@@ -15,6 +15,7 @@
 --   SpaLayout.onPlot(player?): boolean           is the player's plot placed?
 --   SpaLayout.changed(fn)                        fn() when the local player's plot comes or goes (redraw)
 --   SpaLayout.prop(name, player?): Model?        a fixed prop PlotService placed with the plot (PROPS), or nil
+--   SpaLayout.station(id, player?): Model?       a built station in the player's plot (STATIONS), or nil
 --   SpaLayout.slotSpot(name, slot): CFrame       a spot in plot `slot`, whoever has it (the server places with it)
 --   SpaLayout.place(name, onPlot, slot?)         the pure part: (position, yaw) from the tables below; specs
 --   SpaLayout.slotPivot(slot)                    where plot `slot`'s pivot goes; specs
@@ -87,6 +88,16 @@ SpaLayout.PROPS = table.freeze({
 	{ name = "TipJar", asset = "CleanACat_Prop_TipJar", spot = "SpotTipJar" },
 	{ name = "WindowSign", asset = "CleanACat_Prop_WindowSign", spot = "SpotSign" },
 }) :: { Prop }
+
+-- Stations a player builds (BuildRules ids), each on its spot in the owner's plot, in the plot's
+-- STATIONS_FOLDER (StationService). Before it is built the spot holds PAD_ASSET with its name and price.
+export type Station = { id: string, asset: string, spot: string }
+SpaLayout.STATIONS_FOLDER = "Stations"
+SpaLayout.PAD_ASSET = "CleanACat_Prop_BuildPad"
+SpaLayout.STATIONS = table.freeze({
+	{ id = "BrushTable", asset = "CleanACat_Station_BrushTable", spot = "SpotStation2" },
+	{ id = "Dryer", asset = "CleanACat_Station_Dryer", spot = "SpotStation3" },
+}) :: { Station }
 
 -- The placeholder room before the plot, in world space: the spawn at the origin and everything facing it (+Z).
 SpaLayout.ROOM_SPOTS = table.freeze({
@@ -181,6 +192,22 @@ function SpaLayout.prop(name: string, player: Player?): Model?
 	local props = if plot then plot:FindFirstChild(SpaLayout.PROPS_FOLDER) else nil
 	local found = if props then props:FindFirstChild(name) else nil
 	return if found and found:IsA("Model") then found :: Model else nil
+end
+
+-- A built station's model in the player's plot (the local player on the client), or nil.
+function SpaLayout.station(id: string, player: Player?): Model?
+	local slot = SpaLayout.slotOf(player)
+	if slot == nil or not placed() then
+		return nil
+	end
+	local plot = SpaLayout.plotModel(slot)
+	local folder = if plot then plot:FindFirstChild(SpaLayout.STATIONS_FOLDER) else nil
+	local found = if folder then folder:FindFirstChild(id) else nil
+	return if found
+			and found:IsA("Model")
+			and found:GetAttribute("Built") == true
+		then found :: Model
+		else nil
 end
 
 local function spotIn(name: string, slot: number?): CFrame

@@ -15,6 +15,7 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local StationService = require(script.Parent:WaitForChild("StationService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
 local FLAG = "builds"
@@ -69,6 +70,7 @@ local function finishFor(player: Player)
 			Telemetry.onboarding(player, "dryer_built")
 		end
 	end
+	StationService.refresh(player)
 	send(player)
 end
 

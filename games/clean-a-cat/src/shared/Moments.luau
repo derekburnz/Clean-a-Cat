@@ -24,6 +24,10 @@ local catClean: Signal<Model> = Signal.new()
 local brushSwipe: Signal<Model, number> = Signal.new()
 -- (cat): the last brush stroke is done.
 local catFluffed: Signal<Model> = Signal.new()
+-- (cat, dryer): a clean cat sits on the built Blow Dryer's stool and the air starts.
+local dryStart: Signal<Model, Model> = Signal.new()
+-- (cat): the dry is done; the cat goes back to the tub.
+local dryStop: Signal<Model> = Signal.new()
 -- (cat, bowId): the player picks a bow.
 local bowChosen: Signal<Model, string> = Signal.new()
 -- (cat): the before and after photo card shows.
@@ -41,6 +45,8 @@ local Moments = {
 	CatClean = catClean,
 	BrushSwipe = brushSwipe,
 	CatFluffed = catFluffed,
+	DryStart = dryStart,
+	DryStop = dryStop,
 	BowChosen = bowChosen,
 	PhotoTaken = photoTaken,
 	CatToWindow = catToWindow,
@@ -55,6 +61,8 @@ local Moments = {
 		"CatClean",
 		"BrushSwipe",
 		"CatFluffed",
+		"DryStart",
+		"DryStop",
 		"BowChosen",
 		"PhotoTaken",
 		"CatToWindow",
