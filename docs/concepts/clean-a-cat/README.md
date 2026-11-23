@@ -10,5 +10,7 @@ One line per picture: file, what it shows, style, date.
 - `2026-11-23-hud-phone-portrait-washing.png`: portrait fallback if phones are not locked to landscape. Side buttons move down to the thumb zone. Draft colors. 2026-11-23.
 - `sheet_dirty.png`: the ten cats dirty, walking then sitting: 20 mud blobs and 6 tangles each, as a customer brings them. 2026-11-23.
 - `previews/CleanACat_Cat_<Name>_Dirty[_Sit].png`: one preview per dirty model. 2026-11-23.
+- `sheet_spa.png` and `sheet_items.png`: the wash tub, and the three sponges (starter, Bubble Soap, Golden). 2026-11-23.
+- `2026-11-23-tub-scene.png`: dirty Smudge sitting in the wash tub at `ScaleTo(1.5)` with the starter sponge beside it, from about the player's camera. 2026-11-23.
 
 HUD source page: `assets/clean-a-cat/ui/hud.html`. Plans: issues #5 (first session) and #9 (UI layout).

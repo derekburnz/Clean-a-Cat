@@ -5977,5 +5977,165 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Sit.png"
+ },
+ {
+  "name": "CleanACat_Station_Tub",
+  "category": "Station",
+  "module": "stations",
+  "objects": [
+   "CleanACat_Station_Tub",
+   "CleanACat_Station_Tub_Water",
+   "CleanACat_Station_Tub_Foam"
+  ],
+  "triangles": 1472,
+  "budget": 1500,
+  "parts": 45,
+  "size_studs": {
+   "x": 4.7,
+   "y": 3.9,
+   "z": 2.29
+  },
+  "size_roblox": [
+   4.7,
+   2.29,
+   3.9
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "1472/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "988 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Tub.png"
+ },
+ {
+  "name": "CleanACat_Tool_Sponge",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Sponge"
+  ],
+  "triangles": 136,
+  "budget": 400,
+  "parts": 6,
+  "size_studs": {
+   "x": 1.04,
+   "y": 0.69,
+   "z": 0.54
+  },
+  "size_roblox": [
+   1.04,
+   0.54,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "136/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "76 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.20 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Sponge.png"
+ },
+ {
+  "name": "CleanACat_Tool_SpongeBubble",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_SpongeBubble"
+  ],
+  "triangles": 392,
+  "budget": 400,
+  "parts": 10,
+  "size_studs": {
+   "x": 1.25,
+   "y": 0.83,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.25,
+   1.08,
+   0.83
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "392/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "236 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.24 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeBubble.png"
+ },
+ {
+  "name": "CleanACat_Tool_SpongeGolden",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_SpongeGolden"
+  ],
+  "triangles": 392,
+  "budget": 400,
+  "parts": 10,
+  "size_studs": {
+   "x": 1.25,
+   "y": 0.83,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.25,
+   1.08,
+   0.83
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "392/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "236 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.24 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeGolden.png"
  }
 ]
