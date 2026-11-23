@@ -1050,9 +1050,10 @@ def _held(role, arm):
     return b
 
 
-def build_cat(name, mat, spec=None, base=None, body="walk"):
+def build_cat(name, mat, spec=None, base=None, body="walk", held=True):
     """One cat model. `spec` and `base` override the roster entry and the asset name (gold.py builds the gold cats
-    here); `body` is "walk" (A), "sit" (B) or "work" (S)."""
+    here); `body` is "walk" (A), "sit" (B) or "work" (S). held=False leaves out S's held things (the builder kitten
+    holds our own hammer, build_props.py)."""
     spec = spec or ROSTER[name]
     base = base or f"CleanACat_Cat_{name}{SUFFIX[body]}"
     c = look(spec)
@@ -1073,7 +1074,7 @@ def build_cat(name, mat, spec=None, base=None, body="walk"):
     if body == "work":                                  # arms, then legs; each role's held thing rides its arm
         pieces += [(n, _arm(c, 1 if n == "LegF1" else -1, toes[i])) for i, n in enumerate(("LegF1", "LegF2"))]
         pieces += [(n, _leg(c, d["legs"][n][2], w, paw, paw_y, toes[2 + i], rock)) for i, n in enumerate(("LegB1", "LegB2"))]
-        for role, arm in HELD.items():
+        for role, arm in (HELD.items() if held else ()):
             piece = "Held_" + role.capitalize()
             pieces.append((piece, _held(role, arm)))
             rides[piece] = arm
