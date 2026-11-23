@@ -16,9 +16,7 @@ A Roblox game built by a small team with Claude agents. This repo is the source 
 | `.github/workflows/` | `check` (the gate on every pull request), `publish`, `restart-servers`, `flags` (live switches) |
 | `.github/ISSUE_TEMPLATE/` | The Task and Claim work forms. Labels are listed in `.github/labels.json` |
 | `docs/` | Design, decisions, setup guide |
-| `library/` | The team's library: setup, each thread's starting file and playbooks. Its own guide is `library/README.md` |
-| `memory/` | A word-for-word copy of the project instructions and project memory |
 | `assets/clean-a-cat/` | Blender sources, exports, audio and UI mockups, added as the game grows |
 
-## One repo for game and library
-This repo started as the team library and now holds the game too. The starter that used to sit in `starter-game-repo/` was filled in for Clean a Cat and moved to the root, so its skills and agents are in `.claude/`. The library folders keep their paths.
+## Library lives elsewhere
+The team's library (setup, each thread's starting file, playbooks and the memory copy) is in derekburnz/Clean-a-Cat-Library. This repo holds only the game.
