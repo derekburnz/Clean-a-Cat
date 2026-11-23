@@ -23,6 +23,8 @@ Remotes.ClientToServer = {
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
 	-- Builds (BuildService, behind builds).
 	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board, slot free, order, coins
+	-- Funnel (FunnelService, behind onboardingFunnel).
+	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS)  1 a second; logged once per save, nothing else changes
 }
 
 -- Server -> client.

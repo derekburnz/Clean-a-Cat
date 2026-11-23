@@ -102,6 +102,7 @@ local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
 local connections: { RBXScriptConnection } = {}
 local nextCatThread: thread? = nil
+local reportedScrub = false -- the funnel's first_scrub was sent this session
 local reportSeq = 0 -- numbers each spa report; the server echoes it in CatStage
 local answeredSeq = 0 -- the newest report the server has answered
 local warnedMissing: { [string]: boolean } = {}
@@ -461,6 +462,12 @@ local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number)
 	local radius = spongeRadius()
 	for index, piece in cat.mud do
 		if not v.scrub.cleared[index] and (piece.position - point).Magnitude <= radius then
+			if not reportedScrub then
+				-- The funnel's first_scrub: only the client sees the first rub. Once a session; the server keeps it
+				-- once per save.
+				reportedScrub = true
+				Remotes.event("ReportStep"):FireServer("first_scrub")
+			end
 			if ScrubRules.rub(v.scrub, index, travel) then
 				hidePiece(piece)
 				Moments.MudPatchCleared:Fire(

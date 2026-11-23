@@ -76,4 +76,23 @@ return function()
 			expect(next(BuildRules.cleanBuilds("junk"))).to.equal(nil)
 		end)
 	end)
+
+	describe("BuildRules.longRunningAt", function()
+		it("is true only while a long build is still running", function()
+			local s = state(1000)
+			s.stations.BrushTable = true
+			s.stations.Dryer = true
+			expect(BuildRules.longRunningAt(s, 0)).to.equal(false)
+			BuildRules.start(s, "VipRoom", 0)
+			local ends = BuildRules.ITEMS.VipRoom.seconds
+			expect(BuildRules.longRunningAt(s, ends - 1)).to.equal(true)
+			expect(BuildRules.longRunningAt(s, ends)).to.equal(false)
+		end)
+
+		it("does not count a short build", function()
+			local s = state(1000)
+			BuildRules.start(s, "BrushTable", 0)
+			expect(BuildRules.longRunningAt(s, 1)).to.equal(false)
+		end)
+	end)
 end
