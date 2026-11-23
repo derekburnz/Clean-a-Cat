@@ -27,3 +27,4 @@ HUD source page: `assets/clean-a-cat/ui/hud.html`. Plans: issues #5 (first sessi
 - `2026-11-23-builder-kitten-close.png`: the kitten, hat, hammer and toolbox up close. 2026-11-23.
 - `2026-11-23-vip-locked.png`: the locked VIP Room seen from inside the graybox spa. An avatar stands at the closed door with its crown and sign, and the tarp over the scaffold rises above the back wall. 2026-11-23.
 - `2026-11-23-vip-building.png`: the VIP Room while it is being built, seen from above the back yard. The tarp is pulled back on one side, showing the wooden frame and the half-built pink walls. 2026-11-23.
+- `2026-11-23-cat-index-sheet.png`: the first Cat Index in its order. Each of the ten cats sits on a tile in its rarity colour (grey Common, green Uncommon, blue Rare, purple Epic, gold Legendary), clean in front and dirty behind, with dusty mud on the dark fur. Each column is about phone index card size. 2026-11-23.

@@ -120,6 +120,28 @@ def _swatch_at(ob, point):
     return palette.SWATCHES[best][0]
 
 
+def _lum(hex_):
+    c = [int(hex_[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+    c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+
+def _contrast(a, b):
+    la, lb = sorted((_lum(a), _lum(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def _mud_for(fur, wet=False):
+    """#22: brown mud on light fur, dusty dried mud on dark fur (Inky, Tux, the black and grey patches), whichever
+    stands out more from the fur under the blob, so the scrub's reveal reads on every coat."""
+    pairs = (("mud", "mud_wet"), ("mud_dust", "mud_dust_wet"))
+    if fur is None:
+        return pairs[0][wet]
+    hexes = dict(palette.SWATCHES)
+    best = max(pairs, key=lambda pr: _contrast(hexes[pr[0]], hexes[fur]))
+    return best[1] if wet else best[0]
+
+
 def _snap(n):
     """The axis direction nearest a normal."""
     i = max(range(3), key=lambda a: abs(n[a]))
@@ -192,8 +214,9 @@ def build_dirty(name, mat, body):
     if len(spots) < MUD:
         raise RuntimeError(f"{base}: only {len(spots)} mud spots found, need {MUD}")
     nest = {}
+    by_piece = {o.name[len(base) + 1:]: o for o in objs}
     for i, (p, nrm, piece) in enumerate(spots):
-        swatch = "mud_wet" if i % 4 == 3 else "mud"
+        swatch = _mud_for(_swatch_at(by_piece[piece], p), wet=i % 4 == 3)
         part = f"Mud{i + 1:02d}"
         ob = _blob(i, k, swatch).finalize(f"{base}_{part}", mat, location=tuple(p + nrm * 0.008 * k))
         ob.matrix_world = Matrix.Translation(ob.location) @ _align(nrm).to_4x4()

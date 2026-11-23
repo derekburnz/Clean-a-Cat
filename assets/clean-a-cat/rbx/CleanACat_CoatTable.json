@@ -1,0 +1,241 @@
+{
+ "Version": 1,
+ "Order": [
+  "Muffin",
+  "Smudge",
+  "Inky",
+  "Cotton",
+  "Tux",
+  "Patches",
+  "Toffee",
+  "Marble",
+  "LilacCloud",
+  "Starcoat"
+ ],
+ "RarityColors": {
+  "Common": "#8E97B2",
+  "Uncommon": "#5FC98B",
+  "Rare": "#5FA8FF",
+  "Epic": "#C07CFF",
+  "Legendary": "#FFC94D"
+ },
+ "MudColors": {
+  "Mud": "#5A4632",
+  "MudWet": "#735A43",
+  "MudDust": "#B99569",
+  "MudDustWet": "#A88257"
+ },
+ "Coats": {
+  "Muffin": {
+   "Rarity": "Common",
+   "IndexOrder": 1,
+   "Pattern": "stripes",
+   "Extras": [],
+   "Colors": {
+    "fur": "#EBA766",
+    "second": "#B86A33",
+    "muzzle": "#FBF7F1",
+    "eyes": "#F2B53A",
+    "nose": "#E07A8C",
+    "eyes2": "#F2B53A"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Muffin",
+    "Sit": "CleanACat_Cat_Muffin_Sit",
+    "Dirty": "CleanACat_Cat_Muffin_Dirty",
+    "DirtySit": "CleanACat_Cat_Muffin_Dirty_Sit"
+   }
+  },
+  "Smudge": {
+   "Rarity": "Common",
+   "IndexOrder": 2,
+   "Pattern": "stripes",
+   "Extras": [],
+   "Colors": {
+    "fur": "#A3ABB6",
+    "second": "#6B7380",
+    "muzzle": "#FBF7F1",
+    "eyes": "#73DDB4",
+    "nose": "#E07A8C",
+    "eyes2": "#73DDB4"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Smudge",
+    "Sit": "CleanACat_Cat_Smudge_Sit",
+    "Dirty": "CleanACat_Cat_Smudge_Dirty",
+    "DirtySit": "CleanACat_Cat_Smudge_Dirty_Sit"
+   }
+  },
+  "Inky": {
+   "Rarity": "Common",
+   "IndexOrder": 3,
+   "Pattern": "solid",
+   "Extras": [],
+   "Colors": {
+    "fur": "#2F2D3B",
+    "second": "#2F2D3B",
+    "eyes": "#73DDB4",
+    "nose": "#4A4450",
+    "eyes2": "#73DDB4"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Inky",
+    "Sit": "CleanACat_Cat_Inky_Sit",
+    "Dirty": "CleanACat_Cat_Inky_Dirty",
+    "DirtySit": "CleanACat_Cat_Inky_Dirty_Sit"
+   }
+  },
+  "Cotton": {
+   "Rarity": "Common",
+   "IndexOrder": 4,
+   "Pattern": "solid",
+   "Extras": [],
+   "Colors": {
+    "fur": "#FBF7F1",
+    "second": "#FBF7F1",
+    "eyes": "#5EBEFF",
+    "nose": "#F28DAE",
+    "eyes2": "#5EBEFF"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Cotton",
+    "Sit": "CleanACat_Cat_Cotton_Sit",
+    "Dirty": "CleanACat_Cat_Cotton_Dirty",
+    "DirtySit": "CleanACat_Cat_Cotton_Dirty_Sit"
+   }
+  },
+  "Tux": {
+   "Rarity": "Uncommon",
+   "IndexOrder": 5,
+   "Pattern": "patches",
+   "Extras": [
+    "tuxedo"
+   ],
+   "Colors": {
+    "fur": "#2F2D3B",
+    "second": "#FBF7F1",
+    "muzzle": "#FBF7F1",
+    "eyes": "#F2B53A",
+    "tip": "#FBF7F1",
+    "nose": "#E07A8C",
+    "eyes2": "#F2B53A"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Tux",
+    "Sit": "CleanACat_Cat_Tux_Sit",
+    "Dirty": "CleanACat_Cat_Tux_Dirty",
+    "DirtySit": "CleanACat_Cat_Tux_Dirty_Sit"
+   }
+  },
+  "Patches": {
+   "Rarity": "Uncommon",
+   "IndexOrder": 6,
+   "Pattern": "patches",
+   "Extras": [],
+   "Colors": {
+    "fur": "#FBF7F1",
+    "second": "#E59A57",
+    "third": "#3A3640",
+    "eyes": "#73DDB4",
+    "nose": "#E07A8C",
+    "eyes2": "#73DDB4"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Patches",
+    "Sit": "CleanACat_Cat_Patches_Sit",
+    "Dirty": "CleanACat_Cat_Patches_Dirty",
+    "DirtySit": "CleanACat_Cat_Patches_Dirty_Sit"
+   }
+  },
+  "Toffee": {
+   "Rarity": "Rare",
+   "IndexOrder": 7,
+   "Pattern": "points",
+   "Extras": [
+    "ear_tufts"
+   ],
+   "Colors": {
+    "fur": "#EDD6B4",
+    "second": "#7D5539",
+    "eyes": "#5EBEFF",
+    "nose": "#E07A8C",
+    "eyes2": "#5EBEFF"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Toffee",
+    "Sit": "CleanACat_Cat_Toffee_Sit",
+    "Dirty": "CleanACat_Cat_Toffee_Dirty",
+    "DirtySit": "CleanACat_Cat_Toffee_Dirty_Sit"
+   }
+  },
+  "Marble": {
+   "Rarity": "Rare",
+   "IndexOrder": 8,
+   "Pattern": "spots",
+   "Extras": [
+    "ear_tufts"
+   ],
+   "Colors": {
+    "fur": "#CDD2DA",
+    "second": "#545B66",
+    "muzzle": "#FBF7F1",
+    "eyes": "#F2B53A",
+    "nose": "#E07A8C",
+    "eyes2": "#F2B53A"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Marble",
+    "Sit": "CleanACat_Cat_Marble_Sit",
+    "Dirty": "CleanACat_Cat_Marble_Dirty",
+    "DirtySit": "CleanACat_Cat_Marble_Dirty_Sit"
+   }
+  },
+  "LilacCloud": {
+   "Rarity": "Epic",
+   "IndexOrder": 9,
+   "Pattern": "gradient",
+   "Extras": [
+    "ruff",
+    "fluffy"
+   ],
+   "Colors": {
+    "fur": "#CBB6EE",
+    "second": "#EDE3FB",
+    "ruff": "#EDE3FB",
+    "muzzle": "#EDE3FB",
+    "eyes": "#5EBEFF",
+    "nose": "#E07A8C",
+    "eyes2": "#5EBEFF"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_LilacCloud",
+    "Sit": "CleanACat_Cat_LilacCloud_Sit",
+    "Dirty": "CleanACat_Cat_LilacCloud_Dirty",
+    "DirtySit": "CleanACat_Cat_LilacCloud_Dirty_Sit"
+   }
+  },
+  "Starcoat": {
+   "Rarity": "Legendary",
+   "IndexOrder": 10,
+   "Pattern": "solid",
+   "Extras": [
+    "sparkle"
+   ],
+   "Colors": {
+    "fur": "#F5C64A",
+    "second": "#FFF0B8",
+    "muzzle": "#FFF0B8",
+    "eyes": "#5EBEFF",
+    "nose": "#F28DAE",
+    "tip": "#FFF0B8",
+    "eyes2": "#5EBEFF"
+   },
+   "Models": {
+    "Walk": "CleanACat_Cat_Starcoat",
+    "Sit": "CleanACat_Cat_Starcoat_Sit",
+    "Dirty": "CleanACat_Cat_Starcoat_Dirty",
+    "DirtySit": "CleanACat_Cat_Starcoat_Dirty_Sit"
+   }
+  }
+ }
+}

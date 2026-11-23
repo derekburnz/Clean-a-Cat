@@ -24,9 +24,9 @@ All colours live in `assets/clean-a-cat/blender/palette.py` (the source of truth
 Also in row 16: `mud_wet` #735A43 (the lighter wet edge of a blob), `foam` #FDFEFF, `spa_tile` #EEF4F6.
 
 ### Coats (rows 17 and 18) and details (row 19)
-Each Cat Index cat has its own coat swatches (`coat_*`) so no coat repeats a Cat Cafe coat. Eyes (`eye_mint`, `eye_sky`, `eye_gold`), nose (`nose_bubblegum`), bows (`bow_pink`, `bow_mint`, `bow_sky`) and `wood_light` are in row 19. Rarity colours for frames and badges are the studio's row 2 (`rarity_common`, `rarity_rare`, `rarity_epic`, `rarity_legend`).
+Each Cat Index cat has its own coat swatches (`coat_*`) so no coat repeats a Cat Cafe coat. Eyes (`eye_mint`, `eye_sky`, `eye_gold`), nose (`nose_bubblegum`), bows (`bow_pink`, `bow_mint`, `bow_sky`) and `wood_light` are in row 19. Rarity colours for frames and badges are the studio's row 2 (`rarity_common`, `rarity_rare`, `rarity_epic`, `rarity_legend`) plus `rarity_uncommon` #5FC98B in row 20.
 
-**Mud rule:** every coat must stay readable against `mud`. Inky (black) is the one dark coat; its mud uses `mud_wet` edges and the blobs sit proud of the coat so the shape still reads.
+**Mud rule:** every coat must stay readable against its mud. Brown `mud` vanishes on dark fur (Inky, Tux and the dark stripes, points and patches), so each blob takes whichever mud stands out more from the fur under it: `mud` or `mud_dust` #B99569, a dusty dried clay, with `mud_dust_wet` #A88257 as its wet edge (#22). The blobs also sit proud of the coat, so their shape reads.
 
 ## 3. Shape language
 
@@ -84,7 +84,7 @@ Pivot at the base centre on the floor. The front faces -Y in Blender, which is -
 `build_all.py --render` renders a three-quarter preview of every asset to `docs/concepts/clean-a-cat/previews/` and the sheets (`sheet_cats.png` and others). Every picture shown to the owner or players shows scale with one of the game's own characters, and is checked at 150 px wide. Captions go in `docs/concepts/clean-a-cat/README.md`.
 
 ## 11. Dirty cats
-`dirt.py` builds `CleanACat_Cat_<Name>_Dirty` (walking, in a carrier) and `CleanACat_Cat_<Name>_Dirty_Sit` (in the tub or the stray box) for every roster cat: the clean cat plus 20 mud blobs (`_Mud01` to `_Mud20`) and 6 tangles (`_Tangle01` to `_Tangle06`), each its own child Model. Blobs on the head, tail or a leg ride that piece's Model. Mud is `mud` with every fourth blob `mud_wet`, laid flat on the fur, never within 0.3 studs of an eye. The wet coat is a colour shift the game applies (root attribute `WetDarken` = 0.3), not extra parts. With every blob and tangle removed the model is the clean cat plus its hidden fluff.
+`dirt.py` builds `CleanACat_Cat_<Name>_Dirty` (walking, in a carrier) and `CleanACat_Cat_<Name>_Dirty_Sit` (in the tub or the stray box) for every roster cat: the clean cat plus 20 mud blobs (`_Mud01` to `_Mud20`) and 6 tangles (`_Tangle01` to `_Tangle06`), each its own child Model. Blobs on the head, tail or a leg ride that piece's Model. Mud is `mud` (or `mud_dust` on dark fur, see the mud rule) with every fourth blob the wet shade, laid flat on the fur, never within 0.3 studs of an eye. The wet coat is a colour shift the game applies (root attribute `WetDarken` = 0.3), not extra parts. With every blob and tangle removed the model is the clean cat plus its hidden fluff.
 
 **Fluffed look (#14).** Every dirty model also carries `_Fluff01` to `_Fluff10` (root attribute `FluffCount`): coat-coloured cloud puffs on the cheeks, crown, chest, flanks, back and tail, each its own child Model riding its piece. Each puff takes the swatch of the fur under it, so a white chest gets a white ruff. They ship see-through (Transparency 1, CanQuery off, no shadow); after the third brush swipe the game shows them (Transparency 0, CastShadow on) with a small pop. About 720 triangles and 20 parts.
 
@@ -153,7 +153,16 @@ The hat, hammer and toolbox together are 388 triangles (the budget is 400). None
 
 Both are under 2,000 triangles. An invisible solid `_Barrier` with CanQuery off keeps players out of the site. The finished room is a later issue.
 
-## 20. Rules
+## 20. Coat table and the Cat Index (#22)
+`coat_table.py` writes `assets/clean-a-cat/rbx/CleanACat_CoatTable.json` on every full build. Rojo turns it into a ModuleScript, `ReplicatedStorage.Assets.CleanACat_CoatTable`, that returns the table, so the server sends only a coat id (the cat's name). It holds:
+- `Order`: the Cat Index order, Commons first.
+- `RarityColors`: the badge and frame colour of each rarity.
+- `MudColors`: the four mud colours.
+- `Coats[name]`: for each cat, `Rarity`, `IndexOrder`, `Pattern`, `Extras` (ear tufts, ruff, fluffy, sparkle, tuxedo), `Colors` (fur, second, eyes, nose and the rest, as hex) and `Models` (the Walk, Sit, Dirty and DirtySit model names).
+
+Every pattern part sits proud of the body, and nothing is a texture. Extras cost at most 276 triangles (Lilac Cloud's fluffy coat while sitting), under the 300 each that the issue allows. The index sheet shows each cat clean on its rarity tile with its dirty look behind. Each column is about 160 px wide, an index card's size on a phone.
+
+## 21. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.

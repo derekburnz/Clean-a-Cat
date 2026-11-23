@@ -36,6 +36,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `spa_props.py` | the carrier, stray box, chance board and queue mat (#16); the window cushion, tip jar and spa sign (#17); the build pad for a locked station (#18) |
 | `build_props.py` | the builder kitten (#20): the kitten in its own coat with `HatSlot` and `HammerGrip`, the hard hat, the hammer pivoted at its grip and the toolbox with `CountdownAnchor` |
 | `vip.py` | the VIP Room before it is built (#21): the locked look (door, sign `Screen`, tarp over scaffold) and the building look (frame half up) at `SpotVipDoor` |
+| `coat_table.py` | the coat table (#22): `rbx/CleanACat_CoatTable.json`, read in game as `ReplicatedStorage.Assets.CleanACat_CoatTable` (rarity, index order, colours and model names per cat) |
 | `customers.py` | the customers' accessories for the R15 rig and the four looks (`LOOKS`, #16) |
 | `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
 | `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, or `customers`); exports nothing |
