@@ -98,6 +98,12 @@ SpaLayout.STATIONS = table.freeze({
 	{ id = "BrushTable", asset = "CleanACat_Station_BrushTable", spot = "SpotStation2" },
 	{ id = "Dryer", asset = "CleanACat_Station_Dryer", spot = "SpotStation3" },
 }) :: { Station }
+-- The VIP Room's door at SpotVipDoor until the room is built: VIP_LOCKED_ASSET before its build starts,
+-- VIP_BUILDING_ASSET while it runs, nothing once it is done (StationService).
+SpaLayout.VIP_ID = "VipRoom"
+SpaLayout.VIP_SPOT = "SpotVipDoor"
+SpaLayout.VIP_LOCKED_ASSET = "CleanACat_Area_VipLocked"
+SpaLayout.VIP_BUILDING_ASSET = "CleanACat_Area_VipBuilding"
 
 -- The placeholder room before the plot, in world space: the spawn at the origin and everything facing it (+Z).
 SpaLayout.ROOM_SPOTS = table.freeze({

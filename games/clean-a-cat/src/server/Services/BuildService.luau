@@ -94,6 +94,7 @@ local function onBuild(player: Player, rawId: unknown)
 		return
 	end
 	local item = BuildRules.ITEMS[id]
+	StationService.refresh(player)
 	send(player)
 	NetService.notice(player, `Building the {item.name}`)
 	Telemetry.economy(player, "coins", "sink", spent, state.coins, "Shop", id)

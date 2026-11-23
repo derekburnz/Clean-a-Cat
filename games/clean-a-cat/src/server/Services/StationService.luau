@@ -1,8 +1,9 @@
 --!strict
 -- StationService: the stations a player has built stand in that player's own plot (SpaLayout.STATIONS), where
 -- everyone on the street can see them through the open front. Before a station is built its spot holds the
--- build pad (SpaLayout.PAD_ASSET) with the station's name and price. Redrawn when the save loads, when a build
--- finishes (BuildService calls StationService.refresh), when the street is placed again, and when the switch
+-- build pad (SpaLayout.PAD_ASSET) with the station's name and price. The VIP Room's door shows locked, then a
+-- building site while its build runs, and goes once it is built. Redrawn when the save loads, when a build
+-- starts or finishes (BuildService calls StationService.refresh), when the street is placed again, and when the switch
 -- changes; cleared when the owner leaves, so the next player in that slot starts empty.
 -- Behind the LiveFlags switch `stations`, off by default. Stations change nothing on the server: the pay bonus
 -- is BuildRules', and the client's dry step (ScrubController) only reads the Blow Dryer model placed here.
@@ -31,8 +32,8 @@ local function anchorAll(model: Model)
 	end
 end
 
--- The pad's name and price, on its Screen part's front.
-local function label(pad: Model, item: BuildRules.Item)
+-- A name and a second line on the model's Screen part's front.
+local function label(pad: Model, title: string, line: string)
 	local screen = pad:FindFirstChild("Screen", true)
 	if screen == nil or not screen:IsA("BasePart") then
 		return
@@ -47,7 +48,7 @@ local function label(pad: Model, item: BuildRules.Item)
 	text.Font = Enum.Font.FredokaOne
 	text.TextScaled = true
 	text.TextColor3 = LABEL_COLOR
-	text.Text = `{item.name}\n{item.price} coins`
+	text.Text = `{title}\n{line}`
 	text.Parent = gui
 	gui.Parent = screen
 end
@@ -91,9 +92,35 @@ function StationService.refresh(player: Player)
 		model:PivotTo(SpaLayout.slotSpot(entry.spot, slot))
 		anchorAll(model)
 		if not built then
-			label(model, BuildRules.ITEMS[entry.id])
+			local item = BuildRules.ITEMS[entry.id]
+			label(model, item.name, `{item.price} coins`)
 		end
 		model.Parent = folder
+	end
+	-- The VIP Room door: locked, a building site while it builds, gone once built.
+	local vip = BuildRules.ITEMS[SpaLayout.VIP_ID]
+	local running = BuildRules.cleanBuilds(save.builds)[vip.slot]
+	local building = running ~= nil and running.item == SpaLayout.VIP_ID
+	if not save.stations[SpaLayout.VIP_ID] then
+		local doorName = if building
+			then SpaLayout.VIP_BUILDING_ASSET
+			else SpaLayout.VIP_LOCKED_ASSET
+		local door = (assets :: Instance):FindFirstChild(doorName)
+		if door and door:IsA("Model") then
+			local model = (door :: Model):Clone() :: Model
+			model.Name = SpaLayout.VIP_ID
+			model:SetAttribute("Built", false)
+			if building and running then
+				model:SetAttribute("EndsAt", running.endsAt)
+			end
+			model:PivotTo(SpaLayout.slotSpot(SpaLayout.VIP_SPOT, slot))
+			anchorAll(model)
+			label(model, vip.name, if building then "Building" else `{vip.price} coins`)
+			model.Parent = folder
+		elseif not warned[doorName] then
+			warned[doorName] = true
+			warn(`[StationService] {doorName} is missing from ReplicatedStorage.Assets`)
+		end
 	end
 	folder.Parent = plot
 end
