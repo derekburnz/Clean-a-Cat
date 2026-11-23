@@ -5,6 +5,7 @@
 -- Behind the LiveFlags switch `scrubPrototype` (off by default). Nothing here touches the server or saves: the
 -- cat and its mud exist only on this device until coins and saves arrive with their own server checks.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
@@ -21,6 +22,7 @@ local PATCH_SIZE = Vector3.new(0.12, 1.1, 1.1) -- a flat disc: thin along its no
 local DIRTY_COLOR = Color3.fromRGB(120, 112, 104)
 local CLEAN_COLOR = Color3.fromRGB(205, 205, 210)
 local MUD_COLOR = Color3.fromRGB(92, 64, 40)
+local PATCH_FADE = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- a cleared patch fades, not blinks
 local RESET_SECONDS = 4 -- prototype loop: the cat gets muddy again so a tester can repeat
 
 type Scrub = {
@@ -88,6 +90,12 @@ local function buildTub(parent: Instance)
 	water.CanQuery = false
 	water.Parent = tub
 	tub.Parent = parent
+end
+
+-- A cleared patch stops catching the sponge at once and fades out over PATCH_FADE.
+local function hidePatch(patch: BasePart)
+	patch.CanQuery = false
+	TweenService:Create(patch, PATCH_FADE, { Transparency = 1 }):Play()
 end
 
 local function setDirty(scrub: Scrub)
@@ -191,9 +199,7 @@ end
 
 local function reveal(scrub: Scrub)
 	for _, index in ScrubRules.reveal(scrub.state) do
-		local patch = scrub.patches[index]
-		patch.Transparency = 1
-		patch.CanQuery = false
+		hidePatch(scrub.patches[index])
 	end
 	scrub.body.Color = CLEAN_COLOR
 	scrub.head.Color = CLEAN_COLOR
@@ -216,8 +222,7 @@ local function rubAt(scrub: Scrub, point: Vector3, travel: number)
 			and (patch.Position - point).Magnitude <= ScrubRules.SPONGE_RADIUS
 		then
 			if ScrubRules.rub(scrub.state, index, travel) then
-				patch.Transparency = 1
-				patch.CanQuery = false
+				hidePatch(patch)
 				Moments.MudPatchCleared:Fire(
 					scrub.model,
 					patch.Position,
