@@ -74,7 +74,7 @@ local Cues: { [string]: Cue } = {
 	},
 	-- synth: CleanACat_Sfx_Meow_1..3; played at the cat (3D)
 	meow = { ids = {}, group = "Sfx", volume = 0.45, pitch = { 0.9, 1.15 }, minGap = 4, voices = 2 },
-	-- Creator Store picks pending; two beds that alternate
+	-- synth: CleanACat_Music_SpaA and CleanACat_Music_SpaB; two beds that alternate
 	spaMusicA = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
 	spaMusicB = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
 }

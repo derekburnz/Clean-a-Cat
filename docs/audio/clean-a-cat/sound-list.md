@@ -21,7 +21,7 @@ Moments are the shared list in issue #3. Source: **synth** means made by `assets
 | camera | PhotoTaken | Ui | soft double shutter click | synth | CleanACat_Ui_Camera | 0.5 | 1.0 | 0.3 | 1 | no | made, gate PASS |
 | uiClick | any button | Ui | short soft tick | synth | CleanACat_Ui_Click | 0.4 | 0.98 to 1.02 | 0.05 | 2 | yes | made, gate PASS |
 | meow | customer arrives, window cat idle | Sfx (3D at the cat) | short friendly meow, 3 variants, never a hiss | library | CleanACat_Sfx_Meow_1..3 (mew, rising mew, trilled mrrp; ported from the library's cat_voice code) | 0.45 | 0.9 to 1.15 | 4.0 | 2 | no | made, gate PASS |
-| spaMusicA / spaMusicB | spa floor | Music | see brief | library | Roblox-Asset-Library audio/synth/music.py with new tunes, so Clean a Cat does not share Cat Cafe's beds | 0.5 | 1.0 | - | 1 | no | to port |
+| spaMusicA / spaMusicB | spa floor | Music | see brief | synth | CleanACat_Music_SpaA (Warm Bubbles, 92 BPM marimba) and CleanACat_Music_SpaB (Fluff and Fold, 80 BPM piano and flute), new songs from assets/clean-a-cat/audio/synth/music.py | 0.5 | 1.0 | - | 1 | no | made; SpaA gate WARN on the seam (downbeat level, same as every phrase start), listen |
 
 Later, not in the first slice: coin and tip jar, build finished celebration, builder kitten hammer, door bell, window tips.
 
