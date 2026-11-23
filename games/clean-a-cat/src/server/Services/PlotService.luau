@@ -9,8 +9,12 @@
 -- With each plot come Model-Agent's fixed props on their spots (SpaLayout.PROPS, in the plot's Props folder):
 -- queue mats, the stray box, the window cushions, the tip jar and the spa sign. What changes per player (cats,
 -- the jar's fill, the chance board) is drawn by the owner's client on top.
+-- Under the plots goes Model-Agent's street (SpaLayout.STREET_ASSET, pivot at slot 1's pivot, unrotated). While it
+-- is placed the placeholder floor PH_Floor is put away in ServerStorage, so the two grounds never fight; it comes
+-- back with the room.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -18,12 +22,14 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local SPAWN_NAME = "PH_Spawn" -- the spawn in default.project.json
+local FLOOR_NAME = "PH_Floor" -- the placeholder floor in default.project.json
 local ASSET_WAIT_SECONDS = 10
 
 local PlotService = {}
 
 local street: Folder? = nil
 local roomSpawn: CFrame? = nil -- where PH_Spawn stood before the plot, to put it back
+local storedFloor: Instance? = nil -- PH_Floor while the street is placed
 local owners: { [number]: Player? } = {}
 
 local function spawnLocation(): BasePart?
@@ -108,6 +114,22 @@ local function place()
 	end
 	local folder = Instance.new("Folder")
 	folder.Name = SpaLayout.PLOTS_FOLDER
+	local streetAsset = (assets :: Instance):FindFirstChild(SpaLayout.STREET_ASSET)
+	if streetAsset and streetAsset:IsA("Model") then
+		local streetModel = (streetAsset :: Model):Clone() :: Model
+		streetModel.Name = "Street"
+		streetModel.ModelStreamingMode = Enum.ModelStreamingMode.Persistent
+		streetModel:PivotTo(CFrame.new(SpaLayout.slotPivot(1)))
+		anchorAll(streetModel)
+		streetModel.Parent = folder
+		local floor = Workspace:FindFirstChild(FLOOR_NAME)
+		if floor then
+			storedFloor = floor
+			floor.Parent = ServerStorage
+		end
+	else
+		warn(`[PlotService] {SpaLayout.STREET_ASSET} is missing from ReplicatedStorage.Assets`)
+	end
 	for slot = 1, SpaLayout.PLOT_COUNT do
 		placePlot(asset :: Model, assets :: Instance, slot, folder)
 	end
@@ -128,6 +150,11 @@ local function remove()
 	street = nil
 	if folder then
 		folder:Destroy()
+	end
+	local floor = storedFloor
+	storedFloor = nil
+	if floor then
+		floor.Parent = Workspace
 	end
 	local spawn = spawnLocation()
 	if spawn and roomSpawn then

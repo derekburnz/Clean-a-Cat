@@ -37,6 +37,7 @@ SpaLayout.PLOT_COUNT = 6
 SpaLayout.PLOT_SPACING = 44
 SpaLayout.PLOTS_FOLDER = "SpaPlots" -- Workspace.SpaPlots.Plot<slot>
 SpaLayout.SLOT_ATTRIBUTE = "SpaPlot" -- Player attribute: the player's slot, 1 to PLOT_COUNT
+SpaLayout.STREET_ASSET = "CleanACat_Area_Street" -- the street under the plots; its pivot is slot 1's pivot
 
 export type Spot = { position: Vector3, yaw: number }
 
