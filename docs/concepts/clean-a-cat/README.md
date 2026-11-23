@@ -17,6 +17,8 @@ One line per picture: file, what it shows, style, date.
 - `2026-11-23-plot-graybox-top.png`: the spa plot graybox from above (roof hidden). Coloured pads mark the spots: sky the tub, green the spawn, pink the queue, brown the stray box, yellow the builder, grey the two locked station pads, mint the VIP Room door; pink cushions in the window. 2026-11-23.
 - `2026-11-23-plot-graybox-player.png`: from behind the player at the spawn, facing the tub, with the stray box and the VIP door behind. Roof hidden. 2026-11-23.
 - `2026-11-23-plot-graybox-entrance.png`: walking in at the entrance past the first customer. Roof hidden. 2026-11-23.
-- `2026-11-23-plot-graybox-street.png`: outside on the street: the display window with four cats (glass hidden, as Roblox draws it 0.6 clear), the open entrance and three customers queueing with dirty cats. 2026-11-23.
+- `2026-11-23-plot-graybox-street.png`: outside on the street: the display window with four cats on cushions and the tip jar (glass hidden, as Roblox draws it 0.6 clear), the spa sign, the open entrance and three customers queueing with dirty cats. 2026-11-23.
+- `2026-11-23-customers-sheet.png`: the four customers (stand-in avatars in their body colours with the sun hat, scarf, tote bag and sun hat), each with a carrier and a dirty cat at its feet; the stray box with a stray, the chance board and a queue mat. 2026-11-23.
+- `2026-11-23-plot-graybox-window.png`: the display window from the street at an angle, as a neighbour sees it: four cats on cushions at 1.3 times, the tip jar, the spa sign by the entrance and a passer-by for scale. 2026-11-23.
 
 HUD source page: `assets/clean-a-cat/ui/hud.html`. Plans: issues #5 (first session) and #9 (UI layout).

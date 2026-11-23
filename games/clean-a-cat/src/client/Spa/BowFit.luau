@@ -23,21 +23,22 @@ local function findSlot(root: Instance): Attachment?
 	return nil
 end
 
--- The head's BowSlot: the first BowSlot under the cat's ..._Head Model.
-local function headSlot(cat: Model): Attachment?
+-- The cat's ..._Head Model, which CatMotion turns by its pivot.
+local function headModel(cat: Model): Model?
 	for _, descendant in cat:GetDescendants() do
 		if descendant:IsA("Model") and string.match(descendant.Name, "_Head$") then
-			return findSlot(descendant)
+			return descendant :: Model
 		end
 	end
 	return nil
 end
 
--- Takes off the bow the cat wears, if any.
+-- Takes off the bow the cat wears, if any (it sits in the head Model).
 function BowFit.remove(cat: Model)
-	local old = cat:FindFirstChild(NAME)
-	if old then
+	local old = cat:FindFirstChild(NAME, true)
+	while old do
 		old:Destroy()
+		old = cat:FindFirstChild(NAME, true)
 	end
 end
 
@@ -47,8 +48,9 @@ function BowFit.wear(cat: Model, bowId: string, scale: number): Model?
 	BowFit.remove(cat)
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	local asset = if assets then assets:FindFirstChild(BowFit.assetName(bowId)) else nil
-	local target = headSlot(cat)
-	if not asset or not asset:IsA("Model") or not target then
+	local head = headModel(cat)
+	local target = if head then findSlot(head) else nil
+	if not asset or not asset:IsA("Model") or not head or not target then
 		return nil
 	end
 	local bow = (asset :: Model):Clone() :: Model
@@ -75,7 +77,8 @@ function BowFit.wear(cat: Model, bowId: string, scale: number): Model?
 	end
 	bow.Name = NAME
 	bow:SetAttribute("BowId", bowId)
-	bow.Parent = cat
+	-- In the head Model, so the bow turns with the head when CatMotion moves it.
+	bow.Parent = head
 	return bow
 end
 
