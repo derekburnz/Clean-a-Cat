@@ -284,11 +284,113 @@ def dryer_rbx_extras():
             "attributes": {"SeatHeight": {"Float64": SEAT_DRYER}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
 
 
+# -- #23 later stations ------------------------------------------------------------------------------------------
+BATH_R = 1.95                     # the bubble bath's outer radius: 3.9 across, inside the 5 stud pad
+BATH_SEAT = 1.3                   # its inner floor, where the cat sits in the water
+BATH_RIM = 1.7
+
+
+def build_bubble_bath(mat):
+    """A round bubblegum bath on a cream foot, a ring of rim blocks, sky water heaped with foam, a rubber duck and a
+    bubble spout arching over from the back."""
+    name = "CleanACat_Station_BubbleBath"
+    b = Builder()
+    b.cyl_base((0, 0, -0.02), BATH_R - 0.3, 0.2, "spa_cream", segments=12, bevel=False)        # the foot
+    b.cyl_base((0, 0, 0.15), BATH_R, BATH_SEAT - 0.17, "spa_bubblegum", segments=14, bevel=False)   # the body
+    n = 12
+    for i in range(n):                                                             # the wall, a ring of blocks
+        t = 2 * math.pi * (i + 0.5) / n
+        r = BATH_R - 0.17
+        w = 2 * BATH_R * math.sin(math.pi / n) + 0.04
+        b.box_base((math.cos(t) * r, math.sin(t) * r, BATH_SEAT - 0.05 + 0.003 * (i % 2)), (0.36, w, BATH_RIM - BATH_SEAT),
+                   "spa_bubblegum", bevel=False, rot=Matrix.Rotation(t, 3, "Z"))
+        b.box_base((math.cos(t) * r, math.sin(t) * r, BATH_RIM - 0.06 + 0.004 * (i % 2)), (0.46, w + 0.02, 0.14),
+                   "spa_cream", bevel=False, rot=Matrix.Rotation(t, 3, "Z"))      # the cream rim cap
+    b.cyl_base((0, 0, BATH_SEAT - 0.03), BATH_R - 0.3, 0.03, "spa_tile", segments=14, bevel=False)   # inner floor
+    # a rubber duck on the rim
+    dx, dy = math.cos(math.radians(-40)) * (BATH_R - 0.17), math.sin(math.radians(-40)) * (BATH_R - 0.17)
+    b.sphere((dx, dy, BATH_RIM + 0.26), 0.2, "pastel_butter", segments=8, rings=4, scale=(1.2, 1, 0.8))
+    b.sphere((dx - 0.08, dy - 0.12, BATH_RIM + 0.45), 0.13, "pastel_butter", segments=8, rings=4)
+    b.box((dx - 0.12, dy - 0.27, BATH_RIM + 0.43), (0.1, 0.12, 0.05), "spa_bubblegum", bevel=False)
+    # the spout's pipe: up from behind the bath and over the rim
+    py = BATH_R + 0.18
+    b.cyl_base((0, py, -0.02), 0.13, SPOUT_Z + 0.2, "metal", segments=8, bevel=False)
+    b.box((0, (py + SPOUT_Y) / 2, SPOUT_Z + 0.12), (0.18, py - SPOUT_Y + 0.12, 0.18), "metal", bevel=False)
+    main = _tris(b.finalize(name, mat))
+    w_ = Builder()
+    w_.cyl_base((0, 0, BATH_SEAT), BATH_R - 0.32, 0.12, "spa_sky", segments=14, bevel=False)
+    water = _tris(w_.finalize(name + "_Water", mat))
+    f = Builder()
+    for i in range(11):                                                          # foam heaped round the edge
+        t = 2 * math.pi * i / 11 + 0.3
+        r = BATH_R - 0.62 - 0.08 * (i % 3)
+        size = 0.45 + 0.07 * (i % 3)
+        f.sphere((math.cos(t) * r, math.sin(t) * r, BATH_SEAT + 0.2 + 0.05 * (i % 2)), size, "foam", segments=6,
+                 rings=4, scale=(1, 1, 0.75))
+    for i, (x, y) in enumerate(((-1.4, 1.2), (1.3, 1.35), (-1.5, -1.0))):        # and spilling over the rim
+        f.sphere((x, y, BATH_RIM + 0.15), 0.26 - 0.03 * i, "foam", segments=6, rings=4, scale=(1, 1, 0.7))
+    foam = f.finalize(name + "_Foam", mat)
+    s_ = Builder()                                                                # the spout's mouth
+    s_.cyl((0, 0, 0), 0.17, 0.2, "spa_mint", segments=8, bevel=False)
+    spout = _tris(s_.finalize(name + "_Spout", mat, bevel=0, location=(0, SPOUT_Y, SPOUT_Z)))
+    barrier = _barrier(name, mat, (2.4, 2.4, BATH_SEAT - 0.25), (0, 0, 0.04))
+    return [main, water, foam, spout, barrier]
+
+
+SPOUT_Y, SPOUT_Z = 1.2, 4.7       # the spout's mouth, over the back of the bath above a 1.5 scale cat's ears
+
+
+def bubble_bath_rbx_extras():
+    return {"attachments": [("CleanACat_Station_BubbleBath", "CatSeat", Matrix.Translation((0.0, 0.0, BATH_SEAT + 0.02))),
+                            ("CleanACat_Station_BubbleBath_Spout", "Bubbles",
+                             Matrix.Translation((0.0, SPOUT_Y, SPOUT_Z - 0.1)))],
+            "attributes": {"SeatHeight": {"Float64": BATH_SEAT + 0.02}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
+
+
+PAW_Z = 1.6                       # the pawdicure table's cushion top, the CatSeat
+
+
+def build_pawdicure(mat):
+    """A small padded table: mint legs, a cream top with a bubblegum cushion and a paw rest at the front, and a tray of
+    three polish bottles and a nail file at the side."""
+    name = "CleanACat_Station_Pawdicure"
+    b = Builder()
+    tw, td, ty = 2.8, 2.2, 0.2
+    top = PAW_Z - 0.22
+    b.box_base((0, ty, top - 0.14), (tw, td, 0.14), "spa_cream")                 # the top
+    for sx in (1, -1):
+        for sy in (1, -1):
+            b.box_base((sx * (tw / 2 - 0.28), ty + sy * (td / 2 - 0.28), 0), (0.26, 0.26, top - 0.12), "spa_mint")
+    b.box_base((0, ty + 0.15, top - 0.02), (tw - 0.9, td - 0.9, 0.24), "spa_bubblegum")      # the cushion
+    b.box_base((0, ty - td / 2 + 0.3, top - 0.02), (1.2, 0.5, 0.12), "spa_mint")  # the paw rest at the front edge
+    # the tray at the cat's left front corner (+X, -Y): three bottles and a file
+    tx, tyy = tw / 2 - 0.38, ty - td / 2 + 0.42
+    b.box_base((tx, tyy, top - 0.02), (0.6, 0.62, 0.06), "metal", bevel=False)
+    for i, (dx, dy, sw) in enumerate(((-0.14, 0.14, "spa_bubblegum"), (0.13, 0.12, "spa_sky"), (0.0, -0.14, "bow_mint"))):
+        b.cyl_base((tx + dx, tyy + dy, top + 0.03), 0.09, 0.22, sw, segments=8, bevel=False)
+        b.cyl_base((tx + dx, tyy + dy, top + 0.24), 0.045, 0.1, "offwhite", segments=6, bevel=False)
+    b.box((tx - 0.02, tyy - 0.02, top + 0.08), (0.08, 0.52, 0.025), "pastel_butter", bevel=False,
+          rot=Matrix.Rotation(math.radians(30), 3, "Z"))                          # the nail file
+    b.box_base((0, ty, 0.5), (tw - 0.8, td - 0.8, 0.1), "spa_cream", bevel=False)  # a shelf with a towel
+    b.box_base((0.3, ty + 0.1, 0.59), (0.9, 0.7, 0.24), "spa_sky")
+    main = _tris(b.finalize(name, mat))
+    return [main, _barrier(name, mat, (tw - 0.74, td - 0.74, top - 0.35), (0, ty, 0.03))]
+
+
+def pawdicure_rbx_extras():
+    return {"attachments": [("CleanACat_Station_Pawdicure", "CatSeat", Matrix.Translation((0.0, 0.35, PAW_Z)))],
+            "attributes": {"SeatHeight": {"Float64": PAW_Z}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
+
+
 ASSETS = {"CleanACat_Station_Tub": (build_tub, 1500),
           "CleanACat_Station_BrushTable": (build_brush_table, 1200),
           "CleanACat_Station_BrushTableUp": (build_brush_table_up, 1200),
-          "CleanACat_Station_Dryer": (build_dryer, 1200)}
+          "CleanACat_Station_Dryer": (build_dryer, 1200),
+          "CleanACat_Station_BubbleBath": (build_bubble_bath, 1200),
+          "CleanACat_Station_Pawdicure": (build_pawdicure, 1200)}
 EXTRAS = {"CleanACat_Station_Tub": tub_rbx_extras,
           "CleanACat_Station_BrushTable": brush_table_rbx_extras("CleanACat_Station_BrushTable"),
           "CleanACat_Station_BrushTableUp": brush_table_rbx_extras("CleanACat_Station_BrushTableUp"),
-          "CleanACat_Station_Dryer": dryer_rbx_extras}
+          "CleanACat_Station_Dryer": dryer_rbx_extras,
+          "CleanACat_Station_BubbleBath": bubble_bath_rbx_extras,
+          "CleanACat_Station_Pawdicure": pawdicure_rbx_extras}

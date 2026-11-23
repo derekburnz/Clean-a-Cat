@@ -41,8 +41,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_SpaPlot.png"
+  }
  },
  {
   "name": "CleanACat_Area_VipBuilding",
@@ -84,8 +83,7 @@
     "pivot": "floor at z=-0.05 (want 0)",
     "centered": "footprint center x=0.00 y=6.13"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipBuilding.png"
+  }
  },
  {
   "name": "CleanACat_Area_VipLocked",
@@ -127,8 +125,7 @@
     "pivot": "floor at z=-0.05 (want 0)",
     "centered": "footprint center x=0.00 y=6.13"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipLocked.png"
+  }
  },
  {
   "name": "CleanACat_Bow_Mint",
@@ -168,8 +165,7 @@
     "pivot": "floor at z=-0.03 (want 0)",
     "centered": "footprint center x=0.00 y=0.08"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Mint.png"
+  }
  },
  {
   "name": "CleanACat_Bow_Pink",
@@ -209,8 +205,7 @@
     "pivot": "floor at z=-0.03 (want 0)",
     "centered": "footprint center x=0.00 y=0.08"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Pink.png"
+  }
  },
  {
   "name": "CleanACat_Bow_Sky",
@@ -250,8 +245,7 @@
     "pivot": "floor at z=-0.03 (want 0)",
     "centered": "footprint center x=0.00 y=0.08"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Sky.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton",
@@ -376,8 +370,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton_Dirty",
@@ -430,11 +423,19 @@
    "CleanACat_Cat_Cotton_Dirty_Fluff07",
    "CleanACat_Cat_Cotton_Dirty_Fluff08",
    "CleanACat_Cat_Cotton_Dirty_Fluff09",
-   "CleanACat_Cat_Cotton_Dirty_Fluff10"
+   "CleanACat_Cat_Cotton_Dirty_Fluff10",
+   "CleanACat_Cat_Cotton_Dirty_Claw01",
+   "CleanACat_Cat_Cotton_Dirty_Claw02",
+   "CleanACat_Cat_Cotton_Dirty_Claw03",
+   "CleanACat_Cat_Cotton_Dirty_Claw04",
+   "CleanACat_Cat_Cotton_Dirty_Claw05",
+   "CleanACat_Cat_Cotton_Dirty_Claw06",
+   "CleanACat_Cat_Cotton_Dirty_Claw07",
+   "CleanACat_Cat_Cotton_Dirty_Claw08"
   ],
-  "triangles": 2564,
-  "budget": 3000,
-  "parts": 92,
+  "triangles": 2660,
+  "budget": 3200,
+  "parts": 100,
   "size_studs": {
    "x": 1.39,
    "y": 1.99,
@@ -457,6 +458,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -475,7 +477,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -557,16 +567,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2564/3000 tris",
+    "budget": "2660/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1634 faces on swatch centers",
+    "uv": "1682 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton_Dirty_Sit",
@@ -617,11 +626,19 @@
    "CleanACat_Cat_Cotton_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Cotton_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Cotton_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Cotton_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Cotton_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Cotton_Dirty_Sit_Claw08"
   ],
-  "triangles": 2564,
-  "budget": 3000,
-  "parts": 92,
+  "triangles": 2660,
+  "budget": 3200,
+  "parts": 100,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -644,6 +661,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -664,7 +682,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -738,16 +764,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2564/3000 tris",
+    "budget": "2660/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1634 faces on swatch centers",
+    "uv": "1682 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton_Sit",
@@ -862,8 +887,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky",
@@ -988,8 +1012,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky_Dirty",
@@ -1042,11 +1065,19 @@
    "CleanACat_Cat_Inky_Dirty_Fluff07",
    "CleanACat_Cat_Inky_Dirty_Fluff08",
    "CleanACat_Cat_Inky_Dirty_Fluff09",
-   "CleanACat_Cat_Inky_Dirty_Fluff10"
+   "CleanACat_Cat_Inky_Dirty_Fluff10",
+   "CleanACat_Cat_Inky_Dirty_Claw01",
+   "CleanACat_Cat_Inky_Dirty_Claw02",
+   "CleanACat_Cat_Inky_Dirty_Claw03",
+   "CleanACat_Cat_Inky_Dirty_Claw04",
+   "CleanACat_Cat_Inky_Dirty_Claw05",
+   "CleanACat_Cat_Inky_Dirty_Claw06",
+   "CleanACat_Cat_Inky_Dirty_Claw07",
+   "CleanACat_Cat_Inky_Dirty_Claw08"
   ],
-  "triangles": 2564,
-  "budget": 3000,
-  "parts": 92,
+  "triangles": 2660,
+  "budget": 3200,
+  "parts": 100,
   "size_studs": {
    "x": 1.39,
    "y": 1.99,
@@ -1069,6 +1100,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -1087,7 +1119,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -1169,16 +1209,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2564/3000 tris",
+    "budget": "2660/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1634 faces on swatch centers",
+    "uv": "1682 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky_Dirty_Sit",
@@ -1229,11 +1268,19 @@
    "CleanACat_Cat_Inky_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Inky_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Inky_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Inky_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Inky_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Inky_Dirty_Sit_Claw08"
   ],
-  "triangles": 2564,
-  "budget": 3000,
-  "parts": 92,
+  "triangles": 2660,
+  "budget": 3200,
+  "parts": 100,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -1256,6 +1303,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -1276,7 +1324,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -1350,16 +1406,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2564/3000 tris",
+    "budget": "2660/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1634 faces on swatch centers",
+    "uv": "1682 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky_Sit",
@@ -1474,8 +1529,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud",
@@ -1608,8 +1662,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud_Dirty",
@@ -1662,11 +1715,19 @@
    "CleanACat_Cat_LilacCloud_Dirty_Fluff07",
    "CleanACat_Cat_LilacCloud_Dirty_Fluff08",
    "CleanACat_Cat_LilacCloud_Dirty_Fluff09",
-   "CleanACat_Cat_LilacCloud_Dirty_Fluff10"
+   "CleanACat_Cat_LilacCloud_Dirty_Fluff10",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw01",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw02",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw03",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw04",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw05",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw06",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw07",
+   "CleanACat_Cat_LilacCloud_Dirty_Claw08"
   ],
-  "triangles": 2844,
-  "budget": 3000,
-  "parts": 102,
+  "triangles": 2940,
+  "budget": 3200,
+  "parts": 110,
   "size_studs": {
    "x": 1.53,
    "y": 2.01,
@@ -1689,6 +1750,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -1707,7 +1769,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -1797,16 +1867,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2844/3000 tris",
+    "budget": "2940/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1798 faces on swatch centers",
+    "uv": "1846 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=-0.00 y=0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit",
@@ -1857,11 +1926,19 @@
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff07",
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff08",
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw01",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw02",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw03",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw04",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw05",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw06",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw07",
+   "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw08"
   ],
-  "triangles": 2932,
-  "budget": 3000,
-  "parts": 104,
+  "triangles": 3028,
+  "budget": 3200,
+  "parts": 112,
   "size_studs": {
    "x": 1.64,
    "y": 1.28,
@@ -1884,6 +1961,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -1902,7 +1980,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff10": "Tail"
+    "Fluff10": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -1984,16 +2070,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2932/3000 tris",
+    "budget": "3028/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1850 faces on swatch centers",
+    "uv": "1898 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.13 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud_Sit",
@@ -2116,8 +2201,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.16 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble",
@@ -2246,8 +2330,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble_Dirty",
@@ -2300,11 +2383,19 @@
    "CleanACat_Cat_Marble_Dirty_Fluff07",
    "CleanACat_Cat_Marble_Dirty_Fluff08",
    "CleanACat_Cat_Marble_Dirty_Fluff09",
-   "CleanACat_Cat_Marble_Dirty_Fluff10"
+   "CleanACat_Cat_Marble_Dirty_Fluff10",
+   "CleanACat_Cat_Marble_Dirty_Claw01",
+   "CleanACat_Cat_Marble_Dirty_Claw02",
+   "CleanACat_Cat_Marble_Dirty_Claw03",
+   "CleanACat_Cat_Marble_Dirty_Claw04",
+   "CleanACat_Cat_Marble_Dirty_Claw05",
+   "CleanACat_Cat_Marble_Dirty_Claw06",
+   "CleanACat_Cat_Marble_Dirty_Claw07",
+   "CleanACat_Cat_Marble_Dirty_Claw08"
   ],
-  "triangles": 2696,
-  "budget": 3000,
-  "parts": 108,
+  "triangles": 2792,
+  "budget": 3200,
+  "parts": 116,
   "size_studs": {
    "x": 1.39,
    "y": 2.01,
@@ -2327,6 +2418,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -2345,7 +2437,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -2431,16 +2531,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2696/3000 tris",
+    "budget": "2792/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1704 faces on swatch centers",
+    "uv": "1752 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble_Dirty_Sit",
@@ -2491,11 +2590,19 @@
    "CleanACat_Cat_Marble_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Marble_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Marble_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Marble_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Marble_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Marble_Dirty_Sit_Claw08"
   ],
-  "triangles": 2696,
-  "budget": 3000,
-  "parts": 108,
+  "triangles": 2792,
+  "budget": 3200,
+  "parts": 116,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -2518,6 +2625,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -2538,7 +2646,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -2616,16 +2732,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2696/3000 tris",
+    "budget": "2792/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1704 faces on swatch centers",
+    "uv": "1752 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble_Sit",
@@ -2744,8 +2859,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin",
@@ -2874,8 +2988,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin_Dirty",
@@ -2928,11 +3041,19 @@
    "CleanACat_Cat_Muffin_Dirty_Fluff07",
    "CleanACat_Cat_Muffin_Dirty_Fluff08",
    "CleanACat_Cat_Muffin_Dirty_Fluff09",
-   "CleanACat_Cat_Muffin_Dirty_Fluff10"
+   "CleanACat_Cat_Muffin_Dirty_Fluff10",
+   "CleanACat_Cat_Muffin_Dirty_Claw01",
+   "CleanACat_Cat_Muffin_Dirty_Claw02",
+   "CleanACat_Cat_Muffin_Dirty_Claw03",
+   "CleanACat_Cat_Muffin_Dirty_Claw04",
+   "CleanACat_Cat_Muffin_Dirty_Claw05",
+   "CleanACat_Cat_Muffin_Dirty_Claw06",
+   "CleanACat_Cat_Muffin_Dirty_Claw07",
+   "CleanACat_Cat_Muffin_Dirty_Claw08"
   ],
-  "triangles": 2660,
-  "budget": 3000,
-  "parts": 100,
+  "triangles": 2756,
+  "budget": 3200,
+  "parts": 108,
   "size_studs": {
    "x": 1.39,
    "y": 2.01,
@@ -2955,6 +3076,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -2973,7 +3095,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -3059,16 +3189,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2660/3000 tris",
+    "budget": "2756/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1682 faces on swatch centers",
+    "uv": "1730 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin_Dirty_Sit",
@@ -3119,11 +3248,19 @@
    "CleanACat_Cat_Muffin_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Muffin_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Muffin_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Muffin_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Muffin_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Muffin_Dirty_Sit_Claw08"
   ],
-  "triangles": 2684,
-  "budget": 3000,
-  "parts": 102,
+  "triangles": 2780,
+  "budget": 3200,
+  "parts": 110,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -3146,6 +3283,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -3166,7 +3304,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -3244,16 +3390,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2684/3000 tris",
+    "budget": "2780/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1694 faces on swatch centers",
+    "uv": "1742 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin_Sit",
@@ -3372,8 +3517,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches",
@@ -3502,8 +3646,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches_Dirty",
@@ -3556,11 +3699,19 @@
    "CleanACat_Cat_Patches_Dirty_Fluff07",
    "CleanACat_Cat_Patches_Dirty_Fluff08",
    "CleanACat_Cat_Patches_Dirty_Fluff09",
-   "CleanACat_Cat_Patches_Dirty_Fluff10"
+   "CleanACat_Cat_Patches_Dirty_Fluff10",
+   "CleanACat_Cat_Patches_Dirty_Claw01",
+   "CleanACat_Cat_Patches_Dirty_Claw02",
+   "CleanACat_Cat_Patches_Dirty_Claw03",
+   "CleanACat_Cat_Patches_Dirty_Claw04",
+   "CleanACat_Cat_Patches_Dirty_Claw05",
+   "CleanACat_Cat_Patches_Dirty_Claw06",
+   "CleanACat_Cat_Patches_Dirty_Claw07",
+   "CleanACat_Cat_Patches_Dirty_Claw08"
   ],
-  "triangles": 2636,
-  "budget": 3000,
-  "parts": 98,
+  "triangles": 2732,
+  "budget": 3200,
+  "parts": 106,
   "size_studs": {
    "x": 1.39,
    "y": 1.99,
@@ -3583,6 +3734,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -3601,7 +3753,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -3687,16 +3847,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2636/3000 tris",
+    "budget": "2732/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1670 faces on swatch centers",
+    "uv": "1718 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches_Dirty_Sit",
@@ -3747,11 +3906,19 @@
    "CleanACat_Cat_Patches_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Patches_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Patches_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Patches_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Patches_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Patches_Dirty_Sit_Claw08"
   ],
-  "triangles": 2624,
-  "budget": 3000,
-  "parts": 97,
+  "triangles": 2720,
+  "budget": 3200,
+  "parts": 105,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -3774,6 +3941,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -3794,7 +3962,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -3872,16 +4048,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2624/3000 tris",
+    "budget": "2720/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1664 faces on swatch centers",
+    "uv": "1712 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches_Sit",
@@ -4000,8 +4175,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge",
@@ -4130,8 +4304,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge_Dirty",
@@ -4184,11 +4357,19 @@
    "CleanACat_Cat_Smudge_Dirty_Fluff07",
    "CleanACat_Cat_Smudge_Dirty_Fluff08",
    "CleanACat_Cat_Smudge_Dirty_Fluff09",
-   "CleanACat_Cat_Smudge_Dirty_Fluff10"
+   "CleanACat_Cat_Smudge_Dirty_Fluff10",
+   "CleanACat_Cat_Smudge_Dirty_Claw01",
+   "CleanACat_Cat_Smudge_Dirty_Claw02",
+   "CleanACat_Cat_Smudge_Dirty_Claw03",
+   "CleanACat_Cat_Smudge_Dirty_Claw04",
+   "CleanACat_Cat_Smudge_Dirty_Claw05",
+   "CleanACat_Cat_Smudge_Dirty_Claw06",
+   "CleanACat_Cat_Smudge_Dirty_Claw07",
+   "CleanACat_Cat_Smudge_Dirty_Claw08"
   ],
-  "triangles": 2660,
-  "budget": 3000,
-  "parts": 100,
+  "triangles": 2756,
+  "budget": 3200,
+  "parts": 108,
   "size_studs": {
    "x": 1.39,
    "y": 2.01,
@@ -4211,6 +4392,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -4229,7 +4411,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -4315,16 +4505,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2660/3000 tris",
+    "budget": "2756/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1682 faces on swatch centers",
+    "uv": "1730 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge_Dirty_Sit",
@@ -4375,11 +4564,19 @@
    "CleanACat_Cat_Smudge_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Smudge_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Smudge_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Smudge_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Smudge_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Smudge_Dirty_Sit_Claw08"
   ],
-  "triangles": 2684,
-  "budget": 3000,
-  "parts": 102,
+  "triangles": 2780,
+  "budget": 3200,
+  "parts": 110,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -4402,6 +4599,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -4422,7 +4620,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -4500,16 +4706,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2684/3000 tris",
+    "budget": "2780/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1694 faces on swatch centers",
+    "uv": "1742 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge_Sit",
@@ -4628,8 +4833,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat",
@@ -4762,8 +4966,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat_Dirty",
@@ -4816,11 +5019,19 @@
    "CleanACat_Cat_Starcoat_Dirty_Fluff07",
    "CleanACat_Cat_Starcoat_Dirty_Fluff08",
    "CleanACat_Cat_Starcoat_Dirty_Fluff09",
-   "CleanACat_Cat_Starcoat_Dirty_Fluff10"
+   "CleanACat_Cat_Starcoat_Dirty_Fluff10",
+   "CleanACat_Cat_Starcoat_Dirty_Claw01",
+   "CleanACat_Cat_Starcoat_Dirty_Claw02",
+   "CleanACat_Cat_Starcoat_Dirty_Claw03",
+   "CleanACat_Cat_Starcoat_Dirty_Claw04",
+   "CleanACat_Cat_Starcoat_Dirty_Claw05",
+   "CleanACat_Cat_Starcoat_Dirty_Claw06",
+   "CleanACat_Cat_Starcoat_Dirty_Claw07",
+   "CleanACat_Cat_Starcoat_Dirty_Claw08"
   ],
-  "triangles": 2648,
-  "budget": 3000,
-  "parts": 99,
+  "triangles": 2744,
+  "budget": 3200,
+  "parts": 107,
   "size_studs": {
    "x": 1.39,
    "y": 2.07,
@@ -4843,6 +5054,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -4863,7 +5075,15 @@
     "Fluff02": "Head",
     "Fluff03": "Head",
     "Fluff04": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -4953,16 +5173,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2648/3000 tris",
+    "budget": "2744/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1676 faces on swatch centers",
+    "uv": "1724 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.04"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat_Dirty_Sit",
@@ -5013,11 +5232,19 @@
    "CleanACat_Cat_Starcoat_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Starcoat_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Starcoat_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Starcoat_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Starcoat_Dirty_Sit_Claw08"
   ],
-  "triangles": 2684,
-  "budget": 3000,
-  "parts": 102,
+  "triangles": 2780,
+  "budget": 3200,
+  "parts": 110,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -5040,6 +5267,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -5060,7 +5288,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -5142,16 +5378,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2684/3000 tris",
+    "budget": "2780/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1694 faces on swatch centers",
+    "uv": "1742 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat_Sit",
@@ -5274,8 +5509,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee",
@@ -5400,8 +5634,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee_Dirty",
@@ -5454,11 +5687,19 @@
    "CleanACat_Cat_Toffee_Dirty_Fluff07",
    "CleanACat_Cat_Toffee_Dirty_Fluff08",
    "CleanACat_Cat_Toffee_Dirty_Fluff09",
-   "CleanACat_Cat_Toffee_Dirty_Fluff10"
+   "CleanACat_Cat_Toffee_Dirty_Fluff10",
+   "CleanACat_Cat_Toffee_Dirty_Claw01",
+   "CleanACat_Cat_Toffee_Dirty_Claw02",
+   "CleanACat_Cat_Toffee_Dirty_Claw03",
+   "CleanACat_Cat_Toffee_Dirty_Claw04",
+   "CleanACat_Cat_Toffee_Dirty_Claw05",
+   "CleanACat_Cat_Toffee_Dirty_Claw06",
+   "CleanACat_Cat_Toffee_Dirty_Claw07",
+   "CleanACat_Cat_Toffee_Dirty_Claw08"
   ],
-  "triangles": 2588,
-  "budget": 3000,
-  "parts": 99,
+  "triangles": 2684,
+  "budget": 3200,
+  "parts": 107,
   "size_studs": {
    "x": 1.39,
    "y": 2.01,
@@ -5481,6 +5722,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -5499,7 +5741,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -5581,16 +5831,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2588/3000 tris",
+    "budget": "2684/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1650 faces on swatch centers",
+    "uv": "1698 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee_Dirty_Sit",
@@ -5641,11 +5890,19 @@
    "CleanACat_Cat_Toffee_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Toffee_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Toffee_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Toffee_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Toffee_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Toffee_Dirty_Sit_Claw08"
   ],
-  "triangles": 2588,
-  "budget": 3000,
-  "parts": 99,
+  "triangles": 2684,
+  "budget": 3200,
+  "parts": 107,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -5668,6 +5925,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -5688,7 +5946,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -5762,16 +6028,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2588/3000 tris",
+    "budget": "2684/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1650 faces on swatch centers",
+    "uv": "1698 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee_Sit",
@@ -5886,8 +6151,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux",
@@ -6020,8 +6284,7 @@
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux_Dirty",
@@ -6074,11 +6337,19 @@
    "CleanACat_Cat_Tux_Dirty_Fluff07",
    "CleanACat_Cat_Tux_Dirty_Fluff08",
    "CleanACat_Cat_Tux_Dirty_Fluff09",
-   "CleanACat_Cat_Tux_Dirty_Fluff10"
+   "CleanACat_Cat_Tux_Dirty_Fluff10",
+   "CleanACat_Cat_Tux_Dirty_Claw01",
+   "CleanACat_Cat_Tux_Dirty_Claw02",
+   "CleanACat_Cat_Tux_Dirty_Claw03",
+   "CleanACat_Cat_Tux_Dirty_Claw04",
+   "CleanACat_Cat_Tux_Dirty_Claw05",
+   "CleanACat_Cat_Tux_Dirty_Claw06",
+   "CleanACat_Cat_Tux_Dirty_Claw07",
+   "CleanACat_Cat_Tux_Dirty_Claw08"
   ],
-  "triangles": 2600,
-  "budget": 3000,
-  "parts": 95,
+  "triangles": 2696,
+  "budget": 3200,
+  "parts": 103,
   "size_studs": {
    "x": 1.39,
    "y": 2.01,
@@ -6101,6 +6372,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -6119,7 +6391,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff08": "Tail"
+    "Fluff08": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -6209,16 +6489,15 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2600/3000 tris",
+    "budget": "2696/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1652 faces on swatch centers",
+    "uv": "1700 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux_Dirty_Sit",
@@ -6269,11 +6548,19 @@
    "CleanACat_Cat_Tux_Dirty_Sit_Fluff07",
    "CleanACat_Cat_Tux_Dirty_Sit_Fluff08",
    "CleanACat_Cat_Tux_Dirty_Sit_Fluff09",
-   "CleanACat_Cat_Tux_Dirty_Sit_Fluff10"
+   "CleanACat_Cat_Tux_Dirty_Sit_Fluff10",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw01",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw02",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw03",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw04",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw05",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw06",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw07",
+   "CleanACat_Cat_Tux_Dirty_Sit_Claw08"
   ],
-  "triangles": 2588,
-  "budget": 3000,
-  "parts": 94,
+  "triangles": 2684,
+  "budget": 3200,
+  "parts": 102,
   "size_studs": {
    "x": 1.6,
    "y": 1.26,
@@ -6296,6 +6583,7 @@
     "MudCount": 20,
     "TangleCount": 6,
     "FluffCount": 10,
+    "ClawCount": 8,
     "WetDarken": 0.3
    },
    "rides": {
@@ -6316,7 +6604,15 @@
     "Fluff01": "Head",
     "Fluff02": "Head",
     "Fluff03": "Head",
-    "Fluff09": "Tail"
+    "Fluff09": "Tail",
+    "Claw01": "LegF1",
+    "Claw02": "LegF1",
+    "Claw03": "LegF1",
+    "Claw04": "LegF1",
+    "Claw05": "LegF2",
+    "Claw06": "LegF2",
+    "Claw07": "LegF2",
+    "Claw08": "LegF2"
    }
   },
   "coat": {
@@ -6398,16 +6694,15 @@
     "centered"
    ],
    "checks": {
-    "budget": "2588/3000 tris",
+    "budget": "2684/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1646 faces on swatch centers",
+    "uv": "1694 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
+    "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.03"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux_Sit",
@@ -6530,8 +6825,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.18 y=-0.02"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Sit.png"
+  }
  },
  {
   "name": "CleanACat_NPC_BuilderKitten",
@@ -6580,8 +6874,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.11"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_BuilderKitten.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Scarf",
@@ -6620,8 +6913,7 @@
     "pivot": "floor at z=-1.01 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Scarf.png"
+  }
  },
  {
   "name": "CleanACat_NPC_SunHat",
@@ -6660,8 +6952,7 @@
     "pivot": "floor at z=-0.12 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_SunHat.png"
+  }
  },
  {
   "name": "CleanACat_NPC_ToteBag",
@@ -6701,8 +6992,7 @@
     "pivot": "floor at z=-2.25 (want 0)",
     "centered": "footprint center x=0.95 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_ToteBag.png"
+  }
  },
  {
   "name": "CleanACat_Prop_BuildPad",
@@ -6740,8 +7030,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BuildPad.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Carrier",
@@ -6779,8 +7068,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Carrier.png"
+  }
  },
  {
   "name": "CleanACat_Prop_ChanceBoard",
@@ -6820,8 +7108,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.05"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_ChanceBoard.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Cushion",
@@ -6858,8 +7145,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Cushion.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Hammer",
@@ -6899,8 +7185,7 @@
     "pivot": "floor at z=-0.28 (want 0)",
     "centered": "footprint center x=0.00 y=-0.24"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Hammer.png"
+  }
  },
  {
   "name": "CleanACat_Prop_HardHat",
@@ -6940,8 +7225,7 @@
     "pivot": "floor at z=-0.31 (want 0)",
     "centered": "footprint center x=0.00 y=-0.06"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HardHat.png"
+  }
  },
  {
   "name": "CleanACat_Prop_QueueMat",
@@ -6978,8 +7262,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_QueueMat.png"
+  }
  },
  {
   "name": "CleanACat_Prop_StrayBox",
@@ -7016,8 +7299,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_StrayBox.png"
+  }
  },
  {
   "name": "CleanACat_Prop_TipJar",
@@ -7057,8 +7339,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_TipJar.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Toolbox",
@@ -7095,8 +7376,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Toolbox.png"
+  }
  },
  {
   "name": "CleanACat_Prop_WindowSign",
@@ -7137,8 +7417,7 @@
     "pivot": "floor at z=-1.20 (want 0)",
     "centered": "footprint center x=0.00 y=-0.18"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_WindowSign.png"
+  }
  },
  {
   "name": "CleanACat_Station_BrushTable",
@@ -7178,8 +7457,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.20"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_BrushTable.png"
+  }
  },
  {
   "name": "CleanACat_Station_BrushTableUp",
@@ -7219,8 +7497,51 @@
     "pivot": "floor at z=-0.02 (want 0)",
     "centered": "footprint center x=0.00 y=0.30"
    }
+  }
+ },
+ {
+  "name": "CleanACat_Station_BubbleBath",
+  "category": "Station",
+  "module": "stations",
+  "objects": [
+   "CleanACat_Station_BubbleBath",
+   "CleanACat_Station_BubbleBath_Water",
+   "CleanACat_Station_BubbleBath_Foam",
+   "CleanACat_Station_BubbleBath_Spout",
+   "CleanACat_Station_BubbleBath_Barrier"
+  ],
+  "triangles": 1180,
+  "budget": 1200,
+  "parts": 49,
+  "size_studs": {
+   "x": 4.16,
+   "y": 4.34,
+   "z": 4.93
   },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_BrushTableUp.png"
+  "size_roblox": [
+   4.16,
+   4.93,
+   4.34
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "1180/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "748 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.02 (want 0)",
+    "centered": "footprint center x=0.00 y=0.09"
+   }
+  }
  },
  {
   "name": "CleanACat_Station_Dryer",
@@ -7261,8 +7582,47 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.57"
    }
+  }
+ },
+ {
+  "name": "CleanACat_Station_Pawdicure",
+  "category": "Station",
+  "module": "stations",
+  "objects": [
+   "CleanACat_Station_Pawdicure",
+   "CleanACat_Station_Pawdicure_Barrier"
+  ],
+  "triangles": 528,
+  "budget": 1200,
+  "parts": 18,
+  "size_studs": {
+   "x": 2.8,
+   "y": 2.2,
+   "z": 1.72
   },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Dryer.png"
+  "size_roblox": [
+   2.8,
+   1.72,
+   2.2
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "528/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "326 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.20"
+   }
+  }
  },
  {
   "name": "CleanACat_Station_Tub",
@@ -7301,8 +7661,7 @@
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Tub.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Brush",
@@ -7342,8 +7701,7 @@
     "pivot": "floor at z=-0.17 (want 0)",
     "centered": "footprint center x=0.00 y=-0.21"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Brush.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Sponge",
@@ -7382,8 +7740,7 @@
     "pivot": "floor at z=-0.20 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Sponge.png"
+  }
  },
  {
   "name": "CleanACat_Tool_SpongeBubble",
@@ -7422,8 +7779,7 @@
     "pivot": "floor at z=-0.24 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeBubble.png"
+  }
  },
  {
   "name": "CleanACat_Tool_SpongeGolden",
@@ -7462,7 +7818,6 @@
     "pivot": "floor at z=-0.24 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeGolden.png"
+  }
  }
 ]
