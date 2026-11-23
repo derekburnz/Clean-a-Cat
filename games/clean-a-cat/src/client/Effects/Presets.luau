@@ -50,6 +50,44 @@ local function foam(
 	}
 end
 
+local SPARKLE_A = Color3.fromRGB(255, 250, 220)
+local SPARKLE_B = Color3.fromRGB(255, 214, 236)
+local WATER = Color3.fromRGB(190, 225, 255)
+
+local function sparkle(count: number): Emitter
+	return {
+		texture = "",
+		color = { SPARKLE_A, SPARKLE_B },
+		size = { 0.3, 0 },
+		transparency = { 0, 1 },
+		lifetime = { 0.5, 0.8 },
+		speed = { 1.5, 3 },
+		spread = 180,
+		acceleration = Vector3.new(0, 1, 0),
+		drag = 3,
+		lightEmission = 0.6,
+		maxRate = 0,
+		burst = count,
+	}
+end
+
+local function droplets(count: number): Emitter
+	return {
+		texture = "",
+		color = { WATER, WATER },
+		size = { 0.12, 0.06 },
+		transparency = { 0.2, 1 },
+		lifetime = { 0.35, 0.6 },
+		speed = { 4, 7 },
+		spread = 80,
+		acceleration = Vector3.new(0, -25, 0),
+		drag = 0.5,
+		lightEmission = 0.1,
+		maxRate = 0,
+		burst = count,
+	}
+end
+
 local function mud(count: number): Emitter
 	return {
 		texture = "",
@@ -73,12 +111,16 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		foamTrailWide = foam(FOAM_WHITE, FOAM_BLUE, 0.26, 55, 8),
 		foamTrailGold = foam(GOLD_LIGHT, GOLD, 0.22, 25, 8),
 		mudChunks = mud(4),
+		revealSparkle = sparkle(6),
+		shakeDroplets = droplets(6),
 	},
 	high = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 16),
 		foamTrailWide = foam(FOAM_WHITE, FOAM_BLUE, 0.26, 55, 16),
 		foamTrailGold = foam(GOLD_LIGHT, GOLD, 0.22, 25, 16),
 		mudChunks = mud(6),
+		revealSparkle = sparkle(8),
+		shakeDroplets = droplets(10),
 	},
 }
 

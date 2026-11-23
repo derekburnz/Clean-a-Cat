@@ -5,13 +5,13 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 ## Effects
 | Moment | Effect | Where it plays | Preset | Phone budget | Reduce Motion | Issue | Status |
 |---|---|---|---|---|---|---|---|
-| ScrubMove | Foam bubbles at the sponge point, drift up and pop; rate follows drag speed | hit point on the cat | foamTrail | Rate 8, life 0.8 s | kept, halved | #4 | planned |
+| ScrubMove | Foam bubbles at the sponge point, drift up and pop; rate follows drag speed | hit point on the cat | foamTrail | Rate 8, life 0.8 s | kept, halved | #4 | built, switch scrubEffects |
 | ScrubMove (Bubble Soap) | Wider ring of bubbles | hit point | foamTrailWide | Rate 8, life 0.8 s | kept, halved | #4 | planned |
 | ScrubMove (Golden Sponge pass) | Gold-tinted bubbles, same count | hit point | foamTrailGold | Rate 8, life 0.8 s | kept, halved | #4 | planned |
-| MudPatchCleared | 4 to 6 brown flecks fall and fade; the patch fades over 0.15 s | patch position | mudChunks | Emit 6 | kept | #4 | planned |
-| CatClean | Dirty layer fades top to bottom over 0.4 s | the cat | revealWipe | 1 tween | instant fade | #6 | planned |
-| CatClean | 8 sparkles in palette colours | around the cat | revealSparkle | Emit 8 | halved | #6 | planned |
-| CatClean | Water droplets on the shake-off | the cat | shakeDroplets | Emit 10 | halved | #6 | planned |
+| MudPatchCleared | 4 to 6 brown flecks fall and fade; the patch fades over 0.15 s | patch position | mudChunks | Emit 4 phone, 6 PC | kept, halved | #4 | built, switch scrubEffects (patch fade by ScrubController) |
+| CatClean | Dirty layer fades top to bottom over 0.4 s | the cat | revealWipe | 1 tween | instant fade | #6 | patches fade in ScrubController for now; full wipe waits on the dirty layer (#12) |
+| CatClean | 8 sparkles in palette colours | around the cat | revealSparkle | Emit 6 phone, 8 PC | halved | #6 | built, switch revealEffects |
+| CatClean | Water droplets on the shake-off | the cat | shakeDroplets | Emit 6 phone, 10 PC | halved | #6 | built, switch revealEffects; shake motion waits on the rig (#11) |
 | BrushSwipe | Fur puffs in the coat colour along the stroke | brush point | furPuff | Emit 6 | kept | #7 | planned |
 | BrushSwipe | Cat grows about 3 percent per stroke (Back Out, 0.2 s) | the cat | fluffScale | 1 tween | skipped | #7 | planned |
 | CatFluffed | Soft glow pulse, one Highlight destroyed after 0.6 s | the cat | fluffGlow | 1 Highlight | kept, no pulse | #7 | planned |
