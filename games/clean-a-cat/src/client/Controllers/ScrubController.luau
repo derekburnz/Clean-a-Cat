@@ -289,11 +289,19 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 	local model = asset:Clone() :: Model
 	model:ScaleTo(CAT_SCALE)
 	model:PivotTo(seat) -- the pivot is the base centre
+	-- A part that ships hidden (the long claws, #100, and anything added later) stays as shipped: it never
+	-- catches the sponge and is not coat, until code that owns it shows it.
+	local shippedHidden: { [BasePart]: boolean } = {}
 	for _, part in partsOf(model) do
 		part.Anchored = true
 		part.CanCollide = false
 		part.CanTouch = false
-		part.CanQuery = true
+		if part.Transparency >= 1 then
+			shippedHidden[part] = true
+			part.CanQuery = false
+		else
+			part.CanQuery = true
+		end
 	end
 
 	local mud = collectPieces(model, "Mud")
@@ -321,7 +329,7 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 	end
 	local coat: { [BasePart]: Color3 } = {}
 	for _, part in partsOf(model) do
-		if not pieceParts[part] and not inEye(part, model) then
+		if not pieceParts[part] and not shippedHidden[part] and not inEye(part, model) then
 			coat[part] = part.Color
 		end
 	end
