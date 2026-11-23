@@ -4,6 +4,9 @@
 -- is taken away and the spawn goes back to the placeholder room, so the world is exactly as before.
 -- Clients and other services read the spots through Shared.SpaLayout; the ReplicatedStorage attribute
 -- SpaLayout.PLACED_ATTRIBUTE says whether the plot is placed, so they redraw when it changes.
+-- With the plot come Model-Agent's fixed props on their spots (SpaLayout.PROPS, in the plot's Props folder):
+-- queue mats, the stray box, the window cushions, the tip jar and the spa sign. What changes per player (cats,
+-- the jar's fill, the chance board) is drawn by the client on top.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -51,6 +54,26 @@ local function place()
 	plot.Parent = Workspace
 	placed = plot
 	ReplicatedStorage:SetAttribute(SpaLayout.PLACED_ATTRIBUTE, true)
+	-- The props, each on its spot. A missing prop asset is skipped; the spot stays empty.
+	local props = Instance.new("Folder")
+	props.Name = SpaLayout.PROPS_FOLDER
+	for _, entry in SpaLayout.PROPS do
+		local propAsset = (assets :: Instance):FindFirstChild(entry.asset)
+		if propAsset and propAsset:IsA("Model") then
+			local prop = (propAsset :: Model):Clone() :: Model
+			prop.Name = entry.name
+			prop:PivotTo(SpaLayout.spot(entry.spot))
+			for _, descendant in prop:GetDescendants() do
+				if descendant:IsA("BasePart") then
+					(descendant :: BasePart).Anchored = true
+				end
+			end
+			prop.Parent = props
+		else
+			warn(`[PlotService] {entry.asset} is missing from ReplicatedStorage.Assets`)
+		end
+	end
+	props.Parent = plot
 	local spawn = spawnLocation()
 	if spawn then
 		roomSpawn = roomSpawn or spawn.CFrame
