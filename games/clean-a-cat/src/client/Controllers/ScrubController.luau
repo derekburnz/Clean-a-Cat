@@ -1,10 +1,15 @@
 --!strict
--- ScrubController: the scrub and reveal prototype on the player's own device. A placeholder grey cat sits in a
--- placeholder tub; dragging a finger (or holding the mouse) over it rubs the mud patches away, and at 80% clean
--- the rest pop off. Rules live in Shared.ScrubRules; effects and sound listen to Shared.Moments.
--- Behind the LiveFlags switch `scrubPrototype` (off by default). Nothing here touches the server or saves: the
--- cat and its mud exist only on this device until coins and saves arrive with their own server checks.
+-- ScrubController: one cat's visit on the player's own device, as a prototype with placeholder parts. The server
+-- (SpaService) hands out a cat; the player scrubs the mud off (80% clean pops the rest), brushes it three times,
+-- taps one of three bows and taps the camera for the photo, which the server pays. Rules live in Shared.ScrubRules
+-- and Shared.SpaRules; effects and sound listen to Shared.Moments. Behind the LiveFlags switch `scrubPrototype`.
+--
+-- Input: a finger drag or a held left mouse button on the cat scrubs and brushes; a tap or click on a bow or the
+-- camera picks it. Gamepad: hold the right trigger with the cat in the middle of the screen and turn the camera
+-- with the right stick; the right trigger also picks the bow or camera in the middle of the screen.
+-- The client only reports what the player did. The server checks every step and alone decides the coins.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
@@ -12,7 +17,9 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
+local Remotes = require(Shared:WaitForChild("Remotes"))
 local ScrubRules = require(Shared:WaitForChild("ScrubRules"))
+local SpaRules = require(Shared:WaitForChild("SpaRules"))
 
 local FLAG = "scrubPrototype"
 local TUB_POSITION = Vector3.new(0, 0, -12) -- in front of the placeholder spawn, on the placeholder floor
@@ -21,30 +28,56 @@ local HEAD_DIRECTION = Vector3.new(0, 0.6, 0.8) -- from the body's center; faces
 local PATCH_SIZE = Vector3.new(0.12, 1.1, 1.1) -- a flat disc: thin along its normal
 local DIRTY_COLOR = Color3.fromRGB(120, 112, 104)
 local CLEAN_COLOR = Color3.fromRGB(205, 205, 210)
+local FLUFFED_COLOR = Color3.fromRGB(236, 236, 240)
 local MUD_COLOR = Color3.fromRGB(92, 64, 40)
 local PATCH_FADE = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- a cleared patch fades, not blinks
-local RESET_SECONDS = 4 -- prototype loop: the cat gets muddy again so a tester can repeat
+local STROKE_TRAVEL = 2.5 -- studs of drag on the cat that make one brush stroke
+local NEXT_CAT_SECONDS = 3 -- after the photo pays, the next cat is asked for
+local GAMEPAD_BUTTON = Enum.KeyCode.ButtonR2 -- not ButtonA, which jumps
+local BOW_COLORS: { [string]: Color3 } = {
+	BowPink = Color3.fromRGB(255, 120, 170),
+	BowBlue = Color3.fromRGB(90, 160, 255),
+	BowGold = Color3.fromRGB(255, 200, 60),
+}
 
-type Scrub = {
+type Stage = "waiting" | SpaRules.Stage
+
+type Visit = {
 	model: Model,
 	body: BasePart,
 	head: BasePart,
+	bow: BasePart,
 	patches: { BasePart },
-	state: ScrubRules.State,
-	raycastParams: RaycastParams,
+	bowButtons: { BasePart },
+	camera: BasePart,
+	scrub: ScrubRules.State,
+	catParams: RaycastParams,
+	buttonParams: RaycastParams,
+	catId: number?,
+	stage: Stage,
+	strokes: number,
+	strokeTravel: number,
+	lastStrokeAt: number,
 }
 
 local ScrubController = {}
 
-local current: Scrub? = nil
+local visit: Visit? = nil
 local enabled = false
-local activeInput: InputObject? = nil -- the one press (mouse button or finger) that scrubs
-local scrubbing = false
+local activeInput: InputObject? = nil -- the one press (mouse button, finger or trigger) on the cat
+local stroking = false -- the active press is on the cat right now
 local lastHit: Vector3? = nil
 local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
 local connections: { RBXScriptConnection } = {}
-local resetThread: thread? = nil
+local nextCatThread: thread? = nil
+local reportSeq = 0 -- numbers each spa report; the server echoes it in CatStage
+
+-- Sends one spa report for the visit's cat, numbered so only the server's answer to the newest one is acted on.
+local function report(name: string, v: { catId: number? }, ...: any)
+	reportSeq += 1
+	Remotes.event(name):FireServer(v.catId, reportSeq, ...)
+end
 
 local function makePart(
 	name: string,
@@ -65,6 +98,11 @@ local function makePart(
 	part.TopSurface = Enum.SurfaceType.Smooth
 	part.BottomSurface = Enum.SurfaceType.Smooth
 	return part
+end
+
+local function show(part: BasePart, visible: boolean)
+	part.Transparency = if visible then 0 else 1
+	part.CanQuery = visible
 end
 
 local function buildTub(parent: Instance)
@@ -92,23 +130,72 @@ local function buildTub(parent: Instance)
 	tub.Parent = parent
 end
 
+-- Three bow buttons in a row above the tub and a camera button beside it: placeholders for the bottom bar and the
+-- camera stand in the first session plan.
+local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
+	local buttons = Instance.new("Model")
+	buttons.Name = "PH_Buttons"
+	local bowButtons: { BasePart } = {}
+	for index, bowId in SpaRules.BOWS do
+		local x = (index - 2) * 2.2
+		local button = makePart(
+			bowId,
+			Enum.PartType.Block,
+			Vector3.new(1.6, 1.6, 0.4),
+			BOW_COLORS[bowId] or CLEAN_COLOR,
+			CFrame.new(TUB_POSITION + Vector3.new(x, 7, 1))
+		)
+		button:SetAttribute("BowId", bowId)
+		show(button, false)
+		button.Parent = buttons
+		table.insert(bowButtons, button)
+	end
+	local camera = makePart(
+		"Camera",
+		Enum.PartType.Block,
+		Vector3.new(1.4, 1, 1),
+		Color3.fromRGB(40, 40, 48),
+		CFrame.new(TUB_POSITION + Vector3.new(4.5, 2.5, 1))
+	)
+	show(camera, false)
+	camera.Parent = buttons
+	buttons.Parent = parent
+	return bowButtons, camera
+end
+
 -- A cleared patch stops catching the sponge at once and fades out over PATCH_FADE.
 local function hidePatch(patch: BasePart)
 	patch.CanQuery = false
 	TweenService:Create(patch, PATCH_FADE, { Transparency = 1 }):Play()
 end
 
-local function setDirty(scrub: Scrub)
-	scrub.state = ScrubRules.newState(#scrub.patches)
-	scrub.body.Color = DIRTY_COLOR
-	scrub.head.Color = DIRTY_COLOR
-	for _, patch in scrub.patches do
+local function setCatColor(v: Visit, color: Color3)
+	v.body.Color = color
+	v.head.Color = color
+end
+
+-- A new dirty cat in the tub (the server's cat `catId`).
+local function startCat(v: Visit, catId: number)
+	v.catId = catId
+	v.stage = "dirty"
+	v.scrub = ScrubRules.newState(#v.patches)
+	v.strokes = 0
+	v.strokeTravel = 0
+	v.lastStrokeAt = -math.huge
+	setCatColor(v, DIRTY_COLOR)
+	show(v.bow, false)
+	v.bow.CanQuery = false
+	for _, patch in v.patches do
 		patch.Transparency = 0
 		patch.CanQuery = true
 	end
+	for _, button in v.bowButtons do
+		show(button, false)
+	end
+	show(v.camera, false)
 end
 
-local function buildCat(parent: Instance): Scrub
+local function buildVisit(parent: Instance): Visit
 	local model = Instance.new("Model")
 	model.Name = "PH_Cat"
 	local center = TUB_POSITION + Vector3.new(0, 1.2 + CAT_RADIUS, 0)
@@ -120,14 +207,18 @@ local function buildCat(parent: Instance): Scrub
 		CFrame.new(center)
 	)
 	body.Parent = model
-	local head = makePart(
-		"Head",
-		Enum.PartType.Ball,
-		Vector3.one * 1.8,
-		DIRTY_COLOR,
-		CFrame.new(center + HEAD_DIRECTION * (CAT_RADIUS + 0.5))
-	)
+	local headCenter = center + HEAD_DIRECTION * (CAT_RADIUS + 0.5)
+	local head =
+		makePart("Head", Enum.PartType.Ball, Vector3.one * 1.8, DIRTY_COLOR, CFrame.new(headCenter))
 	head.Parent = model
+	local bow = makePart(
+		"Bow",
+		Enum.PartType.Block,
+		Vector3.new(1, 0.5, 0.3),
+		CLEAN_COLOR,
+		CFrame.new(headCenter + Vector3.new(0, 0.95, 0))
+	)
+	bow.Parent = model
 	model.PrimaryPart = body
 
 	local patches: { BasePart } = {}
@@ -148,30 +239,70 @@ local function buildCat(parent: Instance): Scrub
 	end
 	model.Parent = parent
 
-	local raycastParams = RaycastParams.new()
-	raycastParams.FilterType = Enum.RaycastFilterType.Include
-	raycastParams.FilterDescendantsInstances = { model }
+	local bowButtons, camera = buildButtons(parent)
 
-	local scrub: Scrub = {
+	local catParams = RaycastParams.new()
+	catParams.FilterType = Enum.RaycastFilterType.Include
+	catParams.FilterDescendantsInstances = { model }
+	local buttonParams = RaycastParams.new()
+	buttonParams.FilterType = Enum.RaycastFilterType.Include
+	local buttonList: { Instance } = { camera }
+	for _, button in bowButtons do
+		table.insert(buttonList, button)
+	end
+	buttonParams.FilterDescendantsInstances = buttonList
+
+	local v: Visit = {
 		model = model,
 		body = body,
 		head = head,
+		bow = bow,
 		patches = patches,
-		state = ScrubRules.newState(#patches),
-		raycastParams = raycastParams,
+		bowButtons = bowButtons,
+		camera = camera,
+		scrub = ScrubRules.newState(#patches),
+		catParams = catParams,
+		buttonParams = buttonParams,
+		catId = nil,
+		stage = "waiting",
+		strokes = 0,
+		strokeTravel = 0,
+		lastStrokeAt = -math.huge,
 	}
-	setDirty(scrub)
-	return scrub
+	-- Hidden until the server hands out a cat.
+	for _, part in model:GetChildren() do
+		if part:IsA("BasePart") then
+			show(part :: BasePart, false)
+		end
+	end
+	return v
 end
 
--- Where the pointer at screen position `screen` touches the cat, if it does.
-local function hitCat(scrub: Scrub, screen: Vector3): RaycastResult?
+local function showCat(v: Visit)
+	show(v.body, true)
+	show(v.head, true)
+end
+
+-- The ray under the pointer: the touch or mouse position, or the middle of the screen for a gamepad.
+local function pointerRay(input: InputObject): Ray?
 	local camera = Workspace.CurrentCamera
 	if not camera then
 		return nil
 	end
-	local ray = camera:ScreenPointToRay(screen.X, screen.Y)
-	return Workspace:Raycast(ray.Origin, ray.Direction * 200, scrub.raycastParams)
+	local kind = input.UserInputType
+	if
+		kind == Enum.UserInputType.Touch
+		or kind == Enum.UserInputType.MouseButton1
+		or kind == Enum.UserInputType.MouseMovement
+	then
+		return camera:ScreenPointToRay(input.Position.X, input.Position.Y)
+	end
+	local size = camera.ViewportSize
+	return camera:ViewportPointToRay(size.X / 2, size.Y / 2)
+end
+
+local function cast(ray: Ray, params: RaycastParams): RaycastResult?
+	return Workspace:Raycast(ray.Origin, ray.Direction * 200, params)
 end
 
 local function holdCamera(hold: boolean)
@@ -180,7 +311,7 @@ local function holdCamera(hold: boolean)
 		return
 	end
 	if hold and savedCameraType == nil then
-		-- A finger dragging on the world spins the default camera; hold it still while the finger scrubs.
+		-- A finger dragging on the world spins the default camera; hold it still while the finger is on the cat.
 		savedCameraType = camera.CameraType
 		camera.CameraType = Enum.CameraType.Scriptable
 	elseif not hold and savedCameraType ~= nil then
@@ -189,74 +320,98 @@ local function holdCamera(hold: boolean)
 	end
 end
 
-local function stopScrub()
-	if scrubbing and current then
-		Moments.ScrubStop:Fire(current.model, lastHit or current.body.Position)
+-- The press left the cat or lifted: a scrub stroke ends (ScrubStop) and brush travel starts over.
+local function endStroke()
+	local v = visit
+	if stroking and v and v.stage == "dirty" then
+		Moments.ScrubStop:Fire(v.model, lastHit or v.body.Position)
 	end
-	scrubbing = false
+	if v then
+		v.strokeTravel = 0
+	end
+	stroking = false
 	lastHit = nil
 end
 
-local function reveal(scrub: Scrub)
-	for _, index in ScrubRules.reveal(scrub.state) do
-		hidePatch(scrub.patches[index])
+local function reveal(v: Visit)
+	for _, index in ScrubRules.reveal(v.scrub) do
+		hidePatch(v.patches[index])
 	end
-	scrub.body.Color = CLEAN_COLOR
-	scrub.head.Color = CLEAN_COLOR
-	stopScrub()
-	Moments.CatClean:Fire(scrub.model)
-
-	resetThread = task.delay(RESET_SECONDS, function()
-		resetThread = nil
-		if current == scrub then
-			setDirty(scrub)
-		end
-	end)
+	setCatColor(v, CLEAN_COLOR)
+	endStroke()
+	v.stage = "clean"
+	Moments.CatClean:Fire(v.model)
+	report("ReportScrubbed", v)
 end
 
 -- Rubs every patch within the sponge's reach of `point` by `travel` studs.
-local function rubAt(scrub: Scrub, point: Vector3, travel: number)
-	for index, patch in scrub.patches do
+local function rubAt(v: Visit, point: Vector3, travel: number)
+	for index, patch in v.patches do
 		if
-			not scrub.state.cleared[index]
+			not v.scrub.cleared[index]
 			and (patch.Position - point).Magnitude <= ScrubRules.SPONGE_RADIUS
 		then
-			if ScrubRules.rub(scrub.state, index, travel) then
+			if ScrubRules.rub(v.scrub, index, travel) then
 				hidePatch(patch)
 				Moments.MudPatchCleared:Fire(
-					scrub.model,
+					v.model,
 					patch.Position,
-					ScrubRules.patchesLeft(scrub.state)
+					ScrubRules.patchesLeft(v.scrub)
 				)
 			end
 		end
 	end
-	if ScrubRules.shouldReveal(scrub.state) then
-		reveal(scrub)
+	if ScrubRules.shouldReveal(v.scrub) then
+		reveal(v)
 	end
 end
 
-local function onPointer(screen: Vector3, isTouch: boolean)
-	local scrub = current
-	if not scrub or scrub.state.revealed then
+-- Brush travel on the clean cat; every STROKE_TRAVEL studs is one stroke, and the last stroke fluffs the cat.
+local function brushAt(v: Visit, travel: number)
+	v.strokeTravel += travel
+	local now = os.clock()
+	if v.strokeTravel < STROKE_TRAVEL or now - v.lastStrokeAt < SpaRules.MIN_STROKE_GAP then
 		return
 	end
-	local result = hitCat(scrub, screen)
+	v.strokeTravel = 0
+	v.lastStrokeAt = now
+	v.strokes += 1
+	Moments.BrushSwipe:Fire(v.model, v.strokes)
+	report("ReportBrushStroke", v)
+	if v.strokes >= SpaRules.BRUSH_STROKES then
+		v.stage = "fluffed"
+		setCatColor(v, FLUFFED_COLOR)
+		endStroke()
+		Moments.CatFluffed:Fire(v.model)
+		for _, button in v.bowButtons do
+			show(button, true)
+		end
+	end
+end
+
+local function onPointer(input: InputObject)
+	local v = visit
+	if not v or (v.stage ~= "dirty" and v.stage ~= "clean") then
+		return
+	end
+	local ray = pointerRay(input)
+	local result = if ray then cast(ray, v.catParams) else nil
 	if not result then
-		-- The finger slid off the cat: the stroke ends, and a new one starts if it slides back on. The camera stays
-		-- held until the finger lifts, so it does not jump mid-drag.
-		if scrubbing then
-			stopScrub()
+		-- The pointer slid off the cat: the stroke ends, and a new one starts if it slides back on. The camera
+		-- stays held until the finger lifts, so it does not jump mid-drag.
+		if stroking then
+			endStroke()
 		end
 		return
 	end
 	local point = result.Position
-	if not scrubbing then
-		scrubbing = true
+	if not stroking then
+		stroking = true
 		lastHit = point
 		lastMoveTime = os.clock()
-		holdCamera(isTouch)
-		Moments.ScrubStart:Fire(scrub.model, point)
+		if v.stage == "dirty" then
+			Moments.ScrubStart:Fire(v.model, point)
+		end
 		return
 	end
 	local previous = lastHit or point
@@ -265,16 +420,126 @@ local function onPointer(screen: Vector3, isTouch: boolean)
 	if travel <= 0 then
 		return
 	end
-	local now = os.clock()
-	local dt = math.max(now - lastMoveTime, 1 / 240)
-	lastMoveTime = now
-	Moments.ScrubMove:Fire(scrub.model, point, result.Normal, travel / dt)
-	rubAt(scrub, point, travel)
+	if v.stage == "dirty" then
+		local now = os.clock()
+		local dt = math.max(now - lastMoveTime, 1 / 240)
+		lastMoveTime = now
+		Moments.ScrubMove:Fire(v.model, point, result.Normal, travel / dt)
+		rubAt(v, point, travel)
+	else
+		brushAt(v, travel)
+	end
+end
+
+-- A tap on a bow or the camera. True when the press landed on one, so it does not also start a stroke.
+local function tapButton(v: Visit, input: InputObject): boolean
+	local ray = pointerRay(input)
+	local result = if ray then cast(ray, v.buttonParams) else nil
+	if not result then
+		return false
+	end
+	local part = result.Instance
+	local bowId = part:GetAttribute("BowId")
+	if v.stage == "fluffed" and type(bowId) == "string" then
+		v.stage = "styled"
+		v.bow.Color = BOW_COLORS[bowId] or CLEAN_COLOR
+		show(v.bow, true)
+		v.bow.CanQuery = false
+		for _, button in v.bowButtons do
+			show(button, false)
+		end
+		show(v.camera, true)
+		Moments.BowChosen:Fire(v.model, bowId)
+		report("RequestPickBow", v, bowId)
+	elseif v.stage == "styled" and part == v.camera then
+		-- The camera hides while the photo develops; the server pays once the visit is long enough, or hands the
+		-- camera back (CatStage) when it could not pay.
+		show(v.camera, false)
+		report("RequestPhoto", v)
+	end
+	return true
 end
 
 local function isPress(input: InputObject): boolean
 	return input.UserInputType == Enum.UserInputType.MouseButton1
 		or input.UserInputType == Enum.UserInputType.Touch
+		or input.KeyCode == GAMEPAD_BUTTON
+end
+
+local function release()
+	activeInput = nil
+	endStroke()
+	holdCamera(false)
+end
+
+local function onCatReady(rawId: unknown)
+	local v = visit
+	if not v or type(rawId) ~= "number" then
+		return
+	end
+	release()
+	showCat(v)
+	startCat(v, rawId)
+end
+
+-- The server's view of the cat after a report. When the server is behind (a step it refused or never got), the
+-- cat falls back to the server's stage so the player can redo that step instead of being stuck.
+local function onCatStage(
+	rawId: unknown,
+	rawSeq: unknown,
+	rawStage: unknown,
+	rawStrokes: unknown,
+	rawWaiting: unknown
+)
+	local v = visit
+	-- An answer to an older report says nothing about the newer ones still on their way.
+	if not v or rawSeq ~= reportSeq or type(rawStage) ~= "string" or rawId ~= v.catId then
+		return
+	end
+	local serverRank = SpaRules.STAGE_ORDER[rawStage]
+	local clientRank = SpaRules.STAGE_ORDER[v.stage]
+	if serverRank == nil or clientRank == nil then
+		return
+	end
+	if rawStage == "styled" and v.stage == "styled" and rawWaiting == false then
+		show(v.camera, true) -- the server could not pay yet; tap again
+		return
+	end
+	if serverRank >= clientRank then
+		return
+	end
+	release()
+	local strokes = if type(rawStrokes) == "number" then rawStrokes else 0
+	if rawStage == "dirty" then
+		Remotes.event("RequestCat"):FireServer()
+		return
+	end
+	v.stage = rawStage :: SpaRules.Stage
+	v.strokes = math.clamp(strokes, 0, SpaRules.BRUSH_STROKES)
+	v.strokeTravel = 0
+	show(v.bow, false)
+	v.bow.CanQuery = false
+	show(v.camera, false)
+	for _, button in v.bowButtons do
+		show(button, rawStage == "fluffed")
+	end
+	setCatColor(v, if rawStage == "clean" then CLEAN_COLOR else FLUFFED_COLOR)
+end
+
+local function onPhotoPaid(rawId: unknown)
+	local v = visit
+	if not v or rawId ~= v.catId or v.stage ~= "styled" then
+		return
+	end
+	v.stage = "done"
+	show(v.camera, false)
+	Moments.PhotoTaken:Fire(v.model)
+	nextCatThread = task.delay(NEXT_CAT_SECONDS, function()
+		nextCatThread = nil
+		if visit == v then
+			Remotes.event("RequestCat"):FireServer()
+		end
+	end)
 end
 
 local function enable()
@@ -283,25 +548,37 @@ local function enable()
 	end
 	enabled = true
 	local folder = Instance.new("Folder")
-	folder.Name = "PH_ScrubPrototype"
+	folder.Name = "PH_SpaPrototype"
 	buildTub(folder)
-	current = buildCat(folder)
+	visit = buildVisit(folder)
 	folder.Parent = Workspace
 
+	table.insert(connections, Remotes.event("CatReady").OnClientEvent:Connect(onCatReady))
+	table.insert(connections, Remotes.event("PhotoPaid").OnClientEvent:Connect(onPhotoPaid))
+	table.insert(connections, Remotes.event("CatStage").OnClientEvent:Connect(onCatStage))
 	table.insert(
 		connections,
 		UserInputService.InputBegan:Connect(function(input: InputObject, processed: boolean)
 			-- `processed` is true for taps on buttons, the thumbstick and the jump button: those never scrub.
-			if processed or activeInput ~= nil or not isPress(input) then
+			local v = visit
+			if processed or activeInput ~= nil or not isPress(input) or not v then
 				return
 			end
-			-- Only a press that lands on the cat scrubs; a press anywhere else stays a normal camera drag.
-			local scrub = current
-			if not scrub or scrub.state.revealed or not hitCat(scrub, input.Position) then
+			if tapButton(v, input) then
+				return
+			end
+			-- Only a press that lands on the cat scrubs or brushes; a press anywhere else stays a camera drag.
+			local ray = pointerRay(input)
+			if
+				(v.stage ~= "dirty" and v.stage ~= "clean")
+				or not ray
+				or not cast(ray, v.catParams)
+			then
 				return
 			end
 			activeInput = input
-			onPointer(input.Position, input.UserInputType == Enum.UserInputType.Touch)
+			holdCamera(input.UserInputType == Enum.UserInputType.Touch)
+			onPointer(input)
 		end)
 	)
 	table.insert(
@@ -312,12 +589,15 @@ local function enable()
 				return
 			end
 			if active.UserInputType == Enum.UserInputType.Touch then
-				-- Only the finger that started the scrub; a second finger on the thumbstick is someone walking.
+				-- Only the finger that started; a second finger on the thumbstick is someone walking.
 				if input == active then
-					onPointer(input.Position, true)
+					onPointer(input)
 				end
-			elseif input.UserInputType == Enum.UserInputType.MouseMovement then
-				onPointer(input.Position, false)
+			elseif
+				active.UserInputType == Enum.UserInputType.MouseButton1
+				and input.UserInputType == Enum.UserInputType.MouseMovement
+			then
+				onPointer(input)
 			end
 		end)
 	)
@@ -325,12 +605,22 @@ local function enable()
 		connections,
 		UserInputService.InputEnded:Connect(function(input: InputObject)
 			if input == activeInput then
-				activeInput = nil
-				stopScrub()
-				holdCamera(false)
+				release()
 			end
 		end)
 	)
+	-- A held trigger has no pointer movement: the middle of the screen moves as the camera turns.
+	table.insert(
+		connections,
+		RunService.Heartbeat:Connect(function()
+			local active = activeInput
+			if active and active.KeyCode == GAMEPAD_BUTTON then
+				onPointer(active)
+			end
+		end)
+	)
+
+	Remotes.event("RequestCat"):FireServer()
 end
 
 local function disable()
@@ -338,21 +628,19 @@ local function disable()
 		return
 	end
 	enabled = false
-	stopScrub()
-	holdCamera(false)
-	activeInput = nil
+	release()
 	for _, connection in connections do
 		connection:Disconnect()
 	end
 	table.clear(connections)
-	if resetThread then
-		task.cancel(resetThread)
-		resetThread = nil
+	if nextCatThread then
+		task.cancel(nextCatThread)
+		nextCatThread = nil
 	end
-	local scrub = current
-	current = nil
-	if scrub then
-		local folder = scrub.model.Parent
+	local v = visit
+	visit = nil
+	if v then
+		local folder = v.model.Parent
 		if folder then
 			folder:Destroy()
 		end

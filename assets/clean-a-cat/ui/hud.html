@@ -126,6 +126,7 @@ p.lead { margin: 0 0 24px; color: #cfc4d6; max-width: 760px; line-height: 1.4; }
 .item .t { font-weight: 600; font-size: 15px; } .item .d { font-size: 12px; color: #7d6d82; }
 .item .time { font-size: 13px; color: #7d6d82; }
 .buy { background: var(--mint); border: 3px solid var(--ink); border-radius: 12px; padding: 6px 10px; font-weight: 700; box-shadow: 0 3px 0 var(--ink); min-width: 72px; text-align: center; min-height: 44px; display: grid; place-items: center; }
+.sec { font-size: 12px; font-weight: 700; color: #7d6d82; text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 4px; }
 .item.lockd { opacity: .55; } .item.lockd .buy { background: #ddd; }
 
 .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 20px; max-width: 900px; font-size: 13px; color: #d9cfdd; }
@@ -187,17 +188,17 @@ p.lead { margin: 0 0 24px; color: #cfc4d6; max-width: 760px; line-height: 1.4; }
   <div class="phone land">
     <div class="world"><div class="tiles"></div><div class="tub"><div class="foam"></div></div></div>
     <div class="backdrop"></div>
-    <div class="win" style="width:440px">
+    <div class="win" style="width:470px;padding:10px 12px 12px">
       <div class="x">✕</div>
-      <h3>Builder</h3>
-      <div class="build-now"><span style="font-size:22px">🛁</span><div style="flex:1"><div style="font-weight:600">Bubble Bath</div><div class="bar"><i></i></div></div><div style="font-weight:700">3:24</div><div class="bell" title="Tell me when it's done">🔔</div></div>
-      <div class="list">
-        <div class="item lockd"><span style="font-size:22px">💅</span><div><div class="t">Pawdicure</div><div class="d">Trim long claws</div></div><span class="time">1 h</span><div class="buy">400 🪙 · builder busy</div></div>
-        <div class="item lockd"><span style="font-size:22px">👑</span><div><div class="t">VIP Room</div><div class="d">Rarer customers</div></div><span class="time">8 h</span><div class="buy">After Pawdicure</div></div>
-      </div>
+      <h3 style="margin-bottom:4px">Builder</h3>
+      <div class="sec">Stations · builder kitten</div>
+      <div class="build-now"><span style="font-size:20px">🛁</span><div style="flex:1"><div style="font-weight:600">Bubble Bath</div><div class="bar"><i></i></div></div><div style="font-weight:700">3:24</div></div>
+      <div class="item lockd" style="margin-top:4px"><span style="font-size:20px">💅</span><div><div class="t">Pawdicure</div><div class="d">Trim long claws</div></div><span class="time">1 h</span><div class="buy">400 🪙 · kitten busy</div></div>
+      <div class="sec">Rooms · building site</div>
+      <div class="build-now"><span style="font-size:20px">👑</span><div style="flex:1"><div style="font-weight:600">VIP Room</div><div class="bar"><i style="width:8%"></i></div></div><div style="font-weight:700">7:42:10</div><div class="bell" title="Tell me when it's done">🔔</div></div>
     </div>
   </div>
-  <p class="cap">One build at a time: while the Bubble Bath builds, the next build shows its price but stays greyed with "builder busy". The bell asks for a notification only when tapped, so no prompt opens by itself; it shows only to players who can get personal notifications. No timers to buy, no discount tags. Prices beyond the dryer are placeholders.</p>
+  <p class="cap">Two build slots (gdd-draft): the builder kitten builds one station at a time and the building site builds one room at a time, so the 8 hour room never blocks short station builds. A second station waits greyed with "kitten busy". The bell sits only on builds over 1 hour. The bell asks for a notification only when tapped, so no prompt opens by itself; it shows only to players who can get personal notifications. No timers to buy, no discount tags. Prices beyond the dryer are placeholders.</p>
 </div>
 
 <div class="frame-wrap">
