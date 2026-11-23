@@ -4,7 +4,7 @@ makes the draft sheet with each option shown at its real size and at the small s
     python3 assets/clean-a-cat/blender/store_compose.py <raw folder> <out folder> [sheet.png] [--final]
 
 Plain Python with Pillow (not Blender). Fonts: Inter Black from the system (`fc-list | grep "Inter Black"`); swap
-FONT for the game's UI font once the ui-designer picks one. Words: three at most, huge, high contrast, never "free".
+FONT for the game's UI font once the ui-designer picks one. Words: the game's name CLEAN A CAT or none, huge, high contrast, never "free".
 """
 
 import os
@@ -21,19 +21,19 @@ BUTTER = (255, 226, 140)
 # key: (kind, backdrop inner, backdrop outer, words, where the words go)
 OPTIONS = {
     "icon-a": ("icon", (255, 214, 226), (255, 150, 182), None, None),
-    "icon-b": ("icon", (196, 236, 255), (98, 186, 246), "CAT SPA", "bottom"),
-    "icon-c": ("icon", (255, 214, 226), (255, 150, 182), "CLEAN A CAT", "bottom"),
+    "icon-b": ("icon", (196, 236, 255), (98, 186, 246), "CLEAN A CAT", "bottom"),
+    "icon-c": ("icon", (255, 214, 226), (255, 150, 182), None, None),
     "thumb-1": ("thumb", (214, 240, 255), (110, 192, 248), "CLEAN A CAT", "left"),
-    "thumb-2": ("thumb", (255, 226, 234), (255, 160, 190), "MUDDY TO FLUFFY", "top"),
-    "thumb-3": ("thumb", (214, 245, 232), (120, 210, 178), "YOUR CAT SPA", "left"),
+    "thumb-2": ("thumb", (255, 226, 234), (255, 160, 190), "CLEAN A CAT", "top"),
+    "thumb-3": ("thumb", (214, 245, 232), (120, 210, 178), None, None),
 }
 TITLES = {
     "icon-a": "Icon A: the scrub, no words",
-    "icon-b": "Icon B: the whole cat, CAT SPA",
-    "icon-c": "Icon C: clean and fluffy, CLEAN A CAT",
-    "thumb-1": "Thumbnail 1: scrubbing at the tub",
-    "thumb-2": "Thumbnail 2: muddy to fluffy",
-    "thumb-3": "Thumbnail 3: your spa at work",
+    "icon-b": "Icon B: the whole cat, CLEAN A CAT",
+    "icon-c": "Icon C: clean and fluffy, no words",
+    "thumb-1": "Thumbnail 1: scrubbing at the tub, CLEAN A CAT",
+    "thumb-2": "Thumbnail 2: muddy to fluffy, CLEAN A CAT",
+    "thumb-3": "Thumbnail 3: your spa at work, no words",
 }
 
 
@@ -111,7 +111,10 @@ def compose(key, raw_dir, final=False):
     w, h = size
     bg = backdrop(size, inner, outer)
     art = crop_to_content(raw)
-    if where == "left":                                           # words on the left third, art on the right
+    if not text:                                                  # no words: the art fills the frame
+        art = fit(art, w * 0.92, h * 0.9)
+        bg.alpha_composite(art, ((w - art.width) // 2, int(h * 0.95 - art.height)))
+    elif where == "left":                                         # words on the left third, art on the right
         art = fit(art, w * 0.66, h * 0.86)
         bg.alpha_composite(art, (int(w * 0.97 - art.width), int(h * 0.95 - art.height)))
         parts = text.split()
@@ -175,7 +178,7 @@ def sheet(made, out):
         sh.alpha_composite(sm, (x, y + 410))
         label(d, (x + 164, y + 440), "150 px wide", 18, (90, 86, 120))
     notes = ["Rules kept: the first minute's action (a muddy cat, a sponge, foam), Common cats only (Smudge, Muffin,",
-             "Cotton, Inky), no cat cropped, three words at most, never the word free. Rendered from the real models.",
+             "Cotton, Inky), no cat cropped, words only the name CLEAN A CAT, never free. Rendered from the real models.",
              "After the pick: a final 512 x 512 icon and 1920 x 1080 thumbnails. Nothing is uploaded until Derek says."]
     for j, n in enumerate(notes):
         label(d, (48, 1240 + 34 * j), n, 24, (90, 86, 120))
