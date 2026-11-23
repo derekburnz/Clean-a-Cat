@@ -20,6 +20,7 @@ local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
@@ -121,6 +122,7 @@ local function onRequestCat(player: Player)
 	sendCat(player, cat :: SpaRules.Cat)
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
 		NetService.fire(player, "CustomerQueue", table.clone(queueFor(player)))
+		FigureService.showQueue(player, table.clone(queueFor(player)))
 	end
 end
 
