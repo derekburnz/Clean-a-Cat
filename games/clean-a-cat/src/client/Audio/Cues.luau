@@ -49,7 +49,7 @@ local Cues: { [string]: Cue } = {
 		voices = 2,
 		preload = true,
 	},
-	-- Creator Store pick pending
+	-- synth: CleanACat_Sfx_Purr_1..2
 	purr = { ids = {}, group = "Sfx", volume = 0.5, pitch = { 0.95, 1.05 }, minGap = 1, voices = 1 },
 	-- synth: CleanACat_Sfx_BowPop
 	bowPop = {
@@ -72,7 +72,7 @@ local Cues: { [string]: Cue } = {
 		voices = 2,
 		preload = true,
 	},
-	-- Creator Store pick pending; played at the cat (3D)
+	-- synth: CleanACat_Sfx_Meow_1..3; played at the cat (3D)
 	meow = { ids = {}, group = "Sfx", volume = 0.45, pitch = { 0.9, 1.15 }, minGap = 4, voices = 2 },
 	-- Creator Store picks pending; two beds that alternate
 	spaMusicA = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
