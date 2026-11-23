@@ -36,6 +36,31 @@ return function()
 		end)
 	end)
 
+	describe("SpaLayout.slotPivot", function()
+		it("keeps slot 1 where the single plot was and spreads the rest on both sides", function()
+			local step = Vector3.new(SpaLayout.PLOT_SPACING, 0, 0)
+			expect(SpaLayout.slotPivot(1)).to.equal(SpaLayout.PIVOT_POSITION)
+			expect(SpaLayout.slotPivot(2)).to.equal(SpaLayout.PIVOT_POSITION + step)
+			expect(SpaLayout.slotPivot(3)).to.equal(SpaLayout.PIVOT_POSITION - step)
+			expect(SpaLayout.slotPivot(4)).to.equal(SpaLayout.PIVOT_POSITION + step * 2)
+		end)
+
+		it("gives every slot its own pivot", function()
+			local seen: { [string]: boolean } = {}
+			for slot = 1, SpaLayout.PLOT_COUNT do
+				local key = tostring(SpaLayout.slotPivot(slot))
+				expect(seen[key]).to.equal(nil)
+				seen[key] = true
+			end
+		end)
+
+		it("moves a plot spot with its slot", function()
+			local one = SpaLayout.place("SpotTub", true, 1)
+			local two = SpaLayout.place("SpotTub", true, 2)
+			expect(two).to.equal((one :: Vector3) + Vector3.new(SpaLayout.PLOT_SPACING, 0, 0))
+		end)
+	end)
+
 	describe("SpaLayout.PROPS", function()
 		it("puts every prop on a plot spot, under its own name", function()
 			local seen: { [string]: boolean } = {}

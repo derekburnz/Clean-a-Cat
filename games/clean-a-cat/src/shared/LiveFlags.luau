@@ -37,6 +37,7 @@ LiveFlags.KEYS = {
 	"onboardingFunnel", -- the onboarding_v1 funnel and its side events (Telemetry, FunnelService); off by default
 	"scrubTurn", -- the cat turns in the tub to show its muddy side (Controllers/ScrubController); off by default
 	"longBuildOffer", -- the bell on long builds and the build finished notification (NotifyService, BuildBoardController); off by default
+	"spaVisitors", -- players may walk into other players' spas; off means look only (Controllers/PlotController); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -56,6 +57,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	onboardingFunnel = true,
 	scrubTurn = true,
 	longBuildOffer = true,
+	spaVisitors = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

@@ -1,18 +1,24 @@
 --!strict
 -- SpaLayout: where each gameplay spot is (the tub, the spawn, the customer line, the window, the boards), on the
--- server and the client. While the spa plot is placed (PlotService, behind the LiveFlags switch `spaPlot`), a spot
--- is Model-Agent's Attachment of the same name in the plot, read as its WorldCFrame. Otherwise it is the old
--- placeholder room's spot, so turning the switch off gives back exactly the world before the plot.
+-- server and the client. While the street is placed (PlotService, behind the LiveFlags switch `spaPlot`), every
+-- player has their own spa plot (#88): PLOT_COUNT plots side by side, the player's slot in the Player attribute
+-- SLOT_ATTRIBUTE. A spot is then Model-Agent's Attachment of the same name in that player's plot, read as its
+-- WorldCFrame. Otherwise it is the old placeholder room's spot, so turning the switch off gives back exactly the
+-- world before the plot. On the client a spot is the local player's; the server passes the player it acts for.
 --
 -- Every spot faces the way the thing there faces: a model's front (-Z, its LookVector) points along the spot's
 -- LookVector. Each spot is where the base of the thing there sits.
 --
---   SpaLayout.spot(name): CFrame        the spot in the world right now
---   SpaLayout.lineSpot(prefix, index)   SpotQueue<index> or SpotWindow<index>; past the last one, the line goes on
---   SpaLayout.onPlot(): boolean         is the plot placed?
---   SpaLayout.changed(fn)               fn() when the plot is placed or taken away (redraw what stands on spots)
---   SpaLayout.prop(name): Model?        a fixed prop PlotService placed with the plot (see PROPS), or nil
---   SpaLayout.place(name, onPlot)       the pure part: (position, yaw) from the tables below; specs cover it
+--   SpaLayout.spot(name, player?): CFrame        the spot in the world right now
+--   SpaLayout.lineSpot(prefix, index, player?)   SpotQueue<index> or SpotWindow<index>; past the last one, the
+--                                                line goes on
+--   SpaLayout.onPlot(player?): boolean           is the player's plot placed?
+--   SpaLayout.changed(fn)                        fn() when the local player's plot comes or goes (redraw)
+--   SpaLayout.prop(name, player?): Model?        a fixed prop PlotService placed with the plot (PROPS), or nil
+--   SpaLayout.slotSpot(name, slot): CFrame       a spot in plot `slot`, whoever has it (the server places with it)
+--   SpaLayout.place(name, onPlot, slot?)         the pure part: (position, yaw) from the tables below; specs
+--   SpaLayout.slotPivot(slot)                    where plot `slot`'s pivot goes; specs
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local SpaLayout = {}
@@ -23,6 +29,13 @@ SpaLayout.PLACED_ATTRIBUTE = "SpaPlotPlaced" -- ReplicatedStorage attribute: tru
 -- Where the plot's pivot (the plot centre on the ground, street side -Z) goes. This keeps the tub where the
 -- placeholder room had it, (0, 0, -12) on the ground.
 SpaLayout.PIVOT_POSITION = Vector3.new(-5, 0, -10)
+-- The street (#88): PLOT_COUNT plots in a row along X, PLOT_SPACING studs from pivot to pivot. Slot 1 is at
+-- PIVOT_POSITION; the others go out on both sides (2 right, 3 left, 4 further right...). Placeholder values until
+-- design sets the server size (it must match the experience's max players) and Model-Agent the spacing.
+SpaLayout.PLOT_COUNT = 6
+SpaLayout.PLOT_SPACING = 44
+SpaLayout.PLOTS_FOLDER = "SpaPlots" -- Workspace.SpaPlots.Plot<slot>
+SpaLayout.SLOT_ATTRIBUTE = "SpaPlot" -- Player attribute: the player's slot, 1 to PLOT_COUNT
 
 export type Spot = { position: Vector3, yaw: number }
 
@@ -91,16 +104,23 @@ SpaLayout.ROOM_SPOTS = table.freeze({
 	Tools = at(-6, 0, -12, TURNED),
 }) :: { [string]: Spot }
 
--- A spot's world position and yaw from the tables: the plot's (moved to PIVOT_POSITION) while it is placed,
--- else the room's. A spot the room never had uses the plot's. Nil for an unknown name.
-function SpaLayout.place(name: string, onPlot: boolean): (Vector3?, number)
+-- Where plot `slot`'s pivot goes: slot 1 at PIVOT_POSITION, then one step right, one left, two right...
+function SpaLayout.slotPivot(slot: number): Vector3
+	local steps = slot // 2
+	local side = if slot % 2 == 0 then 1 else -1
+	return SpaLayout.PIVOT_POSITION + Vector3.new(side * steps * SpaLayout.PLOT_SPACING, 0, 0)
+end
+
+-- A spot's world position and yaw from the tables: plot `slot`'s (default 1) while it is placed, else the
+-- room's. A spot the room never had uses the plot's. Nil for an unknown name.
+function SpaLayout.place(name: string, onPlot: boolean, slot: number?): (Vector3?, number)
 	local room = SpaLayout.ROOM_SPOTS[name]
 	if not onPlot and room then
 		return room.position, room.yaw
 	end
 	local plot = SpaLayout.PLOT_SPOTS[name]
 	if plot then
-		return SpaLayout.PIVOT_POSITION + plot.position, plot.yaw
+		return SpaLayout.slotPivot(slot or 1) + plot.position, plot.yaw
 	end
 	return nil, 0
 end
@@ -124,51 +144,83 @@ function SpaLayout.lineName(
 	return prefix .. last, index - last, prefix .. (last - 1)
 end
 
-function SpaLayout.onPlot(): boolean
+-- The player's slot (the local player on the client), or nil before PlotService gave one.
+function SpaLayout.slotOf(player: Player?): number?
+	local who = player or Players.LocalPlayer
+	local slot = if who then who:GetAttribute(SpaLayout.SLOT_ATTRIBUTE) else nil
+	return if type(slot) == "number" then slot else nil
+end
+
+local function placed(): boolean
 	return ReplicatedStorage:GetAttribute(SpaLayout.PLACED_ATTRIBUTE) == true
 end
 
-local function placedAttachment(name: string): Attachment?
-	local plot = game:GetService("Workspace"):FindFirstChild(SpaLayout.ASSET)
+function SpaLayout.onPlot(player: Player?): boolean
+	return placed() and SpaLayout.slotOf(player) ~= nil
+end
+
+-- Plot `slot` in Workspace, or nil.
+function SpaLayout.plotModel(slot: number): Model?
+	local folder = game:GetService("Workspace"):FindFirstChild(SpaLayout.PLOTS_FOLDER)
+	local found = if folder then folder:FindFirstChild(`Plot{slot}`) else nil
+	return if found and found:IsA("Model") then found :: Model else nil
+end
+
+local function placedAttachment(name: string, slot: number): Attachment?
+	local plot = SpaLayout.plotModel(slot)
 	local found = if plot then plot:FindFirstChild(name, true) else nil
 	return if found and found:IsA("Attachment") then found :: Attachment else nil
 end
 
-function SpaLayout.prop(name: string): Model?
-	if not SpaLayout.onPlot() then
+function SpaLayout.prop(name: string, player: Player?): Model?
+	local slot = SpaLayout.slotOf(player)
+	if slot == nil or not placed() then
 		return nil
 	end
-	local plot = game:GetService("Workspace"):FindFirstChild(SpaLayout.ASSET)
+	local plot = SpaLayout.plotModel(slot)
 	local props = if plot then plot:FindFirstChild(SpaLayout.PROPS_FOLDER) else nil
 	local found = if props then props:FindFirstChild(name) else nil
 	return if found and found:IsA("Model") then found :: Model else nil
 end
 
-function SpaLayout.spot(name: string): CFrame
-	local onPlot = SpaLayout.onPlot()
+local function spotIn(name: string, slot: number?): CFrame
+	local onPlot = slot ~= nil and placed()
 	if onPlot then
-		local attachment = placedAttachment(name)
+		local attachment = placedAttachment(name, slot :: number)
 		if attachment then
 			return attachment.WorldCFrame
 		end
 	end
-	local position, yaw = SpaLayout.place(name, onPlot)
+	local position, yaw = SpaLayout.place(name, onPlot, slot)
 	return CFrame.new(position or Vector3.zero) * CFrame.Angles(0, yaw, 0)
+end
+
+function SpaLayout.slotSpot(name: string, slot: number): CFrame
+	return spotIn(name, slot)
+end
+
+function SpaLayout.spot(name: string, player: Player?): CFrame
+	return spotIn(name, SpaLayout.slotOf(player))
 end
 
 -- The `index`th spot of a line. Past the last listed spot the line goes on, one step (the gap between the last
 -- two spots) at a time.
-function SpaLayout.lineSpot(prefix: string, index: number): CFrame
-	local name, past, before = SpaLayout.lineName(prefix, index, SpaLayout.onPlot())
-	local cframe = SpaLayout.spot(name)
+function SpaLayout.lineSpot(prefix: string, index: number, player: Player?): CFrame
+	local name, past, before = SpaLayout.lineName(prefix, index, SpaLayout.onPlot(player))
+	local cframe = SpaLayout.spot(name, player)
 	if past <= 0 then
 		return cframe
 	end
-	return cframe + (cframe.Position - SpaLayout.spot(before).Position) * past
+	return cframe + (cframe.Position - SpaLayout.spot(before, player).Position) * past
 end
 
-function SpaLayout.changed(fn: () -> ()): RBXScriptConnection
-	return ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(fn)
+-- fn() when the street is placed or taken away, or the local player gets their slot.
+function SpaLayout.changed(fn: () -> ())
+	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(fn)
+	local player = Players.LocalPlayer
+	if player then
+		player:GetAttributeChangedSignal(SpaLayout.SLOT_ATTRIBUTE):Connect(fn)
+	end
 end
 
 return SpaLayout

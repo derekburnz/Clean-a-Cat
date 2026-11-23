@@ -33,7 +33,7 @@ local SECRET_NAME = "CleanACat_NotifyKey"
 local MESSAGE_ATTRIBUTE = "NotifyMessageId"
 local CHECK_SECONDS = 60
 local BATCH = 20
-local CLAIM_SECONDS = 300 -- a claimed message another server failed to send comes back after this
+local CLAIM_SECONDS = 300 -- a claimed message expires after this, so one a server failed to send is dropped
 
 local NotifyService = {}
 
