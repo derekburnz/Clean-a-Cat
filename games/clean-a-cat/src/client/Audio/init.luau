@@ -15,7 +15,6 @@ local CueRules = require(script:WaitForChild("CueRules"))
 local Cues = require(script:WaitForChild("Cues"))
 
 type Cue = CueRules.Cue
-type Group = CueRules.Group
 
 export type Settings = { music: boolean, sound: boolean }
 export type PlayOptions = { at: Instance?, variant: number?, pitch: number? }
@@ -28,7 +27,7 @@ local Audio = {}
 
 local started = false
 local groups: { [string]: SoundGroup } = {}
-local pools: { [string]: { Sound } } = {}
+local pools: { [string]: { [number]: Sound? } } = {}
 local nextSlot: { [string]: number } = {}
 local lastPlayed: { [string]: number } = {}
 local warned: { [string]: boolean } = {}
@@ -71,11 +70,12 @@ local function takeVoice(cueId: string, cue: Cue): Sound
 	end
 	local slot = CueRules.nextVoice(nextSlot[cueId] or 0, cue.voices or 1)
 	nextSlot[cueId] = slot
-	local sound = pool[slot]
-	if sound == nil or sound.Parent == nil then
-		sound = newSound(cueId, cue, slot)
-		pool[slot] = sound
+	local existing = pool[slot]
+	if existing and existing.Parent then
+		return existing
 	end
+	local sound = newSound(cueId, cue, slot)
+	pool[slot] = sound
 	return sound
 end
 
@@ -107,7 +107,7 @@ function Audio.start()
 			group = made
 		end
 		local soundGroup = group :: SoundGroup
-		soundGroup.Volume = CueRules.GROUP_VOLUME[name :: Group]
+		soundGroup.Volume = CueRules.GROUP_VOLUME[name] or 0.5
 		groups[name] = soundGroup
 	end
 
@@ -189,14 +189,15 @@ function Audio.applySettings(settings: Settings)
 	current = { music = settings.music, sound = settings.sound }
 	settingsRead = true
 	local soundOn = if settings.sound then 1 else 0
-	groups.Sfx.Volume = CueRules.GROUP_VOLUME.Sfx * soundOn
-	groups.Ui.Volume = CueRules.GROUP_VOLUME.Ui * soundOn
-	groups.Ambience.Volume = CueRules.GROUP_VOLUME.Ambience * soundOn
-	groups.Music.Volume = if settings.music then CueRules.GROUP_VOLUME.Music else 0
+	groups.Sfx.Volume = (CueRules.GROUP_VOLUME["Sfx"] or 0) * soundOn
+	groups.Ui.Volume = (CueRules.GROUP_VOLUME["Ui"] or 0) * soundOn
+	groups.Ambience.Volume = (CueRules.GROUP_VOLUME["Ambience"] or 0) * soundOn
+	groups.Music.Volume = if settings.music then (CueRules.GROUP_VOLUME["Music"] or 0) else 0
 
-	if settings.music and musicSound == nil then
+	local playing = musicSound
+	if settings.music and not playing then
 		playNextTrack()
-	elseif not settings.music and musicSound ~= nil then
+	elseif playing and not settings.music then
 		stopMusic()
 	end
 end

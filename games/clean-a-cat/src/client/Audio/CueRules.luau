@@ -24,7 +24,7 @@ CueRules.GROUP_VOLUME = {
 	Ambience = 0.6,
 	Sfx = 0.8,
 	Ui = 0.7,
-} :: { [Group]: number }
+} :: { [string]: number }
 
 CueRules.MAX_PRELOAD = 10
 
