@@ -14,5 +14,9 @@ One line per picture: file, what it shows, style, date.
 - `2026-11-23-tub-scene.png`: dirty Smudge sitting in the wash tub at `ScaleTo(1.5)` with the starter sponge beside it, from about the player's camera. 2026-11-23.
 - `2026-11-23-groom-sheet.png`: grooming at scale next to a stand-in avatar: the rinsed grey cat with its tangles (the brush beside it), fluffed after the brush, then with the pink, mint and sky bows. 2026-11-23.
 - `2026-11-23-groom-close.png`: the same five cats close up. 2026-11-23.
+- `2026-11-23-plot-graybox-top.png`: the spa plot graybox from above (roof hidden). Coloured pads mark the spots: sky the tub, green the spawn, pink the queue, brown the stray box, yellow the builder, grey the two locked station pads, mint the VIP Room door; pink cushions in the window. 2026-11-23.
+- `2026-11-23-plot-graybox-player.png`: from behind the player at the spawn, facing the tub, with the stray box and the VIP door behind. Roof hidden. 2026-11-23.
+- `2026-11-23-plot-graybox-entrance.png`: walking in at the entrance past the first customer. Roof hidden. 2026-11-23.
+- `2026-11-23-plot-graybox-street.png`: outside on the street: the display window with four cats (glass hidden, as Roblox draws it 0.6 clear), the open entrance and three customers queueing with dirty cats. 2026-11-23.
 
 HUD source page: `assets/clean-a-cat/ui/hud.html`. Plans: issues #5 (first session) and #9 (UI layout).
