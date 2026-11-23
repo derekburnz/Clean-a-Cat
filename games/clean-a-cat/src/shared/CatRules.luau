@@ -12,7 +12,7 @@ export type Need = string -- "mud", "tangles" or "wet": a key of NEED_STATION
 CatRules.RARITIES =
 	table.freeze({ "Common", "Uncommon", "Rare", "Epic", "Legendary" }) :: { Rarity }
 
--- Percent per rarity; sums to 100. Nothing paid changes these.
+-- Percent per rarity for a new spa (star tier 1); sums to 100. Nothing paid changes these.
 CatRules.CHANCES = table.freeze({
 	Common = 60,
 	Uncommon = 25,
@@ -20,6 +20,23 @@ CatRules.CHANCES = table.freeze({
 	Epic = 3.5,
 	Legendary = 0.5,
 }) :: { [string]: number }
+
+-- Star tiers: a spa with more stars gets rarer customers. A tier starts at `stars`; each tier's chances sum to
+-- 100 and no rarer chance ever goes down from one tier to the next. Stars come only from customers, so nothing
+-- paid moves a spa up a tier.
+export type Tier = { stars: number, chances: { [string]: number } }
+CatRules.TIERS = table.freeze({
+	table.freeze({ stars = 0, chances = CatRules.CHANCES }),
+	table.freeze({
+		stars = 15,
+		chances = table.freeze({ Common = 54, Uncommon = 27, Rare = 13, Epic = 5, Legendary = 1 }),
+	}),
+	table.freeze({
+		stars = 40,
+		chances = table.freeze({ Common = 47, Uncommon = 28, Rare = 16, Epic = 7, Legendary = 2 }),
+	}),
+}) :: { Tier }
+CatRules.TIER_ATTRIBUTE = "ChanceTier" -- Player attribute the server sets, so the board shows the player's tier
 
 -- The cats, by rarity; each name matches Model-Agent's ReplicatedStorage.Assets.CleanACat_Cat_<Name>... models.
 CatRules.ROSTER = table.freeze({
@@ -60,16 +77,47 @@ function CatRules.rarityOf(name: string): Rarity?
 	return nil
 end
 
--- One customer's cat. `random()` returns a number in [0, 1) (Random.new():NextNumber in the game). The very
--- first customer of a save (`first`) always brings a common cat, so the board only lights up once its
--- chances are true.
-function CatRules.roll(random: () -> number, first: boolean): string
+-- The star tier (an index into TIERS) for a spa with `stars` stars.
+function CatRules.tierFor(stars: number): number
+	local tier = 1
+	for index, entry in CatRules.TIERS do
+		if stars >= entry.stars then
+			tier = index
+		end
+	end
+	return tier
+end
+
+-- A tier number made safe: a whole number within TIERS, else tier 1. For a value read from an attribute.
+function CatRules.cleanTier(raw: unknown): number
+	if type(raw) ~= "number" or raw ~= raw or raw % 1 ~= 0 or raw < 1 or raw > #CatRules.TIERS then
+		return 1
+	end
+	return raw
+end
+
+-- The chances at a tier (tier 1 when nil).
+function CatRules.chancesAt(tier: number?): { [string]: number }
+	return CatRules.TIERS[CatRules.cleanTier(tier)].chances
+end
+
+-- The stars the next tier starts at, or nil at the top tier.
+function CatRules.nextTierStars(tier: number?): number?
+	local following = CatRules.TIERS[CatRules.cleanTier(tier) + 1]
+	return if following then following.stars else nil
+end
+
+-- One customer's cat. `random()` returns a number in [0, 1) (Random.new():NextNumber in the game). `tier` is the
+-- spa's star tier (1 when nil). The very first customer of a save (`first`) always brings a common cat, so the
+-- board only lights up once its chances are true.
+function CatRules.roll(random: () -> number, first: boolean, tier: number?): string
+	local chances = CatRules.chancesAt(tier)
 	local rarity = "Common"
 	if not first then
 		local pick = random() * 100
 		local total = 0
 		for _, candidate in CatRules.RARITIES do
-			total += CatRules.CHANCES[candidate]
+			total += chances[candidate]
 			if pick < total then
 				rarity = candidate
 				break
@@ -105,14 +153,15 @@ end
 
 export type BoardLine = { rarity: Rarity, percent: number, cats: { string } }
 
--- The chance board's lines, read straight from CHANCES and ROSTER (the tables roll uses), rarest last. The
--- board shows these and nothing else, so a shown chance is always the real one.
-function CatRules.boardLines(): { BoardLine }
+-- The chance board's lines at a star tier, read straight from TIERS and ROSTER (the tables roll uses), rarest
+-- last. The board shows these and nothing else, so a shown chance is always the real one.
+function CatRules.boardLines(tier: number?): { BoardLine }
+	local chances = CatRules.chancesAt(tier)
 	local lines: { BoardLine } = {}
 	for _, rarity in CatRules.RARITIES do
 		table.insert(lines, {
 			rarity = rarity,
-			percent = CatRules.CHANCES[rarity],
+			percent = chances[rarity],
 			cats = table.clone(CatRules.ROSTER[rarity]),
 		})
 	end

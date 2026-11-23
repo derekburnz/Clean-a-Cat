@@ -95,6 +95,61 @@ return function()
 		end)
 	end)
 
+	describe("CatRules star tiers", function()
+		it("starts each tier at its stars", function()
+			expect(CatRules.tierFor(0)).to.equal(1)
+			expect(CatRules.tierFor(CatRules.TIERS[2].stars - 1)).to.equal(1)
+			expect(CatRules.tierFor(CatRules.TIERS[2].stars)).to.equal(2)
+			expect(CatRules.tierFor(10 ^ 6)).to.equal(#CatRules.TIERS)
+			expect(CatRules.tierFor(0 / 0)).to.equal(1)
+			expect(CatRules.nextTierStars(1)).to.equal(CatRules.TIERS[2].stars)
+			expect(CatRules.nextTierStars(#CatRules.TIERS)).to.equal(nil)
+		end)
+
+		it("sums to 100 at every tier and never lowers a rarer chance", function()
+			for index, tier in CatRules.TIERS do
+				local sum = 0
+				for _, rarity in CatRules.RARITIES do
+					sum += tier.chances[rarity]
+				end
+				expect(sum).to.be.near(100, 1e-9)
+				local before = CatRules.TIERS[index - 1]
+				if before then
+					expect(tier.stars > before.stars).to.equal(true)
+					for _, rarity in CatRules.RARITIES do
+						if rarity ~= "Common" then
+							expect(tier.chances[rarity] >= before.chances[rarity]).to.equal(true)
+						end
+					end
+				end
+			end
+		end)
+
+		it("shows on the board exactly the table the roll uses, at every tier", function()
+			for tier in CatRules.TIERS do
+				local lines = CatRules.boardLines(tier)
+				local edge = 0
+				for i, line in lines do
+					expect(line.rarity).to.equal(CatRules.RARITIES[i])
+					expect(line.percent).to.equal(CatRules.chancesAt(tier)[line.rarity])
+					-- A roll just inside this line's share lands on this rarity.
+					local pick = (edge + line.percent / 2) / 100
+					local name = CatRules.roll(sequence({ pick, 0 }), false, tier)
+					expect(CatRules.rarityOf(name)).to.equal(line.rarity)
+					edge += line.percent
+				end
+			end
+		end)
+
+		it("reads a tier from an attribute safely", function()
+			expect(CatRules.cleanTier(2)).to.equal(2)
+			expect(CatRules.cleanTier(1.5)).to.equal(1)
+			expect(CatRules.cleanTier(99)).to.equal(1)
+			expect(CatRules.cleanTier("2")).to.equal(1)
+			expect(CatRules.cleanTier(nil)).to.equal(1)
+		end)
+	end)
+
 	describe("CatRules needs and pay", function()
 		it("gives rarer cats more needs and locks the dryer until it is built", function()
 			expect(#CatRules.needs("Smudge")).to.equal(2)
