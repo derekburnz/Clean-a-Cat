@@ -2,9 +2,11 @@
 -- StationService: the stations a player has built stand in that player's own plot (SpaLayout.STATIONS), where
 -- everyone on the street can see them through the open front. Before a station is built its spot holds the
 -- build pad (SpaLayout.PAD_ASSET) with the station's name and price. The VIP Room's door shows locked, then a
--- building site while its build runs, and goes once it is built. Redrawn when the save loads, when a build
--- starts or finishes (BuildService calls StationService.refresh), when the street is placed again, and when the switch
--- changes; cleared when the owner leaves, so the next player in that slot starts empty.
+-- building site while its build runs, and goes once it is built. The builder kitten (hard hat, hammer, toolbox)
+-- stands by the builder board; while a station builds it has the attribute Building and the toolbox EndsAt, for
+-- Motion-FX and the countdown. Redrawn when the save loads, when a build starts or finishes (BuildService calls
+-- StationService.refresh), when the street is placed again and when the switch changes. Cleared when the owner
+-- leaves, so the next player in that slot starts empty.
 -- Behind the LiveFlags switch `stations`, off by default. Stations change nothing on the server: the pay bonus
 -- is BuildRules', and the client's dry step (ScrubController) only reads the Blow Dryer model placed here.
 local Players = game:GetService("Players")
@@ -29,6 +31,77 @@ local function anchorAll(model: Model)
 		if descendant:IsA("BasePart") then
 			(descendant :: BasePart).Anchored = true
 		end
+	end
+end
+
+-- Moves `model` so its attachment `name` lands on `target`. False when it has no such attachment.
+local function alignTo(model: Model, name: string, target: CFrame): boolean
+	local attachment = model:FindFirstChild(name, true)
+	if attachment == nil or not attachment:IsA("Attachment") then
+		return false
+	end
+	local offset = (attachment :: Attachment).WorldCFrame:Inverse() * model:GetPivot()
+	model:PivotTo(target * offset)
+	return true
+end
+
+local function attachmentIn(model: Model, name: string): Attachment?
+	local found = model:FindFirstChild(name, true)
+	return if found and found:IsA("Attachment") then found :: Attachment else nil
+end
+
+-- The builder kitten by the board, with its hat, hammer and toolbox, all in `folder`.
+local function drawKitten(
+	folder: Folder,
+	assets: Instance,
+	slot: number,
+	running: BuildRules.Build?
+)
+	local kittenAsset = assets:FindFirstChild("CleanACat_NPC_BuilderKitten")
+	if kittenAsset == nil or not kittenAsset:IsA("Model") then
+		return
+	end
+	local spot = SpaLayout.slotSpot(SpaLayout.BUILDER_SPOT, slot)
+	local kitten = (kittenAsset :: Model):Clone() :: Model
+	kitten.Name = "BuilderKitten"
+	kitten:PivotTo(spot * CFrame.new(SpaLayout.KITTEN_OFFSET))
+	kitten:SetAttribute("Building", running ~= nil)
+	anchorAll(kitten)
+	local hatSlot = attachmentIn(kitten, "HatSlot")
+	local hatAsset = assets:FindFirstChild("CleanACat_Prop_HardHat")
+	if hatSlot and hatAsset and hatAsset:IsA("Model") then
+		local hat = (hatAsset :: Model):Clone() :: Model
+		hat.Name = "HardHat"
+		if alignTo(hat, "HatSlot", hatSlot.WorldCFrame) then
+			anchorAll(hat)
+			hat.Parent = kitten
+		else
+			hat:Destroy()
+		end
+	end
+	local grip = attachmentIn(kitten, "HammerGrip")
+	local hammerAsset = assets:FindFirstChild("CleanACat_Prop_Hammer")
+	if grip and hammerAsset and hammerAsset:IsA("Model") then
+		local hammer = (hammerAsset :: Model):Clone() :: Model
+		hammer.Name = "Hammer"
+		if alignTo(hammer, "Grip", grip.WorldCFrame) then
+			anchorAll(hammer)
+			hammer.Parent = kitten
+		else
+			hammer:Destroy()
+		end
+	end
+	kitten.Parent = folder
+	local toolboxAsset = assets:FindFirstChild("CleanACat_Prop_Toolbox")
+	if toolboxAsset and toolboxAsset:IsA("Model") then
+		local toolbox = (toolboxAsset :: Model):Clone() :: Model
+		toolbox.Name = "Toolbox"
+		toolbox:PivotTo(spot * CFrame.new(SpaLayout.TOOLBOX_OFFSET))
+		if running then
+			toolbox:SetAttribute("EndsAt", running.endsAt)
+		end
+		anchorAll(toolbox)
+		toolbox.Parent = folder
 	end
 end
 
@@ -97,6 +170,12 @@ function StationService.refresh(player: Player)
 		end
 		model.Parent = folder
 	end
+	drawKitten(
+		folder,
+		assets :: Instance,
+		slot,
+		BuildRules.cleanBuilds(save.builds)[BuildRules.ITEMS.BrushTable.slot]
+	)
 	-- The VIP Room door: locked, a building site while it builds, gone once built.
 	local vip = BuildRules.ITEMS[SpaLayout.VIP_ID]
 	local running = BuildRules.cleanBuilds(save.builds)[vip.slot]

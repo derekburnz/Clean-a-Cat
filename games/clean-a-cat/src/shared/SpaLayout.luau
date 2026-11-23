@@ -104,6 +104,10 @@ SpaLayout.VIP_ID = "VipRoom"
 SpaLayout.VIP_SPOT = "SpotVipDoor"
 SpaLayout.VIP_LOCKED_ASSET = "CleanACat_Area_VipLocked"
 SpaLayout.VIP_BUILDING_ASSET = "CleanACat_Area_VipBuilding"
+-- The builder kitten (#20) stands beside the builder board at SpotBuilder, the toolbox beside it.
+SpaLayout.BUILDER_SPOT = "SpotBuilder"
+SpaLayout.KITTEN_OFFSET = Vector3.new(4, 0, 0) -- in the spot's frame
+SpaLayout.TOOLBOX_OFFSET = Vector3.new(5.6, 0, 0.4)
 
 -- The placeholder room before the plot, in world space: the spawn at the origin and everything facing it (+Z).
 SpaLayout.ROOM_SPOTS = table.freeze({
