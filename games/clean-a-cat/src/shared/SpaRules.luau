@@ -28,6 +28,7 @@ export type Cat = {
 	lastStrokeAt: number,
 	bow: string?,
 	photoTaken: boolean, -- the photo was asked for and is waiting for MIN_VISIT_SECONDS to pass
+	kind: string?, -- a customer's cat (CatRules.ROSTER name); nil for the prototype's anonymous cat
 }
 
 function SpaRules.newCat(id: number, now: number): Cat
@@ -39,6 +40,7 @@ function SpaRules.newCat(id: number, now: number): Cat
 		lastStrokeAt = -math.huge,
 		bow = nil,
 		photoTaken = false,
+		kind = nil,
 	}
 end
 
