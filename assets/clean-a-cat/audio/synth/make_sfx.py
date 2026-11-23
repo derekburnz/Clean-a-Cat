@@ -124,6 +124,84 @@ def camera_shutter(rng: np.random.Generator) -> np.ndarray:
     return out
 
 
+# --- Cat voices. Ported from the owner's own asset library (derekburnz/Roblox-Asset-Library, audio/synth/synth.py,
+# purr_loop and cat_voice), so these are original sounds we own; re-rendered here under Clean a Cat names. ---------
+
+
+def purr_body(seed: int, rate: float, out_s: float, in_s: float) -> np.ndarray:
+    """A purr over one breath out and one breath in: a fast train of tiny clicks (about 25 a second) through
+    mouth and nose formants, louder breathing out, softer and quicker breathing in, with soft air under it."""
+    gap = 0.12
+    length = out_s + in_s + 2 * gap
+    n = int(length * RATE)
+    rng = np.random.default_rng(seed)
+    x_t = np.arange(n) / RATE
+    clicks = np.zeros(n)
+    for start, d, hz, loud in ((0.0, out_s, rate, 1.0), (out_s + gap, in_s, rate * 1.08, 0.65)):
+        at = start + rng.uniform(0, 0.01)
+        while at < start + d:
+            k = int(at * RATE) % n
+            into = (at - start) / d
+            clicks[k] += loud * np.sin(np.pi * into) ** 0.5 * rng.uniform(0.75, 1.0)
+            at += (1 / hz) * (1 + 0.06 * np.sin(2 * np.pi * 1.3 * at) + rng.normal(0, 0.03))
+    kernel_t = np.arange(int(0.012 * RATE)) / RATE
+    kernel = np.random.default_rng(7).standard_normal(len(kernel_t)) * np.exp(-kernel_t / 0.0018)
+    kernel += 0.3 * np.sin(2 * np.pi * 220 * kernel_t) * np.exp(-kernel_t / 0.004)
+    padded = np.zeros(n)
+    padded[: len(kernel)] = kernel
+    voice = np.fft.irfft(np.fft.rfft(clicks) * np.fft.rfft(padded), n)
+    f = np.fft.rfftfreq(n, 1 / RATE)
+    nose = sum(
+        a / (1 + ((f - c) / w) ** 2) for c, a, w in ((350, 0.8, 150), (900, 1.0, 300), (1800, 0.5, 400), (3000, 0.15, 600))
+    )
+    highpass = 1 / np.sqrt(1 + (90 / np.maximum(f, 1)) ** 4)
+    voice = np.fft.irfft(np.fft.rfft(voice) * nose * highpass, n)
+    turns = np.clip(np.minimum(x_t, np.abs(x_t - (out_s + gap))) / 0.05, 0, 1)
+    breathing = np.where(
+        x_t < out_s + gap,
+        np.sin(np.pi * np.clip(x_t / out_s, 0, 1)),
+        0.6 * np.sin(np.pi * np.clip((x_t - out_s - gap) / in_s, 0, 1)),
+    )
+    air = np.fft.irfft(np.fft.rfft(rng.standard_normal(n)) * (1 / (1 + ((f - 1800) / 900) ** 2)), n)
+    x = voice / np.max(np.abs(voice)) + 0.08 * air / np.max(np.abs(air)) * breathing
+    x *= 0.15 + 0.85 * np.maximum(breathing, 0) ** 0.6 * turns
+    return x
+
+
+def purr(rng: np.random.Generator, variant: int) -> np.ndarray:
+    # one breath out and in, about 1.6 s, with a soft end so it works as a one shot
+    sig = purr_body(70 + variant, [25.0, 23.5][variant], [0.8, 0.9][variant], 0.6)
+    return fade_out(sig, 0.08)
+
+
+def cat_voice(length: float, f0: float, f_peak: float, f_end: float, trill: float, seed: int) -> np.ndarray:
+    """A small cat voice: a buzzy tone that rises to f_peak and falls to f_end through mouth formants.
+    trill (0 to 1) is how much rolled "rr" there is; 0 is a plain "mew"."""
+    x = t(length)
+    k = x / length
+    pitch = np.where(k < 0.4, f0 * (f_peak / f0) ** (k / 0.4), f_peak * (f_end / f_peak) ** ((k - 0.4) / 0.6))
+    pitch = pitch * (1 + 0.01 * np.random.default_rng(seed).standard_normal(len(x)).cumsum() / np.sqrt(len(x)))
+    phase = np.cumsum(pitch) / RATE
+    buzz = (2 * (phase % 1.0) - 1) * (1 - trill * 0.4 + trill * 0.4 * np.sin(2 * np.pi * 28 * x))
+    buzz *= np.sin(np.pi * np.clip(k, 0, 1)) ** 0.6
+    spectrum = np.fft.rfft(buzz, 2 * len(buzz))
+    f = np.fft.rfftfreq(2 * len(buzz), 1 / RATE)
+    mouth = sum(a / (1 + ((f - c) / w) ** 2) for c, a, w in ((900, 1.0, 130), (1900, 0.6, 170), (3100, 0.25, 220)))
+    out = np.fft.irfft(spectrum * mouth, 2 * len(buzz))[: len(buzz)]
+    return out / np.max(np.abs(out))
+
+
+def meow(rng: np.random.Generator, variant: int) -> np.ndarray:
+    # three friendly voices: a plain mew, a rising "mew?" and a trilled "mrrp"; never a hiss
+    shapes = [
+        (0.32, 560, 760, 620, 0.1),
+        (0.30, 600, 720, 900, 0.1),
+        (0.22, 540, 700, 660, 0.7),
+    ]
+    length, f0, peak, end, trill = shapes[variant]
+    return fade_out(cat_voice(length, f0, peak, end, trill, 4100 + variant), 0.03)
+
+
 def ui_click(rng: np.random.Generator) -> np.ndarray:
     x = t(0.05)
     return np.sin(2 * np.pi * 1800 * x) * env(len(x), 0.0008, 120)
@@ -139,6 +217,11 @@ SOUNDS = [
     ("sfx", "CleanACat_Sfx_BrushSwish_1", lambda r: brush_swish(r, 0)),
     ("sfx", "CleanACat_Sfx_BrushSwish_2", lambda r: brush_swish(r, 1)),
     ("sfx", "CleanACat_Sfx_BrushSwish_3", lambda r: brush_swish(r, 2)),
+    ("sfx", "CleanACat_Sfx_Purr_1", lambda r: purr(r, 0)),
+    ("sfx", "CleanACat_Sfx_Purr_2", lambda r: purr(r, 1)),
+    ("sfx", "CleanACat_Sfx_Meow_1", lambda r: meow(r, 0)),
+    ("sfx", "CleanACat_Sfx_Meow_2", lambda r: meow(r, 1)),
+    ("sfx", "CleanACat_Sfx_Meow_3", lambda r: meow(r, 2)),
     ("ui", "CleanACat_Ui_Camera", camera_shutter),
     ("ui", "CleanACat_Ui_Click", ui_click),
 ]
@@ -157,7 +240,7 @@ def write_ogg(sig: np.ndarray, path: Path) -> None:
             w.writeframes(pcm.tobytes())
         path.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(
-            ["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-c:a", "libvorbis", "-q:a", "6", str(path)],
+            ["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-c:a", "libvorbis", "-q:a", "6", "-fflags", "+bitexact", "-flags:a", "+bitexact", "-serial_offset", "0", str(path)],
             check=True,
         )
 

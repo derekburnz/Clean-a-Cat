@@ -16,11 +16,11 @@ Moments are the shared list in issue #3. Source: **synth** means made by `assets
 | revealChime | CatClean | Sfx | two soft bright notes rising | synth | CleanACat_Sfx_RevealChime | 0.55 | 1.0 | 0.5 | 1 | yes | made, gate PASS |
 | catShake | CatClean (with the shake-off) | Sfx | fur shake with a few droplets | store | search: dog shake, fur shake, water shake | 0.5 | 0.95 to 1.05 | 0.5 | 1 | no | to search |
 | brushSwish | BrushSwipe | Sfx | soft brush swish, one step higher per stroke | synth | CleanACat_Sfx_BrushSwish_1..3 (stroke 1, 2, 3) | 0.45 | 0.97 to 1.03 | 0.1 | 2 | yes | made, gate PASS |
-| purr | CatFluffed | Sfx | short content purr, about 1.5 s | library | Roblox-Asset-Library `purr()` in audio/synth/synth.py, re-rendered as CleanACat_Sfx_Purr | 0.5 | 0.95 to 1.05 | 1.0 | 1 | no | to port |
+| purr | CatFluffed | Sfx | short content purr, about 1.5 s | library | CleanACat_Sfx_Purr_1..2 (ported from the library's purr code into make_sfx.py) | 0.5 | 0.95 to 1.05 | 1.0 | 1 | no | made, gate PASS |
 | bowPop | BowChosen | Sfx | light round pop | synth | CleanACat_Sfx_BowPop | 0.5 | 0.95 to 1.05 | 0.15 | 1 | no | made, gate PASS |
 | camera | PhotoTaken | Ui | soft double shutter click | synth | CleanACat_Ui_Camera | 0.5 | 1.0 | 0.3 | 1 | no | made, gate PASS |
 | uiClick | any button | Ui | short soft tick | synth | CleanACat_Ui_Click | 0.4 | 0.98 to 1.02 | 0.05 | 2 | yes | made, gate PASS |
-| meow | customer arrives, window cat idle | Sfx (3D at the cat) | short friendly meow, 3 variants, never a hiss | library | Roblox-Asset-Library `cat_voice()` / `stray_call()` in audio/synth/synth.py, three new pitches as CleanACat_Sfx_Meow_1..3 | 0.45 | 0.9 to 1.15 | 4.0 | 2 | no | to port |
+| meow | customer arrives, window cat idle | Sfx (3D at the cat) | short friendly meow, 3 variants, never a hiss | library | CleanACat_Sfx_Meow_1..3 (mew, rising mew, trilled mrrp; ported from the library's cat_voice code) | 0.45 | 0.9 to 1.15 | 4.0 | 2 | no | made, gate PASS |
 | spaMusicA / spaMusicB | spa floor | Music | see brief | library | Roblox-Asset-Library audio/synth/music.py with new tunes, so Clean a Cat does not share Cat Cafe's beds | 0.5 | 1.0 | - | 1 | no | to port |
 
 Later, not in the first slice: coin and tip jar, build finished celebration, builder kitten hammer, door bell, window tips.
