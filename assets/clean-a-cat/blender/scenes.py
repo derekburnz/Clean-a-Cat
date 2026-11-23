@@ -8,6 +8,8 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
     python3 assets/clean-a-cat/blender/scenes.py vip docs/concepts/clean-a-cat
     python3 assets/clean-a-cat/blender/scenes.py index docs/concepts/clean-a-cat/2026-11-23-cat-index-sheet.png
     python3 assets/clean-a-cat/blender/scenes.py later docs/concepts/clean-a-cat/2026-11-23-later-stations.png
+    python3 assets/clean-a-cat/blender/scenes.py plot docs/concepts/clean-a-cat
+    python3 assets/clean-a-cat/blender/scenes.py street docs/concepts/clean-a-cat
 """
 
 import os
@@ -235,6 +237,32 @@ def later_stations_sheet(mat, out):
     common.render_preview(allo, out, res=(1200, 620), samples=24, azimuth=16, elevation=18, margin=0.9)
 
 
+def street_views(mat, out_dir):
+    """#15: the street with six plots (the real plot, empty) from above the road and from the pavement."""
+    import plot
+    import street
+    allo = [o for o in street.build_street(mat) if not o.name.endswith("_Barrier")]
+    for s_ in range(1, street.SLOTS + 1):
+        objs = plot.build_plot(mat)
+        _move(objs, (street.slot_x(s_), 0, 0))
+        for o in objs:
+            o.name = f"P{s_}_{o.name}"
+        allo += objs
+    for i, x in enumerate((-3.0, 40.0, -50.0)):
+        av = avatar(mat, (x, -28.0, plot.FLOOR), ("skin_tan", "skin_light", "skin_deep")[i],
+                    ("spa_bubblegum", "spa_sky", "shirt_green")[i])
+        av.name = f"W{i}_Avatar"
+        allo.append(av)
+    os.makedirs(out_dir, exist_ok=True)
+    made = []
+    for key, eye, target, lens in (("wide", (-22.0, -130.0, 120.0), (-22.0, -10.0, 0.0), 24),
+                                   ("pavement", (30.0, -40.0, 9.0), (-30.0, -16.0, 5.0), 24)):
+        path = os.path.join(out_dir, f"2026-11-23-street-{key}.png")
+        shot(allo, path, eye, target, lens, res=(1600, 800), hide=("_Glass",))
+        made.append(path)
+    return made
+
+
 def _move(objs, offset, k=1.0):
     for o in objs:
         o.location = o.location * k + Vector(offset)
@@ -307,8 +335,8 @@ def shot(objs, path, eye, target, lens=24, res=(960, 600), samples=24, hide=()):
     del math
 
 
-def plot_views(mat, out_dir):
-    """The graybox plot (#15) dressed with the tub, a cat in it, the player at the spawn, three customers in the queue
+def plot_views(mat, out_dir, stem="plot-real"):
+    """The plot (#15; the graybox until the real build) dressed with the tub, a cat in it, the player at the spawn, three customers in the queue
     with cats, a stray in its box and cats on the window cushions: from the entrance, the player's spot, outside
     on the street and top-down."""
     import math
@@ -373,7 +401,7 @@ def plot_views(mat, out_dir):
     }
     made = []
     for key, v in views.items():
-        path = os.path.join(out_dir, f"2026-11-23-plot-graybox-{key}.png")
+        path = os.path.join(out_dir, f"2026-11-23-{stem}-{key}.png")
         hide = ("_Roof",) if key in ("top", "player", "entrance") else ("_Glass",)   # Roblox draws the glass 0.6 clear
         shot(allo, path, v["eye"], v["target"], v["lens"], hide=hide)
         made.append(path)
@@ -388,4 +416,4 @@ if __name__ == "__main__":
     mat = common.palette_material(png)
     {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
      "customers": customers_sheet, "stations": stations_sheet,
-     "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "later": later_stations_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
+     "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "street": street_views, "later": later_stations_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
