@@ -50,7 +50,7 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotStation2 = at(-7, 0.5, -1, 0),
 	SpotStation3 = at(-13.5, 0.5, -1, 0),
 	SpotVipDoor = at(-7, 0.5, 10.5, 0),
-	SpotBoard = at(-13.5, 4.5, -14.95, TURNED),
+	SpotBoard = at(-13.5, 0.5, -14.6, TURNED),
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
 	Tools = at(-1, 0.5, -2, 0),
 }) :: { [string]: Spot }
