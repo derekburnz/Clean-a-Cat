@@ -14,6 +14,7 @@ Moments are the shared list in issue #3. Source: **synth** means made by `assets
 | bubblePop | ScrubMove | Sfx | tiny soft pops | synth | CleanACat_Sfx_BubblePop_1..3 | 0.35 | 0.92 to 1.08 | 0.12 | 3 | yes | made, gate PASS |
 | mudPlop | MudPatchCleared | Sfx | small wet plop, pitch rises as fewer patches remain | synth | CleanACat_Sfx_MudPlop | 0.5 | 0.9 + 0.02 per cleared patch, max 1.3 | 0.05 | 3 | yes | made, gate PASS |
 | revealChime | CatClean | Sfx | two soft bright notes rising | synth | CleanACat_Sfx_RevealChime | 0.55 | 1.0 | 0.5 | 1 | yes | made, gate PASS |
+| dryerHum | DryStart to DryStop | Sfx | soft rushing air over a low fan hum, loops, at the dryer | synth | CleanACat_Sfx_DryerHum (2 s seamless loop, 110 Hz hum, 3 Hz fan flutter) | 0.35 | - | - | 1 | no | made, gate PASS; waits on DryStart and DryStop |
 | catShake | CatClean (with the shake-off) | Sfx | fur shake with a few droplets | synth | CleanACat_Sfx_FurShake (four fur flaps and droplet ticks, 0.75 s) | 0.5 | 0.95 to 1.05 | 0.5 | 1 | no | made, gate PASS |
 | brushSwish | BrushSwipe | Sfx | soft brush swish, one step higher per stroke | synth | CleanACat_Sfx_BrushSwish_1..3 (stroke 1, 2, 3) | 0.45 | 0.97 to 1.03 | 0.1 | 2 | yes | made, gate PASS |
 | purr | CatFluffed | Sfx | short content purr, about 1.5 s | library | CleanACat_Sfx_Purr_1..2 (ported from the library's purr code into make_sfx.py) | 0.5 | 0.95 to 1.05 | 1.0 | 1 | no | made, gate PASS |

@@ -27,6 +27,7 @@ LiveFlags.KEYS = {
 	"revealEffects", -- sparkles and water droplets when a cat comes clean (Controllers/EffectsController); off by default
 	"fluffEffects", -- fur puffs, the fluffed glow and bow hearts (Controllers/EffectsController); off by default
 	"catMotion", -- cat idle, blink, ear twitch, shake-off and happy wiggle (Effects/CatMotion); off by default
+	"dryEffects", -- warm air wisps from the dryer nozzle (Controllers/EffectsController); off by default
 	"toolsBoard", -- the Tools board and Bubble Soap (ToolService, Controllers/ToolsBoardController); off by default
 	"customers", -- customers at the door bring rolled cats and pay on return (SpaService, Controllers/DoorController); off by default
 	"strays", -- strays, the display window and its tips (SpaService, WindowService, Controllers/WindowController); off by default
@@ -45,6 +46,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	revealEffects = true,
 	fluffEffects = true,
 	catMotion = true,
+	dryEffects = true,
 	toolsBoard = true,
 	customers = true,
 	strays = true,

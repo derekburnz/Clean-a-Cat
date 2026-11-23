@@ -6569,6 +6569,45 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_ToteBag.png"
  },
  {
+  "name": "CleanACat_Prop_BuildPad",
+  "category": "Prop",
+  "module": "spa_props",
+  "objects": [
+   "CleanACat_Prop_BuildPad",
+   "CleanACat_Prop_BuildPad_Screen"
+  ],
+  "triangles": 536,
+  "budget": 600,
+  "parts": 40,
+  "size_studs": {
+   "x": 4.8,
+   "y": 4.8,
+   "z": 2.1
+  },
+  "size_roblox": [
+   4.8,
+   2.1,
+   4.8
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "536/600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "304 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BuildPad.png"
+ },
+ {
   "name": "CleanACat_Prop_Carrier",
   "category": "Prop",
   "module": "spa_props",
@@ -6844,6 +6883,130 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_WindowSign.png"
+ },
+ {
+  "name": "CleanACat_Station_BrushTable",
+  "category": "Station",
+  "module": "stations",
+  "objects": [
+   "CleanACat_Station_BrushTable",
+   "CleanACat_Station_BrushTable_Barrier"
+  ],
+  "triangles": 440,
+  "budget": 1200,
+  "parts": 12,
+  "size_studs": {
+   "x": 3.4,
+   "y": 2.4,
+   "z": 1.8
+  },
+  "size_roblox": [
+   3.4,
+   1.8,
+   2.4
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "440/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "266 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.20"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_BrushTable.png"
+ },
+ {
+  "name": "CleanACat_Station_BrushTableUp",
+  "category": "Station",
+  "module": "stations",
+  "objects": [
+   "CleanACat_Station_BrushTableUp",
+   "CleanACat_Station_BrushTableUp_Barrier"
+  ],
+  "triangles": 1152,
+  "budget": 1200,
+  "parts": 40,
+  "size_studs": {
+   "x": 3.46,
+   "y": 2.65,
+   "z": 4.37
+  },
+  "size_roblox": [
+   3.46,
+   4.37,
+   2.65
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "1152/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "708 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.02 (want 0)",
+    "centered": "footprint center x=0.00 y=0.30"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_BrushTableUp.png"
+ },
+ {
+  "name": "CleanACat_Station_Dryer",
+  "category": "Station",
+  "module": "stations",
+  "objects": [
+   "CleanACat_Station_Dryer",
+   "CleanACat_Station_Dryer_Nozzle",
+   "CleanACat_Station_Dryer_Barrier"
+  ],
+  "triangles": 968,
+  "budget": 1200,
+  "parts": 24,
+  "size_studs": {
+   "x": 2.65,
+   "y": 3.56,
+   "z": 5.85
+  },
+  "size_roblox": [
+   2.65,
+   5.85,
+   3.56
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "968/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "640 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.57"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Dryer.png"
  },
  {
   "name": "CleanACat_Station_Tub",

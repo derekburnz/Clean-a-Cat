@@ -6,10 +6,15 @@
 -- API
 --   Effects.start()                                 picks the device tier once
 --   Effects.stream(preset, position, dragSpeed)     a steady stream at a point, rate from drag speed
+--   Effects.streamFrom(preset, cframe, strength)    a steady stream along cframe's +Y (e.g. a nozzle's Air
+--                                                   attachment), rate from strength 0..1
 --   Effects.stopStream(preset)
 --   Effects.burst(preset, position, color?)         one burst at a point, optionally tinted
 --   Effects.glow(model, seconds)                    a soft outline glow that fades out, then is destroyed
+--   Effects.popIn(model, anchor, seconds)           grows a small client-only model from nothing (Back Out), holding
+--                                                   `anchor` (an Attachment in it) still, e.g. a bow on its BowSlot
 local GuiService = game:GetService("GuiService")
+local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -115,6 +120,21 @@ function Effects.stream(name: string, position: Vector3, dragSpeed: number)
 	entry.emitter.Enabled = rate > 0
 end
 
+function Effects.streamFrom(name: string, cframe: CFrame, strength: number)
+	if not started then
+		return
+	end
+	local entry, preset = get(name)
+	if entry == nil or preset == nil then
+		return
+	end
+	entry.attachment.WorldCFrame = cframe
+	entry.emitter.EmissionDirection = Enum.NormalId.Top
+	local rate = Tier.foamRate(preset.maxRate, math.clamp(strength, 0, 1), 1, reducedMotion())
+	entry.emitter.Rate = rate
+	entry.emitter.Enabled = rate > 0
+end
+
 function Effects.stopStream(name: string)
 	local entry = pool[name]
 	if entry then
@@ -175,6 +195,35 @@ function Effects.glow(model: Model, seconds: number)
 		highlight:Destroy()
 	end)
 	fade:Play()
+end
+
+local POP_START = 0.05 -- ScaleTo needs a scale above zero
+
+function Effects.popIn(model: Model, anchor: Attachment, seconds: number)
+	if not started or reducedMotion() or not model:IsDescendantOf(workspace) then
+		return
+	end
+	local final = model:GetScale()
+	local function scaleKeepingAnchor(scale: number)
+		local before = anchor.WorldPosition
+		model:ScaleTo(final * scale)
+		model:PivotTo(model:GetPivot() + (before - anchor.WorldPosition))
+	end
+	scaleKeepingAnchor(POP_START)
+	local began = os.clock()
+	local connection: RBXScriptConnection
+	connection = RunService.RenderStepped:Connect(function()
+		if model.Parent == nil or anchor.Parent == nil then
+			connection:Disconnect()
+			return
+		end
+		local u = math.clamp((os.clock() - began) / seconds, 0, 1)
+		local eased = TweenService:GetValue(u, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+		scaleKeepingAnchor(math.max(POP_START, eased))
+		if u >= 1 then
+			connection:Disconnect()
+		end
+	end)
 end
 
 return Effects

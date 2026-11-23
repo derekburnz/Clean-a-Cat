@@ -17,6 +17,11 @@
                               ScaleTo(CatScale) (root attribute, 1.3); one at each SpotWindow.
   CleanACat_Prop_TipJar       the window cats' tip jar: glass, a coin `Fill` the game sizes, a `Screen` label (SpotTipJar).
   CleanACat_Prop_WindowSign   the spa's name sign on the front wall, a `Screen` face for the name (SpotSign).
+  CleanACat_Prop_BuildPad     where a locked station will go (#18): a cream floor square inside a dashed pastel tape
+                              border, two cones at the front corners, a stack of planks and a small sign at the back
+                              whose face is a `Screen` part (front, -Z in Roblox) for the station's name and price.
+                              The size of a station pad (SpotStation2, SpotStation3); remove it when the station
+                              is built there.
 
 Pivots at the base centre on the floor, front -Y in Blender (-Z in Roblox), unless noted. Nothing here collides
 except the chance board's legs and board.
@@ -214,7 +219,51 @@ def build_window_sign(mat):
     return [main, screen]
 
 
+PAD = 4.8          # the build pad's side, just inside the plot's 5 stud station pad
+PAD_H = 0.1
+
+
+def _cone(b, x, y):
+    b.box_base((x, y, PAD_H - 0.025), (0.72, 0.72, 0.105), "spa_bubblegum", bevel=False)
+    b.cyl_base((x, y, PAD_H + 0.07), 0.3, 1.0, "spa_bubblegum", segments=10, radius2=0.06, bevel=False)
+    b.cyl_base((x, y, PAD_H + 0.44), 0.225, 0.18, "offwhite", segments=10, radius2=0.182, bevel=False)   # a band
+
+
+def build_build_pad(mat):
+    name = "CleanACat_Prop_BuildPad"
+    b = Builder()
+    b.box_base((0, 0, 0), (PAD, PAD, PAD_H), "spa_cream", bevel=False)            # the floor square
+    n, t = 5, 0.28                                                                  # tape: 5 dashes a side
+    for side in range(4):
+        ln = PAD - 0.2 if side < 2 else PAD - 0.2 - 2 * t - 0.08                    # left and right stop short
+        step = ln / n
+        for i in range(n):
+            c = -ln / 2 + step * (i + 0.5)
+            sw = "spa_bubblegum" if (i + side) % 2 else "pastel_butter"
+            off = PAD / 2 - 0.1 - t / 2
+            if side < 2:
+                at, size = (c, (1 if side else -1) * off, PAD_H - 0.01), (step - 0.05, t, 0.04)
+            else:
+                at, size = ((1 if side == 3 else -1) * off, c, PAD_H - 0.01), (t, step - 0.05, 0.04)
+            b.box_base(at, size, sw, bevel=False)
+    for sx in (1, -1):
+        _cone(b, sx * 1.75, -1.75)
+    for i in range(3):                                                              # a stack of planks
+        rot = Matrix.Rotation(math.radians(8 * (i - 1)), 3, "Z")
+        b.box_base((1.3, 0.75, PAD_H + 0.015 + 0.15 * i), (1.6, 0.42, 0.16), "wood_light", bevel=False,
+                   rot=rot)
+    for sx in (1, -1):                                                              # the sign's posts
+        b.box_base((sx * 0.85, 1.75, PAD_H - 0.02), (0.16, 0.16, 1.96), "wood_light", bevel=False)
+    b.box_base((0, 1.75, 0.95), (2.1, 0.18, 1.15), "spa_mint")                      # the board
+    main = _tris(b.finalize(name, mat))
+    s = Builder()
+    s.box_base((0, 1.64, 1.04), (1.86, 0.05, 0.97), "offwhite", bevel=False)
+    screen = s.finalize(name + "_Screen", mat, bevel=0)
+    return [main, screen]
+
+
 ASSETS = {
+    "CleanACat_Prop_BuildPad": (build_build_pad, 600),
     "CleanACat_Prop_Cushion": (build_cushion, 300),
     "CleanACat_Prop_TipJar": (build_tip_jar, 400),
     "CleanACat_Prop_WindowSign": (build_window_sign, 300),

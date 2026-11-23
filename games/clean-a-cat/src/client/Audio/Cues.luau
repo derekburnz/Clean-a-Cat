@@ -72,6 +72,8 @@ local Cues: { [string]: Cue } = {
 		voices = 2,
 		preload = true,
 	},
+	-- synth: CleanACat_Sfx_DryerHum (seamless 2 s loop); played at the dryer (3D) while a cat dries
+	dryerHum = { ids = {}, group = "Sfx", volume = 0.35, voices = 1, looped = true },
 	-- synth: CleanACat_Sfx_Meow_1..3; played at the cat (3D)
 	meow = { ids = {}, group = "Sfx", volume = 0.45, pitch = { 0.9, 1.15 }, minGap = 4, voices = 2 },
 	-- synth: CleanACat_Music_SpaA and CleanACat_Music_SpaB; two beds that alternate
