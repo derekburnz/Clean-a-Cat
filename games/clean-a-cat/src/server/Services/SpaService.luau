@@ -48,7 +48,7 @@ local function rollCustomer(player: Player): string
 	local first = (save == nil or save.stars <= 0) and (queue == nil or #queue == 0)
 	return CatRules.roll(function()
 		return random:NextNumber()
-	end, first)
+	end, first, if save then CatRules.tierFor(save.stars) else 1)
 end
 
 -- The player's door queue, filled to QUEUE_SIZE, so there is always a customer waiting.
@@ -79,7 +79,7 @@ local function newCat(player: Player): SpaRules.Cat
 			-- A stray waits at the back door; a brand new player's first one is common.
 			cat.kind = CatRules.roll(function()
 				return random:NextNumber()
-			end, brandNew)
+			end, brandNew, CatRules.tierFor(save.stars))
 			cat.stray = true
 			cats[player] = cat
 			return cat
@@ -197,6 +197,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	save.coins += coins
 	save.stars += pay.stars
 	player:SetAttribute(BOARD_LIT, true)
+	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
 	NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
 	NetService.notice(
 		player,
@@ -252,6 +253,8 @@ function SpaService.Start()
 		if save.stars > 0 then
 			player:SetAttribute(BOARD_LIT, true)
 		end
+		-- The board shows the chances of the player's star tier, the same table their rolls use.
+		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
 	end)
 	NetService.on("ReportScrubbed", { perSecond = 2 }, onScrubbed)
 	NetService.on("ReportBrushStroke", { perSecond = 8 }, onBrushStroke)

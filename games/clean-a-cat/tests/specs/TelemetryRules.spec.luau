@@ -46,6 +46,13 @@ return function()
 			end
 		end)
 
+		it("keeps saves from before the switch out of the funnel", function()
+			expect(TelemetryRules.inFunnel({}, 1, 0)).to.equal(true) -- a brand new save joins
+			expect(TelemetryRules.inFunnel({}, 1, 120)).to.equal(false) -- an older save does not
+			expect(TelemetryRules.inFunnel({}, 3, 0)).to.equal(false) -- no joined, no later steps
+			expect(TelemetryRules.inFunnel({ ["onboarding_v1:1"] = true }, 3, 500)).to.equal(true)
+		end)
+
 		it("finds the highest step logged, for left_at", function()
 			expect(TelemetryRules.lastStep({})).to.equal(0)
 			local step, name =
