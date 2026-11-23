@@ -45,6 +45,92 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_SpaPlot.png"
  },
  {
+  "name": "CleanACat_Area_VipBuilding",
+  "category": "Area",
+  "module": "vip",
+  "objects": [
+   "CleanACat_Area_VipBuilding",
+   "CleanACat_Area_VipBuilding_Screen",
+   "CleanACat_Area_VipBuilding_Barrier"
+  ],
+  "triangles": 1204,
+  "budget": 2000,
+  "parts": 79,
+  "size_studs": {
+   "x": 19.5,
+   "y": 13.97,
+   "z": 15.53
+  },
+  "size_roblox": [
+   19.5,
+   15.53,
+   13.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "1204/2000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "692 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.05 (want 0)",
+    "centered": "footprint center x=0.00 y=6.13"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipBuilding.png"
+ },
+ {
+  "name": "CleanACat_Area_VipLocked",
+  "category": "Area",
+  "module": "vip",
+  "objects": [
+   "CleanACat_Area_VipLocked",
+   "CleanACat_Area_VipLocked_Screen",
+   "CleanACat_Area_VipLocked_Barrier"
+  ],
+  "triangles": 976,
+  "budget": 2000,
+  "parts": 60,
+  "size_studs": {
+   "x": 19.5,
+   "y": 13.97,
+   "z": 15.85
+  },
+  "size_roblox": [
+   19.5,
+   15.85,
+   13.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "976/2000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "578 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.05 (want 0)",
+    "centered": "footprint center x=0.00 y=6.13"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipLocked.png"
+ },
+ {
   "name": "CleanACat_Bow_Mint",
   "category": "Bow",
   "module": "props",
