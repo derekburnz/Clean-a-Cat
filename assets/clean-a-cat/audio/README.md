@@ -20,3 +20,5 @@ One row per file or Creator Store id, added the moment it is picked. The asset i
 | sfx/CleanACat_Sfx_Purr_1..2.ogg | synth/make_sfx.py, purr code ported from the owner's derekburnz/Roblox-Asset-Library | Original (owner's own) | No | not uploaded | 2026-11-23 |
 | sfx/CleanACat_Sfx_Meow_1..3.ogg | synth/make_sfx.py, cat voice code ported from the owner's derekburnz/Roblox-Asset-Library | Original (owner's own) | No | not uploaded | 2026-11-23 |
 | music/CleanACat_Music_SpaA.ogg, music/CleanACat_Music_SpaB.ogg | synth/music.py (new songs; instruments ported from the owner's derekburnz/Roblox-Asset-Library) | Original (owner's own) | No | not uploaded | 2026-11-23 |
+| sfx/CleanACat_Sfx_SpongeLoop.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-23 |
+| sfx/CleanACat_Sfx_FurShake.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-23 |

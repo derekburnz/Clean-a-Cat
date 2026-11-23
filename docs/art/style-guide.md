@@ -40,7 +40,8 @@ A Roblox R15 avatar is about 5 studs tall. A door is 7 studs, a counter 3.
 |---|---|
 | Cat, walking | about 1 wide, 2 long, 1.9 tall |
 | Cat, sitting | about 1.25 wide, 1.25 deep, 1.85 tall |
-| Tub (planned) | about 4 across, 2.5 tall, so the whole cat shows from the player's spot |
+| Wash tub | 4.6 wide, 3.8 deep, rim at 1.7 (tap to 2.3); the cat sits on the inner floor at 1.2, so a sitting cat shows from the chest up |
+| Sponge (in hand) | about 1 long, 0.7 wide, 0.5 tall; Bubble Soap and Golden are 1.2 times that |
 | Room gaps | 6 studs or wider everywhere a player or camera goes |
 
 If phone playtests show the cat too small at the tub, the game scales the Model (`Model:ScaleTo`) and every joint and attachment follows; the files stay the same.
@@ -50,8 +51,8 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 |---|---|---|
 | Cat (any coat) | up to 1,500 (today 670 to 1,040) | up to 50 (today 34 to 50) |
 | A dirty cat (cat plus mud, tangles) | up to 2,500 (today 1,844 to 2,212) | up to 90 (today 72 to 88) |
-| Station or furniture | 300 to 1,200 | up to 60 |
-| Small prop or tool | 50 to 400 | up to 20 |
+| Station or furniture | 300 to 1,500 (the tub 1,484) | up to 60 (the tub 37) |
+| Small prop or tool | 50 to 400 (sponges 134 to 390) | up to 20 (sponges 6 to 10) |
 | One spa plot, full | under 25,000 | about 250 instances |
 | The whole street | under 150,000 | under 1,500 instances |
 
@@ -77,7 +78,14 @@ Pivot at the base centre on the floor. The front faces -Y in Blender, which is -
 ## 11. Dirty cats
 `dirt.py` builds `CleanACat_Cat_<Name>_Dirty` (walking, in a carrier) and `CleanACat_Cat_<Name>_Dirty_Sit` (in the tub or the stray box) for every roster cat: the clean cat plus 20 mud blobs (`_Mud01` to `_Mud20`) and 6 tangles (`_Tangle01` to `_Tangle06`), each its own child Model. Blobs on the head, tail or a leg ride that piece's Model. Mud is `mud` with every fourth blob `mud_wet`, laid flat on the fur, never within 0.3 studs of an eye. The wet coat is a colour shift the game applies (root attribute `WetDarken` = 0.3), not extra parts. With every blob and tangle removed the model is the clean cat.
 
-## 12. Rules
+## 12. Wash tub and sponges
+`stations.py` builds `CleanACat_Station_Tub`: cream walls with round corners on four bubblegum feet, a mint band and mint rim, a spa_tile inner floor, sky water (`_Water`, Glass in game) and foam (`_Foam`) as their own child Models, and a metal tap with a pink and a sky knob at the back. Attachment `CatSeat` on the inner floor (root attribute `SeatHeight` 1.2): put the sitting cat's pivot there, facing the player. Walls and body collide; water and foam do not. The tub is smaller than the placeholder (6 by 5) so the cat fills more of a phone screen; at the tub the game can show the cat at `Model:ScaleTo(1.5)` and it still sits inside the rim.
+
+`tools.py` builds the three sponges: `CleanACat_Tool_Sponge` (butter yellow, mint scrub top), `CleanACat_Tool_SpongeBubble` (Bubble Soap: bigger, a foam cluster on top) and `CleanACat_Tool_SpongeGolden` (the Golden Sponge pass: gold). Each Part model's biggest part is `Handle`, so the game moves the parts into a Roblox Tool and welds them to it. Pivot at the grip centre. Nothing collides.
+
+Pieces of one model never share a plane: neighbours are staggered by 0.012 studs so nothing flickers and the QA gate passes with no accepted findings.
+
+## 13. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.

@@ -30,6 +30,8 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `contact_sheet.py` | tiles previews into sheets |
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
 | `dirt.py` | the dirty cats (#12): mud blobs and tangles placed by casting rays at each built cat; root attributes for the scrub, brush and dryer |
+| `stations.py` | the spa stations: the wash tub (#13) with its `CatSeat` attachment; the brush table and dryer follow (#18) |
+| `tools.py` | hand tools: the three sponges (#13), each with a `Handle` part; the brush follows (#14) |
 | `props.py` | hook for things a cat wears (bows #14, the builder's hat #20); empty for now |
 
 ## Adding a model
