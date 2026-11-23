@@ -29,6 +29,7 @@ export type Cat = {
 	bow: string?,
 	photoTaken: boolean, -- the photo was asked for and is waiting for MIN_VISIT_SECONDS to pass
 	kind: string?, -- a customer's cat (CatRules.ROSTER name); nil for the prototype's anonymous cat
+	stray: boolean, -- a stray: nobody pays for it and it moves into the display window once clean
 }
 
 function SpaRules.newCat(id: number, now: number): Cat
@@ -41,6 +42,7 @@ function SpaRules.newCat(id: number, now: number): Cat
 		bow = nil,
 		photoTaken = false,
 		kind = nil,
+		stray = false,
 	}
 end
 

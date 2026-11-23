@@ -16,13 +16,16 @@ local CatRules = require(Shared:WaitForChild("CatRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
+local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
+local WindowService = require(script.Parent:WaitForChild("WindowService"))
 
 local FLAG = "scrubPrototype"
 local CUSTOMERS_FLAG = "customers"
+local STRAYS_FLAG = "strays"
 local QUEUE_SIZE = 3
 local FUNNEL = "onboarding_v1"
 local MAX_CAT_ID = 2 ^ 31
@@ -33,6 +36,7 @@ local cats: { [Player]: SpaRules.Cat } = {}
 local nextId: { [Player]: number } = {}
 local lastSeq: { [Player]: number } = {} -- the newest report number each client sent
 local queues: { [Player]: { string } } = {} -- customers waiting at the door, front first
+local handedOut: { [Player]: number } = {} -- cats handed out this session, for the stray turns
 local random = Random.new()
 
 local function rollCustomer(player: Player): string
@@ -63,6 +67,22 @@ local function newCat(player: Player): SpaRules.Cat
 	local id = (nextId[player] or 0) + 1
 	nextId[player] = id
 	local cat = SpaRules.newCat(id, os.clock())
+	local count = handedOut[player] or 0
+	handedOut[player] = count + 1
+	local save = DataService.get(player)
+	if LiveFlags.isOn(STRAYS_FLAG) and save then
+		local residents = #WindowService.residents(player)
+		local brandNew = save.stars <= 0 and residents == 0
+		if WindowRules.isStrayTurn(count, residents, brandNew) then
+			-- A stray waits at the back door; a brand new player's first one is common.
+			cat.kind = CatRules.roll(function()
+				return random:NextNumber()
+			end, brandNew)
+			cat.stray = true
+			cats[player] = cat
+			return cat
+		end
+	end
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
 		-- The front customer hands over their cat; queueFor refills the line when it is next read.
 		cat.kind = table.remove(queueFor(player), 1)
@@ -83,7 +103,7 @@ local function sendCat(player: Player, cat: SpaRules.Cat)
 	local save = DataService.get(player)
 	local needs = CatRules.needs(kind)
 	local locked = CatRules.lockedNeeds(needs, if save then save.stations else {})
-	NetService.fire(player, "CatReady", cat.id, kind, needs, locked)
+	NetService.fire(player, "CatReady", cat.id, kind, needs, locked, cat.stray)
 end
 
 local function onRequestCat(player: Player)
@@ -146,6 +166,17 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		return
 	end
 	local kind = cat.kind
+	if kind ~= nil and cat.stray then
+		-- A stray has nobody to pay: the photo coins, and it moves into the window when there is room.
+		save.coins += coins
+		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
+		local moved = WindowService.addResident(player, kind, cat.bow)
+		NetService.notice(
+			player,
+			if moved then `+{coins} coins. {kind} moved into your window` else `+{coins} coins`
+		)
+		return
+	end
 	if kind == nil then
 		save.coins += coins
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
@@ -229,6 +260,7 @@ function SpaService.Start()
 		nextId[player] = nil
 		lastSeq[player] = nil
 		queues[player] = nil
+		handedOut[player] = nil
 	end)
 end
 
