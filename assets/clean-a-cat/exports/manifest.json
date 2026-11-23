@@ -10,11 +10,12 @@
    "CleanACat_Area_SpaPlot_Glass",
    "CleanACat_Area_SpaPlot_Roof",
    "CleanACat_Area_SpaPlot_Canopy",
-   "CleanACat_Area_SpaPlot_Decor"
+   "CleanACat_Area_SpaPlot_Decor",
+   "CleanACat_Area_SpaPlot_Trim"
   ],
-  "triangles": 656,
+  "triangles": 564,
   "budget": 25000,
-  "parts": 44,
+  "parts": 47,
   "size_studs": {
    "x": 44.0,
    "y": 48.0,
@@ -32,10 +33,10 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "656/25000 tris",
+    "budget": "564/25000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "368 faces on swatch centers",
+    "uv": "282 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
@@ -6648,6 +6649,44 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_ChanceBoard.png"
  },
  {
+  "name": "CleanACat_Prop_Cushion",
+  "category": "Prop",
+  "module": "spa_props",
+  "objects": [
+   "CleanACat_Prop_Cushion"
+  ],
+  "triangles": 260,
+  "budget": 300,
+  "parts": 8,
+  "size_studs": {
+   "x": 2.3,
+   "y": 2.3,
+   "z": 0.39
+  },
+  "size_roblox": [
+   2.3,
+   0.39,
+   2.3
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "260/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "180 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Cushion.png"
+ },
+ {
   "name": "CleanACat_Prop_QueueMat",
   "category": "Prop",
   "module": "spa_props",
@@ -6722,6 +6761,89 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_StrayBox.png"
+ },
+ {
+  "name": "CleanACat_Prop_TipJar",
+  "category": "Prop",
+  "module": "spa_props",
+  "objects": [
+   "CleanACat_Prop_TipJar",
+   "CleanACat_Prop_TipJar_Glass",
+   "CleanACat_Prop_TipJar_Fill",
+   "CleanACat_Prop_TipJar_Screen"
+  ],
+  "triangles": 116,
+  "budget": 400,
+  "parts": 7,
+  "size_studs": {
+   "x": 0.98,
+   "y": 0.99,
+   "z": 1.52
+  },
+  "size_roblox": [
+   0.98,
+   1.52,
+   0.99
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "116/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "68 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_TipJar.png"
+ },
+ {
+  "name": "CleanACat_Prop_WindowSign",
+  "category": "Prop",
+  "module": "spa_props",
+  "objects": [
+   "CleanACat_Prop_WindowSign",
+   "CleanACat_Prop_WindowSign_Screen"
+  ],
+  "triangles": 80,
+  "budget": 300,
+  "parts": 4,
+  "size_studs": {
+   "x": 6.0,
+   "y": 0.39,
+   "z": 2.4
+  },
+  "size_roblox": [
+   6.0,
+   2.4,
+   0.39
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "80/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "44 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-1.20 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.18"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_WindowSign.png"
  },
  {
   "name": "CleanACat_Station_Tub",

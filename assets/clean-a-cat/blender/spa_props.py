@@ -13,6 +13,10 @@
                               -Z in Roblox) for Design-Agent's SurfaceGui with the cats and their chances. The Model is
                               tagged `ChanceBoard` and streams in whole.
   CleanACat_Prop_QueueMat     a welcome mat with two paw prints, where a customer waits (put one at each SpotQueue).
+  CleanACat_Prop_Cushion      a round pastel cushion for the display window, `CatSeat` on top for a sitting cat at
+                              ScaleTo(CatScale) (root attribute, 1.3); one at each SpotWindow.
+  CleanACat_Prop_TipJar       the window cats' tip jar: glass, a coin `Fill` the game sizes, a `Screen` label (SpotTipJar).
+  CleanACat_Prop_WindowSign   the spa's name sign on the front wall, a `Screen` face for the name (SpotSign).
 
 Pivots at the base centre on the floor, front -Y in Blender (-Z in Roblox), unless noted. Nothing here collides
 except the chance board's legs and board.
@@ -130,10 +134,94 @@ def build_queue_mat(mat):
     return [b.finalize(name, mat)]
 
 
+CUSHION_R, CUSHION_H = 1.15, 0.38
+WINDOW_CAT_SCALE = 1.3   # window cats sit at ScaleTo(1.3) so they read from the street and the next plot (CatScale)
+
+
+def build_cushion(mat):
+    """A round pastel cushion for the display window (#17): a fat pad with a puffed top and four tassels."""
+    name = "CleanACat_Prop_Cushion"
+    b = Builder()
+    b.cyl_base((0, 0, 0), CUSHION_R, CUSHION_H - 0.12, "spa_bubblegum", segments=12, bevel=False)
+    b.cyl_base((0, 0, CUSHION_H - 0.14), CUSHION_R - 0.06, 0.13, "spa_bubblegum", segments=12, radius2=CUSHION_R - 0.32,
+               bevel=False)                                                         # the puffed top
+    b.cyl_base((0, 0, CUSHION_H - 0.03), 0.16, 0.04, "spa_cream", segments=8, bevel=False)   # the button
+    for a in range(4):                                                              # tassels round the edge
+        t = math.radians(45 + 90 * a)
+        b.sphere((math.cos(t) * (CUSHION_R - 0.02), math.sin(t) * (CUSHION_R - 0.02), 0.16), 0.11, "spa_cream",
+                 segments=6, rings=4)
+    return [_tris(b.finalize(name, mat))]
+
+
+def cushion_rbx_extras():
+    return {"attachments": [("CleanACat_Prop_Cushion", "CatSeat", Matrix.Translation((0.0, 0.0, CUSHION_H - 0.03)))],
+            "attributes": {"CatScale": {"Float64": WINDOW_CAT_SCALE}}}
+
+
+JAR = (0.9, 0.9, 1.2)    # the glass jar's outer size
+JAR_WALL = 0.06
+
+
+def build_tip_jar(mat):
+    """The tip jar (#17): a square glass jar (its own part, `_Glass`, 0.6 see-through), a gold coin fill (`Fill`, a
+    Block the game sizes from empty to full: its bottom stays at the root attribute FillBottom and its full height is
+    FillHeight; keep it hidden when empty), a mint lid and a cream label on the front (`Screen`, for a SurfaceGui with
+    the count)."""
+    name = "CleanACat_Prop_TipJar"
+    w, d, h = JAR
+    b = Builder()
+    b.box_base((0, 0, 0), (w + 0.08, d + 0.08, 0.1), "spa_mint", bevel=False)       # the base
+    b.cyl_base((0, 0, h + 0.07), 0.42, 0.16, "spa_mint", segments=12, bevel=False)  # the lid
+    b.box_base((0, 0, h + 0.2), (0.2, 0.2, 0.12), "spa_mint", bevel=False)          # the knob
+    main = _tris(b.finalize(name, mat))
+    g = Builder()
+    g.box_base((0, 0, 0.09), (w, d, h - 0.02), "glass", bevel=False)
+    g.box_base((0, 0, h + 0.05), (w - 0.1, d - 0.1, 0.03), "glass", bevel=False)    # the rim under the lid
+    glass = g.finalize(name + "_Glass", mat, bevel=0)
+    f = Builder()
+    f.box_base((0, 0, FILL_BOTTOM), (w - 2 * JAR_WALL, d - 2 * JAR_WALL, FILL_HEIGHT), "gold_mid", bevel=False)
+    fill = f.finalize(name + "_Fill", mat, bevel=0)
+    s = Builder()
+    s.box_base((0, -d / 2 - 0.025, 0.35), (0.62, 0.04, 0.42), "spa_cream", bevel=False)
+    screen = s.finalize(name + "_Screen", mat, bevel=0)
+    return [main, glass, fill, screen]
+
+
+FILL_BOTTOM = 0.08                      # sunk a hair into the base, inside the glass
+FILL_HEIGHT = 0.8                       # full: a little under the jar's shoulder
+
+
+def tip_jar_rbx_extras():
+    return {"attributes": {"FillBottom": {"Float64": FILL_BOTTOM}, "FillHeight": {"Float64": FILL_HEIGHT}}}
+
+
+SIGN_W, SIGN_H = 6.0, 2.4
+
+
+def build_window_sign(mat):
+    """The spa's name sign on the front wall (#17): a bubblegum board with a mint frame, two brackets, and a cream
+    face named `Screen` (front, -Z in Roblox) for a SurfaceGui with the player's spa name. Pivot at the middle of its
+    back, which goes flat on the wall at the plot's SpotSign."""
+    name = "CleanACat_Prop_WindowSign"
+    b = Builder()
+    b.box((0, -0.18, 0), (SIGN_W, 0.3, SIGN_H), "spa_mint")                        # the frame
+    for sx in (1, -1):                                                              # brackets into the wall
+        b.box((sx * (SIGN_W / 2 - 0.6), -0.02, 0), (0.3, 0.06, SIGN_H - 0.6), "metal", bevel=False)
+    main = b.finalize(name, mat)
+    s = Builder()
+    s.box((0, -0.35, 0), (SIGN_W - 0.5, 0.06, SIGN_H - 0.5), "spa_cream", bevel=False)
+    screen = s.finalize(name + "_Screen", mat, bevel=0)
+    return [main, screen]
+
+
 ASSETS = {
+    "CleanACat_Prop_Cushion": (build_cushion, 300),
+    "CleanACat_Prop_TipJar": (build_tip_jar, 400),
+    "CleanACat_Prop_WindowSign": (build_window_sign, 300),
     "CleanACat_Prop_Carrier": (build_carrier, 400),
     "CleanACat_Prop_StrayBox": (build_stray_box, 200),
     "CleanACat_Prop_ChanceBoard": (build_chance_board, 400),
     "CleanACat_Prop_QueueMat": (build_queue_mat, 200),
 }
-EXTRAS = {"CleanACat_Prop_Carrier": carrier_rbx_extras, "CleanACat_Prop_StrayBox": stray_box_rbx_extras}
+EXTRAS = {"CleanACat_Prop_Carrier": carrier_rbx_extras, "CleanACat_Prop_StrayBox": stray_box_rbx_extras,
+          "CleanACat_Prop_Cushion": cushion_rbx_extras, "CleanACat_Prop_TipJar": tip_jar_rbx_extras}

@@ -159,6 +159,7 @@ def plot_views(mat, out_dir):
     on the street and top-down."""
     import math
     import plot
+    import spa_props
     from mathutils import Matrix
     allo = plot.build_plot(mat)
     F = plot.FLOOR
@@ -193,7 +194,6 @@ def plot_views(mat, out_dir):
         for o in c:
             o.location += Vector((0.0, -0.9, 0.0))     # held out in front, at the chest
         allo += fresh(place(c, f"SpotQueue{i}", lift=2.4))
-    import spa_props
     allo += fresh(place(spa_props.build_stray_box(mat), "SpotStray"))
     s, _, _ = dirt.build_dirty("Inky", mat, "sit")
     allo += fresh(place(s, "SpotStray", lift=0.31))
@@ -201,13 +201,21 @@ def plot_views(mat, out_dir):
     for i in range(1, 4):
         allo += fresh(place(spa_props.build_queue_mat(mat), f"SpotQueue{i}", lift=0.0))
     for i, name in enumerate(("Cotton", "Marble", "LilacCloud", "Tux"), start=1):
-        allo += fresh(place(cats.build_cat(name, mat, body="sit"), f"SpotWindow{i}"))
+        allo += fresh(place(spa_props.build_cushion(mat), f"SpotWindow{i}"))
+        allo += fresh(place(cats.build_cat(name, mat, body="sit"), f"SpotWindow{i}", lift=spa_props.CUSHION_H - 0.03,
+                            k=spa_props.WINDOW_CAT_SCALE))
+    allo += fresh(place(spa_props.build_tip_jar(mat), "SpotTipJar"))
+    allo += fresh(place(spa_props.build_window_sign(mat), "SpotSign"))
+    walker = avatar(mat, skin="skin_light", shirt="spa_bubblegum", pants="pants_navy")
+    walker.location = Vector((-9.0, -27.0, 0.0))        # a passer-by on the street, looking in at the window
+    allo += fresh([walker])
     os.makedirs(out_dir, exist_ok=True)
     views = {
         "entrance": dict(eye=(11.0, -12.0, F + 9.5), target=(-4.0, 2.0, F + 1.0), lens=20),
         "player": dict(eye=(-5.0, -16.0, F + 8.5), target=(-5.0, -2.0, F + 1.5), lens=22),
         "street": dict(eye=(-14.0, -46.0, F + 9.0), target=(-2.0, -12.0, F + 4.0), lens=28),
         "top": dict(eye=(0.0, -6.0, 80.0), target=(0.0, -0.5, 0.0), lens=30),
+        "window": dict(eye=(-34.0, -40.0, F + 7.0), target=(-8.0, -15.0, F + 3.0), lens=35),
     }
     made = []
     for key, v in views.items():

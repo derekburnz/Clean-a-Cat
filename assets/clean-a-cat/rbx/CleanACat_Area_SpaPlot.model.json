@@ -285,8 +285,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         13.5,
-         3.1,
+         14.0,
+         2.78,
          -14.2
         ],
         "orientation": [
@@ -317,8 +317,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         10.0,
-         3.1,
+         11.0,
+         2.78,
          -14.2
         ],
         "orientation": [
@@ -349,8 +349,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         6.5,
-         3.1,
+         8.0,
+         2.78,
          -14.2
         ],
         "orientation": [
@@ -381,9 +381,73 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         3.0,
-         3.1,
+         5.0,
+         2.78,
          -14.2
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotTipJar",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         2.4,
+         2.78,
+         -14.2
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotSign",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -13.5,
+         6.25,
+         -17.0
         ],
         "orientation": [
          [
@@ -2333,19 +2397,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         13.5,
-         3.165,
-         -14.2
+         -7.0,
+         0.525,
+         -1.0
         ],
         "orientation": [
          [
+          1.0,
           0.0,
-          -1.0,
           0.0
          ],
          [
-          1.0,
           0.0,
+          1.0,
           0.0
          ],
          [
@@ -2357,14 +2421,14 @@
        }
       },
       "Size": [
-       0.37,
-       2.4,
-       2.4
+       5.0,
+       0.07,
+       5.0
       ],
       "Color": [
-       1.0,
-       0.5255,
-       0.6745
+       0.6627,
+       0.6863,
+       0.7216
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2373,23 +2437,22 @@
       "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "Shape": "Cylinder",
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -3.165,
-         13.5,
-         14.2
+         7.0,
+         -0.525,
+         1.0
         ],
         "orientation": [
          [
-          0.0,
           1.0,
+          0.0,
           0.0
          ],
          [
-          -1.0,
           0.0,
+          1.0,
           0.0
          ],
          [
@@ -2403,156 +2466,6 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Area_SpaPlot/6"
-     }
-    },
-    {
-     "name": "CleanACat_Area_SpaPlot_Decor",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         10.0,
-         3.165,
-         -14.2
-        ],
-        "orientation": [
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.37,
-       2.4,
-       2.4
-      ],
-      "Color": [
-       1.0,
-       0.5255,
-       0.6745
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder"
-     }
-    },
-    {
-     "name": "CleanACat_Area_SpaPlot_Decor",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         6.5,
-         3.165,
-         -14.2
-        ],
-        "orientation": [
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.37,
-       2.4,
-       2.4
-      ],
-      "Color": [
-       1.0,
-       0.5255,
-       0.6745
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder"
-     }
-    },
-    {
-     "name": "CleanACat_Area_SpaPlot_Decor",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         3.0,
-         3.165,
-         -14.2
-        ],
-        "orientation": [
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.37,
-       2.4,
-       2.4
-      ],
-      "Color": [
-       1.0,
-       0.5255,
-       0.6745
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder"
      }
     },
     {
@@ -2905,55 +2818,6 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -7.0,
-         0.525,
-         -1.0
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       5.0,
-       0.07,
-       5.0
-      ],
-      "Color": [
-       0.6627,
-       0.6863,
-       0.7216
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Area_SpaPlot_Decor",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
          -13.5,
          0.525,
          -1.0
@@ -3075,6 +2939,415 @@
     }
    },
    "name": "CleanACat_Area_SpaPlot_Decor"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Area_SpaPlot/7"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Area_SpaPlot_Trim",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         8.5,
+         2.815,
+         -17.1
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       15.8,
+       0.43,
+       0.22
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         -8.5,
+         -2.815,
+         17.1
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Area_SpaPlot/7"
+     }
+    },
+    {
+     "name": "CleanACat_Area_SpaPlot_Trim",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         8.5,
+         10.685,
+         -17.1
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       15.8,
+       0.43,
+       0.22
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_SpaPlot_Trim",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         16.2,
+         6.75,
+         -17.11
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       8.28,
+       0.22
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_SpaPlot_Trim",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.8,
+         6.75,
+         -17.11
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       8.28,
+       0.22
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_SpaPlot_Trim",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -5.0,
+         9.685,
+         -17.1
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       8.8,
+       0.43,
+       0.22
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_SpaPlot_Trim",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.8,
+         4.995,
+         -17.11
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       8.99,
+       0.22
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_SpaPlot_Trim",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -9.2,
+         4.995,
+         -17.11
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       8.99,
+       0.22
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Area_SpaPlot_Trim"
   }
  ],
  "properties": {
