@@ -12,7 +12,7 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 | CatClean | Dirty layer fades top to bottom over 0.4 s | the cat | revealWipe | 1 tween | instant fade | #6 | patches fade in ScrubController for now; full wipe waits on the dirty layer (#12) |
 | CatClean | 8 sparkles in palette colours | around the cat | revealSparkle | Emit 6 phone, 8 PC | halved | #6 | built, switch revealEffects |
 | CatClean | Water droplets on the shake-off | the cat | shakeDroplets | Emit 6 phone, 10 PC | halved | #6 | built, switch revealEffects; shake motion waits on the rig (#11) |
-| BrushSwipe | Fur puffs in the coat colour along the stroke | brush point | furPuff | Emit 6 | kept | #7 | planned |
+| BrushSwipe | Fur puffs in the coat colour along the stroke | brush point | furPuff | Emit 6 | kept | #7 | built, switch fluffEffects |
 | BrushSwipe | Cat grows about 3 percent per stroke (Back Out, 0.2 s) | the cat | fluffScale | 1 tween | skipped | #7 | waits on the cat model (#11), so it never scales a part gameplay moves |
 | CatFluffed | Soft glow pulse, one Highlight destroyed after 0.6 s | the cat | glow | 1 Highlight, 2 max on phones | kept, no fade | #7 | built, switch fluffEffects |
 | BowChosen | Bow pops in (scale 0 to 1, Back Out 0.25 s) with 3 small hearts | above the cat | bowHearts | Emit 3 | halved | #7 | hearts built, switch fluffEffects; bow scale pop waits on the bow model (#14) |
@@ -22,9 +22,13 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 Part names from Model-Agent (issue #11): Body, Head, Eye1, Eye2, EarL, EarR, Tail, LegF1, LegF2, LegB1, LegB2, each pivoted at its joint.
 | Motion | When | Joints | Reduce Motion | Issue | Status |
 |---|---|---|---|---|---|
-| Idle breathing and tail sway | always, within 60 studs | Body, Tail | kept, slower | #6 | planned |
-| Shake-off | CatClean, 0.5 s | Body, Head | skipped | #6 | planned |
-| Happy wiggle | CatFluffed | Body, Tail, EarL, EarR | skipped | #7 | planned |
+| Idle breathing nod and tail sway | always, within 60 studs | Head, Tail | skipped (animation-vfx section 6) | #6 | built, switch catMotion |
+| Blink (eyes squash shut 0.14 s every 2.5 to 6 s) | always, within 60 studs | Eye1, Eye2 | kept, it is tiny | #6 | built, switch catMotion |
+| Ear twitch (one ear, 0.25 s, every 4 to 9 s) | always, within 60 studs | EarL, EarR | skipped | #6 | built, switch catMotion |
+| Shake-off (head roll and tail whip, 0.5 s) | CatClean | Head, Tail, EarL, EarR | skipped | #6 | built, switch catMotion |
+| Happy wiggle (tail wag, ears, head tilt, 0.8 s) | CatFluffed | Head, Tail, EarL, EarR | skipped | #7 | built, switch catMotion |
+
+Body never moves, so mud on the body stays put and the server can still move the whole cat. Phone budget: 4 cats at 30 updates a second, half rate past 30 studs, none past 60. Still to measure on a phone profile in Studio.
 
 ## Requests to other lanes
 | Need | Owner | Issue |
