@@ -71,6 +71,13 @@ local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
 local connections: { RBXScriptConnection } = {}
 local nextCatThread: thread? = nil
+local reportSeq = 0 -- numbers each spa report; the server echoes it in CatStage
+
+-- Sends one spa report for the visit's cat, numbered so only the server's answer to the newest one is acted on.
+local function report(name: string, v: { catId: number? }, ...: any)
+	reportSeq += 1
+	Remotes.event(name):FireServer(v.catId, reportSeq, ...)
+end
 
 local function makePart(
 	name: string,
@@ -334,7 +341,7 @@ local function reveal(v: Visit)
 	endStroke()
 	v.stage = "clean"
 	Moments.CatClean:Fire(v.model)
-	Remotes.event("ReportScrubbed"):FireServer(v.catId)
+	report("ReportScrubbed", v)
 end
 
 -- Rubs every patch within the sponge's reach of `point` by `travel` studs.
@@ -370,7 +377,7 @@ local function brushAt(v: Visit, travel: number)
 	v.lastStrokeAt = now
 	v.strokes += 1
 	Moments.BrushSwipe:Fire(v.model, v.strokes)
-	Remotes.event("ReportBrushStroke"):FireServer(v.catId)
+	report("ReportBrushStroke", v)
 	if v.strokes >= SpaRules.BRUSH_STROKES then
 		v.stage = "fluffed"
 		setCatColor(v, FLUFFED_COLOR)
@@ -443,10 +450,12 @@ local function tapButton(v: Visit, input: InputObject): boolean
 		end
 		show(v.camera, true)
 		Moments.BowChosen:Fire(v.model, bowId)
-		Remotes.event("RequestPickBow"):FireServer(v.catId, bowId)
+		report("RequestPickBow", v, bowId)
 	elseif v.stage == "styled" and part == v.camera then
-		-- The camera stays until the server pays, so a tap the server refused (too soon) can be repeated.
-		Remotes.event("RequestPhoto"):FireServer(v.catId)
+		-- The camera hides while the photo develops; the server pays once the visit is long enough, or hands the
+		-- camera back (CatStage) when it could not pay.
+		show(v.camera, false)
+		report("RequestPhoto", v)
 	end
 	return true
 end
@@ -471,6 +480,50 @@ local function onCatReady(rawId: unknown)
 	release()
 	showCat(v)
 	startCat(v, rawId)
+end
+
+-- The server's view of the cat after a report. When the server is behind (a step it refused or never got), the
+-- cat falls back to the server's stage so the player can redo that step instead of being stuck.
+local function onCatStage(
+	rawId: unknown,
+	rawSeq: unknown,
+	rawStage: unknown,
+	rawStrokes: unknown,
+	rawWaiting: unknown
+)
+	local v = visit
+	-- An answer to an older report says nothing about the newer ones still on their way.
+	if not v or rawSeq ~= reportSeq or type(rawStage) ~= "string" or rawId ~= v.catId then
+		return
+	end
+	local serverRank = SpaRules.STAGE_ORDER[rawStage]
+	local clientRank = SpaRules.STAGE_ORDER[v.stage]
+	if serverRank == nil or clientRank == nil then
+		return
+	end
+	if rawStage == "styled" and v.stage == "styled" and rawWaiting == false then
+		show(v.camera, true) -- the server could not pay yet; tap again
+		return
+	end
+	if serverRank >= clientRank then
+		return
+	end
+	release()
+	local strokes = if type(rawStrokes) == "number" then rawStrokes else 0
+	if rawStage == "dirty" then
+		Remotes.event("RequestCat"):FireServer()
+		return
+	end
+	v.stage = rawStage :: SpaRules.Stage
+	v.strokes = math.clamp(strokes, 0, SpaRules.BRUSH_STROKES)
+	v.strokeTravel = 0
+	show(v.bow, false)
+	v.bow.CanQuery = false
+	show(v.camera, false)
+	for _, button in v.bowButtons do
+		show(button, rawStage == "fluffed")
+	end
+	setCatColor(v, if rawStage == "clean" then CLEAN_COLOR else FLUFFED_COLOR)
 end
 
 local function onPhotoPaid(rawId: unknown)
@@ -502,6 +555,7 @@ local function enable()
 
 	table.insert(connections, Remotes.event("CatReady").OnClientEvent:Connect(onCatReady))
 	table.insert(connections, Remotes.event("PhotoPaid").OnClientEvent:Connect(onPhotoPaid))
+	table.insert(connections, Remotes.event("CatStage").OnClientEvent:Connect(onCatStage))
 	table.insert(
 		connections,
 		UserInputService.InputBegan:Connect(function(input: InputObject, processed: boolean)

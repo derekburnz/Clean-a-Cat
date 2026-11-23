@@ -29,9 +29,13 @@ return function()
 			expect(cat.stage).to.equal("fluffed")
 			expect(SpaRules.pickBow(cat, "BowBlue")).to.equal(true)
 			expect(cat.bow).to.equal("BowBlue")
-			expect(SpaRules.photo(cat, 120)).to.equal(SpaRules.PHOTO_COINS)
+			expect(SpaRules.askPhoto(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(0)
+			expect(SpaRules.photo(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(
+				SpaRules.PHOTO_COINS
+			)
 			expect(cat.stage).to.equal("done")
-			expect(SpaRules.photo(cat, 121)).to.equal(0)
+			expect(SpaRules.photo(cat, 1000)).to.equal(0)
+			expect(SpaRules.askPhoto(cat, 1000)).to.equal(nil)
 		end)
 
 		it("refuses steps out of order", function()
@@ -45,12 +49,13 @@ return function()
 	end)
 
 	describe("SpaRules checks", function()
-		it("does not count strokes closer together than the minimum gap", function()
+		it("counts strokes that arrive bunched together", function()
 			local cat = SpaRules.newCat(1, 0)
 			SpaRules.scrubbed(cat)
-			expect((SpaRules.brushStroke(cat, 1))).to.equal(true)
-			expect((SpaRules.brushStroke(cat, 1 + SpaRules.MIN_STROKE_GAP / 2))).to.equal(false)
-			expect(cat.strokes).to.equal(1)
+			for _ = 1, SpaRules.BRUSH_STROKES do
+				SpaRules.brushStroke(cat, 1)
+			end
+			expect(cat.stage).to.equal("fluffed")
 		end)
 
 		it("refuses an unknown bow", function()
@@ -63,16 +68,15 @@ return function()
 			expect(cat.stage).to.equal("fluffed")
 		end)
 
-		it(
-			"pays nothing for a photo too soon after the cat arrived, and allows a later try",
-			function()
-				local cat = styledCat(0)
-				expect(SpaRules.photo(cat, SpaRules.MIN_VISIT_SECONDS - 0.1)).to.equal(0)
-				expect(cat.stage).to.equal("styled")
-				expect(SpaRules.photo(cat, SpaRules.MIN_VISIT_SECONDS)).to.equal(
-					SpaRules.PHOTO_COINS
-				)
-			end
-		)
+		it("makes an early photo wait until the visit is long enough, then pays once", function()
+			local cat = styledCat(0)
+			expect(SpaRules.photo(cat, 100)).to.equal(0) -- not asked for yet
+			expect(SpaRules.askPhoto(cat, 4)).to.equal(SpaRules.MIN_VISIT_SECONDS - 4)
+			expect(SpaRules.askPhoto(cat, 5)).to.equal(nil) -- already waiting
+			expect(SpaRules.photo(cat, SpaRules.MIN_VISIT_SECONDS - 0.1)).to.equal(0)
+			expect(cat.stage).to.equal("styled")
+			expect(SpaRules.photo(cat, SpaRules.MIN_VISIT_SECONDS)).to.equal(SpaRules.PHOTO_COINS)
+			expect(SpaRules.photo(cat, SpaRules.MIN_VISIT_SECONDS + 1)).to.equal(0)
+		end)
 	end)
 end
