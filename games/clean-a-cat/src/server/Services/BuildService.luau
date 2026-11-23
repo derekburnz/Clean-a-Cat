@@ -27,7 +27,7 @@ local function nearBoard(player: Player): boolean
 	if root == nil or not root:IsA("BasePart") then
 		return false
 	end
-	return ((root :: BasePart).Position - SpaLayout.spot("SpotBuilder").Position).Magnitude
+	return ((root :: BasePart).Position - SpaLayout.spot("SpotBuilder", player).Position).Magnitude
 		<= BuildRules.SERVER_REACH
 end
 

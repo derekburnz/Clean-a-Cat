@@ -32,7 +32,7 @@ local function nearBoard(player: Player): boolean
 	if root == nil or not root:IsA("BasePart") then
 		return false
 	end
-	local offset = (root :: BasePart).Position - SpaLayout.spot("Tools").Position
+	local offset = (root :: BasePart).Position - SpaLayout.spot("Tools", player).Position
 	return offset.Magnitude <= ToolRules.SERVER_REACH
 end
 

@@ -34,6 +34,7 @@ LiveFlags.KEYS = {
 	"builds", -- station and room builds with timers that run while away (BuildService, Controllers/BuildBoardController); off by default
 	"spaPlot", -- the spa plot in Workspace and every spot on it (PlotService, Shared/SpaLayout); off by default
 	"onboardingFunnel", -- the onboarding_v1 funnel and its side events (Telemetry, FunnelService); off by default
+	"spaVisitors", -- players may walk into other players' spas; off means look only (Controllers/PlotController); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -50,6 +51,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	builds = true,
 	spaPlot = true,
 	onboardingFunnel = true,
+	spaVisitors = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
