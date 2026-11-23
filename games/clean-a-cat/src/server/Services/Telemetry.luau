@@ -93,6 +93,10 @@ function Telemetry.onboarding(player: Player, stepName: string): boolean
 	if not LiveFlags.isOn(FUNNEL_FLAG) then
 		return false
 	end
+	local current = DataService.get(player)
+	if current == nil or not TelemetryRules.inFunnel(current.funnel, step, current.playSeconds) then
+		return false
+	end
 	if not Telemetry.funnelStep(player, TelemetryRules.ONBOARDING, step, stepName) then
 		return false
 	end
@@ -117,6 +121,10 @@ function Telemetry.returnedDay2(player: Player, longBuildRunning: boolean)
 	end
 	local save = DataService.get(player)
 	if save == nil or not TelemetryRules.isDay2(save.createdAt, os.time()) then
+		return
+	end
+	-- Only saves in the funnel (their first session logged joined), like every onboarding step.
+	if not TelemetryRules.inFunnel(save.funnel, 2, save.playSeconds) then
 		return
 	end
 	if not TelemetryRules.markOnce(save.funnel, "returned_day_2") then

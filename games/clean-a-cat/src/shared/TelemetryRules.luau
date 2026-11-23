@@ -77,6 +77,20 @@ function TelemetryRules.markOnce(logged: { [string]: boolean }, key: string): bo
 	return true
 end
 
+-- Only a save whose first session ran with the funnel on is in it: `joined` (step 1) goes in only for a brand new
+-- save (no play time yet), and every later step only for a save that logged `joined`. A save from before the
+-- switch went on stays out, so it never looks like a first session.
+function TelemetryRules.inFunnel(
+	logged: { [string]: boolean },
+	step: number,
+	playSeconds: number
+): boolean
+	if step == 1 then
+		return playSeconds <= 0
+	end
+	return logged[`{TelemetryRules.ONBOARDING}:1`] == true
+end
+
 -- The highest onboarding step this save has logged: its number and name, or 0 and "none".
 function TelemetryRules.lastStep(logged: { [string]: boolean }): (number, string)
 	for step = #TelemetryRules.ONBOARDING_STEPS, 1, -1 do
