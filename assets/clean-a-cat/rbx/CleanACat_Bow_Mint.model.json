@@ -1,0 +1,361 @@
+{
+ "className": "Model",
+ "attributes": {
+  "Rojo_Target_PrimaryPart": "CleanACat_Bow_Mint/0",
+  "PartBuilt": true
+ },
+ "children": [
+  {
+   "name": "CleanACat_Bow_Mint",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.2,
+       0.1,
+       0.0
+      ],
+      "orientation": [
+       [
+        0.9511,
+        0.309,
+        0.0
+       ],
+       [
+        -0.309,
+        0.9511,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.36,
+     0.2592,
+     0.18
+    ],
+    "Color": [
+     0.3725,
+     0.8235,
+     0.6588
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "PivotOffset": {
+     "CFrame": {
+      "position": [
+       0.2211,
+       -0.0333,
+       0.0
+      ],
+      "orientation": [
+       [
+        0.9511,
+        -0.309,
+        0.0
+       ],
+       [
+        0.309,
+        0.9511,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "attributes": {
+    "Rojo_Id": "CleanACat_Bow_Mint/0"
+   },
+   "children": [
+    {
+     "name": "Mesh",
+     "className": "SpecialMesh",
+     "properties": {
+      "MeshType": "Sphere"
+     }
+    },
+    {
+     "name": "BowSlot",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.2211,
+         -0.0333,
+         0.0
+        ],
+        "orientation": [
+         [
+          0.9511,
+          -0.309,
+          0.0
+         ],
+         [
+          0.309,
+          0.9511,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "CleanACat_Bow_Mint",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.065,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.15,
+     0.13,
+     0.13
+    ],
+    "Color": [
+     0.3725,
+     0.8235,
+     0.6588
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Bow_Mint",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.2,
+       0.1,
+       0.0
+      ],
+      "orientation": [
+       [
+        0.9511,
+        -0.309,
+        0.0
+       ],
+       [
+        0.309,
+        0.9511,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.36,
+     0.2592,
+     0.18
+    ],
+    "Color": [
+     0.3725,
+     0.8235,
+     0.6588
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   },
+   "children": [
+    {
+     "name": "Mesh",
+     "className": "SpecialMesh",
+     "properties": {
+      "MeshType": "Sphere"
+     }
+    }
+   ]
+  },
+  {
+   "name": "CleanACat_Bow_Mint",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.09,
+       0.03,
+       0.12
+      ],
+      "orientation": [
+       [
+        0.9272,
+        0.0,
+        0.3746
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.3746,
+        0.0,
+        0.9272
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.09,
+     0.035,
+     0.24
+    ],
+    "Color": [
+     0.3725,
+     0.8235,
+     0.6588
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Bow_Mint",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.09,
+       0.03,
+       0.12
+      ],
+      "orientation": [
+       [
+        0.9272,
+        0.0,
+        -0.3746
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.3746,
+        0.0,
+        0.9272
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.09,
+     0.035,
+     0.24
+    ],
+    "Color": [
+     0.3725,
+     0.8235,
+     0.6588
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  }
+ ],
+ "properties": {
+  "WorldPivotData": {
+   "OptionalCFrame": {
+    "position": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "orientation": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   }
+  }
+ }
+}

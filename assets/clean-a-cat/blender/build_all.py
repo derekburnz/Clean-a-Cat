@@ -38,6 +38,7 @@ import stations  # noqa: E402
 import tools  # noqa: E402
 import gates  # noqa: E402
 import palette  # noqa: E402
+import props  # noqa: E402
 import rbx_export  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
@@ -51,21 +52,23 @@ def all_assets():
         out[name] = (fn, budget, "cats")
     for name, (fn, budget) in dirt.ASSETS.items():
         out[name] = (fn, budget, "dirt")
-    for module in (stations, tools):
+    for module in (stations, tools, props):
         for name, (fn, budget) in module.ASSETS.items():
             out[name] = (fn, budget, module.__name__)
     return out
 
 
 def cat_rbx_extras(name):
-    """A cat's Part model carries Rarity and Scale attributes and a Carry Attachment in its Head part (where a carried
-    thing or a name tag rests, above the ears), so the game needs no manifest at runtime."""
+    """A cat's Part model carries Rarity and Scale attributes, a Carry Attachment in its Head part (where a carried
+    thing or a name tag rests, above the ears) and a BowSlot Attachment there (where a bow goes, #14), so the game
+    needs no manifest at runtime."""
     cat, _gold, body = cats.parse(name)
     spec = cats.ROSTER[cat]
     k = cats.scale_of(spec, body)
     joints = cats.joints(spec, body)
     carry = Vector(joints["Head"]) + Vector(cats.carry_at(spec, body)) * k
-    return {"attachments": [("_Head", "Carry", Matrix.Translation(carry))],
+    bow = Vector(joints["Head"]) + Vector(cats.bow_at(spec, body)) * k
+    return {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", Matrix.Translation(bow))],
             "attributes": {"Scale": {"Float64": float(spec.get("scale", 1.0))}, "Rarity": spec["rarity"],
                            "Cat": cat}}
 
@@ -101,6 +104,8 @@ def main():
         extra = cat_rbx_extras(name) if name.startswith("CleanACat_Cat_") else {}
         if name in stations.EXTRAS:
             extra = stations.EXTRAS[name]()
+        if name in props.EXTRAS:
+            extra = props.EXTRAS[name]()
         if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)
             extra["nest"] = {**extra.get("nest", {}), **dnest}
             extra["attributes"] = {**extra.get("attributes", {}), **dattrs}

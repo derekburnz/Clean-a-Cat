@@ -29,10 +29,11 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming |
 | `contact_sheet.py` | tiles previews into sheets |
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
-| `dirt.py` | the dirty cats (#12): mud blobs and tangles placed by casting rays at each built cat; root attributes for the scrub, brush and dryer |
+| `dirt.py` | the dirty cats (#12): mud blobs, tangles and the hidden fluffed look (#14) placed by casting rays at each built cat; root attributes for the scrub, brush and dryer |
 | `stations.py` | the spa stations: the wash tub (#13) with its `CatSeat` attachment; the brush table and dryer follow (#18) |
-| `tools.py` | hand tools: the three sponges (#13), each with a `Handle` part; the brush follows (#14) |
-| `props.py` | hook for things a cat wears (bows #14, the builder's hat #20); empty for now |
+| `tools.py` | hand tools: the three sponges (#13) and the brush (#14), each with a `Handle` part |
+| `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
+| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, or `groom`, `groom-close`); exports nothing |
 
 ## Adding a model
 1. Add a module with an `ASSETS` dict (name to `(builder(mat) -> objects, triangle budget)`), and add it to `all_assets()` in `build_all.py`.
