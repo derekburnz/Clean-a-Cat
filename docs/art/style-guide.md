@@ -56,8 +56,8 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 | Asset | Triangles | Parts |
 |---|---|---|
 | Cat (any coat) | up to 1,500 (today 670 to 1,040) | up to 50 (today 34 to 50) |
-| A dirty cat (cat plus mud, tangles, hidden fluff) | up to 3,000 | up to 110 |
-| Station or furniture | 300 to 1,500 (the tub 1,484); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968) | up to 60 (the tub 37, the upgraded table 40) |
+| A dirty cat (cat plus mud, tangles, hidden fluff and claws) | up to 3,200 (today 2,660 to 3,028; raised from 3,000 for the claws, #23) | up to 120 (today 100 to 116) |
+| Station or furniture | 300 to 1,500 (the tub 1,484); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968, bubble bath 1,180, pawdicure 528) | up to 60 (the tub 37, the upgraded table 40) |
 | Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together) | up to 20 (sponges 6 to 10) |
 | Brush, bow | up to 200 (brush 108, bows 164) | up to 10 |
 | VIP Room locked or building (#21) | up to 2,000 | up to 80 |
@@ -162,7 +162,14 @@ Both are under 2,000 triangles. An invisible solid `_Barrier` with CanQuery off 
 
 Every pattern part sits proud of the body, and nothing is a texture. Extras cost at most 276 triangles (Lilac Cloud's fluffy coat while sitting), under the 300 each that the issue allows. The index sheet shows each cat clean on its rarity tile with its dirty look behind. Each column is about 160 px wide, an index card's size on a phone.
 
-## 21. Rules
+## 21. Bubble bath, pawdicure and long claws (#23)
+`stations.py` builds two later stations on the same 5 by 5 stud pad, facing -Z, with the cat at `ScaleTo(CatScale)` 1.5 on its `CatSeat` and an invisible `_Barrier` (CanQuery off) as at the #18 stations:
+- `CleanACat_Station_BubbleBath`: a round bubblegum bath on a cream foot with a cream rim, a rubber duck on the rim and sky water inside, with a ring of white foam puffs. The cat sits in the water (`CatSeat` at 1.3). A metal pipe behind it ends in a mint part named `Spout` over the cat's ears, with an Attachment `Bubbles` whose +Y points up: a ParticleEmitter there sends bubbles rising. The water and the foam are child Models (`CleanACat_Station_BubbleBath_Water` and `_Foam`) that do not collide, so the game can tint or hide them.
+- `CleanACat_Station_Pawdicure`: a small cream table on mint legs with a bubblegum cushion and a paw rest at the front (`CatSeat` on the cushion at 1.6), a tray with three polish bottles and a nail file, and a towel on the shelf below.
+
+**Long claws.** Every dirty cat (walk and sit) now carries `_Claw01` to `_Claw08`, four pearl claws on each front paw, each its own child Model riding LegF1 or LegF2 (root attribute `ClawCount` 8). They ship hidden like the fluff (Transparency 1, CanQuery off). A cat that comes in with long claws shows them; the pawdicure removes them.
+
+## 22. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.

@@ -254,9 +254,40 @@ def build_dirty(name, mat, body):
         objs.append(ob)
         if piece in RIDES:
             nest["_" + part] = "_" + piece
+    for leg in ("LegF1", "LegF2"):                     # #23: long claws, hidden until a customer's cat needs the
+        paw = [o for o in clean if _piece(o, base) == leg][0]   # pawdicure; four on each front paw, riding the leg
+        for j, (p, tilt) in enumerate(_claw_spots(paw, k)):
+            part = f"Claw{len([o for o in objs if '_Claw' in o.name]) + 1:02d}"
+            b = Builder()
+            b.box((0, -0.05 * k, -0.01 * k), (0.045 * k, 0.12 * k, 0.04 * k), "pearl", bevel=False)
+            ob = b.finalize(f"{base}_{part}", mat, location=tuple(p))
+            ob.matrix_world = Matrix.Translation(ob.location) @ Matrix.Rotation(math.radians(tilt), 4, "X")
+            _apply_rotation(ob)
+            ob.hide_render = True
+            objs.append(ob)
+            nest["_" + part] = "_" + leg
     attributes = {"Dirty": True, "MudCount": MUD, "TangleCount": TANGLES, "FluffCount": FLUFF,
-                  "WetDarken": {"Float64": WET_DARKEN}}
+                  "ClawCount": 2 * CLAWS_PER_PAW, "WetDarken": {"Float64": WET_DARKEN}}
     return objs, nest, attributes
+
+
+CLAWS_PER_PAW = 4
+
+
+def _claw_spots(paw_ob, k):
+    """Four points along the front edge of a front paw (the lowest 0.11 studs of the leg), a little in from its
+    sides and just above the floor, each with a downward tilt in degrees, staggered so no two claws line up."""
+    M = paw_ob.matrix_world
+    vs = [M @ v.co for v in paw_ob.data.vertices]
+    floor = min(v.z for v in vs)
+    low = [v for v in vs if v.z < floor + 0.11 * k]
+    x0, x1 = min(v.x for v in low), max(v.x for v in low)
+    front = min(v.y for v in low)
+    out = []
+    for i in range(CLAWS_PER_PAW):
+        x = x0 + (x1 - x0) * (i + 0.5) / CLAWS_PER_PAW
+        out.append((Vector((x, front + 0.02 * k, floor + (0.065 + 0.004 * i) * k)), 18 + 4 * (i % 2)))
+    return out
 
 
 def _apply_rotation(ob):
@@ -271,6 +302,6 @@ def _apply_rotation(ob):
 
 ASSETS = {}
 for _n in cats.ROSTER:
-    for _body in cats.BUILT_BODIES:
+    for _body in cats.BUILT_BODIES:   # 3,200: the long claws (#23) put the fluffiest coat a little over 3,000
         ASSETS[f"CleanACat_Cat_{_n}_Dirty{cats.SUFFIX[_body]}"] = (
-            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3000)
+            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3200)

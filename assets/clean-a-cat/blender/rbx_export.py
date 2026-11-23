@@ -76,7 +76,7 @@ ROUND = 4
 RENAME_BIGGEST = {n: "Handle" for n in ("CleanACat_Tool_Sponge", "CleanACat_Tool_SpongeBubble",
                                           "CleanACat_Tool_SpongeGolden", "CleanACat_Tool_Brush",
                                           "CleanACat_NPC_SunHat", "CleanACat_NPC_Scarf", "CleanACat_NPC_ToteBag")}   # a Roblox Tool's grip part
-PART_NAMES = {"_SignBoard": "SignBoard", "_Screen": "Screen", "_Fill": "Fill", "_Nozzle": "Nozzle"}
+PART_NAMES = {"_SignBoard": "SignBoard", "_Screen": "Screen", "_Fill": "Fill", "_Nozzle": "Nozzle", "_Spout": "Spout"}
 # CollectionService tags, keyed by object name, or by name suffix when the key starts with "_".
 TAGS = {"_ChanceBoard": ["ChanceBoard"]}
 # Tags on every part of an object, by object name suffix.
@@ -222,7 +222,7 @@ SWATCH_MATERIALS = {}  # asset -> {swatch: Material}: a statue cast in bronze or
 
 # Parts the game shows later: drawn see-through, never in the way of a ray, a tap or a shadow until the game shows
 # them (a dirty cat's fluffed fur, #14: the game tweens Transparency to 0 after the third brush swipe).
-SHOWN_LATER = ("_Fluff",)
+SHOWN_LATER = ("_Fluff", "_Claw")
 
 
 def _material(obname, swatch):

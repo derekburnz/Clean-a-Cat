@@ -12,6 +12,7 @@
   "MudCount": 20,
   "TangleCount": 6,
   "FluffCount": 10,
+  "ClawCount": 8,
   "WetDarken": {
    "Float64": 0.3
   }
@@ -4831,6 +4832,474 @@
       }
      },
      "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud10"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/45"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw01",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.076,
+           0.038,
+           -0.4887
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            0.309
+           ],
+           [
+            0.0,
+            -0.309,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            -0.309
+           ],
+           [
+            0.0,
+            0.309,
+            0.9511
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/45"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.076,
+         0.0617,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw01"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/46"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.133,
+           0.0389,
+           -0.487
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            0.3746
+           ],
+           [
+            0.0,
+            -0.3746,
+            0.9272
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            -0.3746
+           ],
+           [
+            0.0,
+            0.3746,
+            0.9272
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/46"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.133,
+         0.0655,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw02"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/47"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw03",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.19,
+           0.0456,
+           -0.4887
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            0.309
+           ],
+           [
+            0.0,
+            -0.309,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            -0.309
+           ],
+           [
+            0.0,
+            0.309,
+            0.9511
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/47"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.19,
+         0.0693,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw03"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/48"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw04",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.247,
+           0.0465,
+           -0.487
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            0.3746
+           ],
+           [
+            0.0,
+            -0.3746,
+            0.9272
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            -0.3746
+           ],
+           [
+            0.0,
+            0.3746,
+            0.9272
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/48"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.247,
+         0.0732,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw04"
     }
    ],
    "properties": {
@@ -5119,6 +5588,474 @@
       }
      },
      "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud11"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/49"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw05",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.247,
+           0.038,
+           -0.4887
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            0.309
+           ],
+           [
+            0.0,
+            -0.309,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            -0.309
+           ],
+           [
+            0.0,
+            0.309,
+            0.9511
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/49"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.247,
+         0.0617,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw05"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/50"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw06",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.19,
+           0.0389,
+           -0.487
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            0.3746
+           ],
+           [
+            0.0,
+            -0.3746,
+            0.9272
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            -0.3746
+           ],
+           [
+            0.0,
+            0.3746,
+            0.9272
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/50"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.19,
+         0.0655,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw06"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/51"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw07",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.133,
+           0.0456,
+           -0.4887
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            0.309
+           ],
+           [
+            0.0,
+            -0.309,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9511,
+            -0.309
+           ],
+           [
+            0.0,
+            0.309,
+            0.9511
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/51"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.133,
+         0.0693,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw07"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Dirty_Sit/52"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw08",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.076,
+           0.0465,
+           -0.487
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            0.3746
+           ],
+           [
+            0.0,
+            -0.3746,
+            0.9272
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0428,
+         0.038,
+         0.114
+        ],
+        "Color": [
+         0.9569,
+         0.9333,
+         0.9647
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0095,
+           0.0475
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9272,
+            -0.3746
+           ],
+           [
+            0.0,
+            0.3746,
+            0.9272
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/52"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.076,
+         0.0732,
+         -0.4465
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Claw08"
     }
    ],
    "properties": {

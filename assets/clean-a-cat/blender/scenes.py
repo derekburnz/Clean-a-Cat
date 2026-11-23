@@ -7,6 +7,7 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
     python3 assets/clean-a-cat/blender/scenes.py builder docs/concepts/clean-a-cat/2026-11-23-builder-kitten.png
     python3 assets/clean-a-cat/blender/scenes.py vip docs/concepts/clean-a-cat
     python3 assets/clean-a-cat/blender/scenes.py index docs/concepts/clean-a-cat/2026-11-23-cat-index-sheet.png
+    python3 assets/clean-a-cat/blender/scenes.py later docs/concepts/clean-a-cat/2026-11-23-later-stations.png
 """
 
 import os
@@ -208,6 +209,32 @@ def index_sheet(mat, out):
     shot(allo, out, eye=(0.0, -40.0, 21.0), target=(0.0, 1.7, 1.1), lens=58, res=(1600, 600))
 
 
+def later_stations_sheet(mat, out):
+    """#23: the bubble bath with a cat in the foam and the pawdicure table with a cat showing its long claws, an avatar
+    beside each."""
+    import math
+    allo = []
+    k = stations.STATION_CAT_SCALE
+    rows = [(stations.build_bubble_bath, "Marble", ["_Mud", "_Tangle", "_Fluff", "_Claw"],
+             (0.0, 0.0, stations.BATH_SEAT + 0.02)),
+            (stations.build_pawdicure, "Toffee", ["_Mud", "_Tangle", "_Fluff"], (0.0, 0.35, stations.PAW_Z))]
+    for i, (build, name, drop, at) in enumerate(rows):
+        x = i * 7.0
+        objs = [o for o in build(mat) if not o.name.endswith("_Barrier")]
+        _move(objs, (x, 0, 0))
+        c, _, _ = dirt.build_dirty(name, mat, "sit")
+        c = _drop(c, drop)
+        for o in c:
+            o.hide_render = False
+        _move(c, (x + at[0], at[1], at[2]), k)
+        av = avatar(mat, (x - 3.4, -1.2, 0.0), ("skin_deep", "skin_light")[i], ("spa_sky", "spa_bubblegum")[i])
+        av.rotation_euler.z = math.radians(-60)
+        for o in objs + c + [av]:
+            o.name = f"L{i}_{o.name}"
+        allo += objs + c + [av]
+    common.render_preview(allo, out, res=(1200, 620), samples=24, azimuth=16, elevation=18, margin=0.9)
+
+
 def _move(objs, offset, k=1.0):
     for o in objs:
         o.location = o.location * k + Vector(offset)
@@ -361,4 +388,4 @@ if __name__ == "__main__":
     mat = common.palette_material(png)
     {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
      "customers": customers_sheet, "stations": stations_sheet,
-     "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
+     "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "later": later_stations_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
