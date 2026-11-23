@@ -32,6 +32,7 @@ from mathutils import Matrix, Vector  # noqa: E402
 
 import build_props  # noqa: E402
 import cats  # noqa: E402
+import coat_table  # noqa: E402
 import common  # noqa: E402
 import contact_sheet  # noqa: E402
 import customers  # noqa: E402
@@ -158,6 +159,7 @@ def main():
             json.dump(manifest, f, indent=1)
             f.write("\n")
         gates.write_report(os.path.join(args.out, "gates.md"), manifest, ROOT)
+        print("coat table:", coat_table.write(args.rbx))
         if args.render:
             for made in contact_sheet.build_sheets(args.docs, [dict(e, preview=e["preview"]) for e in manifest]):
                 print("sheet:", made)

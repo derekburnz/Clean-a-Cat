@@ -6,6 +6,7 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
     python3 assets/clean-a-cat/blender/scenes.py stations docs/concepts/clean-a-cat/2026-11-23-stations-sheet.png
     python3 assets/clean-a-cat/blender/scenes.py builder docs/concepts/clean-a-cat/2026-11-23-builder-kitten.png
     python3 assets/clean-a-cat/blender/scenes.py vip docs/concepts/clean-a-cat
+    python3 assets/clean-a-cat/blender/scenes.py index docs/concepts/clean-a-cat/2026-11-23-cat-index-sheet.png
 """
 
 import os
@@ -181,6 +182,32 @@ def vip_views(mat, out):
         paths.append(path)
 
 
+def index_sheet(mat, out):
+    """#22: the first Cat Index in its order, each cat sitting on a tile in its rarity colour, clean in the front row and
+    dirty behind; at 1600 px each column is about 160 px wide, an index card's size on a phone."""
+    import coat_table
+    t = coat_table.table()
+    allo = []
+    for i, name in enumerate(t["Order"]):
+        x = (i - 4.5) * 2.6
+        swatch = coat_table.RARITY_SWATCH[cats.ROSTER[name]["rarity"]]
+        for row, dirty in ((0, False), (1, True)):
+            y = row * 3.4
+            b = Builder()
+            b.box_base((0, 0, 0), (2.2, 2.2, 0.12), swatch)
+            tile = b.finalize(f"Tile{i}_{row}", mat, location=(x, y, 0.0))
+            if dirty:
+                objs, _, _ = dirt.build_dirty(name, mat, "sit")
+                objs = [o for o in objs if "_Fluff" not in o.name]
+            else:
+                objs = cats.build_cat(name, mat, body="sit")
+            _move(objs, (x, y, 0.12))
+            for o in objs:
+                o.name = f"I{i}{row}_{o.name}"
+            allo += [tile] + objs
+    shot(allo, out, eye=(0.0, -40.0, 21.0), target=(0.0, 1.7, 1.1), lens=58, res=(1600, 600))
+
+
 def _move(objs, offset, k=1.0):
     for o in objs:
         o.location = o.location * k + Vector(offset)
@@ -334,4 +361,4 @@ if __name__ == "__main__":
     mat = common.palette_material(png)
     {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
      "customers": customers_sheet, "stations": stations_sheet,
-     "builder": builder_sheet, "vip": vip_views, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
+     "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
