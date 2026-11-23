@@ -32,6 +32,8 @@ local ToolRules = require(Shared:WaitForChild("ToolRules"))
 
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
+local TURN_FLAG = "scrubTurn" -- the cat turns to show its muddy side when too little faces the camera
+local TURN_TWEEN = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the prototype's cat; a customer's cat uses its own kind
 local TUB_ASSET = "CleanACat_Station_Tub"
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
@@ -103,6 +105,7 @@ local savedCameraType: Enum.CameraType? = nil
 local connections: { RBXScriptConnection } = {}
 local nextCatThread: thread? = nil
 local reportedScrub = false -- the funnel's first_scrub was sent this session
+local turningCat: Model? = nil -- the cat turning in the tub; the sponge waits until it stops
 local reportSeq = 0 -- numbers each spa report; the server echoes it in CatStage
 local answeredSeq = 0 -- the newest report the server has answered
 local warnedMissing: { [string]: boolean } = {}
@@ -459,6 +462,9 @@ end
 
 -- Rubs every mud blob within the sponge's reach of `point` by `travel` studs.
 local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number)
+	if turningCat == cat.model then
+		return
+	end
 	local radius = spongeRadius()
 	for index, piece in cat.mud do
 		if not v.scrub.cleared[index] and (piece.position - point).Magnitude <= radius then
@@ -597,6 +603,64 @@ local function release()
 	activeInput = nil
 	endStroke()
 	holdCamera(false)
+end
+
+-- When the finger lifts and less mud faces the camera than the reveal still needs, the cat turns in the tub
+-- (about its seat) so the middle of the remaining mud faces the camera. Then the first scrub finishes from the
+-- spawn side without walking round the tub. Behind the switch scrubTurn.
+local function turnToShow(v: Visit, cat: Cat)
+	local camera = Workspace.CurrentCamera
+	if
+		not LiveFlags.isOn(TURN_FLAG)
+		or v.stage ~= "dirty"
+		or turningCat ~= nil
+		or camera == nil
+	then
+		return
+	end
+	local model = cat.model
+	local pivot = model:GetPivot()
+	local centre = pivot.Position
+	local offsets: { Vector3 } = {}
+	for index, piece in cat.mud do
+		if not v.scrub.cleared[index] then
+			table.insert(offsets, piece.position - centre)
+		end
+	end
+	local yaw = ScrubRules.turnToShow(
+		offsets,
+		camera.CFrame.Position - centre,
+		ScrubRules.patchesNeeded(v.scrub)
+	)
+	if yaw == nil then
+		return
+	end
+	-- A turn about the up axis through the pivot (the base centre): the pieces' remembered positions move with it.
+	local turn = CFrame.new(centre) * CFrame.Angles(0, yaw, 0) * CFrame.new(-centre)
+	for _, list in { cat.mud, cat.tangles, cat.fluff } do
+		for _, piece in list do
+			piece.position = turn * piece.position
+		end
+	end
+	local goal = turn * pivot
+	local alpha = Instance.new("NumberValue")
+	alpha.Changed:Connect(function(value: number)
+		if model.Parent then
+			model:PivotTo(pivot:Lerp(goal, value))
+		end
+	end)
+	turningCat = model
+	local tween = TweenService:Create(alpha, TURN_TWEEN, { Value = 1 })
+	tween.Completed:Connect(function()
+		if model.Parent then
+			model:PivotTo(goal)
+		end
+		alpha:Destroy()
+		if turningCat == model then
+			turningCat = nil
+		end
+	end)
+	tween:Play()
 end
 
 -- A new dirty cat in the tub (the server's cat `catId`): the last cat goes and a fresh copy sits down.
@@ -865,6 +929,11 @@ local function enable()
 		UserInputService.InputEnded:Connect(function(input: InputObject)
 			if input == activeInput then
 				release()
+				local v = visit
+				local cat = if v then v.cat else nil
+				if v and cat then
+					turnToShow(v, cat)
+				end
 			end
 		end)
 	)
