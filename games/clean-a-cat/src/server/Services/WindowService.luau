@@ -11,6 +11,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 
 local FLAG = "strays"
@@ -50,6 +51,7 @@ function WindowService.addResident(player: Player, cat: string, bow: string?): b
 	table.insert(residents, { cat = cat, bow = bow, since = os.time() })
 	save.residents = residents
 	WindowService.send(player)
+	IndexService.stamp(player, cat, "resident")
 	return true
 end
 
@@ -71,6 +73,8 @@ local function onLoaded(player: Player, save: any)
 	local count = #WindowService.residents(player)
 	local away = os.time() - (if type(save.lastSeen) == "number" then save.lastSeen else os.time())
 	local coins = WindowRules.tips(count, away, true)
+	-- Stamp the time now, so a server that stops without releasing the save cannot pay this jar twice.
+	save.lastSeen = os.time()
 	if coins > 0 then
 		pay(player, coins)
 		NetService.notice(player, `Your window cats saved {coins} coins in the tip jar`)

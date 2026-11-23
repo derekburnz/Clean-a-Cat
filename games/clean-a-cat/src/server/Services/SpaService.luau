@@ -19,6 +19,7 @@ local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WindowService = require(script.Parent:WaitForChild("WindowService"))
@@ -166,6 +167,9 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		return
 	end
 	local kind = cat.kind
+	if kind ~= nil then
+		IndexService.stamp(player, kind, "washed")
+	end
 	if kind ~= nil and cat.stray then
 		-- A stray has nobody to pay: the photo coins, and it moves into the window when there is room.
 		save.coins += coins

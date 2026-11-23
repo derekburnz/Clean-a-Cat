@@ -32,6 +32,7 @@ Remotes.ServerToClient = {
 	"CustomerQueue", -- (kinds: { string })  the cats waiting at the door, front first (switch customers)
 	"Residents", -- (list: { { cat: string, bow: string? } })  the display window's cats, in order (switch strays)
 	"WindowTips", -- (coins: number, total: number)  window cats tipped; total is the save's coins (switch strays)
+	"CatIndex", -- (index: { [cat]: { washed: boolean, resident: boolean } })  the stamped cats (switch catIndex)
 	"PhotoPaid", -- (catId: number, coins: number, total: number)  the photo paid; total is the save's coins
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view
 	-- after every spa report, so a client whose step was refused falls back to it instead of getting stuck
