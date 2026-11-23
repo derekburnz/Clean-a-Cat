@@ -2,10 +2,12 @@
 
 Written by `.claude/skills/audio-pipeline/scripts/audio_gate.py` for `assets/clean-a-cat/audio`. Do not edit by hand; rerun the script. Budgets: audio-pipeline section 5. PASS means measured clean, not that it sounds right: a person still listens.
 
-16 files: 16 PASS, 0 WARN, 0 FAIL.
+18 files: 17 PASS, 1 WARN, 0 FAIL.
 
 | file | kind | s | ch | Hz | KB | LUFS | peak dBTP | lead ms | seam | verdict | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
+| `music/CleanACat_Music_SpaA.ogg` | music | 83.48 | 2 | 48000 | 1615 | -18.0 | -3.2 | - | listen | WARN | level changes -16 -> -29 dB across the seam (fade or gap) |
+| `music/CleanACat_Music_SpaB.ogg` | music | 96.00 | 2 | 48000 | 1577 | -18.0 | -5.2 | - | ok | PASS |  |
 | `sfx/CleanACat_Sfx_BowPop.ogg` | sfx | 0.12 | 1 | 48000 | 5 | - | -3.0 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_BrushSwish_1.ogg` | sfx | 0.28 | 1 | 48000 | 7 | - | -2.8 | 2 | - | PASS |  |
 | `sfx/CleanACat_Sfx_BrushSwish_2.ogg` | sfx | 0.28 | 1 | 48000 | 7 | - | -1.8 | 2 | - | PASS |  |
