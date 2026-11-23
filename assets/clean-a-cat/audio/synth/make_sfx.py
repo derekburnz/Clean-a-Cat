@@ -124,6 +124,48 @@ def camera_shutter(rng: np.random.Generator) -> np.ndarray:
     return out
 
 
+def sponge_loop(rng: np.random.Generator) -> np.ndarray:
+    """A wet sponge rubbing fur: soft squishy noise that swells with each back and forth stroke (4 strokes in 2 s),
+    with tiny bubbly squeaks. Built circular (strokes and noise wrap around) so the loop has no seam."""
+    length = 2.0
+    n = int(RATE * length)
+    x = np.arange(n) / RATE
+    noise = rng.standard_normal(n)
+    # circular band-pass in the frequency domain so the start and end join cleanly
+    f = np.fft.rfftfreq(n, 1 / RATE)
+    wet = np.fft.irfft(np.fft.rfft(noise) * (1 / (1 + ((f - 1400) / 700) ** 2)), n)
+    hiss = np.fft.irfft(np.fft.rfft(rng.standard_normal(n)) * (1 / (1 + ((f - 4200) / 1500) ** 2)), n)
+    strokes = 0.35 + 0.65 * np.sin(np.pi * ((x * 2.0) % 1.0)) ** 1.5  # four strokes, a period of 0.5 s
+    out = (wet / np.max(np.abs(wet)) + 0.25 * hiss / np.max(np.abs(hiss))) * strokes
+    for k in range(6):  # small squeaks, wrapped around the loop
+        start = int(rng.uniform(0, n))
+        m = int(0.05 * RATE)
+        tt = np.arange(m) / RATE
+        squeak = np.sin(2 * np.pi * (1800 + 900 * tt / 0.05) * tt) * np.exp(-tt / 0.015) * 0.25
+        idx = (np.arange(m) + start) % n
+        out[idx] += squeak
+    return out
+
+
+def fur_shake(rng: np.random.Generator) -> np.ndarray:
+    """A cat shakes off water: four quick fur flaps that get smaller, with a scatter of tiny droplet ticks."""
+    out = np.zeros(int(RATE * 0.75))
+    for i, (at, gain) in enumerate(((0.0, 1.0), (0.11, 0.85), (0.21, 0.65), (0.3, 0.45))):
+        n = int(RATE * 0.12)
+        flap = bandpass(rng.standard_normal(n), 500, 3500) * env(n, 0.012, 28) * gain
+        start = int(RATE * at)
+        out[start : start + n] += flap
+    for _ in range(14):
+        at = rng.uniform(0.04, 0.6)
+        n = int(RATE * 0.02)
+        tt = np.arange(n) / RATE
+        f0 = rng.uniform(2200, 3800)
+        tick = np.sin(2 * np.pi * f0 * tt * (1 + 2 * tt)) * np.exp(-tt / 0.004) * rng.uniform(0.15, 0.35)
+        start = int(RATE * at)
+        out[start : start + n] += tick
+    return out
+
+
 # --- Cat voices. Ported from the owner's own asset library (derekburnz/Roblox-Asset-Library, audio/synth/synth.py,
 # purr_loop and cat_voice), so these are original sounds we own; re-rendered here under Clean a Cat names. ---------
 
@@ -217,6 +259,8 @@ SOUNDS = [
     ("sfx", "CleanACat_Sfx_BrushSwish_1", lambda r: brush_swish(r, 0)),
     ("sfx", "CleanACat_Sfx_BrushSwish_2", lambda r: brush_swish(r, 1)),
     ("sfx", "CleanACat_Sfx_BrushSwish_3", lambda r: brush_swish(r, 2)),
+    ("sfx", "CleanACat_Sfx_SpongeLoop", sponge_loop),
+    ("sfx", "CleanACat_Sfx_FurShake", fur_shake),
     ("sfx", "CleanACat_Sfx_Purr_1", lambda r: purr(r, 0)),
     ("sfx", "CleanACat_Sfx_Purr_2", lambda r: purr(r, 1)),
     ("sfx", "CleanACat_Sfx_Meow_1", lambda r: meow(r, 0)),
@@ -227,8 +271,13 @@ SOUNDS = [
 ]
 
 
-def write_ogg(sig: np.ndarray, path: Path) -> None:
-    sig = fade_out(sig.astype(np.float64))
+LOOPS = {"CleanACat_Sfx_SpongeLoop"}  # seamless loops: no end fade
+
+
+def write_ogg(sig: np.ndarray, path: Path, loop: bool = False) -> None:
+    sig = sig.astype(np.float64)
+    if not loop:
+        sig = fade_out(sig)
     peak = np.max(np.abs(sig)) or 1.0
     pcm = (sig / peak * PEAK * 32767).astype("<i2")
     with tempfile.TemporaryDirectory() as tmp:
@@ -255,7 +304,7 @@ def main() -> None:
     out = Path(args.out)
     for folder, name, make in SOUNDS:
         rng = np.random.default_rng(args.seed + zlib.crc32(name.encode()) % 1000)
-        write_ogg(make(rng), out / folder / f"{name}.ogg")
+        write_ogg(make(rng), out / folder / f"{name}.ogg", loop=name in LOOPS)
         print(f"wrote {folder}/{name}.ogg")
 
 

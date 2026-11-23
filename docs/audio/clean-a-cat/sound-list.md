@@ -10,11 +10,11 @@ Moments are the shared list in issue #3. Source: **synth** means made by `assets
 
 | Cue id | Moment | Bus | What it sounds like | Source | File or asset | Vol | Pitch | minGap | Voices | Preload | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| scrubLoop | ScrubStart to ScrubStop | Sfx | gentle wet sponge rub, loops; speed follows drag | store | search: sponge, scrub, soap | 0.5 | 0.9 to 1.15 by drag speed | - | 1 | yes | to search |
+| scrubLoop | ScrubStart to ScrubStop | Sfx | gentle wet sponge rub, loops; speed follows drag | synth | CleanACat_Sfx_SpongeLoop (2 s seamless loop, four strokes, small squeaks) | 0.5 | 0.9 to 1.15 by drag speed | - | 1 | yes | made, gate PASS, seam clean |
 | bubblePop | ScrubMove | Sfx | tiny soft pops | synth | CleanACat_Sfx_BubblePop_1..3 | 0.35 | 0.92 to 1.08 | 0.12 | 3 | yes | made, gate PASS |
 | mudPlop | MudPatchCleared | Sfx | small wet plop, pitch rises as fewer patches remain | synth | CleanACat_Sfx_MudPlop | 0.5 | 0.9 + 0.02 per cleared patch, max 1.3 | 0.05 | 3 | yes | made, gate PASS |
 | revealChime | CatClean | Sfx | two soft bright notes rising | synth | CleanACat_Sfx_RevealChime | 0.55 | 1.0 | 0.5 | 1 | yes | made, gate PASS |
-| catShake | CatClean (with the shake-off) | Sfx | fur shake with a few droplets | store | search: dog shake, fur shake, water shake | 0.5 | 0.95 to 1.05 | 0.5 | 1 | no | to search |
+| catShake | CatClean (with the shake-off) | Sfx | fur shake with a few droplets | synth | CleanACat_Sfx_FurShake (four fur flaps and droplet ticks, 0.75 s) | 0.5 | 0.95 to 1.05 | 0.5 | 1 | no | made, gate PASS |
 | brushSwish | BrushSwipe | Sfx | soft brush swish, one step higher per stroke | synth | CleanACat_Sfx_BrushSwish_1..3 (stroke 1, 2, 3) | 0.45 | 0.97 to 1.03 | 0.1 | 2 | yes | made, gate PASS |
 | purr | CatFluffed | Sfx | short content purr, about 1.5 s | library | CleanACat_Sfx_Purr_1..2 (ported from the library's purr code into make_sfx.py) | 0.5 | 0.95 to 1.05 | 1.0 | 1 | no | made, gate PASS |
 | bowPop | BowChosen | Sfx | light round pop | synth | CleanACat_Sfx_BowPop | 0.5 | 0.95 to 1.05 | 0.15 | 1 | no | made, gate PASS |
@@ -29,7 +29,7 @@ Later, not in the first slice: coin and tip jar, build finished celebration, bui
 Calm and light, like a sunny spa or a cat cafe: soft keys, plucked guitar or marimba, light brushed drums, 80 to 100 BPM, major key, no vocals. Two tracks that alternate with a 2 second crossfade so no one loop plays all session. Starts only after the player's settings are read.
 
 ## Searching the Creator Store (store rows)
-The Creator Store is Roblox's library of free sounds and music from Roblox's audio partners. It needs no upload, but its music may only be used inside Roblox, never in a video off the platform. The cloud threads cannot reach the Roblox search, so these searches run in Studio on the owner's PC (Sync-Agent, Studio search with free and verified creators only, audio type, the duration range below), returning two or three candidates per cue with name, creator, id and length:
+The Creator Store is Roblox's library of free sounds and music from Roblox's audio partners. It needs no upload, but its music may only be used inside Roblox, never in a video off the platform. Every cue now has a sound made from code, so no search is needed. A Creator Store search is only worth it if a listen says one of ours sounds wrong. It runs in Studio on the owner's PC (Sync-Agent, free and verified creators only, audio type, the duration range below), returning two or three candidates per cue with name, creator, id and length:
 
 | Cue | Search words | Length |
 |---|---|---|

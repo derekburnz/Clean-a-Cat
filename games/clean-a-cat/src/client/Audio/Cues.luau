@@ -7,7 +7,7 @@ local CueRules = require(script.Parent:WaitForChild("CueRules"))
 type Cue = CueRules.Cue
 
 local Cues: { [string]: Cue } = {
-	-- Creator Store pick pending (search in Studio)
+	-- synth: CleanACat_Sfx_SpongeLoop (seamless 2 s loop)
 	scrubLoop = { ids = {}, group = "Sfx", volume = 0.5, voices = 1, preload = true, looped = true },
 	-- synth: CleanACat_Sfx_BubblePop_1..3
 	bubblePop = {
@@ -30,7 +30,7 @@ local Cues: { [string]: Cue } = {
 		voices = 1,
 		preload = true,
 	},
-	-- Creator Store pick pending
+	-- synth: CleanACat_Sfx_FurShake
 	catShake = {
 		ids = {},
 		group = "Sfx",
