@@ -1,23 +1,29 @@
 --!strict
 -- EffectsController: plays effects on the game's moments (Shared.Moments). It only listens.
 -- Scrub effects sit behind the LiveFlags switch `scrubEffects`, reveal effects behind `revealEffects` and brush and bow
--- effects behind `fluffEffects`, all off by default, because they change the first session.
+-- effects behind `fluffEffects`, and the cats' procedural motion (Effects/CatMotion) behind `catMotion`, all off by
+-- default, because they change the first session.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
+local CatPose = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatPose"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 
 local SCRUB_FLAG = "scrubEffects"
 local REVEAL_FLAG = "revealEffects"
 local FLUFF_FLAG = "fluffEffects"
+local MOTION_FLAG = "catMotion"
 local REVEAL_LIFT = 0.6 -- studs above the cat's pivot, so the sparkles start on the coat and not in the tub
 local BOW_LIFT = 1.2 -- studs above the pivot, about where a bow sits
 local GLOW_SECONDS = 0.6
 
--- The coat colour for fur puffs: the cat's Body part when it has one.
+-- The coat colour for fur puffs: the cat's Body part when it has one ("Body" on placeholders, "<asset>_Body" on
+-- the generated cats).
 local function coatColor(cat: Model): Color3?
-	local body = cat:FindFirstChild("Body", true)
-	if body and body:IsA("BasePart") then
-		return body.Color
+	for _, child in cat:GetChildren() do
+		if child:IsA("BasePart") and CatPose.jointKey(child.Name) == "Body" then
+			return child.Color
+		end
 	end
 	return nil
 end
@@ -35,6 +41,10 @@ function EffectsController.Start()
 	local LiveFlags = require(shared:WaitForChild("LiveFlags")) :: any
 	local Moments = require(shared:WaitForChild("Moments")) :: any
 
+	CatMotion.start(Effects.tier(), function(): boolean
+		return LiveFlags.isOn(MOTION_FLAG)
+	end)
+
 	local function scrubOn(): boolean
 		return LiveFlags.isOn(SCRUB_FLAG)
 	end
@@ -50,6 +60,7 @@ function EffectsController.Start()
 		Effects.stopStream(foamPreset)
 	end)
 	Moments.CatClean:Connect(function(cat: Model)
+		CatMotion.shake(cat)
 		if not LiveFlags.isOn(REVEAL_FLAG) or not cat:IsDescendantOf(workspace) then
 			return
 		end
@@ -68,6 +79,7 @@ function EffectsController.Start()
 		end
 	end)
 	Moments.CatFluffed:Connect(function(cat: Model)
+		CatMotion.wiggle(cat)
 		if LiveFlags.isOn(FLUFF_FLAG) then
 			Effects.glow(cat, GLOW_SECONDS)
 		end
