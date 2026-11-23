@@ -261,6 +261,14 @@ def carry_at(spec, body="walk"):
     return (0.0, round(h["c"][1], 4), round(tip - 0.01, 4))
 
 
+def bow_at(spec, body="walk"):
+    """Where a bow sits (issue #14), relative to the neck and unscaled: on the crown, at the front edge of the head
+    and centred, in front of the ears, so it reads from the player's camera at the tub. The cat models carry it as the
+    Attachment `BowSlot` in the Head part; each bow model has a matching `BowSlot` at its base."""
+    h = dims(spec, body)["head"]
+    return (0.0, round(h["fy"] + 0.16, 4), round(h["top"] - 0.01, 4))
+
+
 def back_rise(spec):
     """How far the coat's extras stand above the top of A's body box (_body_a, _coat_extras): a mane 0.09, star specks
     0.07, sprinkles 0.045, stripes, patches, spots and petals 0.03. The walking back pieces cover it."""

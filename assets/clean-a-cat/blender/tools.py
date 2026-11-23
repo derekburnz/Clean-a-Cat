@@ -1,8 +1,9 @@
-"""Hand tools (issue #13 for the sponges; the brush follows in #14).
+"""Hand tools (issue #13 for the sponges, #14 for the brush).
 
   CleanACat_Tool_Sponge        the starting sponge: butter yellow with a mint scrub top
   CleanACat_Tool_SpongeBubble  Bubble Soap (30 coins): a bigger sponge with a foam cluster on top, a wider scrub
   CleanACat_Tool_SpongeGolden  the Golden Sponge game pass: gold with a pale gold top and gold bubbles
+  CleanACat_Tool_Brush         the grooming brush: a bubblegum back with cream bristles and a light wood handle
 
 Each is one object, so the Part model is a Model of Parts whose biggest part is named `Handle` (rbx_export
 RENAME_BIGGEST): the game moves the parts into a Roblox Tool and welds them to Handle. Pivot at the grip centre
@@ -35,4 +36,17 @@ def build_sponge(name, mat):
     return [b.finalize(name, mat)]
 
 
+def build_brush(mat):
+    """The brush, held by its handle: the pivot is the middle of the handle and the head points forward (-Y), the
+    bristles down, so a stroke reads from the player's camera. The head is the biggest part, so it is `Handle`."""
+    name = "CleanACat_Tool_Brush"
+    b = Builder()
+    b.box((0, 0, 0), (0.16, 0.6, 0.12), "wood_light")                          # handle, the grip
+    b.box((0, -0.5, 0.02), (0.56, 0.44, 0.14), "spa_bubblegum")                # the back of the head
+    for i, y in enumerate((-0.66, -0.5, -0.34)):                               # three rows of bristles
+        b.box((0, y, -0.1), (0.48, 0.09, 0.14), "foam" if i != 1 else "spa_cream", bevel=False)
+    return [b.finalize(name, mat)]
+
+
 ASSETS = {n: (lambda mat, n=n: build_sponge(n, mat), 400) for n in SPONGES}
+ASSETS["CleanACat_Tool_Brush"] = (build_brush, 200)

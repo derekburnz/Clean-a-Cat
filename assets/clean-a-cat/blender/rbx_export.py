@@ -73,7 +73,7 @@ ROUND = 4
 # Names the game looks up. An object ending in _SignBoard or _Screen keeps its child Model but its part is named
 # SignBoard or Screen (found with a recursive FindFirstChild), so the UI can hang a SurfaceGui on it.
 RENAME_BIGGEST = {n: "Handle" for n in ("CleanACat_Tool_Sponge", "CleanACat_Tool_SpongeBubble",
-                                          "CleanACat_Tool_SpongeGolden")}   # a Roblox Tool's grip part
+                                          "CleanACat_Tool_SpongeGolden", "CleanACat_Tool_Brush")}   # a Roblox Tool's grip part
 PART_NAMES = {"_SignBoard": "SignBoard", "_Screen": "Screen"}
 # CollectionService tags, keyed by object name, or by name suffix when the key starts with "_".
 TAGS = {"_ChanceBoard": ["ChanceBoard"]}
@@ -218,8 +218,15 @@ LOOKS = {}  # object name -> ([r, g, b] in 0..1, Material): a look from outside 
 SWATCH_MATERIALS = {}  # asset -> {swatch: Material}: a statue cast in bronze or carved in jade (luckycat.py, F88)
 
 
+# Parts the game shows later: drawn see-through, never in the way of a ray, a tap or a shadow until the game shows
+# them (a dirty cat's fluffed fur, #14: the game tweens Transparency to 0 after the third brush swipe).
+SHOWN_LATER = ("_Fluff",)
+
+
 def _material(obname, swatch):
     """(Material, Transparency) for a part."""
+    if any(k in obname for k in SHOWN_LATER):
+        return "SmoothPlastic", 1.0
     if swatch == "glass" or obname.endswith("_Glass"):   # SmoothPlastic, not Glass: Roblox's Glass bends what is
         return "SmoothPlastic", 0.6                       # behind it, so a room seen through a window looked broken
                                                           # (Derek 2026-10-30, "windows have distortion problems")
@@ -282,6 +289,8 @@ def _props(p, asset, uid):
         props["CanQuery"] = False                 # blocker barriers: the camera and clicks pass through
     if p["name"].endswith(("_Snowfall", "_Sky_Glass")):   # the snow volume and the globe's glass: rays, taps and
         props["CanQuery"] = False                 # clicks pass through to the floor and the props
+    if any(k in p["name"] for k in SHOWN_LATER):
+        props["CanQuery"] = False                 # scrub and brush rays reach the fur, not the hidden puffs
     if p["name"].endswith("_RingIcon_Decor"):     # #2449: flat pictures in the walk-up rings, never in the way
         props["CanQuery"] = False
         props["CastShadow"] = False

@@ -497,6 +497,38 @@
          }
         }
        }
+      },
+      {
+       "name": "BowSlot",
+       "className": "Attachment",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.3515,
+           -0.1995
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       }
       }
      ]
     },
