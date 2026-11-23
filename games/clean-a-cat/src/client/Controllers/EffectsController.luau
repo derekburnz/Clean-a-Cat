@@ -15,6 +15,7 @@ local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
 local BOW_DROP = 0.3 -- studs below the top of the cat, about where a bow sits
 local GLOW_SECONDS = 0.6
+local BOW_POP_SECONDS = 0.25
 
 -- The middle of the cat and the top of the cat, from its bounding box. Works for any pivot (the generated cats pivot
 -- at the base centre, the placeholder at the middle of its ball) and any scale.
@@ -92,7 +93,15 @@ function EffectsController.Start()
 	end)
 	Moments.BowChosen:Connect(function(cat: Model, _bowId: string)
 		if LiveFlags.isOn(FLUFF_FLAG) and cat:IsDescendantOf(workspace) then
-			Effects.burst("bowHearts", topPoint(cat))
+			-- The bow BowFit put on the cat pops in on its BowSlot; the hearts start where it sits.
+			local bow = cat:FindFirstChild("WornBow", true)
+			local slot = if bow then bow:FindFirstChild("BowSlot", true) else nil
+			if bow and bow:IsA("Model") and slot and slot:IsA("Attachment") then
+				Effects.popIn(bow :: Model, slot :: Attachment, BOW_POP_SECONDS)
+				Effects.burst("bowHearts", (slot :: Attachment).WorldPosition)
+			else
+				Effects.burst("bowHearts", topPoint(cat))
+			end
 		end
 	end)
 	Moments.MudPatchCleared:Connect(

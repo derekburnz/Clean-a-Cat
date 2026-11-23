@@ -13,9 +13,9 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 | CatClean | 8 sparkles in palette colours | around the cat | revealSparkle | Emit 6 phone, 8 PC | halved | #6 | built, switch revealEffects |
 | CatClean | Water droplets on the shake-off | the cat | shakeDroplets | Emit 6 phone, 10 PC | halved | #6 | built, switch revealEffects; shake motion waits on the rig (#11) |
 | BrushSwipe | Fur puffs in the coat colour along the stroke | brush point | furPuff | Emit 6 | kept | #7 | built, switch fluffEffects |
-| BrushSwipe | Cat grows about 3 percent per stroke (Back Out, 0.2 s) | the cat | fluffScale | 1 tween | skipped | #7 | waits on the cat model (#11), so it never scales a part gameplay moves |
+| BrushSwipe | Fur pieces fade in after the third stroke (Model-Agent's _Fluff01 to _Fluff10) | the cat | none, a tween | 1 tween per piece | kept | #7 | built by ScrubController (showFluff); the grow-per-stroke idea is dropped so no part gameplay moves is scaled |
 | CatFluffed | Soft glow pulse, one Highlight destroyed after 0.6 s | the cat | glow | 1 Highlight, 2 max on phones | kept, no fade | #7 | built, switch fluffEffects |
-| BowChosen | Bow pops in (scale 0 to 1, Back Out 0.25 s) with 3 small hearts | above the cat | bowHearts | Emit 3 | halved | #7 | hearts built, switch fluffEffects; bow scale pop waits on the bow model (#14) |
+| BowChosen | Bow pops in on its BowSlot (scale 0 to 1, Back Out 0.25 s) with 3 small hearts | the bow on the head | bowHearts, popIn | Emit 3, one ScaleTo per frame for 0.25 s | halved, no pop | #7 | built, switch fluffEffects |
 | CatToWindow | Hop arc to the cushion, small dust puff on landing | window cushion | windowHop | Emit 4 | instant move | #7 | planned |
 
 ## Motion (procedural first, on the cat rig)
@@ -29,6 +29,9 @@ Part names from Model-Agent (issue #11): Body, Head, Eye1, Eye2, EarL, EarR, Tai
 | Happy wiggle (tail wag, ears, head tilt, 0.8 s) | CatFluffed | Head, Tail, EarL, EarR | skipped | #7 | built, switch catMotion |
 
 Body never moves, so mud on the body stays put and the server can still move the whole cat. Phone budget: 4 cats at 30 updates a second, half rate past 30 studs, none past 60. Still to measure on a phone profile in Studio.
+
+## Measured
+- 2026-11-23 ET, Sync-Agent on Derek's PC (PR #54, scrub and reveal effects on vs off): render CPU 1.27 vs 1.28 ms, GPU 0.35 vs 0.34 ms, 95th percentile frame 5.27 vs 5.31 ms, at most 4 emitters and 8 instances live, no console errors. Report: `Sync-Agent/studio-reports/pr54-effects-cost-2026-11-23.md` in the project files. Still owed: a phone run, the fluff and bow effects and cat motion.
 
 ## Requests to other lanes
 | Need | Owner | Issue |
