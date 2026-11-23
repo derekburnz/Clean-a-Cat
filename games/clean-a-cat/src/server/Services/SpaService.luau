@@ -12,6 +12,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -189,7 +190,9 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	end
 	-- A customer's cat goes home: the customer pays coins plus a tip, and the spa earns stars.
 	local pay = CatRules.pay(kind)
-	coins = pay.coins + pay.tip
+	-- Built stations (a Brush Table, a dryer) make every customer pay a little more; only while builds are on.
+	local bonus = if LiveFlags.isOn("builds") then BuildRules.payBonus(save.stations) else 0
+	coins = pay.coins + pay.tip + bonus
 	save.coins += coins
 	save.stars += pay.stars
 	NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
