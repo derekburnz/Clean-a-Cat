@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
@@ -33,7 +34,7 @@ local function nearBoard(player: Player): boolean
 	if root == nil or not root:IsA("BasePart") then
 		return false
 	end
-	local offset = (root :: BasePart).Position - ToolRules.BOARD_POSITION
+	local offset = (root :: BasePart).Position - SpaLayout.spot("Tools").Position
 	return offset.Magnitude <= ToolRules.SERVER_REACH
 end
 

@@ -9,11 +9,9 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "customers"
-local DOOR_POSITION = Vector3.new(8, 0, -8) -- the front of the line, on the floor right of the tub
-local SPACING = Vector3.new(3, 0, 0) -- each next customer stands this far further back
-local FACING = CFrame.Angles(0, math.pi, 0) -- models face -Z; turned to face the spawn (+Z)
 local FIGURE_SIZE = Vector3.new(1.6, 3.6, 1)
 local CAT_SCALE = 0.8
 local MAX_SHOWN = 5
@@ -24,6 +22,7 @@ local DoorController = {}
 local folder: Folder? = nil
 local connection: RBXScriptConnection? = nil
 local shownSeq = 0 -- the newest queue drawn, so an older answer that finished waiting late does not win
+local lastQueue: unknown = nil -- the newest queue the server sent, to redraw when the plot comes or goes
 
 local function catAsset(kind: string): Model?
 	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
@@ -32,7 +31,7 @@ local function catAsset(kind: string): Model?
 end
 
 local function figure(kind: string, index: number, parent: Instance)
-	local spot = CFrame.new(DOOR_POSITION + SPACING * (index - 1)) * FACING
+	local spot = SpaLayout.lineSpot("SpotQueue", index) -- the front of the line is SpotQueue1
 	local model = Instance.new("Model")
 	model.Name = `PH_Customer{index}`
 	local body = Instance.new("Part")
@@ -69,6 +68,7 @@ local function onQueue(rawKinds: unknown)
 	if current == nil or type(rawKinds) ~= "table" then
 		return
 	end
+	lastQueue = rawKinds
 	shownSeq += 1
 	local seq = shownSeq
 	local kinds: { string } = {}
@@ -111,6 +111,7 @@ local function disable()
 		folder:Destroy()
 		folder = nil
 	end
+	lastQueue = nil
 end
 
 local function refresh()
@@ -125,6 +126,12 @@ function DoorController.Init(_controllers: { [string]: any }) end
 
 function DoorController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	-- The plot placed or taken away: the line is drawn again at its new spots.
+	SpaLayout.changed(function()
+		if lastQueue ~= nil then
+			task.spawn(onQueue, lastQueue)
+		end
+	end)
 	refresh()
 end
 
