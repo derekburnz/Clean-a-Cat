@@ -36,6 +36,21 @@ return function()
 		end)
 	end)
 
+	describe("SpaLayout.PROPS", function()
+		it("puts every prop on a plot spot, under its own name", function()
+			local seen: { [string]: boolean } = {}
+			for _, prop in SpaLayout.PROPS do
+				expect(SpaLayout.PLOT_SPOTS[prop.spot]).to.be.ok()
+				expect(seen[prop.name]).to.equal(nil)
+				seen[prop.name] = true
+				expect(string.sub(prop.asset, 1, 15)).to.equal("CleanACat_Prop_")
+			end
+			for index = 1, 4 do
+				expect(seen[`Cushion{index}`]).to.equal(true)
+			end
+		end)
+	end)
+
 	describe("SpaLayout.lineName", function()
 		it("names listed spots in a line", function()
 			local name, past = SpaLayout.lineName("SpotQueue", 2, true)

@@ -28,15 +28,46 @@ local connection: RBXScriptConnection? = nil
 local drawnSeq = 0
 local lastResidents: unknown = nil -- the newest list the server sent, to redraw when the plot comes or goes
 
--- The `index`th window spot: on the plot, its window seat cushion; in the placeholder room, the floor under a
--- placeholder cushion.
+-- The `index`th window spot: on the plot, a cushion's base on the window seat; in the placeholder room, the
+-- floor under a placeholder cushion.
 local function cushionCFrame(index: number): CFrame
 	return SpaLayout.lineSpot("SpotWindow", index)
 end
 
--- Where a window cat sits: on the plot's cushion, or on top of the placeholder cushion.
-local function seatCFrame(index: number): CFrame
-	return cushionCFrame(index) * CFrame.new(0, if SpaLayout.onPlot() then 0 else CUSHION_SIZE.Y, 0)
+-- Where a window cat sits and its scale: on the plot, the cushion prop's CatSeat at the cushion's CatScale;
+-- in the placeholder room, on top of the placeholder cushion.
+local function seat(index: number): (CFrame, number)
+	local cushion = SpaLayout.prop(`Cushion{index}`)
+	if cushion then
+		local scale = cushion:GetAttribute("CatScale")
+		local catSeat = cushion:FindFirstChild("CatSeat", true)
+		local at = if catSeat and catSeat:IsA("Attachment")
+			then CFrame.new((catSeat :: Attachment).WorldPosition) * cushion:GetPivot().Rotation
+			else cushion:GetPivot()
+		return at, if type(scale) == "number" and scale > 0 then scale else CAT_SCALE
+	end
+	local base = cushionCFrame(index)
+	return base * CFrame.new(0, if SpaLayout.onPlot() then 0 else CUSHION_SIZE.Y, 0), CAT_SCALE
+end
+
+-- The tip jar fills with the window: empty with no cats, full with every cushion taken (Model-Agent's Fill part
+-- keeps its bottom at the jar's FillBottom and grows to FillHeight). Only on the plot, on this client.
+local function fillJar(cats: number)
+	local jar = SpaLayout.prop("TipJar")
+	local fill = if jar then jar:FindFirstChild("Fill", true) else nil
+	if jar == nil or fill == nil or not fill:IsA("BasePart") then
+		return
+	end
+	local part = fill :: BasePart
+	local bottom = jar:GetAttribute("FillBottom")
+	local full = jar:GetAttribute("FillHeight")
+	if type(bottom) ~= "number" or type(full) ~= "number" then
+		return
+	end
+	local height = full * math.clamp(cats / WindowRules.CUSHIONS, 0, 1)
+	part.Transparency = if height <= 0 then 1 else 0
+	part.Size = Vector3.new(part.Size.X, math.max(height, 0.05), part.Size.Z)
+	part.CFrame = jar:GetPivot() * CFrame.new(0, bottom + part.Size.Y / 2, 0)
 end
 
 -- The placeholder cushions, only in the placeholder room: the plot has its own window seat.
@@ -89,8 +120,9 @@ local function onResidents(rawList: unknown)
 			local asset = catAsset(kind)
 			if asset then
 				local cat = asset:Clone() :: Model
-				cat:ScaleTo(CAT_SCALE)
-				cat:PivotTo(seatCFrame(index))
+				local at, scale = seat(index)
+				cat:ScaleTo(scale)
+				cat:PivotTo(at)
 				for _, part in cat:GetDescendants() do
 					if part:IsA("BasePart") then
 						local p = part :: BasePart
@@ -101,7 +133,7 @@ local function onResidents(rawList: unknown)
 				end
 				cat:SetAttribute("Resident", true)
 				if type(bowId) == "string" and table.find(SpaRules.BOWS, bowId) then
-					BowFit.wear(cat, bowId, CAT_SCALE)
+					BowFit.wear(cat, bowId, scale)
 				end
 				cat.Parent = line
 			end
@@ -117,6 +149,7 @@ local function onResidents(rawList: unknown)
 		child.Parent = current
 	end
 	line:Destroy()
+	fillJar(index)
 end
 
 local function enable()

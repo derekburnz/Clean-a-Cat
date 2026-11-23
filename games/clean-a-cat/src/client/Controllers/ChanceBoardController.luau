@@ -16,31 +16,52 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "customers"
 local LIT = "ChanceBoardLit"
-local BOARD_SIZE = Vector3.new(4, 4, 0.3)
+local BOARD_SIZE = Vector3.new(4, 4, 0.3) -- the placeholder, when the board model is missing
+local PROP_ASSET = "CleanACat_Prop_ChanceBoard" -- Model-Agent's board; its text goes on the part named Screen
 
 local ChanceBoardController = {}
 
-local board: Part? = nil
+local board: Instance? = nil
 local shownTier = 0 -- the tier the board was drawn for
 
--- Standing at SpotBoard, its front facing the way the spot faces.
-local function boardCFrame(): CFrame
-	return SpaLayout.spot("SpotBoard") * CFrame.new(0, BOARD_SIZE.Y / 2, 0)
-end
-
-local function build(tier: number): Part
+-- The board standing at SpotBoard, its front facing the way the spot faces, and the part its text goes on:
+-- Model-Agent's board and its Screen, or a placeholder part when the model is missing.
+local function frame(): (Instance, BasePart)
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	local asset = if assets then assets:FindFirstChild(PROP_ASSET) else nil
+	if asset and asset:IsA("Model") then
+		local model = (asset :: Model):Clone() :: Model
+		model:PivotTo(SpaLayout.spot("SpotBoard"))
+		for _, descendant in model:GetDescendants() do
+			if descendant:IsA("BasePart") then
+				local p = descendant :: BasePart
+				p.Anchored = true
+				p.CanQuery = false
+			end
+		end
+		local screen = model:FindFirstChild("Screen", true)
+		if screen and screen:IsA("BasePart") then
+			return model, screen :: BasePart
+		end
+		model:Destroy()
+	end
 	local part = Instance.new("Part")
 	part.Name = "PH_ChanceBoard"
 	part.Size = BOARD_SIZE
 	part.Color = Color3.fromRGB(250, 245, 235)
 	part.Anchored = true
 	part.CanQuery = false
-	part.CFrame = boardCFrame()
+	part.CFrame = SpaLayout.spot("SpotBoard") * CFrame.new(0, BOARD_SIZE.Y / 2, 0)
+	return part, part
+end
+
+local function build(tier: number): Instance
+	local root, screen = frame()
 	local gui = Instance.new("SurfaceGui")
 	gui.Face = Enum.NormalId.Front -- the front (-Z) faces the way the spot faces
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 	gui.PixelsPerStud = 60
-	gui.Parent = part
+	gui.Parent = screen
 	local list = Instance.new("UIListLayout")
 	list.SortOrder = Enum.SortOrder.LayoutOrder
 	list.Parent = gui
@@ -77,7 +98,7 @@ local function build(tier: number): Part
 		else "Your spa gets the rarest cats"
 	footer.LayoutOrder = #CatRules.RARITIES + 1
 	footer.Parent = gui
-	return part
+	return root
 end
 
 local function refresh()
@@ -101,12 +122,14 @@ function ChanceBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	Players.LocalPlayer:GetAttributeChangedSignal(LIT):Connect(refresh)
 	Players.LocalPlayer:GetAttributeChangedSignal(CatRules.TIER_ATTRIBUTE):Connect(refresh)
-	-- The plot placed or taken away: the board moves to its spot.
+	-- The plot placed or taken away: the board is drawn again at its spot.
 	SpaLayout.changed(function()
-		local part = board
-		if part then
-			part.CFrame = boardCFrame()
+		local old = board
+		board = nil
+		if old then
+			old:Destroy()
 		end
+		refresh()
 	end)
 	refresh()
 end

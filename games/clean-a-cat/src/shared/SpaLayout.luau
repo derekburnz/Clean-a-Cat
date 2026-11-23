@@ -11,6 +11,7 @@
 --   SpaLayout.lineSpot(prefix, index)   SpotQueue<index> or SpotWindow<index>; past the last one, the line goes on
 --   SpaLayout.onPlot(): boolean         is the plot placed?
 --   SpaLayout.changed(fn)               fn() when the plot is placed or taken away (redraw what stands on spots)
+--   SpaLayout.prop(name): Model?        a fixed prop PlotService placed with the plot (see PROPS), or nil
 --   SpaLayout.place(name, onPlot)       the pure part: (position, yaw) from the tables below; specs cover it
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -56,6 +57,23 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
 	Tools = at(-1, 0.5, -2, 0),
 }) :: { [string]: Spot }
+
+-- Model-Agent's fixed props, placed with the plot (PlotService) into its PROPS_FOLDER, each with its pivot (its
+-- base, or for the sign its back) on its spot.
+export type Prop = { name: string, asset: string, spot: string }
+SpaLayout.PROPS_FOLDER = "Props"
+SpaLayout.PROPS = table.freeze({
+	{ name = "QueueMat1", asset = "CleanACat_Prop_QueueMat", spot = "SpotQueue1" },
+	{ name = "QueueMat2", asset = "CleanACat_Prop_QueueMat", spot = "SpotQueue2" },
+	{ name = "QueueMat3", asset = "CleanACat_Prop_QueueMat", spot = "SpotQueue3" },
+	{ name = "StrayBox", asset = "CleanACat_Prop_StrayBox", spot = "SpotStray" },
+	{ name = "Cushion1", asset = "CleanACat_Prop_Cushion", spot = "SpotWindow1" },
+	{ name = "Cushion2", asset = "CleanACat_Prop_Cushion", spot = "SpotWindow2" },
+	{ name = "Cushion3", asset = "CleanACat_Prop_Cushion", spot = "SpotWindow3" },
+	{ name = "Cushion4", asset = "CleanACat_Prop_Cushion", spot = "SpotWindow4" },
+	{ name = "TipJar", asset = "CleanACat_Prop_TipJar", spot = "SpotTipJar" },
+	{ name = "WindowSign", asset = "CleanACat_Prop_WindowSign", spot = "SpotSign" },
+}) :: { Prop }
 
 -- The placeholder room before the plot, in world space: the spawn at the origin and everything facing it (+Z).
 SpaLayout.ROOM_SPOTS = table.freeze({
@@ -114,6 +132,16 @@ local function placedAttachment(name: string): Attachment?
 	local plot = game:GetService("Workspace"):FindFirstChild(SpaLayout.ASSET)
 	local found = if plot then plot:FindFirstChild(name, true) else nil
 	return if found and found:IsA("Attachment") then found :: Attachment else nil
+end
+
+function SpaLayout.prop(name: string): Model?
+	if not SpaLayout.onPlot() then
+		return nil
+	end
+	local plot = game:GetService("Workspace"):FindFirstChild(SpaLayout.ASSET)
+	local props = if plot then plot:FindFirstChild(SpaLayout.PROPS_FOLDER) else nil
+	local found = if props then props:FindFirstChild(name) else nil
+	return if found and found:IsA("Model") then found :: Model else nil
 end
 
 function SpaLayout.spot(name: string): CFrame
