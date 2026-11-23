@@ -1,23 +1,35 @@
-# Python
-__pycache__/
-*.pyc
+# Rojo, Wally and luau-lsp outputs
+sourcemap.json
+Packages/
+ServerPackages/
+globalTypes*.d.luau
+.types-version
+roblox.toml
+roblox.yml
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Roblox and Rojo
+# Roblox place files and lock files (dev copies live in Studio, not Git)
+*.rbxl
+*.rbxlx
 *.rbxl.lock
 *.rbxlx.lock
-sourcemap.json
 
-# Blender backups
+# Blender backups and Python caches
 *.blend1
 *.blend2
+__pycache__/
+*.pyc
 
 # Secrets and local settings
 .env
 .env.*
+.claude/settings.local.json
 
-# The starter's skills ship in starter-game-repo/dot-claude/. A stray .claude copy there is never committed.
-starter-game-repo/.claude/
+# OS
+Thumbs.db
+.DS_Store
+
+# Node tooling (tools/cloudcheck)
+node_modules/
+
+# Library tooling (library/)
+.venv/
