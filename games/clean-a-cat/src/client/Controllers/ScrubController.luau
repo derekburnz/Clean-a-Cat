@@ -5,8 +5,8 @@
 -- effects and sound listen to Shared.Moments. Behind the LiveFlags switch `scrubPrototype`.
 --
 -- The cat is Model-Agent's dirty cat from ReplicatedStorage.Assets (see assets/clean-a-cat/blender/README.md):
--- every nested Model named `..._MudNN` is one scrub patch and every `..._TangleNN` is brushed out. The tub, the
--- bow and the buttons are still placeholders.
+-- every nested Model named `..._MudNN` is one scrub patch and every `..._TangleNN` is brushed out. It sits on
+-- the wash tub's CatSeat attachment. The bow and the buttons are still placeholders.
 --
 -- Input: a finger drag or a held left mouse button on the cat scrubs and brushes; a tap or click on a bow or the
 -- camera picks it. Gamepad: hold the right trigger with the cat in the middle of the screen and turn the camera
@@ -27,12 +27,13 @@ local SpaRules = require(Shared:WaitForChild("SpaRules"))
 
 local FLAG = "scrubPrototype"
 local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the first slice's cat; customers (#32) bring the others
+local TUB_ASSET = "CleanACat_Station_Tub"
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
-local CAT_FACING = CFrame.Angles(0, math.pi, 0) -- cat models face -Z; turned to face the spawn (+Z)
+local FACING = CFrame.Angles(0, math.pi, 0) -- models face -Z; the tub and cat turn to face the spawn (+Z)
 local ASSET_WAIT_SECONDS = 5
 local WET_DARKEN = 0.3 -- used when the cat has no WetDarken attribute
 local TUB_POSITION = Vector3.new(0, 0, -12) -- in front of the placeholder spawn, on the placeholder floor
-local TUB_TOP = TUB_POSITION + Vector3.new(0, 1.2, 0) -- where the cat sits
+local SEAT_HEIGHT = 1.2 -- the tub's inner floor, used when the tub has no CatSeat attachment
 local BOW_SIZE = Vector3.new(0.5, 0.25, 0.15) -- studs at scale 1
 local PIECE_FADE = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- mud and tangles fade, not blink
 local STROKE_TRAVEL = 2.5 -- studs of drag on the cat that make one brush stroke
@@ -68,6 +69,7 @@ type Cat = {
 
 type Visit = {
 	folder: Folder,
+	seat: CFrame?, -- where the cat sits, once the tub is in
 	cat: Cat?,
 	bowButtons: { BasePart },
 	camera: BasePart,
@@ -96,7 +98,7 @@ local connections: { RBXScriptConnection } = {}
 local nextCatThread: thread? = nil
 local reportSeq = 0 -- numbers each spa report; the server echoes it in CatStage
 local answeredSeq = 0 -- the newest report the server has answered
-local warnedNoAsset = false
+local warnedMissing: { [string]: boolean } = {}
 
 -- Sends one numbered spa report. If the server has not answered it after RESEND_SECONDS (its rate limit may have
 -- dropped it) and nothing newer was sent, it is sent again under a new number, up to RESEND_TRIES times.
@@ -139,27 +141,42 @@ local function show(part: BasePart, visible: boolean)
 	part.CanQuery = visible
 end
 
-local function buildTub(parent: Instance)
-	local tub = Instance.new("Model")
-	tub.Name = "PH_Tub"
-	local base = makePart(
-		"Base",
-		Vector3.new(6, 1.2, 5),
-		Color3.fromRGB(235, 240, 245),
-		CFrame.new(TUB_POSITION + Vector3.new(0, 0.6, 0))
-	)
-	base.CanCollide = true
-	base.Parent = tub
-	local water = makePart(
-		"Water",
-		Vector3.new(5.4, 0.2, 4.4),
-		Color3.fromRGB(150, 200, 235),
-		CFrame.new(TUB_POSITION + Vector3.new(0, 1.25, 0))
-	)
-	water.Transparency = 0.3
-	water.CanQuery = false
-	water.Parent = tub
+local function partsOf(model: Instance): { BasePart }
+	local parts: { BasePart } = {}
+	for _, descendant in model:GetDescendants() do
+		if descendant:IsA("BasePart") then
+			table.insert(parts, descendant :: BasePart)
+		end
+	end
+	return parts
+end
+
+-- The wash tub in front of the spawn. Returns where the cat sits: the tub's CatSeat attachment.
+local function buildTub(asset: Model, parent: Instance): CFrame
+	local tub = asset:Clone() :: Model
+	tub:PivotTo(CFrame.new(TUB_POSITION) * FACING) -- the pivot is the base centre on the floor
+	for _, part in partsOf(tub) do
+		part.Anchored = true
+	end
+	-- Water and foam never catch a ray, so only the cat is scrubbed.
+	for _, descendant in tub:GetDescendants() do
+		if
+			descendant:IsA("Model")
+			and (
+				string.match(descendant.Name, "_Water$") or string.match(descendant.Name, "_Foam$")
+			)
+		then
+			for _, part in partsOf(descendant) do
+				part.CanQuery = false
+			end
+		end
+	end
 	tub.Parent = parent
+	local seat = tub:FindFirstChild("CatSeat", true)
+	if seat and seat:IsA("Attachment") then
+		return (seat :: Attachment).WorldCFrame
+	end
+	return tub:GetPivot() * CFrame.new(0, SEAT_HEIGHT, 0)
 end
 
 -- Three bow buttons in a row above the tub and a camera button beside it: placeholders for the bottom bar and the
@@ -191,16 +208,6 @@ local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
 	camera.Parent = buttons
 	buttons.Parent = parent
 	return bowButtons, camera
-end
-
-local function partsOf(model: Instance): { BasePart }
-	local parts: { BasePart } = {}
-	for _, descendant in model:GetDescendants() do
-		if descendant:IsA("BasePart") then
-			table.insert(parts, descendant :: BasePart)
-		end
-	end
-	return parts
 end
 
 -- The cat's nested Models named `..._<kind>NN`, in number order.
@@ -250,26 +257,24 @@ local function findHead(model: Model): BasePart?
 	return nil
 end
 
-local function findAsset(): Model?
+local function findAsset(name: string): Model?
 	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
-	local asset = if assets then assets:FindFirstChild(CAT_ASSET) else nil
+	local asset = if assets then assets:FindFirstChild(name) else nil
 	if asset and asset:IsA("Model") then
 		return asset :: Model
 	end
-	if not warnedNoAsset then
-		warnedNoAsset = true
-		warn(
-			`ScrubController: ReplicatedStorage.Assets.{CAT_ASSET} is missing; no cat can be shown`
-		)
+	if not warnedMissing[name] then
+		warnedMissing[name] = true
+		warn(`ScrubController: ReplicatedStorage.Assets.{name} is missing`)
 	end
 	return nil
 end
 
--- A fresh copy of the dirty cat, sitting in the tub and facing the spawn.
-local function buildCat(asset: Model, parent: Instance): Cat
+-- A fresh copy of the dirty cat, sitting on `seat` (which faces the spawn).
+local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 	local model = asset:Clone() :: Model
 	model:ScaleTo(CAT_SCALE)
-	model:PivotTo(CFrame.new(TUB_TOP) * CAT_FACING) -- the pivot is the base centre
+	model:PivotTo(seat) -- the pivot is the base centre
 	for _, part in partsOf(model) do
 		part.Anchored = true
 		part.CanCollide = false
@@ -547,12 +552,12 @@ local function release()
 end
 
 -- A new dirty cat in the tub (the server's cat `catId`): the last cat goes and a fresh copy sits down.
-local function startCat(v: Visit, asset: Model, catId: number)
+local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	local old = v.cat
 	if old then
 		old.model:Destroy()
 	end
-	local cat = buildCat(asset, v.folder)
+	local cat = buildCat(asset, v.folder, seat)
 	v.cat = cat
 	v.catParams.FilterDescendantsInstances = { cat.model }
 	v.catId = catId
@@ -575,12 +580,20 @@ local function onCatReady(rawId: unknown)
 	if not v or type(rawId) ~= "number" then
 		return
 	end
-	local asset = findAsset()
+	local asset = findAsset(CAT_ASSET)
 	if not asset or visit ~= v then
 		return
 	end
+	local seat = v.seat
+	if seat == nil then
+		local tub = findAsset(TUB_ASSET)
+		seat = if tub
+			then buildTub(tub, v.folder)
+			else CFrame.new(TUB_POSITION + Vector3.new(0, SEAT_HEIGHT, 0)) * FACING
+		v.seat = seat
+	end
 	release()
-	startCat(v, asset, rawId)
+	startCat(v, asset, seat :: CFrame, rawId)
 end
 
 -- Puts the cat back to the server's stage after a step the server refused or never got, so the player can redo
@@ -672,7 +685,6 @@ local function onPhotoPaid(rawId: unknown)
 end
 
 local function buildVisit(folder: Folder): Visit
-	buildTub(folder)
 	local bowButtons, camera = buildButtons(folder)
 	local catParams = RaycastParams.new()
 	catParams.FilterType = Enum.RaycastFilterType.Include
@@ -686,6 +698,7 @@ local function buildVisit(folder: Folder): Visit
 	buttonParams.FilterDescendantsInstances = buttonList
 	return {
 		folder = folder,
+		seat = nil,
 		cat = nil,
 		bowButtons = bowButtons,
 		camera = camera,
