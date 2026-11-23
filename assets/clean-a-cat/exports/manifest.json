@@ -1,0 +1,2462 @@
+[
+ {
+  "name": "CleanACat_Cat_Cotton",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Cotton_Body",
+   "CleanACat_Cat_Cotton_Head",
+   "CleanACat_Cat_Cotton_Eye1",
+   "CleanACat_Cat_Cotton_Eye2",
+   "CleanACat_Cat_Cotton_EarL",
+   "CleanACat_Cat_Cotton_EarR",
+   "CleanACat_Cat_Cotton_Tail",
+   "CleanACat_Cat_Cotton_LegF1",
+   "CleanACat_Cat_Cotton_LegF2",
+   "CleanACat_Cat_Cotton_LegB1",
+   "CleanACat_Cat_Cotton_LegB2"
+  ],
+  "triangles": 668,
+  "budget": 1500,
+  "parts": 34,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "walk",
+  "pattern": "solid",
+  "coat": {
+   "fur": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "second": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_bubblegum",
+    "hex": "#F28DAE"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "668/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "386 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Cotton_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Cotton_Sit_Body",
+   "CleanACat_Cat_Cotton_Sit_Head",
+   "CleanACat_Cat_Cotton_Sit_Eye1",
+   "CleanACat_Cat_Cotton_Sit_Eye2",
+   "CleanACat_Cat_Cotton_Sit_EarL",
+   "CleanACat_Cat_Cotton_Sit_EarR",
+   "CleanACat_Cat_Cotton_Sit_Tail",
+   "CleanACat_Cat_Cotton_Sit_LegF1",
+   "CleanACat_Cat_Cotton_Sit_LegF2"
+  ],
+  "triangles": 668,
+  "budget": 1500,
+  "parts": 34,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.24,
+   1.85,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "sit",
+  "pattern": "solid",
+  "coat": {
+   "fur": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "second": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_bubblegum",
+    "hex": "#F28DAE"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "668/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "386 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Inky",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Inky_Body",
+   "CleanACat_Cat_Inky_Head",
+   "CleanACat_Cat_Inky_Eye1",
+   "CleanACat_Cat_Inky_Eye2",
+   "CleanACat_Cat_Inky_EarL",
+   "CleanACat_Cat_Inky_EarR",
+   "CleanACat_Cat_Inky_Tail",
+   "CleanACat_Cat_Inky_LegF1",
+   "CleanACat_Cat_Inky_LegF2",
+   "CleanACat_Cat_Inky_LegB1",
+   "CleanACat_Cat_Inky_LegB2"
+  ],
+  "triangles": 668,
+  "budget": 1500,
+  "parts": 34,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "walk",
+  "pattern": "solid",
+  "coat": {
+   "fur": {
+    "swatch": "coat_inky",
+    "hex": "#2F2D3B"
+   },
+   "second": {
+    "swatch": "coat_inky",
+    "hex": "#2F2D3B"
+   },
+   "eyes": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   },
+   "nose": {
+    "swatch": "nose_dark",
+    "hex": "#4A4450"
+   },
+   "eyes2": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "668/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "386 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Inky_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Inky_Sit_Body",
+   "CleanACat_Cat_Inky_Sit_Head",
+   "CleanACat_Cat_Inky_Sit_Eye1",
+   "CleanACat_Cat_Inky_Sit_Eye2",
+   "CleanACat_Cat_Inky_Sit_EarL",
+   "CleanACat_Cat_Inky_Sit_EarR",
+   "CleanACat_Cat_Inky_Sit_Tail",
+   "CleanACat_Cat_Inky_Sit_LegF1",
+   "CleanACat_Cat_Inky_Sit_LegF2"
+  ],
+  "triangles": 668,
+  "budget": 1500,
+  "parts": 34,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.24,
+   1.85,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "sit",
+  "pattern": "solid",
+  "coat": {
+   "fur": {
+    "swatch": "coat_inky",
+    "hex": "#2F2D3B"
+   },
+   "second": {
+    "swatch": "coat_inky",
+    "hex": "#2F2D3B"
+   },
+   "eyes": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   },
+   "nose": {
+    "swatch": "nose_dark",
+    "hex": "#4A4450"
+   },
+   "eyes2": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "668/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "386 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_LilacCloud",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_LilacCloud_Body",
+   "CleanACat_Cat_LilacCloud_Head",
+   "CleanACat_Cat_LilacCloud_Eye1",
+   "CleanACat_Cat_LilacCloud_Eye2",
+   "CleanACat_Cat_LilacCloud_EarL",
+   "CleanACat_Cat_LilacCloud_EarR",
+   "CleanACat_Cat_LilacCloud_Tail",
+   "CleanACat_Cat_LilacCloud_LegF1",
+   "CleanACat_Cat_LilacCloud_LegF2",
+   "CleanACat_Cat_LilacCloud_LegB1",
+   "CleanACat_Cat_LilacCloud_LegB2"
+  ],
+  "triangles": 948,
+  "budget": 1500,
+  "parts": 44,
+  "size_studs": {
+   "x": 1.18,
+   "y": 2.01,
+   "z": 1.89
+  },
+  "size_roblox": [
+   1.18,
+   1.89,
+   2.01
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Epic",
+  "body": "walk",
+  "pattern": "gradient",
+  "coat": {
+   "fur": {
+    "swatch": "coat_lilac",
+    "hex": "#CBB6EE"
+   },
+   "second": {
+    "swatch": "coat_lilac_light",
+    "hex": "#EDE3FB"
+   },
+   "ruff": {
+    "swatch": "coat_lilac_light",
+    "hex": "#EDE3FB"
+   },
+   "muzzle": {
+    "swatch": "coat_lilac_light",
+    "hex": "#EDE3FB"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.88,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.83,
+    0.58
+   ],
+   "LegF1": [
+    -0.24,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.24,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.24,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.24,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.14,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.14,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.59,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.59,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "948/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "550 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.01"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_LilacCloud_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_LilacCloud_Sit_Body",
+   "CleanACat_Cat_LilacCloud_Sit_Head",
+   "CleanACat_Cat_LilacCloud_Sit_Eye1",
+   "CleanACat_Cat_LilacCloud_Sit_Eye2",
+   "CleanACat_Cat_LilacCloud_Sit_EarL",
+   "CleanACat_Cat_LilacCloud_Sit_EarR",
+   "CleanACat_Cat_LilacCloud_Sit_Tail",
+   "CleanACat_Cat_LilacCloud_Sit_LegF1",
+   "CleanACat_Cat_LilacCloud_Sit_LegF2"
+  ],
+  "triangles": 1036,
+  "budget": 1500,
+  "parts": 46,
+  "size_studs": {
+   "x": 1.36,
+   "y": 1.27,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.36,
+   1.85,
+   1.27
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Epic",
+  "body": "sit",
+  "pattern": "gradient",
+  "coat": {
+   "fur": {
+    "swatch": "coat_lilac",
+    "hex": "#CBB6EE"
+   },
+   "second": {
+    "swatch": "coat_lilac_light",
+    "hex": "#EDE3FB"
+   },
+   "ruff": {
+    "swatch": "coat_lilac_light",
+    "hex": "#EDE3FB"
+   },
+   "muzzle": {
+    "swatch": "coat_lilac_light",
+    "hex": "#EDE3FB"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.21,
+    0.13,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "1036/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "602 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.16 y=-0.01"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Marble",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Marble_Body",
+   "CleanACat_Cat_Marble_Head",
+   "CleanACat_Cat_Marble_Eye1",
+   "CleanACat_Cat_Marble_Eye2",
+   "CleanACat_Cat_Marble_EarL",
+   "CleanACat_Cat_Marble_EarR",
+   "CleanACat_Cat_Marble_Tail",
+   "CleanACat_Cat_Marble_LegF1",
+   "CleanACat_Cat_Marble_LegF2",
+   "CleanACat_Cat_Marble_LegB1",
+   "CleanACat_Cat_Marble_LegB2"
+  ],
+  "triangles": 800,
+  "budget": 1500,
+  "parts": 50,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.97
+  },
+  "size_roblox": [
+   1.0,
+   1.97,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Rare",
+  "body": "walk",
+  "pattern": "spots",
+  "coat": {
+   "fur": {
+    "swatch": "coat_marble",
+    "hex": "#CDD2DA"
+   },
+   "second": {
+    "swatch": "coat_marble_spot",
+    "hex": "#545B66"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "800/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "456 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Marble_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Marble_Sit_Body",
+   "CleanACat_Cat_Marble_Sit_Head",
+   "CleanACat_Cat_Marble_Sit_Eye1",
+   "CleanACat_Cat_Marble_Sit_Eye2",
+   "CleanACat_Cat_Marble_Sit_EarL",
+   "CleanACat_Cat_Marble_Sit_EarR",
+   "CleanACat_Cat_Marble_Sit_Tail",
+   "CleanACat_Cat_Marble_Sit_LegF1",
+   "CleanACat_Cat_Marble_Sit_LegF2"
+  ],
+  "triangles": 800,
+  "budget": 1500,
+  "parts": 50,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.96
+  },
+  "size_roblox": [
+   1.24,
+   1.96,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Rare",
+  "body": "sit",
+  "pattern": "spots",
+  "coat": {
+   "fur": {
+    "swatch": "coat_marble",
+    "hex": "#CDD2DA"
+   },
+   "second": {
+    "swatch": "coat_marble_spot",
+    "hex": "#545B66"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "800/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "456 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Muffin",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Muffin_Body",
+   "CleanACat_Cat_Muffin_Head",
+   "CleanACat_Cat_Muffin_Eye1",
+   "CleanACat_Cat_Muffin_Eye2",
+   "CleanACat_Cat_Muffin_EarL",
+   "CleanACat_Cat_Muffin_EarR",
+   "CleanACat_Cat_Muffin_Tail",
+   "CleanACat_Cat_Muffin_LegF1",
+   "CleanACat_Cat_Muffin_LegF2",
+   "CleanACat_Cat_Muffin_LegB1",
+   "CleanACat_Cat_Muffin_LegB2"
+  ],
+  "triangles": 764,
+  "budget": 1500,
+  "parts": 42,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "walk",
+  "pattern": "stripes",
+  "coat": {
+   "fur": {
+    "swatch": "coat_muffin",
+    "hex": "#EBA766"
+   },
+   "second": {
+    "swatch": "coat_muffin_dark",
+    "hex": "#B86A33"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "764/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "434 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Muffin_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Muffin_Sit_Body",
+   "CleanACat_Cat_Muffin_Sit_Head",
+   "CleanACat_Cat_Muffin_Sit_Eye1",
+   "CleanACat_Cat_Muffin_Sit_Eye2",
+   "CleanACat_Cat_Muffin_Sit_EarL",
+   "CleanACat_Cat_Muffin_Sit_EarR",
+   "CleanACat_Cat_Muffin_Sit_Tail",
+   "CleanACat_Cat_Muffin_Sit_LegF1",
+   "CleanACat_Cat_Muffin_Sit_LegF2"
+  ],
+  "triangles": 788,
+  "budget": 1500,
+  "parts": 44,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.24,
+   1.85,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "sit",
+  "pattern": "stripes",
+  "coat": {
+   "fur": {
+    "swatch": "coat_muffin",
+    "hex": "#EBA766"
+   },
+   "second": {
+    "swatch": "coat_muffin_dark",
+    "hex": "#B86A33"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "788/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "446 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Patches",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Patches_Body",
+   "CleanACat_Cat_Patches_Head",
+   "CleanACat_Cat_Patches_Eye1",
+   "CleanACat_Cat_Patches_Eye2",
+   "CleanACat_Cat_Patches_EarL",
+   "CleanACat_Cat_Patches_EarR",
+   "CleanACat_Cat_Patches_Tail",
+   "CleanACat_Cat_Patches_LegF1",
+   "CleanACat_Cat_Patches_LegF2",
+   "CleanACat_Cat_Patches_LegB1",
+   "CleanACat_Cat_Patches_LegB2"
+  ],
+  "triangles": 740,
+  "budget": 1500,
+  "parts": 40,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Uncommon",
+  "body": "walk",
+  "pattern": "patches",
+  "coat": {
+   "fur": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "second": {
+    "swatch": "coat_patches_ginger",
+    "hex": "#E59A57"
+   },
+   "third": {
+    "swatch": "coat_patches_black",
+    "hex": "#3A3640"
+   },
+   "eyes": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "740/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "422 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Patches_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Patches_Sit_Body",
+   "CleanACat_Cat_Patches_Sit_Head",
+   "CleanACat_Cat_Patches_Sit_Eye1",
+   "CleanACat_Cat_Patches_Sit_Eye2",
+   "CleanACat_Cat_Patches_Sit_EarL",
+   "CleanACat_Cat_Patches_Sit_EarR",
+   "CleanACat_Cat_Patches_Sit_Tail",
+   "CleanACat_Cat_Patches_Sit_LegF1",
+   "CleanACat_Cat_Patches_Sit_LegF2"
+  ],
+  "triangles": 728,
+  "budget": 1500,
+  "parts": 39,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.24,
+   1.85,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Uncommon",
+  "body": "sit",
+  "pattern": "patches",
+  "coat": {
+   "fur": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "second": {
+    "swatch": "coat_patches_ginger",
+    "hex": "#E59A57"
+   },
+   "third": {
+    "swatch": "coat_patches_black",
+    "hex": "#3A3640"
+   },
+   "eyes": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "728/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "416 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Smudge",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Smudge_Body",
+   "CleanACat_Cat_Smudge_Head",
+   "CleanACat_Cat_Smudge_Eye1",
+   "CleanACat_Cat_Smudge_Eye2",
+   "CleanACat_Cat_Smudge_EarL",
+   "CleanACat_Cat_Smudge_EarR",
+   "CleanACat_Cat_Smudge_Tail",
+   "CleanACat_Cat_Smudge_LegF1",
+   "CleanACat_Cat_Smudge_LegF2",
+   "CleanACat_Cat_Smudge_LegB1",
+   "CleanACat_Cat_Smudge_LegB2"
+  ],
+  "triangles": 764,
+  "budget": 1500,
+  "parts": 42,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "walk",
+  "pattern": "stripes",
+  "coat": {
+   "fur": {
+    "swatch": "coat_smudge",
+    "hex": "#A3ABB6"
+   },
+   "second": {
+    "swatch": "coat_smudge_dark",
+    "hex": "#6B7380"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "764/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "434 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Smudge_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Smudge_Sit_Body",
+   "CleanACat_Cat_Smudge_Sit_Head",
+   "CleanACat_Cat_Smudge_Sit_Eye1",
+   "CleanACat_Cat_Smudge_Sit_Eye2",
+   "CleanACat_Cat_Smudge_Sit_EarL",
+   "CleanACat_Cat_Smudge_Sit_EarR",
+   "CleanACat_Cat_Smudge_Sit_Tail",
+   "CleanACat_Cat_Smudge_Sit_LegF1",
+   "CleanACat_Cat_Smudge_Sit_LegF2"
+  ],
+  "triangles": 788,
+  "budget": 1500,
+  "parts": 44,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.24,
+   1.85,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Common",
+  "body": "sit",
+  "pattern": "stripes",
+  "coat": {
+   "fur": {
+    "swatch": "coat_smudge",
+    "hex": "#A3ABB6"
+   },
+   "second": {
+    "swatch": "coat_smudge_dark",
+    "hex": "#6B7380"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "788/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "446 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Starcoat",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Starcoat_Body",
+   "CleanACat_Cat_Starcoat_Head",
+   "CleanACat_Cat_Starcoat_Eye1",
+   "CleanACat_Cat_Starcoat_Eye2",
+   "CleanACat_Cat_Starcoat_EarL",
+   "CleanACat_Cat_Starcoat_EarR",
+   "CleanACat_Cat_Starcoat_Tail",
+   "CleanACat_Cat_Starcoat_LegF1",
+   "CleanACat_Cat_Starcoat_LegF2",
+   "CleanACat_Cat_Starcoat_LegB1",
+   "CleanACat_Cat_Starcoat_LegB2"
+  ],
+  "triangles": 752,
+  "budget": 1500,
+  "parts": 41,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Legendary",
+  "body": "walk",
+  "pattern": "solid",
+  "coat": {
+   "fur": {
+    "swatch": "coat_star",
+    "hex": "#F5C64A"
+   },
+   "second": {
+    "swatch": "coat_star_light",
+    "hex": "#FFF0B8"
+   },
+   "muzzle": {
+    "swatch": "coat_star_light",
+    "hex": "#FFF0B8"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_bubblegum",
+    "hex": "#F28DAE"
+   },
+   "tip": {
+    "swatch": "coat_star_light",
+    "hex": "#FFF0B8"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "752/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "428 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Starcoat_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Starcoat_Sit_Body",
+   "CleanACat_Cat_Starcoat_Sit_Head",
+   "CleanACat_Cat_Starcoat_Sit_Eye1",
+   "CleanACat_Cat_Starcoat_Sit_Eye2",
+   "CleanACat_Cat_Starcoat_Sit_EarL",
+   "CleanACat_Cat_Starcoat_Sit_EarR",
+   "CleanACat_Cat_Starcoat_Sit_Tail",
+   "CleanACat_Cat_Starcoat_Sit_LegF1",
+   "CleanACat_Cat_Starcoat_Sit_LegF2"
+  ],
+  "triangles": 788,
+  "budget": 1500,
+  "parts": 44,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.24,
+   1.85,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Legendary",
+  "body": "sit",
+  "pattern": "solid",
+  "coat": {
+   "fur": {
+    "swatch": "coat_star",
+    "hex": "#F5C64A"
+   },
+   "second": {
+    "swatch": "coat_star_light",
+    "hex": "#FFF0B8"
+   },
+   "muzzle": {
+    "swatch": "coat_star_light",
+    "hex": "#FFF0B8"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_bubblegum",
+    "hex": "#F28DAE"
+   },
+   "tip": {
+    "swatch": "coat_star_light",
+    "hex": "#FFF0B8"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "788/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "446 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Toffee",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Toffee_Body",
+   "CleanACat_Cat_Toffee_Head",
+   "CleanACat_Cat_Toffee_Eye1",
+   "CleanACat_Cat_Toffee_Eye2",
+   "CleanACat_Cat_Toffee_EarL",
+   "CleanACat_Cat_Toffee_EarR",
+   "CleanACat_Cat_Toffee_Tail",
+   "CleanACat_Cat_Toffee_LegF1",
+   "CleanACat_Cat_Toffee_LegF2",
+   "CleanACat_Cat_Toffee_LegB1",
+   "CleanACat_Cat_Toffee_LegB2"
+  ],
+  "triangles": 692,
+  "budget": 1500,
+  "parts": 41,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.97
+  },
+  "size_roblox": [
+   1.0,
+   1.97,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Rare",
+  "body": "walk",
+  "pattern": "points",
+  "coat": {
+   "fur": {
+    "swatch": "coat_toffee",
+    "hex": "#EDD6B4"
+   },
+   "second": {
+    "swatch": "coat_toffee_dark",
+    "hex": "#7D5539"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "692/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "402 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Toffee_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Toffee_Sit_Body",
+   "CleanACat_Cat_Toffee_Sit_Head",
+   "CleanACat_Cat_Toffee_Sit_Eye1",
+   "CleanACat_Cat_Toffee_Sit_Eye2",
+   "CleanACat_Cat_Toffee_Sit_EarL",
+   "CleanACat_Cat_Toffee_Sit_EarR",
+   "CleanACat_Cat_Toffee_Sit_Tail",
+   "CleanACat_Cat_Toffee_Sit_LegF1",
+   "CleanACat_Cat_Toffee_Sit_LegF2"
+  ],
+  "triangles": 692,
+  "budget": 1500,
+  "parts": 41,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.96
+  },
+  "size_roblox": [
+   1.24,
+   1.96,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Rare",
+  "body": "sit",
+  "pattern": "points",
+  "coat": {
+   "fur": {
+    "swatch": "coat_toffee",
+    "hex": "#EDD6B4"
+   },
+   "second": {
+    "swatch": "coat_toffee_dark",
+    "hex": "#7D5539"
+   },
+   "eyes": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_sky",
+    "hex": "#5EBEFF"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "692/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "402 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Tux",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Tux_Body",
+   "CleanACat_Cat_Tux_Head",
+   "CleanACat_Cat_Tux_Eye1",
+   "CleanACat_Cat_Tux_Eye2",
+   "CleanACat_Cat_Tux_EarL",
+   "CleanACat_Cat_Tux_EarR",
+   "CleanACat_Cat_Tux_Tail",
+   "CleanACat_Cat_Tux_LegF1",
+   "CleanACat_Cat_Tux_LegF2",
+   "CleanACat_Cat_Tux_LegB1",
+   "CleanACat_Cat_Tux_LegB2"
+  ],
+  "triangles": 704,
+  "budget": 1500,
+  "parts": 37,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Uncommon",
+  "body": "walk",
+  "pattern": "patches",
+  "coat": {
+   "fur": {
+    "swatch": "coat_inky",
+    "hex": "#2F2D3B"
+   },
+   "second": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   },
+   "tip": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.85,
+    -0.3
+   ],
+   "Tail": [
+    0.0,
+    0.8,
+    0.58
+   ],
+   "LegF1": [
+    -0.22,
+    0.42,
+    -0.2
+   ],
+   "LegF2": [
+    0.22,
+    0.42,
+    -0.2
+   ],
+   "LegB1": [
+    -0.22,
+    0.42,
+    0.42
+   ],
+   "LegB2": [
+    0.22,
+    0.42,
+    0.42
+   ],
+   "Eye1": [
+    -0.25,
+    1.11,
+    -0.93
+   ],
+   "Eye2": [
+    0.25,
+    1.11,
+    -0.93
+   ],
+   "EarL": [
+    -0.3,
+    1.56,
+    -0.46
+   ],
+   "EarR": [
+    0.3,
+    1.56,
+    -0.46
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "704/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "404 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00"
+   }
+  }
+ },
+ {
+  "name": "CleanACat_Cat_Tux_Sit",
+  "category": "Cat",
+  "module": "cats",
+  "objects": [
+   "CleanACat_Cat_Tux_Sit_Body",
+   "CleanACat_Cat_Tux_Sit_Head",
+   "CleanACat_Cat_Tux_Sit_Eye1",
+   "CleanACat_Cat_Tux_Sit_Eye2",
+   "CleanACat_Cat_Tux_Sit_EarL",
+   "CleanACat_Cat_Tux_Sit_EarR",
+   "CleanACat_Cat_Tux_Sit_Tail",
+   "CleanACat_Cat_Tux_Sit_LegF1",
+   "CleanACat_Cat_Tux_Sit_LegF2"
+  ],
+  "triangles": 692,
+  "budget": 1500,
+  "parts": 36,
+  "size_studs": {
+   "x": 1.24,
+   "y": 1.24,
+   "z": 1.85
+  },
+  "size_roblox": [
+   1.24,
+   1.85,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "rarity": "Uncommon",
+  "body": "sit",
+  "pattern": "patches",
+  "coat": {
+   "fur": {
+    "swatch": "coat_inky",
+    "hex": "#2F2D3B"
+   },
+   "second": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "muzzle": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "eyes": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   },
+   "tip": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
+   },
+   "nose": {
+    "swatch": "nose_pink",
+    "hex": "#E07A8C"
+   },
+   "eyes2": {
+    "swatch": "eye_gold",
+    "hex": "#F2B53A"
+   }
+  },
+  "joints_roblox": {
+   "Head": [
+    0.0,
+    0.97,
+    -0.09
+   ],
+   "Tail": [
+    -0.19,
+    0.1,
+    0.41
+   ],
+   "LegF1": [
+    -0.16,
+    0.59,
+    -0.28
+   ],
+   "LegF2": [
+    0.16,
+    0.59,
+    -0.28
+   ],
+   "Eye1": [
+    -0.21,
+    1.2,
+    -0.59
+   ],
+   "Eye2": [
+    0.21,
+    1.2,
+    -0.59
+   ],
+   "EarL": [
+    -0.27,
+    1.57,
+    -0.17
+   ],
+   "EarR": [
+    0.27,
+    1.57,
+    -0.17
+   ]
+  },
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "692/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "398 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.18 y=-0.02"
+   }
+  }
+ }
+]

@@ -1,5 +1,5 @@
-name: Problem with the template
-description: Something in this starter is wrong, unclear or missing
+name: Problem with the team setup
+description: Something in the library, the agent setup or the starter tooling is wrong, unclear or missing
 title: "Template: "
 labels: [template]
 body:
@@ -8,11 +8,11 @@ body:
     attributes:
       label: Where is the problem
       options:
-        - README or the setup steps
+        - library/README.md or the setup steps
         - library/Setup (rules, roster, instructions)
         - An agent's starting file
         - A playbook or a video tool
-        - starter-game-repo (rules, skills, workflows, scripts)
+        - The repo root from the starter (CLAUDE.md, .claude skills and agents, workflows, scripts)
     validations:
       required: true
   - type: input
