@@ -139,6 +139,19 @@ function BuildRules.finish(state: State, now: number): { string }
 	return done
 end
 
+-- True when a long build (LONG_SECONDS or more) was still running at time `at`. Read on join with `at` the save's
+-- lastSeen, before finish, it says whether one was running when the player left (returned_day_2).
+function BuildRules.longRunningAt(state: State, at: number): boolean
+	for _, slot in BuildRules.SLOTS do
+		local build = state.builds[slot]
+		local item = if build then BuildRules.ITEMS[build.item] else nil
+		if build and item and item.seconds >= BuildRules.LONG_SECONDS and build.endsAt > at then
+			return true
+		end
+	end
+	return false
+end
+
 -- Extra coins a customer's cat pays for the stations built.
 function BuildRules.payBonus(stations: { [string]: boolean }): number
 	local bonus = 0

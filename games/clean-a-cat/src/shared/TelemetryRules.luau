@@ -43,4 +43,54 @@ function TelemetryRules.fields(values: { string }?): ({ [string]: string }?, str
 	return out, nil
 end
 
+-- The first session funnel (milestone-1 analytics plan). Step numbers are the positions in this list. If the steps
+-- ever change, the funnel gets a new name (onboarding_v2).
+TelemetryRules.ONBOARDING = "onboarding_v1"
+TelemetryRules.ONBOARDING_STEPS = table.freeze({
+	"joined", -- the save's first load
+	"loaded", -- the client finished loading and the character can move (reported by the client)
+	"first_scrub", -- the first rub on a dirty cat (reported by the client)
+	"first_reveal", -- the server accepted the first fully scrubbed cat
+	"first_photo", -- the first photo paid
+	"first_customer", -- the first customer handed over a cat
+	"first_return", -- the first customer took their cat home and paid
+	"upgrade_1", -- the first tool bought
+	"first_build", -- the first build started
+	"dryer_built", -- the Blow Dryer finished
+})
+-- Steps only the client can see. It reports them through ReportStep; a lie only moves our own chart.
+TelemetryRules.CLIENT_STEPS = table.freeze({ "loaded", "first_scrub" })
+TelemetryRules.DAY_SECONDS = 86400
+
+-- The step's number in the onboarding funnel, or nil for a name not in it.
+function TelemetryRules.stepNumber(name: string): number?
+	return table.find(TelemetryRules.ONBOARDING_STEPS, name)
+end
+
+-- The once per save rule: true the first time `key` is seen in `logged` (the save's funnel table), and records
+-- it. Every later call for the same key is false. A step missed earlier is not filled in by a later one.
+function TelemetryRules.markOnce(logged: { [string]: boolean }, key: string): boolean
+	if logged[key] then
+		return false
+	end
+	logged[key] = true
+	return true
+end
+
+-- The highest onboarding step this save has logged: its number and name, or 0 and "none".
+function TelemetryRules.lastStep(logged: { [string]: boolean }): (number, string)
+	for step = #TelemetryRules.ONBOARDING_STEPS, 1, -1 do
+		if logged[`{TelemetryRules.ONBOARDING}:{step}`] then
+			return step, TelemetryRules.ONBOARDING_STEPS[step]
+		end
+	end
+	return 0, "none"
+end
+
+-- True when `now` falls on the day after the first join (UTC days), which is what returned_day_2 counts.
+function TelemetryRules.isDay2(createdAt: number, now: number): boolean
+	local day = TelemetryRules.DAY_SECONDS
+	return math.floor(now / day) == math.floor(createdAt / day) + 1
+end
+
 return TelemetryRules

@@ -3,6 +3,7 @@
 -- nothing from a client or from Studio, and a client could send anything.
 --
 --   Telemetry.funnelStep(player, "onboarding_v1", 2, "first_win")   once per save (remembered in save.funnel)
+--   Telemetry.onboarding(player, "first_scrub")   a step of TelemetryRules.ONBOARDING_STEPS, with its time_to_step
 --   Telemetry.event(player, "shop_opened", 1, { "phone", "tier_2" })  a custom event, 3 fields at most
 --   Telemetry.economy(player, "coins", "source", 50, balance, "Gameplay", "quest_reward")
 --
@@ -15,7 +16,10 @@ local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local DataService = require(script.Parent.DataService)
+local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local TelemetryRules = require(Shared:WaitForChild("TelemetryRules"))
+
+local FUNNEL_FLAG = "onboardingFunnel"
 
 local Telemetry = {}
 
@@ -43,31 +47,27 @@ local function send(what: string, fn: () -> ())
 end
 
 -- One step of a funnel, sent once per save. Steps are numbered from 1 in the order players reach them.
+-- Returns true when it was sent (the first time for this save).
 function Telemetry.funnelStep(
 	player: Player,
 	funnel: string,
 	step: number,
 	stepName: string,
 	fields: { string }?
-)
+): boolean
 	if not TelemetryRules.validName(funnel) or not TelemetryRules.validName(stepName) then
 		warn(`Telemetry: bad funnel or step name {funnel} {stepName}`)
-		return
+		return false
 	end
 	local custom, reason = TelemetryRules.fields(fields)
 	if custom == nil then
 		warn(`Telemetry: {funnel} {stepName}: {reason}`)
-		return
+		return false
 	end
 	local save = DataService.get(player)
-	if save == nil then
-		return
+	if save == nil or not TelemetryRules.markOnce(save.funnel, `{funnel}:{step}`) then
+		return false
 	end
-	local key = `{funnel}:{step}`
-	if save.funnel[key] then
-		return
-	end
-	save.funnel[key] = true
 	remember(`funnel {funnel} {step} {stepName}`)
 	send(`funnel {funnel}`, function()
 		AnalyticsService:LogFunnelStepEvent(
@@ -79,6 +79,55 @@ function Telemetry.funnelStep(
 			custom
 		)
 	end)
+	return true
+end
+
+-- A step of the first session funnel (TelemetryRules.ONBOARDING_STEPS), once per save, behind the switch
+-- onboardingFunnel. The first time, a time_to_step event follows with the seconds since the first join.
+function Telemetry.onboarding(player: Player, stepName: string): boolean
+	local step = TelemetryRules.stepNumber(stepName)
+	if step == nil then
+		warn(`Telemetry: {stepName} is not an onboarding step`)
+		return false
+	end
+	if not LiveFlags.isOn(FUNNEL_FLAG) then
+		return false
+	end
+	if not Telemetry.funnelStep(player, TelemetryRules.ONBOARDING, step, stepName) then
+		return false
+	end
+	local save = DataService.get(player)
+	if save then
+		Telemetry.event(
+			player,
+			"time_to_step",
+			math.max(0, os.time() - save.createdAt),
+			{ stepName }
+		)
+	end
+	return true
+end
+
+-- returned_day_2, once per save: the player is back on the day after their first join. The one field says
+-- whether a long build was running when they left, which tells us if the day 2 hook works.
+-- Behind the switch onboardingFunnel.
+function Telemetry.returnedDay2(player: Player, longBuildRunning: boolean)
+	if not LiveFlags.isOn(FUNNEL_FLAG) then
+		return
+	end
+	local save = DataService.get(player)
+	if save == nil or not TelemetryRules.isDay2(save.createdAt, os.time()) then
+		return
+	end
+	if not TelemetryRules.markOnce(save.funnel, "returned_day_2") then
+		return
+	end
+	Telemetry.event(
+		player,
+		"returned_day_2",
+		1,
+		{ if longBuildRunning then "long_build" else "no_long_build" }
+	)
 end
 
 -- A custom event with a number value (a count, seconds, an amount) and up to 3 short fields.

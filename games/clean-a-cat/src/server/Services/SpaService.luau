@@ -29,7 +29,6 @@ local FLAG = "scrubPrototype"
 local CUSTOMERS_FLAG = "customers"
 local STRAYS_FLAG = "strays"
 local QUEUE_SIZE = 3
-local FUNNEL = "onboarding_v1"
 local BOARD_LIT = "ChanceBoardLit" -- Player attribute: true once a customer has been served, so the board shows
 local MAX_CAT_ID = 2 ^ 31
 
@@ -89,7 +88,7 @@ local function newCat(player: Player): SpaRules.Cat
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
 		-- The front customer hands over their cat; queueFor refills the line when it is next read.
 		cat.kind = table.remove(queueFor(player), 1)
-		Telemetry.funnelStep(player, FUNNEL, 6, "first_customer")
+		Telemetry.onboarding(player, "first_customer")
 	end
 	cats[player] = cat
 	return cat
@@ -168,6 +167,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	if coins <= 0 then
 		return
 	end
+	Telemetry.onboarding(player, "first_photo")
 	local kind = cat.kind
 	if kind ~= nil then
 		IndexService.stamp(player, kind, "washed")
@@ -202,12 +202,14 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		player,
 		`+{coins} coins, +{pay.stars} {if pay.stars == 1 then "star" else "stars"}`
 	)
-	Telemetry.funnelStep(player, FUNNEL, 7, "first_return")
+	Telemetry.onboarding(player, "first_return")
 end
 
 local function onScrubbed(player: Player, rawId: unknown, rawSeq: unknown)
 	withCat(player, rawId, rawSeq, function(cat)
-		SpaRules.scrubbed(cat)
+		if SpaRules.scrubbed(cat) then
+			Telemetry.onboarding(player, "first_reveal")
+		end
 	end)
 end
 

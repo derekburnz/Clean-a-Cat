@@ -18,7 +18,6 @@ local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
 local FLAG = "builds"
-local FUNNEL = "onboarding_v1"
 
 local BuildService = {}
 
@@ -67,7 +66,7 @@ local function finishFor(player: Player)
 		NetService.fire(player, "BuildFinished", id)
 		NetService.notice(player, `{BuildRules.ITEMS[id].name} is ready!`)
 		if id == "Dryer" then
-			Telemetry.funnelStep(player, FUNNEL, 10, "dryer_built")
+			Telemetry.onboarding(player, "dryer_built")
 		end
 	end
 	send(player)
@@ -96,7 +95,7 @@ local function onBuild(player: Player, rawId: unknown)
 	send(player)
 	NetService.notice(player, `Building the {item.name}`)
 	Telemetry.economy(player, "coins", "sink", spent, state.coins, "Shop", id)
-	Telemetry.funnelStep(player, FUNNEL, 9, "first_build")
+	Telemetry.onboarding(player, "first_build")
 	if item.seconds >= BuildRules.LONG_SECONDS then
 		Telemetry.event(player, "long_build_started", item.seconds / 3600, { id })
 	end
@@ -106,7 +105,9 @@ function BuildService.Init(_services: { [string]: any }) end
 
 function BuildService.Start()
 	NetService.on("RequestBuild", { perSecond = 1, burst = 2 }, onBuild)
-	DataService.onLoaded:Connect(function(player: Player)
+	DataService.onLoaded:Connect(function(player: Player, save)
+		-- Read before anything finishes: was a long build running when the player left?
+		Telemetry.returnedDay2(player, BuildRules.longRunningAt(stateOf(save), save.lastSeen))
 		if LiveFlags.isOn(FLAG) then
 			send(player)
 			finishFor(player) -- builds that finished while the player was away wait for them here
