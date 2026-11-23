@@ -33,6 +33,29 @@
       "$className": "Workspace",
       "$properties": {
         "FilteringEnabled": true
+      },
+      "PH_Floor": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "Size": [128, 1, 128],
+          "Position": [0, -0.5, 0],
+          "Color": [0.639, 0.635, 0.647],
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+        }
+      },
+      "PH_Spawn": {
+        "$className": "SpawnLocation",
+        "$properties": {
+          "Anchored": true,
+          "Size": [6, 1, 6],
+          "Position": [0, 0.5, 0],
+          "Transparency": 1,
+          "CanCollide": false,
+          "Neutral": true,
+          "Duration": 0
+        }
       }
     },
 
