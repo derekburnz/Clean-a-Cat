@@ -50,17 +50,21 @@ local function sendStage(player: Player, cat: SpaRules.Cat, seq: number)
 end
 
 -- Runs `step` on the player's current cat when `rawId` names it and the switch is on, then answers with the
--- stage, echoing the client's report number `rawSeq`. A report for another cat (a stale client) is answered with a
--- cat, so the client resyncs.
+-- stage, echoing the client's report number `rawSeq`. A report for another cat (a stale client) is answered with
+-- the current cat's id (0 for none) and changes nothing; the client then asks for a cat through RequestCat, which
+-- has its own rate limit. Malformed reports get no answer.
 local function withCat(player: Player, rawId: unknown, rawSeq: unknown, step: (SpaRules.Cat) -> ())
 	if not LiveFlags.isOn(FLAG) then
 		return
 	end
 	local id = Guard.int(rawId, 1, MAX_CAT_ID)
 	local seq = Guard.int(rawSeq, 0, MAX_CAT_ID)
+	if id == nil or seq == nil then
+		return
+	end
 	local cat = cats[player]
-	if id == nil or seq == nil or cat == nil or cat.id ~= id then
-		onRequestCat(player)
+	if cat == nil or cat.id ~= id then
+		NetService.fire(player, "CatStage", if cat then cat.id else 0, seq, "dirty", 0, false)
 		return
 	end
 	lastSeq[player] = seq

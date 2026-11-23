@@ -1,13 +1,12 @@
 --!strict
--- ScrubRules: the pure rules of scrubbing mud off a cat (patch layout, how much rubbing clears a patch, when the
--- rest pops off). No Roblox calls, so specs cover it; ScrubController does the world and input on top.
+-- ScrubRules: the pure rules of scrubbing mud off a cat (which pieces are mud, how much rubbing clears one, when
+-- the rest pops off). No Roblox calls, so specs cover it; ScrubController does the world and input on top.
 -- Numbers are draft tuning from the first session plan: first scrub about 8 seconds on a phone.
 
 local ScrubRules = {}
 
 -- Tuning (draft). Change here only; the specs read these too.
-ScrubRules.PATCH_COUNT = 16 -- the design's range is 12 to 20; cheap phones cap at 20
-ScrubRules.MAX_PATCHES = 20
+ScrubRules.MAX_PATCHES = 20 -- the design's range is 12 to 20; cheap phones cap at 20 (blobs past it are removed)
 ScrubRules.SPONGE_RADIUS = 0.9 -- studs around the touch point that the sponge reaches
 ScrubRules.RUB_TO_CLEAR = 1.2 -- studs of sponge travel over a patch to clear it
 ScrubRules.REVEAL_FRACTION = 0.8 -- at this share cleared, the rest pops off
@@ -21,44 +20,11 @@ export type State = {
 	revealed: boolean,
 }
 
-local function spiral(n: number): { Vector3 }
-	local directions = {}
-	local goldenAngle = math.pi * (3 - math.sqrt(5))
-	-- y runs from near the top (0.95) down to a little below the middle (-0.35): the top and the sides, never
-	-- the belly, which the player cannot see.
-	local top, bottom = 0.95, -0.35
-	for i = 0, n - 1 do
-		local t = if n == 1 then 0 else i / (n - 1)
-		local y = top + (bottom - top) * t
-		local radius = math.sqrt(math.max(0, 1 - y * y))
-		local angle = goldenAngle * i
-		table.insert(directions, Vector3.new(math.cos(angle) * radius, y, math.sin(angle) * radius))
-	end
-	return directions
-end
-
--- Unit directions for `count` patches on a ball-shaped cat, spread evenly with a golden angle spiral. When
--- `avoid` is given (a unit direction, such as where the head sits), no patch lands within the cone whose
--- cosine is `avoidDot`, so no patch hides under the head. The same arguments give the same layout every time.
-function ScrubRules.patchDirections(count: number, avoid: Vector3?, avoidDot: number?): { Vector3 }
-	local n = math.clamp(math.floor(count), 1, ScrubRules.MAX_PATCHES)
-	if avoid == nil then
-		return spiral(n)
-	end
-	local limit = avoidDot or 0.8
-	for m = n, n * 4 do
-		local kept: { Vector3 } = {}
-		for _, direction in spiral(m) do
-			if direction:Dot(avoid) < limit then
-				table.insert(kept, direction)
-			end
-		end
-		if #kept >= n then
-			local first: { Vector3 } = table.move(kept, 1, n, 1, {} :: { Vector3 })
-			return first
-		end
-	end
-	return spiral(n)
+-- The number at the end of a dirt piece's name: `pieceNumber("CleanACat_Cat_Smudge_Dirty_Mud07", "Mud")` is 7. Nil for
+-- any other name, so a part that only contains the word (such as "MuddyPaw") is never taken for a piece.
+function ScrubRules.pieceNumber(name: string, kind: string): number?
+	local digits = string.match(name, "_" .. kind .. "(%d+)$")
+	return if digits then tonumber(digits) else nil
 end
 
 function ScrubRules.newState(total: number): State

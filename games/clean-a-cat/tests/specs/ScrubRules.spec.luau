@@ -2,32 +2,17 @@
 return function()
 	local ScrubRules = require(game:GetService("ReplicatedStorage").Shared.ScrubRules)
 
-	describe("ScrubRules.patchDirections", function()
-		it("gives the asked count of unit directions, capped at the maximum", function()
-			local directions = ScrubRules.patchDirections(ScrubRules.PATCH_COUNT)
-			expect(#directions).to.equal(ScrubRules.PATCH_COUNT)
-			for _, direction in directions do
-				expect(direction.Magnitude).to.be.near(1, 1e-6)
-				expect(direction.Y >= -0.36).to.equal(true)
-			end
-			expect(#ScrubRules.patchDirections(500)).to.equal(ScrubRules.MAX_PATCHES)
-		end)
-
-		it("keeps every patch out of the cone it is told to avoid", function()
-			local head = Vector3.new(0, 0.6, 0.8)
-			local directions = ScrubRules.patchDirections(16, head, 0.8)
-			expect(#directions).to.equal(16)
-			for _, direction in directions do
-				expect(direction:Dot(head) < 0.8).to.equal(true)
-			end
-		end)
-
-		it("is the same every time", function()
-			local a = ScrubRules.patchDirections(16)
-			local b = ScrubRules.patchDirections(16)
-			for index in a do
-				expect(a[index] == b[index]).to.equal(true)
-			end
+	describe("ScrubRules.pieceNumber", function()
+		it("reads the number at the end of a piece's name only", function()
+			expect(ScrubRules.pieceNumber("CleanACat_Cat_Smudge_Dirty_Mud07", "Mud")).to.equal(7)
+			expect(ScrubRules.pieceNumber("CleanACat_Cat_Tux_Dirty_Tangle12", "Tangle")).to.equal(
+				12
+			)
+			expect(ScrubRules.pieceNumber("CleanACat_Cat_Smudge_Dirty_Mud07", "Tangle")).to.equal(
+				nil
+			)
+			expect(ScrubRules.pieceNumber("CleanACat_Cat_Smudge_Dirty_Body", "Mud")).to.equal(nil)
+			expect(ScrubRules.pieceNumber("CleanACat_Cat_Mud07_Extra", "Mud")).to.equal(nil)
 		end)
 	end)
 
