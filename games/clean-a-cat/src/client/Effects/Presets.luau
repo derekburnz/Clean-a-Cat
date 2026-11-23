@@ -144,6 +144,27 @@ local function mud(count: number): Emitter
 	}
 end
 
+local AIR = Color3.fromRGB(240, 248, 255)
+
+-- Warm air from the dryer nozzle: faint wisps that blow down onto the cat and spread out. Fast and short, so
+-- they reach the ears (about 0.4 studs under the nozzle at CatScale 1.5) and fade there.
+local function air(rate: number): Emitter
+	return {
+		texture = "",
+		color = { AIR },
+		size = { 0.12, 0.35 },
+		transparency = { 0.55, 1 },
+		lifetime = { 0.25, 0.4 },
+		speed = { 2.5, 4 },
+		spread = 30,
+		acceleration = Vector3.zero,
+		drag = 3,
+		lightEmission = 0.05,
+		maxRate = rate,
+		burst = 0,
+	}
+end
+
 local Presets: { [Tier]: { [string]: Emitter } } = {
 	low = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 8),
@@ -154,6 +175,7 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		shakeDroplets = droplets(6),
 		furPuff = fur(4),
 		bowHearts = hearts(3),
+		dryerAir = air(6),
 	},
 	high = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 16),
@@ -164,6 +186,7 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		shakeDroplets = droplets(10),
 		furPuff = fur(6),
 		bowHearts = hearts(3),
+		dryerAir = air(12),
 	},
 }
 

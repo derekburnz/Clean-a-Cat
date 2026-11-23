@@ -147,6 +147,21 @@ def sponge_loop(rng: np.random.Generator) -> np.ndarray:
     return out
 
 
+def dryer_hum(rng: np.random.Generator) -> np.ndarray:
+    """A small hood dryer: soft rushing air over a low fan hum, 2 s and circular so it loops with no seam.
+    Every tone sits on a multiple of 0.5 Hz (the loop's period), and the air is filtered in the frequency domain."""
+    length = 2.0
+    n = int(RATE * length)
+    x = np.arange(n) / RATE
+    f = np.fft.rfftfreq(n, 1 / RATE)
+    air = np.fft.irfft(np.fft.rfft(rng.standard_normal(n)) * (1 / (1 + ((f - 900) / 1100) ** 2)), n)
+    air /= np.max(np.abs(air))
+    hum = sum(a * np.sin(2 * np.pi * h * 110.0 * x) for h, a in ((1, 1.0), (2, 0.45), (3, 0.2), (5, 0.08)))
+    hum /= np.max(np.abs(hum))
+    flutter = 1 + 0.08 * np.sin(2 * np.pi * 3.0 * x)  # fan blades, 3 Hz wraps cleanly in 2 s
+    return (0.75 * air + 0.3 * hum) * flutter
+
+
 def fur_shake(rng: np.random.Generator) -> np.ndarray:
     """A cat shakes off water: four quick fur flaps that get smaller, with a scatter of tiny droplet ticks."""
     out = np.zeros(int(RATE * 0.75))
@@ -261,6 +276,7 @@ SOUNDS = [
     ("sfx", "CleanACat_Sfx_BrushSwish_3", lambda r: brush_swish(r, 2)),
     ("sfx", "CleanACat_Sfx_SpongeLoop", sponge_loop),
     ("sfx", "CleanACat_Sfx_FurShake", fur_shake),
+    ("sfx", "CleanACat_Sfx_DryerHum", dryer_hum),
     ("sfx", "CleanACat_Sfx_Purr_1", lambda r: purr(r, 0)),
     ("sfx", "CleanACat_Sfx_Purr_2", lambda r: purr(r, 1)),
     ("sfx", "CleanACat_Sfx_Meow_1", lambda r: meow(r, 0)),
@@ -271,7 +287,7 @@ SOUNDS = [
 ]
 
 
-LOOPS = {"CleanACat_Sfx_SpongeLoop"}  # seamless loops: no end fade
+LOOPS = {"CleanACat_Sfx_SpongeLoop", "CleanACat_Sfx_DryerHum"}  # seamless loops: no end fade
 
 
 def write_ogg(sig: np.ndarray, path: Path, loop: bool = False) -> None:

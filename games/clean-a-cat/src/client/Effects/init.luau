@@ -6,6 +6,8 @@
 -- API
 --   Effects.start()                                 picks the device tier once
 --   Effects.stream(preset, position, dragSpeed)     a steady stream at a point, rate from drag speed
+--   Effects.streamFrom(preset, cframe, strength)    a steady stream along cframe's +Y (e.g. a nozzle's Air
+--                                                   attachment), rate from strength 0..1
 --   Effects.stopStream(preset)
 --   Effects.burst(preset, position, color?)         one burst at a point, optionally tinted
 --   Effects.glow(model, seconds)                    a soft outline glow that fades out, then is destroyed
@@ -114,6 +116,21 @@ function Effects.stream(name: string, position: Vector3, dragSpeed: number)
 	end
 	entry.attachment.WorldPosition = position
 	local rate = Tier.foamRate(preset.maxRate, dragSpeed, FAST_DRAG, reducedMotion())
+	entry.emitter.Rate = rate
+	entry.emitter.Enabled = rate > 0
+end
+
+function Effects.streamFrom(name: string, cframe: CFrame, strength: number)
+	if not started then
+		return
+	end
+	local entry, preset = get(name)
+	if entry == nil or preset == nil then
+		return
+	end
+	entry.attachment.WorldCFrame = cframe
+	entry.emitter.EmissionDirection = Enum.NormalId.Top
+	local rate = Tier.foamRate(preset.maxRate, math.clamp(strength, 0, 1), 1, reducedMotion())
 	entry.emitter.Rate = rate
 	entry.emitter.Enabled = rate > 0
 end
