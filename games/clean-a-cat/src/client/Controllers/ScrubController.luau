@@ -34,6 +34,8 @@ local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
 local TURN_FLAG = "scrubTurn" -- the cat turns to show its muddy side when too little faces the camera
 local TURN_TWEEN = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+local DRY_FLAG = "stations" -- with the Blow Dryer built, a fluffed cat sits on its stool before the bows
+local DRY_SECONDS = 2.5
 local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the prototype's cat; a customer's cat uses its own kind
 local TUB_ASSET = "CleanACat_Station_Tub"
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
@@ -489,6 +491,39 @@ local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number)
 	end
 end
 
+-- After the fluff: with the Blow Dryer built (StationService places it in this player's plot), the cat sits on
+-- the dryer's stool for DRY_SECONDS (DryStart and DryStop, for the air and hum), then goes back to the tub. Then
+-- the bows show. Only a look: the server pays the dryer's bonus from the save, not from this.
+local function dryThenBows(v: Visit, cat: Cat)
+	local dryer = if LiveFlags.isOn(DRY_FLAG) then SpaLayout.station("Dryer") else nil
+	local stool = if dryer then dryer:FindFirstChild("CatSeat", true) else nil
+	local seat = v.seat
+	if dryer and stool and stool:IsA("Attachment") and seat then
+		local scale = dryer:GetAttribute("CatScale")
+		local dryScale = if type(scale) == "number" and scale > 0 then scale else CAT_SCALE
+		if dryScale ~= CAT_SCALE then
+			cat.model:ScaleTo(dryScale)
+		end
+		cat.model:PivotTo((stool :: Attachment).WorldCFrame)
+		Moments.DryStart:Fire(cat.model, dryer)
+		task.wait(DRY_SECONDS)
+		-- Always stop the dry, even for a cat that is gone: the hum loops until DryStop.
+		Moments.DryStop:Fire(cat.model)
+		if visit ~= v or v.cat ~= cat then
+			return
+		end
+		if dryScale ~= CAT_SCALE then
+			cat.model:ScaleTo(CAT_SCALE)
+		end
+		cat.model:PivotTo(seat :: CFrame)
+	end
+	if visit == v and v.cat == cat and v.stage == "fluffed" then
+		for _, button in v.bowButtons do
+			show(button, true)
+		end
+	end
+end
+
 -- Brush travel on the clean cat; every STROKE_TRAVEL studs is one stroke, which brushes out a share of the
 -- tangles, and the last stroke fluffs the cat dry.
 local function brushAt(v: Visit, cat: Cat, travel: number)
@@ -512,9 +547,7 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 		showFluff(cat, true)
 		endStroke()
 		Moments.CatFluffed:Fire(cat.model)
-		for _, button in v.bowButtons do
-			show(button, true)
-		end
+		task.spawn(dryThenBows, v, cat)
 	end
 end
 
