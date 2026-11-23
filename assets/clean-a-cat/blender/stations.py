@@ -18,7 +18,8 @@
 
 The brush tables and the dryer fit the 5 by 5 stud station pads (SpotStation2, SpotStation3 in the plot) and stand
 inside them. The cat sits on them at ScaleTo(CatScale) (root attribute, 1.5, the same as at the tub). Their thin
-legs and boards are too slim to collide, so an invisible `_Barrier` under each top keeps players from walking through.
+legs and boards are too slim to collide, so an invisible `_Barrier` under each top keeps players from walking through
+(CanQuery off: taps and the camera pass through it).
 
 Pivot at the base centre on the floor, the front (where the player stands) at -Y in Blender, -Z in Roblox.
 """
