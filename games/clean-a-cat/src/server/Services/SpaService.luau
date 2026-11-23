@@ -3,18 +3,28 @@
 -- reports (scrub, brush strokes, bow, photo) against SpaRules and pays the photo coins once, into the save.
 -- The client only reports what the player did; it never says how many coins. Behind `scrubPrototype`.
 -- Cats live in memory only: a rejoin starts a fresh cat. Coins are saved through DataService.
+--
+-- Customers (behind `customers` as well): each player has a queue of QUEUE_SIZE customers at the door, each
+-- holding a cat rolled from CatRules. The next cat comes from the front of the queue and the queue refills at
+-- once, so it is never empty. The photo hands the cat back: the customer pays CatRules.pay (coins plus tip)
+-- and stars instead of PHOTO_COINS. The first customer of a save (no stars yet) always brings a common cat.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CatRules = require(Shared:WaitForChild("CatRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
 local FLAG = "scrubPrototype"
+local CUSTOMERS_FLAG = "customers"
+local QUEUE_SIZE = 3
+local FUNNEL = "onboarding_v1"
 local MAX_CAT_ID = 2 ^ 31
 
 local SpaService = {}
@@ -22,13 +32,58 @@ local SpaService = {}
 local cats: { [Player]: SpaRules.Cat } = {}
 local nextId: { [Player]: number } = {}
 local lastSeq: { [Player]: number } = {} -- the newest report number each client sent
+local queues: { [Player]: { string } } = {} -- customers waiting at the door, front first
+local random = Random.new()
+
+local function rollCustomer(player: Player): string
+	local save = DataService.get(player)
+	local queue = queues[player]
+	-- The first customer of a save is common: no stars yet and nobody queued ahead of them.
+	local first = (save == nil or save.stars <= 0) and (queue == nil or #queue == 0)
+	return CatRules.roll(function()
+		return random:NextNumber()
+	end, first)
+end
+
+-- The player's door queue, filled to QUEUE_SIZE, so there is always a customer waiting.
+local function queueFor(player: Player): { string }
+	local queue = queues[player]
+	if queue == nil then
+		queue = {}
+		queues[player] = queue
+	end
+	local q = queue :: { string }
+	while #q < QUEUE_SIZE do
+		table.insert(q, rollCustomer(player))
+	end
+	return q
+end
 
 local function newCat(player: Player): SpaRules.Cat
 	local id = (nextId[player] or 0) + 1
 	nextId[player] = id
 	local cat = SpaRules.newCat(id, os.clock())
+	if LiveFlags.isOn(CUSTOMERS_FLAG) then
+		-- The front customer hands over their cat; queueFor refills the line when it is next read.
+		cat.kind = table.remove(queueFor(player), 1)
+		Telemetry.funnelStep(player, FUNNEL, 6, "first_customer")
+	end
 	cats[player] = cat
 	return cat
+end
+
+-- Tells the client a dirty cat is in the tub; for a customer's cat, which cat, its needs and the needs whose
+-- station is not built yet.
+local function sendCat(player: Player, cat: SpaRules.Cat)
+	local kind = cat.kind
+	if kind == nil then
+		NetService.fire(player, "CatReady", cat.id)
+		return
+	end
+	local save = DataService.get(player)
+	local needs = CatRules.needs(kind)
+	local locked = CatRules.lockedNeeds(needs, if save then save.stations else {})
+	NetService.fire(player, "CatReady", cat.id, kind, needs, locked)
 end
 
 local function onRequestCat(player: Player)
@@ -41,7 +96,10 @@ local function onRequestCat(player: Player)
 	if cat == nil or cat.stage ~= "dirty" then
 		cat = newCat(player)
 	end
-	NetService.fire(player, "CatReady", (cat :: SpaRules.Cat).id)
+	sendCat(player, cat :: SpaRules.Cat)
+	if LiveFlags.isOn(CUSTOMERS_FLAG) then
+		NetService.fire(player, "CustomerQueue", table.clone(queueFor(player)))
+	end
 end
 
 -- Tells the client where the server stands, so a refused step never leaves it stuck ahead of the server.
@@ -87,9 +145,24 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	if coins <= 0 then
 		return
 	end
+	local kind = cat.kind
+	if kind == nil then
+		save.coins += coins
+		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
+		NetService.notice(player, `+{coins} coins`)
+		return
+	end
+	-- A customer's cat goes home: the customer pays coins plus a tip, and the spa earns stars.
+	local pay = CatRules.pay(kind)
+	coins = pay.coins + pay.tip
 	save.coins += coins
+	save.stars += pay.stars
 	NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
-	NetService.notice(player, `+{coins} coins`)
+	NetService.notice(
+		player,
+		`+{coins} coins, +{pay.stars} {if pay.stars == 1 then "star" else "stars"}`
+	)
+	Telemetry.funnelStep(player, FUNNEL, 7, "first_return")
 end
 
 local function onScrubbed(player: Player, rawId: unknown, rawSeq: unknown)
@@ -144,10 +217,18 @@ function SpaService.Start()
 				table.clear(cats)
 			end
 		end)
+	-- Customers switched on or off: the next cat follows the switch; a queue left over is dropped.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CUSTOMERS_FLAG)
+		:Connect(function()
+			if not LiveFlags.isOn(CUSTOMERS_FLAG) then
+				table.clear(queues)
+			end
+		end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		cats[player] = nil
 		nextId[player] = nil
 		lastSeq[player] = nil
+		queues[player] = nil
 	end)
 end
 

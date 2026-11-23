@@ -26,7 +26,9 @@ Remotes.ClientToServer = {
 -- Server -> client.
 Remotes.ServerToClient = {
 	"Notice", -- (kind: "info" | "warning", text: string)  a short line the client shows as a toast
-	"CatReady", -- (catId: number)  a dirty cat is in the tub
+	"CatReady", -- (catId: number, kind: string?, needs: { CatRules.Need }?, locked: { CatRules.Need }?)  a dirty cat
+	-- is in the tub; kind and needs come with a customer's cat (switch customers), locked lists needs whose station is not built
+	"CustomerQueue", -- (kinds: { string })  the cats waiting at the door, front first (switch customers)
 	"PhotoPaid", -- (catId: number, coins: number, total: number)  the photo paid; total is the save's coins
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view
 	-- after every spa report, so a client whose step was refused falls back to it instead of getting stuck

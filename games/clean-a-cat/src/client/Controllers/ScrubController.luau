@@ -20,6 +20,7 @@ local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
@@ -29,7 +30,7 @@ local ToolRules = require(Shared:WaitForChild("ToolRules"))
 
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
-local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the first slice's cat; customers (#32) bring the others
+local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the prototype's cat; a customer's cat uses its own kind
 local TUB_ASSET = "CleanACat_Station_Tub"
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
 local FACING = CFrame.Angles(0, math.pi, 0) -- models face -Z; the tub and cat turn to face the spawn (+Z)
@@ -65,6 +66,7 @@ type Cat = {
 	model: Model,
 	mud: { Piece }, -- in name order; patch index i is mud[i]
 	tangles: { Piece }, -- in name order; brushed out from the first
+	fluff: { Piece }, -- fur puffs, hidden until the cat is fluffed; never caught by a ray
 	coat: { [BasePart]: Color3 }, -- dry colours of the coat, to undo the wet look
 	wetDarken: number,
 	bow: BasePart,
@@ -292,9 +294,16 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 		extra.model:Destroy()
 	end
 	local tangles = collectPieces(model, "Tangle")
+	local fluff = collectPieces(model, "Fluff")
+	for _, piece in fluff do
+		for _, part in piece.parts do
+			part.CanQuery = false
+			part.Transparency = 1
+		end
+	end
 
 	local pieceParts: { [BasePart]: boolean } = {}
-	for _, list in { mud, tangles } do
+	for _, list in { mud, tangles, fluff } do
 		for _, piece in list do
 			for _, part in piece.parts do
 				pieceParts[part] = true
@@ -327,6 +336,7 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 		model = model,
 		mud = mud,
 		tangles = tangles,
+		fluff = fluff,
 		coat = coat,
 		wetDarken = wetDarken,
 		bow = bow,
@@ -341,11 +351,23 @@ local function hidePiece(piece: Piece)
 	end
 end
 
--- Puts a piece back (the server was behind). The new tween replaces a fade still running.
-local function showPiece(piece: Piece)
+-- Fades a piece in: a tangle put back (the server was behind) catches rays again, fur puffs never do. The new
+-- tween replaces a fade still running.
+local function showPiece(piece: Piece, catchRays: boolean)
 	for _, part in piece.parts do
-		part.CanQuery = true
+		part.CanQuery = catchRays
 		TweenService:Create(part, PIECE_FADE, { Transparency = 0 }):Play()
+	end
+end
+
+-- Fur puffs show once the cat is fluffed and hide again if it falls back to clean.
+local function showFluff(cat: Cat, visible: boolean)
+	for _, piece in cat.fluff do
+		if visible then
+			showPiece(piece, false)
+		else
+			hidePiece(piece)
+		end
 	end
 end
 
@@ -471,6 +493,7 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 	if v.strokes >= SpaRules.BRUSH_STROKES then
 		v.stage = "fluffed"
 		setWet(cat, false)
+		showFluff(cat, true)
 		endStroke()
 		Moments.CatFluffed:Fire(cat.model)
 		for _, button in v.bowButtons do
@@ -588,12 +611,27 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	end
 end
 
-local function onCatReady(rawId: unknown)
+-- Needs as one comma separated attribute ("mud,tangles,wet") for need icons to read; only known needs pass.
+local function needList(raw: unknown): string
+	local out: { string } = {}
+	if type(raw) == "table" then
+		for _, need in raw :: { unknown } do
+			if type(need) == "string" and CatRules.NEED_STATION[need] then
+				table.insert(out, need)
+			end
+		end
+	end
+	return table.concat(out, ",")
+end
+
+local function onCatReady(rawId: unknown, rawKind: unknown, rawNeeds: unknown, rawLocked: unknown)
 	local v = visit
 	if not v or type(rawId) ~= "number" then
 		return
 	end
-	local asset = findAsset(CAT_ASSET)
+	-- A customer's cat is its own kind; anything else is the prototype's cat.
+	local kind = if type(rawKind) == "string" and CatRules.rarityOf(rawKind) then rawKind else nil
+	local asset = findAsset(if kind then `CleanACat_Cat_{kind}_Dirty_Sit` else CAT_ASSET)
 	if not asset or visit ~= v then
 		return
 	end
@@ -607,6 +645,13 @@ local function onCatReady(rawId: unknown)
 	end
 	release()
 	startCat(v, asset, seat :: CFrame, rawId)
+	local cat = v.cat
+	if cat and kind then
+		-- For the need icons (UI): which cat, what it needs and which needs wait on a station not built yet.
+		cat.model:SetAttribute("Customer", true)
+		cat.model:SetAttribute("Needs", needList(rawNeeds))
+		cat.model:SetAttribute("LockedNeeds", needList(rawLocked))
+	end
 end
 
 -- Puts the cat back to the server's stage after a step the server refused or never got, so the player can redo
@@ -619,10 +664,11 @@ local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: numb
 	local gone = SpaRules.tanglesGone(v.strokes, #cat.tangles)
 	for index, piece in cat.tangles do
 		if index > gone then
-			showPiece(piece)
+			showPiece(piece, true)
 		end
 	end
 	setWet(cat, stage == "clean")
+	showFluff(cat, stage ~= "clean")
 	show(cat.bow, false)
 	cat.bow.CanQuery = false
 	show(v.camera, false)

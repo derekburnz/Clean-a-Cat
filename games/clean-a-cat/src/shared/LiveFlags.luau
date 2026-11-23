@@ -28,6 +28,7 @@ LiveFlags.KEYS = {
 	"fluffEffects", -- fur puffs, the fluffed glow and bow hearts (Controllers/EffectsController); off by default
 	"catMotion", -- cat idle, blink, ear twitch, shake-off and happy wiggle (Effects/CatMotion); off by default
 	"toolsBoard", -- the Tools board and Bubble Soap (ToolService, Controllers/ToolsBoardController); off by default
+	"customers", -- customers at the door bring rolled cats and pay on return (SpaService, Controllers/DoorController); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -38,6 +39,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	fluffEffects = true,
 	catMotion = true,
 	toolsBoard = true,
+	customers = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
