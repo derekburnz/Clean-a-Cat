@@ -10,6 +10,7 @@ local CueRules = require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild
 local AudioController = {}
 
 local scrub: Audio.LoopHandle? = nil
+local dryer: Audio.LoopHandle? = nil
 
 -- Moment name -> handler. Payloads follow Shared.Moments: the cat first, then the moment's values.
 local HANDLERS: { [string]: (...any) -> () } = {
@@ -50,6 +51,19 @@ local HANDLERS: { [string]: (...any) -> () } = {
 	end,
 	PhotoTaken = function()
 		Audio.play("camera")
+	end,
+	-- DryStart and DryStop arrive with the dry step (Gameplay-Engineer's stations PR); bind skips them until then.
+	DryStart = function(_cat: any, station: any)
+		if dryer then
+			dryer.stop()
+		end
+		dryer = Audio.loop("dryerHum", if typeof(station) == "Instance" then station else nil)
+	end,
+	DryStop = function()
+		if dryer then
+			dryer.stop()
+			dryer = nil
+		end
 	end,
 }
 

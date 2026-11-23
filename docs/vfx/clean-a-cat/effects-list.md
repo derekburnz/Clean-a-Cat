@@ -17,6 +17,7 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 | CatFluffed | Soft glow pulse, one Highlight destroyed after 0.6 s | the cat | glow | 1 Highlight, 2 max on phones | kept, no fade | #7 | built, switch fluffEffects |
 | BowChosen | Bow pops in on its BowSlot (scale 0 to 1, Back Out 0.25 s) with 3 small hearts | the bow on the head | bowHearts, popIn | Emit 3, one ScaleTo per frame for 0.25 s | halved, no pop | #7 | built, switch fluffEffects |
 | CatToWindow | Hop arc to the cushion, small dust puff on landing | window cushion | windowHop | Emit 4 | instant move | #7 | planned |
+| DryStart to DryStop | Warm air wisps blow down from the nozzle onto the cat | the dryer's Air attachment | dryerAir | Rate 6 phone, 12 PC, life 0.4 s | halved | #18 | built, switch dryEffects; waits on DryStart and DryStop from the dry step |
 
 ## Motion (procedural first, on the cat rig)
 Part names from Model-Agent (issue #11): Body, Head, Eye1, Eye2, EarL, EarR, Tail, LegF1, LegF2, LegB1, LegB2, each pivoted at its joint.

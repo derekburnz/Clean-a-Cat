@@ -2,7 +2,7 @@
 
 Written by `.claude/skills/audio-pipeline/scripts/audio_gate.py` for `assets/clean-a-cat/audio`. Do not edit by hand; rerun the script. Budgets: audio-pipeline section 5. PASS means measured clean, not that it sounds right: a person still listens.
 
-20 files: 19 PASS, 1 WARN, 0 FAIL.
+21 files: 20 PASS, 1 WARN, 0 FAIL.
 
 | file | kind | s | ch | Hz | KB | LUFS | peak dBTP | lead ms | seam | verdict | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -15,6 +15,7 @@ Written by `.claude/skills/audio-pipeline/scripts/audio_gate.py` for `assets/cle
 | `sfx/CleanACat_Sfx_BubblePop_1.ogg` | sfx | 0.09 | 1 | 48000 | 4 | - | -2.9 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_BubblePop_2.ogg` | sfx | 0.09 | 1 | 48000 | 4 | - | -2.9 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_BubblePop_3.ogg` | sfx | 0.09 | 1 | 48000 | 4 | - | -2.9 | 0 | - | PASS |  |
+| `sfx/CleanACat_Sfx_DryerHum.ogg` | sfx | 2.00 | 1 | 48000 | 24 | -14.6 | -3.2 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_FurShake.ogg` | sfx | 0.75 | 1 | 48000 | 12 | -21.8 | -3.1 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_Meow_1.ogg` | sfx | 0.32 | 1 | 48000 | 7 | - | -2.8 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_Meow_2.ogg` | sfx | 0.30 | 1 | 48000 | 7 | - | -3.0 | 0 | - | PASS |  |
