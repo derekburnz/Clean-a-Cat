@@ -6448,6 +6448,56 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Sit.png"
  },
  {
+  "name": "CleanACat_NPC_BuilderKitten",
+  "category": "NPC",
+  "module": "build_props",
+  "objects": [
+   "CleanACat_NPC_BuilderKitten_Body",
+   "CleanACat_NPC_BuilderKitten_Head",
+   "CleanACat_NPC_BuilderKitten_Eye1",
+   "CleanACat_NPC_BuilderKitten_Eye2",
+   "CleanACat_NPC_BuilderKitten_EarL",
+   "CleanACat_NPC_BuilderKitten_EarR",
+   "CleanACat_NPC_BuilderKitten_Tail",
+   "CleanACat_NPC_BuilderKitten_LegF1",
+   "CleanACat_NPC_BuilderKitten_LegF2",
+   "CleanACat_NPC_BuilderKitten_LegB1",
+   "CleanACat_NPC_BuilderKitten_LegB2"
+  ],
+  "triangles": 944,
+  "budget": 1500,
+  "parts": 41,
+  "size_studs": {
+   "x": 1.07,
+   "y": 1.62,
+   "z": 1.93
+  },
+  "size_roblox": [
+   1.07,
+   1.93,
+   1.62
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "944/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "544 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.11"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_BuilderKitten.png"
+ },
+ {
   "name": "CleanACat_NPC_Scarf",
   "category": "NPC",
   "module": "customers",
@@ -6726,6 +6776,88 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Cushion.png"
  },
  {
+  "name": "CleanACat_Prop_Hammer",
+  "category": "Prop",
+  "module": "build_props",
+  "objects": [
+   "CleanACat_Prop_Hammer"
+  ],
+  "triangles": 96,
+  "budget": 100,
+  "parts": 4,
+  "size_studs": {
+   "x": 0.21,
+   "y": 0.78,
+   "z": 0.65
+  },
+  "size_roblox": [
+   0.21,
+   0.65,
+   0.78
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "96/100 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "58 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.28 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.24"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Hammer.png"
+ },
+ {
+  "name": "CleanACat_Prop_HardHat",
+  "category": "Prop",
+  "module": "build_props",
+  "objects": [
+   "CleanACat_Prop_HardHat"
+  ],
+  "triangles": 152,
+  "budget": 160,
+  "parts": 5,
+  "size_studs": {
+   "x": 1.07,
+   "y": 1.23,
+   "z": 0.63
+  },
+  "size_roblox": [
+   1.07,
+   0.63,
+   1.23
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "152/160 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "94 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.31 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.06"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HardHat.png"
+ },
+ {
   "name": "CleanACat_Prop_QueueMat",
   "category": "Prop",
   "module": "spa_props",
@@ -6841,6 +6973,44 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_TipJar.png"
+ },
+ {
+  "name": "CleanACat_Prop_Toolbox",
+  "category": "Prop",
+  "module": "build_props",
+  "objects": [
+   "CleanACat_Prop_Toolbox"
+  ],
+  "triangles": 140,
+  "budget": 140,
+  "parts": 9,
+  "size_studs": {
+   "x": 1.3,
+   "y": 0.69,
+   "z": 0.92
+  },
+  "size_roblox": [
+   1.3,
+   0.92,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "140/140 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "74 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.01"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Toolbox.png"
  },
  {
   "name": "CleanACat_Prop_WindowSign",

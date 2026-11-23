@@ -2068,6 +2068,7 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
       "Transparency": 1.0,
+      "CanQuery": false,
       "PivotOffset": {
        "CFrame": {
         "position": [

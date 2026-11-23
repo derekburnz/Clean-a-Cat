@@ -58,7 +58,7 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 | Cat (any coat) | up to 1,500 (today 670 to 1,040) | up to 50 (today 34 to 50) |
 | A dirty cat (cat plus mud, tangles, hidden fluff) | up to 3,000 | up to 110 |
 | Station or furniture | 300 to 1,500 (the tub 1,484); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968) | up to 60 (the tub 37, the upgraded table 40) |
-| Small prop or tool | 50 to 400 (sponges 134 to 390) | up to 20 (sponges 6 to 10) |
+| Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together) | up to 20 (sponges 6 to 10) |
 | Brush, bow | up to 200 (brush 108, bows 164) | up to 10 |
 | One spa plot, full | under 25,000 | about 250 instances |
 | The whole street | under 150,000 | under 1,500 instances |
@@ -129,14 +129,23 @@ Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, 
 The plot draws a mint frame round the window and the entrance (`_Trim`, no collision).
 
 ## 17. Stations and the build pad (#18)
-`stations.py` builds the next two stations. Each fits the plot's 5 by 5 stud station pad (`SpotStation2`, `SpotStation3`), faces the player at -Z in Roblox like the tub, and seats the cat at `ScaleTo(CatScale)` (root attribute, 1.5, as at the tub) on its `CatSeat` attachment. Their legs and boards are too thin to collide, so each has an invisible solid `_Barrier` box under its top that keeps players out and stays under the cat, so taps reach the cat.
+`stations.py` builds the next two stations. Each fits the plot's 5 by 5 stud station pad (`SpotStation2`, `SpotStation3`), faces the player at -Z in Roblox like the tub, and seats the cat at `ScaleTo(CatScale)` (root attribute, 1.5, as at the tub) on its `CatSeat` attachment. Their legs and boards are too thin to collide, so each has an invisible solid `_Barrier` box under its top that keeps players out. It stays under the cat and has CanQuery off, so taps, clicks and the camera pass through it.
 - `CleanACat_Station_BrushTable`: a light wood table with a mint rubber mat, a towel and a shampoo bottle on the shelf. `CatSeat` on the mat at 1.8 studs (`SeatHeight`), hip high on an avatar.
 - `CleanACat_Station_BrushTableUp`: the upgrade, same footprint, pivot and `CatSeat`, so the game swaps one for the other in place. Painted cream with round legs on bubblegum ball feet, a puffy bubblegum cushion, two towels and two bottles, and a mint brush rack at the back with three brushes on a rail and a pink bow on the header.
 - `CleanACat_Station_Dryer`: a hood dryer: a round bubblegum stool (`CatSeat` at 1.2, like the tub) and a cream hood with a mint rim and sky vents on an arm from a pole behind it, with a two dial control box. Under the hood hangs a part named `Nozzle` with an Attachment `Air` whose +Y points straight down at the cat: a ParticleEmitter in `Air` with EmissionDirection Top blows onto the cat. The hood's rim is at 4.45 studs, about 0.4 over a 1.5 scale cat's ears.
 
 `spa_props.py` builds `CleanACat_Prop_BuildPad`, shown where a locked station will go: a cream 4.8 stud square inside a dashed bubblegum and butter tape border, two bubblegum cones at the front corners, a stack of planks and a mint sign at the back whose cream face is a `Screen` part for the station's name and price. Walk-through; remove it when the station is built.
 
-## 18. Rules
+## 18. Builder kitten (#20)
+`build_props.py` builds the kitten that hammers at a locked station while the build countdown runs:
+- `CleanACat_NPC_BuilderKitten`: the standing cat body with arms from `cats.py`, about 1.8 studs tall, in a hazel coat with an oat chest and socks. No index cat has that coat, so it never reads as collectible. It has the same child Models as every cat (Head with eyes and ears, Tail, the arms LegF1 and LegF2 pivoted at the shoulders, LegB1, LegB2). It has an Attachment `HatSlot` on top of the head, an Attachment `HammerGrip` in its right paw (LegF2), and the root attributes `Scale` 1 and `Role` Builder.
+- `CleanACat_Prop_HardHat`: a butter hard hat with a ridge, a front peak and a mint sticker. Line its `HatSlot` up with the kitten's and weld it to the Head part.
+- `CleanACat_Prop_Hammer`: pivot and Attachment `Grip` at the grip. Line `Grip` up with the kitten's `HammerGrip`. The handle points to the front (-Z) and the striking face down, so turning the hammer about its pivot's X axis lifts the head and brings it down.
+- `CleanACat_Prop_Toolbox`: a sky toolbox with a handle and a wrench on the lid. Its Attachment `CountdownAnchor`, 2.4 studs up, holds the build countdown BillboardGui.
+
+The hat, hammer and toolbox together are 388 triangles (the budget is 400). None of them collides.
+
+## 19. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.

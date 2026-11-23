@@ -3,20 +3,26 @@
 -- build. The player walks up and taps a prompt; BuildService checks and starts the build. A running build's
 -- prompt shows its countdown, and a built one's prompt goes away. Nothing opens by itself.
 -- Behind the LiveFlags switch `builds`.
+-- With `longBuildOffer` on as well, a running build of an hour or more gets a bell prompt, "Tell me when it's
+-- done": only a tap on it asks Roblox for the notification opt-in prompt (#38). A player Roblox would not ask sees
+-- "Ready in 8 h. Come back to see it!" on the board instead. What happened goes to the server as ReportOptIn.
 --
 --   BuildBoardController.finished:Connect(fn)  fn(id) when a build finishes (also one that finished while away),
 --                                              for the celebration effects and the builder panel
+local ExperienceNotificationService = game:GetService("ExperienceNotificationService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local NotifyRules = require(Shared:WaitForChild("NotifyRules"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local Signal = require(Shared:WaitForChild("Signal"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "builds"
+local BELL_FLAG = "longBuildOffer"
 local BOARD_SIZE = Vector3.new(4, 5, 0.4)
 
 local BuildBoardController = {}
@@ -30,6 +36,11 @@ local ticker: thread? = nil
 local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
 local clockOffset = 0 -- server os.time() minus local os.time(), so countdowns use the server's clock
+local bell: ProximityPrompt? = nil
+local comeBack: BillboardGui? = nil
+local canOptIn: boolean? = nil -- Roblox would show the opt-in prompt; checked once, before any ask
+local askedFor: { [number]: boolean } = {} -- builds (by end time) the bell was tapped for: it never asks twice
+local toldCannot = false -- cannot_prompt reported this session
 
 -- Standing on the floor at the builder spot, its front facing the way the spot faces.
 local function boardCFrame(): CFrame
@@ -45,8 +56,46 @@ local function countdown(seconds: number): string
 		else string.format("%d:%02d", m, s % 60)
 end
 
+-- The running long build that finishes last, or nil.
+local function longRunning(now: number): BuildRules.Build?
+	local found: BuildRules.Build? = nil
+	for _, build in builds do
+		local current = found
+		if
+			NotifyRules.isLong(build.item)
+			and build.endsAt > now
+			and (current == nil or build.endsAt > current.endsAt)
+		then
+			found = build
+		end
+	end
+	return found
+end
+
+local function refreshBell(now: number)
+	local prompt = bell
+	local label = comeBack
+	if prompt == nil or label == nil then
+		return
+	end
+	local long = if LiveFlags.isOn(BELL_FLAG) then longRunning(now) else nil
+	prompt.Enabled = long ~= nil and canOptIn == true and not askedFor[long.endsAt]
+	label.Enabled = long ~= nil and canOptIn == false
+	if long and canOptIn == false then
+		local text = label:FindFirstChildOfClass("TextLabel")
+		if text then
+			(text :: TextLabel).Text = NotifyRules.comeBackText(long.endsAt - now)
+		end
+		if not toldCannot then
+			toldCannot = true
+			Remotes.event("ReportOptIn"):FireServer("cannot_prompt")
+		end
+	end
+end
+
 local function refreshPrompts()
 	local now = os.time() + clockOffset
+	refreshBell(now)
 	for id, prompt in prompts do
 		local item = BuildRules.ITEMS[id]
 		local running: BuildRules.Build? = builds[item.slot]
@@ -108,6 +157,67 @@ local function enable()
 			end)
 		)
 	end
+	-- The bell and the come back line, at the foot of the board.
+	local foot = Instance.new("Attachment")
+	foot.Name = "Bell"
+	foot.Position = Vector3.new(0, -BOARD_SIZE.Y / 2 + 0.5, -BOARD_SIZE.Z / 2)
+	foot.Parent = part
+	local bellPrompt = Instance.new("ProximityPrompt")
+	bellPrompt.ActionText = "Tell me when it's done"
+	bellPrompt.HoldDuration = 0
+	bellPrompt.MaxActivationDistance = BuildRules.PROMPT_REACH
+	bellPrompt.RequiresLineOfSight = false
+	bellPrompt.Enabled = false
+	bellPrompt.Parent = foot
+	bell = bellPrompt
+	table.insert(
+		connections,
+		bellPrompt.Triggered:Connect(function()
+			local long = longRunning(os.time() + clockOffset)
+			if long == nil or askedFor[long.endsAt] then
+				return
+			end
+			askedFor[long.endsAt] = true
+			bellPrompt.Enabled = false
+			-- Only this tap opens Roblox's prompt.
+			if pcall(function()
+				ExperienceNotificationService:PromptOptIn()
+			end) then
+				Remotes.event("ReportOptIn"):FireServer("shown")
+			end
+		end)
+	)
+	table.insert(
+		connections,
+		ExperienceNotificationService.OptInPromptClosed:Connect(function()
+			Remotes.event("ReportOptIn"):FireServer("closed")
+		end)
+	)
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "ComeBack"
+	gui.Size = UDim2.fromScale(5, 0.8) -- studs
+	gui.StudsOffset = Vector3.new(0, 0, 0)
+	gui.MaxDistance = 40
+	gui.Enabled = false
+	local text = Instance.new("TextLabel")
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundTransparency = 1
+	text.TextScaled = true
+	text.Font = Enum.Font.FredokaOne
+	text.TextColor3 = Color3.fromRGB(255, 255, 255)
+	text.TextStrokeTransparency = 0.4
+	text.Parent = gui
+	gui.Adornee = foot
+	gui.Parent = part
+	comeBack = gui
+	if canOptIn == nil then
+		task.spawn(function()
+			local ok, result = pcall(function()
+				return ExperienceNotificationService:CanPromptOptInAsync()
+			end)
+			canOptIn = ok and result == true
+		end)
+	end
 	refreshPrompts()
 	part.Parent = Workspace
 	board = part
@@ -139,6 +249,8 @@ local function disable()
 		ticker = nil
 	end
 	table.clear(prompts)
+	bell = nil
+	comeBack = nil
 	if board then
 		board:Destroy()
 		board = nil

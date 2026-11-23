@@ -4,6 +4,7 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
     python3 assets/clean-a-cat/blender/scenes.py tub   docs/concepts/clean-a-cat/2026-11-23-tub-scene.png
     python3 assets/clean-a-cat/blender/scenes.py groom docs/concepts/clean-a-cat/2026-11-23-groom-sheet.png
     python3 assets/clean-a-cat/blender/scenes.py stations docs/concepts/clean-a-cat/2026-11-23-stations-sheet.png
+    python3 assets/clean-a-cat/blender/scenes.py builder docs/concepts/clean-a-cat/2026-11-23-builder-kitten.png
 """
 
 import os
@@ -121,6 +122,34 @@ def stations_sheet(mat, out):
         av.rotation_euler.z = math.radians(-60)          # turned to the station, three quarters to us
         allo += fresh([av])
     common.render_preview(allo, out, res=(1600, 600), samples=24, azimuth=10, elevation=18, margin=0.9)
+
+
+def builder_sheet(mat, out, close=False):
+    """#20: the builder kitten in its hard hat with the hammer in its right paw and the toolbox beside it, on a build
+    pad at a locked station, an avatar beside it for scale. close=True: the kitten and its things alone, nearer."""
+    import math
+
+    import build_props
+    import spa_props
+    allo = []
+    top, paw = build_props._kitten_points()
+    kit = build_props.build_kitten(mat)
+    hat = build_props.build_hard_hat(mat)
+    _move(hat, top)
+    ham = build_props.build_hammer(mat)
+    _move(ham, paw)
+    box = build_props.build_toolbox(mat)
+    _move(box, (1.2, 0.15, 0.0))
+    group = kit + hat + ham + box
+    if close:
+        common.render_preview(group, out, res=(900, 700), samples=24, azimuth=28, elevation=12)
+        return
+    pad = spa_props.build_build_pad(mat)
+    _move(group, (-0.4, -0.6, spa_props.PAD_H))
+    av = avatar(mat, (-3.4, -1.2, 0.0), "skin_tan", "spa_sky")
+    av.rotation_euler.z = math.radians(-60)
+    allo = group + pad + [av]
+    common.render_preview(allo, out, res=(1200, 700), samples=24, azimuth=22, elevation=16, margin=0.95)
 
 
 def _move(objs, offset, k=1.0):
@@ -275,4 +304,5 @@ if __name__ == "__main__":
     png = os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png")
     mat = common.palette_material(png)
     {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
-     "customers": customers_sheet, "stations": stations_sheet}[which](mat, out)
+     "customers": customers_sheet, "stations": stations_sheet,
+     "builder": builder_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
