@@ -72,7 +72,8 @@ ROUND = 4
 
 # Names the game looks up. An object ending in _SignBoard or _Screen keeps its child Model but its part is named
 # SignBoard or Screen (found with a recursive FindFirstChild), so the UI can hang a SurfaceGui on it.
-RENAME_BIGGEST = {}
+RENAME_BIGGEST = {n: "Handle" for n in ("CleanACat_Tool_Sponge", "CleanACat_Tool_SpongeBubble",
+                                          "CleanACat_Tool_SpongeGolden")}   # a Roblox Tool's grip part
 PART_NAMES = {"_SignBoard": "SignBoard", "_Screen": "Screen"}
 # CollectionService tags, keyed by object name, or by name suffix when the key starts with "_".
 TAGS = {"_ChanceBoard": ["ChanceBoard"]}
