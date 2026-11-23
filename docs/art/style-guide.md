@@ -100,10 +100,28 @@ Pieces of one model never share a plane: neighbours are staggered by 0.012 studs
 
 `props.py` builds `CleanACat_Bow_Pink`, `CleanACat_Bow_Mint` and `CleanACat_Bow_Sky` (`bow_pink`, `bow_mint`, `bow_sky`): two puffed loops, a knot and two tails lying back over the crown. Pivot at the base of the knot, with an Attachment `BowSlot` there. To put one on, line the bow's `BowSlot` up with the cat Head's `BowSlot`, weld it to the Head, and `ScaleTo` it by the cat's `Scale` attribute.
 
-## 14. Spa plot (#15, graybox)
-`plot.py` builds `CleanACat_Area_SpaPlot`, today a graybox: flat blocks in plain colours with every gameplay spot in place, to be played and changed before the real build. The front apron sits on the pavement; the room has an open front (an entrance with no door, and the display window with a window seat and four cushions behind 0.6 see-through glass); a back door leads to the stray box; an opening in the back wall is the VIP Room door, with the back yard behind it for the VIP Room build. No room, tub or space is made for avatars: only cats bathe.
+## 14. Spa plot and the street (#15)
+`plot.py` builds `CleanACat_Area_SpaPlot`. It began as a graybox and is now the real build on the same layout, so every spot, wall and opening is where the graybox had it. The front apron sits on the pavement; the room has an open front (an entrance with no door, and the display window with a window seat and four cushions behind 0.6 see-through glass); a back door leads to the stray box; an opening in the back wall is the VIP Room door, with the back yard behind it for the VIP Room build. No room, tub or space is made for avatars: only cats bathe.
 
-Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, `SpotQueue1` to `SpotQueue3`, `SpotStray`, `SpotWindow1` to `SpotWindow4` (each cushion's base), `SpotTipJar`, `SpotSign`, `SpotBuilder`, `SpotStation2`, `SpotStation3`, `SpotVipDoor` and `SpotBoard`. Each faces the way the player, customer, cat or station there faces. Root attribute `FloorHeight` (0.5, the top of the floor slab). The graybox draws a coloured pad on the floor at each spot (`_Decor`, no collision); the real build replaces the pads, never the Attachments.
+Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, `SpotQueue1` to `SpotQueue3`, `SpotStray`, `SpotWindow1` to `SpotWindow4` (each cushion's base), `SpotTipJar`, `SpotSign`, `SpotBuilder`, `SpotStation2`, `SpotStation3`, `SpotVipDoor` and `SpotBoard`. Each faces the way the player, customer, cat or station there faces. Root attribute `FloorHeight` (0.5, the top of the floor slab). The real build has these parts:
+- A bubblegum shop front under a mint and white striped awning. The side and back walls are cream, with a bubblegum band outside and a mint band inside.
+- A checked offwhite tile floor, with a round bubblegum rug under the tub.
+- A mint roof with a cream parapet.
+- Inside: three pendant lamps with warm bulbs (`_Glow`, Neon), a towel shelf, a clock, a paw poster and two plants.
+- Over the back door: a cardboard strays sign.
+- Outside: a flower box under the window, two potted plants at the entrance and two lamp posts on the apron.
+- A grassy back yard with a low white fence, set 0.5 studs inside the plot edge so neighbours never overlap.
+
+Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `_Flowers`, `_Trim`, `_Bands`, `_Tiles`) does not. The plot is 3,540 triangles and 161 parts.
+
+`street.py` builds `CleanACat_Area_Street`, which holds everything round the six plots:
+- Grass ground and a pavement in front of the plots, level with their floor (0.5).
+- Cream curbs and a two lane road with white dashes.
+- A far pavement, with pastel town houses across the road as a backdrop.
+- A hedge and round trees behind the plots, and hedges at both ends.
+- An invisible solid `_Barrier` round the edge, with CanQuery off.
+
+Its pivot is slot 1's plot pivot, so it goes at `SpaLayout.PIVOT_POSITION`. Attachments `PlotSlot1` to `PlotSlot6` mark each plot's pivot in `SpaLayout.slotPivot` order, 44 studs apart. The root attributes are `PlotSpacing` 44 and `PlotCount` 6. The game places the plots; they are not built into the street. The street is 2,624 triangles and 105 parts.
 
 ## 15. Customers and spa props (#16)
 `spa_props.py` builds:
