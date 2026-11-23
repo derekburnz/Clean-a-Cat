@@ -30,6 +30,7 @@ local CUSTOMERS_FLAG = "customers"
 local STRAYS_FLAG = "strays"
 local QUEUE_SIZE = 3
 local FUNNEL = "onboarding_v1"
+local BOARD_LIT = "ChanceBoardLit" -- Player attribute: true once a customer has been served, so the board shows
 local MAX_CAT_ID = 2 ^ 31
 
 local SpaService = {}
@@ -195,6 +196,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	coins = pay.coins + pay.tip + bonus
 	save.coins += coins
 	save.stars += pay.stars
+	player:SetAttribute(BOARD_LIT, true)
 	NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
 	NetService.notice(
 		player,
@@ -243,6 +245,12 @@ function SpaService.Init(_services: { [string]: any }) end
 
 function SpaService.Start()
 	NetService.on("RequestCat", { perSecond = 1, burst = 2 }, onRequestCat)
+	-- The chance board lights up from the second customer: once a save has stars, a customer was served.
+	DataService.onLoaded:Connect(function(player: Player, save)
+		if save.stars > 0 then
+			player:SetAttribute(BOARD_LIT, true)
+		end
+	end)
 	NetService.on("ReportScrubbed", { perSecond = 2 }, onScrubbed)
 	NetService.on("ReportBrushStroke", { perSecond = 8 }, onBrushStroke)
 	NetService.on("RequestPickBow", { perSecond = 2 }, onPickBow)

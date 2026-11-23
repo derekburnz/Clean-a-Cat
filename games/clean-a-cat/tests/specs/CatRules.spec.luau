@@ -77,6 +77,24 @@ return function()
 		end)
 	end)
 
+	describe("CatRules.boardLines", function()
+		it("shows exactly the chances and cats the roll uses, summing to 100", function()
+			local sum = 0
+			local lines = CatRules.boardLines()
+			expect(#lines).to.equal(#CatRules.RARITIES)
+			for i, line in lines do
+				expect(line.rarity).to.equal(CatRules.RARITIES[i])
+				expect(line.percent).to.equal(CatRules.CHANCES[line.rarity])
+				expect(#line.cats).to.equal(#CatRules.ROSTER[line.rarity])
+				sum += line.percent
+			end
+			expect(sum).to.be.near(100, 1e-9)
+			expect(CatRules.percentText(60)).to.equal("60%")
+			expect(CatRules.percentText(3.5)).to.equal("3.5%")
+			expect(CatRules.percentText(0.5)).to.equal("0.5%")
+		end)
+	end)
+
 	describe("CatRules needs and pay", function()
 		it("gives rarer cats more needs and locks the dryer until it is built", function()
 			expect(#CatRules.needs("Smudge")).to.equal(2)

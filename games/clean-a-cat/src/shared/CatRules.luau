@@ -103,6 +103,30 @@ function CatRules.lockedNeeds(needs: { Need }, stations: { [string]: boolean }):
 	return locked
 end
 
+export type BoardLine = { rarity: Rarity, percent: number, cats: { string } }
+
+-- The chance board's lines, read straight from CHANCES and ROSTER (the tables roll uses), rarest last. The
+-- board shows these and nothing else, so a shown chance is always the real one.
+function CatRules.boardLines(): { BoardLine }
+	local lines: { BoardLine } = {}
+	for _, rarity in CatRules.RARITIES do
+		table.insert(lines, {
+			rarity = rarity,
+			percent = CatRules.CHANCES[rarity],
+			cats = table.clone(CatRules.ROSTER[rarity]),
+		})
+	end
+	return lines
+end
+
+-- A chance as the board prints it: "60%", "3.5%", "0.5%".
+function CatRules.percentText(percent: number): string
+	if percent == math.floor(percent) then
+		return `{percent}%`
+	end
+	return `{string.format("%.1f", percent)}%`
+end
+
 -- What `name` pays. A cat not on the roster pays like a common one.
 function CatRules.pay(name: string): Pay
 	return CatRules.PAY[CatRules.rarityOf(name) or "Common"]
