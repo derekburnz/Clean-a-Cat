@@ -19,6 +19,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
+local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -38,7 +39,7 @@ local ASSET_WAIT_SECONDS = 5
 local WET_DARKEN = 0.3 -- used when the cat has no WetDarken attribute
 local TUB_POSITION = Vector3.new(0, 0, -12) -- in front of the placeholder spawn, on the placeholder floor
 local SEAT_HEIGHT = 1.2 -- the tub's inner floor, used when the tub has no CatSeat attachment
-local BOW_SIZE = Vector3.new(0.5, 0.25, 0.15) -- studs at scale 1
+local BOW_SIZE = Vector3.new(0.5, 0.25, 0.15) -- studs at scale 1; the stand-in when a bow model is missing
 local PIECE_FADE = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- mud and tangles fade, not blink
 local STROKE_TRAVEL = 2.5 -- studs of drag on the cat that make one brush stroke
 local NEXT_CAT_SECONDS = 3 -- after the photo pays, the next cat is asked for
@@ -48,9 +49,9 @@ local RESEND_TRIES = 3
 local GAMEPAD_BUTTON = Enum.KeyCode.ButtonR2 -- not ButtonA, which jumps
 local BUTTON_COLOR = Color3.fromRGB(205, 205, 210)
 local BOW_COLORS: { [string]: Color3 } = {
-	BowPink = Color3.fromRGB(255, 120, 170),
-	BowBlue = Color3.fromRGB(90, 160, 255),
-	BowGold = Color3.fromRGB(255, 200, 60),
+	BowPink = Color3.fromRGB(255, 150, 190),
+	BowMint = Color3.fromRGB(150, 225, 190),
+	BowSky = Color3.fromRGB(140, 195, 245),
 }
 
 type Stage = "waiting" | SpaRules.Stage
@@ -70,7 +71,7 @@ type Cat = {
 	fluff: { Piece }, -- fur puffs, hidden until the cat is fluffed; never caught by a ray
 	coat: { [BasePart]: Color3 }, -- dry colours of the coat, to undo the wet look
 	wetDarken: number,
-	bow: BasePart,
+	bow: BasePart, -- the stand-in bow, shown only when the picked bow's model cannot be worn
 }
 
 type Visit = {
@@ -558,9 +559,11 @@ local function tapButton(v: Visit, input: InputObject): boolean
 	local bowId = part:GetAttribute("BowId")
 	if v.stage == "fluffed" and type(bowId) == "string" then
 		v.stage = "styled"
-		cat.bow.Color = BOW_COLORS[bowId] or BUTTON_COLOR
-		show(cat.bow, true)
-		cat.bow.CanQuery = false
+		if not BowFit.wear(cat.model, bowId, CAT_SCALE) then
+			cat.bow.Color = BOW_COLORS[bowId] or BUTTON_COLOR
+			show(cat.bow, true)
+			cat.bow.CanQuery = false
+		end
 		for _, button in v.bowButtons do
 			show(button, false)
 		end
@@ -677,6 +680,7 @@ local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: numb
 	end
 	setWet(cat, stage == "clean")
 	showFluff(cat, stage ~= "clean")
+	BowFit.remove(cat.model)
 	show(cat.bow, false)
 	cat.bow.CanQuery = false
 	show(v.camera, false)
