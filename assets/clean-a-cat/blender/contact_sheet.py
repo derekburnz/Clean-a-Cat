@@ -77,7 +77,8 @@ def sheet(paths, out_path, cols=4, factor=2, bg=(0.96, 0.92, 0.87, 1.0)):
 def build_sheets(docs_dir, manifest):
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
     groups = {
-        "sheet_cats": [e for e in manifest if e["category"] == "Cat"],
+        "sheet_cats": [e for e in manifest if e["category"] == "Cat" and "_Dirty" not in e["name"]],
+        "sheet_dirty": [e for e in manifest if e["category"] == "Cat" and "_Dirty" in e["name"]],
         "sheet_spa": [e for e in manifest if e["category"] in ("Station", "Area", "Street", "Decor", "NPC")],
         "sheet_items": [e for e in manifest if e["category"] in ("Tool", "Prop", "Bow", "Mud")],
     }
