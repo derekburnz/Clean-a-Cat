@@ -3,6 +3,7 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
 
     python3 assets/clean-a-cat/blender/scenes.py tub   docs/concepts/clean-a-cat/2026-11-23-tub-scene.png
     python3 assets/clean-a-cat/blender/scenes.py groom docs/concepts/clean-a-cat/2026-11-23-groom-sheet.png
+    python3 assets/clean-a-cat/blender/scenes.py stations docs/concepts/clean-a-cat/2026-11-23-stations-sheet.png
 """
 
 import os
@@ -79,6 +80,47 @@ def customers_sheet(mat, out):
     _move(mat_, (21.5, -2.6, 0))
     allo += fresh(board) + fresh(mat_)
     common.render_preview(allo, out, res=(1600, 640), samples=24, azimuth=14, elevation=12)
+
+
+def stations_sheet(mat, out):
+    """#18: the brush table with a tangled cat, the upgraded table with a fluffed one, the dryer with a rinsed cat
+    under the hood and the build pad with a stray watching; an avatar stands at the front of each, facing it."""
+    import math
+
+    import spa_props
+    allo, n = [], [0]
+
+    def fresh(objs):
+        n[0] += 1
+        for o in objs:
+            o.name = f"T{n[0]}_{o.name}"
+        return objs
+
+    def cat(name, drop, at, k):
+        objs, _, _ = dirt.build_dirty(name, mat, "sit")
+        objs = _drop(objs, drop)
+        for o in objs:
+            o.hide_render = False
+        _move(objs, at, k)
+        return fresh(objs)
+
+    k = stations.STATION_CAT_SCALE
+    seat = (0.0, stations.TOP_Y - 0.03, stations.GROOM_Z)
+    rows = [(stations.build_brush_table, ("Smudge", ["_Mud", "_Fluff"]), seat),
+            (stations.build_brush_table_up, ("Cotton", ["_Mud", "_Tangle"]), seat),
+            (stations.build_dryer, ("Muffin", ["_Mud", "_Tangle"]), (*stations.STOOL, stations.SEAT_DRYER)),
+            (spa_props.build_build_pad, ("Inky", ["_Mud", "_Tangle", "_Fluff"]), (-1.2, -1.0, spa_props.PAD_H))]
+    for i, (build, (cat_name, drop), at) in enumerate(rows):
+        x = i * 7.4
+        objs = [o for o in build(mat) if not o.name.endswith("_Barrier")]
+        _move(objs, (x, 0, 0))
+        allo += fresh(objs)
+        allo += cat(cat_name, drop, (x + at[0], at[1], at[2]), k if i < 3 else 1.0)
+        av = avatar(mat, (x - 3.3, -1.3, 0.0), ("skin_light", "skin_tan", "skin_deep", "skin_tan")[i],
+                    ("spa_mint", "shirt_blue", "pastel_butter", "spa_bubblegum")[i])
+        av.rotation_euler.z = math.radians(-60)          # turned to the station, three quarters to us
+        allo += fresh([av])
+    common.render_preview(allo, out, res=(1600, 600), samples=24, azimuth=10, elevation=18, margin=0.9)
 
 
 def _move(objs, offset, k=1.0):
@@ -233,4 +275,4 @@ if __name__ == "__main__":
     png = os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png")
     mat = common.palette_material(png)
     {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
-     "customers": customers_sheet}[which](mat, out)
+     "customers": customers_sheet, "stations": stations_sheet}[which](mat, out)
