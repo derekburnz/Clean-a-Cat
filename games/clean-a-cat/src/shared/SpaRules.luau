@@ -104,4 +104,11 @@ function SpaRules.photo(cat: Cat, now: number): number
 	return SpaRules.PHOTO_COINS
 end
 
+-- How many of a cat's `total` tangles are gone after `strokes` brush strokes: an even share per stroke, and
+-- all of them on the last stroke.
+function SpaRules.tanglesGone(strokes: number, total: number): number
+	local done = math.clamp(math.floor(strokes), 0, SpaRules.BRUSH_STROKES)
+	return math.ceil(math.max(total, 0) * done / SpaRules.BRUSH_STROKES)
+end
+
 return table.freeze(SpaRules)
