@@ -103,14 +103,18 @@ function CueRules.nextVoice(current: number, voices: number): number
 	return current % math.max(voices, 1) + 1
 end
 
--- Mud plop pitch: starts low and rises as more patches are cleared, capped.
-function CueRules.mudPlopPitch(cleared: number): number
-	return math.min(0.9 + 0.02 * math.max(cleared, 0), 1.3)
+CueRules.MAX_PATCHES = 20 -- the design's cap on mud patches per cat
+CueRules.FAST_DRAG = 30 -- studs per second that counts as a fast scrub
+
+-- Mud plop pitch from the patches still left: low with a full coat of mud, rising to 1.3 at the last patch.
+function CueRules.mudPlopPitch(patchesLeft: number): number
+	local cleared = CueRules.MAX_PATCHES - math.clamp(patchesLeft, 0, CueRules.MAX_PATCHES)
+	return math.min(0.9 + 0.02 * cleared, 1.3)
 end
 
--- Sponge loop speed from drag speed in pixels a second: 0.9 still, 1.15 at a fast drag.
+-- Sponge loop speed from drag speed in studs a second: 0.9 still, 1.15 at a fast drag.
 function CueRules.scrubLoopSpeed(dragSpeed: number): number
-	return 0.9 + 0.25 * math.clamp(dragSpeed / 1200, 0, 1)
+	return 0.9 + 0.25 * math.clamp(dragSpeed / CueRules.FAST_DRAG, 0, 1)
 end
 
 -- The next music track: alternates between the tracks that have ids, starting at the first.
