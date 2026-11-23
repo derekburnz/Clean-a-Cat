@@ -42,6 +42,7 @@ local BOW_SIZE = Vector3.new(0.5, 0.25, 0.15) -- studs at scale 1
 local PIECE_FADE = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- mud and tangles fade, not blink
 local STROKE_TRAVEL = 2.5 -- studs of drag on the cat that make one brush stroke
 local NEXT_CAT_SECONDS = 3 -- after the photo pays, the next cat is asked for
+local LEAVE_SECONDS = 1.2 -- after the photo, the cat leaves: home with its owner or into the window
 local RESEND_SECONDS = 2 -- the newest report is sent again when the server has not answered it by then
 local RESEND_TRIES = 3
 local GAMEPAD_BUTTON = Enum.KeyCode.ButtonR2 -- not ButtonA, which jumps
@@ -624,7 +625,13 @@ local function needList(raw: unknown): string
 	return table.concat(out, ",")
 end
 
-local function onCatReady(rawId: unknown, rawKind: unknown, rawNeeds: unknown, rawLocked: unknown)
+local function onCatReady(
+	rawId: unknown,
+	rawKind: unknown,
+	rawNeeds: unknown,
+	rawLocked: unknown,
+	rawStray: unknown
+)
 	local v = visit
 	if not v or type(rawId) ~= "number" then
 		return
@@ -648,7 +655,8 @@ local function onCatReady(rawId: unknown, rawKind: unknown, rawNeeds: unknown, r
 	local cat = v.cat
 	if cat and kind then
 		-- For the need icons (UI): which cat, what it needs and which needs wait on a station not built yet.
-		cat.model:SetAttribute("Customer", true)
+		cat.model:SetAttribute("Customer", rawStray ~= true)
+		cat.model:SetAttribute("Stray", rawStray == true)
 		cat.model:SetAttribute("Needs", needList(rawNeeds))
 		cat.model:SetAttribute("LockedNeeds", needList(rawLocked))
 	end
@@ -735,7 +743,17 @@ local function onPhotoPaid(rawId: unknown)
 	v.stage = "done"
 	show(v.camera, false)
 	Moments.PhotoTaken:Fire(cat.model)
-	nextCatThread = task.delay(NEXT_CAT_SECONDS, function()
+	nextCatThread = task.delay(LEAVE_SECONDS, function()
+		if visit ~= v or v.cat ~= cat then
+			return
+		end
+		-- A stray hops into the window; a customer's cat goes home. The prototype's cat just waits.
+		if cat.model:GetAttribute("Stray") == true then
+			Moments.CatToWindow:Fire(cat.model)
+		elseif cat.model:GetAttribute("Customer") == true then
+			Moments.CatReturned:Fire(cat.model)
+		end
+		task.wait(NEXT_CAT_SECONDS - LEAVE_SECONDS)
 		nextCatThread = nil
 		if visit == v then
 			Remotes.event("RequestCat"):FireServer()
