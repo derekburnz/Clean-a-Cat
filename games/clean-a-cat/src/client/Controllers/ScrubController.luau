@@ -507,10 +507,11 @@ local function dryThenBows(v: Visit, cat: Cat)
 		cat.model:PivotTo((stool :: Attachment).WorldCFrame)
 		Moments.DryStart:Fire(cat.model, dryer)
 		task.wait(DRY_SECONDS)
+		-- Always stop the dry, even for a cat that is gone: the hum loops until DryStop.
+		Moments.DryStop:Fire(cat.model)
 		if visit ~= v or v.cat ~= cat then
 			return
 		end
-		Moments.DryStop:Fire(cat.model)
 		if dryScale ~= CAT_SCALE then
 			cat.model:ScaleTo(CAT_SCALE)
 		end
