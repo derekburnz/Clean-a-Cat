@@ -16,7 +16,10 @@ faces there (the Attachment's LookVector), all at floor height:
   SpotSpawn            where the player spawns, in front of the tub, facing it
   SpotQueue1..3        the customer queue: 1 just inside the entrance, 2 in the doorway, 3 on the apron
   SpotStray            the stray box, inside the back door
-  SpotWindow1..4       the four cushions on the window seat (the cushion top, WINDOW_SEAT above the floor)
+  SpotWindow1..4       the four cushions on the window seat (CleanACat_Prop_Cushion's pivot, on the seat top)
+  SpotTipJar           the tip jar, at the right end of the window seat
+  SpotSign             the spa's name sign, flat on the outside of the front wall right of the entrance, facing
+                       the street
   SpotBuilder          where the builder kitten works
   SpotStation2, 3      the two locked station pads (the Brush Table, then the Blow Dryer)
   SpotVipDoor          the middle of the VIP Room door, facing into the room
@@ -53,10 +56,12 @@ SPOTS = {
     "SpotQueue2": (5.0, -17.5, 0.0, 180.0),
     "SpotQueue3": (5.0, -21.5, 0.0, 180.0),
     "SpotStray": (-12.0, 7.0, 0.0, 0.0),
-    "SpotWindow1": (-13.5, -14.2, WINDOW_SEAT + 0.35, 0.0),
-    "SpotWindow2": (-10.0, -14.2, WINDOW_SEAT + 0.35, 0.0),
-    "SpotWindow3": (-6.5, -14.2, WINDOW_SEAT + 0.35, 0.0),
-    "SpotWindow4": (-3.0, -14.2, WINDOW_SEAT + 0.35, 0.0),
+    "SpotWindow1": (-14.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
+    "SpotWindow2": (-11.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
+    "SpotWindow3": (-8.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
+    "SpotWindow4": (-5.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
+    "SpotTipJar": (-2.4, -14.2, WINDOW_SEAT + 0.03, 0.0),
+    "SpotSign": (13.5, ROOM_Y[0] - WALL_T, 6.0, 0.0),
     "SpotBuilder": (13.0, 6.0, 0.0, 0.0),
     "SpotStation2": (7.0, -1.0, 0.0, 0.0),
     "SpotStation3": (13.5, -1.0, 0.0, 0.0),
@@ -123,10 +128,19 @@ def _window_seat(b):
                "spa_cream", bevel=False)
 
 
-def _cushions(b):
-    for i in range(1, 5):
-        x, y, z, _ = SPOTS[f"SpotWindow{i}"]
-        b.cyl_base((x, y, FLOOR + WINDOW_SEAT - 0.02), 1.2, 0.37, "bow_pink", segments=12, bevel=False)
+def _trim(b):
+    """A mint frame round the display window and the entrance, on the outside of the front wall."""
+    y = ROOM_Y[0] - WALL_T - 0.1
+    a, c = WINDOW
+    for x0, x1, z0, z1 in ((a - 0.4, c + 0.4, WINDOW_SEAT - 0.4, WINDOW_SEAT), (a - 0.4, c + 0.4, 10.0, 10.4),
+                           (a - 0.4, a, WINDOW_SEAT - 0.39, 10.39), (c, c + 0.4, WINDOW_SEAT - 0.39, 10.39),
+                           (ENTRANCE[0] - 0.4, ENTRANCE[1] + 0.4, DOOR_H, DOOR_H + 0.4),
+                           (ENTRANCE[0] - 0.4, ENTRANCE[0], 0.0, DOOR_H - 0.01), (ENTRANCE[1], ENTRANCE[1] + 0.4, 0.0, DOOR_H - 0.01)):
+        side = (z1 - z0) > 1.0                         # the uprights sit a hair proud of the rails: no shared face
+        if side:
+            x0, x1 = x0 + 0.01, x1 - 0.01
+        b.box_base(((x0 + x1) / 2, y - (0.01 if side else 0.0), FLOOR + z0), (x1 - x0, 0.22, z1 - z0), "spa_mint",
+                   bevel=False)
 
 
 def _glass(b):
@@ -164,7 +178,7 @@ def _pads(b):
 def build_plot(mat):
     name = "CleanACat_Area_SpaPlot"
     parts = [("", lambda b: (_floor(b),)), ("_Wall", _walls), ("_WindowSeat", _window_seat), ("_Glass", _glass),
-             ("_Roof", _roof), ("_Canopy", _canopy), ("_Decor", lambda b: (_cushions(b), _pads(b)))]
+             ("_Roof", _roof), ("_Canopy", _canopy), ("_Decor", _pads), ("_Trim", _trim)]
     objs = []
     for suffix, fn in parts:
         b = Builder()
