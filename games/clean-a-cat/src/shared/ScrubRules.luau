@@ -77,4 +77,38 @@ function ScrubRules.patchesLeft(state: State): number
 	return state.total - state.clearedCount
 end
 
+-- Patches still to clear before the rest pops off.
+function ScrubRules.patchesNeeded(state: State): number
+	if state.revealed then
+		return 0
+	end
+	return math.max(0, math.ceil(state.total * ScrubRules.REVEAL_FRACTION) - state.clearedCount)
+end
+
+-- How far to turn the cat (radians about the up axis, as CFrame.Angles(0, yaw, 0) turns) so the middle of the mud
+-- still on it faces the camera, or nil when enough of it faces the camera already. `offsets` are the remaining
+-- patches' positions minus the cat's centre; `toCamera` points from the cat's centre to the camera. Heights are
+-- ignored. A patch faces the camera when it sits on the camera's half of the cat.
+function ScrubRules.turnToShow(offsets: { Vector3 }, toCamera: Vector3, needed: number): number?
+	local camera = Vector3.new(toCamera.X, 0, toCamera.Z)
+	if needed <= 0 or #offsets == 0 or camera.Magnitude < 1e-6 then
+		return nil
+	end
+	local facing = 0
+	local sum = Vector3.zero
+	for _, offset in offsets do
+		local flat = Vector3.new(offset.X, 0, offset.Z)
+		if flat:Dot(camera) > 0 then
+			facing += 1
+		end
+		sum += flat
+	end
+	if facing >= math.min(needed, #offsets) or sum.Magnitude < 1e-6 then
+		return nil
+	end
+	-- CFrame.Angles(0, yaw, 0) moves a direction at angle atan2(z, x) to that angle minus yaw.
+	local yaw = math.atan2(sum.Z, sum.X) - math.atan2(camera.Z, camera.X)
+	return (yaw + math.pi) % (2 * math.pi) - math.pi
+end
+
 return table.freeze(ScrubRules)
