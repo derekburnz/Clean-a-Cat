@@ -19,6 +19,8 @@ Remotes.ClientToServer = {
 	"ReportBrushStroke", -- (catId: int, seq: int)  8 a second; counts toward SpaRules.BRUSH_STROKES
 	"RequestPickBow", -- (catId: int, seq: int, bowId: one of SpaRules.BOWS)  2 a second; fluffed -> styled
 	"RequestPhoto", -- (catId: int, seq: int)  2 a second; styled -> done and pays once, no sooner than MIN_VISIT_SECONDS
+	-- Tools board (ToolService, behind toolsBoard).
+	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
 }
 
 -- Server -> client.

@@ -12,6 +12,7 @@
 -- camera picks it. Gamepad: hold the right trigger with the cat in the middle of the screen and turn the camera
 -- with the right stick; the right trigger also picks the bow or camera in the middle of the screen.
 -- The client only reports what the player did. The server checks every step and alone decides the coins.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
@@ -24,8 +25,10 @@ local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local ScrubRules = require(Shared:WaitForChild("ScrubRules"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
+local ToolRules = require(Shared:WaitForChild("ToolRules"))
 
 local FLAG = "scrubPrototype"
+local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
 local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the first slice's cat; customers (#32) bring the others
 local TUB_ASSET = "CleanACat_Station_Tub"
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
@@ -416,13 +419,23 @@ local function reveal(v: Visit, cat: Cat)
 	report("ReportScrubbed", v)
 end
 
+local function ownsTool(id: string): boolean
+	return Players.LocalPlayer:GetAttribute(ToolRules.ATTRIBUTE_PREFIX .. id) == true
+end
+
+-- How far the sponge reaches: wider with Bubble Soap. The server sets the owned-tool attributes.
+local function spongeRadius(): number
+	if not LiveFlags.isOn(TOOLS_FLAG) then
+		return ScrubRules.SPONGE_RADIUS
+	end
+	return ToolRules.spongeRadius(ScrubRules.SPONGE_RADIUS, ownsTool)
+end
+
 -- Rubs every mud blob within the sponge's reach of `point` by `travel` studs.
 local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number)
+	local radius = spongeRadius()
 	for index, piece in cat.mud do
-		if
-			not v.scrub.cleared[index]
-			and (piece.position - point).Magnitude <= ScrubRules.SPONGE_RADIUS
-		then
+		if not v.scrub.cleared[index] and (piece.position - point).Magnitude <= radius then
 			if ScrubRules.rub(v.scrub, index, travel) then
 				hidePiece(piece)
 				Moments.MudPatchCleared:Fire(
