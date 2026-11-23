@@ -60,6 +60,7 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 | Station or furniture | 300 to 1,500 (the tub 1,484); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968) | up to 60 (the tub 37, the upgraded table 40) |
 | Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together) | up to 20 (sponges 6 to 10) |
 | Brush, bow | up to 200 (brush 108, bows 164) | up to 10 |
+| VIP Room locked or building (#21) | up to 2,000 | up to 80 |
 | One spa plot, full | under 25,000 | about 250 instances |
 | The whole street | under 150,000 | under 1,500 instances |
 
@@ -145,7 +146,14 @@ The plot draws a mint frame round the window and the entrance (`_Trim`, no colli
 
 The hat, hammer and toolbox together are 388 triangles (the budget is 400). None of them collides.
 
-## 19. Rules
+## 19. VIP Room before it is built (#21)
+`vip.py` builds the VIP Room's two looks before the room exists, both at the plot's `SpotVipDoor` (pivot at the middle of the door opening on the floor, front -Z into the spa, the back yard behind):
+- `CleanACat_Area_VipLocked`: a closed bubblegum double door fills the 8 by 9 stud opening and blocks it. It has cream panels, round sky windows, gold handles, a butter frame and a crown above. A mint sign on the door has a cream `Screen` part for the room's name and the timer. Behind the wall a sky tarp with white straps covers scaffold poles. Its roof peaks at about 15.7 studs, so the room's size shows over the 12 stud wall from inside the spa.
+- `CleanACat_Area_VipBuilding`: the same door, sign and scaffold while the 8 hour build runs. The tarp stays on the back and the right side only, and the builder kitten's work shows: a wooden frame rising over the wall, bubblegum lower walls half up, rafters and planks.
+
+Both are under 2,000 triangles. An invisible solid `_Barrier` with CanQuery off keeps players out of the site. The finished room is a later issue.
+
+## 20. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.

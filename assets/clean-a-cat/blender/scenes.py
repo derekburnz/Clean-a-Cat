@@ -5,6 +5,7 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
     python3 assets/clean-a-cat/blender/scenes.py groom docs/concepts/clean-a-cat/2026-11-23-groom-sheet.png
     python3 assets/clean-a-cat/blender/scenes.py stations docs/concepts/clean-a-cat/2026-11-23-stations-sheet.png
     python3 assets/clean-a-cat/blender/scenes.py builder docs/concepts/clean-a-cat/2026-11-23-builder-kitten.png
+    python3 assets/clean-a-cat/blender/scenes.py vip docs/concepts/clean-a-cat
 """
 
 import os
@@ -150,6 +151,34 @@ def builder_sheet(mat, out, close=False):
     av.rotation_euler.z = math.radians(-60)
     allo = group + pad + [av]
     common.render_preview(allo, out, res=(1200, 700), samples=24, azimuth=22, elevation=16, margin=0.95)
+
+
+def vip_views(mat, out):
+    """#21: the VIP Room before it is built, on the graybox plot. VipLocked seen from inside the spa, an avatar at
+    the door, and VipBuilding from above the yard's back corner, the open side of the frame showing. `out` is a folder:
+    the two pictures are 2026-11-23-vip-locked.png and 2026-11-23-vip-building.png in it."""
+    import plot
+    import vip
+    F = plot.FLOOR
+    x, y, _, _ = plot.SPOTS["SpotVipDoor"]
+    paths = []
+    for i, (build, view) in enumerate(((vip.build_vip_locked, dict(eye=(x - 9.0, y - 22.0, F + 10.0),
+                                                                     target=(x, y + 2.0, F + 6.0), lens=22)),
+                                       (vip.build_vip_building, dict(eye=(x - 24.0, y + 26.0, F + 22.0),
+                                                                       target=(x, y + 4.0, F + 6.0), lens=24)))):
+        common.reset_scene()
+        mat = common.palette_material(os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png"))
+        objs = plot.build_plot(mat) + build(mat)
+        for o in objs:
+            if o.name.startswith("CleanACat_Area_Vip"):
+                o.location = Vector((x, y, F))
+        av = avatar(mat, (x - 1.5, y - 5.0, F), "skin_tan", "spa_mint")
+        av.rotation_euler.z = 3.14159
+        av2 = avatar(mat, (x + 10.0, y + 5.0, F), "skin_light", "spa_bubblegum")   # in the yard, by the site
+        path = os.path.join(out, ("2026-11-23-vip-locked.png", "2026-11-23-vip-building.png")[i])
+        shot(objs + [av, av2], path, view["eye"], view["target"], view["lens"], res=(900, 640),
+             hide=("_Barrier",) + (("_Roof",) if i == 0 else ()))
+        paths.append(path)
 
 
 def _move(objs, offset, k=1.0):
@@ -305,4 +334,4 @@ if __name__ == "__main__":
     mat = common.palette_material(png)
     {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
      "customers": customers_sheet, "stations": stations_sheet,
-     "builder": builder_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
+     "builder": builder_sheet, "vip": vip_views, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)

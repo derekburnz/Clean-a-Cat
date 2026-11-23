@@ -25,3 +25,5 @@ HUD source page: `assets/clean-a-cat/ui/hud.html`. Plans: issues #5 (first sessi
 - `2026-11-23-stations-sheet.png`: the #18 stations, each with an avatar beside it: the plain brush table with a tangled cat, the upgraded table (cushion and brush rack) with a fluffed cat, the hood dryer with a cat on its stool and the build pad with a stray watching. Cats at the stations' 1.5 scale. 2026-11-23.
 - `2026-11-23-builder-kitten.png`: the builder kitten on a build pad, in its hard hat, with the hammer in its right paw and the toolbox beside it, and an avatar for scale. 2026-11-23.
 - `2026-11-23-builder-kitten-close.png`: the kitten, hat, hammer and toolbox up close. 2026-11-23.
+- `2026-11-23-vip-locked.png`: the locked VIP Room seen from inside the graybox spa. An avatar stands at the closed door with its crown and sign, and the tarp over the scaffold rises above the back wall. 2026-11-23.
+- `2026-11-23-vip-building.png`: the VIP Room while it is being built, seen from above the back yard. The tarp is pulled back on one side, showing the wooden frame and the half-built pink walls. 2026-11-23.
