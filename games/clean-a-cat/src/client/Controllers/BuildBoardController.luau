@@ -25,6 +25,7 @@ BuildBoardController.finished = Signal.new() :: Signal.Signal<string>
 local board: Part? = nil
 local prompts: { [string]: ProximityPrompt } = {}
 local connections: { RBXScriptConnection } = {}
+local ticker: thread? = nil
 local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
 local clockOffset = 0 -- server os.time() minus local os.time(), so countdowns use the server's clock
@@ -114,20 +115,12 @@ local function enable()
 		end)
 	)
 	-- The countdowns tick once a second.
-	local thread = task.spawn(function()
+	ticker = task.spawn(function()
 		while true do
 			task.wait(1)
 			refreshPrompts()
 		end
 	end)
-	table.insert(
-		connections,
-		{
-			Disconnect = function()
-				task.cancel(thread)
-			end,
-		} :: any
-	)
 end
 
 local function disable()
@@ -135,6 +128,10 @@ local function disable()
 		connection:Disconnect()
 	end
 	table.clear(connections)
+	if ticker then
+		task.cancel(ticker)
+		ticker = nil
+	end
 	table.clear(prompts)
 	if board then
 		board:Destroy()
