@@ -29,6 +29,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming |
 | `contact_sheet.py` | tiles previews into sheets |
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
+| `dirt.py` | the dirty cats (#12): mud blobs and tangles placed by casting rays at each built cat; root attributes for the scrub, brush and dryer |
 | `props.py` | hook for things a cat wears (bows #14, the builder's hat #20); empty for now |
 
 ## Adding a model

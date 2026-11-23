@@ -33,6 +33,7 @@ from mathutils import Matrix, Vector  # noqa: E402
 import cats  # noqa: E402
 import common  # noqa: E402
 import contact_sheet  # noqa: E402
+import dirt  # noqa: E402
 import gates  # noqa: E402
 import palette  # noqa: E402
 import rbx_export  # noqa: E402
@@ -46,6 +47,8 @@ def all_assets():
     out = {}
     for name, (fn, budget) in cats.ASSETS.items():
         out[name] = (fn, budget, "cats")
+    for name, (fn, budget) in dirt.ASSETS.items():
+        out[name] = (fn, budget, "dirt")
     return out
 
 
@@ -88,8 +91,12 @@ def main():
         if wanted and not any(w in name.lower() for w in wanted):
             continue
         common.hide_all_meshes()
-        objs = fn(mat)
+        built = fn(mat)
+        objs, dnest, dattrs = built if isinstance(built, tuple) else (built, {}, {})
         extra = cat_rbx_extras(name) if name.startswith("CleanACat_Cat_") else {}
+        if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)
+            extra["nest"] = {**extra.get("nest", {}), **dnest}
+            extra["attributes"] = {**extra.get("attributes", {}), **dattrs}
         _rbx_path, parts = rbx_export.write_model(objs, name, args.rbx, **extra)
         if not args.no_fbx:
             common.export_asset(objs, name, args.out, glb=False)
@@ -106,7 +113,10 @@ def main():
         if name.startswith("CleanACat_Cat_"):
             cat, _g, body = cats.parse(name)
             spec = cats.ROSTER[cat]
-            entry.update(rarity=spec["rarity"], body=body, pattern=spec["pattern"])
+            entry.update(rarity=spec["rarity"], body=body, pattern=spec["pattern"], dirty="_Dirty" in name)
+            if dnest or dattrs:
+                entry["dirt"] = {"attributes": {k: (v["Float64"] if isinstance(v, dict) else v) for k, v in dattrs.items()},
+                                 "rides": {k.lstrip("_"): v.lstrip("_") for k, v in dnest.items()}}
             entry["coat"] = {f: {"swatch": sw, "hex": palette.SWATCHES[palette.idx(sw)][1]}
                              for f, sw in cats.coat(spec).items()}
             joints = cats.joints(spec, body)

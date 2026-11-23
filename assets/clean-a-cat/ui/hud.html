@@ -79,7 +79,7 @@ p.lead { margin: 0 0 24px; color: #cfc4d6; max-width: 760px; line-height: 1.4; }
 .ic.star { background: var(--lilac); border-radius: 4px; transform: rotate(45deg) scale(.8); }
 
 /* Side buttons: the only things that look like buttons */
-.side { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; }
+.side { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 24px; }
 .btn { width: 56px; height: 56px; border-radius: 50%; background: var(--white); border: 3px solid var(--ink);
   box-shadow: 0 4px 0 var(--ink); display: grid; place-items: center; font-size: 24px; position: relative; }
 .btn .lbl { position: absolute; bottom: -15px; font-size: 11px; font-weight: 700; color: #fff; text-shadow: var(--outline); }
@@ -149,8 +149,8 @@ p.lead { margin: 0 0 24px; color: #cfc4d6; max-width: 760px; line-height: 1.4; }
       <div class="needs"><div class="need">🧽</div><div class="need done">✓</div><div class="need locked">💨</div></div>
     </div>
     <div class="safe-top">Roblox menu</div>
-    <div class="goal">Build the Dryer <small>75</small></div>
-    <div class="leave">Leave</div>
+    <div class="goal">Next: build the Dryer <small>(75 coins)</small></div>
+    <div class="leave">Stop washing</div>
     <div class="money"><div class="row">48 <span class="ic coin"></span></div><div class="row s">3 <span class="ic star"></span></div></div>
     <div class="side">
       <div class="btn">🔨<div class="ring"></div><div class="lbl">Build</div></div>
@@ -192,12 +192,12 @@ p.lead { margin: 0 0 24px; color: #cfc4d6; max-width: 760px; line-height: 1.4; }
       <h3>Builder</h3>
       <div class="build-now"><span style="font-size:22px">🛁</span><div style="flex:1"><div style="font-weight:600">Bubble Bath</div><div class="bar"><i></i></div></div><div style="font-weight:700">3:24</div><div class="bell" title="Tell me when it's done">🔔</div></div>
       <div class="list">
-        <div class="item"><span style="font-size:22px">💅</span><div><div class="t">Pawdicure</div><div class="d">Trim long claws</div></div><span class="time">1 h</span><div class="buy">400 🪙</div></div>
+        <div class="item lockd"><span style="font-size:22px">💅</span><div><div class="t">Pawdicure</div><div class="d">Trim long claws</div></div><span class="time">1 h</span><div class="buy">400 🪙 · builder busy</div></div>
         <div class="item lockd"><span style="font-size:22px">👑</span><div><div class="t">VIP Room</div><div class="d">Rarer customers</div></div><span class="time">8 h</span><div class="buy">After Pawdicure</div></div>
       </div>
     </div>
   </div>
-  <p class="cap">One build at a time with its countdown. The bell asks for a notification only when tapped, so no prompt opens by itself; it shows only to players who can get personal notifications. No timers to buy, no discount tags. Prices beyond the dryer are placeholders.</p>
+  <p class="cap">One build at a time: while the Bubble Bath builds, the next build shows its price but stays greyed with "builder busy". The bell asks for a notification only when tapped, so no prompt opens by itself; it shows only to players who can get personal notifications. No timers to buy, no discount tags. Prices beyond the dryer are placeholders.</p>
 </div>
 
 <div class="frame-wrap">
@@ -212,7 +212,7 @@ p.lead { margin: 0 0 24px; color: #cfc4d6; max-width: 760px; line-height: 1.4; }
     </div>
     <div class="safe-top">Roblox menu</div>
     <div class="goal" style="top:52px;font-size:17px">Clean a customer's cat</div>
-    <div class="leave" style="top:82px">Leave</div>
+    <div class="leave" style="top:82px">Stop washing</div>
     <div class="money"><div class="row">12 <span class="ic coin"></span></div><div class="row s">1 <span class="ic star"></span></div></div>
     <div class="side" style="top:auto;bottom:100px;transform:none"><div class="btn">🔨<div class="lbl">Build</div></div><div class="btn">📖<div class="lbl">Index</div></div></div>
     <div class="hotbar" style="bottom:22px">

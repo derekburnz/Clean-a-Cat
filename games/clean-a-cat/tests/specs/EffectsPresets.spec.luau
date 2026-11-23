@@ -41,6 +41,11 @@ return function()
 			end
 		end)
 
+		it("caps Highlights per tier", function()
+			expect(PresetData.budgets.low.maxHighlights).to.equal(2)
+			expect(PresetData.budgets.high.maxHighlights <= 4).to.equal(true)
+		end)
+
 		it("keeps every preset inside its tier's budget", function()
 			for tierName, presets in PresetData.emitters do
 				local budget = PresetData.budgets[tierName]

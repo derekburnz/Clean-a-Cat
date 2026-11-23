@@ -7,8 +7,10 @@
 --   Effects.start()                                 picks the device tier once
 --   Effects.stream(preset, position, dragSpeed)     a steady stream at a point, rate from drag speed
 --   Effects.stopStream(preset)
---   Effects.burst(preset, position)                 one burst at a point
+--   Effects.burst(preset, position, color?)         one burst at a point, optionally tinted
+--   Effects.glow(model, seconds)                    a soft outline glow that fades out, then is destroyed
 local GuiService = game:GetService("GuiService")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local PresetData = require(script:WaitForChild("Presets"))
@@ -23,6 +25,7 @@ local Effects = {}
 local tier: PresetData.Tier = "high"
 local started = false
 local pool: { [string]: { attachment: Attachment, emitter: ParticleEmitter } } = {}
+local activeHighlights = 0
 
 local function reducedMotion(): boolean
 	local ok, value = pcall(function()
@@ -119,7 +122,7 @@ function Effects.stopStream(name: string)
 	end
 end
 
-function Effects.burst(name: string, position: Vector3)
+function Effects.burst(name: string, position: Vector3, color: Color3?)
 	if not started then
 		return
 	end
@@ -127,8 +130,51 @@ function Effects.burst(name: string, position: Vector3)
 	if entry == nil or preset == nil or preset.burst <= 0 then
 		return
 	end
+	entry.emitter.Color = if color then ColorSequence.new(color) else sequenceColor(preset.color)
 	entry.attachment.WorldPosition = position
 	entry.emitter:Emit(Tier.burst(preset.burst, reducedMotion()))
+end
+
+function Effects.glow(model: Model, seconds: number)
+	if not started or not model:IsDescendantOf(workspace) then
+		return
+	end
+	if activeHighlights >= PresetData.budgets[tier].maxHighlights then
+		return
+	end
+	activeHighlights += 1
+	local highlight = Instance.new("Highlight")
+	highlight.Name = "CleanACat_Fx_Glow"
+	highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+	highlight.FillColor = Color3.fromRGB(255, 250, 235)
+	highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+	highlight.FillTransparency = 0.75
+	highlight.OutlineTransparency = 0.3
+	highlight.Adornee = model
+	highlight.Parent = model
+	local released = false
+	local function release()
+		if not released then
+			released = true
+			activeHighlights -= 1
+		end
+	end
+	highlight.Destroying:Once(release)
+	if reducedMotion() then
+		task.delay(seconds, function()
+			highlight:Destroy()
+		end)
+		return
+	end
+	local fade = TweenService:Create(
+		highlight,
+		TweenInfo.new(seconds, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ FillTransparency = 1, OutlineTransparency = 1 }
+	)
+	fade.Completed:Once(function()
+		highlight:Destroy()
+	end)
+	fade:Play()
 end
 
 return Effects
