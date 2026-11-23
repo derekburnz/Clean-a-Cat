@@ -34,6 +34,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `tools.py` | hand tools: the three sponges (#13) and the brush (#14), each with a `Handle` part |
 | `plot.py` | the spa plot (#15): today the graybox with every gameplay spot as an Attachment (`SPOTS`) |
 | `spa_props.py` | the carrier, stray box, chance board and queue mat (#16); the window cushion, tip jar and spa sign (#17); the build pad for a locked station (#18) |
+| `build_props.py` | the builder kitten (#20): the kitten in its own coat with `HatSlot` and `HammerGrip`, the hard hat, the hammer pivoted at its grip and the toolbox with `CountdownAnchor` |
 | `customers.py` | the customers' accessories for the R15 rig and the four looks (`LOOKS`, #16) |
 | `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
 | `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, or `customers`); exports nothing |

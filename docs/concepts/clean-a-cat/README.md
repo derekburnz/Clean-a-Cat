@@ -23,3 +23,5 @@ One line per picture: file, what it shows, style, date.
 
 HUD source page: `assets/clean-a-cat/ui/hud.html`. Plans: issues #5 (first session) and #9 (UI layout).
 - `2026-11-23-stations-sheet.png`: the #18 stations, each with an avatar beside it: the plain brush table with a tangled cat, the upgraded table (cushion and brush rack) with a fluffed cat, the hood dryer with a cat on its stool and the build pad with a stray watching. Cats at the stations' 1.5 scale. 2026-11-23.
+- `2026-11-23-builder-kitten.png`: the builder kitten on a build pad, in its hard hat, with the hammer in its right paw and the toolbox beside it, and an avatar for scale. 2026-11-23.
+- `2026-11-23-builder-kitten-close.png`: the kitten, hat, hammer and toolbox up close. 2026-11-23.
