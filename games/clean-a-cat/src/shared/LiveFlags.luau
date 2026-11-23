@@ -23,11 +23,13 @@ LiveFlags.CHECK_SECONDS = 60
 LiveFlags.KEYS = {
 	"exampleFeature", -- an example to copy: say what the switch does and which module reads it; off by default
 	"scrubPrototype", -- the scrub and reveal prototype (Controllers/ScrubController); off by default
+	"scrubEffects", -- foam and mud particles while scrubbing (Controllers/EffectsController); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
 	exampleFeature = true,
 	scrubPrototype = true,
+	scrubEffects = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
