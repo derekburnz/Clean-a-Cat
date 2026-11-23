@@ -45,6 +45,7 @@ A Roblox R15 avatar is about 5 studs tall. A door is 7 studs, a counter 3.
 | Brush (in hand) | about 1.3 long, 0.56 wide, 0.3 tall |
 | Bow (on a cat) | about 0.75 wide, 0.25 tall |
 | Room gaps | 6 studs or wider everywhere a player or camera goes |
+| Spa plot | 44 wide, 48 deep; the room inside 36 wide, 26 deep, walls 12 tall; entrance 8 wide and 9 tall with no door; back door 6 wide; VIP Room door 8 wide |
 
 If phone playtests show the cat too small at the tub, the game scales the Model (`Model:ScaleTo`) and every joint and attachment follows; the files stay the same.
 
@@ -95,7 +96,28 @@ Pieces of one model never share a plane: neighbours are staggered by 0.012 studs
 
 `props.py` builds `CleanACat_Bow_Pink`, `CleanACat_Bow_Mint` and `CleanACat_Bow_Sky` (`bow_pink`, `bow_mint`, `bow_sky`): two puffed loops, a knot and two tails lying back over the crown. Pivot at the base of the knot, with an Attachment `BowSlot` there. To put one on, line the bow's `BowSlot` up with the cat Head's `BowSlot`, weld it to the Head, and `ScaleTo` it by the cat's `Scale` attribute.
 
-## 14. Rules
+## 14. Spa plot (#15, graybox)
+`plot.py` builds `CleanACat_Area_SpaPlot`, today a graybox: flat blocks in plain colours with every gameplay spot in place, to be played and changed before the real build. The front apron sits on the pavement; the room has an open front (an entrance with no door, and the display window with a window seat and four cushions behind 0.6 see-through glass); a back door leads to the stray box; an opening in the back wall is the VIP Room door, with the back yard behind it for the VIP Room build. No room, tub or space is made for avatars: only cats bathe.
+
+Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, `SpotQueue1` to `SpotQueue3`, `SpotStray`, `SpotWindow1` to `SpotWindow4`, `SpotBuilder`, `SpotStation2`, `SpotStation3`, `SpotVipDoor` and `SpotBoard`. Each faces the way the player, customer, cat or station there faces. Root attribute `FloorHeight` (0.5, the top of the floor slab). The graybox draws a coloured pad on the floor at each spot (`_Decor`, no collision); the real build replaces the pads, never the Attachments.
+
+## 15. Customers and spa props (#16)
+`spa_props.py` builds:
+- `CleanACat_Prop_Carrier`: bubblegum tray, cream shell with mint vents and handle, and a metal grille door (`..._Door_Swing`, a child Model pivoted at its hinge on the cat's left; turn it up to `DoorOpenDegrees`, 110). `CatSeat` on the tray for a walking cat at `ScaleTo(CatScale)` (0.8) so it shows through the grille; `Grip` at the handle.
+- `CleanACat_Prop_StrayBox`: cardboard box with its flaps folded out and a bubblegum blanket; `CatSeat` on the blanket.
+- `CleanACat_Prop_ChanceBoard`: a standing bubblegum board on two wooden legs; its face part is `Screen` (front, -Z) for the chances SurfaceGui. Tagged `ChanceBoard`, streams in whole. It stands at the plot's `SpotBoard`.
+- `CleanACat_Prop_QueueMat`: a welcome mat with two paw prints, one at each `SpotQueue`.
+
+`customers.py` builds three accessories for Roblox's own R15 customer rig: `CleanACat_NPC_SunHat` (`HatAttachment`), `CleanACat_NPC_Scarf` (`NeckAttachment`) and `CleanACat_NPC_ToteBag` (`LeftShoulderAttachment`). Each Model's biggest part is `Handle` and holds that Attachment; move the parts into an Accessory, weld them to Handle and `Humanoid:AddAccessory` it. The customer itself is `Players:CreateHumanoidModelFromDescription` with body colours only, so nothing waits on an upload:
+
+| Customer | Head and arms | Torso | Legs | Accessory |
+|---|---|---|---|---|
+| Sunny | skin_light #F3C9A2 | spa_mint #A8E6CF | pants_navy #2F3E5C | SunHat |
+| Mo | skin_deep #7A4B32 | pastel_butter #F6DFA0 | shirt_blue #3C7DD9 | Scarf |
+| Pip | skin_tan #C98E6A | spa_sky #8FD3FE | wood_light #E3C49C | ToteBag |
+| Rae | skin_tan #C98E6A | spa_bubblegum #FFB3C7 | pants_navy #2F3E5C | SunHat |
+
+## 16. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.
