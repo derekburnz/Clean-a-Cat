@@ -49,7 +49,7 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 | Asset | Triangles | Parts |
 |---|---|---|
 | Cat (any coat) | up to 1,500 (today 670 to 1,040) | up to 50 (today 34 to 50) |
-| A dirty cat (cat plus mud, tangles) | up to 2,500 | up to 85 |
+| A dirty cat (cat plus mud, tangles) | up to 2,500 (today 1,844 to 2,212) | up to 90 (today 72 to 88) |
 | Station or furniture | 300 to 1,200 | up to 60 |
 | Small prop or tool | 50 to 400 | up to 20 |
 | One spa plot, full | under 25,000 | about 250 instances |
@@ -74,7 +74,10 @@ Pivot at the base centre on the floor. The front faces -Y in Blender, which is -
 ## 10. Previews
 `build_all.py --render` renders a three-quarter preview of every asset to `docs/concepts/clean-a-cat/previews/` and the sheets (`sheet_cats.png` and others). Every picture shown to the owner or players shows scale with one of the game's own characters, and is checked at 150 px wide. Captions go in `docs/concepts/clean-a-cat/README.md`.
 
-## 11. Rules
+## 11. Dirty cats
+`dirt.py` builds `CleanACat_Cat_<Name>_Dirty` (walking, in a carrier) and `CleanACat_Cat_<Name>_Dirty_Sit` (in the tub or the stray box) for every roster cat: the clean cat plus 20 mud blobs (`_Mud01` to `_Mud20`) and 6 tangles (`_Tangle01` to `_Tangle06`), each its own child Model. Blobs on the head, tail or a leg ride that piece's Model. Mud is `mud` with every fourth blob `mud_wet`, laid flat on the fur, never within 0.3 studs of an eye. The wet coat is a colour shift the game applies (root attribute `WetDarken` = 0.3), not extra parts. With every blob and tangle removed the model is the clean cat.
+
+## 12. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.

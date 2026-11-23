@@ -1093,10 +1093,10 @@ def build_cat(name, mat, spec=None, base=None, body="walk"):
 
 
 def parse(asset):
-    """CleanACat_Cat_<Name>[_Gold][_Sit|_Work] -> (name, gold, body)."""
+    """CleanACat_Cat_<Name>[_Dirty][_Sit|_Work] -> (name, gold, body). A dirty model (dirt.py) parses as its cat."""
     rest = asset[len("CleanACat_Cat_"):]
     body = "sit" if rest.endswith("_Sit") else "work" if rest.endswith("_Work") else "walk"
-    rest = rest.removesuffix("_Sit").removesuffix("_Work")
+    rest = rest.removesuffix("_Sit").removesuffix("_Work").removesuffix("_Dirty")
     gold = rest.endswith("_Gold")
     return rest.removesuffix("_Gold"), gold, body
 
