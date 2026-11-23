@@ -88,6 +88,45 @@ local function droplets(count: number): Emitter
 	}
 end
 
+local FUR_DEFAULT = Color3.fromRGB(235, 230, 225)
+local HEART = Color3.fromRGB(255, 140, 180)
+local HEART_LIGHT = Color3.fromRGB(255, 200, 220)
+
+-- Fur puffs take the coat colour at play time; FUR_DEFAULT is used when the cat has no Body part.
+local function fur(count: number): Emitter
+	return {
+		texture = "",
+		color = { FUR_DEFAULT },
+		size = { 0.25, 0.4 },
+		transparency = { 0.2, 1 },
+		lifetime = { 0.4, 0.7 },
+		speed = { 0.8, 1.8 },
+		spread = 70,
+		acceleration = Vector3.new(0, 0.5, 0),
+		drag = 4,
+		lightEmission = 0,
+		maxRate = 0,
+		burst = count,
+	}
+end
+
+local function hearts(count: number): Emitter
+	return {
+		texture = "",
+		color = { HEART, HEART_LIGHT },
+		size = { 0.28, 0.1 },
+		transparency = { 0, 1 },
+		lifetime = { 0.6, 0.9 },
+		speed = { 1, 1.8 },
+		spread = 30,
+		acceleration = Vector3.new(0, 1.2, 0),
+		drag = 2,
+		lightEmission = 0.3,
+		maxRate = 0,
+		burst = count,
+	}
+end
+
 local function mud(count: number): Emitter
 	return {
 		texture = "",
@@ -113,6 +152,8 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		mudChunks = mud(4),
 		revealSparkle = sparkle(6),
 		shakeDroplets = droplets(6),
+		furPuff = fur(4),
+		bowHearts = hearts(3),
 	},
 	high = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 16),
@@ -121,14 +162,17 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		mudChunks = mud(6),
 		revealSparkle = sparkle(8),
 		shakeDroplets = droplets(10),
+		furPuff = fur(6),
+		bowHearts = hearts(3),
 	},
 }
 
 -- Budget caps from the animation-vfx skill, section 7. The spec holds every preset under them.
-local Budgets: { [Tier]: { maxRate: number, maxBurst: number, maxLifetime: number } } = {
-	low = { maxRate = 8, maxBurst = 12, maxLifetime = 1.5 },
-	high = { maxRate = 16, maxBurst = 24, maxLifetime = 1.5 },
-}
+local Budgets: { [Tier]: { maxRate: number, maxBurst: number, maxLifetime: number, maxHighlights: number } } =
+	{
+		low = { maxRate = 8, maxBurst = 12, maxLifetime = 1.5, maxHighlights = 2 },
+		high = { maxRate = 16, maxBurst = 24, maxLifetime = 1.5, maxHighlights = 4 },
+	}
 
 return {
 	emitters = Presets,

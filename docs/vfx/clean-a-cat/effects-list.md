@@ -13,9 +13,9 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 | CatClean | 8 sparkles in palette colours | around the cat | revealSparkle | Emit 6 phone, 8 PC | halved | #6 | built, switch revealEffects |
 | CatClean | Water droplets on the shake-off | the cat | shakeDroplets | Emit 6 phone, 10 PC | halved | #6 | built, switch revealEffects; shake motion waits on the rig (#11) |
 | BrushSwipe | Fur puffs in the coat colour along the stroke | brush point | furPuff | Emit 6 | kept | #7 | planned |
-| BrushSwipe | Cat grows about 3 percent per stroke (Back Out, 0.2 s) | the cat | fluffScale | 1 tween | skipped | #7 | planned |
-| CatFluffed | Soft glow pulse, one Highlight destroyed after 0.6 s | the cat | fluffGlow | 1 Highlight | kept, no pulse | #7 | planned |
-| BowChosen | Bow pops in (scale 0 to 1, Back Out 0.25 s) with 3 small hearts | the bow | bowPop | Emit 3 | no scale pop | #7 | planned |
+| BrushSwipe | Cat grows about 3 percent per stroke (Back Out, 0.2 s) | the cat | fluffScale | 1 tween | skipped | #7 | waits on the cat model (#11), so it never scales a part gameplay moves |
+| CatFluffed | Soft glow pulse, one Highlight destroyed after 0.6 s | the cat | glow | 1 Highlight, 2 max on phones | kept, no fade | #7 | built, switch fluffEffects |
+| BowChosen | Bow pops in (scale 0 to 1, Back Out 0.25 s) with 3 small hearts | above the cat | bowHearts | Emit 3 | halved | #7 | hearts built, switch fluffEffects; bow scale pop waits on the bow model (#14) |
 | CatToWindow | Hop arc to the cushion, small dust puff on landing | window cushion | windowHop | Emit 4 | instant move | #7 | planned |
 
 ## Motion (procedural first, on the cat rig)
