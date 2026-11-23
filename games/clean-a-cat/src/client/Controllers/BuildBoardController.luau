@@ -14,6 +14,7 @@ local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local Signal = require(Shared:WaitForChild("Signal"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "builds"
 local BOARD_SIZE = Vector3.new(4, 5, 0.4)
@@ -29,6 +30,11 @@ local ticker: thread? = nil
 local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
 local clockOffset = 0 -- server os.time() minus local os.time(), so countdowns use the server's clock
+
+-- Standing on the floor at the builder spot, its front facing the way the spot faces.
+local function boardCFrame(): CFrame
+	return SpaLayout.spot("SpotBuilder") * CFrame.new(0, BOARD_SIZE.Y / 2, 0)
+end
 
 local function countdown(seconds: number): string
 	local s = math.max(0, math.ceil(seconds))
@@ -83,11 +89,11 @@ local function enable()
 	part.Size = BOARD_SIZE
 	part.Color = Color3.fromRGB(120, 150, 190)
 	part.Anchored = true
-	part.CFrame = CFrame.new(BuildRules.BOARD_POSITION + Vector3.new(0, BOARD_SIZE.Y / 2, 0))
+	part.CFrame = boardCFrame()
 	for index, id in BuildRules.IDS do
 		local spot = Instance.new("Attachment")
 		spot.Name = id
-		spot.Position = Vector3.new(0, BOARD_SIZE.Y / 2 - index, BOARD_SIZE.Z / 2)
+		spot.Position = Vector3.new(0, BOARD_SIZE.Y / 2 - index, -BOARD_SIZE.Z / 2) -- down the front (-Z)
 		spot.Parent = part
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.HoldDuration = 0
@@ -151,6 +157,13 @@ function BuildBoardController.Init(_controllers: { [string]: any }) end
 
 function BuildBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	-- The plot placed or taken away: the board moves to its spot.
+	SpaLayout.changed(function()
+		local part = board
+		if part then
+			part.CFrame = boardCFrame()
+		end
+	end)
 	refresh()
 end
 

@@ -49,7 +49,6 @@ BuildRules.ITEMS = table.freeze({
 
 BuildRules.IDS = table.freeze({ "BrushTable", "Dryer", "VipRoom" }) -- board order; every id is a key of ITEMS
 BuildRules.LONG_SECONDS = 3600 -- a build this long or longer logs long_build_started
-BuildRules.BOARD_POSITION = Vector3.new(-11, 0, -12) -- the builder board, beside the Tools board (placeholder room)
 BuildRules.PROMPT_REACH = 10 -- studs; the board's prompts show within this distance
 BuildRules.SERVER_REACH = 16 -- studs; the server's distance check, with room for lag
 

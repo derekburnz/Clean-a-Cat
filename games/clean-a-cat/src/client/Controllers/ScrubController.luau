@@ -26,6 +26,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local ScrubRules = require(Shared:WaitForChild("ScrubRules"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 
@@ -34,10 +35,8 @@ local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge on
 local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the prototype's cat; a customer's cat uses its own kind
 local TUB_ASSET = "CleanACat_Station_Tub"
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
-local FACING = CFrame.Angles(0, math.pi, 0) -- models face -Z; the tub and cat turn to face the spawn (+Z)
 local ASSET_WAIT_SECONDS = 5
 local WET_DARKEN = 0.3 -- used when the cat has no WetDarken attribute
-local TUB_POSITION = Vector3.new(0, 0, -12) -- in front of the placeholder spawn, on the placeholder floor
 local SEAT_HEIGHT = 1.2 -- the tub's inner floor, used when the tub has no CatSeat attachment
 local BOW_SIZE = Vector3.new(0.5, 0.25, 0.15) -- studs at scale 1; the stand-in when a bow model is missing
 local PIECE_FADE = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- mud and tangles fade, not blink
@@ -158,10 +157,10 @@ local function partsOf(model: Instance): { BasePart }
 	return parts
 end
 
--- The wash tub in front of the spawn. Returns where the cat sits: the tub's CatSeat attachment.
+-- The wash tub at SpotTub, facing the spawn. Returns where the cat sits: the tub's CatSeat attachment.
 local function buildTub(asset: Model, parent: Instance): CFrame
 	local tub = asset:Clone() :: Model
-	tub:PivotTo(CFrame.new(TUB_POSITION) * FACING) -- the pivot is the base centre on the floor
+	tub:PivotTo(SpaLayout.spot("SpotTub")) -- the pivot is the base centre on the floor
 	for _, part in partsOf(tub) do
 		part.Anchored = true
 	end
@@ -188,17 +187,19 @@ end
 
 -- Three bow buttons in a row above the tub and a camera button beside it: placeholders for the bottom bar and the
 -- camera stand in the first session plan.
+-- Offsets are in the tub's frame (its front, -Z, faces the player), so the first bow is on the player's left.
 local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
+	local tub = SpaLayout.spot("SpotTub")
 	local buttons = Instance.new("Model")
 	buttons.Name = "PH_Buttons"
 	local bowButtons: { BasePart } = {}
 	for index, bowId in SpaRules.BOWS do
-		local x = (index - 2) * 2.2
+		local x = (2 - index) * 2.2
 		local button = makePart(
 			bowId,
 			Vector3.new(1.6, 1.6, 0.4),
 			BOW_COLORS[bowId] or BUTTON_COLOR,
-			CFrame.new(TUB_POSITION + Vector3.new(x, 7, 1))
+			tub * CFrame.new(x, 7, -1)
 		)
 		button:SetAttribute("BowId", bowId)
 		show(button, false)
@@ -209,7 +210,7 @@ local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
 		"Camera",
 		Vector3.new(1.4, 1, 1),
 		Color3.fromRGB(40, 40, 48),
-		CFrame.new(TUB_POSITION + Vector3.new(4.5, 2.5, 1))
+		tub * CFrame.new(-4.5, 2.5, -1)
 	)
 	show(camera, false)
 	camera.Parent = buttons
@@ -650,7 +651,7 @@ local function onCatReady(
 		local tub = findAsset(TUB_ASSET)
 		seat = if tub
 			then buildTub(tub, v.folder)
-			else CFrame.new(TUB_POSITION + Vector3.new(0, SEAT_HEIGHT, 0)) * FACING
+			else SpaLayout.spot("SpotTub") * CFrame.new(0, SEAT_HEIGHT, 0)
 		v.seat = seat
 	end
 	release()
@@ -907,6 +908,14 @@ function ScrubController.Init(_controllers: { [string]: any }) end
 
 function ScrubController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	-- The plot placed or taken away: the tub moves to its new spot the way a switch flip does, by starting the
+	-- visit again (the server resends a dirty cat as it is).
+	SpaLayout.changed(function()
+		if enabled then
+			disable()
+			refresh()
+		end
+	end)
 	refresh()
 end
 

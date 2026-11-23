@@ -1,6 +1,6 @@
 --!strict
--- WindowController: the display window, as four placeholder cushions near the spawn with the player's window
--- cats sitting on them (their clean sitting models). It only draws what the server sends (Residents);
+-- WindowController: the display window. The player's window cats (their clean sitting models) sit on the plot's
+-- window seat at SpotWindow1 to 4, or on four placeholder cushions in the placeholder room. It only draws what the server sends (Residents);
 -- WindowService owns the residents and the tips. The real window comes with Model-Agent's #17. Behind the
 -- LiveFlags switch `strays`.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -11,13 +11,11 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local FLAG = "strays"
-local WINDOW_POSITION = Vector3.new(-9, 0, -3) -- the first cushion, on the floor left of the spawn
-local SPACING = Vector3.new(2.4, 0, 0)
-local FACING = CFrame.Angles(0, math.pi, 0) -- models face -Z; turned to face the spawn (+Z)
 local CUSHION_SIZE = Vector3.new(2, 0.5, 2)
 local CAT_SCALE = 1
 local ASSET_WAIT_SECONDS = 5
@@ -28,9 +26,39 @@ local folder: Folder? = nil
 local cats: Folder? = nil
 local connection: RBXScriptConnection? = nil
 local drawnSeq = 0
+local lastResidents: unknown = nil -- the newest list the server sent, to redraw when the plot comes or goes
 
+-- The `index`th window spot: on the plot, its window seat cushion; in the placeholder room, the floor under a
+-- placeholder cushion.
 local function cushionCFrame(index: number): CFrame
-	return CFrame.new(WINDOW_POSITION + SPACING * (index - 1)) * FACING
+	return SpaLayout.lineSpot("SpotWindow", index)
+end
+
+-- Where a window cat sits: on the plot's cushion, or on top of the placeholder cushion.
+local function seatCFrame(index: number): CFrame
+	return cushionCFrame(index) * CFrame.new(0, if SpaLayout.onPlot() then 0 else CUSHION_SIZE.Y, 0)
+end
+
+-- The placeholder cushions, only in the placeholder room: the plot has its own window seat.
+local function drawCushions(parent: Instance)
+	for _, child in parent:GetChildren() do
+		if string.match(child.Name, "^Cushion%d+$") then
+			child:Destroy()
+		end
+	end
+	if SpaLayout.onPlot() then
+		return
+	end
+	for index = 1, WindowRules.CUSHIONS do
+		local cushion = Instance.new("Part")
+		cushion.Name = `Cushion{index}`
+		cushion.Size = CUSHION_SIZE
+		cushion.Color = Color3.fromRGB(240, 190, 210)
+		cushion.Anchored = true
+		cushion.CanQuery = false
+		cushion.CFrame = cushionCFrame(index) * CFrame.new(0, CUSHION_SIZE.Y / 2, 0)
+		cushion.Parent = parent
+	end
 end
 
 local function catAsset(kind: string): Model?
@@ -44,6 +72,7 @@ local function onResidents(rawList: unknown)
 	if current == nil or type(rawList) ~= "table" then
 		return
 	end
+	lastResidents = rawList
 	drawnSeq += 1
 	local seq = drawnSeq
 	local line = Instance.new("Folder")
@@ -61,7 +90,7 @@ local function onResidents(rawList: unknown)
 			if asset then
 				local cat = asset:Clone() :: Model
 				cat:ScaleTo(CAT_SCALE)
-				cat:PivotTo(cushionCFrame(index) * CFrame.new(0, CUSHION_SIZE.Y, 0))
+				cat:PivotTo(seatCFrame(index))
 				for _, part in cat:GetDescendants() do
 					if part:IsA("BasePart") then
 						local p = part :: BasePart
@@ -96,16 +125,7 @@ local function enable()
 	end
 	local made = Instance.new("Folder")
 	made.Name = "PH_Window"
-	for index = 1, WindowRules.CUSHIONS do
-		local cushion = Instance.new("Part")
-		cushion.Name = `Cushion{index}`
-		cushion.Size = CUSHION_SIZE
-		cushion.Color = Color3.fromRGB(240, 190, 210)
-		cushion.Anchored = true
-		cushion.CanQuery = false
-		cushion.CFrame = cushionCFrame(index) * CFrame.new(0, CUSHION_SIZE.Y / 2, 0)
-		cushion.Parent = made
-	end
+	drawCushions(made)
 	local catFolder = Instance.new("Folder")
 	catFolder.Name = "Cats"
 	catFolder.Parent = made
@@ -125,6 +145,7 @@ local function disable()
 		folder = nil
 		cats = nil
 	end
+	lastResidents = nil
 end
 
 local function refresh()
@@ -139,6 +160,17 @@ function WindowController.Init(_controllers: { [string]: any }) end
 
 function WindowController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	-- The plot placed or taken away: cushions and cats are drawn again at the new spots.
+	SpaLayout.changed(function()
+		local made = folder
+		if made == nil then
+			return
+		end
+		drawCushions(made)
+		if lastResidents ~= nil then
+			task.spawn(onResidents, lastResidents)
+		end
+	end)
 	refresh()
 end
 

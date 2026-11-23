@@ -17,7 +17,6 @@ ToolRules.TOOLS = table.freeze({
 
 ToolRules.IDS = table.freeze({ "BubbleSoap" }) -- board order; every id is a key of TOOLS
 ToolRules.ATTRIBUTE_PREFIX = "Tool_" -- the server sets Player attribute Tool_<id> = true for each owned tool
-ToolRules.BOARD_POSITION = Vector3.new(-6, 0, -12) -- on the floor beside the tub (placeholder room)
 ToolRules.PROMPT_REACH = 10 -- studs; the board's prompt shows within this distance
 ToolRules.SERVER_REACH = 16 -- studs; the server's distance check, with room for lag
 

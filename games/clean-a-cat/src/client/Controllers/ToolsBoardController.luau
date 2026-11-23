@@ -10,6 +10,7 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 
 local FLAG = "toolsBoard"
@@ -19,6 +20,11 @@ local ToolsBoardController = {}
 
 local board: Part? = nil
 local connections: { RBXScriptConnection } = {}
+
+-- Standing on the floor at the Tools spot, its front facing the way the spot faces.
+local function boardCFrame(): CFrame
+	return SpaLayout.spot("Tools") * CFrame.new(0, BOARD_SIZE.Y / 2, 0)
+end
 
 local function owns(id: string): boolean
 	return Players.LocalPlayer:GetAttribute(ToolRules.ATTRIBUTE_PREFIX .. id) == true
@@ -34,13 +40,13 @@ local function enable()
 	part.Color = Color3.fromRGB(180, 140, 100)
 	part.Anchored = true
 	part.CanCollide = true
-	part.CFrame = CFrame.new(ToolRules.BOARD_POSITION + Vector3.new(0, BOARD_SIZE.Y / 2, 0))
+	part.CFrame = boardCFrame()
 	for index, id in ToolRules.IDS do
 		local tool = ToolRules.TOOLS[id]
 		local spot = Instance.new("Attachment")
 		spot.Name = id
-		-- Rows down the front of the board, which faces the spawn (+Z).
-		spot.Position = Vector3.new(0, BOARD_SIZE.Y / 2 - index, BOARD_SIZE.Z / 2)
+		-- Rows down the front of the board (its -Z face).
+		spot.Position = Vector3.new(0, BOARD_SIZE.Y / 2 - index, -BOARD_SIZE.Z / 2)
 		spot.Parent = part
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = `Buy {tool.name}`
@@ -92,6 +98,13 @@ function ToolsBoardController.Init(_controllers: { [string]: any }) end
 
 function ToolsBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	-- The plot placed or taken away: the board moves to its spot.
+	SpaLayout.changed(function()
+		local part = board
+		if part then
+			part.CFrame = boardCFrame()
+		end
+	end)
 	refresh()
 end
 

@@ -11,6 +11,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
@@ -27,7 +28,7 @@ local function nearBoard(player: Player): boolean
 	if root == nil or not root:IsA("BasePart") then
 		return false
 	end
-	return ((root :: BasePart).Position - BuildRules.BOARD_POSITION).Magnitude
+	return ((root :: BasePart).Position - SpaLayout.spot("SpotBuilder").Position).Magnitude
 		<= BuildRules.SERVER_REACH
 end
 

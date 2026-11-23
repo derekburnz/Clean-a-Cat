@@ -10,15 +10,20 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "customers"
 local LIT = "ChanceBoardLit"
-local BOARD_POSITION = Vector3.new(5, 0, -6) -- beside the door line (placeholder room)
 local BOARD_SIZE = Vector3.new(4, 4, 0.3)
 
 local ChanceBoardController = {}
 
 local board: Part? = nil
+
+-- Standing at SpotBoard, its front facing the way the spot faces.
+local function boardCFrame(): CFrame
+	return SpaLayout.spot("SpotBoard") * CFrame.new(0, BOARD_SIZE.Y / 2, 0)
+end
 
 local function build(): Part
 	local part = Instance.new("Part")
@@ -27,9 +32,9 @@ local function build(): Part
 	part.Color = Color3.fromRGB(250, 245, 235)
 	part.Anchored = true
 	part.CanQuery = false
-	part.CFrame = CFrame.new(BOARD_POSITION + Vector3.new(0, BOARD_SIZE.Y / 2 + 1, 0))
+	part.CFrame = boardCFrame()
 	local gui = Instance.new("SurfaceGui")
-	gui.Face = Enum.NormalId.Back -- faces the spawn (+Z)
+	gui.Face = Enum.NormalId.Front -- the front (-Z) faces the way the spot faces
 	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 	gui.PixelsPerStud = 60
 	gui.Parent = part
@@ -77,6 +82,13 @@ function ChanceBoardController.Init(_controllers: { [string]: any }) end
 function ChanceBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	Players.LocalPlayer:GetAttributeChangedSignal(LIT):Connect(refresh)
+	-- The plot placed or taken away: the board moves to its spot.
+	SpaLayout.changed(function()
+		local part = board
+		if part then
+			part.CFrame = boardCFrame()
+		end
+	end)
 	refresh()
 end
 
