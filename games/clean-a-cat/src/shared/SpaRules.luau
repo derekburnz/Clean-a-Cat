@@ -12,7 +12,7 @@ SpaRules.MIN_STROKE_GAP = 0.2 -- client only: seconds between strokes it reports
 SpaRules.MIN_VISIT_SECONDS = 15 -- the photo pays no sooner than this after the cat arrived, about an honest visit.
 -- An earlier photo is not refused: it pays when the time is up, so a quick player only waits a moment.
 SpaRules.PHOTO_COINS = 10 -- draft: a common cat's pay; tips arrive with customers
-SpaRules.BOWS = table.freeze({ "BowPink", "BowBlue", "BowGold" }) -- the three bows a player picks from
+SpaRules.BOWS = table.freeze({ "BowPink", "BowMint", "BowSky" }) -- the three bows; Assets.CleanACat_Bow_<Pink|Mint|Sky>
 
 export type Stage = "dirty" | "clean" | "fluffed" | "styled" | "done"
 

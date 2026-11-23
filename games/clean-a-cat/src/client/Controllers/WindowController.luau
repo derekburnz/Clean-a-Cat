@@ -6,10 +6,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
+local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
+local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local FLAG = "strays"
@@ -48,7 +50,11 @@ local function onResidents(rawList: unknown)
 	line.Name = "Cats"
 	local index = 0
 	for _, entry in rawList :: { unknown } do
-		local kind = if type(entry) == "table" then (entry :: { [string]: unknown }).cat else nil
+		local fields: { [string]: unknown } = if type(entry) == "table"
+			then entry :: { [string]: unknown }
+			else {}
+		local kind = fields.cat
+		local bowId = fields.bow
 		if index < WindowRules.CUSHIONS and type(kind) == "string" and CatRules.rarityOf(kind) then
 			index += 1
 			local asset = catAsset(kind)
@@ -65,6 +71,9 @@ local function onResidents(rawList: unknown)
 					end
 				end
 				cat:SetAttribute("Resident", true)
+				if type(bowId) == "string" and table.find(SpaRules.BOWS, bowId) then
+					BowFit.wear(cat, bowId, CAT_SCALE)
+				end
 				cat.Parent = line
 			end
 		end

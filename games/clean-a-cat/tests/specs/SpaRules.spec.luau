@@ -27,8 +27,8 @@ return function()
 			expect(counted).to.equal(true)
 			expect(fluffed).to.equal(true)
 			expect(cat.stage).to.equal("fluffed")
-			expect(SpaRules.pickBow(cat, "BowBlue")).to.equal(true)
-			expect(cat.bow).to.equal("BowBlue")
+			expect(SpaRules.pickBow(cat, "BowMint")).to.equal(true)
+			expect(cat.bow).to.equal("BowMint")
 			expect(SpaRules.askPhoto(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(0)
 			expect(SpaRules.photo(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(
 				SpaRules.PHOTO_COINS
