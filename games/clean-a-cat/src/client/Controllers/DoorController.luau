@@ -1,7 +1,8 @@
 --!strict
 -- DoorController: the customers waiting at the door, as placeholder figures (a block holding the customer's
 -- dirty cat) in a line, front first. It only shows what the server says (CustomerQueue); SpaService owns the
--- queue and the rolls. The customer look comes with Model-Agent's #16. Behind the LiveFlags switch `customers`.
+-- queue and the rolls. Behind the LiveFlags switch `customers`. With `customerFigures` on and the plot placed,
+-- the server draws real customers with carriers in the plot instead (FigureService), and this draws nothing.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -12,6 +13,7 @@ local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "customers"
+local FIGURES_FLAG = "customerFigures"
 local FIGURE_SIZE = Vector3.new(1.6, 3.6, 1)
 local CAT_SCALE = 0.8
 local MAX_SHOWN = 5
@@ -77,6 +79,9 @@ local function onQueue(rawKinds: unknown)
 			table.insert(kinds, kind)
 		end
 	end
+	if LiveFlags.isOn(FIGURES_FLAG) and SpaLayout.onPlot() then
+		table.clear(kinds) -- the server's figures stand in the plot
+	end
 	local line = Instance.new("Folder")
 	line.Name = "Line"
 	for index, kind in kinds do
@@ -126,6 +131,12 @@ function DoorController.Init(_controllers: { [string]: any }) end
 
 function DoorController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FIGURES_FLAG)
+		:Connect(function()
+			if lastQueue ~= nil then
+				task.spawn(onQueue, lastQueue)
+			end
+		end)
 	-- The plot placed or taken away: the line is drawn again at its new spots.
 	SpaLayout.changed(function()
 		if lastQueue ~= nil then
