@@ -12,11 +12,22 @@ Remotes.FolderName = "Remotes"
 -- Client -> server: (args) and what the server checks.
 Remotes.ClientToServer = {
 	"Ping", -- ()  an example to copy: no arguments, 2 a second at most
+	-- Spa loop (SpaService, behind scrubPrototype). catId must be the player's current cat; order and timing are
+	-- SpaRules' checks on the server. seq numbers the client's reports; the server echoes it in CatStage.
+	"RequestCat", -- ()  1 a second; resends the current dirty cat or hands out a new one
+	"ReportScrubbed", -- (catId: int, seq: int)  2 a second; dirty -> clean
+	"ReportBrushStroke", -- (catId: int, seq: int)  8 a second; counts toward SpaRules.BRUSH_STROKES
+	"RequestPickBow", -- (catId: int, seq: int, bowId: one of SpaRules.BOWS)  2 a second; fluffed -> styled
+	"RequestPhoto", -- (catId: int, seq: int)  2 a second; styled -> done and pays once, no sooner than MIN_VISIT_SECONDS
 }
 
 -- Server -> client.
 Remotes.ServerToClient = {
 	"Notice", -- (kind: "info" | "warning", text: string)  a short line the client shows as a toast
+	"CatReady", -- (catId: number)  a dirty cat is in the tub
+	"PhotoPaid", -- (catId: number, coins: number, total: number)  the photo paid; total is the save's coins
+	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view
+	-- after every spa report, so a client whose step was refused falls back to it instead of getting stuck
 }
 
 function Remotes.folder(): Folder
