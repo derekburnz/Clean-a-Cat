@@ -11,7 +11,7 @@ local AudioController = {}
 
 local scrub: Audio.LoopHandle? = nil
 
--- Moment name -> handler. Payload shapes follow issue #3; anything unexpected is ignored.
+-- Moment name -> handler. Payloads follow Shared.Moments: the cat first, then the moment's values.
 local HANDLERS: { [string]: (...any) -> () } = {
 	ScrubStart = function(cat: any)
 		if scrub then
@@ -19,7 +19,7 @@ local HANDLERS: { [string]: (...any) -> () } = {
 		end
 		scrub = Audio.loop("scrubLoop", if typeof(cat) == "Instance" then cat else nil)
 	end,
-	ScrubMove = function(_hitPoint: any, _normal: any, dragSpeed: any)
+	ScrubMove = function(_cat: any, _hitPoint: any, _normal: any, dragSpeed: any)
 		if scrub and type(dragSpeed) == "number" then
 			scrub.setSpeed(CueRules.scrubLoopSpeed(dragSpeed))
 		end
@@ -31,11 +31,9 @@ local HANDLERS: { [string]: (...any) -> () } = {
 			scrub = nil
 		end
 	end,
-	MudPatchCleared = function(_cat: any, _position: any, cleared: any)
-		Audio.play(
-			"mudPlop",
-			{ pitch = CueRules.mudPlopPitch(if type(cleared) == "number" then cleared else 0) }
-		)
+	MudPatchCleared = function(_cat: any, _position: any, patchesLeft: any)
+		local left = if type(patchesLeft) == "number" then patchesLeft else CueRules.MAX_PATCHES
+		Audio.play("mudPlop", { pitch = CueRules.mudPlopPitch(left) })
 	end,
 	CatClean = function(cat: any)
 		Audio.play("revealChime")
