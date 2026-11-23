@@ -21,6 +21,8 @@ Remotes.ClientToServer = {
 	"RequestPhoto", -- (catId: int, seq: int)  2 a second; styled -> done and pays once, no sooner than MIN_VISIT_SECONDS
 	-- Tools board (ToolService, behind toolsBoard).
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
+	-- Builds (BuildService, behind builds).
+	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board, slot free, order, coins
 }
 
 -- Server -> client.
@@ -33,6 +35,8 @@ Remotes.ServerToClient = {
 	"Residents", -- (list: { { cat: string, bow: string? } })  the display window's cats, in order (switch strays)
 	"WindowTips", -- (coins: number, total: number)  window cats tipped; total is the save's coins (switch strays)
 	"CatIndex", -- (index: { [cat]: { washed: boolean, resident: boolean } })  the stamped cats (switch catIndex)
+	"Builds", -- (builds: { [slot]: { item, endsAt } }, built: { string }, serverNow: number)  for the board and countdowns
+	"BuildFinished", -- (id: string)  a build just finished, or finished while the player was away: celebrate (switch builds)
 	"PhotoPaid", -- (catId: number, coins: number, total: number)  the photo paid; total is the save's coins
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view
 	-- after every spa report, so a client whose step was refused falls back to it instead of getting stuck

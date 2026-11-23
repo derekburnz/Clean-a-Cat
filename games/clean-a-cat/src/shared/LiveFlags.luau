@@ -31,6 +31,7 @@ LiveFlags.KEYS = {
 	"customers", -- customers at the door bring rolled cats and pay on return (SpaService, Controllers/DoorController); off by default
 	"strays", -- strays, the display window and its tips (SpaService, WindowService, Controllers/WindowController); off by default
 	"catIndex", -- Cat Index stamps and the full set bonus (IndexService, Controllers/IndexController); off by default
+	"builds", -- station and room builds with timers that run while away (BuildService, Controllers/BuildBoardController); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -44,6 +45,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	customers = true,
 	strays = true,
 	catIndex = true,
+	builds = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
