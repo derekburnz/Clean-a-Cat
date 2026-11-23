@@ -1,4 +1,4 @@
-"""Spa stations (issue #13 for the tub; the brush table and dryer follow in #18).
+"""Spa stations (issue #13 for the tub, #18 for the brush tables and the dryer).
 
   CleanACat_Station_Tub   the wash tub, the first thing a player sees: a low bath on four feet with a mint rim, a
                           shallow pool of water (_Water), foam (_Foam) and a tap at the back. It matches the
@@ -7,8 +7,23 @@
                           Attachment `CatSeat` on the inner floor, facing the player (-Z in Roblox): put the sitting
                           cat's pivot there. The walls and body collide; water and foam do not.
 
+  CleanACat_Station_BrushTable    the grooming table: a wooden table on four legs with a mint rubber mat, a towel on
+                                  the shelf underneath. `CatSeat` on the mat.
+  CleanACat_Station_BrushTableUp  its upgrade, same footprint, pivot and CatSeat: painted cream with round legs and
+                                  bubblegum feet, a puffy cushion top and a mint brush rack at the back with three
+                                  brushes and a bow. Swap one for the other in place.
+  CleanACat_Station_Dryer         a hood dryer over a round stool: the hood hangs from an arm on a pole behind the
+                                  stool. Its nozzle is a part named `Nozzle` under the hood, with an Attachment `Air`
+                                  whose +Y points down at the cat, for Motion-FX's air puffs. `CatSeat` on the stool.
+
+The brush tables and the dryer fit the 5 by 5 stud station pads (SpotStation2, SpotStation3 in the plot) and stand
+inside them. The cat sits on them at ScaleTo(CatScale) (root attribute, 1.5, the same as at the tub). Their thin
+legs and boards are too slim to collide, so an invisible `_Barrier` under each top keeps players from walking through.
+
 Pivot at the base centre on the floor, the front (where the player stands) at -Y in Blender, -Z in Roblox.
 """
+
+import math
 
 from mathutils import Matrix
 
@@ -132,5 +147,147 @@ def tub_rbx_extras():
             "attributes": {"SeatHeight": {"Float64": SEAT_Z}}}
 
 
-ASSETS = {"CleanACat_Station_Tub": (build_tub, 1500)}
-EXTRAS = {"CleanACat_Station_Tub": tub_rbx_extras}
+# -- #18 brush tables and dryer ---------------------------------------------------------------------------------
+STATION = 5.0             # the station pad's side; every station stays inside it
+STATION_CAT_SCALE = 1.5   # the cat at a station, as big as at the tub (root attribute CatScale)
+GROOM_Z = 1.8             # the brush tables' CatSeat: hip high on an avatar, so the cat's face is at the player's chest
+TOP_W, TOP_D, TOP_Y = 3.4, 2.4, 0.2     # the table top, centred a little back so the player has room in front
+LEG_X, LEG_Y = 1.45, 0.95               # leg centres from the top's centre
+
+
+def _barrier(name, mat, size, at=(0.0, 0.0, 0.0)):
+    """An invisible solid box (exported with Transparency 1 and CanCollide on) under a station's top."""
+    b = Builder()
+    b.box_base(at, size, "metal", bevel=False)
+    ob = b.finalize(name + "_Barrier", mat, bevel=0)
+    ob.hide_render = True
+    return ob
+
+
+def build_brush_table(mat):
+    name = "CleanACat_Station_BrushTable"
+    b = Builder()
+    top_z = GROOM_Z - 0.1                                                           # the board's top; the mat on it
+    b.box_base((0, TOP_Y, top_z - 0.16), (TOP_W, TOP_D, 0.16), "wood_light")        # the top board
+    b.box_base((0, TOP_Y - 0.03, top_z - 0.01), (TOP_W - 0.5, TOP_D - 0.46, 0.11), "spa_mint")   # the rubber mat
+    for sx in (1, -1):
+        for sy in (1, -1):
+            b.box_base((sx * LEG_X, TOP_Y + sy * LEG_Y, 0), (0.28, 0.28, top_z - 0.12), "wood_light")
+    b.box_base((0, TOP_Y, 0.42), (2.62, 1.66, 0.12), "wood_light", bevel=False)     # the shelf between the legs
+    b.box_base((-0.55, TOP_Y + 0.05, 0.53), (1.1, 0.8, 0.32), "spa_sky")            # a folded towel on it
+    b.box_base((-0.55, TOP_Y + 0.05, 0.84), (1.0, 0.72, 0.03), "offwhite", bevel=False)   # its stripe
+    b.cyl_base((0.7, TOP_Y - 0.1, 0.53), 0.2, 0.55, "spa_bubblegum", segments=8)    # a shampoo bottle
+    b.cyl_base((0.7, TOP_Y - 0.1, 1.07), 0.08, 0.14, "spa_cream", segments=6, bevel=False)
+    main = _tris(b.finalize(name, mat))
+    return [main, _barrier(name, mat, (TOP_W - 0.62, TOP_D - 0.66, top_z - 0.3), (0, TOP_Y, 0.03))]
+
+
+def _hanging_brush(b, x, y, z, head):
+    """A brush hung by its handle from the rack rail at (x, y, z): handle up, bristles to the front."""
+    b.box((x, y - 0.04, z - 0.3), (0.13, 0.1, 0.62), "wood_light", bevel=False)
+    b.box((x, y - 0.06, z - 0.78), (0.44, 0.16, 0.46), head, bevel=False)
+    b.box((x, y - 0.17, z - 0.78), (0.36, 0.08, 0.38), "foam", bevel=False)
+    b.box((x, y - 0.03, z + 0.02), (0.07, 0.09, 0.12), "metal", bevel=False)      # the hook over the rail
+
+
+def build_brush_table_up(mat):
+    name = "CleanACat_Station_BrushTableUp"
+    b = Builder()
+    top_z = GROOM_Z - 0.24                                                          # the board; the cushion on it
+    b.box_base((0, TOP_Y, top_z - 0.16), (TOP_W, TOP_D, 0.16), "spa_cream")
+    b.box_base((0, TOP_Y, top_z - 0.13), (TOP_W + 0.06, TOP_D + 0.06, 0.09), "spa_bubblegum", bevel=False)  # a band
+    b.box_base((0, TOP_Y - 0.03, top_z - 0.02), (TOP_W - 0.42, TOP_D - 0.5, 0.2), "spa_bubblegum")         # cushion
+    b.box_base((0, TOP_Y - 0.03, top_z + 0.15), (TOP_W - 0.82, TOP_D - 0.86, 0.09), "spa_bubblegum")       # its puff
+    for sx in (1, -1):                                                              # round legs on ball feet
+        for sy in (1, -1):
+            x, y = sx * LEG_X, TOP_Y + sy * LEG_Y
+            b.cyl_base((x, y, 0.2), 0.15, top_z - 0.3, "spa_cream", segments=8, bevel=False)
+            b.sphere((x, y, 0.2), 0.22, "spa_bubblegum", segments=6, rings=4)
+    b.box_base((0, TOP_Y, 0.52), (2.66, 1.62, 0.12), "spa_cream", bevel=False)      # the shelf
+    for i, sw in enumerate(("spa_sky", "spa_mint")):                               # two folded towels
+        b.box_base((-0.6, TOP_Y + 0.05, 0.63 + 0.25 * i), (1.0 - 0.08 * i, 0.74 - 0.06 * i, 0.26), sw)
+    b.cyl_base((0.55, TOP_Y - 0.1, 0.63), 0.2, 0.55, "spa_bubblegum", segments=8)   # shampoo and conditioner
+    b.cyl_base((0.98, TOP_Y + 0.1, 0.63), 0.17, 0.45, "spa_sky", segments=8)
+    # the brush rack at the back: two posts off the back legs, a mint board, a rail with three brushes, a bow on top
+    ry = TOP_Y + TOP_D / 2 + 0.11
+    for sx in (1, -1):
+        b.box_base((sx * 1.52, ry, top_z - 0.5), (0.22, 0.22, 2.95), "spa_mint")
+    b.box_base((0, ry + 0.02, top_z + 0.45), (2.86, 0.1, 1.85), "spa_mint", bevel=False)
+    b.box_base((0, ry + 0.01, top_z + 2.24), (3.34, 0.2, 0.24), "spa_bubblegum")     # the header
+    rail_z = top_z + 1.95
+    b.cyl((0, ry - 0.16, rail_z), 0.05, 2.9, "metal", segments=6, bevel=False, rot=Matrix.Rotation(math.pi / 2, 3, "Y"))
+    for sx in (1, -1):
+        b.box((sx * 1.445, ry - 0.08, rail_z), (0.08, 0.2, 0.12), "metal", bevel=False)   # the rail's brackets
+    for x, head in ((-0.85, "spa_bubblegum"), (0.0, "spa_sky"), (0.85, "pastel_butter")):
+        _hanging_brush(b, x, ry - 0.16, rail_z, head)
+    kz = top_z + 2.6                                                                 # the bow on the header
+    b.box((0, ry - 0.08, kz), (0.2, 0.17, 0.18), "bow_pink")
+    for sx in (1, -1):
+        b.sphere((sx * 0.27, ry - 0.08, kz), 0.22, "bow_pink", segments=8, rings=4, scale=(1.2, 0.5, 0.85))
+    main = _tris(b.finalize(name, mat))
+    return [main, _barrier(name, mat, (TOP_W - 0.62, TOP_D - 0.66, top_z - 0.3), (0, TOP_Y, 0.03))]
+
+
+SEAT_DRYER = 1.2                  # the stool's top, as high as the tub's seat
+STOOL = (0.0, -0.1)               # the stool's centre (x, y)
+POLE_Y = 1.75                     # the dryer's pole, behind the stool
+HOOD_Z = 4.45                     # the hood's lower rim: a 1.5 scale sitting cat's ears clear it by about 0.4
+HOOD_R = 1.3
+
+
+def build_dryer(mat):
+    name = "CleanACat_Station_Dryer"
+    b = Builder()
+    sx_, sy_ = STOOL
+    b.cyl_base((sx_, sy_, 0), 0.75, 0.16, "spa_cream", segments=12)                 # the stool's foot
+    b.cyl_base((sx_, sy_, 0.12), 0.16, SEAT_DRYER - 0.3, "metal", segments=8, bevel=False)    # its post
+    b.cyl_base((sx_, sy_, 0.42), 0.55, 0.07, "metal", segments=10, bevel=False)      # a foot ring
+    b.cyl_base((sx_, sy_, SEAT_DRYER - 0.24), 1.0, 0.18, "spa_bubblegum", segments=14, bevel=False)   # the seat
+    b.cyl_base((sx_, sy_, SEAT_DRYER - 0.07), 0.94, 0.07, "spa_bubblegum", segments=14, radius2=0.8,
+               bevel=False)                                                          # its puffed top
+    b.cyl_base((0, POLE_Y, 0), 0.62, 0.2, "spa_cream", segments=12)                  # the pole's heavy base
+    b.cyl_base((0, POLE_Y, 0.15), 0.12, HOOD_Z + 1.0, "metal", segments=8, bevel=False)   # the pole
+    b.box((0, POLE_Y - 0.12, 2.2), (0.42, 0.24, 0.6), "spa_mint")                    # a control box with two dials
+    for i, sw in enumerate(("spa_bubblegum", "spa_sky")):
+        b.cyl((0.1 - 0.2 * i, POLE_Y - 0.25, 2.25 - 0.14 * i), 0.07, 0.06, sw, segments=8, bevel=False,
+              rot=Matrix.Rotation(math.pi / 2, 3, "X"))
+    hy = STOOL[1] + 0.25                                                             # the hood, a little back
+    arm_z = HOOD_Z + 1.25
+    b.box((0, (POLE_Y + hy) / 2, arm_z), (0.24, POLE_Y - hy + 0.1, 0.24), "metal", bevel=False)   # the arm
+    b.cyl_base((0, POLE_Y, HOOD_Z + 1.1), 0.18, 0.3, "spa_mint", segments=8, bevel=False)          # the arm's collar
+    b.cyl_base((0, hy, HOOD_Z), HOOD_R, 0.75, "spa_cream", segments=14, radius2=HOOD_R - 0.38, bevel=False)
+    b.sphere((0, hy, HOOD_Z + 0.73), HOOD_R - 0.4, "spa_cream", segments=14, rings=6, scale=(1, 1, 0.55))
+    b.cyl_base((0, hy, HOOD_Z - 0.04), HOOD_R + 0.06, 0.22, "spa_mint", segments=14, bevel=False)  # the rim band
+    for i in range(5):                                                               # vent slots round the dome
+        t = math.radians(-90 + 45 * (i - 2))
+        b.box((math.cos(t) * (HOOD_R - 0.17), hy + math.sin(t) * (HOOD_R - 0.17), HOOD_Z + 0.42), (0.12, 0.12, 0.34),
+              "spa_sky", bevel=False, rot=Matrix.Rotation(t + math.pi / 2, 3, "Z"))
+    main = _tris(b.finalize(name, mat))
+    n = Builder()                                                                    # the nozzle, under the hood
+    n.cyl_base((0, 0, -0.32), 0.26, 0.36, "metal", segments=10, bevel=False)
+    nozzle = _tris(n.finalize(name + "_Nozzle", mat, bevel=0, location=(0, hy, HOOD_Z)))
+    barrier = _barrier(name, mat, (1.3, 1.3, SEAT_DRYER - 0.35), (sx_, sy_, 0.02))
+    return [main, nozzle, barrier]
+
+
+def brush_table_rbx_extras(asset):
+    return lambda: {"attachments": [(asset, "CatSeat", Matrix.Translation((0.0, TOP_Y - 0.03, GROOM_Z)))],
+                    "attributes": {"SeatHeight": {"Float64": GROOM_Z}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
+
+
+def dryer_rbx_extras():
+    hy = STOOL[1] + 0.25
+    air = Matrix.Translation((0.0, hy, HOOD_Z - 0.33)) @ Matrix.Rotation(math.pi, 4, "X")   # +Z (Roblox +Y) down
+    return {"attachments": [("CleanACat_Station_Dryer", "CatSeat", Matrix.Translation((STOOL[0], STOOL[1], SEAT_DRYER))),
+                            ("CleanACat_Station_Dryer_Nozzle", "Air", air)],
+            "attributes": {"SeatHeight": {"Float64": SEAT_DRYER}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
+
+
+ASSETS = {"CleanACat_Station_Tub": (build_tub, 1500),
+          "CleanACat_Station_BrushTable": (build_brush_table, 1200),
+          "CleanACat_Station_BrushTableUp": (build_brush_table_up, 1200),
+          "CleanACat_Station_Dryer": (build_dryer, 1200)}
+EXTRAS = {"CleanACat_Station_Tub": tub_rbx_extras,
+          "CleanACat_Station_BrushTable": brush_table_rbx_extras("CleanACat_Station_BrushTable"),
+          "CleanACat_Station_BrushTableUp": brush_table_rbx_extras("CleanACat_Station_BrushTableUp"),
+          "CleanACat_Station_Dryer": dryer_rbx_extras}

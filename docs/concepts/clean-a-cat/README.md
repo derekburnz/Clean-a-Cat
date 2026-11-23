@@ -22,3 +22,4 @@ One line per picture: file, what it shows, style, date.
 - `2026-11-23-plot-graybox-window.png`: the display window from the street at an angle, as a neighbour sees it: four cats on cushions at 1.3 times, the tip jar, the spa sign by the entrance and a passer-by for scale. 2026-11-23.
 
 HUD source page: `assets/clean-a-cat/ui/hud.html`. Plans: issues #5 (first session) and #9 (UI layout).
+- `2026-11-23-stations-sheet.png`: the #18 stations, each with an avatar beside it: the plain brush table with a tangled cat, the upgraded table (cushion and brush rack) with a fluffed cat, the hood dryer with a cat on its stool and the build pad with a stray watching. Cats at the stations' 1.5 scale. 2026-11-23.

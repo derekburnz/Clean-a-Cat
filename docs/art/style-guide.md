@@ -57,7 +57,7 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 |---|---|---|
 | Cat (any coat) | up to 1,500 (today 670 to 1,040) | up to 50 (today 34 to 50) |
 | A dirty cat (cat plus mud, tangles, hidden fluff) | up to 3,000 | up to 110 |
-| Station or furniture | 300 to 1,500 (the tub 1,484) | up to 60 (the tub 37) |
+| Station or furniture | 300 to 1,500 (the tub 1,484); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968) | up to 60 (the tub 37, the upgraded table 40) |
 | Small prop or tool | 50 to 400 (sponges 134 to 390) | up to 20 (sponges 6 to 10) |
 | Brush, bow | up to 200 (brush 108, bows 164) | up to 10 |
 | One spa plot, full | under 25,000 | about 250 instances |
@@ -128,7 +128,15 @@ Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, 
 
 The plot draws a mint frame round the window and the entrance (`_Trim`, no collision).
 
-## 17. Rules
+## 17. Stations and the build pad (#18)
+`stations.py` builds the next two stations. Each fits the plot's 5 by 5 stud station pad (`SpotStation2`, `SpotStation3`), faces the player at -Z in Roblox like the tub, and seats the cat at `ScaleTo(CatScale)` (root attribute, 1.5, as at the tub) on its `CatSeat` attachment. Their legs and boards are too thin to collide, so each has an invisible solid `_Barrier` box under its top that keeps players out and stays under the cat, so taps reach the cat.
+- `CleanACat_Station_BrushTable`: a light wood table with a mint rubber mat, a towel and a shampoo bottle on the shelf. `CatSeat` on the mat at 1.8 studs (`SeatHeight`), hip high on an avatar.
+- `CleanACat_Station_BrushTableUp`: the upgrade, same footprint, pivot and `CatSeat`, so the game swaps one for the other in place. Painted cream with round legs on bubblegum ball feet, a puffy bubblegum cushion, two towels and two bottles, and a mint brush rack at the back with three brushes on a rail and a pink bow on the header.
+- `CleanACat_Station_Dryer`: a hood dryer: a round bubblegum stool (`CatSeat` at 1.2, like the tub) and a cream hood with a mint rim and sky vents on an arm from a pole behind it, with a two dial control box. Under the hood hangs a part named `Nozzle` with an Attachment `Air` whose +Y points straight down at the cat: a ParticleEmitter in `Air` with EmissionDirection Top blows onto the cat. The hood's rim is at 4.45 studs, about 0.4 over a 1.5 scale cat's ears.
+
+`spa_props.py` builds `CleanACat_Prop_BuildPad`, shown where a locked station will go: a cream 4.8 stud square inside a dashed bubblegum and butter tape border, two bubblegum cones at the front corners, a stack of planks and a mint sign at the back whose cream face is a `Screen` part for the station's name and price. Walk-through; remove it when the station is built.
+
+## 18. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.
