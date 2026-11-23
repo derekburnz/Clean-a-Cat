@@ -38,6 +38,7 @@ import stations  # noqa: E402
 import tools  # noqa: E402
 import gates  # noqa: E402
 import palette  # noqa: E402
+import plot  # noqa: E402
 import props  # noqa: E402
 import rbx_export  # noqa: E402
 
@@ -52,7 +53,7 @@ def all_assets():
         out[name] = (fn, budget, "cats")
     for name, (fn, budget) in dirt.ASSETS.items():
         out[name] = (fn, budget, "dirt")
-    for module in (stations, tools, props):
+    for module in (stations, tools, props, plot):
         for name, (fn, budget) in module.ASSETS.items():
             out[name] = (fn, budget, module.__name__)
     return out
@@ -106,6 +107,8 @@ def main():
             extra = stations.EXTRAS[name]()
         if name in props.EXTRAS:
             extra = props.EXTRAS[name]()
+        if name in plot.EXTRAS:
+            extra = plot.EXTRAS[name]()
         if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)
             extra["nest"] = {**extra.get("nest", {}), **dnest}
             extra["attributes"] = {**extra.get("attributes", {}), **dattrs}
