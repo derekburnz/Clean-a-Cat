@@ -11,6 +11,7 @@
   "Dirty": true,
   "MudCount": 20,
   "TangleCount": 6,
+  "FluffCount": 10,
   "WetDarken": {
    "Float64": 0.3
   }
@@ -727,6 +728,38 @@
            0.0,
            0.608,
            0.0115
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       }
+      },
+      {
+       "name": "BowSlot",
+       "className": "Attachment",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.3515,
+           -0.188
           ],
           "orientation": [
            [
@@ -3671,6 +3704,564 @@
       }
      },
      "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Tangle06"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/35"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff01",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5871,
+           1.0521,
+           -0.4074
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            -0.2924,
+            0.0,
+            0.9563
+           ],
+           [
+            -0.9563,
+            0.0,
+            -0.2924
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.323,
+         0.2003,
+         0.2907
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.2924,
+            -0.9563
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9563,
+            -0.2924
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/35"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff01",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.6065,
+           1.12,
+           -0.3234
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            -0.2924,
+            0.0,
+            0.9563
+           ],
+           [
+            -0.9563,
+            0.0,
+            -0.2924
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2196,
+         0.1615,
+         0.2003
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.5871,
+         1.0521,
+         -0.4074
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff01"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/36"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.5871,
+           1.0521,
+           -0.4074
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7431,
+            0.0,
+            0.6691
+           ],
+           [
+            0.6691,
+            0.0,
+            0.7431
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.323,
+         0.2003,
+         0.2907
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.7431,
+            0.6691
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.6691,
+            0.7431
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/36"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.6065,
+           1.1536,
+           -0.4444
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7431,
+            0.0,
+            0.6691
+           ],
+           [
+            0.6691,
+            0.0,
+            0.7431
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2196,
+         0.1615,
+         0.2003
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.5871,
+         1.0521,
+         -0.4074
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff02"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/37"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff03",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6672,
+           0.0121
+          ],
+          "orientation": [
+           [
+            0.1908,
+            0.0,
+            0.9816
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.9816,
+            0.0,
+            0.1908
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.285,
+         0.1767,
+         0.2565
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.1908,
+            0.0,
+            -0.9816
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.9816,
+            0.0,
+            0.1908
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/37"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff03",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0181,
+           1.6843,
+           0.1056
+          ],
+          "orientation": [
+           [
+            0.1908,
+            0.0,
+            0.9816
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.9816,
+            0.0,
+            0.1908
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1938,
+         0.1425,
+         0.1767
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.6672,
+         0.0121
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff03"
     }
    ],
    "properties": {
@@ -4008,6 +4599,192 @@
       }
      },
      "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Mud17"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/44"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff10",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.8657,
+           0.1925,
+           0.2817
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.8988,
+            0.0,
+            0.4384
+           ],
+           [
+            -0.4384,
+            0.0,
+            0.8988
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.266,
+         0.1649,
+         0.2394
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false,
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.8988,
+            -0.4384
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.4384,
+            0.8988
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/44"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff10",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.8816,
+           0.133,
+           0.3478
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.8988,
+            0.0,
+            0.4384
+           ],
+           [
+            -0.4384,
+            0.0,
+            0.8988
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1809,
+         0.133,
+         0.1649
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Transparency": 1.0,
+        "CanQuery": false
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.8657,
+         0.1925,
+         0.2817
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff10"
     }
    ],
    "properties": {
@@ -6618,6 +7395,1122 @@
     }
    },
    "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Tangle05"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/38"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff04",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.4883,
+         -0.4075
+        ],
+        "orientation": [
+         [
+          -0.342,
+          0.0,
+          0.9397
+         ],
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          0.9397,
+          0.0,
+          0.342
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       0.2356,
+       0.342
+      ],
+      "Color": [
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false,
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          -0.342,
+          0.0,
+          0.9397
+         ],
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          0.9397,
+          0.0,
+          0.342
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/38"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff04",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0849,
+         0.4655,
+         -0.502
+        ],
+        "orientation": [
+         [
+          -0.342,
+          0.0,
+          0.9397
+         ],
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          0.9397,
+          0.0,
+          0.342
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2584,
+       0.19,
+       0.2356
+      ],
+      "Color": [
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.4883,
+       -0.4075
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff04"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/39"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff05",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.4674,
+         0.6023,
+         0.1099
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          -0.6293,
+          0.0,
+          -0.7771
+         ],
+         [
+          0.7771,
+          0.0,
+          -0.6293
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.342,
+       0.212,
+       0.3078
+      ],
+      "Color": [
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false,
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.6293,
+          0.7771
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          -0.7771,
+          -0.6293
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/39"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff05",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.4879,
+         0.6358,
+         0.0006
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          -0.6293,
+          0.0,
+          -0.7771
+         ],
+         [
+          0.7771,
+          0.0,
+          -0.6293
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2326,
+       0.171,
+       0.212
+      ],
+      "Color": [
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       -0.4674,
+       0.6023,
+       0.1099
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff05"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/40"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff06",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4674,
+         0.6023,
+         0.1099
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.1392,
+          0.0,
+          -0.9903
+         ],
+         [
+          -0.9903,
+          0.0,
+          0.1392
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.342,
+       0.212,
+       0.3078
+      ],
+      "Color": [
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false,
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.1392,
+          -0.9903
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          -0.9903,
+          0.1392
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/40"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff06",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4879,
+         0.5747,
+         0.2209
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.1392,
+          0.0,
+          -0.9903
+         ],
+         [
+          -0.9903,
+          0.0,
+          0.1392
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2326,
+       0.171,
+       0.212
+      ],
+      "Color": [
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.4674,
+       0.6023,
+       0.1099
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff06"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/41"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff07",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.846,
+         0.2726
+        ],
+        "orientation": [
+         [
+          0.9205,
+          0.0,
+          0.3907
+         ],
+         [
+          0.3907,
+          0.0,
+          -0.9205
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.342,
+       0.212,
+       0.3078
+      ],
+      "Color": [
+       0.7961,
+       0.7137,
+       0.9333
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false,
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          0.9205,
+          0.3907,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.3907,
+          -0.9205,
+          0.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/41"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff07",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0809,
+         0.7652,
+         0.2932
+        ],
+        "orientation": [
+         [
+          0.9205,
+          0.0,
+          0.3907
+         ],
+         [
+          0.3907,
+          0.0,
+          -0.9205
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2326,
+       0.171,
+       0.212
+      ],
+      "Color": [
+       0.7961,
+       0.7137,
+       0.9333
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.846,
+       0.2726
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff07"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/42"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff08",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1698,
+         0.5953,
+         0.265
+        ],
+        "orientation": [
+         [
+          0.5878,
+          0.0,
+          0.809
+         ],
+         [
+          0.809,
+          0.0,
+          -0.5878
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.304,
+       0.1885,
+       0.2736
+      ],
+      "Color": [
+       0.7961,
+       0.7137,
+       0.9333
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false,
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          0.5878,
+          0.809,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.809,
+          -0.5878,
+          0.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/42"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff08",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1945,
+         0.4967,
+         0.2833
+        ],
+        "orientation": [
+         [
+          0.5878,
+          0.0,
+          0.809
+         ],
+         [
+          0.809,
+          0.0,
+          -0.5878
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2067,
+       0.152,
+       0.1885
+      ],
+      "Color": [
+       0.7961,
+       0.7137,
+       0.9333
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       -0.1698,
+       0.5953,
+       0.265
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff08"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty_Sit/43"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff09",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1698,
+         0.5953,
+         0.265
+        ],
+        "orientation": [
+         [
+          0.0872,
+          0.0,
+          0.9962
+         ],
+         [
+          0.9962,
+          0.0,
+          -0.0872
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.304,
+       0.1885,
+       0.2736
+      ],
+      "Color": [
+       0.7961,
+       0.7137,
+       0.9333
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false,
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          0.0872,
+          0.9962,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.9962,
+          -0.0872,
+          0.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty_Sit/43"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff09",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1995,
+         0.4981,
+         0.2833
+        ],
+        "orientation": [
+         [
+          0.0872,
+          0.0,
+          0.9962
+         ],
+         [
+          0.9962,
+          0.0,
+          -0.0872
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2067,
+       0.152,
+       0.1885
+      ],
+      "Color": [
+       0.7961,
+       0.7137,
+       0.9333
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 1.0,
+      "CanQuery": false
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.1698,
+       0.5953,
+       0.265
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Fluff09"
   }
  ],
  "properties": {

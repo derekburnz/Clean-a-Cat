@@ -9,11 +9,17 @@ A dirty model is the clean cat (same pieces, same pivots, same names after the a
                         by its name (find the child Model whose name ends in _MudNN and Destroy it). Blobs on the head,
                         tail or a leg are nested in that piece's Model, so they move with it; the rest sit on the Body.
   _Tangle01 .. _Tangle06  a spiky fur clump each, removed by the brush the same way.
-  root attributes       Dirty = true, MudCount = 20, TangleCount = 6, WetDarken = 0.3. The wet coat is a colour shift,
+  _Fluff01 .. _Fluff10  the fluffed look (#14): coat-coloured puffs on the cheeks, crown, chest, flanks, back and
+                        tail, each its own child Model (riding Head or Tail like the mud). They ship see-through
+                        (Transparency 1, CanQuery off, no shadow): after the third brush swipe the game tweens every
+                        part under a _FluffNN Model to Transparency 0 (and turns CastShadow on), with a small
+                        ScaleTo pop if it likes. They stay through the bow and the walk out.
+  root attributes       Dirty = true, MudCount = 20, TangleCount = 6, FluffCount = 10, WetDarken = 0.3. The wet coat is a colour shift,
                         not extra parts: while the cat is wet, the game darkens every coat part by WetDarken (multiply
                         its Color by 1 - WetDarken) and the dryer tweens it back. No extra parts, no z-fighting.
 
-When the last blob and tangle are gone the model is exactly the clean cat, so nothing is swapped at the reveal.
+When the last blob and tangle are gone the model is the clean cat (plus the hidden fluff), so nothing is swapped at
+the reveal.
 
 Blob spots are found by casting rays at the built cat (deterministic, no randomness), so every coat and both bodies
 get spots on their own surface, the eyes stay clear and no two blobs touch.
@@ -25,6 +31,7 @@ import bpy
 from mathutils import Matrix, Vector
 
 import cats
+import palette
 from common import Builder
 
 MUD = 20
@@ -33,6 +40,8 @@ WET_DARKEN = 0.3
 EYE_CLEAR = 0.3           # studs: no blob centre this close to an eye's centre
 SPACING = 0.22            # studs between blob centres
 TANGLE_SPACING = 0.3
+FLUFF = 10
+FLUFF_SPACING = 0.25
 # Blob shapes A, B and C (the model list's three): (half width, half length, half thickness) in studs, before the
 # cat's scale. Big flat smears; the centre sits just off the fur, so about 0.05 studs stands proud of the coat.
 SHAPES = {"A": (0.2, 0.18, 0.05), "B": (0.26, 0.15, 0.05), "C": (0.15, 0.14, 0.045)}
@@ -57,6 +66,17 @@ _D = [
 _T = [
     ("Body", (0.0, 0.4, 1.0)), ("Tail", (0.0, 0.5, 1.0)), ("Head", (1.0, -0.2, 0.0)), ("Head", (-1.0, -0.2, 0.0)),
     ("Body", (0.8, 0.3, 0.7)), ("Body", (-0.8, 0.3, 0.7)), ("Body", (0.0, -0.4, 1.0)), ("Body", (0.6, 0.8, 0.5)),
+]
+
+
+# Fluff puffs: (target piece, ray direction, radius before the cat's scale). Cheek ruffs and a crown tuft on the
+# head, a chest ruff, the flanks and the back, the tail. Ten land on every cat on both bodies.
+_F = [
+    ("Head", (1.0, -0.3, -0.35), 0.17), ("Head", (-1.0, -0.3, -0.35), 0.17), ("Head", (0.0, 0.7, 1.0), 0.15),
+    ("Body", (0.0, -1.0, 0.1), 0.2), ("Body", (1.0, 0.25, 0.2), 0.18), ("Body", (-1.0, 0.25, 0.2), 0.18),
+    ("Body", (0.0, 0.6, 1.0), 0.18), ("Tail", (0.0, 0.3, 1.0), 0.16), ("Body", (0.7, 0.8, 0.3), 0.16),
+    ("Body", (-0.7, 0.8, 0.3), 0.16), ("Body", (0.0, 1.0, 0.0), 0.16), ("Tail", (1.0, 0.0, 0.2), 0.14),
+    ("Body", (0.8, -0.7, 0.1), 0.15), ("Body", (-0.8, -0.7, 0.1), 0.15),
 ]
 
 
@@ -87,6 +107,19 @@ def _ray(objs, base, origin, direction):
     return None if best is None else best[1:]
 
 
+def _swatch_at(ob, point):
+    """The palette swatch of the face of `ob` nearest `point` (asset space), from its UV (faces sit on swatch
+    centres), so a puff on a white chest is white and one on a ginger patch is ginger."""
+    ok, _loc, _n, face = ob.closest_point_on_mesh(ob.matrix_world.inverted() @ point)
+    if not ok:
+        return None
+    me = ob.data
+    loop = me.polygons[face].loop_indices[0]
+    u, v = me.uv_layers.active.data[loop].uv
+    best = min(range(len(palette.SWATCHES)), key=lambda i: (palette.uv_center(i)[0] - u) ** 2 + (palette.uv_center(i)[1] - v) ** 2)
+    return palette.SWATCHES[best][0]
+
+
 def _snap(n):
     """The axis direction nearest a normal."""
     i = max(range(3), key=lambda a: abs(n[a]))
@@ -106,10 +139,10 @@ def _align(normal):
     return Matrix((x, y, z)).transposed()
 
 
-def _spots(objs, base, rays, n, spacing, eyes):
+def _spots(objs, base, rays, n, spacing, eyes, keep_index=False):
     pieces = {_piece(o, base): o for o in objs}
     out = []
-    for target, d in rays:
+    for j, (target, d) in enumerate(rays):
         if len(out) == n:
             break
         if target not in pieces:
@@ -125,9 +158,9 @@ def _spots(objs, base, rays, n, spacing, eyes):
             continue                                   # an eye, an ear or the nose: keep the face readable
         if any((p - e).length < EYE_CLEAR for e in eyes):
             continue
-        if any((p - q).length < spacing for q, _, _ in out):
+        if any((o[0] - p).length < spacing for o in out):
             continue
-        out.append((p, nrm, piece))
+        out.append((p, nrm, piece, j) if keep_index else (p, nrm, piece))
     return out
 
 
@@ -179,7 +212,26 @@ def build_dirty(name, mat, body):
         objs.append(ob)
         if piece in RIDES:
             nest["_" + part] = "_" + piece
-    attributes = {"Dirty": True, "MudCount": MUD, "TangleCount": TANGLES,
+    clean = objs[:len(objs) - MUD - TANGLES]
+    fspots = _spots(clean, base, [(t, d) for t, d, _ in _F], FLUFF, FLUFF_SPACING * k, [], keep_index=True)
+    if len(fspots) < FLUFF:
+        raise RuntimeError(f"{base}: only {len(fspots)} fluff spots found, need {FLUFF}")
+    for i, (p, nrm, piece, j) in enumerate(fspots):
+        part = f"Fluff{i + 1:02d}"
+        r = _F[j][2] * k
+        sw = _swatch_at([o for o in clean if _piece(o, base) == piece][0], p) or look["fur"]
+        b = Builder()                                  # a cloud: a big puff and a smaller one beside it, a little up
+        b.sphere((0, 0, 0), 1.0, sw, segments=8, rings=4, scale=(r, r * 0.9, r * 0.62))
+        b.sphere((0.62 * r, 0.25 * r, 0.12 * r), 1.0, sw, segments=6, rings=3, scale=(r * 0.68, r * 0.62, r * 0.5))
+        ob = b.finalize(f"{base}_{part}", mat, location=tuple(p + nrm * 0.4 * r))
+        twist = Matrix.Rotation(math.radians(17 + 31 * i), 4, "Z")   # turned about the normal, a different way each
+        ob.matrix_world = Matrix.Translation(ob.location) @ _align(nrm).to_4x4() @ twist   # time: no face lies flat on fur
+        _apply_rotation(ob)
+        ob.hide_render = True                          # the previews show the cat as it arrives
+        objs.append(ob)
+        if piece in RIDES:
+            nest["_" + part] = "_" + piece
+    attributes = {"Dirty": True, "MudCount": MUD, "TangleCount": TANGLES, "FluffCount": FLUFF,
                   "WetDarken": {"Float64": WET_DARKEN}}
     return objs, nest, attributes
 
@@ -198,4 +250,4 @@ ASSETS = {}
 for _n in cats.ROSTER:
     for _body in cats.BUILT_BODIES:
         ASSETS[f"CleanACat_Cat_{_n}_Dirty{cats.SUFFIX[_body]}"] = (
-            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 2500)
+            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3000)
