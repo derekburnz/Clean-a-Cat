@@ -38,6 +38,7 @@ import customers  # noqa: E402
 import dirt  # noqa: E402
 import stations  # noqa: E402
 import tools  # noqa: E402
+import vip  # noqa: E402
 import gates  # noqa: E402
 import palette  # noqa: E402
 import plot  # noqa: E402
@@ -56,7 +57,7 @@ def all_assets():
         out[name] = (fn, budget, "cats")
     for name, (fn, budget) in dirt.ASSETS.items():
         out[name] = (fn, budget, "dirt")
-    for module in (stations, tools, props, plot, spa_props, customers, build_props):
+    for module in (stations, tools, props, plot, spa_props, customers, build_props, vip):
         for name, (fn, budget) in module.ASSETS.items():
             out[name] = (fn, budget, module.__name__)
     return out
