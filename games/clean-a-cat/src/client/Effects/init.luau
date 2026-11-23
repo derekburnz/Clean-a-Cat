@@ -9,7 +9,10 @@
 --   Effects.stopStream(preset)
 --   Effects.burst(preset, position, color?)         one burst at a point, optionally tinted
 --   Effects.glow(model, seconds)                    a soft outline glow that fades out, then is destroyed
+--   Effects.popIn(model, anchor, seconds)           grows a small client-only model from nothing (Back Out), holding
+--                                                   `anchor` (an Attachment in it) still, e.g. a bow on its BowSlot
 local GuiService = game:GetService("GuiService")
+local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -175,6 +178,35 @@ function Effects.glow(model: Model, seconds: number)
 		highlight:Destroy()
 	end)
 	fade:Play()
+end
+
+local POP_START = 0.05 -- ScaleTo needs a scale above zero
+
+function Effects.popIn(model: Model, anchor: Attachment, seconds: number)
+	if not started or reducedMotion() or not model:IsDescendantOf(workspace) then
+		return
+	end
+	local final = model:GetScale()
+	local function scaleKeepingAnchor(scale: number)
+		local before = anchor.WorldPosition
+		model:ScaleTo(final * scale)
+		model:PivotTo(model:GetPivot() + (before - anchor.WorldPosition))
+	end
+	scaleKeepingAnchor(POP_START)
+	local began = os.clock()
+	local connection: RBXScriptConnection
+	connection = RunService.RenderStepped:Connect(function()
+		if model.Parent == nil or anchor.Parent == nil then
+			connection:Disconnect()
+			return
+		end
+		local u = math.clamp((os.clock() - began) / seconds, 0, 1)
+		local eased = TweenService:GetValue(u, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+		scaleKeepingAnchor(math.max(POP_START, eased))
+		if u >= 1 then
+			connection:Disconnect()
+		end
+	end)
 end
 
 return Effects
