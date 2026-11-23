@@ -60,5 +60,45 @@ return function()
 			expect(ScrubRules.shouldReveal(state)).to.equal(false)
 			expect(ScrubRules.rub(state, 10, ScrubRules.RUB_TO_CLEAR)).to.equal(false)
 		end)
+
+		it("counts the patches still needed for the reveal", function()
+			local state = ScrubRules.newState(16)
+			expect(ScrubRules.patchesNeeded(state)).to.equal(13)
+			ScrubRules.rub(state, 1, ScrubRules.RUB_TO_CLEAR)
+			expect(ScrubRules.patchesNeeded(state)).to.equal(12)
+			ScrubRules.reveal(state)
+			expect(ScrubRules.patchesNeeded(state)).to.equal(0)
+		end)
+	end)
+
+	describe("ScrubRules.turnToShow", function()
+		local toCamera = Vector3.new(0, 2, 10) -- the camera is in front (+Z) and a little above
+
+		it("does not turn while enough mud faces the camera", function()
+			local offsets = { Vector3.new(0, 1, 1), Vector3.new(0.5, 0, 1), Vector3.new(0, 0, -1) }
+			expect(ScrubRules.turnToShow(offsets, toCamera, 2)).to.equal(nil)
+			expect(ScrubRules.turnToShow(offsets, toCamera, 0)).to.equal(nil)
+			expect(ScrubRules.turnToShow({}, toCamera, 3)).to.equal(nil)
+		end)
+
+		it("turns the mud on the back round to the camera", function()
+			local yaw =
+				ScrubRules.turnToShow({ Vector3.new(0, 0, -1), Vector3.new(0, 1, -1) }, toCamera, 2)
+			expect(math.abs(math.abs(yaw :: number) - math.pi) < 1e-6).to.equal(true)
+		end)
+
+		it("turns the mud on the side a quarter turn the right way", function()
+			-- Mud on +X; CFrame.Angles(0, yaw, 0) must carry +X to +Z: (1, 0) at angle 0 goes to angle pi/2.
+			local yaw = ScrubRules.turnToShow(
+				{ Vector3.new(1, 0, 0), Vector3.new(1, 1, 0) },
+				toCamera,
+				2
+			) :: number
+			local x, z = 1, 0
+			local turnedX = x * math.cos(yaw) + z * math.sin(yaw)
+			local turnedZ = -x * math.sin(yaw) + z * math.cos(yaw)
+			expect(turnedX).to.be.near(0, 1e-6)
+			expect(turnedZ).to.be.near(1, 1e-6)
+		end)
 	end)
 end
