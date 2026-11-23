@@ -101,7 +101,23 @@ Pieces of one model never share a plane: neighbours are staggered by 0.012 studs
 
 Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, `SpotQueue1` to `SpotQueue3`, `SpotStray`, `SpotWindow1` to `SpotWindow4`, `SpotBuilder`, `SpotStation2`, `SpotStation3`, `SpotVipDoor` and `SpotBoard`. Each faces the way the player, customer, cat or station there faces. Root attribute `FloorHeight` (0.5, the top of the floor slab). The graybox draws a coloured pad on the floor at each spot (`_Decor`, no collision); the real build replaces the pads, never the Attachments.
 
-## 15. Rules
+## 15. Customers and spa props (#16)
+`spa_props.py` builds:
+- `CleanACat_Prop_Carrier`: bubblegum tray, cream shell with mint vents and handle, and a metal grille door (`..._Door_Swing`, a child Model pivoted at its hinge on the cat's left; turn it up to `DoorOpenDegrees`, 110). `CatSeat` on the tray for a walking cat at `ScaleTo(CatScale)` (0.8) so it shows through the grille; `Grip` at the handle.
+- `CleanACat_Prop_StrayBox`: cardboard box with its flaps folded out and a bubblegum blanket; `CatSeat` on the blanket.
+- `CleanACat_Prop_ChanceBoard`: a standing bubblegum board on two wooden legs; its face part is `Screen` (front, -Z) for the chances SurfaceGui. Tagged `ChanceBoard`, streams in whole. It stands at the plot's `SpotBoard`.
+- `CleanACat_Prop_QueueMat`: a welcome mat with two paw prints, one at each `SpotQueue`.
+
+`customers.py` builds three accessories for Roblox's own R15 customer rig: `CleanACat_NPC_SunHat` (`HatAttachment`), `CleanACat_NPC_Scarf` (`NeckAttachment`) and `CleanACat_NPC_ToteBag` (`LeftShoulderAttachment`). Each Model's biggest part is `Handle` and holds that Attachment; move the parts into an Accessory, weld them to Handle and `Humanoid:AddAccessory` it. The customer itself is `Players:CreateHumanoidModelFromDescription` with body colours only, so nothing waits on an upload:
+
+| Customer | Head and arms | Torso | Legs | Accessory |
+|---|---|---|---|---|
+| Sunny | skin_light #F3C9A2 | spa_mint #A8E6CF | pants_navy #2F3E5C | SunHat |
+| Mo | skin_deep #7A4B32 | pastel_butter #F6DFA0 | shirt_blue #3C7DD9 | Scarf |
+| Pip | skin_tan #C98E6A | spa_sky #8FD3FE | wood_light #E3C49C | ToteBag |
+| Rae | skin_tan #C98E6A | spa_bubblegum #FFB3C7 | pants_navy #2F3E5C | SunHat |
+
+## 16. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.

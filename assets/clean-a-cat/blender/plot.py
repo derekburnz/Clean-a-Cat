@@ -20,7 +20,7 @@ faces there (the Attachment's LookVector), all at floor height:
   SpotBuilder          where the builder kitten works
   SpotStation2, 3      the two locked station pads (the Brush Table, then the Blow Dryer)
   SpotVipDoor          the middle of the VIP Room door, facing into the room
-  SpotBoard            the chance board, on the wall beside the entrance, facing in
+  SpotBoard            the chance board (CleanACat_Prop_ChanceBoard stands here), beside the entrance, facing in
 
 Every gap a player or the camera goes through is 6 studs or wider.
 """
@@ -61,7 +61,7 @@ SPOTS = {
     "SpotStation2": (7.0, -1.0, 0.0, 0.0),
     "SpotStation3": (13.5, -1.0, 0.0, 0.0),
     "SpotVipDoor": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
-    "SpotBoard": (13.5, ROOM_Y[0] + WALL_T + 0.05, 4.0, 180.0),
+    "SpotBoard": (13.5, ROOM_Y[0] + 1.4, 0.0, 180.0),
 }
 # Floor pads that show each spot in the graybox: (spot, size x, size y, swatch)
 PADS = [("SpotTub", 5.4, 4.6, "spa_sky"), ("SpotSpawn", 2.4, 2.4, "shirt_green"),

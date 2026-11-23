@@ -24,15 +24,61 @@ import tools  # noqa: E402
 from common import Builder  # noqa: E402
 
 
-def avatar(mat, at=(0.0, 0.0, 0.0)):
+# Where our stand-in avatar has the R15 accessory Attachments (Blender axes; the avatar's left is +X)
+AVATAR_ATT = {"HatAttachment": (0.0, 0.0, 4.75), "NeckAttachment": (0.0, 0.0, 3.6),
+              "LeftShoulderAttachment": (1.0, 0.0, 3.6)}
+
+
+def avatar(mat, at=(0.0, 0.0, 0.0), skin="skin_tan", shirt="shirt_green", pants="shirt_blue"):
     """A plain blocky avatar, R15 proportions: legs 2, torso 1.6, head 1.2 studs; front -Y."""
     b = Builder()
     for sx in (1, -1):
-        b.box_base((sx * 0.5, 0, 0), (0.95, 0.95, 2.0), "shirt_blue")
-        b.box_base((sx * 1.5, 0, 2.0), (0.95, 0.95, 1.6), "skin_tan")
-    b.box_base((0, 0, 2.0), (1.95, 0.95, 1.6), "shirt_green")
-    b.box_base((0, 0, 3.6), (1.15, 1.15, 1.15), "skin_tan")
+        b.box_base((sx * 0.5, 0, 0), (0.95, 0.95, 2.0), pants)
+        b.box_base((sx * 1.5, 0, 2.0), (0.95, 0.95, 1.6), skin)
+    b.box_base((0, 0, 2.0), (1.95, 0.95, 1.6), shirt)
+    b.box_base((0, 0, 3.6), (1.15, 1.15, 1.15), skin)
     return b.finalize("Avatar", mat, location=at)
+
+
+def customers_sheet(mat, out):
+    """The four customers, each with its accessory and a carrier with a dirty cat at its feet; the stray box with a
+    stray, the chance board and a queue mat."""
+    import customers
+    import spa_props
+    allo = []
+    n = [0]
+
+    def fresh(objs):
+        n[0] += 1
+        for o in objs:
+            o.name = f"C{n[0]}_{o.name}"
+        return objs
+
+    for i, (_name, skin, shirt, pants, acc) in enumerate(customers.LOOKS):
+        x = i * 4.2
+        allo += fresh([avatar(mat, (x, 0, 0), skin, shirt, pants)])
+        a = Vector(AVATAR_ATT[customers.ATTACH[acc]]) + Vector((x, 0, 0))
+        built = {"CleanACat_NPC_SunHat": customers.build_sun_hat, "CleanACat_NPC_Scarf": customers.build_scarf,
+                 "CleanACat_NPC_ToteBag": customers.build_tote_bag}[acc](mat)
+        _move(built, a)
+        allo += fresh(built)
+        car = spa_props.build_carrier(mat)
+        _move(car, (x + 0.2, -2.2, 0))
+        cat_name = ("Muffin", "Patches", "Toffee", "Marble")[i]
+        c, _, _ = dirt.build_dirty(cat_name, mat, "walk")
+        _move(c, (x + 0.2, -2.2 + 0.06, spa_props.TRAY_H), spa_props.CAT_SCALE)
+        allo += fresh(car) + fresh(c)
+    box = spa_props.build_stray_box(mat)
+    _move(box, (17.5, -2.0, 0))
+    s, _, _ = dirt.build_dirty("Inky", mat, "sit")
+    _move(s, (17.5, -2.0, 0.31))
+    allo += fresh(box) + fresh(s)
+    board = spa_props.build_chance_board(mat)
+    _move(board, (21.5, 0.5, 0))
+    mat_ = spa_props.build_queue_mat(mat)
+    _move(mat_, (21.5, -2.6, 0))
+    allo += fresh(board) + fresh(mat_)
+    common.render_preview(allo, out, res=(1600, 640), samples=24, azimuth=14, elevation=12)
 
 
 def _move(objs, offset, k=1.0):
@@ -147,8 +193,13 @@ def plot_views(mat, out_dir):
         for o in c:
             o.location += Vector((0.0, -0.9, 0.0))     # held out in front, at the chest
         allo += fresh(place(c, f"SpotQueue{i}", lift=2.4))
+    import spa_props
+    allo += fresh(place(spa_props.build_stray_box(mat), "SpotStray"))
     s, _, _ = dirt.build_dirty("Inky", mat, "sit")
-    allo += fresh(place(s, "SpotStray"))
+    allo += fresh(place(s, "SpotStray", lift=0.31))
+    allo += fresh(place(spa_props.build_chance_board(mat), "SpotBoard"))
+    for i in range(1, 4):
+        allo += fresh(place(spa_props.build_queue_mat(mat), f"SpotQueue{i}", lift=0.0))
     for i, name in enumerate(("Cotton", "Marble", "LilacCloud", "Tux"), start=1):
         allo += fresh(place(cats.build_cat(name, mat, body="sit"), f"SpotWindow{i}"))
     os.makedirs(out_dir, exist_ok=True)
@@ -173,4 +224,5 @@ if __name__ == "__main__":
     common.reset_scene()
     png = os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png")
     mat = common.palette_material(png)
-    {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views}[which](mat, out)
+    {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
+     "customers": customers_sheet}[which](mat, out)
