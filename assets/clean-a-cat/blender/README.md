@@ -33,8 +33,10 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `stations.py` | the spa stations: the wash tub (#13) with its `CatSeat` attachment; the brush table and dryer follow (#18) |
 | `tools.py` | hand tools: the three sponges (#13) and the brush (#14), each with a `Handle` part |
 | `plot.py` | the spa plot (#15): today the graybox with every gameplay spot as an Attachment (`SPOTS`) |
+| `spa_props.py` | the carrier, stray box, chance board and queue mat (#16) |
+| `customers.py` | the customers' accessories for the R15 rig and the four looks (`LOOKS`, #16) |
 | `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
-| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, or `plot <folder>` for the four plot views); exports nothing |
+| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the four plot views, or `customers`); exports nothing |
 
 ## Adding a model
 1. Add a module with an `ASSETS` dict (name to `(builder(mat) -> objects, triangle budget)`), and add it to `all_assets()` in `build_all.py`.
