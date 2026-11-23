@@ -13,9 +13,19 @@ local SCRUB_FLAG = "scrubEffects"
 local REVEAL_FLAG = "revealEffects"
 local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
-local REVEAL_LIFT = 0.6 -- studs above the cat's pivot, so the sparkles start on the coat and not in the tub
-local BOW_LIFT = 1.2 -- studs above the pivot, about where a bow sits
+local BOW_DROP = 0.3 -- studs below the top of the cat, about where a bow sits
 local GLOW_SECONDS = 0.6
+
+-- The middle of the cat and the top of the cat, from its bounding box. Works for any pivot (the generated cats pivot
+-- at the base centre, the placeholder at the middle of its ball) and any scale.
+local function coatPoint(cat: Model): Vector3
+	return (cat:GetBoundingBox()).Position
+end
+
+local function topPoint(cat: Model): Vector3
+	local box, size = cat:GetBoundingBox()
+	return box.Position + Vector3.new(0, size.Y / 2 - BOW_DROP, 0)
+end
 
 -- The coat colour for fur puffs: the cat's Body part when it has one ("Body" on placeholders, "<asset>_Body" on
 -- the generated cats).
@@ -64,18 +74,14 @@ function EffectsController.Start()
 		if not LiveFlags.isOn(REVEAL_FLAG) or not cat:IsDescendantOf(workspace) then
 			return
 		end
-		local center = cat:GetPivot().Position + Vector3.new(0, REVEAL_LIFT, 0)
+		local center = coatPoint(cat)
 		Effects.stopStream(foamPreset)
 		Effects.burst("revealSparkle", center)
 		Effects.burst("shakeDroplets", center)
 	end)
 	Moments.BrushSwipe:Connect(function(cat: Model, _stroke: number)
 		if LiveFlags.isOn(FLUFF_FLAG) and cat:IsDescendantOf(workspace) then
-			Effects.burst(
-				"furPuff",
-				cat:GetPivot().Position + Vector3.new(0, REVEAL_LIFT, 0),
-				coatColor(cat)
-			)
+			Effects.burst("furPuff", coatPoint(cat), coatColor(cat))
 		end
 	end)
 	Moments.CatFluffed:Connect(function(cat: Model)
@@ -86,7 +92,7 @@ function EffectsController.Start()
 	end)
 	Moments.BowChosen:Connect(function(cat: Model, _bowId: string)
 		if LiveFlags.isOn(FLUFF_FLAG) and cat:IsDescendantOf(workspace) then
-			Effects.burst("bowHearts", cat:GetPivot().Position + Vector3.new(0, BOW_LIFT, 0))
+			Effects.burst("bowHearts", topPoint(cat))
 		end
 	end)
 	Moments.MudPatchCleared:Connect(
