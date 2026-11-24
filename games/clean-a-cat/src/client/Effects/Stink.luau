@@ -6,6 +6,7 @@
 --
 -- API
 --   Stink.start(isOn)                 finds dirty cats (the `Dirty` attribute) in Workspace; isOn is read once a second
+--   Stink.focus(cat)                  the cat being washed takes a wisp slot first, then the nearest cats
 --   Stink.setLeft(cat, left)          mud patches still on the cat; 0 removes the wisps
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
@@ -31,6 +32,10 @@ local Stink = {}
 
 local entries: { [Model]: Entry } = {}
 local started = false
+local focus: Model? = nil -- the cat being washed
+local switchOn: () -> boolean = function()
+	return false
+end
 
 local function findCarry(cat: Model): Attachment?
 	for _, descendant in cat:GetDescendants() do
@@ -93,19 +98,40 @@ local function consider(instance: Instance)
 	end
 end
 
+-- The cat being washed takes a slot first, then the nearest cats, so a street of customers at the door never
+-- leaves the tub cat without wisps on a phone's two slots.
 local function refresh(on: boolean)
 	local camera = Workspace.CurrentCamera
 	local from = if camera then camera.CFrame.Position else nil
 	local reduced = Effects.reducedMotion()
 	local budget = if Effects.tier() == "low" then MAX_CATS.low else MAX_CATS.high
+	local order: { { entry: Entry, distance: number } } = {}
 	for cat, entry in entries do
 		if cat.Parent == nil or entry.attachment.Parent == nil then
 			remove(cat)
 			continue
 		end
-		local near = from ~= nil and (entry.attachment.WorldPosition - from).Magnitude <= RANGE
+		local distance = if from
+			then (entry.attachment.WorldPosition - from).Magnitude
+			else math.huge
+		table.insert(order, {
+			entry = entry,
+			distance = if cat == focus and distance <= RANGE then -1 else distance,
+		})
+	end
+	table.sort(
+		order,
+		function(
+			a: { entry: Entry, distance: number },
+			b: { entry: Entry, distance: number }
+		): boolean
+			return a.distance < b.distance
+		end
+	)
+	for _, item in order do
+		local entry = item.entry
 		local rate = if on
-				and near
+				and item.distance <= RANGE
 				and budget > 0
 			then Tier.stinkRate(entry.maxRate, entry.left, entry.total, reduced)
 			else 0
@@ -122,6 +148,7 @@ function Stink.start(isOn: () -> boolean)
 		return
 	end
 	started = true
+	switchOn = isOn
 	for _, instance in Workspace:GetDescendants() do
 		consider(instance)
 	end
@@ -131,9 +158,19 @@ function Stink.start(isOn: () -> boolean)
 		local now = os.clock()
 		if now >= checkAt then
 			checkAt = now + 1
-			refresh(isOn())
+			refresh(switchOn())
 		end
 	end)
+end
+
+-- The cat being washed (ScrubStart): it takes a wisp slot before any other cat, at once.
+function Stink.focus(cat: Model)
+	if focus ~= cat then
+		focus = cat
+		if started then
+			refresh(switchOn())
+		end
+	end
 end
 
 function Stink.setLeft(cat: Model, left: number)
