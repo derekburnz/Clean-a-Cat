@@ -380,26 +380,39 @@ def mud(mat):
 
 
 def tangles(mat):
-    """The Tangles need: one of the cat's own tangles (dirt.py: a spiky clump of fur). Seven tufts of uneven length
-    and spacing, all swept the same way, so it is matted fur and not a sun or a cog, and a thick swirl sits on it
-    in the outline's ink."""
+    """The Tangles need: a round ball of matted fur. Strands cross it in the outline's ink, three bowed one way and
+    two the other, like a ball of wool, and one loose strand trails out low on the left, where the lock badge (low
+    on the right) cannot cover it. Round on purpose: a spiky clump read as a star or a sun, too near Sparkle."""
     b, k = Builder(), Builder()
-    tufts = ((8, 1.3), (52, 1.52), (104, 1.24), (150, 1.5), (212, 1.3), (262, 1.56), (318, 1.34))   # degrees, tip
-    pts = []
-    for i, (deg, tip) in enumerate(tufts):
-        before = (deg + tufts[i - 1][0] - (360 if i == 0 else 0)) / 2                    # the dip before this tuft
-        pts.append((0.9 * math.cos(math.radians(before)), 0.9 * math.sin(math.radians(before))))
-        pts.append((tip * math.cos(math.radians(deg + 13)), tip * math.sin(math.radians(deg + 13))))
-    b.prism((0, 0, 0), pts, 0.5, "fur_orange", rot=X)
-    n = 22                                                                               # the swirl: one and a
-    for i in range(n):                                                                   # quarter turns, short pieces
-        t0 = 0.9 + 2.5 * math.pi * i / n
-        t1 = 0.9 + 2.5 * math.pi * (i + 1) / n
-        r0, r1 = 0.1 + 0.52 * i / n, 0.1 + 0.52 * (i + 1) / n
-        x0, z0, x1, z1 = r0 * math.cos(t0), r0 * math.sin(t0), r1 * math.cos(t1), r1 * math.sin(t1)
-        ang = math.atan2(x1 - x0, z1 - z0)
-        k.box(((x0 + x1) / 2, -0.27, (z0 + z1) / 2), (0.24, 0.04, math.hypot(x1 - x0, z1 - z0) + 0.12), "coat_inky",
-              bevel=False, rot=(ang, "Y"))
+    b.cyl((0, 0, 0), 1.0, 0.5, "fur_orange", segments=28, rot=X)
+    for si, (deg, bulge, offsets) in enumerate(((35, 0.3, (-0.72, -0.3, 0.12)), (120, 0.3, (-0.55, -0.08)))):
+        ux, uz = math.cos(math.radians(deg)), math.sin(math.radians(deg))               # along the strand
+        for off in offsets:
+            n, pts = 18, []
+            for i in range(n + 1):
+                t = -1 + 2 * i / n
+                w = off + bulge * (1 - t * t)                                            # bowed sideways
+                pts.append((t * ux - w * uz, t * uz + w * ux))
+            for (x0, z0), (x1, z1) in zip(pts, pts[1:]):
+                mx, mz = (x0 + x1) / 2, (z0 + z1) / 2
+                if math.hypot(mx, mz) > 0.85:                                            # cut off at the ball's edge
+                    continue
+                k.box((mx, -0.27 - 0.006 * si, mz), (0.17, 0.04, math.hypot(x1 - x0, z1 - z0) + 0.08), "coat_inky",
+                      bevel=False, rot=(math.atan2(x1 - x0, z1 - z0), "Y"))
+    cx, cz, mid, parts = -0.98, -0.6, 0.36, 6                                            # the loose strand: a hook
+    for p in range(parts):                                                               # in short simple pieces
+        f0, f1 = p / parts, (p + 1) / parts
+        am = math.radians(15 - 215 * (f0 + f1) / 2)
+        ox, oz = cx + mid * math.cos(am), cz + mid * math.sin(am)
+        outer, inner = [], []
+        for j in range(4):
+            f = f0 + (f1 - f0) * j / 3
+            t, w = math.radians(15 - 215 * f), 0.17 - 0.1 * f                            # it tapers
+            outer.append((cx + (mid + w) * math.cos(t) - ox, cz + (mid + w) * math.sin(t) - oz))
+            inner.append((cx + (mid - w) * math.cos(t) - ox, cz + (mid - w) * math.sin(t) - oz))
+        b.prism((ox, 0.002 * (p % 2), oz), inner + outer[::-1], 0.4, "fur_orange", rot=X)
+    end = math.radians(15 - 215)
+    b.cyl((cx + mid * math.cos(end), 0.004, cz + mid * math.sin(end)), 0.07, 0.4, "fur_orange", segments=10, rot=X)
     return _fin(b, "Tangles", mat, ink=k)
 
 
