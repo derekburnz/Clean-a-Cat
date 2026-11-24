@@ -13,6 +13,7 @@ local WindowRules = require(Shared:WaitForChild("WindowRules"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
 local FLAG = "strays"
 
@@ -61,6 +62,7 @@ local function pay(player: Player, coins: number)
 		return
 	end
 	save.coins += coins
+	WalletService.show(player)
 	NetService.fire(player, "WindowTips", coins, save.coins)
 end
 

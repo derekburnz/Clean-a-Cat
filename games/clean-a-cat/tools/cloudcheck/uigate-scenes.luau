@@ -14,6 +14,11 @@ local Scenes = {}
 
 local UI
 
+-- The HUD's switch, as the flags workflow would set it.
+local function hud(on)
+	game:GetService("ReplicatedStorage"):SetAttribute("LiveFlag_gameHud", on)
+end
+
 function Scenes.setup()
 	UI = UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI")
 	UI.init()
@@ -25,6 +30,23 @@ local SCENES = {
 	end },
 	{ "Toast", function()
 		UI.toast("This server updates in 10 minutes. Your progress is saved.", "info")
+	end },
+	-- The game HUD (#210, switch gameHud), at its widest: the longest coin count before it goes short (999,999)
+	-- and the longest step line, then a short count on the first step.
+	{ "HudWash", function()
+		hud(true)
+		UI.setCoins(999999)
+		UI.setWashStage("styled")
+	end },
+	{ "HudScrub", function()
+		hud(true)
+		UI.setCoins(12345678)
+		UI.setWashStage("dirty")
+	end },
+	{ "HudWalking", function()
+		hud(true)
+		UI.setCoins(1240)
+		UI.setWashStage(nil)
 	end },
 }
 
@@ -45,6 +67,8 @@ end
 
 function Scenes.close()
 	UI.closeAll()
+	UI.setWashStage(nil)
+	hud(false)
 end
 
 return Scenes

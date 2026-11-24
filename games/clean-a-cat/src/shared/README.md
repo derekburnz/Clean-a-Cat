@@ -8,6 +8,7 @@ Visible to both server and client (it becomes `ReplicatedStorage.Shared`). Nothi
 - `TelemetryRules.luau`, `RestartNotice.luau`: the pure rules behind `Telemetry` and the restart countdown.
 - `Guard.luau`: argument checks for remotes (`Guard.id`, `Guard.int`, `Guard.oneOf`, `Guard.text`...), each returning the cleaned value or nil.
 - `Signal.luau`: a small typed signal (`DataService.onLoaded` uses it).
+- `Wallet.luau`: the Player attribute the server mirrors the save's coins onto (display only) and how the coin counter writes a number (`1,240`, `1.2M`).
 - `Vendor/`: third-party single-file modules. Never edit or reformat them (StyLua and Selene skip this folder); replace the whole file to update. `Trove.luau` is [Sleitnick/RbxUtil](https://github.com/Sleitnick/RbxUtil) `modules/trove` v1.8.0 at commit 5437776 (2026-11-20), MIT, licence in `Trove.LICENSE.md` (#184). Clean up a screen or a visit with it: see `luau-conventions`. `spr.luau` is [Fraktality/spr](https://github.com/Fraktality/spr) `spr.lua` at commit 665be17 (2024-07-30), MIT, licence in `spr.LICENSE.md`: spring motion for UI, a trial behind the `springUi` switch (#183); client only, required lazily by `client/UI/Motion.luau`.
 - Add as the game grows: `Config.luau` (tuning numbers), `Catalog.luau` (items with stable ids) and `Types.luau`. Templates are in the `luau-conventions` and `remote-security-checklist` skills.
 

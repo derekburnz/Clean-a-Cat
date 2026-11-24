@@ -26,6 +26,7 @@ local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
+local WalletService = require(script.Parent:WaitForChild("WalletService"))
 local WindowService = require(script.Parent:WaitForChild("WindowService"))
 
 local FLAG = "scrubPrototype"
@@ -216,6 +217,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	if kind ~= nil and cat.stray then
 		-- A stray has nobody to pay: the photo coins, and it moves into the window when there is room.
 		save.coins += coins
+		WalletService.show(player)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
 		local moved = WindowService.addResident(player, kind, cat.bow)
 		NetService.notice(
@@ -226,6 +228,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	end
 	if kind == nil then
 		save.coins += coins
+		WalletService.show(player)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
 		NetService.notice(player, `+{coins} coins`)
 		return
@@ -236,6 +239,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	local bonus = if LiveFlags.isOn("builds") then BuildRules.payBonus(save.stations) else 0
 	coins = pay.coins + pay.tip + bonus
 	save.coins += coins
+	WalletService.show(player)
 	save.stars += pay.stars
 	player:SetAttribute(BOARD_LIT, true)
 	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))

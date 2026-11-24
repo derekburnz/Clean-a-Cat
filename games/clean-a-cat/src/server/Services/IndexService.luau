@@ -12,6 +12,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
+local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
 local FLAG = "catIndex"
 
@@ -66,6 +67,7 @@ function IndexService.stamp(player: Player, cat: string, stamp: IndexRules.Stamp
 	if not save.indexBonusPaid and IndexRules.complete(index, cats) then
 		save.indexBonusPaid = true
 		save.coins += IndexRules.BONUS_COINS
+		WalletService.show(player)
 		NetService.notice(player, `Cat Index complete! +{IndexRules.BONUS_COINS} coins`)
 		Telemetry.economy(
 			player,
