@@ -7,7 +7,7 @@ colours on the chunky 3D look of his asset library's coin. 512 px, see-through.
 |---|---|
 | `CleanACat_Icon_Hud_Coins.png` | coin counter: Derek's library coin (Cat Cafe `CatCafe_Icon_Coins`) with its outline redrawn in our ink, his calls on 2026-11-24 |
 | `CleanACat_Icon_Hud_Index.png` | Cat Index |
-| `CleanACat_Icon_Hud_Tools.png` | Tools (a toolbox, Derek 2026-11-24) |
+| `CleanACat_Icon_Hud_Tools.png` | Tools (an open toolbox with its handle up, a brush and a soap bottle, Derek 2026-11-24; shut, it read as a lunchbox at phone size) |
 | `CleanACat_Icon_Hud_Helper.png` | Helpers (a staff head: helpers are human staff; a placeholder until Derek's staff ideas) |
 | `CleanACat_Icon_Hud_Build.png` | Build |
 | `CleanACat_Icon_Hud_Settings.png` | Settings (in the menu, not on the HUD) |

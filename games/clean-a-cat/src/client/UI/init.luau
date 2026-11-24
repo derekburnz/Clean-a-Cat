@@ -11,6 +11,8 @@
 --   UI.onSettingsChanged(fn)  fn(settings) on every change on the Settings card (UI/Settings, switch settingsCard,
 --                             #230); with the switch on, the Menu opens that card
 --   UI.setIndex(entries, newCats, tier)  the Cat Index window (UI/CatIndex, switch catIndexWindow, #238)
+--   UI.setQueue(cards, headline, pickable)  the "Who's next?" window and the HUD's waiting faces (UI/QueueWindow,
+--                             HUD/Waiting, switch queueWindow, #246); UI.onQueuePick(fn) gets fn(place) on Wash next
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
@@ -23,6 +25,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 
@@ -30,9 +33,11 @@ local CatIndex = require(script:WaitForChild("CatIndex"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local HUD = require(script:WaitForChild("HUD"))
 local Motion = require(script:WaitForChild("Motion"))
+local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
+local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
 
 local UI = {}
 
@@ -169,6 +174,12 @@ function UI.init()
 	SideButtons.build(root, function(name: string)
 		UI.open(name)
 	end)
+	Waiting.build(
+		root,
+		function() -- the waiting faces open "Who's next?" (switch queueWindow, #246)
+			UI.open("Queue")
+		end
+	)
 
 	local toast = Instance.new("TextLabel")
 	toast.Name = "Toast"
@@ -189,6 +200,7 @@ function UI.init()
 
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
+	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -239,6 +251,21 @@ end
 -- For the UI gate: the Cat Index detail for `cat`, or the grid for nil.
 function UI.showIndexDetail(cat: string?)
 	CatIndex.showDetail(cat)
+end
+
+-- The customers at the door for "Who's next?" and the waiting faces (QueueWindowController).
+function UI.setQueue(
+	cards: { QueueViewRules.Card },
+	headline: string,
+	pickable: { [number]: boolean }
+)
+	QueueWindow.set(cards, headline, pickable)
+	Waiting.set(cards)
+end
+
+-- fn(place) when the player presses Wash next on "Who's next?".
+function UI.onQueuePick(fn: (place: number) -> ())
+	QueueWindow.onPick(fn)
 end
 
 function UI.onSettingsChanged(fn: (SettingsRules.Settings) -> ())
