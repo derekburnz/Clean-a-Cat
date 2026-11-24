@@ -15,6 +15,7 @@ local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
+local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
 local FLAG = "toolsBoard"
 
@@ -54,6 +55,7 @@ local function onBuy(player: Player, rawId: unknown)
 	if spent <= 0 then
 		return
 	end
+	WalletService.show(player)
 	showOwned(player, save.tools)
 	NetService.notice(player, `{ToolRules.TOOLS[id].name} is yours`)
 	Telemetry.economy(player, "coins", "sink", spent, save.coins, "Shop", id)

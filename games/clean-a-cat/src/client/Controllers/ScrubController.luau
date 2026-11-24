@@ -26,6 +26,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local ScrubRules = require(Shared:WaitForChild("ScrubRules"))
+local Signal = require(Shared:WaitForChild("Signal"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
@@ -99,6 +100,10 @@ type Args = { n: number, [number]: any }
 
 local ScrubController = {}
 
+-- Fires (stage) each time the visit moves to another step, and (nil) when the visit ends. The HUD's step bar and
+-- tool tray listen (HudController, #210). Read-only for listeners, like Moments.
+ScrubController.stageChanged = Signal.new() :: Signal.Signal<string?>
+
 local visit: Visit? = nil
 local enabled = false
 local activeInput: InputObject? = nil -- the one press (mouse button, finger or trigger) on the cat
@@ -115,6 +120,12 @@ local turningCat: Model? = nil -- the cat turning in the tub; the sponge waits u
 local reportSeq = 0 -- numbers each spa report; the server echoes it in CatStage
 local answeredSeq = 0 -- the newest report the server has answered
 local warnedMissing: { [string]: boolean } = {}
+
+-- Every step change goes through here, so the HUD hears each one.
+local function setStage(v: Visit, stage: Stage)
+	v.stage = stage
+	ScrubController.stageChanged:Fire(stage)
+end
 
 -- Sends one numbered spa report. If the server has not answered it after RESEND_SECONDS (its rate limit may have
 -- dropped it) and nothing newer was sent, it is sent again under a new number, up to RESEND_TRIES times.
@@ -487,7 +498,7 @@ local function reveal(v: Visit, cat: Cat)
 	end
 	setWet(cat, true)
 	endStroke()
-	v.stage = "clean"
+	setStage(v, "clean")
 	Moments.CatClean:Fire(cat.model)
 	report("ReportScrubbed", v)
 end
@@ -591,7 +602,7 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 	Moments.BrushSwipe:Fire(cat.model, v.strokes)
 	report("ReportBrushStroke", v)
 	if v.strokes >= SpaRules.BRUSH_STROKES then
-		v.stage = "fluffed"
+		setStage(v, "fluffed")
 		setWet(cat, false)
 		showFluff(cat, true)
 		endStroke()
@@ -654,7 +665,7 @@ local function tapButton(v: Visit, input: InputObject): boolean
 	local part = result.Instance
 	local bowId = part:GetAttribute("BowId")
 	if v.stage == "fluffed" and type(bowId) == "string" then
-		v.stage = "styled"
+		setStage(v, "styled")
 		if not BowFit.wear(cat.model, bowId, CAT_SCALE) then
 			cat.bow.Color = BOW_COLORS[bowId] or BUTTON_COLOR
 			show(cat.bow, true)
@@ -756,7 +767,7 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	v.cat = cat
 	v.catParams.FilterDescendantsInstances = { cat.model }
 	v.catId = catId
-	v.stage = "dirty"
+	setStage(v, "dirty")
 	v.scrub = ScrubRules.newState(#cat.mud)
 	v.strokes = 0
 	v.strokeTravel = 0
@@ -824,7 +835,7 @@ end
 -- that step instead of being stuck.
 local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: number)
 	release()
-	v.stage = stage
+	setStage(v, stage)
 	v.strokes = math.clamp(strokes, 0, SpaRules.BRUSH_STROKES)
 	v.strokeTravel = 0
 	local gone = SpaRules.tanglesGone(v.strokes, #cat.tangles)
@@ -899,7 +910,7 @@ local function onPhotoPaid(rawId: unknown)
 	if not v or not cat or rawId ~= v.catId or v.stage ~= "styled" then
 		return
 	end
-	v.stage = "done"
+	setStage(v, "done")
 	show(v.camera, false)
 	Moments.PhotoTaken:Fire(cat.model)
 	nextCatThread = task.delay(LEAVE_SECONDS, function()
@@ -1038,6 +1049,7 @@ local function disable()
 	release()
 	visit = nil
 	trove:Clean()
+	ScrubController.stageChanged:Fire(nil)
 end
 
 local function refresh()
@@ -1046,6 +1058,12 @@ local function refresh()
 	else
 		disable()
 	end
+end
+
+-- The current visit's step, or nil with no visit (the switch is off).
+function ScrubController.stage(): string?
+	local v = visit
+	return if v then v.stage else nil
 end
 
 function ScrubController.Init(_controllers: { [string]: any }) end

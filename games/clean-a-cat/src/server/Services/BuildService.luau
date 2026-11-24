@@ -17,6 +17,7 @@ local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local StationService = require(script.Parent:WaitForChild("StationService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
+local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
 local FLAG = "builds"
 
@@ -93,6 +94,7 @@ local function onBuild(player: Player, rawId: unknown)
 	if spent <= 0 then
 		return
 	end
+	WalletService.show(player)
 	local item = BuildRules.ITEMS[id]
 	StationService.refresh(player)
 	send(player)

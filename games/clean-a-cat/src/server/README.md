@@ -8,6 +8,7 @@ Runs on Roblox's server only (it becomes `ServerScriptService.Server`). Players 
 - `Services/Telemetry.luau`: funnels, custom events and economy events to Roblox analytics, checked by `shared/TelemetryRules`.
 - `Services/LiveFlagService.luau`: copies the live switches to attributes every minute.
 - `Services/RestartNoticeService.luau`: shows players the restart countdown the `restart-servers` workflow sends.
+- `Services/WalletService.luau`: mirrors the save's coins onto a Player attribute for the HUD. Call `WalletService.show(player)` after every change to `save.coins`.
 - `Util/RateLimiter.luau`: a token bucket per key, used by `NetService`; `Util/` modules are required by services, never loaded by `Main`.
 - `Util/LineLooks.luau`: which look each waiting customer wears as the door line moves, used by `FigureService` (pure, with a spec).
 - `Vendor/`: third-party single-file modules (`ProfileStore.luau`, MIT). Never edit or reformat them; replace the whole file to update.

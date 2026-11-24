@@ -6,6 +6,8 @@
 --   UI.init()                 builds the HUD once, under the local player's PlayerGui
 --   UI.open("Example")        opens a window by name; UI.closeAll() closes every window
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
+--   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
+--   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
 --
 -- Every screen honours the player's Roblox comfort settings through UI/Comfort (#181), behind the live switch
 -- comfortSettings: see-through backgrounds go through Comfort.backdrop, and text leaves room to grow
@@ -13,6 +15,7 @@
 local Players = game:GetService("Players")
 
 local Comfort = require(script:WaitForChild("Comfort"))
+local HUD = require(script:WaitForChild("HUD"))
 local Motion = require(script:WaitForChild("Motion"))
 
 local UI = {}
@@ -130,6 +133,8 @@ function UI.init()
 	fitScreen(Comfort.tenFoot())
 	Comfort.onTenFootChanged(fitScreen)
 
+	HUD.build(root) -- coin counter, wash step bar and tool tray (switch gameHud, off by default)
+
 	local toast = Instance.new("TextLabel")
 	toast.Name = "Toast"
 	toast.AnchorPoint = Vector2.new(0.5, 0)
@@ -164,6 +169,14 @@ function UI.init()
 	body.Parent = example
 
 	hud.Parent = playerGui
+end
+
+function UI.setCoins(coins: unknown)
+	HUD.setCoins(coins)
+end
+
+function UI.setWashStage(stage: string?)
+	HUD.setStage(stage)
 end
 
 function UI.open(name: string)
