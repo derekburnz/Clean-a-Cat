@@ -1,0 +1,16 @@
+# Every clone checks text files out with Unix line endings, Windows included. StyLua and the check gate
+# compare files byte for byte, and Windows-style endings made `stylua --check` fail on every file.
+* text=auto eol=lf
+
+# Binary files are never touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ogg binary
+*.mp3 binary
+*.wav binary
+*.fbx binary
+*.blend binary
+*.rbxm binary
+*.rbxl binary
+*.glb binary

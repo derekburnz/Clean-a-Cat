@@ -3,16 +3,28 @@
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
+# Windows PowerShell 5.1 turns any line a tool writes to stderr into an error record when its output is
+# redirected (an agent shell, CI, a log file), and "Stop" then ends the script on luau-lsp's normal info
+# lines. So each step runs with "Continue", its stderr is printed as plain text and only the exit code
+# decides pass or fail.
 function Invoke-Step($name, $block) {
     Write-Host "== $name"
-    & $block
+    $saved = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & $block 2>&1 | ForEach-Object { Write-Host "$_" }
+    } finally {
+        $ErrorActionPreference = $saved
+    }
     if ($LASTEXITCODE -ne 0) { throw "$name failed" }
 }
 
 Invoke-Step "rojo sourcemap" { rojo sourcemap default.project.json -o sourcemap.json }
 
 $types = "globalTypes.None.d.luau"
-$lspVersion = [regex]::Match((luau-lsp --version), "\d+\.\d+\.\d+").Value
+$ErrorActionPreference = "Continue"
+$lspVersion = [regex]::Match("$(luau-lsp --version 2>&1)", "\d+\.\d+\.\d+").Value
+$ErrorActionPreference = "Stop"
 $have = ""
 if (Test-Path .types-version) { $have = (Get-Content .types-version -Raw).Trim() }
 if (-not (Test-Path $types) -or $have -ne $lspVersion) {
