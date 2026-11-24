@@ -292,7 +292,8 @@ local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
 	local camera = makePart(
 		"Camera",
 		Vector3.new(1.4, 1, 1),
-		Color3.fromRGB(40, 40, 48),
+		-- pastel, not a black block (Derek's dev test), until Model-Agent's photo camera model replaces it
+		Color3.fromRGB(255, 205, 222),
 		tub * CFrame.new(-4.5, 2.5, -1)
 	)
 	show(camera, false)
@@ -1176,6 +1177,28 @@ local function needList(raw: unknown): string
 	return table.concat(needArray(raw), ",")
 end
 
+-- The tub, built once per visit: as the spa opens, so the opening's trail leads to a tub and not an empty rug
+-- (Sync-Agent's playtest of Derek's dev notes), or with the first cat. Returns where a cat sits in it.
+local function ensureTub(v: Visit): CFrame
+	local built = v.seat
+	if built then
+		return built
+	end
+	local tub = findAsset(TUB_ASSET) -- may wait for the asset
+	local already = v.seat
+	if already then
+		return already -- the other caller built it while this one waited
+	end
+	if visit ~= v then
+		return SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0) -- the visit ended while waiting: build nothing
+	end
+	local seat = if tub
+		then buildTub(tub, v.folder)
+		else SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
+	v.seat = seat
+	return seat
+end
+
 local function onCatReady(
 	rawId: unknown,
 	rawKind: unknown,
@@ -1203,16 +1226,12 @@ local function onCatReady(
 	if not asset or visit ~= v then
 		return
 	end
-	local seat = v.seat
-	if seat == nil then
-		local tub = findAsset(TUB_ASSET)
-		seat = if tub
-			then buildTub(tub, v.folder)
-			else SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
-		v.seat = seat
+	local seat = ensureTub(v)
+	if visit ~= v then
+		return
 	end
 	release()
-	startCat(v, asset, seat :: CFrame, rawId)
+	startCat(v, asset, seat, rawId)
 	-- the server's count; anything odd falls back to the hand brush's
 	v.brushStrokes = if type(rawStrokes) == "number"
 			and rawStrokes == math.floor(rawStrokes)
@@ -1444,8 +1463,14 @@ local function enable()
 	enabled = true
 	local folder: Folder = trove:Add(Instance.new("Folder"))
 	folder.Name = "PH_SpaPrototype"
-	visit = buildVisit(folder)
+	local v = buildVisit(folder)
+	visit = v
 	folder.Parent = Workspace
+	task.spawn(function()
+		if visit == v then
+			ensureTub(v)
+		end
+	end)
 
 	trove:Connect(Remotes.event("CatReady").OnClientEvent, onCatReady)
 	trove:Connect(Remotes.event("PhotoPaid").OnClientEvent, onPhotoPaid)
