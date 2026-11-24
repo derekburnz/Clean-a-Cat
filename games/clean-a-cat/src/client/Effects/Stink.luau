@@ -114,7 +114,7 @@ end
 local function refresh(on: boolean)
 	local camera = Workspace.CurrentCamera
 	local from = if camera then camera.CFrame.Position else nil
-	local reduced = Effects.reducedMotion()
+	local reduced = Effects.lessSparkle()
 	local budget = if Effects.tier() == "low" then MAX_CATS.low else MAX_CATS.high
 	local order: { { entry: Entry, distance: number } } = {}
 	for cat, entry in entries do
@@ -202,7 +202,7 @@ function Stink.setLeft(cat: Model, left: number)
 		return
 	end
 	entry.left = left
-	local rate = Tier.stinkRate(entry.maxRate, left, entry.total, Effects.reducedMotion())
+	local rate = Tier.stinkRate(entry.maxRate, left, entry.total, Effects.lessSparkle())
 	if entry.emitter.Enabled and entry.emitter.Rate ~= rate then
 		entry.emitter.Rate = rate
 	end

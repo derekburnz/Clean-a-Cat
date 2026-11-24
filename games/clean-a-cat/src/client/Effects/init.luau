@@ -14,11 +14,11 @@
 --   Effects.newEmitter(preset)                     a fresh emitter from a preset, for one-per-object effects
 --   Effects.popIn(model, anchor, seconds)           grows a small client-only model from nothing (Back Out), holding
 --                                                   `anchor` (an Attachment in it) still, e.g. a bow on its BowSlot
-local GuiService = game:GetService("GuiService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
+local Comfort = require(script.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
 local PresetData = require(script:WaitForChild("Presets"))
 local Tier = require(script:WaitForChild("Tier"))
 
@@ -33,11 +33,14 @@ local started = false
 local pool: { [string]: { attachment: Attachment, emitter: ParticleEmitter } } = {}
 local activeHighlights = 0
 
+-- Comfort (UI/Comfort) folds Roblox's Reduced Motion together with the Settings card's Less screen shake and Less
+-- sparkle toggles. Motion (the bow pop, the glow fade) follows reducedMotion; particle counts follow lessSparkle.
 local function reducedMotion(): boolean
-	local ok, value = pcall(function()
-		return GuiService.ReducedMotionEnabled
-	end)
-	return ok and value == true
+	return Comfort.reducedMotion()
+end
+
+local function lessSparkle(): boolean
+	return Comfort.lessSparkle()
 end
 
 local function qualityLevel(): number
@@ -126,6 +129,10 @@ function Effects.reducedMotion(): boolean
 	return reducedMotion()
 end
 
+function Effects.lessSparkle(): boolean
+	return lessSparkle()
+end
+
 function Effects.tier(): PresetData.Tier
 	return tier
 end
@@ -152,7 +159,7 @@ function Effects.stream(name: string, position: Vector3, dragSpeed: number)
 		return
 	end
 	entry.attachment.WorldPosition = position
-	setRate(entry.emitter, Tier.foamRate(preset.maxRate, dragSpeed, FAST_DRAG, reducedMotion()))
+	setRate(entry.emitter, Tier.foamRate(preset.maxRate, dragSpeed, FAST_DRAG, lessSparkle()))
 end
 
 function Effects.streamFrom(name: string, cframe: CFrame, strength: number)
@@ -169,7 +176,7 @@ function Effects.streamFrom(name: string, cframe: CFrame, strength: number)
 	end
 	setRate(
 		entry.emitter,
-		Tier.foamRate(preset.maxRate, math.clamp(strength, 0, 1), 1, reducedMotion())
+		Tier.foamRate(preset.maxRate, math.clamp(strength, 0, 1), 1, lessSparkle())
 	)
 end
 
@@ -190,7 +197,7 @@ function Effects.burst(name: string, position: Vector3, color: Color3?)
 	end
 	entry.emitter.Color = if color then ColorSequence.new(color) else sequenceColor(preset.color)
 	entry.attachment.WorldPosition = position
-	entry.emitter:Emit(Tier.burst(preset.burst, reducedMotion()))
+	entry.emitter:Emit(Tier.burst(preset.burst, lessSparkle()))
 end
 
 function Effects.glow(model: Model, seconds: number)
