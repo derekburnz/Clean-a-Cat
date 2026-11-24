@@ -21,7 +21,8 @@
 --                                   camera turn toward the tub is gone (Sync-Agent: Roblox's camera undid it, and with
 --                                   the carry the player walks to the tub themselves)
 --   handle.pickUp(character, onDone?)  the player lifts the kitten out of the box into folded arms (Effects/Carry),
---                                   with a purr; he stays in their arms as they walk. onDone once he is in them
+--                                   with a purr; he stays in their arms as they walk. onDone once he is in them.
+--                                   He becomes the loaf body as he leaves the box, so handle.kitten changes here
 --   handle.placeIn(target, onDone?) the arms open and the carried kitten hops in, his base on `target` (the tub's
 --                                   seat); onDone when he lands. Then Gameplay eases into the wash (Effects/WashCamera)
 --   Derek 2026-11-24 picked the carry over the hop-out ("we should pick him up out of crate"); hopOut stays for now.
@@ -45,6 +46,7 @@ local TruckDrop = require(script.Parent:WaitForChild("TruckDrop"))
 local TRUCK_ASSET = "CleanACat_Prop_DeliveryTruck"
 local BOX_ASSET = "CleanACat_Prop_DeliveryBox"
 local KITTEN_ASSETS = { "CleanACat_Cat_Suds_Dirty_Sit", "CleanACat_Cat_Suds_Dirty" }
+local LOAF_ASSET = "CleanACat_Cat_Suds_Dirty_Loaf" -- the held body: legs tucked, carried across the arms
 local FOLDER_NAME = "CleanACat_OpeningScene"
 
 -- Signs for the hinge turns, so a prop built the other way round is a one-character fix.
@@ -642,7 +644,27 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				end
 				return
 			end
-			carry = Carry.hold(character, cat)
+			-- He leaves the box as the loaf body (Model-Agent's #323) when it is there, base where the sitting one's was,
+			-- so the lift starts in the box; the sitting body (and anything parented to it) goes. Else he stays sitting.
+			local loafAsset = findAsset({ LOAF_ASSET })
+			local held: Carry.Held = "sit"
+			if loafAsset then
+				local loaf = loafAsset:Clone() :: Model
+				makeClientOnly(loaf)
+				loaf:PivotTo(cat:GetPivot())
+				local sitBox, sitSize = cat:GetBoundingBox()
+				local loafBox, loafSize = loaf:GetBoundingBox()
+				local drop = (sitBox.Position.Y - sitSize.Y / 2)
+					- (loafBox.Position.Y - loafSize.Y / 2)
+				loaf:PivotTo(cat:GetPivot() + Vector3.yAxis * drop)
+				loaf.Parent = folder
+				cat:Destroy()
+				cat = loaf
+				kitten = loaf
+				handle.kitten = loaf
+				held = "loaf"
+			end
+			carry = Carry.hold(character, cat, held)
 			if onDone then
 				task.delay(Carry.FOLD_SECONDS, onDone)
 			end

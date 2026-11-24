@@ -9,7 +9,7 @@
 -- module only draws it. The legs, hips and root stay the character's own, so they keep walking under the cat.
 --
 -- API
---   Carry.hold(character, cat) -> Handle
+--   Carry.hold(character, cat, held?) -> Handle    held: "sit" (default) or "loaf" (lying across the arms)
 --       folds the arms over FOLD_SECONDS and lifts `cat` from where it is onto them, with a purr that loops while
 --       it is held. The cat follows the arms every frame until placeIn.
 --   handle.placeIn(target, onDone?)   the arms open and the cat hops off them, landing with its base on `target`
@@ -58,6 +58,14 @@ Carry.POSE = table.freeze({
 	forward = 0.3, -- and this far back from the hands toward the chest (+Z is back), so he rests on the arms
 	sitTurn = 0, -- facing straight out
 	sitSide = 0,
+	-- The held loaf (Model-Agent's CleanACat_Cat_Suds_Dirty_Loaf, his head built turned to look out) lies across the
+	-- forearms as in Derek's clip: his front to the character's left, a little left of middle, the head end rolled
+	-- up, and his pivot at least loafClear ahead of the chest's front (his chest side reaches 0.53 with mud).
+	loafForward = 0.3,
+	loafTurn = 90,
+	loafSide = -0.4,
+	loafRoll = 8,
+	loafClear = 0.55,
 })
 
 Carry.HOLD_FLAG = "carryHold"
@@ -84,6 +92,11 @@ Carry.CROSSED = table.freeze({
 	forward = -0.6, -- and this far ahead of the forearms (a sit; -Z is ahead)
 	sitTurn = 15, -- degrees the sitting cat turns to the character's left, so its face shows past the chest
 	sitSide = -0.55, -- studs to the character's left
+	loafForward = -1.15, -- the library's loaf: further out on the arms, straight across them
+	loafTurn = 90,
+	loafSide = 0,
+	loafRoll = 0,
+	loafClear = 0,
 	fromHands = false,
 })
 
@@ -254,7 +267,7 @@ end
 
 -- Where the sitting cat's base goes this frame (Avatar.cradle): on top of the higher forearm, ahead of halfway
 -- between the two, level with the chest, turned a little to show its face. nil without arms.
-local function cradle(rig: Rig, halfDepth: number): CFrame?
+local function cradle(rig: Rig, halfDepth: number, loaf: boolean): CFrame?
 	local left: BasePart? = rig.parts.LeftElbow or rig.parts.LeftShoulder
 	local right: BasePart? = rig.parts.RightElbow or rig.parts.RightShoulder
 	if left == nil or right == nil then
@@ -278,15 +291,18 @@ local function cradle(rig: Rig, halfDepth: number): CFrame?
 	local useHands = c.fromHands == true
 	local a: Vector3 = if useHands then hand(left :: BasePart) else top(left :: BasePart)
 	local b: Vector3 = if useHands then hand(right :: BasePart) else top(right :: BasePart)
+	local ahead = (a.Z + b.Z) / 2 + (if loaf then c.loafForward else c.forward)
+	-- never back inside the chest: a sit's rear (halfDepth behind its middle), a loaf's chest side (loafClear)
+	local clear = rig.chest.Size.Z / 2 + (if loaf then c.loafClear else halfDepth + 0.05)
 	local spot = Vector3.new(
-		(a.X + b.X) / 2 + c.sitSide,
+		(a.X + b.X) / 2 + (if loaf then c.loafSide else c.sitSide),
 		math.max(a.Y, b.Y) + c.gap,
-		-- never back inside the chest: the cat's rear (halfDepth behind its middle) stays at the chest's front
-		if useHands
-			then math.min((a.Z + b.Z) / 2 + c.forward, -(rig.chest.Size.Z / 2 + halfDepth + 0.05))
-			else (a.Z + b.Z) / 2 + c.forward
+		if useHands then math.min(ahead, -clear) else ahead
 	)
-	return torso * CFrame.new(spot) * CFrame.Angles(0, math.rad(c.sitTurn), 0)
+	return torso
+		* CFrame.new(spot)
+		* CFrame.Angles(0, math.rad(if loaf then c.loafTurn else c.sitTurn), 0)
+		* CFrame.Angles(math.rad(if loaf then c.loafRoll else 0), 0, 0)
 end
 
 -- The cat's pivot relative to the middle of its base, so the base sits where cradle() or a target says.
@@ -321,7 +337,10 @@ function Carry.holdPose(): Hold
 	return Carry.chooseHold(on, RunService:IsStudio())
 end
 
-function Carry.hold(character: Model, cat: Model): Handle
+export type Held = "sit" | "loaf"
+
+function Carry.hold(character: Model, cat: Model, held: Held?): Handle
+	local loaf = held == "loaf"
 	local reduced = Effects.reducedMotion()
 	local rig = bind(character, Carry.holdPose())
 	local offset = baseOffset(cat)
@@ -402,7 +421,7 @@ function Carry.hold(character: Model, cat: Model): Handle
 			end
 			return
 		end
-		local arms = if rig then cradle(rig, halfDepth) else nil
+		local arms = if rig then cradle(rig, halfDepth, loaf) else nil
 		if arms then
 			local along, arc = Carry.lift(os.clock() - started, reduced)
 			local base = (from * offset:Inverse()):Lerp(arms, along) + Vector3.yAxis * arc
