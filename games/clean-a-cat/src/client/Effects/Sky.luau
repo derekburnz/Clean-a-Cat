@@ -19,28 +19,32 @@ local Workspace = game:GetService("Workspace")
 
 local Sky = {}
 
+-- Tuned down 2026-11-24 after Sync-Agent's phone check (studio-reports/opening-sky-2026-11-24.md): the first draft
+-- washed the street out (pavement L 0.52 to 0.97, road against pavement 5.4:1 to 3.0:1, the spa's sign panel lost
+-- in the wall), so less brightness, exposure and bloom, and the haze pushed out to the horizon.
+
 local PREFIX = "CleanACat_Sky_"
 
 Sky.LOOK = table.freeze({
 	lighting = table.freeze({
 		ClockTime = 14.5,
 		GeographicLatitude = 35,
-		Brightness = 2.6,
+		Brightness = 2,
 		Ambient = Color3.fromRGB(110, 105, 125),
-		OutdoorAmbient = Color3.fromRGB(165, 155, 175),
+		OutdoorAmbient = Color3.fromRGB(138, 130, 150),
 		ColorShift_Top = Color3.fromRGB(255, 236, 214),
-		EnvironmentDiffuseScale = 0.7,
-		EnvironmentSpecularScale = 0.5,
+		EnvironmentDiffuseScale = 0.45,
+		EnvironmentSpecularScale = 0.35,
 		ShadowSoftness = 0.35,
-		ExposureCompensation = 0.1,
+		ExposureCompensation = -0.2,
 	} :: { [string]: any }),
 	atmosphere = table.freeze({
-		Density = 0.28,
-		Offset = 0.3,
+		Density = 0.22,
+		Offset = 0.6, -- pushed out, so the haze sits on the horizon and not on the street
 		Color = Color3.fromRGB(255, 214, 226), -- pastel pink haze
 		Decay = Color3.fromRGB(186, 170, 220), -- fading to lavender
-		Glare = 0.25,
-		Haze = 1.4,
+		Glare = 0.12,
+		Haze = 0.8,
 	} :: { [string]: any }),
 	sky = table.freeze({
 		SunAngularSize = 16,
@@ -54,12 +58,12 @@ Sky.LOOK = table.freeze({
 		Color = Color3.fromRGB(255, 247, 250),
 	} :: { [string]: any }),
 	colorCorrection = table.freeze({
-		Saturation = 0.12,
-		Contrast = 0.06,
-		Brightness = 0.02,
+		Saturation = 0.1,
+		Contrast = 0.1,
+		Brightness = 0,
 		TintColor = Color3.fromRGB(255, 250, 244),
 	} :: { [string]: any }),
-	bloom = table.freeze({ Intensity = 0.35, Size = 28, Threshold = 1.5 } :: { [string]: any }),
+	bloom = table.freeze({ Intensity = 0.15, Size = 24, Threshold = 2.4 } :: { [string]: any }),
 	sunRays = table.freeze({ Intensity = 0.05, Spread = 0.6 } :: { [string]: any }),
 })
 
