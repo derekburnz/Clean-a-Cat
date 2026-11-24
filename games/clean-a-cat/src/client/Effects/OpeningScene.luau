@@ -13,7 +13,8 @@
 --       options.shot: true takes the camera for a framed shot until BEATS.done (Derek's lean, option A); false
 --       leaves the camera the player's (option B). Reduced Motion or Less shake always leaves it the player's.
 --       options.onTap: called when the player taps the box or uses its prompt, once it has landed.
---   handle.open()      flaps pop open, the kitten peeks out and shakes off mud
+--   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
+--   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point; onDone when he lands
 --   handle.destroy()   removes everything this scene made and gives the camera back
 --
 -- Props come from ReplicatedStorage.Assets by name (Model-Agent, #279 and #278); until they land, plain PH_ parts of
@@ -48,7 +49,8 @@ export type Options = { shot: boolean?, onTap: (() -> ())? }
 export type Handle = {
 	box: Model,
 	kitten: Model?,
-	open: () -> (),
+	open: (onDone: (() -> ())?) -> (),
+	hopOut: (toward: Vector3, onDone: (() -> ())?) -> (),
 	destroy: () -> (),
 }
 
@@ -238,6 +240,11 @@ local function partRests(model: Model): { PartRest }
 	return list
 end
 
+local function attributeNumber(model: Model, name: string, default: number): number
+	local value = model:GetAttribute(name)
+	return if type(value) == "number" and value > 0 then value else default
+end
+
 local function findAttachment(model: Model, name: string): Attachment?
 	local a = model:FindFirstChild(name, true)
 	return if a and a:IsA("Attachment") then a :: Attachment else nil
@@ -275,6 +282,9 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	makeClientOnly(truck)
 	truck:PivotTo(CFrame.new(at(TruckDrop.truckX(0), 0, TruckDrop.ROAD_Z)) * truckFacing)
 	local truckJoints = joints(truck, { "Door", "FL_Wheel", "FR_Wheel", "BL_Wheel", "BR_Wheel" })
+	local doorScale = attributeNumber(truck, "DoorOpenDegrees", math.deg(TruckDrop.DOOR.open))
+		/ math.deg(TruckDrop.DOOR.open)
+	local wheelRadius = attributeNumber(truck, "WheelRadius", TruckDrop.WHEEL_RADIUS)
 	truck.Parent = folder
 	local truckBody: Instance? = truck.PrimaryPart
 
@@ -291,6 +301,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	box:PivotTo(CFrame.new(at(0, -50, 0)) * boxFacing)
 	local boxRests = partRests(box)
 	local flaps = joints(box, { "FlapL", "FlapR", "FlapF", "FlapB" })
+	-- The props can carry their own open angles and wheel size (Model-Agent's root attributes); the curves keep
+	-- their shape and are scaled to them.
+	local flapScale = attributeNumber(box, "FlapOpenDegrees", math.deg(TruckDrop.OPEN.flap))
+		/ math.deg(TruckDrop.OPEN.flap)
 	local _, boxSize = box:GetBoundingBox()
 	local boxHeight = boxSize.Y
 	local boxBody: Instance? = box.PrimaryPart
@@ -323,6 +337,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local landed = false
 	local opened: number? = nil
 	local shookOff = false
+	local hopping: { start: number, from: Vector3, to: Vector3, onDone: (() -> ())? }? = nil
 	local lastWiggle: number? = nil
 	local destroyed = false
 	local connection: RBXScriptConnection? = nil
@@ -352,9 +367,11 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		truck:PivotTo(truckCF)
 		local doors: { Joint } = truckJoints.Door or {}
 		for _, j in doors do
-			j.instance:PivotTo(truckCF * j.rest * CFrame.Angles(DOOR_SIGN * state.door, 0, 0))
+			j.instance:PivotTo(
+				truckCF * j.rest * CFrame.Angles(DOOR_SIGN * state.door * doorScale, 0, 0)
+			)
 		end
-		local roll = WHEEL_SIGN * (state.x - TruckDrop.truckX(0)) / TruckDrop.WHEEL_RADIUS
+		local roll = WHEEL_SIGN * (state.x - TruckDrop.truckX(0)) / wheelRadius
 		for _, key in { "FL_Wheel", "FR_Wheel", "BL_Wheel", "BR_Wheel" } do
 			local wheels: { Joint } = truckJoints[key] or {}
 			for _, j in wheels do
@@ -386,15 +403,19 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 
 	local function openStep(e: number)
 		local flap, rise = TruckDrop.open(e, reduced)
+		local under = TruckDrop.open(e - TruckDrop.OPEN.stagger, reduced)
 		local boxCF =
 			boxCFrame({ x = 0, y = 0, z = 0, tumble = 0, roll = 0, squash = 1, visible = true })
-		for _, list in flaps do
+		for key, list in flaps do
+			local angle = FLAP_SIGN
+				* flapScale
+				* (if key == "FlapF" or key == "FlapB" then under else flap)
 			for _, j in list do
-				j.instance:PivotTo(boxCF * j.rest * CFrame.Angles(0, 0, FLAP_SIGN * flap))
+				j.instance:PivotTo(boxCF * j.rest * CFrame.Angles(0, 0, angle))
 			end
 		end
 		local cat = kitten
-		if cat and seat then
+		if cat and seat and hopping == nil then
 			-- The chest (about CHEST of the cat's height) rises to the rim's Peek point.
 			local rim = if peek
 				then (peek.WorldPosition - seat.WorldPosition).Magnitude
@@ -415,6 +436,26 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		end
 	end
 
+	local function hopStep()
+		local hop = hopping
+		local cat = kitten
+		if hop == nil or cat == nil then
+			return
+		end
+		local e = os.clock() - hop.start
+		local along, height = TruckDrop.hop(e, reduced)
+		local pos = hop.from:Lerp(hop.to, along) + up * height
+		local flat = (hop.to - hop.from) * (Vector3.one - up)
+		local facing = if flat.Magnitude > 0.01 then flat.Unit else -across
+		cat:PivotTo(CFrame.lookAt(pos, pos + facing, up))
+		if e >= TruckDrop.HOP.seconds and hop.onDone then
+			local done = hop.onDone
+			hop.onDone = nil
+			Audio.play("boxThud", { at = cat.PrimaryPart :: Instance?, pitch = 1.6 })
+			done()
+		end
+	end
+
 	local function frame()
 		local t = os.clock() - started
 		for _, name in TruckDrop.eventsBetween(last, t) do
@@ -430,6 +471,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 
 		if opened then
 			openStep(os.clock() - opened)
+			hopStep()
 		else
 			local state = TruckDrop.box(t, reduced)
 			if state.visible then
@@ -485,9 +527,16 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	handle = {
 		box = box,
 		kitten = nil :: Model?,
-		open = function()
+		open = function(onDone: (() -> ())?)
 			if opened or destroyed or not landed then
 				return
+			end
+			if onDone then
+				task.delay(TruckDrop.openDoneSeconds(), function()
+					if not destroyed then
+						onDone()
+					end
+				end)
 			end
 			opened = os.clock()
 			if prompt then
@@ -505,6 +554,23 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			handle.kitten = cat
 			openStep(0)
 			Audio.play("meow", { at = cat.PrimaryPart :: Instance?, variant = 2 })
+		end,
+		hopOut = function(toward: Vector3, onDone: (() -> ())?)
+			local cat = kitten
+			if cat == nil or destroyed or hopping then
+				return
+			end
+			local from = cat:GetPivot().Position
+			local flat = (toward - from) * (Vector3.one - up)
+			local dir = if flat.Magnitude > 0.01 then flat.Unit else -across
+			-- lands on the pavement (the landing spot's height), a hop's length toward the target
+			local ground = from - up * up:Dot(from - origin.Position)
+			hopping = {
+				start = os.clock(),
+				from = from,
+				to = ground + dir * TruckDrop.HOP.distance,
+				onDone = onDone,
+			}
 		end,
 		destroy = function()
 			if destroyed then
