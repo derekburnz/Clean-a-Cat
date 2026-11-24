@@ -575,7 +575,7 @@ def opening_board(mat, out_dir, only=""):
     for i in range(1, 5):
         world += fresh(at_spot(spa_props.build_cushion(mat), f"SpotWindow{i}"))
     bump_x, lane = plot.SPOTS["SpotBump"][0], plot.SPOTS["SpotBump"][1]         # the near lane's middle
-    world += fresh(at_spot(opening.build_bump(mat), "SpotBump"))
+    world += fresh(at_spot(opening.build_pothole(mat), "SpotBump"))               # the pothole, since #343
 
     def truck(x, pitch=0.0, door=0.0):
         """The truck in the near lane, nose toward -X (the player's right), its middle at x."""
@@ -614,20 +614,20 @@ def opening_board(mat, out_dir, only=""):
 
     PX, PY = plot.SPOTS["SpotOpening"][0], plot.SPOTS["SpotOpening"][1]       # the player, on the pavement
     BX, BY = plot.SPOTS["SpotBox"][0], plot.SPOTS["SpotBox"][1]               # where the box comes to rest
-    jolt = bump_x - opening.WHEELS["FL"][1]                                   # the truck's middle, front wheels on the bump
+    jolt = bump_x - opening.WHEELS["FL"][1]                                   # the truck's middle, front wheels in the pothole
     tail = jolt + opening.T_L / 2
     frames = {}
 
-    # a1: the jolt, from a low camera on the road behind the truck
-    tr = truck(jolt, pitch=6.0, door=58.0)
+    # a1: the jolt, from a low camera on the road behind the truck: the nose drops into the pothole
+    tr = truck(jolt, pitch=-4.0, door=58.0)
     air = box(T(tail - 1.6, lane + 0.3, 3.4) @ R(28, "Y") @ R(-24, "X") @ R(15, "Z") @ T(0, 0, -0.9))
     frames["a1-truck-jolt"] = dict(objs=tr + air + player(PX, PY), eye=(tail + 13.5, -47.0, 1.5),
                                    target=(jolt - 3.0, -35.5, 3.9), lens=24, hide=("_Glass",))
     # a2: the box bouncing on the pavement at the player's feet, the truck driving off
     far = truck(jolt - 21.0, door=20.0)
     bounce = box(T(BX + 0.4, BY - 0.2, F + 0.75) @ R(-22, "Y") @ R(14, "X") @ T(0, 0, -0.2))
-    frames["a2-box-bounce"] = dict(objs=far + bounce + player(PX, PY), eye=(BX + 7.5, BY - 3.4, 1.5),
-                                   target=(BX - 0.8, BY + 0.6, 2.3), lens=28, hide=("_Glass",))
+    frames["a2-box-bounce"] = dict(objs=far + bounce + player(PX, PY), eye=(PX + 6.5, BY - 3.8, 1.5),
+                                   target=(BX + 0.6, BY + 0.6, 2.3), lens=28, hide=("_Glass",))
     # a: a beat later from the play camera: the back wheels cross the bump, the box is out and falling
     on = bump_x - opening.WHEELS["BL"][1]
     tr2 = truck(on, pitch=-3.0, door=42.0)
@@ -647,7 +647,7 @@ def opening_board(mat, out_dir, only=""):
                                    hide=("_Glass", "_Roof"))
     # c2: the player lifts him out and carries him to the spa door (owner 2026-11-24: "we should pick him up out of
     # crate"). Seen from the front: from behind, the player's own body hides him.
-    cx, cy = BX - 4.5, BY + 4.4
+    cx, cy = PX - 1.5, BY + 4.4
     empty = box(Mb, open_=opening.FLAP_OPEN)
     held = fresh(xf(loaf(), T(cx, cy, F) @ R(180, "Z") @ held_at()))
     frames["c2-carry"] = dict(objs=empty + held + player(cx, cy, turn=180, arms="hold"),
