@@ -131,12 +131,13 @@ SpaRules.QUEUE_SIZE = 3
 
 -- Moves the customer at `index` to the front of the door line, keeping the others in order (switch queuePick).
 -- Only a reorder: no customer is added, removed or rerolled. False for the front or an index outside the line.
-function SpaRules.pickNext(queue: { string }, index: number): boolean
+-- Generic, so FigureService can move a customer's look the same way as their cat.
+function SpaRules.pickNext<T>(queue: { T }, index: number): boolean
 	if index < 2 or index > #queue or index ~= math.floor(index) then
 		return false
 	end
 	local picked = table.remove(queue, index)
-	table.insert(queue, 1, picked :: string)
+	table.insert(queue, 1, picked :: T)
 	return true
 end
 
