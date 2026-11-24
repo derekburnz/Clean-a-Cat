@@ -10,12 +10,18 @@ return function()
 	end
 
 	describe("beats", function()
-		it("run in order and stay under the 5 second rule", function()
+		it("run in order and stay short: about 5 seconds, slower since Derek's dev test", function()
 			local order = { B.honk, B.frontHit, B.backHit, B.drop, B.land, B.settle, B.done }
 			for i = 2, #order do
 				expect(order[i] > order[i - 1]).to.equal(true)
 			end
-			expect(B.done < 5).to.equal(true)
+			expect(B.done <= 5.5).to.equal(true)
+			-- Derek 2026-11-24: "start it further back and slower"
+			expect(TruckDrop.speed() <= 22).to.equal(true)
+			-- the bump kicks the box out: it leaves just after the back wheels' hit, once the door is open
+			expect(B.drop > B.backHit and B.drop - B.backHit <= TruckDrop.DOOR.seconds + 0.05).to.equal(
+				true
+			)
 			-- the watched intro holds the shot until the box is down and still (Derek: a watched intro)
 			expect(B.done >= B.settle + 0.5).to.equal(true)
 		end)
@@ -93,30 +99,45 @@ return function()
 			expect(near(start.x, lx) and near(start.y, ly) and near(start.z, lz)).to.equal(true)
 			local landed = TruckDrop.box(B.land, false)
 			expect(near(landed.x, 0) and near(landed.y, 0) and near(landed.z, 0)).to.equal(true)
-			expect(near(TruckDrop.box(B.land - 1e-4, false).tumble, 0, 1e-3)).to.equal(true)
+			-- one whole flip, landing on its back edge (short of flat by ARC.flop), slammed flat by the squash's end
+			local a = TruckDrop.ARC
+			expect(near(TruckDrop.box(B.land - 1e-4, false).tumble, -(a.spin - a.flop), 1e-2)).to.equal(
+				true
+			)
+			local flat =
+				TruckDrop.box(B.land + TruckDrop.LANDING.squashSeconds - 1e-4, false).tumble
+			expect(near(math.cos(flat), 1, 1e-3)).to.equal(true)
+			expect(TruckDrop.box(B.land + 0.05, true).tumble).to.equal(0)
 		end)
-		it("falls off the back: more along the road than across it, and barely rises", function()
-			local lx, ly, lz = TruckDrop.launch()
-			expect(lx > lz).to.equal(true)
-			local peak = 0
-			for i = 0, 20 do
-				local t = TruckDrop.BEATS.drop
-					+ i / 20 * (TruckDrop.BEATS.land - TruckDrop.BEATS.drop)
-				peak = math.max(peak, TruckDrop.box(t, false).y)
+		it(
+			"is kicked out the back: drifts on along the road slower than the truck, and barely rises",
+			function()
+				local lx, ly = TruckDrop.launch()
+				local drift = (0 - lx) / (B.land - B.drop)
+				expect(drift > 0 and drift < TruckDrop.speed()).to.equal(true)
+				local peak = 0
+				for i = 0, 20 do
+					local t = TruckDrop.BEATS.drop
+						+ i / 20 * (TruckDrop.BEATS.land - TruckDrop.BEATS.drop)
+					peak = math.max(peak, TruckDrop.box(t, false).y)
+				end
+				expect(peak - ly < 0.75).to.equal(true)
 			end
-			expect(peak - ly < 0.75).to.equal(true)
-		end)
+		)
 		it("arcs above the straight line", function()
 			local mid = TruckDrop.box((B.drop + B.land) / 2, false)
 			local _, ly = TruckDrop.launch()
 			expect(mid.y > ly / 2).to.equal(true)
 		end)
-		it("squashes on landing, bounces once, then rests", function()
+		it("squashes on landing, bounces twice, then rests", function()
 			expect(TruckDrop.box(B.land + 0.05, false).squash < 1).to.equal(true)
 			local l = TruckDrop.LANDING
 			expect(TruckDrop.box(B.land + l.squashSeconds + l.bounceSeconds / 2, false).y > 0).to.equal(
 				true
 			)
+			local second = B.land + l.squashSeconds + l.bounceSeconds + l.bounce2Seconds / 2
+			expect(TruckDrop.box(second, false).y > 0).to.equal(true)
+			expect(TruckDrop.box(second, false).y < l.bounce).to.equal(true)
 			local rest = TruckDrop.box(B.settle + TruckDrop.LANDING.squashSeconds + 0.01, true)
 			expect(rest.y).to.equal(0)
 			expect(rest.squash).to.equal(1)
@@ -124,7 +145,9 @@ return function()
 		end)
 		it("is back on the ground by the settle beat", function()
 			local l = TruckDrop.LANDING
-			expect(B.land + l.squashSeconds + l.bounceSeconds <= B.settle + 1e-6).to.equal(true)
+			expect(B.land + l.squashSeconds + l.bounceSeconds + l.bounce2Seconds <= B.settle + 1e-6).to.equal(
+				true
+			)
 		end)
 	end)
 

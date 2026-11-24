@@ -30,44 +30,47 @@ local Carry = {}
 -- swings it out to the side (negative: in), tw turns the upper arm in about its length, el bends the elbow. arms6 is
 -- the R6 hold (no elbows).
 --
--- POSE is Derek's hold (his clip, 2026-11-24: "here is how the carrying should look"; his avatar is R6): both arms
--- reach forward and down from the shoulders and swing in, so the hands meet in front of the lower chest and the
--- item is held close against the body, head up. On R15 the upper arms go 30 forward and the elbows bend 55, so the
--- forearms come in level under the cat at the bottom of the chest. Behind the switch `carryHold`: on in the dev experience, off in live until Derek confirms it. A Studio playtest
--- also uses it, since Studio does not read the dev switches.
+-- POSE is Derek's hold, matched to his Catch a Cat Cafe carry (his screenshots, 2026-11-24 3:10 PM ET: "it should look
+-- closer to the attached"): the arms are that game's own (Presets.carryPose), on R6 both raised forward 65 and
+-- swung 35 in so they reach out level-ish at chest height and meet under the cat, on R15 folded across the chest,
+-- head tipped down to the cat. The loaf lies across them pressed against the chest (`hug`), his floor a little
+-- over the hand ends so his top comes up to the chin. Behind the switch `carryHold`: on in the dev experience, off
+-- in live until Derek confirms it. A Studio playtest also uses it, since Studio does not read the dev switches.
 Carry.POSE = table.freeze({
 	arms = table.freeze({
-		shL = 30,
-		shR = 30,
-		spL = -15,
-		spR = -15,
-		twL = 15,
-		twR = 15,
-		elL = 55,
-		elR = 55,
-		neck = 0,
-		waist = 0,
+		shL = 25,
+		twL = 25,
+		spL = -35,
+		elL = 30,
+		shR = 25,
+		twR = 25,
+		spR = -35,
+		elR = 35,
+		neck = -12,
+		waist = -4,
 	} :: { [string]: number }),
 	arms6 = table.freeze(
-		{ shL = 45, shR = 45, spL = -28, spR = -28, neck = 0 } :: { [string]: number }
+		{ shL = 65, shR = 65, spL = -35, spR = -35, neck = -12 } :: { [string]: number }
 	),
-	-- Measured from the hands (the far end of each arm), not the arm's highest point: with arms angled down, the
-	-- highest point is up by the shoulder and would put the cat over the face (Review-QA on #330).
+	-- Measured from the hands (the far end of each arm), not the arm's highest point, which is up by the shoulder
+	-- and would put the cat over the face (Review-QA on #330).
 	fromHands = true,
-	gap = 0.25, -- the cat's base this far above the higher hand end
-	forward = 0.3, -- and this far back from the hands toward the chest (+Z is back), so he rests on the arms
+	gap = 0.2, -- the cat's base this far above the higher hand end (the arm's top surface there)
+	forward = 0.3, -- a sit: this far back from the hands toward the chest (+Z is back), so he rests on the arms
 	sitTurn = 0, -- facing straight out
 	sitSide = 0,
 	-- The held loaf (Model-Agent's CleanACat_Cat_Suds_Dirty_Loaf, his head built turned to look out) lies across the
-	-- forearms as in Derek's clip: his front to the character's left, a little left of middle, the head end rolled
-	-- up, and his bounding box clear of the chest's front (Carry.reach: his width, not his length, faces the chest).
-	loafForward = 0.3,
+	-- arms: his front to the character's left, the head end rolled up a little, his back pressed to the chest (hug:
+	-- his bounding box just clear of it, Carry.reach, so his width, not his length, faces the chest).
+	hug = true,
+	loafForward = 0,
 	loafTurn = 90,
-	loafSide = -0.6, -- further left so his face shows past the avatar's head from the camera behind (Model-Agent, Review-QA)
+	loafSide = -0.2, -- a touch left, so his head pokes out past the left arm (Model-Agent)
 	loafRoll = 8,
 })
 
 Carry.HOLD_FLAG = "carryHold"
+Carry.SCALE_ATTRIBUTE = "CarryScale"
 
 -- The first hold (Presets.carryPose from Derek's library): arms crossed over the chest, head tipped down. Live keeps
 -- it until `carryHold` is on.
@@ -96,7 +99,35 @@ Carry.CROSSED = table.freeze({
 	loafSide = 0,
 	loafRoll = 0,
 	fromHands = false,
+	hug = false,
 })
+
+-- The reach before a lift out of a box or off the floor (Derek's dev test: "instead of you walking closer to box and
+-- picking up cat"): the character bends (R15 at the waist; R6 has no waist joint, so its head and arms do it) and
+-- reaches down and forward for `seconds`, holds there `grab` seconds, then lifts the cat into the hold.
+Carry.REACH = table.freeze({
+	seconds = 0.3,
+	grab = 0.08,
+	arms = table.freeze({
+		shL = 55,
+		shR = 55,
+		spL = -12,
+		spR = -12,
+		elL = 15,
+		elR = 15,
+		neck = -25,
+		waist = 30,
+	} :: { [string]: number }),
+	arms6 = table.freeze(
+		{ shL = 50, shR = 50, spL = -12, spR = -12, neck = -30 } :: { [string]: number }
+	),
+})
+
+-- Seconds from Carry.hold until the cat is in the arms: the reach (when asked for), then the fold.
+function Carry.settleSeconds(reach: boolean?): number
+	local lead = if reach then Carry.REACH.seconds + Carry.REACH.grab else 0
+	return lead + Carry.FOLD_SECONDS
+end
 
 Carry.FOLD_SECONDS = 0.3 -- the arms fold and the cat rises onto them (Derek's ask, about 0.3 s)
 Carry.OPEN_SECONDS = 0.25 -- the arms open as the cat hops off
@@ -240,7 +271,7 @@ local function bind(character: Model, hold: Hold): Rig?
 end
 
 -- The folded arms' Transforms (Avatar.carryArms): waist, neck, shoulders and elbows, wrists straight.
-local function armFrames(rig: Rig): { [Joint]: CFrame }
+local function armFrames(rig: Rig, spec: { [string]: number }): { [Joint]: CFrame }
 	local out: { [Joint]: CFrame } = {}
 	local function set(name: string, frame: CFrame)
 		local joint = rig.joints[name]
@@ -249,8 +280,7 @@ local function armFrames(rig: Rig): { [Joint]: CFrame }
 			out[joint] = axes:Inverse() * frame * axes
 		end
 	end
-	local hold = rig.hold
-	local p = Carry.pose(if rig.r15 then hold.arms else hold.arms6)
+	local p = Carry.pose(spec)
 	local rad = math.rad
 	set("Waist", CFrame.Angles(rad(-p.waist), 0, 0))
 	set("Neck", CFrame.Angles(rad(p.neck), 0, 0))
@@ -302,7 +332,7 @@ local function cradle(rig: Rig, reach: number, loaf: boolean): CFrame?
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + (if loaf then c.loafSide else c.sitSide),
 		math.max(a.Y, b.Y) + c.gap,
-		if useHands then math.min(ahead, -reach) else ahead
+		if not useHands then ahead elseif loaf and c.hug then -reach else math.min(ahead, -reach)
 	)
 	return torso
 		* CFrame.new(spot)
@@ -344,14 +374,23 @@ end
 
 export type Held = "sit" | "loaf"
 
-function Carry.hold(character: Model, cat: Model, held: Held?): Handle
+function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?): Handle
 	local loaf = held == "loaf"
+	local reaching = reach == true
 	local reduced = Effects.reducedMotion()
 	local rig = bind(character, Carry.holdPose())
+	-- A held model can ask to be drawn bigger in the arms than in the box (Model-Agent's CarryScale root attribute,
+	-- 1.4 on the loaf, so he fills the arms as in Derek's reference); scaled about his pivot before anything is measured.
+	local carryScale = cat:GetAttribute(Carry.SCALE_ATTRIBUTE)
+	if type(carryScale) == "number" and carryScale > 0 and carryScale <= 3 and carryScale ~= 1 then
+		cat:ScaleTo(cat:GetScale() * carryScale)
+	end
 	local offset = baseOffset(cat)
 	local _, catSize = cat:GetBoundingBox()
 	local from = cat:GetPivot()
 	local started = os.clock()
+	-- the lift into the arms starts after the reach, if any
+	local liftStart = started + Carry.settleSeconds(reaching) - Carry.FOLD_SECONDS
 	local weight = 0
 	local holding = true
 	local written: { [Joint]: CFrame } = {}
@@ -365,9 +404,17 @@ function Carry.hold(character: Model, cat: Model, held: Held?): Handle
 		if rig == nil then
 			return
 		end
-		local frames = armFrames(rig)
-		for joint, frame in frames do
+		local set = rig.hold
+		local frames = armFrames(rig, if rig.r15 then set.arms else set.arms6)
+		local reachFrames = if reaching
+			then armFrames(rig, if rig.r15 then Carry.REACH.arms else Carry.REACH.arms6)
+			else nil
+		-- 0 while reaching down, easing to 1 (the hold) over the fold
+		local k = Carry.ease((os.clock() - liftStart) / Carry.FOLD_SECONDS)
+		for joint, target in frames do
 			local j = joint :: any
+			local before = if reachFrames then reachFrames[joint] else nil
+			local frame = if before then before:Lerp(target, k) else target
 			if weight <= 0 then
 				-- let go: put back only what this wrote and the Animator has not since replaced
 				local mine = written[joint]
@@ -429,7 +476,7 @@ function Carry.hold(character: Model, cat: Model, held: Held?): Handle
 			then cradle(rig, Carry.reach(rig.chest.Size.Z, catSize, loaf), loaf)
 			else nil
 		if arms then
-			local along, arc = Carry.lift(os.clock() - started, reduced)
+			local along, arc = Carry.lift(os.clock() - liftStart, reduced)
 			local base = (from * offset:Inverse()):Lerp(arms, along) + Vector3.yAxis * arc
 			cat:PivotTo(base * offset)
 		end
