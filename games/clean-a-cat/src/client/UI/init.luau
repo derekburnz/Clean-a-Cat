@@ -8,6 +8,7 @@
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
+--   UI.setWashPlan(later)     the later steps ("bath", "claws") this wash takes, which join the step bar (#267)
 --   UI.onSettingsChanged(fn)  fn(settings) on every change on the Settings card (UI/Settings, switch settingsCard,
 --                             #230); with the switch on, the Menu opens that card
 --   UI.setIndex(entries, newCats, tier)  the Cat Index window (UI/CatIndex, switch catIndexWindow, #238)
@@ -266,6 +267,11 @@ end
 
 function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
+end
+
+-- The later steps ("bath", "claws") this cat's wash takes, for the step bar (#267).
+function UI.setWashPlan(later: { string })
+	HUD.setPlan(later)
 end
 
 function UI.setTip(tip: { step: number, total: number, icon: string, say: string }?)

@@ -28,6 +28,10 @@ function HudController.Start()
 		scrub.stageChanged:Connect(function(stage: string?)
 			UI.setWashStage(stage)
 		end)
+		scrub.planChanged:Connect(function(later: { string })
+			UI.setWashPlan(later)
+		end)
+		UI.setWashPlan(scrub.plan())
 		UI.setWashStage(scrub.stage())
 	end
 end
