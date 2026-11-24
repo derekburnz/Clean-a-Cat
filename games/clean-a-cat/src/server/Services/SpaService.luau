@@ -465,6 +465,10 @@ end
 function SpaService.Init(_services: { [string]: any }) end
 
 function SpaService.Start()
+	MascotService.whileInTub(function(player: Player): boolean
+		local cat = cats[player]
+		return cat ~= nil and cat.mascot == true
+	end)
 	NetService.on("RequestCat", { perSecond = 1, burst = 2 }, onRequestCat)
 	-- The chance board lights up from the second customer: once a save has stars, a customer was served.
 	DataService.onLoaded:Connect(function(player: Player, save)

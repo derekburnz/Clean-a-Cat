@@ -26,6 +26,16 @@ local TAP_REACH = 24 -- studs; a tap from further away does nothing
 local MascotService = {}
 
 local warned: { [string]: boolean } = {}
+-- SpaService's answer to "is Suds still in this player's tub?" (MascotService.whileInTub); he is never drawn twice.
+local inTub: (Player) -> boolean = function(_player: Player): boolean
+	return false
+end
+
+-- SpaService tells us how to ask whether the tub still holds Suds, so a switch flip or a street placed again between
+-- his naming and the next cat never draws him on his bed while he still sits in the tub (Review-QA on #295).
+function MascotService.whileInTub(fn: (Player) -> boolean)
+	inTub = fn
+end
 
 local function asset(assets: Instance, name: string): Model?
 	local found = assets:FindFirstChild(name)
@@ -115,6 +125,7 @@ function MascotService.refresh(player: Player)
 		or save == nil
 		or assets == nil
 		or SudsRules.cleanStage(save.suds) < SudsRules.DONE
+		or inTub(player)
 	then
 		return
 	end
