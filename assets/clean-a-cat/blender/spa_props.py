@@ -163,29 +163,35 @@ def cushion_rbx_extras():
             "attributes": {"CatScale": {"Float64": WINDOW_CAT_SCALE}}}
 
 
-BED_R, BED_STAND, BED_PAD = 1.15, 1.5, 0.2
+BED_R = 1.1              # the basket's outer radius: 2.2 wide in a 2.5 stretch of wall
+BED_BASE, BED_PAD = 0.14, 0.22
+BED_RIM = (0.24, 0.5)    # the plush rim: how thick, how high
+BED_SEAT = BED_BASE - 0.02 + BED_PAD    # the pad's top, where he sits
+BED_SIT = (-0.18, -0.06) # his seat off the basket's middle: a sitting cat's tail curls round his left side, so
+                         # he sits a little to his right and the tail lies inside the rim, not through it
 BED_CAT_SCALE = 1.2      # the mascot sits a little bigger than life, so he reads from the tub and from the street
 BED = "CleanACat_Prop_SudsBed"
 
 
 def build_suds_bed(mat):
-    """The mascot's bed (#297): a round bed with a mint rim and a bubblegum pad on a low cream stand, and a gold bell
-    on the front of the rim like the one on his collar. It stands just inside the entrance, between the door and
-    the chance board (SpotMascot): 2.3 wide, because that stretch of wall is 2.5."""
+    """The mascot's bed (#297, a basket since #333): a low round basket with a cream base, a plush mint rim and a
+    bubblegum pad, and a gold bell on the front of the rim like the one on his collar. It stands on the floor just
+    inside the entrance, between the door and the chance board (SpotMascot). The first bed stood on a post and read
+    as a cake stand; low on the floor it reads as a cat bed at once."""
+    rim_t, rim_h = BED_RIM
+    rim_z = BED_BASE - 0.01 + rim_h / 2
     b = Builder()
-    b.cyl_base((0, 0, 0), 0.85, 0.16, "spa_mint", segments=12, bevel=False)                      # the foot
-    b.cyl_base((0, 0, 0.15), 0.4, BED_STAND - 0.28, "spa_cream", segments=10, bevel=False)       # the post
-    b.cyl_base((0, 0, BED_STAND - 0.14), BED_R - 0.04, 0.14, "spa_cream", segments=14, bevel=False)   # the tray
-    b.ring((0, 0, BED_STAND + 0.16), BED_R, 0.2, 0.36, "spa_mint", segments=14)                  # the rim
-    b.cyl_base((0, 0, BED_STAND - 0.01), BED_R - 0.17, BED_PAD, "spa_bubblegum", segments=14, bevel=False)   # the pad
-    b.box((0, -BED_R - 0.03, BED_STAND + 0.2), (0.14, 0.1, 0.14), "spa_mint", bevel=False)       # the bell's loop
-    b.sphere((0, -BED_R - 0.1, BED_STAND + 0.03), 0.17, "fur_golden", segments=8, rings=5)
-    b.box((0, -BED_R - 0.24, BED_STAND - 0.03), (0.04, 0.07, 0.1), "fur_brown", bevel=False)     # its slot
+    b.cyl_base((0, 0, 0), BED_R - 0.06, BED_BASE, "spa_cream", segments=14, bevel=False)             # the base
+    b.ring((0, 0, rim_z), BED_R, rim_t, rim_h, "spa_mint", segments=14)                              # the rim
+    b.cyl_base((0, 0, BED_BASE - 0.02), BED_R - rim_t + 0.03, BED_PAD, "spa_bubblegum", segments=14, bevel=False)   # the pad
+    b.box((0, -BED_R - 0.02, rim_z + 0.06), (0.14, 0.1, 0.14), "spa_cream", bevel=False)             # the bell's loop
+    b.sphere((0, -BED_R - 0.09, rim_z - 0.1), 0.17, "fur_golden", segments=8, rings=5)
+    b.box((0, -BED_R - 0.23, rim_z - 0.16), (0.04, 0.07, 0.1), "fur_brown", bevel=False)             # its slot
     return [_tris(b.finalize(BED, mat))]
 
 
 def suds_bed_rbx_extras():
-    return {"attachments": [(BED, "CatSeat", Matrix.Translation((0.0, 0.0, BED_STAND - 0.01 + BED_PAD)))],
+    return {"attachments": [(BED, "CatSeat", Matrix.Translation((*BED_SIT, BED_SEAT)))],
             "attributes": {"CatScale": {"Float64": BED_CAT_SCALE}}}
 
 
