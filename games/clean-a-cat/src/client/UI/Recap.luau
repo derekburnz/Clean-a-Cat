@@ -207,7 +207,7 @@ local function chunky(
 	b.Text = text
 	b.TextColor3 = Kit.WHITE
 	b.TextStrokeColor3 = Kit.INK
-	b.TextStrokeTransparency = 0.4
+	b.TextStrokeTransparency = 0 -- a solid ink edge: white on bright green or red needs it to read on a phone
 	Kit.minText(b)
 	gradient(b, top, bottom)
 	Kit.corner(b, UDim.new(0, 16))
