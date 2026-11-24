@@ -99,7 +99,7 @@ function TipLine.build(root: Instance)
 	list.FillDirection = Enum.FillDirection.Horizontal
 	list.VerticalAlignment = Enum.VerticalAlignment.Center
 	list.SortOrder = Enum.SortOrder.LayoutOrder
-	list.Padding = UDim.new(0, 9)
+	list.Padding = UDim.new(0, 14) -- room after "Step 2 of 3:" past both outlines (Review-QA on #258)
 	list.Parent = holder
 	local iconBox = Instance.new("Frame")
 	iconBox.Name = "IconBox"
