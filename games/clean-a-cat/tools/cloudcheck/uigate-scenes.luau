@@ -84,11 +84,13 @@ local SCENES = {
 	-- The same card at the side with no dim (switch recapSide), so the clean cat stays in view; the touch controls hide.
 	{ "RecapSide", function()
 		flag("recapSide", true)
+		UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI.Recap").sideOnPhones = true
 		recap(true)
 	end },
 	-- The naming card at the side (switches recapSide and sudsWash).
 	{ "RecapSideSuds", function()
 		flag("recapSide", true)
+		UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI.Recap").sideOnPhones = true
 		flag("recapCard", true)
 		hud(true)
 		UI.setCoins(0)
@@ -297,6 +299,7 @@ function Scenes.close()
 	flag("sudsBubble", false)
 	flag("washChecklist", false)
 	flag("recapSide", false)
+	UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI.Recap").sideOnPhones = false
 	flag("tutorialTip", false)
 	flag("windowsHideControls", false)
 	UI.setTip(nil)

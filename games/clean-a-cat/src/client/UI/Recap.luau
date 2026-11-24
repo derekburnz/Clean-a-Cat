@@ -20,7 +20,8 @@
 -- With the switch recapSide on (off by default, Design-Agent's recap.html "side"), the full card is a narrow column
 -- at the left, vertically centred under Roblox's top bar, with no dim, so the clean cat stays in view in the middle:
 -- the portrait with the name, stars and chips beside it, then the rows, the total and a full-width Next cat. On a
--- short screen it is narrower, with the total and Next cat side by side. It stays on the left on every screen, away
+-- short screen it is narrower, with the total and Next cat side by side, and it waits for the close-up wash camera's
+-- slide (Recap.sideOnPhones) before a phone uses it. It stays on the left on every screen, away
 -- from the bottom right corner where Roblox's badge note shows, and UI hides the phone's thumbstick and jump button
 -- while it shows, so its button is never under them. The strip is unchanged.
 -- UI never fires remotes: the caller's onClose does (RecapController asks for the next cat).
@@ -40,6 +41,9 @@ local Recap = {}
 
 Recap.FLAG = "recapCard"
 Recap.SIDE_FLAG = "recapSide"
+-- True once the close-up wash camera slides the cat clear of the side card on a phone (Design-Agent); the UI gate
+-- sets it to check the phone layout.
+Recap.sideOnPhones = false
 
 local MAX_STARS_SHOWN = 5
 local ROW_ICONS = { wash = "Paw", tip = "Heart", bonus = "Station" } :: { [string]: string }
@@ -386,7 +390,12 @@ local function shownAs(): string?
 	if not recap.full then
 		return "strip"
 	end
-	return if LiveFlags.isOn(Recap.SIDE_FLAG) then "side" else "card"
+	-- On a phone the 330 px column would cover the cat until the close-up wash camera slides him right (Design-Agent):
+	-- until that is wired, a phone keeps the card in the middle even with the switch on.
+	local _, short = Kit.screenScale()
+	return if LiveFlags.isOn(Recap.SIDE_FLAG) and (Recap.sideOnPhones or not short)
+		then "side"
+		else "card"
 end
 
 local function tellShown()
