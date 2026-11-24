@@ -46,7 +46,8 @@ def build_star(mat):
 
 def build_coin_stack(mat):
     b = Builder()
-    for (x, y), n in (((-0.2, 0.12), 5), ((0.34, 0.02), 3), ((0.02, -0.38), 2)):
+    # three piles side by side: piles that cross share the planes of their coins' tops and undersides (#160)
+    for (x, y), n in (((-0.24, 0.16), 5), ((0.4, 0.06), 3), ((0.08, -0.46), 2)):
         for i in range(n):                                                # every other coin a hair smaller and paler
             odd = i % 2
             b.cyl_base((x + 0.02 * odd, y - 0.015 * odd, i * 0.1), 0.3 - 0.015 * odd, 0.102, "gold_light" if odd

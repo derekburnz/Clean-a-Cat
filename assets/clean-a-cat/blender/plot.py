@@ -124,7 +124,7 @@ def _floor(b):
     b.box_base((0, 0, 0), (PLOT_W, PLOT_D, FLOOR), "paving_light", bevel=False)
     x0, x1 = ROOM_X
     y0, y1 = ROOM_Y
-    b.box_base(((x0 + x1) / 2, (y0 + y1) / 2, FLOOR - 0.03), (x1 - x0 - 0.02, y1 - y0 - 0.02, 0.05), "spa_tile",
+    b.box_base(((x0 + x1) / 2, (y0 + y1) / 2, FLOOR - 0.03), (x1 - x0 - 0.03, y1 - y0 - 0.03, 0.05), "spa_tile",
                bevel=False)                            # the shop floor, a lighter tile
 
 
@@ -204,7 +204,7 @@ def _bands(b):
     for a, c in ((x0 - t - 0.06, BACK_DOOR[0]), (BACK_DOOR[1], VIP_DOOR[0]), (VIP_DOOR[1], x1 + t + 0.06)):
         b.box_base(((a + c) / 2, yb, z + 0.004), (c - a, 0.2, band), "spa_bubblegum", bevel=False)
     for sx, x in ((-1, x0), (1, x1)):                                           # inside, the sides (behind the seat)
-        b.box_base((x - sx * 0.08, (y0 + y1) / 2, z + 0.01), (0.2, y1 - y0 - 0.02, 2.5), "spa_mint", bevel=False)
+        b.box_base((x - sx * 0.08, (y0 + y1) / 2, z + 0.007), (0.2, y1 - y0 - 0.02, 2.5), "spa_mint", bevel=False)
     for a, c in ((x0 + 0.2, BACK_DOOR[0]), (BACK_DOOR[1], VIP_DOOR[0]), (VIP_DOOR[1], x1 - 0.2)):
         b.box_base(((a + c) / 2, y1 - 0.08, z + 0.012), (c - a, 0.2, 2.5), "spa_mint", bevel=False)
 
@@ -248,7 +248,7 @@ def _decor(b):
     b.cyl((0.0, y1 - 0.12, F + 8.6), 1.0, 0.16, "offwhite", segments=16, bevel=False, rot=rx)
     b.cyl((0.0, y1 - 0.2, F + 8.6), 1.2, 0.1, "spa_mint", segments=16, bevel=False, rot=rx)
     b.box((0.0, y1 - 0.24, F + 8.85), (0.12, 0.04, 0.6), "fur_charcoal", bevel=False)
-    b.box((0.2, y1 - 0.26, F + 8.6), (0.5, 0.04, 0.1), "fur_charcoal", bevel=False)
+    b.box((0.2, y1 - 0.26, F + 8.61), (0.5, 0.04, 0.1), "fur_charcoal", bevel=False)   # not in line with the other hand's end
     px = x1 - 0.12
     b.box((px, 2.0, F + 7.0), (0.12, 4.0, 3.0), "spa_sky", bevel=False)
     b.box((px - 0.05, 2.0, F + 7.0), (0.1, 3.4, 2.4), "offwhite", bevel=False)
@@ -257,7 +257,7 @@ def _decor(b):
         b.sphere((px - 0.12, 2.0 + dy, F + 6.7 + dz), 0.22, "spa_bubblegum", segments=6, rings=4, scale=(0.3, 1, 1))
     # plants in two corners
     for x, y in ((x1 - 1.4, y1 - 1.4), (x0 + 1.4, -10.4)):
-        b.cyl_base((x, y, F - 0.01), 0.7, 1.4, "terracotta", segments=10, bevel=False, radius2=0.85)
+        b.cyl_base((x, y, F - 0.006), 0.7, 1.4, "terracotta", segments=10, bevel=False, radius2=0.85)
         b.sphere((x, y, F + 2.2), 1.1, "leaf_green", segments=8, rings=6)
         b.sphere((x + 0.3, y - 0.2, F + 3.0), 0.7, "leaf_dark", segments=8, rings=5)
     # pendant lamp cords and shades (the bulbs glow, in _glow)

@@ -372,12 +372,33 @@ class Builder:
         if bev_edges and bevel > 0:
             bmesh.ops.bevel(bm, geom=bev_edges, offset=bevel, offset_type="OFFSET",
                             segments=BEVEL_SEGMENTS, profile=0.7, affect="EDGES", clamp_overlap=True)
+        # #160: no face has more than four sides (a cylinder's cap, a bevelled corner), which Roblox and the
+        # blender-asset-qa check both want.
+        bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 4])
         uv = bm.loops.layers.uv.new("UVMap")
         for f in bm.faces:
             u, v = palette.uv_center(f[self.sw])
             for l in f.loops:
                 l[uv].uv = (u, v)
-        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+        # Weld inside each piece only (#160). Welding the whole mesh joined the corners of two boxes that happened
+        # to touch, which left edges with three or four faces and normals no recalculation could make consistent.
+        seen, shells = set(), []
+        for v0 in bm.verts:
+            if v0 in seen:
+                continue
+            seen.add(v0)
+            shell, stack = [], [v0]
+            while stack:
+                v = stack.pop()
+                shell.append(v)
+                for e in v.link_edges:
+                    o = e.other_vert(v)
+                    if o not in seen:
+                        seen.add(o)
+                        stack.append(o)
+            shells.append(shell)
+        for shell in shells:
+            bmesh.ops.remove_doubles(bm, verts=shell, dist=1e-5)
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
         me = bpy.data.meshes.new(name)
         bm.to_mesh(me)

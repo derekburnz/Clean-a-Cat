@@ -74,9 +74,9 @@ def build_wait_bench(mat):
     b.box_base((0.0, -0.3, z), (0.9, 0.7, 0.34), "pastel_butter")                                # a basket
     b.box_base((0.0, -0.3, z + 0.3), (0.98, 0.78, 0.08), "wood_light", bevel=False)              # its rim
     for i, (x, sw) in enumerate(((-0.2, "spa_sky"), (0.2, "spa_bubblegum"))):                    # sponges in it
-        b.box_base((x, -0.3, z + 0.3), (0.34, 0.5, 0.18 + 0.04 * i), sw)
+        b.box_base((x, -0.3, z + 0.29), (0.34, 0.5, 0.19 + 0.04 * i), sw)
     # the top and the shelf are too slim to collide, so an invisible wall under the top keeps players out (stations.py)
-    wall = stations._barrier(BENCH, mat, (BENCH_W - 0.2, BENCH_D - 0.2, BENCH_H - 0.05))
+    wall = stations._barrier(BENCH, mat, (BENCH_W - 0.2, BENCH_D - 0.2, BENCH_H - 0.07), at=(0.0, 0.0, 0.02))
     return [_tris(b.finalize(BENCH, mat)), wall]
 
 
@@ -225,7 +225,7 @@ def build_star_shades(mat):
     for sx in (1, -1):
         b.box((sx * 0.3, -0.03, z), (0.52, 0.06, 0.38), "rarity_legend")                         # a rim
         b.box((sx * 0.3, -0.055, z), (0.42, 0.05, 0.28), "aurora_violet", bevel=False)           # its lens
-        b.box((sx * 0.6, 0.2, z + 0.1), (0.05, 0.46, 0.07), "rarity_legend", bevel=False)        # an arm
+        b.box((sx * 0.585, 0.2, z + 0.1), (0.08, 0.46, 0.07), "rarity_legend", bevel=False)      # an arm, into the rim
     b.box((0, -0.03, z + 0.08), (0.14, 0.05, 0.07), "rarity_legend", bevel=False)                # the bridge
     return [b.finalize(SHADES, mat)]
 
@@ -252,10 +252,11 @@ def build_star_photo(mat):
           rot=Matrix.Rotation(math.radians(12), 3, "Y"))
     rx, rz = PHOTO_W / 2 - 0.12, PHOTO_H / 2 - 0.12                                              # the rosette
     for a in (-25, 25):
-        b.box((rx + math.sin(math.radians(a)) * 0.3, -d - 0.02, rz - 0.36), (0.16, 0.03, 0.46), "velvet_lilac",
-              bevel=False, rot=Matrix.Rotation(math.radians(-a), 3, "Y"))                        # its two tails
+        b.box((rx + math.sin(math.radians(a)) * 0.3, -d - 0.02, rz - 0.36), (0.16, 0.03 if a < 0 else 0.026,
+              0.46), "velvet_lilac", bevel=False, rot=Matrix.Rotation(math.radians(-a), 3, "Y"))  # its two tails,
+        # one a hair slimmer: they cross, and two faces in one plane flicker
     face = Matrix.Rotation(math.radians(90), 3, "X")
-    b.cyl((rx, -d - 0.05, rz), 0.3, 0.06, "velvet_lilac", segments=10, bevel=False, rot=face)
+    b.cyl((rx, -d - 0.052, rz), 0.3, 0.056, "velvet_lilac", segments=10, bevel=False, rot=face)
     b.star((rx, -d - 0.1, rz), 0.22, 0.1, 0.04, "rarity_legend", rot=face)
     main = b.finalize(PHOTO, mat)
     s = Builder()

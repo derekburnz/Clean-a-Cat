@@ -12,9 +12,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.2,
+       0.24,
        0.051,
-       0.12
+       0.16
       ],
       "orientation": [
        [
@@ -57,8 +57,8 @@
      "CFrame": {
       "position": [
        -0.051,
-       0.2,
-       -0.12
+       0.24,
+       -0.16
       ],
       "orientation": [
        [
@@ -91,9 +91,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.18,
+       0.22,
        0.151,
-       0.105
+       0.145
       ],
       "orientation": [
        [
@@ -141,9 +141,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.2,
+       0.24,
        0.251,
-       0.12
+       0.16
       ],
       "orientation": [
        [
@@ -191,9 +191,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.18,
+       0.22,
        0.351,
-       0.105
+       0.145
       ],
       "orientation": [
        [
@@ -241,9 +241,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.2,
+       0.24,
        0.451,
-       0.12
+       0.16
       ],
       "orientation": [
        [
@@ -291,9 +291,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.34,
+       -0.4,
        0.051,
-       0.02
+       0.06
       ],
       "orientation": [
        [
@@ -341,9 +341,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.36,
+       -0.42,
        0.151,
-       0.005
+       0.045
       ],
       "orientation": [
        [
@@ -391,9 +391,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.34,
+       -0.4,
        0.251,
-       0.02
+       0.06
       ],
       "orientation": [
        [
@@ -441,9 +441,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.02,
+       -0.08,
        0.051,
-       -0.38
+       -0.46
       ],
       "orientation": [
        [
@@ -491,9 +491,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.04,
+       -0.1,
        0.151,
-       -0.395
+       -0.475
       ],
       "orientation": [
        [

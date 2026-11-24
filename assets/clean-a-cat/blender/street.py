@@ -105,7 +105,7 @@ def _barrier(name, mat):
     """Invisible walls round the street: both ends, behind the trees and in front of the houses."""
     b = Builder()
     H = 40.0
-    yb0, yb1 = Y_FAR - 2.5, BACK + 18.0
+    yb0, yb1 = Y_FAR - 2.45, BACK + 18.0               # its face a hair off the house fronts, not in their plane
     for x in (X0 - 3.5, X1 + 3.5):
         b.box_base((x, (yb0 + yb1) / 2, -0.1), (1.0, yb1 - yb0 + 1.0, H), "metal", bevel=False)
     for y in (yb0, yb1):
