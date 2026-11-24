@@ -31,6 +31,7 @@
 --
 -- Props come from ReplicatedStorage.Assets by name (Model-Agent, #279 and #278); until they land, plain PH_ parts of
 -- the same sizes and joint names stand in, so the scene can be checked today.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
@@ -357,17 +358,36 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	-- Sounds: the rumble follows the truck, the rest play where they happen.
 	local rumble = Audio.loop("truckRumble", truckBody)
 
-	local camera = Workspace.CurrentCamera
-	local cameraType: Enum.CameraType? = nil
-	if useShot and camera then
-		cameraType = camera.CameraType
-		camera.CameraType = Enum.CameraType.Scriptable
+	-- The shot can start before the player's first spawn, so it never trusts what it found: it holds the camera
+	-- (re-taking it if a spawn resets it mid-shot) and always hands back the default Custom camera on the player's
+	-- own Humanoid (Review-QA on #314).
+	local holdingShot = useShot and Workspace.CurrentCamera ~= nil
+	local function shotCamera(): Camera?
+		local cam = Workspace.CurrentCamera -- re-read: a respawn can replace it
+		if cam and cam.CameraType ~= Enum.CameraType.Scriptable then
+			cam.CameraType = Enum.CameraType.Scriptable
+		end
+		return cam
+	end
+	if holdingShot then
+		shotCamera()
 	end
 	local function giveCameraBack()
-		if cameraType and camera then
-			camera.CameraType = cameraType
-			cameraType = nil
+		if not holdingShot then
+			return
 		end
+		holdingShot = false
+		local cam = Workspace.CurrentCamera
+		if cam == nil then
+			return
+		end
+		local player = Players.LocalPlayer
+		local character = player and player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			cam.CameraSubject = humanoid :: Humanoid
+		end
+		cam.CameraType = Enum.CameraType.Custom
 	end
 
 	local started = os.clock()
@@ -551,12 +571,13 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			end
 		end
 
-		if cameraType and camera then
-			if t >= TruckDrop.BEATS.done then
+		if holdingShot then
+			local cam = if t >= TruckDrop.BEATS.done then nil else shotCamera()
+			if cam == nil then
 				giveCameraBack()
 			else
 				local look = at(TruckDrop.lookX(t, bumpX), SHOT_LOOK_Y, TruckDrop.ROAD_Z * 0.45)
-				camera.CFrame = CFrame.lookAt(at(SHOT_FROM.X, SHOT_FROM.Y, SHOT_FROM.Z), look)
+				cam.CFrame = CFrame.lookAt(at(SHOT_FROM.X, SHOT_FROM.Y, SHOT_FROM.Z), look)
 			end
 		end
 	end
