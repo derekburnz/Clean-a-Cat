@@ -244,7 +244,12 @@ local function setDown()
 	stopLeading()
 	askToPlace()
 	enterWash()
-	scene.placeIn(if scrub then scrub.seatSpot().Position else SpaLayout.tubSpot().Position)
+	-- He lands at the tub kitten's size, so the swap to the tub's sit body is not a jump in size.
+	scene.placeIn(
+		if scrub then scrub.seatSpot().Position else SpaLayout.tubSpot().Position,
+		nil,
+		if scrub then scrub.seatScale() else nil
+	)
 end
 
 -- He is in the player's arms: the trail and the tip lead to the tub, where a prompt sets him down.
