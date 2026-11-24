@@ -8944,17 +8944,17 @@
    "CleanACat_Prop_DeliveryTruck_BL_Wheel",
    "CleanACat_Prop_DeliveryTruck_BR_Wheel"
   ],
-  "triangles": 1888,
+  "triangles": 2168,
   "budget": 2500,
-  "parts": 60,
+  "parts": 84,
   "size_studs": {
    "x": 6.24,
    "y": 13.43,
-   "z": 7.6
+   "z": 7.63
   },
   "size_roblox": [
    6.24,
-   7.6,
+   7.63,
    13.43
   ],
   "pivot": "base center (floor contact)",
@@ -8967,10 +8967,10 @@
     "back to back": 2
    },
    "checks": {
-    "budget": "1888/2500 tris",
+    "budget": "2168/2500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1178 faces on swatch centers",
+    "uv": "1320 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.02",
