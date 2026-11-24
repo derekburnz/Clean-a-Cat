@@ -489,18 +489,18 @@
    "CleanACat_Cat_Cotton_Dirty_Claw07",
    "CleanACat_Cat_Cotton_Dirty_Claw08"
   ],
-  "triangles": 2168,
+  "triangles": 2590,
   "budget": 3200,
-  "parts": 119,
+  "parts": 125,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -518,15 +518,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud14": "Head",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -623,13 +626,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2168/3200 tris",
+    "budget": "2590/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1276 faces on swatch centers",
+    "uv": "1482 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton_Dirty.png"
@@ -693,9 +696,9 @@
    "CleanACat_Cat_Cotton_Dirty_Sit_Claw07",
    "CleanACat_Cat_Cotton_Dirty_Sit_Claw08"
   ],
-  "triangles": 2180,
+  "triangles": 2578,
   "budget": 3200,
-  "parts": 120,
+  "parts": 126,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -725,16 +728,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud11": "LegF1",
-    "Mud12": "LegF2",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -823,10 +823,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2180/3200 tris",
+    "budget": "2578/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1282 faces on swatch centers",
+    "uv": "1473 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -1137,18 +1137,18 @@
    "CleanACat_Cat_Inky_Dirty_Claw07",
    "CleanACat_Cat_Inky_Dirty_Claw08"
   ],
-  "triangles": 2168,
+  "triangles": 2590,
   "budget": 3200,
-  "parts": 119,
+  "parts": 125,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -1166,15 +1166,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud14": "Head",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -1271,13 +1274,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2168/3200 tris",
+    "budget": "2590/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1276 faces on swatch centers",
+    "uv": "1482 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky_Dirty.png"
@@ -1341,9 +1344,9 @@
    "CleanACat_Cat_Inky_Dirty_Sit_Claw07",
    "CleanACat_Cat_Inky_Dirty_Sit_Claw08"
   ],
-  "triangles": 2180,
+  "triangles": 2578,
   "budget": 3200,
-  "parts": 120,
+  "parts": 126,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -1373,16 +1376,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud11": "LegF1",
-    "Mud12": "LegF2",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -1471,10 +1471,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2180/3200 tris",
+    "budget": "2578/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1282 faces on swatch centers",
+    "uv": "1473 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -1793,18 +1793,18 @@
    "CleanACat_Cat_LilacCloud_Dirty_Claw07",
    "CleanACat_Cat_LilacCloud_Dirty_Claw08"
   ],
-  "triangles": 2436,
+  "triangles": 2870,
   "budget": 3200,
-  "parts": 128,
+  "parts": 135,
   "size_studs": {
    "x": 1.53,
-   "y": 2.01,
+   "y": 2.03,
    "z": 1.89
   },
   "size_roblox": [
    1.53,
    1.89,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -1822,17 +1822,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud13": "Tail",
-    "Mud14": "Tail",
-    "Mud15": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -1937,13 +1938,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2436/3200 tris",
+    "budget": "2870/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1434 faces on swatch centers",
+    "uv": "1646 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=-0.00 y=0.01"
+    "centered": "footprint center x=-0.00 y=0.02"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud_Dirty.png"
@@ -2007,9 +2008,9 @@
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw07",
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw08"
   ],
-  "triangles": 2524,
+  "triangles": 2946,
   "budget": 3200,
-  "parts": 130,
+  "parts": 138,
   "size_studs": {
    "x": 1.64,
    "y": 1.27,
@@ -2039,14 +2040,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud14": "Tail",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -2143,10 +2143,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2524/3200 tris",
+    "budget": "2946/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1486 faces on swatch centers",
+    "uv": "1689 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.13 y=-0.01"
@@ -2469,18 +2469,18 @@
    "CleanACat_Cat_Marble_Dirty_Claw07",
    "CleanACat_Cat_Marble_Dirty_Claw08"
   ],
-  "triangles": 2276,
+  "triangles": 2722,
   "budget": 3200,
-  "parts": 133,
+  "parts": 141,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.97
   },
   "size_roblox": [
    1.39,
    1.97,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -2498,18 +2498,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud13": "Head",
-    "Mud14": "Head",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -2610,13 +2610,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2276/3200 tris",
+    "budget": "2722/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1334 faces on swatch centers",
+    "uv": "1552 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble_Dirty.png"
@@ -2680,9 +2680,9 @@
    "CleanACat_Cat_Marble_Dirty_Sit_Claw07",
    "CleanACat_Cat_Marble_Dirty_Sit_Claw08"
   ],
-  "triangles": 2300,
+  "triangles": 2710,
   "budget": 3200,
-  "parts": 135,
+  "parts": 142,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -2712,17 +2712,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud09": "LegF1",
-    "Mud10": "LegF2",
-    "Mud14": "Tail",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -2815,10 +2811,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2300/3200 tris",
+    "budget": "2710/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1346 faces on swatch centers",
+    "uv": "1543 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -3137,18 +3133,18 @@
    "CleanACat_Cat_Muffin_Dirty_Claw07",
    "CleanACat_Cat_Muffin_Dirty_Claw08"
   ],
-  "triangles": 2240,
+  "triangles": 2686,
   "budget": 3200,
-  "parts": 125,
+  "parts": 133,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -3166,17 +3162,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud10": "LegF1",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -3277,13 +3274,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2240/3200 tris",
+    "budget": "2686/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1312 faces on swatch centers",
+    "uv": "1530 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin_Dirty.png"
@@ -3347,9 +3344,9 @@
    "CleanACat_Cat_Muffin_Dirty_Sit_Claw07",
    "CleanACat_Cat_Muffin_Dirty_Sit_Claw08"
   ],
-  "triangles": 2300,
+  "triangles": 2698,
   "budget": 3200,
-  "parts": 130,
+  "parts": 136,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -3379,17 +3376,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud09": "LegF1",
-    "Mud10": "LegF2",
-    "Mud14": "Tail",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -3482,10 +3475,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2300/3200 tris",
+    "budget": "2698/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1342 faces on swatch centers",
+    "uv": "1533 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -3804,18 +3797,18 @@
    "CleanACat_Cat_Patches_Dirty_Claw07",
    "CleanACat_Cat_Patches_Dirty_Claw08"
   ],
-  "triangles": 2240,
+  "triangles": 2662,
   "budget": 3200,
-  "parts": 125,
+  "parts": 131,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -3833,16 +3826,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud13": "Head",
-    "Mud14": "Head",
-    "Mud15": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -3943,13 +3938,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2240/3200 tris",
+    "budget": "2662/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1312 faces on swatch centers",
+    "uv": "1518 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches_Dirty.png"
@@ -4013,9 +4008,9 @@
    "CleanACat_Cat_Patches_Dirty_Sit_Claw07",
    "CleanACat_Cat_Patches_Dirty_Sit_Claw08"
   ],
-  "triangles": 2240,
+  "triangles": 2638,
   "budget": 3200,
-  "parts": 125,
+  "parts": 131,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -4045,15 +4040,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud11": "LegF1",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -4146,10 +4139,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2240/3200 tris",
+    "budget": "2638/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1312 faces on swatch centers",
+    "uv": "1503 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -4468,18 +4461,18 @@
    "CleanACat_Cat_Smudge_Dirty_Claw07",
    "CleanACat_Cat_Smudge_Dirty_Claw08"
   ],
-  "triangles": 2240,
+  "triangles": 2686,
   "budget": 3200,
-  "parts": 125,
+  "parts": 133,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -4497,17 +4490,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud10": "LegF1",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -4608,13 +4602,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2240/3200 tris",
+    "budget": "2686/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1312 faces on swatch centers",
+    "uv": "1530 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge_Dirty.png"
@@ -4678,9 +4672,9 @@
    "CleanACat_Cat_Smudge_Dirty_Sit_Claw07",
    "CleanACat_Cat_Smudge_Dirty_Sit_Claw08"
   ],
-  "triangles": 2300,
+  "triangles": 2698,
   "budget": 3200,
-  "parts": 130,
+  "parts": 136,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -4710,17 +4704,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud09": "LegF1",
-    "Mud10": "LegF2",
-    "Mud14": "Tail",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -4813,10 +4803,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2300/3200 tris",
+    "budget": "2698/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1342 faces on swatch centers",
+    "uv": "1533 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -5139,18 +5129,18 @@
    "CleanACat_Cat_Starcoat_Dirty_Claw07",
    "CleanACat_Cat_Starcoat_Dirty_Claw08"
   ],
-  "triangles": 2252,
+  "triangles": 2674,
   "budget": 3200,
-  "parts": 126,
+  "parts": 132,
   "size_studs": {
    "x": 1.39,
-   "y": 2.07,
+   "y": 2.08,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.07
+   2.08
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -5168,18 +5158,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud10": "LegF1",
-    "Mud14": "Head",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -5286,10 +5276,10 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2252/3200 tris",
+    "budget": "2674/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1318 faces on swatch centers",
+    "uv": "1524 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.04"
@@ -5356,9 +5346,9 @@
    "CleanACat_Cat_Starcoat_Dirty_Sit_Claw07",
    "CleanACat_Cat_Starcoat_Dirty_Sit_Claw08"
   ],
-  "triangles": 2300,
+  "triangles": 2698,
   "budget": 3200,
-  "parts": 130,
+  "parts": 136,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -5388,17 +5378,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud09": "LegF1",
-    "Mud10": "LegF2",
-    "Mud14": "Tail",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -5495,10 +5481,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2300/3200 tris",
+    "budget": "2698/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1342 faces on swatch centers",
+    "uv": "1533 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -5817,18 +5803,18 @@
    "CleanACat_Cat_Toffee_Dirty_Claw07",
    "CleanACat_Cat_Toffee_Dirty_Claw08"
   ],
-  "triangles": 2192,
+  "triangles": 2614,
   "budget": 3200,
-  "parts": 126,
+  "parts": 132,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.97
   },
   "size_roblox": [
    1.39,
    1.97,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -5846,15 +5832,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud14": "Head",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -5951,13 +5940,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2192/3200 tris",
+    "budget": "2614/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1292 faces on swatch centers",
+    "uv": "1498 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee_Dirty.png"
@@ -6021,9 +6010,9 @@
    "CleanACat_Cat_Toffee_Dirty_Sit_Claw07",
    "CleanACat_Cat_Toffee_Dirty_Sit_Claw08"
   ],
-  "triangles": 2204,
+  "triangles": 2602,
   "budget": 3200,
-  "parts": 127,
+  "parts": 133,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -6053,16 +6042,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud11": "LegF1",
-    "Mud12": "LegF2",
-    "Mud15": "Tail",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -6151,10 +6137,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2204/3200 tris",
+    "budget": "2602/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1298 faces on swatch centers",
+    "uv": "1489 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -6473,18 +6459,18 @@
    "CleanACat_Cat_Tux_Dirty_Claw07",
    "CleanACat_Cat_Tux_Dirty_Claw08"
   ],
-  "triangles": 2204,
+  "triangles": 2626,
   "budget": 3200,
-  "parts": 122,
+  "parts": 128,
   "size_studs": {
    "x": 1.39,
-   "y": 1.98,
+   "y": 1.99,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   1.98
+   1.99
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -6502,18 +6488,18 @@
     "WetDarken": 0.3
    },
    "rides": {
+    "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
     "Mud06": "Head",
-    "Mud07": "Head",
-    "Mud13": "Head",
-    "Mud14": "Head",
-    "Mud15": "Head",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud15": "LegF1",
+    "Mud16": "LegF2",
+    "Mud17": "LegB1",
+    "Mud18": "LegB2",
+    "Mud19": "Tail",
+    "Mud20": "Tail",
     "Tangle02": "Tail",
     "Tangle03": "Head",
     "Tangle04": "Head",
@@ -6618,13 +6604,13 @@
    "failed": [],
    "warnings": [],
    "checks": {
-    "budget": "2204/3200 tris",
+    "budget": "2626/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1294 faces on swatch centers",
+    "uv": "1500 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Dirty.png"
@@ -6688,9 +6674,9 @@
    "CleanACat_Cat_Tux_Dirty_Sit_Claw07",
    "CleanACat_Cat_Tux_Dirty_Sit_Claw08"
   ],
-  "triangles": 2192,
+  "triangles": 2602,
   "budget": 3200,
-  "parts": 121,
+  "parts": 128,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -6720,16 +6706,13 @@
     "Mud01": "Head",
     "Mud02": "Head",
     "Mud03": "Head",
-    "Mud07": "Head",
-    "Mud08": "Head",
-    "Mud09": "LegF1",
-    "Mud10": "LegF2",
-    "Mud14": "Tail",
-    "Mud16": "Head",
-    "Mud17": "Head",
-    "Mud18": "Head",
-    "Mud19": "Head",
-    "Mud20": "Head",
+    "Mud04": "Head",
+    "Mud05": "Head",
+    "Mud06": "Head",
+    "Mud17": "LegF1",
+    "Mud18": "LegF2",
+    "Mud19": "LegF1",
+    "Mud20": "LegF2",
     "Tangle02": "Head",
     "Tangle03": "Head",
     "Tangle06": "Head",
@@ -6826,10 +6809,10 @@
     "centered"
    ],
    "checks": {
-    "budget": "2192/3200 tris",
+    "budget": "2602/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1288 faces on swatch centers",
+    "uv": "1485 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02"
@@ -7012,6 +6995,156 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_BuilderKitten.png"
  },
  {
+  "name": "CleanACat_NPC_Helper",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_Helper_Body",
+   "CleanACat_NPC_Helper_Head",
+   "CleanACat_NPC_Helper_Eye1",
+   "CleanACat_NPC_Helper_Eye2",
+   "CleanACat_NPC_Helper_EarL",
+   "CleanACat_NPC_Helper_EarR",
+   "CleanACat_NPC_Helper_Tail",
+   "CleanACat_NPC_Helper_LegF1",
+   "CleanACat_NPC_Helper_LegF2",
+   "CleanACat_NPC_Helper_LegB1",
+   "CleanACat_NPC_Helper_LegB2"
+  ],
+  "triangles": 1000,
+  "budget": 1500,
+  "parts": 43,
+  "size_studs": {
+   "x": 1.07,
+   "y": 1.62,
+   "z": 1.93
+  },
+  "size_roblox": [
+   1.07,
+   1.93,
+   1.62
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "1000/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "576 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.11"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Helper.png"
+ },
+ {
+  "name": "CleanACat_NPC_Helper2",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_Helper2_Body",
+   "CleanACat_NPC_Helper2_Head",
+   "CleanACat_NPC_Helper2_Eye1",
+   "CleanACat_NPC_Helper2_Eye2",
+   "CleanACat_NPC_Helper2_EarL",
+   "CleanACat_NPC_Helper2_EarR",
+   "CleanACat_NPC_Helper2_Tail",
+   "CleanACat_NPC_Helper2_LegF1",
+   "CleanACat_NPC_Helper2_LegF2",
+   "CleanACat_NPC_Helper2_LegB1",
+   "CleanACat_NPC_Helper2_LegB2"
+  ],
+  "triangles": 1000,
+  "budget": 1500,
+  "parts": 43,
+  "size_studs": {
+   "x": 1.07,
+   "y": 1.62,
+   "z": 1.93
+  },
+  "size_roblox": [
+   1.07,
+   1.93,
+   1.62
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "1000/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "576 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.11"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Helper2.png"
+ },
+ {
+  "name": "CleanACat_NPC_Helper3",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_Helper3_Body",
+   "CleanACat_NPC_Helper3_Head",
+   "CleanACat_NPC_Helper3_Eye1",
+   "CleanACat_NPC_Helper3_Eye2",
+   "CleanACat_NPC_Helper3_EarL",
+   "CleanACat_NPC_Helper3_EarR",
+   "CleanACat_NPC_Helper3_Tail",
+   "CleanACat_NPC_Helper3_LegF1",
+   "CleanACat_NPC_Helper3_LegF2",
+   "CleanACat_NPC_Helper3_LegB1",
+   "CleanACat_NPC_Helper3_LegB2"
+  ],
+  "triangles": 1000,
+  "budget": 1500,
+  "parts": 43,
+  "size_studs": {
+   "x": 1.07,
+   "y": 1.62,
+   "z": 1.93
+  },
+  "size_roblox": [
+   1.07,
+   1.93,
+   1.62
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "1000/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "576 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.11"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Helper3.png"
+ },
+ {
   "name": "CleanACat_NPC_Scarf",
   "category": "NPC",
   "module": "customers",
@@ -7050,6 +7183,88 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Scarf.png"
+ },
+ {
+  "name": "CleanACat_NPC_StarBeret",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_StarBeret"
+  ],
+  "triangles": 268,
+  "budget": 400,
+  "parts": 14,
+  "size_studs": {
+   "x": 1.61,
+   "y": 1.64,
+   "z": 0.58
+  },
+  "size_roblox": [
+   1.61,
+   0.58,
+   1.64
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "268/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "138 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.04 (want 0)",
+    "centered": "footprint center x=0.11 y=0.02"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_StarBeret.png"
+ },
+ {
+  "name": "CleanACat_NPC_StarShades",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_StarShades"
+  ],
+  "triangles": 116,
+  "budget": 200,
+  "parts": 7,
+  "size_studs": {
+   "x": 1.25,
+   "y": 0.51,
+   "z": 0.38
+  },
+  "size_roblox": [
+   1.25,
+   0.38,
+   0.51
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "116/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "66 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.11 (want 0)",
+    "centered": "footprint center x=0.00 y=0.18"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_StarShades.png"
  },
  {
   "name": "CleanACat_NPC_SunHat",
@@ -7172,6 +7387,44 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BuildPad.png"
  },
  {
+  "name": "CleanACat_Prop_Burr",
+  "category": "Prop",
+  "module": "burrs",
+  "objects": [
+   "CleanACat_Prop_Burr"
+  ],
+  "triangles": 148,
+  "budget": 250,
+  "parts": 8,
+  "size_studs": {
+   "x": 0.4,
+   "y": 0.4,
+   "z": 0.4
+  },
+  "size_roblox": [
+   0.4,
+   0.4,
+   0.4
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "148/250 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "82 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.02 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Burr.png"
+ },
+ {
   "name": "CleanACat_Prop_Carrier",
   "category": "Prop",
   "module": "spa_props",
@@ -7250,6 +7503,86 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_ChanceBoard.png"
+ },
+ {
+  "name": "CleanACat_Prop_Coin",
+  "category": "Prop",
+  "module": "rewards",
+  "objects": [
+   "CleanACat_Prop_Coin"
+  ],
+  "triangles": 388,
+  "budget": 400,
+  "parts": 13,
+  "size_studs": {
+   "x": 0.97,
+   "y": 0.27,
+   "z": 0.97
+  },
+  "size_roblox": [
+   0.97,
+   0.97,
+   0.27
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "388/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "178 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.49 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Coin.png"
+ },
+ {
+  "name": "CleanACat_Prop_CoinStack",
+  "category": "Prop",
+  "module": "rewards",
+  "objects": [
+   "CleanACat_Prop_CoinStack"
+  ],
+  "triangles": 360,
+  "budget": 400,
+  "parts": 10,
+  "size_studs": {
+   "x": 1.12,
+   "y": 1.1,
+   "z": 0.5
+  },
+  "size_roblox": [
+   1.12,
+   0.5,
+   1.1
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "360/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "120 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.07 y=-0.13"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_CoinStack.png"
  },
  {
   "name": "CleanACat_Prop_Cushion",
@@ -7372,6 +7705,167 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HardHat.png"
  },
  {
+  "name": "CleanACat_Prop_HelperCap",
+  "category": "Prop",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Prop_HelperCap"
+  ],
+  "triangles": 176,
+  "budget": 300,
+  "parts": 12,
+  "size_studs": {
+   "x": 1.09,
+   "y": 1.15,
+   "z": 0.96
+  },
+  "size_roblox": [
+   1.09,
+   0.96,
+   1.15
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "176/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "110 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.31 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HelperCap.png"
+ },
+ {
+  "name": "CleanACat_Prop_HelperCap2",
+  "category": "Prop",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Prop_HelperCap2"
+  ],
+  "triangles": 176,
+  "budget": 300,
+  "parts": 12,
+  "size_studs": {
+   "x": 1.09,
+   "y": 1.15,
+   "z": 0.96
+  },
+  "size_roblox": [
+   1.09,
+   0.96,
+   1.15
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "176/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "110 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.31 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HelperCap2.png"
+ },
+ {
+  "name": "CleanACat_Prop_HelperCap3",
+  "category": "Prop",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Prop_HelperCap3"
+  ],
+  "triangles": 176,
+  "budget": 300,
+  "parts": 12,
+  "size_studs": {
+   "x": 1.09,
+   "y": 1.15,
+   "z": 0.96
+  },
+  "size_roblox": [
+   1.09,
+   0.96,
+   1.15
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "176/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "110 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.31 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HelperCap3.png"
+ },
+ {
+  "name": "CleanACat_Prop_Leaf",
+  "category": "Prop",
+  "module": "burrs",
+  "objects": [
+   "CleanACat_Prop_Leaf"
+  ],
+  "triangles": 184,
+  "budget": 250,
+  "parts": 6,
+  "size_studs": {
+   "x": 0.32,
+   "y": 0.7,
+   "z": 0.15
+  },
+  "size_roblox": [
+   0.32,
+   0.15,
+   0.7
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "184/250 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "108 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.05 (want 0)",
+    "centered": "footprint center x=0.00 y=0.07"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Leaf.png"
+ },
+ {
   "name": "CleanACat_Prop_QueueMat",
   "category": "Prop",
   "module": "spa_props",
@@ -7408,6 +7902,88 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_QueueMat.png"
+ },
+ {
+  "name": "CleanACat_Prop_Star",
+  "category": "Prop",
+  "module": "rewards",
+  "objects": [
+   "CleanACat_Prop_Star"
+  ],
+  "triangles": 80,
+  "budget": 200,
+  "parts": 20,
+  "size_studs": {
+   "x": 1.14,
+   "y": 0.24,
+   "z": 1.09
+  },
+  "size_roblox": [
+   1.14,
+   1.09,
+   0.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "80/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "60 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.49 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.01"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Star.png"
+ },
+ {
+  "name": "CleanACat_Prop_StarPhoto",
+  "category": "Prop",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Prop_StarPhoto",
+   "CleanACat_Prop_StarPhoto_Screen"
+  ],
+  "triangles": 252,
+  "budget": 300,
+  "parts": 23,
+  "size_studs": {
+   "x": 1.88,
+   "y": 0.26,
+   "z": 2.28
+  },
+  "size_roblox": [
+   1.88,
+   2.28,
+   0.26
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "252/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "134 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-1.05 (want 0)",
+    "centered": "footprint center x=0.09 y=-0.13"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_StarPhoto.png"
  },
  {
   "name": "CleanACat_Prop_StrayBox",
@@ -7525,6 +8101,46 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Toolbox.png"
+ },
+ {
+  "name": "CleanACat_Prop_Twig",
+  "category": "Prop",
+  "module": "burrs",
+  "objects": [
+   "CleanACat_Prop_Twig"
+  ],
+  "triangles": 172,
+  "budget": 400,
+  "parts": 11,
+  "size_studs": {
+   "x": 0.67,
+   "y": 0.9,
+   "z": 0.08
+  },
+  "size_roblox": [
+   0.67,
+   0.08,
+   0.9
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "172/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "98 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.05 y=-0.12"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Twig.png"
  },
  {
   "name": "CleanACat_Prop_WindowSign",
@@ -7739,6 +8355,47 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Dryer.png"
  },
  {
+  "name": "CleanACat_Station_FrontDesk",
+  "category": "Station",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Station_FrontDesk",
+   "CleanACat_Station_FrontDesk_Screen"
+  ],
+  "triangles": 452,
+  "budget": 1200,
+  "parts": 17,
+  "size_studs": {
+   "x": 5.0,
+   "y": 2.3,
+   "z": 3.39
+  },
+  "size_roblox": [
+   5.0,
+   3.39,
+   2.3
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "452/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "268 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.12"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_FrontDesk.png"
+ },
+ {
   "name": "CleanACat_Station_Pawdicure",
   "category": "Station",
   "module": "stations",
@@ -7822,6 +8479,45 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Tub.png"
  },
  {
+  "name": "CleanACat_Station_WaitBench",
+  "category": "Station",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Station_WaitBench",
+   "CleanACat_Station_WaitBench_Barrier"
+  ],
+  "triangles": 944,
+  "budget": 1200,
+  "parts": 28,
+  "size_studs": {
+   "x": 7.2,
+   "y": 3.05,
+   "z": 1.36
+  },
+  "size_roblox": [
+   7.2,
+   1.36,
+   3.05
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "944/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "564 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.02"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_WaitBench.png"
+ },
+ {
   "name": "CleanACat_Tool_Brush",
   "category": "Tool",
   "module": "tools",
@@ -7861,6 +8557,373 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Brush.png"
+ },
+ {
+  "name": "CleanACat_Tool_BrushFluffy",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_BrushFluffy"
+  ],
+  "triangles": 376,
+  "budget": 450,
+  "parts": 8,
+  "size_studs": {
+   "x": 0.78,
+   "y": 1.22,
+   "z": 0.47
+  },
+  "size_roblox": [
+   0.78,
+   0.47,
+   1.22
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "376/450 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "244 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.36 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.31"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushFluffy.png"
+ },
+ {
+  "name": "CleanACat_Tool_BrushGolden",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_BrushGolden"
+  ],
+  "triangles": 416,
+  "budget": 450,
+  "parts": 18,
+  "size_studs": {
+   "x": 0.78,
+   "y": 1.22,
+   "z": 0.5
+  },
+  "size_roblox": [
+   0.78,
+   0.5,
+   1.22
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "416/450 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "274 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.36 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.31"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushGolden.png"
+ },
+ {
+  "name": "CleanACat_Tool_Clipper",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Clipper"
+  ],
+  "triangles": 192,
+  "budget": 200,
+  "parts": 8,
+  "size_studs": {
+   "x": 0.32,
+   "y": 1.06,
+   "z": 0.63
+  },
+  "size_roblox": [
+   0.32,
+   0.63,
+   1.06
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "192/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "108 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.11 (want 0)",
+    "centered": "footprint center x=0.00 y=0.01"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Clipper.png"
+ },
+ {
+  "name": "CleanACat_Tool_Comb",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Comb"
+  ],
+  "triangles": 148,
+  "budget": 300,
+  "parts": 7,
+  "size_studs": {
+   "x": 0.2,
+   "y": 1.41,
+   "z": 0.54
+  },
+  "size_roblox": [
+   0.2,
+   0.54,
+   1.41
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "148/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "82 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.37 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.09"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Comb.png"
+ },
+ {
+  "name": "CleanACat_Tool_Dryer",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Dryer"
+  ],
+  "triangles": 356,
+  "budget": 400,
+  "parts": 6,
+  "size_studs": {
+   "x": 0.61,
+   "y": 1.24,
+   "z": 1.16
+  },
+  "size_roblox": [
+   0.61,
+   1.16,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "356/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "194 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.34 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.24"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Dryer.png"
+ },
+ {
+  "name": "CleanACat_Tool_Shampoo",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Shampoo"
+  ],
+  "triangles": 392,
+  "budget": 400,
+  "parts": 12,
+  "size_studs": {
+   "x": 0.65,
+   "y": 0.69,
+   "z": 1.09
+  },
+  "size_roblox": [
+   0.65,
+   1.09,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "392/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "178 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.36 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.01"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Shampoo.png"
+ },
+ {
+  "name": "CleanACat_Tool_Shower",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Shower"
+  ],
+  "triangles": 364,
+  "budget": 400,
+  "parts": 12,
+  "size_studs": {
+   "x": 0.73,
+   "y": 0.64,
+   "z": 1.4
+  },
+  "size_roblox": [
+   0.73,
+   1.4,
+   0.64
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "364/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "190 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.53 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.16"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Shower.png"
+ },
+ {
+  "name": "CleanACat_Tool_ShowerGolden",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_ShowerGolden"
+  ],
+  "triangles": 388,
+  "budget": 400,
+  "parts": 15,
+  "size_studs": {
+   "x": 1.0,
+   "y": 0.69,
+   "z": 1.52
+  },
+  "size_roblox": [
+   1.0,
+   1.52,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "388/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "202 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.53 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.19"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_ShowerGolden.png"
+ },
+ {
+  "name": "CleanACat_Tool_ShowerRain",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_ShowerRain"
+  ],
+  "triangles": 388,
+  "budget": 400,
+  "parts": 15,
+  "size_studs": {
+   "x": 1.0,
+   "y": 0.69,
+   "z": 1.52
+  },
+  "size_roblox": [
+   1.0,
+   1.52,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "388/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "202 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.53 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.19"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_ShowerRain.png"
  },
  {
   "name": "CleanACat_Tool_Sponge",
@@ -7981,5 +9044,85 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeGolden.png"
+ },
+ {
+  "name": "CleanACat_Tool_Towel",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Towel"
+  ],
+  "triangles": 156,
+  "budget": 200,
+  "parts": 5,
+  "size_studs": {
+   "x": 1.04,
+   "y": 0.74,
+   "z": 0.38
+  },
+  "size_roblox": [
+   1.04,
+   0.38,
+   0.74
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "156/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "90 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.19 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Towel.png"
+ },
+ {
+  "name": "CleanACat_Tool_Tweezers",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Tweezers"
+  ],
+  "triangles": 316,
+  "budget": 400,
+  "parts": 7,
+  "size_studs": {
+   "x": 0.81,
+   "y": 1.35,
+   "z": 0.28
+  },
+  "size_roblox": [
+   0.81,
+   0.28,
+   1.35
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "316/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "194 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.14 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.02"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Tweezers.png"
  }
 ]

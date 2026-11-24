@@ -300,7 +300,7 @@
      "CFrame": {
       "position": [
        -0.4512,
-       0.5156,
+       0.5021,
        0.12
       ],
       "orientation": [
@@ -324,7 +324,7 @@
     },
     "Size": [
      0.08,
-     0.3111,
+     0.3381,
      0.855
     ],
     "Color": [
@@ -1038,7 +1038,7 @@
        "CFrame": {
         "position": [
          0.52,
-         0.9548,
+         0.9448,
          -0.77
         ],
         "orientation": [
@@ -1062,7 +1062,7 @@
       },
       "Size": [
        0.14,
-       0.28,
+       0.3,
        0.24
       ],
       "Color": [
@@ -2081,25 +2081,25 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/12"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/11"
      },
      "children": [
       {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud02",
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.18,
-           1.6248,
-           -0.6905
+           0.5095,
+           0.954,
+           -0.4616
           ],
           "orientation": [
            [
-            0.9397,
+            1.0,
             0.0,
-            -0.342
+            0.0
            ],
            [
             0.0,
@@ -2107,17 +2107,95 @@
             0.0
            ],
            [
-            0.342,
             0.0,
-            0.9397
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.45,
-         0.04,
-         0.162
+         0.2009,
+         0.4083,
+         0.7391
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.1364,
+           0.0175,
+           0.0
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/11"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.472,
+           1.2515,
+           -0.4756
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1259,
+         0.1867,
+         0.3556
         ],
         "Color": [
          0.3529,
@@ -2130,54 +2208,25 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.1691,
-           0.0,
-           -0.0616
-          ],
-          "orientation": [
-           [
-            0.9397,
-            0.0,
-            0.342
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.342,
-            0.0,
-            0.9397
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/12"
+        "BottomSurface": "Smooth"
        }
       },
       {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud02",
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.099,
-           1.6333,
-           -0.7535
+           0.2727,
+           0.9073,
+           -0.1504
           ],
           "orientation": [
            [
-            0.9903,
+            1.0,
             0.0,
-            -0.1392
+            0.0
            ],
            [
             0.0,
@@ -2185,17 +2234,66 @@
             0.0
            ],
            [
-            0.1392,
             0.0,
-            0.9903
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.306,
-         0.057,
-         0.144
+         0.2727,
+         0.315,
+         0.1169
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4645,
+           0.6915,
+           -0.7867
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1109,
+         0.1867,
+         0.0889
         ],
         "Color": [
          0.3529,
@@ -2216,9 +2314,271 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.0,
-         1.6248,
-         -0.6905
+         0.3732,
+         0.9715,
+         -0.4616
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/12"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.472,
+           1.3448,
+           -0.4756
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1259,
+         0.3733,
+         0.5333
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.0375,
+           -0.1325,
+           -0.0444
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/12"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.472,
+           1.0648,
+           -0.4311
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1259,
+         0.1867,
+         0.2667
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.472,
+           1.5956,
+           -0.52
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1259,
+         0.1283,
+         0.2667
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5095,
+           0.8681,
+           -0.7555
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2009,
+         0.2067,
+         0.1511
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.5095,
+         1.2123,
+         -0.52
         ],
         "orientation": [
          [
@@ -2255,33 +2615,33 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.18,
-           1.416,
-           -0.9124
+           -0.1818,
+           1.5881,
+           -0.8411
           ],
           "orientation": [
            [
-            0.9945,
+            1.0,
             0.0,
-            0.1045
-           ],
-           [
-            -0.1045,
-            0.0,
-            0.9945
-           ],
-           [
-            0.0,
-            -1.0,
             0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.54,
-         0.0551,
-         0.126
+         0.2727,
+         0.1133,
+         0.1978
         ],
         "Color": [
          0.451,
@@ -2292,31 +2652,31 @@
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
-        "CastShadow": true,
+        "CastShadow": false,
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth",
         "PivotOffset": {
          "CFrame": {
           "position": [
-           -0.1884,
-           0.0076,
-           0.0707
+           0.0,
+           -0.0467,
+           0.0
           ],
           "orientation": [
            [
-            0.9945,
-            -0.1045,
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
             0.0
            ],
            [
             0.0,
             0.0,
-            -1.0
-           ],
-           [
-            0.1045,
-            0.9945,
-            0.0
+            1.0
            ]
           ]
          }
@@ -2333,33 +2693,33 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.27,
-           1.479,
-           -0.9209
+           -0.1818,
+           1.4848,
+           -0.8856
           ],
           "orientation": [
            [
-            0.9903,
+            1.0,
             0.0,
-            -0.1392
-           ],
-           [
-            0.1392,
-            0.0,
-            0.9903
-           ],
-           [
-            0.0,
-            -1.0,
             0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.324,
-         0.0721,
-         0.126
+         0.0909,
+         0.0933,
+         0.1089
         ],
         "Color": [
          0.451,
@@ -2380,9 +2740,9 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.0,
-         1.506,
-         -0.92
+         -0.1818,
+         1.5415,
+         -0.8411
         ],
         "orientation": [
          [
@@ -2409,6 +2769,383 @@
     {
      "className": "Model",
      "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/14"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud04",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.5956,
+           -0.3282
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2727,
+         0.1283,
+         0.4724
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0455,
+           -0.1867,
+           0.0
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/14"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud04",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.3448,
+           -0.1504
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2727,
+         0.3733,
+         0.1169
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud04",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1818,
+           1.4381,
+           -0.1504
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0909,
+         0.1867,
+         0.1169
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0455,
+         1.409,
+         -0.3282
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud04"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/15"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud05",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3357,
+           0.9073,
+           -0.1504
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.3986,
+         0.315,
+         0.1169
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.14,
+           0.0
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/15"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud05",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3182,
+           1.2048,
+           -0.1504
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1818,
+         0.28,
+         0.1169
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.3357,
+         1.0473,
+         -0.1504
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud05"
+    },
+    {
+     "className": "Model",
+     "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/16"
      },
      "children": [
@@ -2419,33 +3156,33 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.4842,
-           1.3437,
-           -0.7035
+           0.4191,
+           1.5415,
+           -0.8411
           ],
           "orientation": [
            [
+            1.0,
             0.0,
-            -1.0,
             0.0
            ],
            [
-            -0.5736,
             0.0,
-            0.8192
+            1.0,
+            0.0
            ],
            [
-            -0.8192,
             0.0,
-            -0.5736
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.36,
-         0.0715,
-         0.198
+         0.2018,
+         0.2067,
+         0.1978
         ],
         "Color": [
          0.451,
@@ -2462,25 +3199,25 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0737,
-           0.0158,
-           0.0516
+           0.0,
+           -0.0467,
+           0.0444
           ],
           "orientation": [
            [
-            0.0,
-            -0.5736,
-            -0.8192
-           ],
-           [
-            -1.0,
+            1.0,
             0.0,
             0.0
            ],
            [
             0.0,
-            0.8192,
-            -0.5736
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
            ]
           ]
          }
@@ -2497,33 +3234,33 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.4927,
-           1.2987,
-           -0.6405
+           0.4645,
+           1.4948,
+           -0.6978
           ],
           "orientation": [
            [
+            1.0,
             0.0,
-            -1.0,
             0.0
            ],
            [
-            -0.309,
             0.0,
-            0.9511
+            1.0,
+            0.0
            ],
            [
-            -0.9511,
             0.0,
-            -0.309
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.27,
-         0.0885,
-         0.144
+         0.1109,
+         0.3,
+         0.0889
         ],
         "Color": [
          0.451,
@@ -2544,9 +3281,9 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.5,
-         1.3437,
-         -0.7935
+         0.4191,
+         1.4948,
+         -0.7967
         ],
         "orientation": [
          [
@@ -2569,990 +3306,6 @@
       }
      },
      "name": "CleanACat_Cat_LilacCloud_Dirty_Mud06"
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/17"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud07",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.5075,
-           1.3437,
-           -0.6135
-          ],
-          "orientation": [
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.342,
-            0.0,
-            0.9397
-           ],
-           [
-            0.9397,
-            0.0,
-            -0.342
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.45,
-         0.055,
-         0.162
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           -0.1691,
-           -0.0075,
-           0.0616
-          ],
-          "orientation": [
-           [
-            0.0,
-            0.342,
-            0.9397
-           ],
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.9397,
-            -0.342
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/17"
-       }
-      },
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud07",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.516,
-           1.2807,
-           -0.5325
-          ],
-          "orientation": [
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.1392,
-            0.0,
-            0.9903
-           ],
-           [
-            0.9903,
-            0.0,
-            -0.1392
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.306,
-         0.072,
-         0.144
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         0.5,
-         1.3437,
-         -0.7935
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud07"
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/25"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud15",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.0,
-           1.3343,
-           -0.112
-          ],
-          "orientation": [
-           [
-            -0.8192,
-            0.0,
-            -0.5736
-           ],
-           [
-            -0.5736,
-            0.0,
-            0.8192
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.36,
-         0.04,
-         0.198
-        ],
-        "Color": [
-         0.451,
-         0.3529,
-         0.2627
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.0,
-           0.0,
-           0.0
-          ],
-          "orientation": [
-           [
-            -0.8192,
-            -0.5736,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ],
-           [
-            -0.5736,
-            0.8192,
-            0.0
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/25"
-       }
-      },
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud15",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.063,
-           1.2893,
-           -0.1035
-          ],
-          "orientation": [
-           [
-            -0.9511,
-            0.0,
-            -0.309
-           ],
-           [
-            -0.309,
-            0.0,
-            0.9511
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.27,
-         0.057,
-         0.144
-        ],
-        "Color": [
-         0.451,
-         0.3529,
-         0.2627
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         0.0,
-         1.3343,
-         -0.112
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud15"
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/27"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud17",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.5056,
-           0.9603,
-           -0.4405
-          ],
-          "orientation": [
-           [
-            0.0,
-            -1.0,
-            0.0
-           ],
-           [
-            0.5736,
-            0.0,
-            0.8192
-           ],
-           [
-            -0.8192,
-            0.0,
-            0.5736
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.36,
-         0.0971,
-         0.198
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.0516,
-           0.0094,
-           0.0737
-          ],
-          "orientation": [
-           [
-            0.0,
-            0.5736,
-            -0.8192
-           ],
-           [
-            -1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.8192,
-            0.5736
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/27"
-       }
-      },
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud17",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.5141,
-           0.9153,
-           -0.5035
-          ],
-          "orientation": [
-           [
-            0.0,
-            -1.0,
-            0.0
-           ],
-           [
-            0.309,
-            0.0,
-            0.9511
-           ],
-           [
-            -0.9511,
-            0.0,
-            0.309
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.27,
-         0.1141,
-         0.144
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         -0.515,
-         1.0503,
-         -0.4405
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud17"
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/28"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud18",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.5078,
-           0.9603,
-           -0.4405
-          ],
-          "orientation": [
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.2588,
-            0.0,
-            0.9659
-           ],
-           [
-            0.9659,
-            0.0,
-            -0.2588
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.405,
-         0.1032,
-         0.18
-        ],
-        "Color": [
-         0.451,
-         0.3529,
-         0.2627
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.0233,
-           0.0072,
-           0.0869
-          ],
-          "orientation": [
-           [
-            0.0,
-            0.2588,
-            0.9659
-           ],
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.9659,
-            -0.2588
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/28"
-       }
-      },
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud18",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.5163,
-           1.0323,
-           -0.3685
-          ],
-          "orientation": [
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.5299,
-            0.0,
-            0.848
-           ],
-           [
-            0.848,
-            0.0,
-            -0.5299
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.27,
-         0.1202,
-         0.135
-        ],
-        "Color": [
-         0.451,
-         0.3529,
-         0.2627
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         0.515,
-         1.0503,
-         -0.4405
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud18"
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/29"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud19",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.241,
-           1.0285,
-           -0.112
-          ],
-          "orientation": [
-           [
-            -0.9945,
-            0.0,
-            -0.1045
-           ],
-           [
-            -0.1045,
-            0.0,
-            0.9945
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.54,
-         0.04,
-         0.126
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": true,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           -0.0989,
-           0.0,
-           0.0801
-          ],
-          "orientation": [
-           [
-            -0.9945,
-            -0.1045,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ],
-           [
-            -0.1045,
-            0.9945,
-            0.0
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/29"
-       }
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         -0.151,
-         1.1185,
-         -0.112
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud19"
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/30"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud20",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.0495,
-           1.6398,
-           -0.2825
-          ],
-          "orientation": [
-           [
-            0.9659,
-            0.0,
-            0.2588
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.2588,
-            0.0,
-            0.9659
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.3645,
-         0.04,
-         0.162
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           -0.0782,
-           0.0,
-           -0.021
-          ],
-          "orientation": [
-           [
-            0.9659,
-            0.0,
-            -0.2588
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.2588,
-            0.0,
-            0.9659
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/30"
-       }
-      },
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud20",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.1143,
-           1.6483,
-           -0.2177
-          ],
-          "orientation": [
-           [
-            0.848,
-            0.0,
-            0.5299
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.5299,
-            0.0,
-            0.848
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.243,
-         0.057,
-         0.1215
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      },
-      {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud20",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.2097,
-           1.6398,
-           -0.2501
-          ],
-          "orientation": [
-           [
-            0.8829,
-            0.0,
-            -0.4695
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.4695,
-            0.0,
-            0.8829
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.09,
-         0.04,
-         0.09
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         -0.1305,
-         1.6398,
-         -0.2825
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud20"
     },
     {
      "className": "Model",
@@ -4705,43 +4458,43 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/23"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/29"
      },
      "children": [
       {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud13",
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud19",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.1286,
-           0.9893,
-           0.7584
+           0.0,
+           1.2531,
+           0.8692
           ],
           "orientation": [
            [
+            1.0,
             0.0,
-            -1.0,
             0.0
            ],
            [
-            -0.5736,
             0.0,
-            0.8192
+            0.1736,
+            0.9848
            ],
            [
-            -0.8192,
             0.0,
-            -0.5736
+            -0.9848,
+            0.1736
            ]
           ]
          }
         },
         "Size": [
-         0.36,
-         0.0947,
-         0.198
+         0.332,
+         0.332,
+         0.2
         ],
         "Color": [
          0.3529,
@@ -4758,32 +4511,32 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           -0.0516,
-           0.0174,
-           0.0737
+           0.0,
+           0.0,
+           0.0
           ],
           "orientation": [
            [
-            0.0,
-            -0.5736,
-            -0.8192
-           ],
-           [
-            -1.0,
+            1.0,
             0.0,
             0.0
            ],
            [
             0.0,
-            0.8192,
-            -0.5736
+            0.1736,
+            -0.9848
+           ],
+           [
+            0.0,
+            0.9848,
+            0.1736
            ]
           ]
          }
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/23"
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/29"
        }
       }
      ],
@@ -4791,9 +4544,9 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.146,
-         1.0793,
-         0.7584
+         0.0,
+         1.2531,
+         0.8692
         ],
         "orientation": [
          [
@@ -4815,48 +4568,48 @@
        }
       }
      },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud13"
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud19"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/24"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/30"
      },
      "children": [
       {
-       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud14",
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud20",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.1286,
-           0.9893,
-           0.7584
+           0.0,
+           1.0142,
+           0.6375
           ],
           "orientation": [
            [
-            0.0,
             1.0,
+            0.0,
             0.0
            ],
            [
-            0.5736,
             0.0,
-            0.8192
+            0.8192,
+            0.5736
            ],
            [
-            0.8192,
             0.0,
-            -0.5736
+            -0.5736,
+            0.8192
            ]
           ]
          }
         },
         "Size": [
-         0.36,
-         0.0947,
-         0.198
+         0.352,
+         0.124,
+         0.18
         ],
         "Color": [
          0.3529,
@@ -4873,16 +4626,11 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0516,
-           0.0174,
-           0.0737
+           0.0,
+           0.0,
+           0.0
           ],
           "orientation": [
-           [
-            0.0,
-            0.5736,
-            0.8192
-           ],
            [
             1.0,
             0.0,
@@ -4892,13 +4640,18 @@
             0.0,
             0.8192,
             -0.5736
+           ],
+           [
+            0.0,
+            0.5736,
+            0.8192
            ]
           ]
          }
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/24"
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/30"
        }
       }
      ],
@@ -4906,9 +4659,9 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.146,
-         1.0793,
-         0.7584
+         0.0,
+         1.0142,
+         0.6375
         ],
         "orientation": [
          [
@@ -4930,7 +4683,7 @@
        }
       }
      },
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud14"
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud20"
     },
     {
      "className": "Model",
@@ -5455,7 +5208,7 @@
         "position": [
          -0.2376,
          0.055,
-         -0.21
+         -0.2076
         ],
         "orientation": [
          [
@@ -5477,9 +5230,9 @@
        }
       },
       "Size": [
-       0.27,
+       0.2304,
        0.11,
-       0.27
+       0.2352
       ],
       "Color": [
        0.7961,
@@ -5494,6 +5247,219 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/25"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud15",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2376,
+           0.1175,
+           -0.2076
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2904,
+         0.235,
+         0.2952
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0462,
+           -0.0024
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/25"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud15",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2376,
+           0.065,
+           -0.21
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.31,
+         0.13,
+         0.31
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud15",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3276,
+           0.2812,
+           -0.25
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1,
+         0.0925,
+         0.18
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.2376,
+         0.1637,
+         -0.21
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud15"
     },
     {
      "className": "Model",
@@ -6130,6 +6096,219 @@
     {
      "className": "Model",
      "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/26"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud16",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2376,
+           0.0712,
+           -0.21
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.3052,
+         0.1425,
+         0.3052
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0462,
+           0.0
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/26"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud16",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2376,
+           0.065,
+           -0.21
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.31,
+         0.13,
+         0.31
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud16",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3276,
+           0.1887,
+           -0.25
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1,
+         0.0925,
+         0.18
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.2376,
+         0.1175,
+         -0.21
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud16"
+    },
+    {
+     "className": "Model",
+     "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/51"
      },
      "children": [
@@ -6758,6 +6937,219 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/27"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud17",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2376,
+           0.0712,
+           0.41
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.3052,
+         0.1425,
+         0.3052
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0462,
+           0.0
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/27"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud17",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2376,
+           0.065,
+           0.41
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.31,
+         0.13,
+         0.31
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud17",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3276,
+           0.1887,
+           0.47
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1,
+         0.0925,
+         0.18
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.2376,
+         0.1175,
+         0.41
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud17"
     }
    ],
    "properties": {
@@ -6883,7 +7275,7 @@
         "position": [
          0.2376,
          0.055,
-         0.41
+         0.4199
         ],
         "orientation": [
          [
@@ -6905,9 +7297,9 @@
        }
       },
       "Size": [
-       0.27,
+       0.2304,
        0.11,
-       0.27
+       0.2502
       ],
       "Color": [
        0.7961,
@@ -6922,6 +7314,219 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/28"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud18",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2376,
+           0.1175,
+           0.4124
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2904,
+         0.235,
+         0.2952
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0462,
+           -0.0024
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/28"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud18",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2376,
+           0.065,
+           0.41
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.31,
+         0.13,
+         0.31
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Mud18",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3276,
+           0.2812,
+           0.47
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1,
+         0.0925,
+         0.18
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.2376,
+         0.1637,
+         0.41
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud18"
     }
    ],
    "properties": {
@@ -6957,25 +7562,25 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/11"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/17"
    },
    "children": [
     {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01",
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud07",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.9523,
-         0.0747
+         0.4957,
+         -0.3718
         ],
         "orientation": [
          [
-          0.9397,
+          1.0,
           0.0,
-          0.342
+          0.0
          ],
          [
           0.0,
@@ -6983,17 +7588,17 @@
           0.0
          ],
          [
-          -0.342,
           0.0,
-          0.9397
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.45,
-       0.055,
-       0.162
+       0.2808,
+       0.3713,
+       0.2064
       ],
       "Color": [
        0.3529,
@@ -7011,14 +7616,14 @@
        "CFrame": {
         "position": [
          0.0,
-         0.0075,
+         -0.0778,
          0.0
         ],
         "orientation": [
          [
-          0.9397,
+          1.0,
           0.0,
-          -0.342
+          0.0
          ],
          [
           0.0,
@@ -7026,34 +7631,34 @@
           0.0
          ],
          [
-          0.342,
           0.0,
-          0.9397
+          0.0,
+          1.0
          ]
         ]
        }
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/11"
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/17"
      }
     },
     {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01",
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud07",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.081,
-         0.9608,
-         0.0117
+         0.0,
+         0.2422,
+         -0.3218
         ],
         "orientation": [
          [
-          0.9903,
+          1.0,
           0.0,
-          0.1392
+          0.0
          ],
          [
           0.0,
@@ -7061,17 +7666,17 @@
           0.0
          ],
          [
-          -0.1392,
           0.0,
-          0.9903
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.306,
-       0.072,
-       0.144
+       0.0936,
+       0.1757,
+       0.1064
       ],
       "Color": [
        0.3529,
@@ -7093,8 +7698,8 @@
      "OptionalCFrame": {
       "position": [
        0.0,
-       0.9598,
-       0.0747
+       0.4178,
+       -0.3718
       ],
       "orientation": [
        [
@@ -7116,335 +7721,7 @@
      }
     }
    },
-   "name": "CleanACat_Cat_LilacCloud_Dirty_Mud01"
-  },
-  {
-   "className": "Model",
-   "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/14"
-   },
-   "children": [
-    {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud04",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.4312,
-         0.7952,
-         0.1556
-        ],
-        "orientation": [
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          0.1045,
-          0.0,
-          0.9945
-         ],
-         [
-          -0.9945,
-          0.0,
-          0.1045
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.54,
-       0.06,
-       0.126
-      ],
-      "Color": [
-       0.3529,
-       0.2745,
-       0.1961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         0.1884,
-         -0.01,
-         0.0707
-        ],
-        "orientation": [
-         [
-          0.0,
-          0.1045,
-          -0.9945
-         ],
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.9945,
-          0.1045
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/14"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud04",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.4397,
-         0.8582,
-         0.2456
-        ],
-        "orientation": [
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          -0.1392,
-          0.0,
-          0.9903
-         ],
-         [
-          -0.9903,
-          0.0,
-          -0.1392
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.324,
-       0.077,
-       0.126
-      ],
-      "Color": [
-       0.3529,
-       0.2745,
-       0.1961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    }
-   ],
-   "properties": {
-    "WorldPivotData": {
-     "OptionalCFrame": {
-      "position": [
-       -0.4212,
-       0.8852,
-       -0.0244
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    }
-   },
-   "name": "CleanACat_Cat_LilacCloud_Dirty_Mud04"
-  },
-  {
-   "className": "Model",
-   "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/15"
-   },
-   "children": [
-    {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud05",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.4312,
-         0.7952,
-         0.1556
-        ],
-        "orientation": [
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          -0.1045,
-          0.0,
-          0.9945
-         ],
-         [
-          0.9945,
-          0.0,
-          0.1045
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.54,
-       0.06,
-       0.126
-      ],
-      "Color": [
-       0.3529,
-       0.2745,
-       0.1961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         -0.1884,
-         -0.01,
-         0.0707
-        ],
-        "orientation": [
-         [
-          0.0,
-          -0.1045,
-          0.9945
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.9945,
-          0.1045
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/15"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud05",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.4397,
-         0.8582,
-         0.2456
-        ],
-        "orientation": [
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.1392,
-          0.0,
-          0.9903
-         ],
-         [
-          0.9903,
-          0.0,
-          -0.1392
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.324,
-       0.077,
-       0.126
-      ],
-      "Color": [
-       0.3529,
-       0.2745,
-       0.1961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    }
-   ],
-   "properties": {
-    "WorldPivotData": {
-     "OptionalCFrame": {
-      "position": [
-       0.4212,
-       0.8852,
-       -0.0244
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    }
-   },
-   "name": "CleanACat_Cat_LilacCloud_Dirty_Mud05"
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Mud07"
   },
   {
    "className": "Model",
@@ -7459,33 +7736,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.2043,
-         0.5785,
-         -0.4382
+         -0.254,
+         0.8331,
+         0.12
         ],
         "orientation": [
          [
-          0.8192,
+          1.0,
           0.0,
-          0.5736
-         ],
-         [
-          -0.5736,
-          0.0,
-          0.8192
-         ],
-         [
-          0.0,
-          -1.0,
           0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.36,
-       0.0736,
-       0.198
+       0.4144,
+       0.3035,
+       0.4318
       ],
       "Color": [
        0.3529,
@@ -7502,25 +7779,25 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.0737,
-         0.0168,
-         -0.0516
+         -0.025,
+         -0.0878,
+         0.0
         ],
         "orientation": [
          [
-          0.8192,
-          -0.5736,
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
           0.0
          ],
          [
           0.0,
           0.0,
-          -1.0
-         ],
-         [
-          0.5736,
-          0.8192,
-          0.0
+          1.0
          ]
         ]
        }
@@ -7537,33 +7814,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.2673,
-         0.5335,
-         -0.4467
+         -0.4194,
+         0.5935,
+         0.0768
         ],
         "orientation": [
          [
-          0.9511,
+          1.0,
           0.0,
-          0.309
-         ],
-         [
-          -0.309,
-          0.0,
-          0.9511
-         ],
-         [
-          0.0,
-          -1.0,
           0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.27,
-       0.0906,
-       0.144
+       0.1836,
+       0.1757,
+       0.1727
       ],
       "Color": [
        0.3529,
@@ -7584,9 +7861,9 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.2943,
-       0.5785,
-       -0.455
+       -0.279,
+       0.7452,
+       0.12
       ],
       "orientation": [
        [
@@ -7623,33 +7900,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.2133,
-         0.5785,
-         -0.45
+         0.1404,
+         0.8331,
+         0.5234
         ],
         "orientation": [
          [
-          0.9659,
+          1.0,
           0.0,
-          -0.2588
-         ],
-         [
-          0.2588,
-          0.0,
-          0.9659
-         ],
-         [
-          0.0,
-          -1.0,
           0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.3645,
-       0.05,
-       0.162
+       0.3744,
+       0.3035,
+       0.2022
       ],
       "Color": [
        0.451,
@@ -7666,25 +7943,25 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.0782,
-         0.005,
-         -0.021
+         0.0,
+         -0.1317,
+         0.0
         ],
         "orientation": [
          [
-          0.9659,
-          0.2588,
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
           0.0
          ],
          [
           0.0,
           0.0,
-          -1.0
-         ],
-         [
-          -0.2588,
-          0.9659,
-          0.0
+          1.0
          ]
         ]
        }
@@ -7701,33 +7978,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.2781,
-         0.6433,
-         -0.4585
+         0.1872,
+         0.5496,
+         0.5666
         ],
         "orientation": [
          [
-          0.848,
+          1.0,
           0.0,
-          -0.5299
-         ],
-         [
-          0.5299,
-          0.0,
-          0.848
-         ],
-         [
-          0.0,
-          -1.0,
           0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.243,
-       0.067,
-       0.1215
+       0.0936,
+       0.2635,
+       0.1159
       ],
       "Color": [
        0.451,
@@ -7748,9 +8025,9 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.2943,
-       0.5785,
-       -0.455
+       0.1404,
+       0.7013,
+       0.5234
       ],
       "orientation": [
        [
@@ -7787,15 +8064,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.1637,
-         0.9623,
-         0.4021
+         0.4194,
+         0.5935,
+         0.0768
         ],
         "orientation": [
          [
-          0.9397,
+          1.0,
           0.0,
-          0.342
+          0.0
          ],
          [
           0.0,
@@ -7803,17 +8080,17 @@
           0.0
          ],
          [
-          -0.342,
           0.0,
-          0.9397
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.45,
-       0.045,
-       0.162
+       0.1836,
+       0.3513,
+       0.5182
       ],
       "Color": [
        0.3529,
@@ -7824,21 +8101,21 @@
       "Anchored": true,
       "CanCollide": false,
       "CanTouch": false,
-      "CastShadow": false,
+      "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.0,
-         0.0025,
-         0.0
+         -0.0936,
+         0.0978,
+         -0.0432
         ],
         "orientation": [
          [
-          0.9397,
+          1.0,
           0.0,
-          -0.342
+          0.0
          ],
          [
           0.0,
@@ -7846,9 +8123,9 @@
           0.0
          ],
          [
-          0.342,
           0.0,
-          0.9397
+          0.0,
+          1.0
          ]
         ]
        }
@@ -7865,15 +8142,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.2447,
-         0.9708,
-         0.3391
+         0.2908,
+         0.9109,
+         -0.1823
         ],
         "orientation": [
          [
-          0.9903,
+          1.0,
           0.0,
-          0.1392
+          0.0
          ],
          [
           0.0,
@@ -7881,17 +8158,17 @@
           0.0
          ],
          [
-          -0.1392,
           0.0,
-          0.9903
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.306,
-       0.062,
-       0.144
+       0.3008,
+       0.1078,
+       0.1727
       ],
       "Color": [
        0.3529,
@@ -7912,9 +8189,9 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.1637,
-       0.9648,
-       0.4021
+       0.3258,
+       0.6913,
+       0.0336
       ],
       "orientation": [
        [
@@ -7951,33 +8228,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.4733,
-         0.5392,
-         -0.058
+         -0.279,
+         0.3978,
+         0.2927
         ],
         "orientation": [
          [
+          1.0,
           0.0,
-          -1.0,
           0.0
          ],
          [
-          0.342,
           0.0,
-          0.9397
+          1.0,
+          0.0
          ],
          [
-          -0.9397,
           0.0,
-          0.342
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.405,
-       0.0758,
-       0.1458
+       0.4644,
+       0.2157,
+       0.4318
       ],
       "Color": [
        0.3529,
@@ -7994,25 +8271,25 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.1522,
-         0.0179,
-         -0.0554
+         0.0,
+         -0.0678,
+         0.0
         ],
         "orientation": [
          [
-          0.0,
-          0.342,
-          -0.9397
-         ],
-         [
-          -1.0,
+          1.0,
           0.0,
           0.0
          ],
          [
           0.0,
-          0.9397,
-          0.342
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
          ]
         ]
        }
@@ -8029,33 +8306,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.4818,
-         0.4825,
-         -0.1309
+         -0.3919,
+         0.2422,
+         0.2064
         ],
         "orientation": [
          [
+          1.0,
           0.0,
-          -1.0,
           0.0
          ],
          [
-          0.1392,
           0.0,
-          0.9903
+          1.0,
+          0.0
          ],
          [
-          -0.9903,
           0.0,
-          0.1392
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.2754,
-       0.0928,
-       0.1296
+       0.1286,
+       0.1757,
+       0.0864
       ],
       "Color": [
        0.3529,
@@ -8076,9 +8353,9 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.4912,
-       0.5392,
-       -0.22
+       -0.279,
+       0.33,
+       0.2927
       ],
       "orientation": [
        [
@@ -8115,111 +8392,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.4714,
-         0.4492,
-         -0.04
+         0.1872,
+         0.9184,
+         0.12
         ],
         "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
          [
           0.0,
           1.0,
           0.0
          ],
          [
-          -0.1045,
           0.0,
-          0.9945
-         ],
-         [
-          0.9945,
           0.0,
-          0.1045
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.54,
-       0.0797,
-       0.126
-      ],
-      "Color": [
-       0.451,
-       0.3529,
-       0.2627
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         -0.1884,
-         0.0198,
-         0.0707
-        ],
-        "orientation": [
-         [
-          0.0,
-          -0.1045,
-          0.9945
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.9945,
-          0.1045
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/22"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud12",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.4799,
-         0.5122,
-         0.05
-        ],
-        "orientation": [
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.1392,
-          0.0,
-          0.9903
-         ],
-         [
-          0.9903,
-          0.0,
-          -0.1392
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.324,
-       0.0967,
-       0.126
+       0.2808,
+       0.1228,
+       0.2591
       ],
       "Color": [
        0.451,
@@ -8232,7 +8431,36 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         0.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/22"
      }
     }
    ],
@@ -8240,9 +8468,9 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.4912,
-       0.5392,
-       -0.22
+       0.1872,
+       0.9184,
+       0.12
       ],
       "orientation": [
        [
@@ -8269,43 +8497,43 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/26"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/23"
    },
    "children": [
     {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud16",
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud13",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.1732,
-         0.6374,
-         0.6045
+         -0.4194,
+         0.5935,
+         -0.1823
         ],
         "orientation": [
          [
-          -0.8192,
+          1.0,
           0.0,
-          0.5736
-         ],
-         [
-          0.5736,
-          0.0,
-          0.8192
+          0.0
          ],
          [
           0.0,
           1.0,
           0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
          ]
         ]
        }
       },
       "Size": [
-       0.36,
-       0.04,
-       0.198
+       0.1836,
+       0.3513,
+       0.1727
       ],
       "Color": [
        0.3529,
@@ -8322,81 +8550,32 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.1474,
          0.0,
-         -0.1032
+         0.0,
+         0.0
         ],
         "orientation": [
          [
-          -0.8192,
-          0.5736,
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
           0.0
          ],
          [
           0.0,
           0.0,
           1.0
-         ],
-         [
-          0.5736,
-          0.8192,
-          0.0
          ]
         ]
        }
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/26"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud16",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.2362,
-         0.5924,
-         0.613
-        ],
-        "orientation": [
-         [
-          -0.9511,
-          0.0,
-          0.309
-         ],
-         [
-          0.309,
-          0.0,
-          0.9511
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.27,
-       0.057,
-       0.144
-      ],
-      "Color": [
-       0.3529,
-       0.2745,
-       0.1961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/23"
      }
     }
    ],
@@ -8404,9 +8583,9 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.3532,
-       0.6374,
-       0.6045
+       -0.4194,
+       0.5935,
+       -0.1823
       ],
       "orientation": [
        [
@@ -8428,7 +8607,171 @@
      }
     }
    },
-   "name": "CleanACat_Cat_LilacCloud_Dirty_Mud16"
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Mud13"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/24"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud14",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.279,
+         0.3539,
+         0.3791
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4644,
+       0.1278,
+       0.2591
+      ],
+      "Color": [
+       0.3529,
+       0.2745,
+       0.1961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         -0.0678,
+         0.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_LilacCloud_Dirty/24"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_LilacCloud_Dirty_Mud14",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3944,
+         0.2422,
+         0.3791
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1336,
+       0.1757,
+       0.0864
+      ],
+      "Color": [
+       0.3529,
+       0.2745,
+       0.1961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.279,
+       0.2861,
+       0.3791
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_LilacCloud_Dirty_Mud14"
   },
   {
    "className": "Model",

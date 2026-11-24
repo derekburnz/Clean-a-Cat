@@ -290,8 +290,8 @@ def compose_spa(raw_dir, final=False):
     w, h = size
     bg = bubble_backdrop(size)
     art = soft_shadow_edges(crop_to_content(Image.open(os.path.join(raw_dir, "raw-thumb-spa.png")).convert("RGBA")))
-    art = fit(art, w * 0.58, h * 0.97)
-    bg.alpha_composite(art, (int(w * 0.985 - art.width), int(h * 0.99 - art.height)))
+    art = fit(art, w * 0.6, h * 0.97)                     # the bath as big as the frame allows (Derek: "blown up")
+    bg.alpha_composite(art, (int(w * 0.99 - art.width), int(h * 0.99 - art.height)))
     title = title_block(int(w * 0.44))
     title = fit(title, w * 0.47, h * 0.9)
     bg.alpha_composite(title, (int(w * 0.235 - title.width / 2), int(h * 0.5 - title.height / 2)))
@@ -299,8 +299,14 @@ def compose_spa(raw_dir, final=False):
 
 
 def icon_spa(raw_dir):
-    """The matching 512 icon: the same tub shot filling the square, the bubble backdrop, no words."""
+    """The matching 512 icon: the bubble backdrop and no words. With the close shot (raw-icon-spa.png) the cat's
+    face fills about half the square and the render bleeds off the edges; without it, the whole bath."""
     bg = bubble_backdrop((512, 512), seed=9)
+    close = os.path.join(raw_dir, "raw-icon-spa.png")
+    if os.path.exists(close):
+        art = Image.open(close).convert("RGBA").resize((512, 512), Image.LANCZOS)
+        bg.alpha_composite(art, (0, 0))
+        return bg
     raw = Image.open(os.path.join(raw_dir, "raw-thumb-spa.png")).convert("RGBA")
     art = fit(soft_shadow_edges(crop_to_content(raw)), 500, 500)
     bg.alpha_composite(art, ((512 - art.width) // 2, 512 - art.height - 6))

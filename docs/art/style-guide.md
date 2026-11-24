@@ -26,9 +26,9 @@ Also in row 16: `mud_wet` #735A43 (the lighter wet mud), `foam` #FDFEFF, `spa_ti
 ### Coats (rows 17 and 18) and details (row 19)
 Each Cat Index cat has its own coat swatches (`coat_*`) so no coat repeats a Cat Cafe coat. Eyes (`eye_mint`, `eye_sky`, `eye_gold`), nose (`nose_bubblegum`), bows (`bow_pink`, `bow_mint`, `bow_sky`) and `wood_light` are in row 19. Rarity colours for frames and badges are the studio's row 2 (`rarity_common`, `rarity_rare`, `rarity_epic`, `rarity_legend`) plus `rarity_uncommon` #5FC98B in row 20.
 
-**Mud rule:** every coat must stay readable against its mud. Brown `mud` vanishes on dark fur (Inky, Tux and the dark stripes, points and patches), so each blob takes whichever mud stands out more from the fur under it: `mud` or `mud_dust` #B99569, a dusty dried clay, with `mud_dust_wet` #A88257 as its wet edge (#22). The mud also sits proud of the coat, so its shape reads.
+**Mud rule:** every coat must stay readable against its mud. Brown `mud` vanishes on dark fur (Inky, Tux and the dark stripes, points and patches), so each blob takes whichever mud stands out more from the fur under it: `mud` or `mud_dust` #A39683, a grey dried clay, with `mud_dust_wet` #877B6A as its wet edge (#22; greyer since #117, because a warm tan on black fur read as a tortoiseshell coat at phone size). The mud also sits proud of the coat, so its shape reads.
 
-**Mud shape (#107, #111):** mud is grime smeared on the coat, never a ball and never a raised block. Each stain is two thin flat strokes of one mud shade, one lying half over the other at a slightly different angle, with one or two small flecks of splatter beside them. The strokes are turned off the cat's own straight lines, so they read as dirt on the cat and not as part of it, and they stand only 0.02 studs off the fur, like paint. A stain is fitted to one fur face so nothing hangs past an edge (a narrow face gets one stroke). Stains on one face never overlap, a stain may lie over a stripe or a patch but not over the drawing of the face, and none is smaller than about 0.025 square studs, so every one can be seen and scrubbed. Every third stain is the wet shade.
+**Mud shape (#107, #111, #113):** mud is a coat on the cat, built into its fur, never a ball, a raised block or a smear stuck on a face. Every piece is a slice of one of the cat's own blocks (the head, the chest, the haunches, a leg, a paw, the tail), a hair bigger than the block, so it wraps the block's edges and corners and lies flush, 0.02 studs off the fur, the way the coat's own stripes and patches do. A piece is one to four boxes: a wrap and the drips running from it, all on one grid of mud pixels (0.09 studs before the cat's scale) and all square to the cat's own lines. Together the 20 pieces read as a cat coated in mud: socks up the legs, caked haunches and flanks, a muddy back and chest, splats on the brow, the cheeks and the crown, the walking cat's tail tip dipped. A drip may hang one or two mud pixels past the bottom edge of the head or the walking cat's body (off the jaw, the chest and the belly, #117): fur never does that, so it is the cue that this is dirt. The eyes and the drawing of the face stay clear. Where a piece lies over a stripe, a patch or a fringe it stands 0.02 off the highest thing under it, so nothing of the coat pokes through. No part of a piece is further than 0.6 studs from its middle (the sponge's reach at the station's 1.5 times), and every piece of a sitting cat shows above the tub's water. Every third piece is the wet shade.
 
 ## 3. Shape language
 
@@ -58,9 +58,9 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 | Asset | Triangles | Parts |
 |---|---|---|
 | Cat (any coat) | up to 1,500 (today 670 to 1,040) | up to 50 (today 34 to 50) |
-| A dirty cat (cat plus mud, tangles, hidden fluff and claws) | up to 3,200 (today 2,168 to 2,524; raised from 3,000 for the claws, #23) | up to 150 (today 119 to 135; raised from 120 because a mud stain is up to four thin flat parts where a blob was one, #107 and #111) |
+| A dirty cat (cat plus mud, tangles, hidden fluff and claws) | up to 3,200 (today 2,578 to 2,946; raised from 3,000 for the claws, #23) | up to 150 (today 125 to 142; raised from 120 because a piece of the mud coat is up to four boxes where a blob was one, #107, #111 and #113) |
 | Station or furniture | 300 to 1,500 (the tub 1,040 without its foam); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968, bubble bath 676 without its foam, pawdicure 528). The two baths get up to 2,500 with lather and bubbles (tub 2,472, bubble bath 2,032): each ball of lather and each soap bubble is a Ball part that Roblox draws itself, so its triangles are only the preview mesh (#107, #111) | up to 75 for the two baths (the tub 71, the bubble bath 68: a soap bubble is two parts, the ball and its glint, #111), up to 60 for the rest (the upgraded table 40) |
-| Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together) | up to 20 (sponges 6 to 10) |
+| Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together; the #123 wash tools 156 to 392) | up to 20 (sponges 6 to 10; the #123 wash tools 5 to 12) |
 | Brush, bow | up to 200 (brush 108, bows 164) | up to 10 |
 | VIP Room locked or building (#21) | up to 2,000 | up to 80 |
 | One spa plot, full | under 25,000 | about 250 instances |
@@ -86,7 +86,7 @@ Pivot at the base centre on the floor. The front faces -Y in Blender, which is -
 `build_all.py --render` renders a three-quarter preview of every asset to `docs/concepts/clean-a-cat/previews/` and the sheets (`sheet_cats.png` and others). Every picture shown to the owner or players shows scale with one of the game's own characters, and is checked at 150 px wide. Captions go in `docs/concepts/clean-a-cat/README.md`.
 
 ## 11. Dirty cats
-`dirt.py` builds `CleanACat_Cat_<Name>_Dirty` (walking, in a carrier) and `CleanACat_Cat_<Name>_Dirty_Sit` (in the tub or the stray box) for every roster cat: the clean cat plus 20 mud stains (`_Mud01` to `_Mud20`, each a child Model of one to four thin flat parts, see the mud shape rule) and 6 tangles (`_Tangle01` to `_Tangle06`), each its own child Model. Blobs on the head, tail or a leg ride that piece's Model. Mud is `mud` (or `mud_dust` on dark fur, see the mud rule) with every third stain the wet shade, laid flat on the fur, never within 0.3 studs of an eye. The wet coat is a colour shift the game applies (root attribute `WetDarken` = 0.3), not extra parts. With every blob and tangle removed the model is the clean cat plus its hidden fluff.
+`dirt.py` builds `CleanACat_Cat_<Name>_Dirty` (walking, in a carrier) and `CleanACat_Cat_<Name>_Dirty_Sit` (in the tub or the stray box) for every roster cat: the clean cat plus the 20 pieces of its mud coat (`_Mud01` to `_Mud20`, each a child Model of one to four boxes, see the mud shape rule) and 6 tangles (`_Tangle01` to `_Tangle06`), each its own child Model. Blobs on the head, tail or a leg ride that piece's Model. Mud is `mud` (or `mud_dust` on dark fur, see the mud rule) with every third piece the wet shade, wrapped flush round the fur, never near an eye. The wet coat is a colour shift the game applies (root attribute `WetDarken` = 0.3), not extra parts. With every blob and tangle removed the model is the clean cat plus its hidden fluff.
 
 **Fluffed look (#14).** Every dirty model also carries `_Fluff01` to `_Fluff10` (root attribute `FluffCount`): coat-coloured cloud puffs on the cheeks, crown, chest, flanks, back and tail, each its own child Model riding its piece. Each puff takes the swatch of the fur under it, so a white chest gets a white ruff. They ship see-through (Transparency 1, CanQuery off, no shadow); after the third brush swipe the game shows them (Transparency 0, CastShadow on) with a small pop. About 720 triangles and 20 parts.
 
@@ -101,6 +101,27 @@ Pieces of one model never share a plane: neighbours are staggered by 0.012 studs
 `tools.py` builds `CleanACat_Tool_Brush`: a light wood handle and a bubblegum back with three rows of foam and cream bristles. Pivot at the middle of the handle, the head pointing forward (-Z in Roblox), bristles down; the head is `Handle`.
 
 `props.py` builds `CleanACat_Bow_Pink`, `CleanACat_Bow_Mint` and `CleanACat_Bow_Sky` (`bow_pink`, `bow_mint`, `bow_sky`): two puffed loops, a knot and two tails lying back over the crown. Pivot at the base of the knot, with an Attachment `BowSlot` there. To put one on, line the bow's `BowSlot` up with the cat Head's `BowSlot`, weld it to the Head, and `ScaleTo` it by the cat's `Scale` attribute.
+
+### Draft tools for the other wash steps (#123)
+Drafts, not wired into the game. Each follows the sponge's rules: one Model of Parts whose biggest part is `Handle`, pivot at the grip, front -Z in Roblox, nothing collides, about twice real size so it reads in a hand on a phone. Colour says what a tool is for at a glance: water tools are sky and white, drying is bubblegum, combing and clipping are mint, picking is pink. **No tool body is mostly grey (#132):** grey is only for metal tips (a jaw, a pin, a bead), because the spa floor and the grey coats eat it and a grey tool is a grey smudge at 32 px.
+- `CleanACat_Tool_Shower` (rinse): a white grip with a sky collar and a hose stub, a sky head tipped forward and 25 degrees down, a white face plate with five water holes. Attachment `Nozzle` on the face plate, its +Y along the spray.
+- `CleanACat_Tool_Comb` (pick out burrs): a mint handle and spine with five wide white teeth pointing down, the gaps as wide as a tooth.
+- `CleanACat_Tool_Tweezers` (lift a burr or a leaf): two pink arms open wide toward the front with cream grip pads and a round metal bead on each tip, the part that picks.
+- `CleanACat_Tool_Towel` (towel dry): a bubblegum towel folded in three with two cream stripes.
+- `CleanACat_Tool_Clipper` (trim a claw): two mint blades open at the front, each ending in a metal jaw, a pale mint lever on a pin with a sky thumb pad.
+- `CleanACat_Tool_Dryer` (blow dry): a bubblegum barrel, a cream nozzle, a darker pink grip with a cream switch. Attachment `Air` at the nozzle's mouth, its +Y along the air.
+- `CleanACat_Tool_Shampoo` (lather): a lilac pump bottle, a cream label with a pink paw, a white pump with its spout to the front.
+
+### Draft upgrade tiers for the brush and the shower (#142)
+Upgrades follow the sponge's pattern: tier 2 is a step up in shape and colour that reads at phone size, tier 3 is tier 2 in gold. A tier keeps its tool's grip, `Handle` and attachments, so the game swaps the model without moving the hand. Drafts, not wired.
+
+| Tool | Tier 1 | Tier 2 | Tier 3 |
+|---|---|---|---|
+| Sponge | `CleanACat_Tool_Sponge` | `CleanACat_Tool_SpongeBubble` | `CleanACat_Tool_SpongeGolden` |
+| Brush | `CleanACat_Tool_Brush`: pink back, wood handle, three rows | `CleanACat_Tool_BrushFluffy`: a quarter bigger, lilac back, mint handle, six tall round tufts in white and pink that show past the edge of the back | `CleanACat_Tool_BrushGolden`: the fluffy brush in gold with a star on its back |
+| Shower | `CleanACat_Tool_Shower`: sky head, five holes | `CleanACat_Tool_ShowerRain`: a wide rain head with a broad lilac rim, seven holes | `CleanACat_Tool_ShowerGolden`: the rain head in gold with a pale gold plate |
+
+Every tier changes shape or size as well as colour (Review-QA, #142): a player who does not see the colour change must still see a different tool. No two tiers of one tool share a body colour, tier 2 is lilac and gold is kept for tier 3 of each tool and the reward props. The rain head was pale mint at first and nearly vanished on the mint HUD panel at 64 and 32 px, so look at a new tool's icon on mint before it ships.
 
 ## 14. Spa plot and the street (#15)
 `plot.py` builds `CleanACat_Area_SpaPlot`. It began as a graybox and is now the real build on the same layout, so every spot, wall and opening is where the graybox had it. The front apron sits on the pavement; the room has an open front (an entrance with no door, and the display window with a window seat and four cushions behind 0.6 see-through glass); a back door leads to the stray box; an opening in the back wall is the VIP Room door, with the back yard behind it for the VIP Room build. No room, tub or space is made for avatars: only cats bathe.
@@ -188,6 +209,46 @@ Every pattern part sits proud of the body, and nothing is a texture. Extras cost
 - `CleanACat_Station_Pawdicure`: a small cream table on mint legs with a bubblegum cushion and a paw rest at the front (`CatSeat` on the cushion at 1.6), a tray with three polish bottles and a nail file, and a towel on the shelf below.
 
 **Long claws.** Every dirty cat (walk and sit) now carries `_Claw01` to `_Claw08`, four pearl claws on each front paw, each its own child Model riding LegF1 or LegF2 (root attribute `ClawCount` 8). They ship hidden like the fluff (Transparency 1, CanQuery off). A cat that comes in with long claws shows them; the pawdicure removes them.
+
+## 21b. Reward props (#125)
+`rewards.py` builds what a wash pays, for the world and as the source of the recap card's icons. Drafts, not wired. Nothing collides.
+- `CleanACat_Prop_Coin`: a chunky gold coin standing on edge, 1 stud across, a paw print (a pad and four toes) on both faces. Pivot at its middle so the game can spin it and pop it out of a customer. The golds are the palette's metal swatches, so it shines in Roblox.
+- `CleanACat_Prop_Star`: a fat five point star standing up, 1.1 studs across, a paler star set into its front face. Pivot at its middle. It is flat `rarity_legend`, the UI's gold, so a star in the world and a star on a card are one colour. 20 parts (a star is ten wedges), so spawn few at once: a burst of many stars is a particle picture, not this model.
+- `CleanACat_Prop_CoinStack`: stacks of five, three and two coins. Pivot at the base centre. For the recap card and a full tip jar.
+
+## 21c. Things stuck in the fur (#126)
+`burrs.py` builds what a player picks out of a coat with the tweezers or the comb. Drafts: no dirty cat carries them yet and the scrub contract is untouched. Nothing collides.
+- `CleanACat_Prop_Burr`: a round seed head 0.4 studs across, a dark green core with pale moss spikes on every side. Dark where the leaf is bright, so the two stay apart at 32 px.
+- `CleanACat_Prop_Leaf`: a small leaf lying flat, 0.7 studs long: a tapered blade, a darker rib and a short stalk.
+- `CleanACat_Prop_Twig`: a forked brown twig 0.9 studs long with a small leaf at the end of each arm.
+
+All three are green or wear green, the one colour family no coat and no mud uses, so on any cat they read as a plant thing that does not belong. Each is drawn for a scale 1 cat: `ScaleTo` it by the cat's `Scale` and the station's `CatScale`. The pivot is the middle of the underside with Roblox +Y out of the fur, so the game sets the pivot on the fur and turns its up along the surface. Placement follows the mud rule: nothing over the eyes or the face drawing. A leaf goes on a cheek, a shoulder or the back, a twig sticks up out of the head or the back, a burr sits anywhere in the fur. Three to five on a cat is plenty: at phone size a burr is about 8 px, so the pick step should also mark each one (a ring or a bounce) while the tweezers are out.
+
+## 21d. A busy spa (#124)
+`busy_spa.py` builds the pieces a spa with a queue, a helper and a rare visitor needs. Drafts, nothing wired.
+- `CleanACat_Station_WaitBench`: where waiting cats sit in their carriers, three side by side, so a player sees who is waiting and picks who is next. 7.2 studs wide, 3 deep, the top 1.3 up: a cream top on mint legs (too slim to collide, so an invisible `_Barrier` sits under the top as at the other stations), a mat for each carrier in its own pastel (pink, butter, sky), a white plate under each mat with one, two or three pink dots, and towels and a basket on the shelf below. Attachments `Spot1` to `Spot3` on the mats (set a carrier's pivot there) and `Tag1` to `Tag3` 3.3 studs above the top for a bubble. Attribute `Spots` 3. The carrier's door is barred, so the cat's face goes in the bubble on its `Tag`: a waiting cat is told apart by its portrait, not through the bars.
+- `CleanACat_Station_FrontDesk`: where a customer checks in. 5 studs wide, 2.3 deep, the top 2.6 up: a cream body on a mint toe kick, a bubblegum front with the spa's cream paw (a pad and four toes, like the coin), a mint top, a gold bell (Attachment `Bell` above it), an appointment book with a pencil, and a standing card whose face is the child Model `CleanACat_Station_FrontDesk_Screen` for a SurfaceGui. Attachment `TipJarSpot` on the top for `CleanACat_Prop_TipJar`.
+- `CleanACat_NPC_Helper`, `CleanACat_NPC_Helper2`, `CleanACat_NPC_Helper3`: three hired helpers, one body in three looks, so three helper spots show three different helpers that share one motion. Each is the standing kitten body of the builder kitten in a smock that wraps its whole chest, with a cream hem and pocket. No customer's cat wears a smock: a kitten with only a small apron read as a customer's cat that got loose (Review-QA). Attachments `HatSlot` on the head and `ToolGrip` in its right paw (a sponge's or a brush's `Handle` goes there). Attributes `Role` Helper, `Look` 1 to 3 and `Cap`, the name of its cap.
+
+| Model | Coat | Smock | Cap |
+|---|---|---|---|
+| `CleanACat_NPC_Helper` | peach, vanilla muzzle and paws, mint eyes | mint | `CleanACat_Prop_HelperCap`, bubblegum with a mint paw |
+| `CleanACat_NPC_Helper2` | ink, white muzzle and paws, sky eyes | bubblegum | `CleanACat_Prop_HelperCap2`, mint with a bubblegum paw |
+| `CleanACat_NPC_Helper3` | custard, white muzzle, latte paws, violet eyes | sky | `CleanACat_Prop_HelperCap3`, butter with a sky paw |
+
+- The caps are bath caps: a puffy cap with a cream frill, an ear shape over each ear (the cap covers the ears, so without them the helper stops reading as a cat) and a paw on the front. A cap's pivot goes on `HatSlot`, like the hard hat. Coat, smock and cap all differ between looks because those three are what still reads at phone size.
+- `CleanACat_NPC_StarBeret` and `CleanACat_NPC_StarShades`: what the rare visitor wears, a lilac beret with a gold star pin (R15 `HatAttachment`) and gold rimmed violet shades (`FaceFrontAttachment`). The visitor is a customer like the others (Roblox's own R15 rig with body colours); `busy_spa.VISITORS` has the look: Vivi, skin `#C98E6A`, a lilac top `#9479BE` and pearl trousers `#F4EEF6`, wearing both. An original character: no real person, brand or other game's character.
+- `CleanACat_Prop_StarPhoto`: the keepsake the rare visitor leaves, a permanent reward a player sees in their spa. A gold framed photo 1.7 studs wide and 2.1 tall for a wall, a cream mat with a lilac paw print and signature line, and a lilac rosette with a gold star on the top corner. The picture is the child Model `CleanACat_Prop_StarPhoto_Screen` (part `Screen`) for a SurfaceGui or a Decal, pale lilac until the game sets it. Pivot at the middle of its back, which goes on the wall. Does not collide.
+
+The bench and the desk are named `Station` so they collide like the other furniture a player walks round. The helper is the builder kitten's size (1.9 studs), far smaller than a player, so it stands at a station and is hidden behind the desk: do not put it there.
+
+## 21e. Pictures of the models for the screens (#127)
+Portraits and icons are rendered from the real models, never drawn apart from them, so a screen and the world always show the same thing.
+- `ui_renders.py <raw folder> [--only word,word]` (Blender's Python) renders each picture on a see-through background with a camera that has no perspective: `portrait_<Cat>.png` and `portrait_<Cat>_Dirty.png` for every roster cat (sitting, head and shoulders), `portrait_Helper.png`, `icon_<Model without CleanACat_>.png` for each model in its `ICONS` table, and `icon_Customer_<Name>.png` and `icon_Visitor_<Name>.png` on the stand-in block figure with a plain face.
+- `ui_compose.py <raw folder> <out folder> [sheet.png]` (plain Python with Pillow) writes each final twice: alone, and `_ink` with an outline in the UI's ink `#3B2D45`, 3% of the picture wide. Icons are 256 px, trimmed and centred with an 8% margin. Portraits are 512 px and keep their framing: the chest runs off the bottom edge for a round frame, and that edge has no outline.
+- One camera rule for the icons (from the front right, a little above) with a per model angle only where that view hides what the thing is. A station's invisible `_Barrier` is never drawn. The per model angles so far: the coin stack from the left (from the right its top glints like a flame at 64 px), the dryer from the side so hood, pole and stool sit side by side, and the bench from above so its three mats show.
+- A new model gets its icon by adding one line to `ICONS`. An icon is done when it reads on the sheet's 32 px row. White cats and white bristles vanish on cream without the ink version. The comb and the brush both have white teeth, so their buttons need different backing colours.
+- Nothing is uploaded by these scripts. The ui-designer picks what goes into `assets/clean-a-cat/ui/` and uploads are group owned.
 
 ## 22. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.

@@ -1,0 +1,605 @@
+{
+ "className": "Model",
+ "attributes": {
+  "Rojo_Target_PrimaryPart": "CleanACat_Prop_Twig/0",
+  "PartBuilt": true
+ },
+ "children": [
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.04,
+       0.12
+      ],
+      "orientation": [
+       [
+        0.9903,
+        0.0,
+        0.1392
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.1392,
+        0.0,
+        0.9903
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.07,
+     0.07,
+     0.42
+    ],
+    "Color": [
+     0.4314,
+     0.3176,
+     0.251
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "PivotOffset": {
+     "CFrame": {
+      "position": [
+       0.0167,
+       -0.04,
+       -0.1188
+      ],
+      "orientation": [
+       [
+        0.9903,
+        0.0,
+        -0.1392
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.1392,
+        0.0,
+        0.9903
+       ]
+      ]
+     }
+    }
+   },
+   "attributes": {
+    "Rojo_Id": "CleanACat_Prop_Twig/0"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.0927,
+       0.043,
+       -0.1678
+      ],
+      "orientation": [
+       [
+        0.829,
+        0.0,
+        0.5592
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.5592,
+        0.0,
+        0.829
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.06,
+     0.06,
+     0.3
+    ],
+    "Color": [
+     0.4314,
+     0.3176,
+     0.251
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.1698,
+       0.069,
+       -0.2821
+      ],
+      "orientation": [
+       [
+        0.829,
+        0.0,
+        0.5592
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.5592,
+        0.0,
+        0.829
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.124,
+     0.068,
+     0.0758
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.2201,
+       0.06,
+       -0.3566
+      ],
+      "orientation": [
+       [
+        0.829,
+        0.0,
+        0.5592
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.5592,
+        0.0,
+        0.829
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1984,
+     0.047,
+     0.144
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.279,
+       0.06,
+       -0.444
+      ],
+      "orientation": [
+       [
+        0.829,
+        0.0,
+        0.5592
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.5592,
+        0.0,
+        0.829
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1488,
+     0.044,
+     0.1068
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.3241,
+       0.06,
+       -0.5108
+      ],
+      "orientation": [
+       [
+        0.829,
+        0.0,
+        0.5592
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        -0.5592,
+        0.0,
+        0.829
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.0806,
+     0.041,
+     0.0944
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.035,
+       0.046,
+       -0.1553
+      ],
+      "orientation": [
+       [
+        0.866,
+        0.0,
+        -0.5
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5,
+        0.0,
+        0.866
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.06,
+     0.06,
+     0.26
+    ],
+    "Color": [
+     0.4314,
+     0.3176,
+     0.251
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.094,
+       0.0725,
+       -0.2574
+      ],
+      "orientation": [
+       [
+        0.866,
+        0.0,
+        -0.5
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5,
+        0.0,
+        0.866
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.124,
+     0.067,
+     0.0758
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.1389,
+       0.064,
+       -0.3352
+      ],
+      "orientation": [
+       [
+        0.866,
+        0.0,
+        -0.5
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5,
+        0.0,
+        0.866
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1984,
+     0.047,
+     0.144
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.1916,
+       0.064,
+       -0.4265
+      ],
+      "orientation": [
+       [
+        0.866,
+        0.0,
+        -0.5
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5,
+        0.0,
+        0.866
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1488,
+     0.044,
+     0.1068
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Twig",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.2319,
+       0.064,
+       -0.4963
+      ],
+      "orientation": [
+       [
+        0.866,
+        0.0,
+        -0.5
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5,
+        0.0,
+        0.866
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.0806,
+     0.041,
+     0.0944
+    ],
+    "Color": [
+     0.3725,
+     0.7216,
+     0.3529
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  }
+ ],
+ "properties": {
+  "WorldPivotData": {
+   "OptionalCFrame": {
+    "position": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "orientation": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   }
+  }
+ }
+}
