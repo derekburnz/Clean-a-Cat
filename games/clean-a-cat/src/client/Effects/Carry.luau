@@ -123,6 +123,11 @@ Carry.REACH = table.freeze({
 	),
 })
 
+-- His scale `along` (0 to 1) the hop off the arms: from the held size back to his own, landing at his own.
+function Carry.hopScale(held: number, own: number, along: number): number
+	return held + (own - held) * math.clamp(along, 0, 1)
+end
+
 -- Seconds from Carry.hold until the cat is in the arms: the reach (when asked for), then the fold.
 function Carry.settleSeconds(reach: boolean?): number
 	local lead = if reach then Carry.REACH.seconds + Carry.REACH.grab else 0
@@ -381,9 +386,13 @@ function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?):
 	local rig = bind(character, Carry.holdPose())
 	-- A held model can ask to be drawn bigger in the arms than in the box (Model-Agent's CarryScale root attribute,
 	-- 1.4 on the loaf, so he fills the arms as in Derek's reference); scaled about his pivot before anything is measured.
+	-- He eases back to his own size over the hop off the arms (Carry.hopScale), so he never pops in the tub.
+	local ownScale = cat:GetScale()
+	local heldScale = ownScale
 	local carryScale = cat:GetAttribute(Carry.SCALE_ATTRIBUTE)
 	if type(carryScale) == "number" and carryScale > 0 and carryScale <= 3 and carryScale ~= 1 then
-		cat:ScaleTo(cat:GetScale() * carryScale)
+		heldScale = ownScale * carryScale
+		cat:ScaleTo(heldScale)
 	end
 	local offset = baseOffset(cat)
 	local _, catSize = cat:GetBoundingBox()
@@ -461,7 +470,13 @@ function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?):
 			local flat = (h.to - h.from.Position) * Vector3.new(1, 0, 1)
 			local facing = if flat.Magnitude > 0.01 then flat.Unit else h.from.LookVector
 			local pos = h.from.Position:Lerp(h.to, along) + Vector3.yAxis * arc
-			cat:PivotTo(CFrame.lookAt(pos, pos + facing) * offset)
+			local scale = Carry.hopScale(heldScale, ownScale, along)
+			if scale ~= cat:GetScale() then
+				cat:ScaleTo(scale)
+			end
+			-- the pivot's offset from his base shrinks with him
+			local scaled = offset.Rotation + offset.Position * (scale / heldScale)
+			cat:PivotTo(CFrame.lookAt(pos, pos + facing) * scaled)
 			if e >= Carry.HOP_SECONDS and h.onDone then
 				Audio.play("bubblePop", { at = ownPart(cat) })
 				finishHop()
