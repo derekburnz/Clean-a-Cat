@@ -663,6 +663,38 @@
      }
     },
     {
+     "name": "SpotMascot",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -10.25,
+         0.25,
+         -14.3
+        ],
+        "orientation": [
+         [
+          -0.6428,
+          0.0,
+          -0.766
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.766,
+          0.0,
+          -0.6428
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
      "name": "SpotOpening",
      "className": "Attachment",
      "properties": {
@@ -701,7 +733,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -5.0,
+         -8.0,
          0.25,
          -30.6
         ],
@@ -733,7 +765,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.0,
+         -11.0,
          -0.03,
          -37.6
         ],
