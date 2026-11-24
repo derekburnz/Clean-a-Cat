@@ -211,7 +211,7 @@ Every pattern part sits proud of the body, and nothing is a texture. Extras cost
 - `CleanACat_Prop_Leaf`: a small leaf lying flat, 0.7 studs long: a tapered blade, a darker rib and a short stalk.
 - `CleanACat_Prop_Twig`: a forked brown twig 0.9 studs long with a small leaf at the end of each arm.
 
-All three are green or wear green, the one colour family no coat and no mud uses, so on any cat they read as a plant thing that does not belong. Each is drawn for a scale 1 cat: `ScaleTo` it by the cat's `Scale` and the station's `CatScale`. The pivot is the middle of the underside with Roblox +Y out of the fur, so the game sets the pivot on the fur and turns its up along the surface. Three to five on a cat is plenty: at phone size a burr is about 8 px, so the pick step should also mark each one (a ring or a bounce) while the tweezers are out.
+All three are green or wear green, the one colour family no coat and no mud uses, so on any cat they read as a plant thing that does not belong. Each is drawn for a scale 1 cat: `ScaleTo` it by the cat's `Scale` and the station's `CatScale`. The pivot is the middle of the underside with Roblox +Y out of the fur, so the game sets the pivot on the fur and turns its up along the surface. Placement follows the mud rule: nothing over the eyes or the face drawing. A leaf goes on a cheek, a shoulder or the back, a twig sticks up out of the head or the back, a burr sits anywhere in the fur. Three to five on a cat is plenty: at phone size a burr is about 8 px, so the pick step should also mark each one (a ring or a bounce) while the tweezers are out.
 
 ## 22. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
