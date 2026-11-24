@@ -30,6 +30,7 @@ export type Cat = {
 	photoTaken: boolean, -- the photo was asked for and is waiting for MIN_VISIT_SECONDS to pass
 	kind: string?, -- a customer's cat (CatRules.ROSTER name); nil for the prototype's anonymous cat
 	stray: boolean, -- a stray: nobody pays for it and it moves into the display window once clean
+	brushStrokes: number, -- strokes this cat's brushing takes: BRUSH_STROKES, fewer with the Pro Brush (#267)
 }
 
 function SpaRules.newCat(id: number, now: number): Cat
@@ -43,6 +44,7 @@ function SpaRules.newCat(id: number, now: number): Cat
 		photoTaken = false,
 		kind = nil,
 		stray = false,
+		brushStrokes = SpaRules.BRUSH_STROKES,
 	}
 end
 
@@ -81,7 +83,7 @@ function SpaRules.brushStroke(cat: Cat, now: number): (boolean, boolean)
 	end
 	cat.strokes += 1
 	cat.lastStrokeAt = now
-	if cat.strokes >= SpaRules.BRUSH_STROKES then
+	if cat.strokes >= cat.brushStrokes then
 		cat.stage = "fluffed"
 		return true, true
 	end
@@ -141,11 +143,12 @@ function SpaRules.pickNext<T>(queue: { T }, index: number): boolean
 	return true
 end
 
--- How many of a cat's `total` tangles are gone after `strokes` brush strokes: an even share per stroke, and
--- all of them on the last stroke.
-function SpaRules.tanglesGone(strokes: number, total: number): number
-	local done = math.clamp(math.floor(strokes), 0, SpaRules.BRUSH_STROKES)
-	return math.ceil(math.max(total, 0) * done / SpaRules.BRUSH_STROKES)
+-- How many of a cat's `total` tangles are gone after `strokes` brush strokes of `needed` (BRUSH_STROKES when
+-- nil): an even share per stroke, and all of them on the last stroke.
+function SpaRules.tanglesGone(strokes: number, total: number, needed: number?): number
+	local all = math.max(1, needed or SpaRules.BRUSH_STROKES)
+	local done = math.clamp(math.floor(strokes), 0, all)
+	return math.ceil(math.max(total, 0) * done / all)
 end
 
 return table.freeze(SpaRules)

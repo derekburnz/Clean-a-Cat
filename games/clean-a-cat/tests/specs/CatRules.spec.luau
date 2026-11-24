@@ -166,4 +166,71 @@ return function()
 			expect(CatRules.pay("Nobody").coins).to.equal(CatRules.PAY.Common.coins)
 		end)
 	end)
+
+	describe("CatRules.rollNeeds (#267)", function()
+		local function on(_flag: string): boolean
+			return true
+		end
+		local function off(_flag: string): boolean
+			return false
+		end
+
+		it("is the rarity's needs while the later switches are off", function()
+			for _, name in { "Smudge", "Tux", "Marble", "LilacCloud", "Starcoat" } do
+				expect(table.concat(CatRules.rollNeeds(name, sequence({ 0, 0 }), off), ",")).to.equal(
+					table.concat(CatRules.needs(name), ",")
+				)
+			end
+		end)
+
+		it("never gives a common cat a smell or claws", function()
+			expect(table.concat(CatRules.rollNeeds("Smudge", sequence({ 0, 0 }), on), ",")).to.equal(
+				"mud,tangles"
+			)
+		end)
+
+		it("rolls the smell for half the uncommon cats and never claws", function()
+			expect(table.concat(CatRules.rollNeeds("Tux", sequence({ 0.49, 0 }), on), ",")).to.equal(
+				"mud,tangles,wet,smell"
+			)
+			expect(table.concat(CatRules.rollNeeds("Tux", sequence({ 0.5, 0 }), on), ",")).to.equal(
+				"mud,tangles,wet"
+			)
+		end)
+
+		it("always gives a rare cat the smell and half of them claws", function()
+			expect(table.concat(CatRules.rollNeeds("Marble", sequence({ 0.99, 0.49 }), on), ",")).to.equal(
+				"mud,tangles,wet,smell,claws"
+			)
+			expect(table.concat(CatRules.rollNeeds("Marble", sequence({ 0.99, 0.5 }), on), ",")).to.equal(
+				"mud,tangles,wet,smell"
+			)
+		end)
+
+		it("gives epic and legendary cats both, and each need only with its own switch", function()
+			local function only(flag: string): (string) -> boolean
+				return function(asked: string): boolean
+					return asked == flag
+				end
+			end
+			expect(table.concat(CatRules.rollNeeds("Starcoat", sequence({ 0.99, 0.99 }), on), ",")).to.equal(
+				"mud,tangles,wet,smell,claws"
+			)
+			expect(
+				table.concat(
+					CatRules.rollNeeds("LilacCloud", sequence({ 0, 0 }), only("pawdicure")),
+					","
+				)
+			).to.equal("mud,tangles,wet,claws")
+		end)
+
+		it("has a station for every later need", function()
+			for _, need in CatRules.LATER_NEEDS do
+				expect(CatRules.NEED_STATION[need]).to.be.ok()
+			end
+			expect(
+				table.concat(CatRules.lockedNeeds({ "smell", "claws" }, { BubbleBath = true }), ",")
+			).to.equal("claws")
+		end)
+	end)
 end

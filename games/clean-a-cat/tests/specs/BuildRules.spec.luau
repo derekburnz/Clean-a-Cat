@@ -52,6 +52,30 @@ return function()
 			end
 		end)
 
+		it("offers the Bubble Bath and Pawdicure only with their switches on (#267)", function()
+			local function on(_flag: string): boolean
+				return true
+			end
+			local function off(_flag: string): boolean
+				return false
+			end
+			expect(table.concat(BuildRules.offered(off), ",")).to.equal("BrushTable,Dryer,VipRoom")
+			expect(table.concat(BuildRules.offered(on), ",")).to.equal(
+				"BrushTable,Dryer,BubbleBath,Pawdicure,VipRoom"
+			)
+			expect(BuildRules.ITEMS.BubbleBath.requires).to.equal("Dryer")
+			expect(BuildRules.ITEMS.Pawdicure.requires).to.equal("BubbleBath")
+		end)
+
+		it("builds the Bubble Bath only after the Dryer, in the station slot", function()
+			local s: BuildRules.State =
+				{ coins = 10000, stations = { BrushTable = true }, builds = {} }
+			expect(BuildRules.canStart(s, "BubbleBath")).to.equal(false)
+			s.stations.Dryer = true
+			expect(BuildRules.start(s, "BubbleBath", 0)).to.equal(BuildRules.ITEMS.BubbleBath.price)
+			expect(s.builds.station.item).to.equal("BubbleBath")
+		end)
+
 		it("adds pay bonuses only for built stations", function()
 			expect(BuildRules.payBonus({})).to.equal(0)
 			expect(BuildRules.payBonus({ BrushTable = true, Dryer = true })).to.equal(

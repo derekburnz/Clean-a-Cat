@@ -93,6 +93,7 @@ type Visit = {
 	catId: number?,
 	stage: Stage,
 	strokes: number,
+	brushStrokes: number, -- strokes this cat's brushing takes, as the server said (fewer with the Pro Brush)
 	strokeTravel: number,
 	lastStrokeAt: number,
 }
@@ -606,14 +607,14 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 	end
 	v.strokeTravel = 0
 	v.lastStrokeAt = now
-	local before = SpaRules.tanglesGone(v.strokes, #cat.tangles)
+	local before = SpaRules.tanglesGone(v.strokes, #cat.tangles, v.brushStrokes)
 	v.strokes += 1
-	for index = before + 1, SpaRules.tanglesGone(v.strokes, #cat.tangles) do
+	for index = before + 1, SpaRules.tanglesGone(v.strokes, #cat.tangles, v.brushStrokes) do
 		hidePiece(cat.tangles[index])
 	end
 	Moments.BrushSwipe:Fire(cat.model, v.strokes)
 	report("ReportBrushStroke", v)
-	if v.strokes >= SpaRules.BRUSH_STROKES then
+	if v.strokes >= v.brushStrokes then
 		setStage(v, "fluffed")
 		setWet(cat, false)
 		showFluff(cat, true)
@@ -811,7 +812,8 @@ local function onCatReady(
 	rawKind: unknown,
 	rawNeeds: unknown,
 	rawLocked: unknown,
-	rawStray: unknown
+	rawStray: unknown,
+	rawStrokes: unknown
 )
 	local v = visit
 	if not v or type(rawId) ~= "number" then
@@ -833,6 +835,13 @@ local function onCatReady(
 	end
 	release()
 	startCat(v, asset, seat :: CFrame, rawId)
+	-- the server's count; anything odd falls back to the hand brush's
+	v.brushStrokes = if type(rawStrokes) == "number"
+			and rawStrokes == math.floor(rawStrokes)
+			and rawStrokes >= 1
+			and rawStrokes <= SpaRules.BRUSH_STROKES
+		then rawStrokes
+		else SpaRules.BRUSH_STROKES
 	local cat = v.cat
 	if cat and kind then
 		-- For the need icons (UI): which cat, what it needs and which needs wait on a station not built yet.
@@ -848,9 +857,9 @@ end
 local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: number)
 	release()
 	setStage(v, stage)
-	v.strokes = math.clamp(strokes, 0, SpaRules.BRUSH_STROKES)
+	v.strokes = math.clamp(strokes, 0, v.brushStrokes)
 	v.strokeTravel = 0
-	local gone = SpaRules.tanglesGone(v.strokes, #cat.tangles)
+	local gone = SpaRules.tanglesGone(v.strokes, #cat.tangles, v.brushStrokes)
 	for index, piece in cat.tangles do
 		if index > gone then
 			showPiece(piece, true)
@@ -988,6 +997,7 @@ local function buildVisit(folder: Folder): Visit
 		catId = nil,
 		stage = "waiting",
 		strokes = 0,
+		brushStrokes = SpaRules.BRUSH_STROKES,
 		strokeTravel = 0,
 		lastStrokeAt = -math.huge,
 	}

@@ -79,7 +79,7 @@ local function onBuild(player: Player, rawId: unknown)
 	if not LiveFlags.isOn(FLAG) then
 		return
 	end
-	local id = Guard.oneOf(rawId, BuildRules.IDS)
+	local id = Guard.oneOf(rawId, BuildRules.offered(LiveFlags.isOn)) -- an item whose switch is off is refused
 	local save = DataService.get(player)
 	if id == nil or save == nil or not nearBoard(player) then
 		return

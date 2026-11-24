@@ -117,6 +117,22 @@ return function()
 			expect(SpaRules.tanglesGone(SpaRules.BRUSH_STROKES + 5, 7)).to.equal(7)
 			expect(SpaRules.tanglesGone(2, 0)).to.equal(0)
 		end)
+
+		it("takes them all in one stroke when the cat needs one (Pro Brush, #267)", function()
+			expect(SpaRules.tanglesGone(0, 6, 1)).to.equal(0)
+			expect(SpaRules.tanglesGone(1, 6, 1)).to.equal(6)
+			expect(SpaRules.tanglesGone(1, 6, 0)).to.equal(6) -- a bad count is at least one stroke
+		end)
+
+		it("fluffs a cat after its own stroke count", function()
+			local cat = SpaRules.newCat(1, 0)
+			SpaRules.scrubbed(cat)
+			cat.brushStrokes = 1
+			local counted, fluffed = SpaRules.brushStroke(cat, 1)
+			expect(counted).to.equal(true)
+			expect(fluffed).to.equal(true)
+			expect(cat.stage).to.equal("fluffed")
+		end)
 	end)
 	describe("SpaRules.pickNext", function()
 		it("moves the picked customer to the front and keeps the rest in order", function()
