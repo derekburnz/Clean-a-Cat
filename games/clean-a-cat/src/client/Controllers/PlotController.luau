@@ -8,12 +8,7 @@
 -- that is inside another plot when the walls go up (the shared spawn sits in plot 1, and a slot change leaves the
 -- old walls up for a moment) stands on the floor until the server moves it, instead of being pushed out of a
 -- solid part and through the floor (#169).
--- With `spawnView` on, it also points the camera behind the character once the server has moved it onto its own
--- spawn spot (#188). Everyone spawns at plot 1's SpawnLocation; a player in slot 2 or up is then moved about 44
--- studs, and on a phone the camera swings along the move and starts looking sideways down the street.
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -24,15 +19,6 @@ local FLAG = "spaVisitors"
 local WALL_EXTRA_HEIGHT = 40 -- well above a jump, so nobody stands on top
 local WALL_THICKNESS = 1
 local FOLDER_NAME = "VisitorWalls"
--- The camera turn after a spawn (#188).
-local ARRIVE_WAIT_SECONDS = 5 -- how long to wait for the server's move before giving up
-local ARRIVE_DISTANCE = 4 -- studs from the spawn spot (flat) that count as arrived
-local FOCUS_HEIGHT = 1.5 -- the camera looks at this height above the root, about the head
-local DEFAULT_ZOOM = 12.5 -- Roblox's starting camera distance
-local MIN_ZOOM = 8
-local MAX_ZOOM = 20
-local MIN_PITCH = -0.6 -- radians; the camera looks down at least a little and never steeply
-local MAX_PITCH = -0.1
 
 local PlotController = {}
 
@@ -105,52 +91,6 @@ local function refresh()
 	walls = folder
 end
 
--- Puts the camera behind the character, looking the way `look` points, keeping the player's zoom and a sane pitch.
-local function pointCamera(root: BasePart, look: Vector3)
-	local camera = Workspace.CurrentCamera
-	if camera == nil or camera.CameraType ~= Enum.CameraType.Custom then
-		return
-	end
-	local flat = Vector3.new(look.X, 0, look.Z)
-	if flat.Magnitude < 0.01 then
-		return
-	end
-	local focus = root.Position + Vector3.new(0, FOCUS_HEIGHT, 0)
-	local zoom = (camera.CFrame.Position - camera.Focus.Position).Magnitude
-	zoom = if zoom >= 1 then math.clamp(zoom, MIN_ZOOM, MAX_ZOOM) else DEFAULT_ZOOM
-	local pitch =
-		math.clamp(math.asin(math.clamp(camera.CFrame.LookVector.Y, -1, 1)), MIN_PITCH, MAX_PITCH)
-	local direction = flat.Unit * math.cos(pitch) + Vector3.new(0, math.sin(pitch), 0)
-	camera.CFrame = CFrame.lookAt(focus - direction * zoom, focus)
-end
-
--- Waits for the server to put this character on its own spawn spot, then turns the camera behind it once.
-local function faceForward(character: Model)
-	if not LiveFlags.isOn(SpaLayout.VIEW_FLAG) then
-		return
-	end
-	local found = character:WaitForChild("HumanoidRootPart", ARRIVE_WAIT_SECONDS)
-	if found == nil or not found:IsA("BasePart") then
-		return
-	end
-	local root = found :: BasePart
-	local deadline = os.clock() + ARRIVE_WAIT_SECONDS
-	while os.clock() < deadline and character.Parent ~= nil do
-		local slot = SpaLayout.slotOf()
-		if slot ~= nil and SpaLayout.onPlot() then
-			local spot = SpaLayout.spawnSpot(slot)
-			local offset = root.Position - spot.Position
-			if Vector3.new(offset.X, 0, offset.Z).Magnitude < ARRIVE_DISTANCE then
-				-- One more frame, so the default camera has taken the new position before it is turned.
-				RunService.RenderStepped:Wait()
-				pointCamera(root, spot.LookVector)
-				return
-			end
-		end
-		RunService.Heartbeat:Wait()
-	end
-end
-
 function PlotController.Init(_controllers: { [string]: any }) end
 
 function PlotController.Start()
@@ -162,13 +102,6 @@ function PlotController.Start()
 		task.delay(1, refresh)
 	end)
 	task.delay(1, refresh)
-	local player = Players.LocalPlayer
-	player.CharacterAdded:Connect(function(character: Model)
-		task.spawn(faceForward, character)
-	end)
-	if player.Character then
-		task.spawn(faceForward, player.Character)
-	end
 end
 
 return PlotController
