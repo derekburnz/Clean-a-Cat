@@ -38,7 +38,11 @@ TruckDrop.OPEN = {
 	peekDelay = 0.15,
 	peekSeconds = 0.35,
 	overshoot = 1.6,
+	stagger = 0.08, -- the short flaps (FlapF, FlapB) lie under the long ones, so they start this much later
+	settle = 0.6, -- after the peek: the shake-off plays out before open()'s onDone fires
 }
+-- The kitten hops out of the box toward the spa (Gameplay-Engineer's ask): a small arc, then onDone.
+TruckDrop.HOP = { distance = 2.5, height = 1.4, seconds = 0.42, squash = 0.15 }
 
 -- Sound and effect beats, in the order they happen. OpeningScene plays each once as the clock passes it.
 TruckDrop.EVENTS = {
@@ -218,9 +222,24 @@ end
 
 function TruckDrop.openSeconds(): number
 	return math.max(
-		TruckDrop.OPEN.flapSeconds,
+		TruckDrop.OPEN.flapSeconds + TruckDrop.OPEN.stagger,
 		TruckDrop.OPEN.peekDelay + TruckDrop.OPEN.peekSeconds
 	)
+end
+
+-- Seconds from the tap until open()'s onDone: the flaps and the peek, then the shake-off.
+function TruckDrop.openDoneSeconds(): number
+	return TruckDrop.openSeconds() + TruckDrop.OPEN.settle
+end
+
+-- The hop out of the box, `e` seconds in: how far along (0..1, eased) and how high (studs) above the straight line
+-- from the rim to the ground. With `reduced` it is a lower arc (still a hop, so it reads as leaving).
+function TruckDrop.hop(e: number, reduced: boolean): (number, number)
+	local h = TruckDrop.HOP
+	local u = math.clamp(e / h.seconds, 0, 1)
+	local along = u * (2 - u) * 0.35 + u * 0.65 -- a little quicker off the rim
+	local height = (if reduced then h.height * 0.4 else h.height) * 4 * u * (1 - u)
+	return along, height
 end
 
 -- Names of the EVENTS whose time falls in (from, to].
