@@ -13,6 +13,7 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
     python3 assets/clean-a-cat/blender/scenes.py street docs/concepts/clean-a-cat
 """
 
+import math
 import os
 import sys
 
@@ -20,7 +21,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 import bpy  # noqa: E402,F401
-from mathutils import Vector  # noqa: E402
+from mathutils import Matrix, Vector  # noqa: E402
 
 import cats  # noqa: E402
 import common  # noqa: E402
@@ -37,18 +38,42 @@ AVATAR_ATT = {"HatAttachment": (0.0, 0.0, 4.75), "NeckAttachment": (0.0, 0.0, 3.
               "LeftShoulderAttachment": (1.0, 0.0, 3.6)}
 
 
-CARRY_Y, CARRY_Z = -0.82, 2.75     # the folded arms' shelf: its middle in front of the avatar, and its top
+# The owner's hold (his clip, 2026-11-24: "here is how the carrying should look"): the arms reach forward, down and
+# in from the shoulders, so the hands end near the hips in front of the belly, and the kitten lies across them close
+# against the body with his head end at the carrier's left shoulder. The game's arms are Effects/Carry.luau
+# (Motion-FX); these are a stand-in with an elbow, so the picture reads on the avatars most players wear.
+HOLD_UPPER = 12.0                  # degrees the upper arm goes forward of straight down
+HOLD_IN, HOLD_DOWN = 42.0, 25.0    # degrees the forearm turns in toward the middle, and slopes down to the hand
+HOLD_SEAT = (0.4, -0.95, 2.55)     # the held loaf's base in the avatar's space: to its left, ahead, and up
+HOLD_ROLL = 8.0                    # degrees his head end is raised
+
+
+def held_at():
+    """The held loaf's place in the avatar's space: across the arms, his front to the carrier's left."""
+    return (Matrix.Translation(HOLD_SEAT) @ Matrix.Rotation(math.radians(90), 4, "Z")
+            @ Matrix.Rotation(math.radians(-HOLD_ROLL), 4, "X"))
 
 
 def avatar(mat, at=(0.0, 0.0, 0.0), skin="skin_tan", shirt="shirt_green", pants="shirt_blue", arms="down"):
-    """A plain blocky avatar, R15 proportions: legs 2, torso 1.6, head 1.2 studs; front -Y. `arms` "carry" folds
-    the forearms across the chest into a shelf a cat can lie on (top at CARRY_Z, CARRY_Y in front of the middle)."""
+    """A plain blocky avatar, R15 proportions: legs 2, torso 1.6, head 1.2 studs; front -Y. `arms` "hold" is the
+    owner's carry hold (HOLD_FWD, HOLD_IN): the arms reach forward, down and in, and a loaf lies across them at
+    held_at()."""
     b = Builder()
     for sx in (1, -1):
         b.box_base((sx * 0.5, 0, 0), (0.95, 0.95, 2.0), pants)
-        if arms == "carry":
-            b.box_base((sx * 1.5, 0, 2.3), (0.95, 0.95, 1.3), skin)                                # shoulder to elbow
-            b.box_base((sx * 0.8, CARRY_Y - 0.03 * sx, CARRY_Z - 0.8 - 0.04 * sx), (2.3, 0.8, 0.8), skin)   # the forearm, across
+        if arms == "hold":
+            def limb(start, way, back, length, thick):
+                side = Vector((0, 1, 0)).cross(-way).normalized()
+                rot = Matrix((side, (-way).cross(side), -way)).transposed()
+                b.box(tuple(start + way * (length / 2 - back)), (thick, thick, length), skin, rot=rot)
+
+            up, turn, down = (math.radians(a) for a in (HOLD_UPPER, HOLD_IN, HOLD_DOWN))
+            shoulder = Vector((sx * 1.5, 0, 3.35))
+            way = Vector((-sx * 0.09, -math.sin(up), -math.cos(up))).normalized()
+            limb(shoulder, way, 0.25, 1.1, 0.95)                                          # shoulder to elbow
+            elbow = shoulder + way * 0.8
+            way = Vector((-sx * math.sin(turn) * math.cos(down), -math.cos(turn) * math.cos(down), -math.sin(down)))
+            limb(elbow, way, 0.3, 1.45, 0.86)                                             # elbow to hand
         else:
             b.box_base((sx * 1.5, 0, 2.0), (0.95, 0.95, 1.6), skin)
     b.box_base((0, 0, 2.0), (1.95, 0.95, 1.6), shirt)
@@ -608,8 +633,8 @@ def opening_board(mat, out_dir, only=""):
     # crate"). Seen from the front: from behind, the player's own body hides him.
     cx, cy = BX - 4.5, BY + 4.4
     empty = box(Mb, open_=opening.FLAP_OPEN)
-    held = fresh(xf(loaf(), T(cx, cy, F) @ R(180, "Z") @ T(0.62, CARRY_Y - 0.05, CARRY_Z) @ R(62, "Z") @ Matrix.Scale(0.95, 4)))
-    frames["c2-carry"] = dict(objs=empty + held + player(cx, cy, turn=180, arms="carry"),
+    held = fresh(xf(loaf(), T(cx, cy, F) @ R(180, "Z") @ held_at()))
+    frames["c2-carry"] = dict(objs=empty + held + player(cx, cy, turn=180, arms="hold"),
                               eye=(cx - 1.5, cy + 8.4, F + 5.0), target=(cx + 1.0, cy, F + 3.0), lens=30,
                               hide=("_Glass", "_Roof"))
     # d: in the tub, still muddy, in the close wash view: the sponge beside him and foam on one side
