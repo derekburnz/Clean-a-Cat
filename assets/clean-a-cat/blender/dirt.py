@@ -1,14 +1,15 @@
-"""The dirty cat (issue #12): mud blobs, tangles and the wet coat, on every cat of the roster.
+"""The dirty cat (issue #12): the mud coat, tangles and the wet coat, on every cat of the roster.
 
   CleanACat_Cat_<Name>_Dirty       the walking cat (A) as a customer brings it: in a carrier, at the door
   CleanACat_Cat_<Name>_Dirty_Sit   the sitting cat (B) as it sits in the tub or the stray box
 
 A dirty model is the clean cat (same pieces, same pivots, same names after the asset name) plus:
 
-  _Mud01 .. _Mud20      one mud stain each (one to four thin flat parts: two strokes and one or two flecks of
-                        splatter, as many as fit the face), its own child Model pivoted at the spot. The scrub
-                        removes a blob by its name (find the child Model whose name ends in _MudNN and Destroy it). Blobs on the head,
-                        tail or a leg are nested in that piece's Model, so they move with it; the rest sit on the Body.
+  _Mud01 .. _Mud20      one piece of the mud coat each (one to four boxes: a wrap round an edge or a corner of one
+                        of the cat's blocks and the drips running from it), its own child Model pivoted at its
+                        middle. The scrub removes a piece by its name (find the child Model whose name ends in
+                        _MudNN and Destroy it). Pieces on the head, the tail or a leg are nested in that piece's
+                        Model, so they move with it; the rest sit on the Body.
   _Tangle01 .. _Tangle06  a spiky fur clump each, removed by the brush the same way.
   _Fluff01 .. _Fluff10  the fluffed look (#14): coat-coloured puffs on the cheeks, crown, chest, flanks, back and
                         tail, each its own child Model (riding Head or Tail like the mud). They ship see-through
@@ -22,10 +23,11 @@ A dirty model is the clean cat (same pieces, same pivots, same names after the a
 When the last blob and tangle are gone the model is the clean cat (plus the hidden fluff), so nothing is swapped at
 the reveal.
 
-Mud spots are found by casting rays at the built cat (deterministic, no randomness), so every coat and both bodies
-get spots on their own surface, the eyes stay clear and no two splats touch. A splat is then fitted to its fur face
-(#107): the biggest pattern that lies wholly on the face, so nothing hangs past an edge, and never a splat too small
-to scrub. A spot with no room (a thin tail) is passed over for the next one.
+The mud is a coat, not stains stuck on (Derek 2026-11-23: "built into their fur or like coated in it"): every
+piece is a slice of one of the cat's own blocks, a hair bigger than the block, so it wraps the block's edges and
+corners and lies flush like the coat's own stripes and patches. The pieces are listed once per body (COAT) in
+fractions of each block, so every coat and both bodies wear the same coat on their own shapes; the eyes and the
+drawing of the face stay clear. Tangles and fluff are placed by casting rays at the built cat (no randomness).
 """
 
 import math
@@ -35,69 +37,40 @@ from mathutils import Matrix, Vector
 
 import cats
 import palette
-from common import Builder
+from common import PRIMS, Builder
 
 MUD = 20
 TANGLES = 6
 WET_DARKEN = 0.3
-EYE_CLEAR = 0.3           # studs: no blob centre this close to an eye's centre
-SPACING = 0.22            # studs between blob centres
+EYE_CLEAR = 0.3           # studs: nothing is placed this close to an eye's centre (mud keeps three quarters of it)
 TANGLE_SPACING = 0.3
 FLUFF = 10
 FLUFF_SPACING = 0.25
-# Mud stains (#107, #111). Mud is grime smeared on the coat: thin as paint, never a raised block, and turned off
-# the cat's own lines so it reads as dirt and not as part of the cat. A stain is two flat strokes of one mud shade,
-# one lying half over the other at a slightly different angle, and one or two small flecks of splatter beside
-# them. PIX is one mud pixel in studs before the cat's scale, about an eye's highlight. A pattern: ((centre x, centre y, length, width, turn in degrees)
-# of the two strokes, the flecks' centres), in pixels, +Y up on a side face.
+# The mud coat. Mud is part of the cat's look, not something stuck on it: every piece is a slice of one of the
+# cat's own blocks (the head, the chest, a leg, a paw, the tail), a hair bigger than the block, so it wraps the
+# block's edges and corners and lies flush like the coat's own stripes and patches. The cat reads as coated: socks of
+# mud up the legs, a caked rump and flanks, a cap over the brow, the tail tip dipped. A piece is one to four boxes
+# (a wrap and the drips running from it), all on a grid of mud pixels so they meet without overlapping. PIX is one
+# mud pixel in studs before the cat's scale, about an eye's highlight.
 PIX = 0.09
-PATTERNS = {
-    "A": (((0.0, 0.0, 5.0, 1.8, 20), (0.9, -0.7, 3.4, 1.6, 8)), ((3.2, 2.2), (-3.0, -1.8))),
-    "B": (((0.0, 0.0, 4.5, 2.0, -15), (-0.8, 0.8, 3.0, 1.5, -32)), ((-3.0, -1.2), (3.2, 0.4))),
-    "C": (((0.0, 0.0, 4.0, 2.2, 35), (0.7, -0.5, 3.0, 1.6, 18)), ((2.8, 2.6), (-2.8, -0.6))),
-    "W": (((0.0, 0.0, 6.0, 1.4, 6), (-1.0, 0.7, 3.6, 1.4, -8)), ((3.8, 1.4), (1.8, -1.6))),     # a wide smear: a back
-    "T": (((0.0, 0.0, 4.0, 1.4, 80), (0.5, -0.6, 2.6, 1.3, 66)), ((1.7, 1.8), (-1.5, -2.6))),   # a tall run: a leg
-    "S": (((0.0, 0.0, 2.8, 1.5, 25), (0.4, -0.5, 2.0, 1.2, 5)), ((2.0, 1.8), (-2.0, -1.5))),    # a small dab: a tail
-}
-FLECK = (1.0, 28)                  # a fleck of splatter: its side in pixels and its turn in degrees
-SHAPE_ORDER = "ABACBACABC"
-# A stain stands MUD_PROUD off the fur (just past the z-fight gap, so it reads as grime on the coat and not as a
-# block) and reaches MUD_SUNK into it. It may lie over the coat's pattern (a stripe, a patch, a point), which stands
-# up to COVER proud of the fur: the stain measures the highest and the lowest thing under it (_relief) and stands
-# off the highest and reaches under the lowest.
-COVER = 0.045
+# A piece stands MUD_PROUD off the fur, just past the z-fight gap. Where it lies over the coat's own relief (a
+# stripe, a patch, a fringe: up to RELIEF_MAX proud of the block) it stands that much off the highest thing under
+# each of its faces instead, so nothing of the coat pokes through.
 MUD_PROUD = 0.02
-MUD_STEP = 0.017                   # the second stroke lies this much higher, so the two never share a plane
-MUD_SUNK = 0.02
-FIT_SCALES = (1.0, 0.9, 0.8, 0.7, 0.6, 0.5)
-FIT_SHIFTS = sorted(((x, y) for x in range(-3, 4) for y in range(-3, 4)), key=lambda t: (t[0] ** 2 + t[1] ** 2, t))
-# A stain must be big enough to see and to scrub. Its size is the first rectangle plus half the second, in square
-# pixels. The spots are tried at the first size; only if fewer than MUD fit does the next size get its turn.
-FIT_SIZES = (8.0, 5.0, 3.0)
+RELIEF_MAX = 0.11
+FACE_BARE = 0.012                  # on the front of the head mud lies on bare fur only: the face keeps its drawing
+# The scrub counts a rub within the sponge's radius (0.9 studs) of the piece's middle, with the cat at 1.5 times at
+# a station, so no part of a piece is further than this from its middle (before the station's scale).
+SCRUB_REACH = 0.6
+# In the wash tub the water stands this high on a sitting cat (stations: the water over the seat, at the cat's 1.5
+# times). Every piece of the sitting coat shows at least WATER_CLEAR above it, so none is washed out of sight.
+TUB_WATER = 0.18
+WATER_CLEAR = 0.1
 RIDES = ("Head", "Tail", "LegF1", "LegF2", "LegB1", "LegB2")   # pieces whose Model carries the blobs on them
 ALLOWED = ("Body",) + RIDES
 
 # Ray directions, in the cat's own frame (front is -Y, the cat's left is +X, up is +Z), aimed at a target piece's
-# centre. Listed best first: the faces a player sees at the tub (top, sides, chest), then the rest. The first MUD
-# that land on fur, clear of the eyes and of each other, are used.
-_D = [
-    ("Body", (0.0, 0.0, 1.0)), ("Head", (0.0, -0.35, 1.0)), ("Head", (0.0, -1.0, 0.8)),          # the forehead (#107)
-    ("Body", (0.85, -0.2, 0.5)), ("Body", (-0.85, -0.2, 0.5)),
-    ("Body", (0.0, -1.0, 0.25)), ("Head", (0.9, -0.45, 0.25)), ("Head", (-0.9, -0.45, 0.25)), ("Body", (0.9, 0.5, 0.3)),
-    ("Body", (-0.9, 0.5, 0.3)), ("LegF1", (0.3, -1.0, 0.0)), ("LegF2", (-0.3, -1.0, 0.0)), ("Tail", (0.0, 0.3, 1.0)),
-    ("Body", (0.5, -0.9, -0.1)), ("Body", (-0.5, -0.9, -0.1)), ("Head", (0.5, 0.3, 1.0)), ("Head", (-0.5, 0.3, 1.0)),
-    ("Body", (0.4, 0.8, 0.8)), ("Body", (-0.4, 0.8, 0.8)), ("Body", (1.0, -0.6, -0.2)), ("Body", (-1.0, -0.6, -0.2)),
-    ("LegB1", (0.6, -0.8, 0.0)), ("LegB2", (-0.6, -0.8, 0.0)), ("Head", (0.0, -1.0, -0.6)), ("Body", (0.0, 1.0, 0.4)),
-    ("Body", (1.0, 0.0, 0.0)), ("Body", (-1.0, 0.0, 0.0)), ("Tail", (1.0, 0.0, 0.3)), ("Tail", (-1.0, 0.0, 0.3)),
-    ("Body", (0.7, 0.0, 0.9)), ("Body", (-0.7, 0.0, 0.9)), ("Body", (0.3, -0.5, 1.0)), ("Body", (-0.3, -0.5, 1.0)),
-    # spares (#107): a splat needs room on its face, so a thin tail or leg may turn its spot down
-    ("Head", (0.0, 1.0, 0.3)), ("Head", (0.9, 0.5, 0.2)), ("Head", (-0.9, 0.5, 0.2)), ("Body", (0.6, 0.9, 0.0)),
-    ("Body", (-0.6, 0.9, 0.0)), ("Head", (0.6, -0.2, 1.0)), ("Head", (-0.6, -0.2, 1.0)), ("Body", (0.3, 0.9, 1.0)),
-    ("Body", (-0.3, 0.9, 1.0)), ("Head", (1.0, 0.2, -0.3)), ("Head", (-1.0, 0.2, -0.3)), ("Body", (0.0, 0.6, 1.0)),
-    ("Body", (0.45, -1.0, 0.6)), ("Body", (-0.45, -1.0, 0.6)), ("Head", (0.35, 1.0, -0.2)),
-    ("Head", (-0.35, 1.0, -0.2)),
-    ("Body", (1.0, 0.3, 0.35)), ("Body", (-1.0, 0.3, 0.35)), ("Head", (0.3, 0.6, 1.0)), ("Head", (-0.3, 0.6, 1.0)),
-]
+# centre, for the tangles and the fluff.
 # Tangles: on the back, the tail and the cheeks, where a brush stroke goes.
 _T = [
     ("Body", (0.0, 0.4, 1.0)), ("Tail", (0.0, 0.5, 1.0)), ("Head", (1.0, -0.2, 0.0)), ("Head", (-1.0, -0.2, 0.0)),
@@ -222,132 +195,189 @@ def _spots(objs, base, rays, n, spacing, eyes, keep_index=False):
     return out
 
 
-def _on_fur(clean, base, pt, nrm, piece, k):
-    """True where pt, on a fur face with normal nrm, has that same face of `piece` under it, or the coat's pattern on
-    that face: no ear, eye or other piece on top and no edge of the block passed. The face of the head keeps its
-    drawing (muzzle, mouth, blaze), so there only the bare fur counts."""
-    hit = _ray(clean, base, pt + nrm * 0.6 * k, -nrm)
-    if hit is None:
-        return False
-    q, _n, got = hit
-    face = piece == "Head" and nrm.y < -0.5
-    return got == piece and abs((q - pt).dot(nrm)) < (0.012 if face else COVER) * k
+# The coat's pieces, one list per body. A piece: (the cat piece it rides, its boxes). A box: (which block of that
+# piece, x0, x1, y0, y1, z0, z1) in fractions of the block along its own axes: x from the cat's right to its left,
+# y from the front to the back (along a tail segment, root to tip), z from the bottom to the top. A box that
+# reaches a face of the block (0 or 1) comes out of that face; its other sides are cut inside the block. Fractions
+# snap to the block's mud pixels. The first box is the wrap and must fit; a later box (a drip) that would touch the
+# face's drawing or come too near an eye is left out on that cat.
+HEAD_COAT = [
+    ("Head", [(0, 0.0, 0.1, 0.125, 1.0, 0.0, 0.5), (0, 0.0, 0.1, 0.375, 0.75, 0.5, 0.75),       # the right cheek
+              (0, 0.1, 0.4, 0.875, 1.0, 0.0, 0.375), (0, 0.0, 0.2, 0.0, 0.125, 0.0, 0.125)]),
+    ("Head", [(0, 0.9, 1.0, 0.25, 0.875, 0.5, 0.875), (0, 0.9, 1.0, 0.5, 0.75, 0.25, 0.5),      # the left temple
+              (0, 0.9, 1.0, 0.375, 0.625, 0.875, 1.0)]),
+    ("Head", [(0, 0.5, 0.8, 0.0, 0.25, 0.875, 1.0), (0, 0.6, 0.7, 0.0, 0.125, 0.75, 0.875)]),   # a splat on the brow
+    ("Head", [(0, 0.4, 0.6, 0.5, 1.0, 0.875, 1.0), (0, 0.4, 0.6, 0.875, 1.0, 0.5, 0.875),       # the crown, running
+              (0, 0.3, 0.4, 0.875, 1.0, 0.625, 0.875)]),                                        # down the back
+    ("Head", [(0, 0.6, 1.0, 0.875, 1.0, 0.0, 0.375), (0, 0.7, 0.9, 0.875, 1.0, 0.375, 0.625)]),  # the back, low left
+    ("Head", [(0, 0.0, 0.2, 0.0, 0.25, 0.75, 1.0), (0, 0.0, 0.1, 0.25, 0.375, 0.625, 1.0)]),    # the right brow corner
+]
+COAT = {
+    "sit": HEAD_COAT + [
+        ("Body", [(1, 0.375, 0.625, 0.0, 0.17, 0.375, 0.625), (1, 0.5, 0.625, 0.0, 0.17, 0.125, 0.375),   # the bib
+                  (1, 0.375, 0.5, 0.0, 0.17, 0.625, 0.75)]),
+        ("Body", [(1, 0.875, 1.0, 0.0, 0.83, 0.3, 0.7), (1, 0.875, 1.0, 0.17, 0.5, 0.1, 0.3)]),      # left shoulder
+        ("Body", [(1, 0.125, 0.75, 0.83, 1.0, 0.375, 0.75), (1, 0.25, 0.5, 0.83, 1.0, 0.125, 0.375),   # the back
+                  (1, 0.75, 1.0, 0.83, 1.0, 0.5, 0.9)]),
+        ("Body", [(1, 0.0, 0.125, 0.0, 0.5, 0.15, 0.55), (1, 0.0, 0.125, 0.5, 0.83, 0.3, 0.45)]),    # right side
+        ("Body", [(1, 0.0, 0.125, 0.5, 1.0, 0.6, 0.9)]),                                             # right shoulder
+        ("Body", [(0, 0.78, 1.0, 0.3, 1.0, 0.0, 0.8), (0, 0.89, 1.0, 0.45, 0.75, 0.8, 1.0)]),        # left haunch
+        ("Body", [(0, 0.2, 0.7, 0.7, 1.0, 0.6, 1.0), (0, 0.3, 0.45, 0.86, 1.0, 0.2, 0.6)]),          # the rump
+        ("Body", [(0, 0.0, 0.11, 0.15, 0.7, 0.2, 0.8), (0, 0.0, 0.22, 0.7, 1.0, 0.0, 0.4)]),         # right haunch
+        ("Body", [("pawL", 0, 1, 0, 1, 0, 1), (0, 0.78, 1.0, 0.0, 0.3, 0.0, 0.8)]),                  # left back paw
+        ("Body", [("pawR", 0, 1, 0, 1, 0, 1), (0, 0.0, 0.22, 0.0, 0.15, 0.0, 0.8)]),                 # right back paw
+        ("LegF1", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.5), (0, 0.5, 1.0, 0.0, 0.5, 0.5, 0.67)]),
+        ("LegF2", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.33), (0, 0.0, 0.5, 0.0, 0.5, 0.33, 0.5)]),
+        ("LegF1", [(0, 0.0, 0.5, 0.0, 1.0, 0.75, 0.92)]),
+        ("LegF2", [(0, 0.5, 1.0, 0.0, 1.0, 0.6, 0.8)]),
+    ],
+    "walk": HEAD_COAT + [
+        ("Body", [(0, 0.3, 0.7, 0.0, 0.1, 0.0, 0.6)]),                                               # the chest
+        ("Body", [(0, 0.55, 1.0, 0.3, 0.7, 0.6, 1.0), (0, 0.89, 1.0, 0.36, 0.55, 0.3, 0.6)]),        # saddle, left
+        ("Body", [(0, 0.1, 0.6, 0.8, 1.0, 0.5, 1.0), (0, 0.2, 0.35, 0.9, 1.0, 0.15, 0.5)]),          # the rump
+        ("Body", [(0, 0.0, 0.11, 0.2, 0.75, 0.15, 0.7), (0, 0.0, 0.3, 0.1, 0.3, 0.83, 1.0)]),        # right flank
+        ("Body", [(0, 0.6, 1.0, 0.45, 0.9, 0.0, 0.33)]),                                             # belly, left
+        ("Body", [(0, 0.1, 0.45, 0.35, 0.6, 0.83, 1.0)]),                                            # the shoulders
+        ("Body", [(0, 0.89, 1.0, 0.05, 0.3, 0.2, 0.7)]),                                             # left flank
+        ("Body", [(0, 0.0, 0.4, 0.6, 0.95, 0.0, 0.17)]),                                             # belly, right
+        ("LegF1", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.5), (0, 0.67, 1.0, 0.0, 0.67, 0.5, 0.75)]),
+        ("LegF2", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.25), (0, 0.0, 0.33, 0.0, 0.67, 0.25, 0.5)]),
+        ("LegB1", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.25), (0, 0.67, 1.0, 0.33, 1.0, 0.25, 0.5)]),
+        ("LegB2", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.5), (0, 0.0, 0.33, 0.33, 1.0, 0.5, 0.75)]),
+        ("Tail", [(-1, 0, 1, 0.4, 1.0, 0, 1)]),                                                      # the tip, dipped
+        ("Tail", [(0, 0, 1, 0.2, 0.7, 0.5, 1.0)]),
+    ],
+}
 
 
-def _fit_splat(clean, base, p, nrm, piece, i, k, eyes, placed, size):
-    """Lay pattern i at p so that every patch lies wholly on its fur face, clear of the eyes and of the splats
-    already placed on that face. Tries every pattern, with and without its second patch, mirrored, moved up to three
-    pixels and smaller, the biggest splat first, and nothing under `size` square pixels. Returns (the rectangles,
-    the splatter pixels that fit), each (cx, cy, w, h) in studs in the face's frame, or None when
-    nothing that big fits here."""
-    R = _align(nrm)
-    ax, ay = R.col[0], R.col[1]
-    nkey = tuple(round(c) for c in nrm)
-    plane = p.dot(nrm)
-
-    def world(x, y):
-        return p + ax * x + ay * y
-
-    def corners(x, y, w, h, ang, inset=0.0):
-        c, sn = math.cos(ang), math.sin(ang)
-        hw, hh = w / 2 - inset, h / 2 - inset
-        return [(x + sx * hw * c - sy * hh * sn, y + sx * hw * sn + sy * hh * c)
-                for sx in (0, 1, -1) for sy in (0, 1, -1)]
-
-    def box2(x, y, w, h, ang):
-        """The rectangle's bounds along the face's own axes, in asset space."""
-        us, vs = zip(*[(world(*t).dot(ax), world(*t).dot(ay)) for t in corners(x, y, w, h, ang)])
-        return (min(us), max(us), min(vs), max(vs))
-
-    def free(x, y, w, h, ang):
-        a = box2(x, y, w, h, ang)
-        for key, d, b in placed:
-            if key == nkey and abs(d - plane) < 0.05 * k:
-                if a[0] < b[1] + 0.01 and b[0] < a[1] + 0.01 and a[2] < b[3] + 0.01 and b[2] < a[3] + 0.01:
-                    return False
-        return True
-
-    seen = {}
-
-    def fur(x, y):
-        key = (round(x, 4), round(y, 4))
-        if key not in seen:
-            w = world(x, y)
-            seen[key] = (all((w - eye).length >= EYE_CLEAR * 0.75 for eye in eyes)
-                         and _on_fur(clean, base, w, nrm, piece, k))
-        return seen[key]
-
-    def lies(x, y, w, h, ang):
-        return free(x, y, w, h, ang) and all(fur(*t) for t in corners(x, y, w, h, ang, 0.008 * k))
-
-    def apart(a, b):
-        return not (a[0] < b[1] and b[0] < a[1] and a[2] < b[3] and b[2] < a[3])
-
-    want = SHAPE_ORDER[i % len(SHAPE_ORDER)]
-    flips = (1, -1) if i % 2 == 0 else (-1, 1)
-    tries = []                                         # every way to lay a pattern here, the biggest splat first
-    for key, ((main, second), _specks) in PATTERNS.items():
-        for both in (True, False):
-            for scale in FIT_SCALES:
-                area = (main[2] * main[3] + (second[2] * second[3] * 0.5 if both else 0.0)) * scale * scale
-                if area < size:
-                    continue
-                for f, flip in enumerate(flips):
-                    for dx, dy in FIT_SHIFTS:
-                        cost = 0.2 * (dx * dx + dy * dy) + (0.0 if key == want else 1.5) + 0.1 * f
-                        tries.append((-(area - cost), key, both, scale, flip, dx, dy))
-    tries.sort()
-    for _score, key, both, scale, flip, dx, dy in tries:
-        (main, second), specks = PATTERNS[key]
-        u = PIX * k * scale
-        rects = [((cx * flip + dx) * u, (cy + dy) * u, w * u, h * u, math.radians(deg) * flip)
-                 for cx, cy, w, h, deg in ((main, second) if both else (main,))]
-        if not all(lies(*r) for r in rects):
-            continue
-        side, turn = FLECK[0] * PIX * k, math.radians(FLECK[1]) * flip
-        dots = [((cx * flip + dx) * u, (cy + dy) * u, side, side, turn) for cx, cy in specks]
-        dots = [d for d in dots if lies(*d) and all(apart(box2(*d), box2(*r)) for r in rects)]
-        for r in rects + dots:
-            placed.append((nkey, plane, box2(*r)))
-        return rects, dots
-    return None
+def _boxes(ob):
+    """The piece's boxes in asset space, in the order they were built: (centre, 3x3 of unit axes, size)."""
+    out = []
+    for kind, m, _sw, _extra in PRIMS[ob.data.name]:
+        if kind == "box":
+            M = ob.matrix_world @ m
+            cols = [M.col[i].to_3d() for i in range(3)]
+            out.append((M.translation.copy(), Matrix([c.normalized() for c in cols]).transposed(),
+                        Vector([c.length for c in cols])))
+    return out
 
 
-def _relief(ob, p, nrm, boxes, k):
-    """The highest and the lowest point of `ob`'s surface under the stain's boxes ((cx, cy, w, h, turn) in the
-    face's frame at p), measured along nrm from p, sampled every third of a pixel."""
-    R = _align(nrm)
-    ax, ay = R.col[0], R.col[1]
+def _block(ob, which, k):
+    """One block of a piece: its number in build order (-1 the last: the tail's tip), a leg's "paw", or the sitting
+    body's back paws "pawL" (the cat's left, +X) and "pawR"."""
+    boxes = _boxes(ob)
+    if isinstance(which, int):
+        return boxes[which]
+    paws = [b for b in boxes[1:] if abs(b[2].z - 0.11 * k) < 0.004 * k and b[2].x > 0.2 * k]
+    if which == "paw":
+        return paws[0]
+    return (max if which == "pawL" else min)(paws, key=lambda b: b[0].x)
+
+
+def _cells(block, frac, k):
+    """The box's span in the block's mud pixels: ((first, end) on each axis, the pixel counts)."""
+    n = [max(1, round(block[2][a] / (PIX * k))) for a in range(3)]
+    span = []
+    for a in range(3):
+        i0, i1 = round(frac[2 * a] * n[a]), round(frac[2 * a + 1] * n[a])
+        if i1 <= i0:
+            i1 = min(n[a], i0 + 1)
+            i0 = i1 - 1
+        span.append((i0, i1))
+    return span, n
+
+
+def _shell(ob, block, span, n, k, eyes, head):
+    """The mud box for a span of a block: (centre, axes, size, its outer sides) in asset space, or None when it would lie on the
+    face's drawing or too near an eye. Each side that reaches the block's surface comes out of it by MUD_PROUD over
+    the highest thing of the coat under it; an underside stops at the floor."""
+    c, R, size = block
     inv = ob.matrix_world.inverted()
-    d_l = (inv.to_3x3() @ -nrm).normalized()
     dg = bpy.context.evaluated_depsgraph_get()
-    hi, lo = 0.0, 0.0
-    step = PIX * k / 3
-    for cx, cy, w, h, ang in boxes:
-        c, sn = math.cos(ang), math.sin(ang)
-        nx, ny = max(2, math.ceil(w / step) + 1), max(2, math.ceil(h / step) + 1)
-        for a in range(nx):
-            for b in range(ny):
-                u, v = -w / 2 + w * a / (nx - 1), -h / 2 + h * b / (ny - 1)
-                pt = p + ax * (cx + u * c - v * sn) + ay * (cy + u * sn + v * c)
-                ok, loc, _n, _f = ob.ray_cast(inv @ (pt + nrm * 0.6 * k), d_l, distance=2.0, depsgraph=dg)
-                if ok:
-                    z = (ob.matrix_world @ loc - p).dot(nrm)
-                    if abs(z) <= COVER * k:            # past a bevel the ray lands on another face: not under the mud
-                        hi, lo = max(hi, z), min(lo, z)
-    return hi, lo
+    lo = [-size[a] / 2 + size[a] * span[a][0] / n[a] for a in range(3)]
+    hi = [-size[a] / 2 + size[a] * span[a][1] / n[a] for a in range(3)]
+    out_lo, out_hi = list(lo), list(hi)
+    out = set()                                        # the sides that come out of the block: (axis, sign)
+    for a in range(3):
+        u, v = [i for i in range(3) if i != a]
+        for sign, edge, reaches in ((-1, lo, span[a][0] == 0), (1, hi, span[a][1] == n[a])):
+            if not reaches:
+                continue
+            nrm = R.col[a] * sign
+            down = (c + R @ Vector([edge[i] if i == a else 0.0 for i in range(3)])).z if nrm.z < -0.9 else None
+            relief = 0.0
+            for fu in (0.08, 0.3, 0.5, 0.7, 0.92):
+                for fv in (0.08, 0.3, 0.5, 0.7, 0.92):
+                    q = [0.0, 0.0, 0.0]
+                    q[a], q[u], q[v] = edge[a], lo[u] + (hi[u] - lo[u]) * fu, lo[v] + (hi[v] - lo[v]) * fv
+                    p = c + R @ Vector(q)
+                    if head and any((p - e).length < EYE_CLEAR * 0.75 for e in eyes):
+                        return None
+                    ok, loc, _n, _f = ob.ray_cast(inv @ (p + nrm * 0.6 * k), (inv.to_3x3() @ -nrm).normalized(),
+                                                  distance=2.0, depsgraph=dg)
+                    if ok:
+                        z = (ob.matrix_world @ loc - p).dot(nrm)
+                        if head and nrm.y < -0.5 and z > FACE_BARE * k:
+                            return None
+                        if z <= RELIEF_MAX * k:
+                            relief = max(relief, z)
+            grow = relief + MUD_PROUD * k
+            if down is not None:                       # an underside never goes below the floor the cat stands on
+                grow = max(0.0, min(grow, down))
+            out.add((a, sign))
+            if sign < 0:
+                out_lo[a] = lo[a] - grow
+            else:
+                out_hi[a] = hi[a] + grow
+    mid = Vector([(out_lo[a] + out_hi[a]) / 2 for a in range(3)])
+    return c + R @ mid, R, Vector([out_hi[a] - out_lo[a] for a in range(3)]), out
 
 
-def _blob(k, swatch, rects, dots, hi=0.0, lo=0.0):
-    """The stain's boxes in the face's frame (z out of the fur), all one shade: the strokes, the second a step
-    higher so they never share a plane, and the flecks. hi and lo are the relief under the stain (_relief)."""
-    b = Builder()
-    bottom = lo - MUD_SUNK * k
-    for j, (cx, cy, w, h, ang) in enumerate(rects + dots):
-        top = hi + (MUD_PROUD + (MUD_STEP if j == 1 and len(rects) > 1 else 0.0)) * k
-        b.box((cx, cy, (top + bottom) / 2), (w, h, top - bottom), swatch, bevel=False,
-              rot=Matrix.Rotation(ang, 3, "Z"))
-    return b
+def _coat(objs, base, body, k, eyes, mat):
+    """The MUD pieces of the coat for a built cat: [(object, the cat piece it rides)]."""
+    pieces = {_piece(o, base): o for o in objs}
+    taken = {}                                         # (piece, block): the mud pixels already used
+    out = []
+    for i, (piece, boxes) in enumerate(COAT[body]):
+        ob = pieces[piece]
+        shells, probe = [], []
+        for j, (which, *frac) in enumerate(boxes):
+            block = _block(ob, which, k)
+            span, n = _cells(block, frac, k)
+            cells = {(x, y, z) for x in range(*span[0]) for y in range(*span[1]) for z in range(*span[2])}
+            used = taken.setdefault((piece, which if which != -1 else len(_boxes(ob)) - 1), set())
+            shell = None if cells & used else _shell(ob, block, span, n, k, eyes, piece == "Head")
+            if shell is None:
+                if j == 0:
+                    raise RuntimeError(f"{base}: mud piece {i + 1} does not fit (its first box)")
+                continue
+            used |= cells
+            shells.append(shell)
+        corners = [c + R @ Vector((sx * s.x, sy * s.y, sz * s.z)) / 2 for c, R, s, _o in shells
+                   for sx in (1, -1) for sy in (1, -1) for sz in (1, -1)]
+        lo = Vector([min(p[a] for p in corners) for a in range(3)])
+        hi = Vector([max(p[a] for p in corners) for a in range(3)])
+        if (hi - lo).length / 2 > SCRUB_REACH:
+            raise RuntimeError(f"{base}: mud piece {i + 1} is too big to scrub ({(hi - lo).length / 2:.2f})")
+        if body == "sit" and hi.z < TUB_WATER + WATER_CLEAR * k:
+            raise RuntimeError(f"{base}: mud piece {i + 1} would sit under the tub's water")
+        at = (lo + hi) / 2
+        c0, R0, s0, _o = shells[0]                     # the fur under the wrap picks the mud's shade
+        for a in range(3):
+            for sign in (1, -1):
+                probe.append(_swatch_at(ob, c0 + R0.col[a] * sign * s0[a] / 2))
+        furs = [f for f in probe if f]
+        fur = max(set(furs), key=furs.count) if furs else None
+        tone = _mud_for(fur, wet=i % 3 == 2)           # every third piece the wet shade
+        b = Builder()
+        for c, R, s, sides in shells:
+            verts = b.box(tuple(c - at), tuple(s), tone, bevel=False, rot=R)
+            for e in {e for v in verts for e in v.link_edges}:      # soften the edges that wrap an edge of the block,
+                p = R.transposed() @ ((e.verts[0].co + e.verts[1].co) / 2 - (c - at))   # as the block's own are
+                on = [(a, 1 if p[a] > 0 else -1) for a in range(3) if abs(p[a]) > s[a] / 4]
+                e[b.bev] = 1 if len(on) == 2 and all(f in sides for f in on) else 0
+        out.append((b.finalize(f"{base}_Mud{i + 1:02d}", mat, location=tuple(at)), piece))
+    return out
 
 
 def _tangle(k, swatch, swatch2):
@@ -367,33 +397,12 @@ def build_dirty(name, mat, body):
     k = cats.scale_of(spec, body)
     eyes = [_centre(o) for o in objs if o.name.endswith(("_Eye1", "_Eye2"))]
     look = cats.look(spec)
-    spots = _spots(objs, base, _D, len(_D), SPACING * k, eyes)
     nest = {}
-    by_piece = {o.name[len(base) + 1:]: o for o in objs}
     cat_objs = list(objs)
-    placed = []
-    fits = {}                                          # spot number: its splat
-    for size in FIT_SIZES:                             # the big splats first, on the faces a player sees first
-        for j, (p, nrm, piece) in enumerate(spots):
-            if j not in fits and len(fits) < MUD:
-                fit = _fit_splat(cat_objs, base, p, nrm, piece, j, k, eyes, placed, size)
-                if fit:
-                    fits[j] = fit
-    if len(fits) < MUD:
-        raise RuntimeError(f"{base}: only {len(fits)} mud splats fit, need {MUD}")
-    for i, j in enumerate(sorted(fits)):
-        p, nrm, piece = spots[j]
-        rects, dots = fits[j]
-        fur = _swatch_at(by_piece[piece], p)
-        tone = _mud_for(fur, wet=i % 3 == 2)           # every third stain the wet shade
-        part = f"Mud{i + 1:02d}"
-        hi, lo = _relief(by_piece[piece], p, nrm, rects + dots, k)
-        ob = _blob(k, tone, rects, dots, hi, lo).finalize(f"{base}_{part}", mat, bevel=0, location=tuple(p))
-        ob.matrix_world = Matrix.Translation(ob.location) @ _align(nrm).to_4x4()
-        _apply_rotation(ob)
+    for ob, piece in _coat(cat_objs, base, body, k, eyes, mat):
         objs.append(ob)
         if piece in RIDES:
-            nest["_" + part] = "_" + piece
+            nest[ob.name[len(base):]] = "_" + piece
     tspots = _spots(objs[:len(objs) - MUD], base, _T, TANGLES, TANGLE_SPACING * k, eyes)
     if len(tspots) < TANGLES:
         raise RuntimeError(f"{base}: only {len(tspots)} tangle spots found, need {TANGLES}")
@@ -465,7 +474,6 @@ def _apply_rotation(ob):
     R = ob.matrix_world.to_3x3()
     ob.data.transform(R.to_4x4())
     ob.matrix_world = Matrix.Translation(ob.matrix_world.translation)
-    from common import PRIMS                           # the Part export reads the primitive log: turn it too
     ob.data.update()
     PRIMS[ob.data.name] = [(kind, R.to_4x4() @ m, sw, extra) for kind, m, sw, extra in PRIMS[ob.data.name]]
 
