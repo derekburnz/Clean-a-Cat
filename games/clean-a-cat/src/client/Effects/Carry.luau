@@ -73,9 +73,10 @@ Carry.POSE = table.freeze({
 	-- that corner stays under the carrier's chin (Model-Agent's numbers from his stand-in).
 	loafGap = 0,
 	-- R6 has one-stud block arms in a V narrower than the 2.9 stud loaf at CarryScale 1.4, so on the hands' middle
-	-- he sat half a stud inside both; raised 0.4 his head and body read 0.23 to 0.26 into the arms and the chin
-	-- still has room (Model-Agent's numbers from Sync-Agent's 63ff1f6 run)
-	loafGap6 = 0.4,
+	-- he sat half a stud inside both. Raised 0.4 (#381) his tipped head came level with the top of the carrier's head
+	-- and covered the left half of the face from the front (Sync-Agent, 4ae0e33), so 0.2: a little more arm overlap,
+	-- the face clear (Model-Agent's middle)
+	loafGap6 = 0.2,
 	loafRoll = 5,
 })
 
