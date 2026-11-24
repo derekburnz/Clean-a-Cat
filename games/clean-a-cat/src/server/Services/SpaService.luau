@@ -21,6 +21,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
+local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
@@ -46,6 +47,9 @@ local cats: { [Player]: SpaRules.Cat } = {}
 local nextId: { [Player]: number } = {}
 local lastSeq: { [Player]: number } = {} -- the newest report number each client sent
 local queues: { [Player]: { string } } = {} -- customers waiting at the door, front first
+-- What each waiting customer's cat needs, in the same order as queues (#267): rolled when the customer joins the
+-- line, so the card shows a smell or long claws before the pick, and moved with the customer on a pick.
+local queueNeeds: { [Player]: { { CatRules.Need } } } = {}
 local handedOut: { [Player]: number } = {} -- cats handed out this session, for the stray turns
 local random = Random.new()
 
@@ -59,6 +63,23 @@ local function rollCustomer(player: Player): string
 	end, first, if save then CatRules.tierFor(save.stars) else 1)
 end
 
+-- A cat's needs: its rarity's, plus the later needs whose switches are on, by chance (WashDraft, #267).
+local function rollNeeds(kind: string): { CatRules.Need }
+	return CatRules.rollNeeds(kind, function()
+		return random:NextNumber()
+	end, LiveFlags.isOn)
+end
+
+-- The needs list beside the player's door queue, kept as long as the queue.
+local function needsFor(player: Player): { { CatRules.Need } }
+	local list = queueNeeds[player]
+	if list == nil then
+		list = {}
+		queueNeeds[player] = list
+	end
+	return list :: { { CatRules.Need } }
+end
+
 -- The player's door queue, filled to QUEUE_SIZE, so there is always a customer waiting.
 local function queueFor(player: Player): { string }
 	local queue = queues[player]
@@ -67,8 +88,18 @@ local function queueFor(player: Player): { string }
 		queues[player] = queue
 	end
 	local q = queue :: { string }
+	local n = needsFor(player)
+	-- a line left from before this list existed, or out of step: roll what is missing, drop what is extra
+	while #n < #q do
+		table.insert(n, rollNeeds(q[#n + 1]))
+	end
+	while #n > #q do
+		table.remove(n)
+	end
 	while #q < QUEUE_SIZE do
-		table.insert(q, rollCustomer(player))
+		local kind = rollCustomer(player)
+		table.insert(q, kind)
+		table.insert(n, rollNeeds(kind))
 	end
 	return q
 end
@@ -98,13 +129,16 @@ local function newCat(player: Player): SpaRules.Cat
 				return random:NextNumber()
 			end, brandNew, CatRules.tierFor(save.stars))
 			cat.stray = true
+			cat.needs = rollNeeds(cat.kind :: string)
 			cats[player] = cat
 			return cat
 		end
 	end
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
 		-- The front customer hands over their cat; queueFor refills the line when it is next read.
-		cat.kind = table.remove(queueFor(player), 1)
+		local line = queueFor(player)
+		cat.kind = table.remove(line, 1)
+		cat.needs = table.remove(needsFor(player), 1)
 		FigureService.served(player, cat.kind :: string) -- that customer's figure leaves the line
 		Telemetry.onboarding(player, "first_customer")
 	end
@@ -122,14 +156,19 @@ local function sendCat(player: Player, cat: SpaRules.Cat)
 		return
 	end
 	local save = DataService.get(player)
-	local needs = CatRules.needs(kind)
+	local needs = CatRules.liveNeeds(cat.needs or CatRules.needs(kind), LiveFlags.isOn)
 	local locked = CatRules.lockedNeeds(needs, if save then save.stations else {})
 	NetService.fire(player, "CatReady", cat.id, kind, needs, locked, cat.stray, cat.brushStrokes)
 end
 
 -- Sends the door line to the client and the figures (switch customers).
 local function sendQueue(player: Player)
-	NetService.fire(player, "CustomerQueue", table.clone(queueFor(player)))
+	local line = queueFor(player)
+	local needs: { { CatRules.Need } } = {}
+	for place, list in needsFor(player) do
+		needs[place] = CatRules.liveNeeds(list, LiveFlags.isOn)
+	end
+	NetService.fire(player, "CustomerQueue", table.clone(line), needs)
 	FigureService.showQueue(player, table.clone(queueFor(player)))
 end
 
@@ -173,7 +212,9 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 	if save == nil or save.stars <= 0 then
 		return
 	end
-	if SpaRules.pickNext(queueFor(player), index) then
+	local line = queueFor(player)
+	if SpaRules.pickNext(line, index) then
+		SpaRules.pickNext(needsFor(player), index) -- the cat's needs move with it
 		FigureService.picked(player, index) -- the customer's look goes to the front with their cat (#206)
 		sendQueue(player)
 	end
@@ -250,7 +291,9 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	-- A customer's cat goes home: the customer pays coins plus a tip, and the spa earns stars.
 	local pay = CatRules.pay(kind)
 	-- Built stations (a Brush Table, a dryer) make every customer pay a little more; only while builds are on.
-	local bonus = if LiveFlags.isOn("builds") then BuildRules.payBonus(save.stations) else 0
+	local bonus = if LiveFlags.isOn("builds")
+		then BuildRules.payBonus(save.stations, LiveFlags.isOn)
+		else 0
 	coins = pay.coins + pay.tip + bonus
 	save.coins += coins
 	WalletService.show(player)
@@ -340,13 +383,28 @@ function SpaService.Start()
 		:Connect(function()
 			if not LiveFlags.isOn(CUSTOMERS_FLAG) then
 				table.clear(queues)
+				table.clear(queueNeeds)
 			end
 		end)
+	-- A later wash step switched on or off: the waiting cards show or drop its need at once (CatRules.liveNeeds).
+	for _, need in CatRules.LATER_NEEDS do
+		ReplicatedStorage
+			:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WashDraft.NEED_FLAG[need])
+			:Connect(function()
+				if not LiveFlags.isOn(CUSTOMERS_FLAG) then
+					return
+				end
+				for player in queues do
+					sendQueue(player)
+				end
+			end)
+	end
 	Players.PlayerRemoving:Connect(function(player: Player)
 		cats[player] = nil
 		nextId[player] = nil
 		lastSeq[player] = nil
 		queues[player] = nil
+		queueNeeds[player] = nil
 		handedOut[player] = nil
 	end)
 end

@@ -31,6 +31,40 @@ return function()
 		)
 	end)
 
+	describe("QueueViewRules.cleanNeeds", function()
+		it("keeps each place's list of known needs", function()
+			local needs =
+				QueueViewRules.cleanNeeds({ { "mud", "tangles", "smell" }, { "mud", "tangles" } })
+			expect(#needs[1]).to.equal(3)
+			expect(needs[1][3]).to.equal("smell")
+			expect(#needs[2]).to.equal(2)
+		end)
+
+		it(
+			"leaves out a place with an unknown, repeated or wrong-typed need, and anything past the line",
+			function()
+				expect(next(QueueViewRules.cleanNeeds(nil))).to.equal(nil)
+				local needs = QueueViewRules.cleanNeeds({
+					{ "mud", "fleas" },
+					{ "mud", "mud" },
+					{ 3 },
+					{},
+					"mud",
+				})
+				expect(next(needs)).to.equal(nil)
+				local long = {}
+				for place = 1, SpaRules.QUEUE_SIZE + 2 do
+					long[place] = { "mud" }
+				end
+				local count = 0
+				for _ in QueueViewRules.cleanNeeds(long) do
+					count += 1
+				end
+				expect(count).to.equal(SpaRules.QUEUE_SIZE)
+			end
+		)
+	end)
+
 	describe("QueueViewRules.cards", function()
 		it("makes one card per customer with its rarity, needs, pay and place", function()
 			local cards = QueueViewRules.cards({ "Muffin", "Marble" }, {}, {})
@@ -50,6 +84,23 @@ return function()
 			expect(before.locked.mud).to.equal(nil)
 			local after = QueueViewRules.cards({ "Marble" }, {}, { Dryer = true })[1]
 			expect(after.locked.wet).to.equal(nil)
+		end)
+
+		it("shows the rolled needs where the server sent them, else the rarity's", function()
+			local rolled = { [1] = { "mud", "tangles", "smell", "claws" } }
+			local cards = QueueViewRules.cards({ "Muffin", "Marble" }, {}, { Dryer = true }, rolled)
+			expect(#cards[1].needs).to.equal(4)
+			expect(cards[1].locked.smell).to.equal(true)
+			expect(cards[1].locked.claws).to.equal(true)
+			expect(#cards[2].needs).to.equal(#CatRules.needs("Marble"))
+			local built = QueueViewRules.cards(
+				{ "Muffin" },
+				{},
+				{ BubbleBath = true, Pawdicure = true },
+				rolled
+			)
+			expect(built[1].locked.smell).to.equal(nil)
+			expect(built[1].locked.claws).to.equal(nil)
 		end)
 
 		it("marks a cat new until it has been washed", function()

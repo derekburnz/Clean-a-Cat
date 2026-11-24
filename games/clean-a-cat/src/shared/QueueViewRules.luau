@@ -40,22 +40,59 @@ function QueueViewRules.clean(raw: unknown): { string }
 	return out
 end
 
+-- What each waiting cat needs, as the server sent it beside the line (#267), place by place. A place whose list is
+-- not a list of known needs (each a key of CatRules.NEED_STATION, at most once) is left out, and its card falls back
+-- to the cat's rarity's needs.
+function QueueViewRules.cleanNeeds(raw: unknown): { [number]: { CatRules.Need } }
+	local out: { [number]: { CatRules.Need } } = {}
+	if type(raw) ~= "table" then
+		return out
+	end
+	for place = 1, SpaRules.QUEUE_SIZE do
+		local list = (raw :: { [number]: unknown })[place]
+		if type(list) ~= "table" then
+			continue
+		end
+		local needs: { CatRules.Need } = {}
+		local ok = true
+		for index = 1, #(list :: { unknown }) do
+			local need = (list :: { [number]: unknown })[index]
+			if
+				type(need) ~= "string"
+				or CatRules.NEED_STATION[need] == nil
+				or table.find(needs, need) ~= nil
+			then
+				ok = false
+				break
+			end
+			table.insert(needs, need)
+		end
+		if ok and #needs > 0 then
+			out[place] = needs
+		end
+	end
+	return out
+end
+
 function QueueViewRules.isVip(rarity: string): boolean
 	local from = table.find(CatRules.RARITIES, QueueViewRules.VIP_FROM) :: number
 	local at = table.find(CatRules.RARITIES, rarity)
 	return at ~= nil and at >= from
 end
 
--- One card per customer in `line` (front first).
+-- One card per customer in `line` (front first). `rolled` is each place's needs as the server rolled them
+-- (cleanNeeds); a place without one shows its rarity's needs.
 function QueueViewRules.cards(
 	line: { string },
 	entries: { [string]: IndexRules.Entry },
-	built: { [string]: boolean }
+	built: { [string]: boolean },
+	rolled: { [number]: { CatRules.Need } }?
 ): { Card }
 	local out: { Card } = {}
 	for place, cat in line do
 		local rarity = CatRules.rarityOf(cat) or "Common"
-		local needs = CatRules.needs(cat)
+		local given: { CatRules.Need }? = if rolled then rolled[place] else nil
+		local needs = if given then table.clone(given) else CatRules.needs(cat)
 		local locked: { [string]: boolean } = {}
 		for _, need in CatRules.lockedNeeds(needs, built) do
 			locked[need] = true

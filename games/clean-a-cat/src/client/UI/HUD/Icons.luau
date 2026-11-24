@@ -31,6 +31,8 @@ Icons.IMAGES = {
 	Mud = "",
 	Tangles = "",
 	Wet = "",
+	Smell = "", -- the Bubble Bath's need (#267)
+	Claws = "", -- the Pawdicure's need (#267)
 	Pointer = "",
 } :: { [string]: string }
 
@@ -64,6 +66,8 @@ local STAND_INS: { [string]: StandIn } = {
 	Mud = { glyph = "🟤", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Tangles = { glyph = "🧶", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Wet = { glyph = "💧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Smell = { glyph = "🫧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Claws = { glyph = "💅", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
 }
 

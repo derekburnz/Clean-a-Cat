@@ -31,6 +31,7 @@ export type Cat = {
 	kind: string?, -- a customer's cat (CatRules.ROSTER name); nil for the prototype's anonymous cat
 	stray: boolean, -- a stray: nobody pays for it and it moves into the display window once clean
 	brushStrokes: number, -- strokes this cat's brushing takes: BRUSH_STROKES, fewer with the Pro Brush (#267)
+	needs: { string }?, -- a customer's cat or stray: what it needs, rolled once (CatRules.rollNeeds, #267)
 }
 
 function SpaRules.newCat(id: number, now: number): Cat

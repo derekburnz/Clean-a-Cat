@@ -36,7 +36,9 @@ local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F
 local NEW_PINK = Color3.fromHex("FF86CF")
 local VIP_TOP = Color3.fromHex("E3F0FF")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
-local NEED_ICON: { [string]: string } = { mud = "Mud", tangles = "Tangles", wet = "Wet" }
+local SIDE_BY_SIDE_NEEDS = 3 -- most needs that fit beside the pay on a short card
+local NEED_ICON: { [string]: string } =
+	{ mud = "Mud", tangles = "Tangles", wet = "Wet", smell = "Smell", claws = "Claws" }
 
 -- Sizes in design pixels: full, then compact for a short screen (the picture beside the name).
 local SIZES = {
@@ -174,24 +176,32 @@ local function screenWidth(scale: number): number
 	return width / scale
 end
 
--- The needs as round icons, left to right; a locked one is faded with a lock on its corner.
+local NEED_GAP = 5
+
+-- The needs as round icons, left to right; a locked one is faded with a lock on its corner. Stacked over the pay,
+-- they share the card's width: a cat with a smell and claws as well (#267) gets smaller dots, never a wider card.
 local function drawNeeds(
 	card: QueueViewRules.Card,
 	parent: Instance,
 	s: Sizes,
-	short: boolean
+	stacked: boolean
 ): Frame
+	local count = math.max(#card.needs, 1)
+	local room = s.cardW - 2 * s.inner
+	local size = if stacked
+		then math.min(s.need, math.floor((room - (count - 1) * NEED_GAP) / count))
+		else s.need
 	local set = frame("Needs", parent)
 	set.AutomaticSize = Enum.AutomaticSize.X
-	set.Size = UDim2.fromOffset(0, s.need)
-	local layout = list(set, true, 5)
-	layout.HorizontalAlignment = if short
-		then Enum.HorizontalAlignment.Left
-		else Enum.HorizontalAlignment.Center
+	set.Size = UDim2.fromOffset(0, size)
+	local layout = list(set, true, NEED_GAP)
+	layout.HorizontalAlignment = if stacked
+		then Enum.HorizontalAlignment.Center
+		else Enum.HorizontalAlignment.Left
 	for index, need in card.needs do
 		local dot = frame(`Need{index}`, set)
 		dot.LayoutOrder = index
-		dot.Size = UDim2.fromOffset(s.need, s.need)
+		dot.Size = UDim2.fromOffset(size, size)
 		dot.BackgroundTransparency = 0
 		dot.BackgroundColor3 = Kit.WHITE
 		Kit.corner(dot, UDim.new(0.5, 0))
@@ -215,11 +225,18 @@ local function drawNeeds(
 	return set
 end
 
--- Draws one customer's card in `row` and returns its height.
-local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: boolean): number
+-- Draws one customer's card in `row` and returns its height. `stacked` puts the needs over the pay: always on a
+-- tall screen, and on a short one when some cat in the line has more needs than fit beside the pay.
+local function drawCard(
+	card: QueueViewRules.Card,
+	row: Frame,
+	s: Sizes,
+	short: boolean,
+	stacked: boolean
+): number
 	local whoW = if short then s.cardW - 2 * s.inner - s.tile - 10 else s.cardW - 2 * s.inner
 	local headH = if short then s.tile else s.tile + 6 + s.chip + 4 + s.name
-	local infoH = if short then s.payH else s.need + 6 + s.payH
+	local infoH = if stacked then s.need + 6 + s.payH else s.payH
 	local cardH = 2 * s.inner + headH + infoH + s.act + 2 * s.stackGap
 
 	local box = frame(`Customer{card.place}`, row)
@@ -296,7 +313,7 @@ local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: 
 	local info = frame("Info", box)
 	info.LayoutOrder = 2
 	info.Size = UDim2.new(1, 0, 0, infoH)
-	local needs = drawNeeds(card, info, s, short)
+	local needs = drawNeeds(card, info, s, stacked)
 	if card.vip and short then
 		-- on a short card the crown tips over the card's top right corner, clear of New! on the picture's top left
 		-- (Review-QA on #252). Info has no layout, so it is placed from there.
@@ -312,7 +329,7 @@ local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: 
 	pay.AutomaticSize = Enum.AutomaticSize.X
 	pay.Size = UDim2.fromOffset(0, s.payH)
 	list(pay, true, 6)
-	if short then
+	if not stacked then
 		needs.AnchorPoint = Vector2.new(0, 0.5)
 		needs.Position = UDim2.fromScale(0, 0.5)
 		pay.AnchorPoint = Vector2.new(1, 0.5)
@@ -322,6 +339,8 @@ local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: 
 		needs.Position = UDim2.fromScale(0.5, 0)
 		pay.AnchorPoint = Vector2.new(0.5, 1)
 		pay.Position = UDim2.fromScale(0.5, 1)
+	end
+	if not short then
 		local say = words("Say", pay, 20)
 		say.LayoutOrder = 1
 		say.FontFace = Kit.BODY_FACE
@@ -404,9 +423,14 @@ local function redraw()
 
 	p.rowList.Padding = UDim.new(0, s.gap)
 	clearRow(p.row)
+	local most = 0
+	for _, card in cards do
+		most = math.max(most, #card.needs)
+	end
+	local stacked = not short or most > SIDE_BY_SIDE_NEEDS
 	local tallest = 0
 	for _, card in cards do
-		tallest = math.max(tallest, drawCard(card, p.row, s, short))
+		tallest = math.max(tallest, drawCard(card, p.row, s, short, stacked))
 	end
 	p.row.Size = UDim2.new(1, 0, 0, tallest + s.room + 4)
 	p.rowPad.PaddingTop = UDim.new(0, s.room)
