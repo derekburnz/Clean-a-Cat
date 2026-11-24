@@ -8,7 +8,7 @@ cd games/clean-a-cat/tools/cloudcheck
 npm ci                       # once
 npm test                     # tests/specs/*.spec.luau, one fresh Luau state per spec file
 npm run analyze:tests        # strict type check and lint of src/ and tests/, Roblox API types included
-npm run uigate               # the UI gate at desktop, laptop and phone sizes
+npm run uigate               # the UI gate at desktop, laptop and phone sizes, plus the phone at the largest text size
 npm run uigate:tablets       # the same on iPad mini, a 4:3 iPad, iPad Pro, a 16:10 Android tablet and a Fire 7
 npm run uigate:devices       # a 10th-gen iPad, the smallest iPhone, a small Android phone and a console
 npm run check                # everything CI runs
@@ -30,6 +30,14 @@ node uigate.mjs --profile phone --scene Example --out /tmp/look   # one scene at
 
 The gate writes a report, a picture of each scene (SVG) and an `index.html` to the `--out` folder (default: the
 system temp folder), never into the repo. In CI they are kept as the `uigate-report` artifact for a week.
+
+## Comfort settings run
+`phonecomfort` is the phone again with Roblox's largest text size and fully solid backgrounds
+(`GuiService.PreferredTextSize = Largest`, `PreferredTransparency = 0`) and the `comfortSettings` switch on, so every screen is checked the way a player
+who picked those settings sees it (#181). Roblox does not publish how much bigger each text size draws; the shim uses
+1.15, 1.3 and 1.5 for Large, Larger and Largest (`TEXT_SCALE` in `ui-shim.luau`) until a Studio measurement replaces
+them. Text that outgrows its box shows as a `fit` note, like on every other size; taps, tiny text and anything pushed
+off screen or under the top bar fail as usual.
 
 ## Limits to know
 - The runtime is `@luau-rs/luau`, Luau compiled to WebAssembly. The real type gate is still `./check.sh` with the
