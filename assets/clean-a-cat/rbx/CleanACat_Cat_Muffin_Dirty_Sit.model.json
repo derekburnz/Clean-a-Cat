@@ -201,7 +201,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.2945,
+       0.2739,
        0.0617,
        -0.095
       ],
@@ -225,7 +225,7 @@
      }
     },
     "Size": [
-     0.228,
+     0.1868,
      0.1045,
      0.38
     ],
@@ -745,7 +745,7 @@
         "position": [
          0.0,
          1.6055,
-         -0.1805
+         -0.1898
         ],
         "orientation": [
          [
@@ -769,7 +769,7 @@
       "Size": [
        0.076,
        0.057,
-       0.478
+       0.4593
       ],
       "Color": [
        0.7216,
@@ -2239,8 +2239,8 @@
          "CFrame": {
           "position": [
            0.0,
-           1.6416,
-           0.0356
+           1.6276,
+           -0.0328
           ],
           "orientation": [
            [
@@ -2262,9 +2262,9 @@
          }
         },
         "Size": [
-         0.38,
-         0.095,
-         0.342
+         0.2052,
+         0.1078,
+         0.2052
         ],
         "Color": [
          0.3529,
@@ -2282,8 +2282,8 @@
          "CFrame": {
           "position": [
            0.0,
-           0.0,
-           0.0
+           0.0064,
+           0.0684
           ],
           "orientation": [
            [
@@ -2307,16 +2307,7 @@
        },
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/9"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ]
+       }
       }
      ],
      "properties": {
@@ -2324,7 +2315,7 @@
        "OptionalCFrame": {
         "position": [
          0.0,
-         1.6416,
+         1.634,
          0.0356
         ],
         "orientation": [
@@ -2362,8 +2353,8 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0,
-           1.6416,
+           -0.0684,
+           1.6312,
            -0.3871
           ],
           "orientation": [
@@ -2386,9 +2377,9 @@
          }
         },
         "Size": [
-         0.494,
-         0.095,
-         0.285
+         0.2736,
+         0.1083,
+         0.2052
         ],
         "Color": [
          0.3529,
@@ -2405,8 +2396,8 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
-           0.0,
+           0.0684,
+           0.0028,
            0.0
           ],
           "orientation": [
@@ -2431,16 +2422,56 @@
        },
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/10"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0171,
+           1.6207,
+           -0.3016
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
          }
-        }
-       ]
+        },
+        "Size": [
+         0.171,
+         0.0722,
+         0.171
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
@@ -2448,7 +2479,7 @@
        "OptionalCFrame": {
         "position": [
          0.0,
-         1.6416,
+         1.634,
          -0.3871
         ],
         "orientation": [
@@ -2486,9 +2517,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.4446,
+           -0.4353,
            1.3754,
-           -0.4726
+           -0.3871
           ],
           "orientation": [
            [
@@ -2510,9 +2541,9 @@
          }
         },
         "Size": [
-         0.38,
-         0.095,
-         0.342
+         0.342,
+         0.1059,
+         0.2565
         ],
         "Color": [
          0.3529,
@@ -2529,8 +2560,8 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
-           0.0,
+           0.0855,
+           0.0017,
            0.0
           ],
           "orientation": [
@@ -2555,23 +2586,112 @@
        },
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/14"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud06",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4249,
+           1.4707,
+           -0.2803
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
          }
-        }
-       ]
+        },
+        "Size": [
+         0.2138,
+         0.0698,
+         0.1906
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud06",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4287,
+           1.1616,
+           -0.5154
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0855,
+         0.085,
+         0.0855
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.4446,
+         -0.437,
          1.3754,
          -0.4726
         ],
@@ -2610,9 +2730,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.4446,
+           0.4372,
            1.3754,
-           -0.4726
+           -0.3871
           ],
           "orientation": [
            [
@@ -2634,9 +2754,9 @@
          }
         },
         "Size": [
-         0.285,
-         0.0855,
-         0.266
+         0.342,
+         0.1097,
+         0.2565
         ],
         "Color": [
          0.3529,
@@ -2653,8 +2773,8 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
-           0.0,
+           -0.0855,
+           -0.0002,
            0.0
           ],
           "orientation": [
@@ -2679,23 +2799,112 @@
        },
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/15"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud07",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4249,
+           1.4707,
+           -0.2803
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
          }
-        }
-       ]
+        },
+        "Size": [
+         0.2138,
+         0.0698,
+         0.1906
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud07",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4287,
+           1.1616,
+           -0.5154
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0855,
+         0.085,
+         0.0855
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.4446,
+         0.437,
          1.3754,
          -0.4726
         ],
@@ -2724,19 +2933,19 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/25"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/22"
      },
      "children": [
       {
-       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud17",
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud14",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.4446,
+           -0.4472,
            1.0844,
-           0.0356
+           -0.1354
           ],
           "orientation": [
            [
@@ -2758,9 +2967,9 @@
          }
         },
         "Size": [
-         0.285,
-         0.0855,
-         0.266
+         0.342,
+         0.0822,
+         0.2565
         ],
         "Color": [
          0.3529,
@@ -2777,8 +2986,8 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
-           0.0,
+           -0.171,
+           -0.0102,
            0.0
           ],
           "orientation": [
@@ -2802,26 +3011,509 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/25"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
+        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/22"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud14",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4368,
+           1.1912,
+           -0.0285
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
          }
-        }
-       ]
+        },
+        "Size": [
+         0.2138,
+         0.0461,
+         0.2138
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.4446,
+         -0.437,
          1.0844,
          0.0356
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud14"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/23"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud15",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4491,
+           1.0844,
+           -0.1354
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.342,
+         0.086,
+         0.2565
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.171,
+           -0.0121,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/23"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud15",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4368,
+           1.1912,
+           -0.0285
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2138,
+         0.0461,
+         0.2138
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.437,
+         1.0844,
+         0.0356
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud15"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/24"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud16",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3132,
+           1.619,
+           -0.4327
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1876,
+         0.1477,
+         0.2052
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.0088,
+           -0.023,
+           -0.0684
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/24"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.322,
+         1.596,
+         -0.5011
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud16"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/25"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud17",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3133,
+           1.6133,
+           -0.4327
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1875,
+         0.1363,
+         0.2052
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0088,
+           -0.0173,
+           -0.0684
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/25"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud17",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2366,
+           1.6048,
+           -0.4515
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.171,
+         0.104,
+         0.106
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.3221,
+         1.596,
+         -0.5011
         ],
         "orientation": [
          [
@@ -2858,14 +3550,14 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.4446,
-           1.0844,
-           0.0356
+           0.0,
+           1.3673,
+           0.1186
           ],
           "orientation": [
            [
+            -1.0,
             0.0,
-            1.0,
             0.0
            ],
            [
@@ -2874,17 +3566,17 @@
             1.0
            ],
            [
-            1.0,
             0.0,
+            1.0,
             0.0
            ]
           ]
          }
         },
         "Size": [
-         0.38,
-         0.095,
-         0.342
+         0.342,
+         0.1123,
+         0.2565
         ],
         "Color": [
          0.3529,
@@ -2902,19 +3594,19 @@
          "CFrame": {
           "position": [
            0.0,
-           0.0,
+           0.0049,
            0.0
           ],
           "orientation": [
            [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
             0.0,
             0.0,
             1.0
-           ],
-           [
-            1.0,
-            0.0,
-            0.0
            ],
            [
             0.0,
@@ -2927,25 +3619,114 @@
        },
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/26"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud18",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1069,
+           1.4667,
+           0.1082
+          ],
+          "orientation": [
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
          }
-        }
-       ]
+        },
+        "Size": [
+         0.2138,
+         0.0762,
+         0.1987
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud18",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1283,
+           1.1535,
+           0.112
+          ],
+          "orientation": [
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0855,
+         0.0914,
+         0.0855
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.4446,
-         1.0844,
-         0.0356
+         0.0,
+         1.3673,
+         0.1235
         ],
         "orientation": [
          [
@@ -2982,33 +3763,33 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.322,
-           1.6036,
-           -0.5011
+           -0.4341,
+           1.411,
+           -0.0113
           ],
           "orientation": [
            [
-            1.0,
             0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
+            -1.0,
             0.0
            ],
            [
             0.0,
             0.0,
             1.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
            ]
           ]
          }
         },
         "Size": [
-         0.494,
-         0.095,
-         0.285
+         0.2394,
+         0.116,
+         0.1796
         ],
         "Color": [
          0.3529,
@@ -3026,12 +3807,17 @@
          "CFrame": {
           "position": [
            0.0,
-           0.0,
-           0.0
+           0.0029,
+           -0.0598
           ],
           "orientation": [
            [
-            1.0,
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            -1.0,
             0.0,
             0.0
            ],
@@ -3039,11 +3825,6 @@
             0.0,
             1.0,
             0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
            ]
           ]
          }
@@ -3051,25 +3832,65 @@
        },
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/27"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud19",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4218,
+           1.4858,
+           -0.0862
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
          }
-        }
-       ]
+        },
+        "Size": [
+         0.1496,
+         0.0761,
+         0.1496
+        ],
+        "Color": [
+         0.451,
+         0.3529,
+         0.2627
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.322,
-         1.6036,
-         -0.5011
+         -0.437,
+         1.3511,
+         -0.0113
         ],
         "orientation": [
          [
@@ -3106,16 +3927,11 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.3221,
-           1.6036,
-           -0.5011
+           0.4359,
+           1.4281,
+           -0.0113
           ],
           "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
            [
             0.0,
             1.0,
@@ -3125,14 +3941,19 @@
             0.0,
             0.0,
             1.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
            ]
           ]
          }
         },
         "Size": [
-         0.285,
-         0.0855,
-         0.266
+         0.2308,
+         0.12,
+         0.2308
         ],
         "Color": [
          0.451,
@@ -3150,24 +3971,24 @@
          "CFrame": {
           "position": [
            0.0,
-           0.0,
-           0.0
+           0.0011,
+           -0.0769
           ],
           "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
            [
             0.0,
             0.0,
             1.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
            ]
           ]
          }
@@ -3175,25 +3996,16 @@
        },
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/28"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ]
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.3221,
-         1.6036,
-         -0.5011
+         0.437,
+         1.3511,
+         -0.0113
         ],
         "orientation": [
          [
@@ -4630,130 +5442,6 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/23"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud15",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.7298,
-           0.1876,
-           0.2751
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.494,
-         0.095,
-         0.285
-        ],
-        "Color": [
-         0.3529,
-         0.2745,
-         0.1961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.0,
-           0.0,
-           0.0
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/23"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ]
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         -0.7298,
-         0.1876,
-         0.2751
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud15"
-    },
-    {
-     "className": "Model",
-     "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/43"
      },
      "children": [
@@ -5104,11 +5792,11 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/18"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/16"
      },
      "children": [
       {
-       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud10",
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud08",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -5116,7 +5804,7 @@
           "position": [
            -0.1772,
            0.2945,
-           -0.3876
+           -0.3814
           ],
           "orientation": [
            [
@@ -5138,14 +5826,14 @@
          }
         },
         "Size": [
-         0.285,
-         0.0855,
-         0.266
+         0.1283,
+         0.115,
+         0.342
         ],
         "Color": [
+         0.451,
          0.3529,
-         0.2745,
-         0.1961
+         0.2627
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -5158,7 +5846,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.0,
+           -0.0014,
            0.0
           ],
           "orientation": [
@@ -5182,17 +5870,8 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/18"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ]
+        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/16"
+       }
       }
      ],
      "properties": {
@@ -5201,7 +5880,7 @@
         "position": [
          -0.1772,
          0.2945,
-         -0.3876
+         -0.38
         ],
         "orientation": [
          [
@@ -5223,7 +5902,7 @@
        }
       }
      },
-     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud10"
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud08"
     },
     {
      "className": "Model",
@@ -5860,11 +6539,11 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/19"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/17"
      },
      "children": [
       {
-       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud11",
+       "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud09",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -5872,7 +6551,7 @@
           "position": [
            0.1772,
            0.2945,
-           -0.3876
+           -0.3757
           ],
           "orientation": [
            [
@@ -5894,8 +6573,8 @@
          }
         },
         "Size": [
-         0.38,
-         0.095,
+         0.1283,
+         0.1036,
          0.342
         ],
         "Color": [
@@ -5914,7 +6593,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.0,
+           0.0043,
            0.0
           ],
           "orientation": [
@@ -5938,17 +6617,8 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/19"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ]
+        "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/17"
+       }
       }
      ],
      "properties": {
@@ -5957,7 +6627,7 @@
         "position": [
          0.1772,
          0.2945,
-         -0.3876
+         -0.38
         ],
         "orientation": [
          [
@@ -5979,7 +6649,7 @@
        }
       }
      },
-     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud11"
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud09"
     },
     {
      "className": "Model",
@@ -6493,8 +7163,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3591,
-         0.7293,
+         -0.379,
+         0.6438,
          -0.0471
         ],
         "orientation": [
@@ -6517,9 +7187,9 @@
        }
       },
       "Size": [
-       0.38,
-       0.095,
-       0.342
+       0.342,
+       0.1311,
+       0.2565
       ],
       "Color": [
        0.3529,
@@ -6537,8 +7207,8 @@
        "CFrame": {
         "position": [
          0.0,
-         0.0,
-         0.0
+         -0.0276,
+         0.0855
         ],
         "orientation": [
          [
@@ -6562,23 +7232,112 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/11"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud03",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3667,
+         0.7506,
+         -0.154
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
        }
-      }
-     ]
+      },
+      "Size": [
+       0.2138,
+       0.0912,
+       0.2138
+      ],
+      "Color": [
+       0.451,
+       0.3529,
+       0.2627
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud03",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3705,
+         0.43,
+         0.0812
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0855,
+       0.1064,
+       0.0855
+      ],
+      "Color": [
+       0.3529,
+       0.2745,
+       0.1961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.3591,
+       -0.3515,
        0.7293,
        -0.0471
       ],
@@ -6617,8 +7376,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.3591,
-         0.7293,
+         0.3809,
+         0.6438,
          -0.0471
         ],
         "orientation": [
@@ -6641,9 +7400,9 @@
        }
       },
       "Size": [
-       0.285,
-       0.0855,
-       0.266
+       0.342,
+       0.1349,
+       0.2565
       ],
       "Color": [
        0.451,
@@ -6661,8 +7420,8 @@
        "CFrame": {
         "position": [
          0.0,
-         0.0,
-         0.0
+         -0.0295,
+         0.0855
         ],
         "orientation": [
          [
@@ -6686,23 +7445,112 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/12"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud04",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3667,
+         0.7506,
+         -0.154
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
        }
-      }
-     ]
+      },
+      "Size": [
+       0.2138,
+       0.0912,
+       0.2138
+      ],
+      "Color": [
+       0.3529,
+       0.2745,
+       0.1961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud04",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3705,
+         0.43,
+         0.0812
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0855,
+       0.1064,
+       0.0855
+      ],
+      "Color": [
+       0.451,
+       0.3529,
+       0.2627
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.3591,
+       0.3515,
        0.7293,
        -0.0471
       ],
@@ -6741,9 +7589,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.0,
-         0.6205,
-         -0.3638
+         0.0855,
+         0.706,
+         -0.3515
         ],
         "orientation": [
          [
@@ -6765,9 +7613,9 @@
        }
       },
       "Size": [
-       0.494,
-       0.095,
-       0.285
+       0.342,
+       0.1045,
+       0.2565
       ],
       "Color": [
        0.3529,
@@ -6784,9 +7632,9 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.0,
-         0.0,
-         0.0
+         -0.0855,
+         0.0047,
+         -0.0855
         ],
         "orientation": [
          [
@@ -6810,16 +7658,7 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/13"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+     }
     }
    ],
    "properties": {
@@ -6828,7 +7667,7 @@
       "position": [
        0.0,
        0.6205,
-       -0.3638
+       -0.3562
       ],
       "orientation": [
        [
@@ -6855,19 +7694,232 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/16"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/18"
    },
    "children": [
     {
-     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud08",
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud10",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.2962,
-         0.6187,
-         0.1959
+         -0.0938,
+         0.7101,
+         0.2299
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.342,
+       0.0893,
+       0.2565
+      ],
+      "Color": [
+       0.3529,
+       0.2745,
+       0.1961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         -0.0067,
+         0.0
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/18"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud10",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0131,
+         0.817,
+         0.2195
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2138,
+       0.0532,
+       0.2138
+      ],
+      "Color": [
+       0.451,
+       0.3529,
+       0.2627
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud10",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.2221,
+         0.4964,
+         0.2233
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0855,
+       0.0684,
+       0.0855
+      ],
+      "Color": [
+       0.3529,
+       0.2745,
+       0.1961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       -0.0938,
+       0.7101,
+       0.2232
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud10"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/19"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud11",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3886,
+         0.2812,
+         0.0812
         ],
         "orientation": [
          [
@@ -6889,14 +7941,14 @@
        }
       },
       "Size": [
-       0.38,
-       0.095,
-       0.342
+       0.4275,
+       0.1121,
+       0.1283
       ],
       "Color": [
-       0.451,
        0.3529,
-       0.2627
+       0.2745,
+       0.1961
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -6908,9 +7960,9 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.0,
-         0.0,
-         0.0
+         0.2565,
+         -0.037,
+         0.171
         ],
         "orientation": [
          [
@@ -6933,26 +7985,17 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/16"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/19"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.2962,
-       0.6187,
-       0.1959
+       -0.3515,
+       0.4522,
+       -0.1753
       ],
       "orientation": [
        [
@@ -6974,131 +8017,7 @@
      }
     }
    },
-   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud08"
-  },
-  {
-   "className": "Model",
-   "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/17"
-   },
-   "children": [
-    {
-     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud09",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.2962,
-         0.6187,
-         0.1959
-        ],
-        "orientation": [
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.494,
-       0.095,
-       0.285
-      ],
-      "Color": [
-       0.3529,
-       0.2745,
-       0.1961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.0,
-         0.0
-        ],
-        "orientation": [
-         [
-          0.0,
-          0.0,
-          1.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/17"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
-    }
-   ],
-   "properties": {
-    "WorldPivotData": {
-     "OptionalCFrame": {
-      "position": [
-       0.2962,
-       0.6187,
-       0.1959
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    }
-   },
-   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud09"
+   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud11"
   },
   {
    "className": "Model",
@@ -7113,14 +8032,14 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.0938,
-         0.7101,
-         0.2308
+         0.3755,
+         0.1957,
+         0.0081
         ],
         "orientation": [
          [
-          -1.0,
           0.0,
+          1.0,
           0.0
          ],
          [
@@ -7129,17 +8048,17 @@
           1.0
          ],
          [
-          0.0,
           1.0,
+          0.0,
           0.0
          ]
         ]
        }
       },
       "Size": [
-       0.494,
-       0.095,
-       0.285
+       0.3172,
+       0.1458,
+       0.2138
       ],
       "Color": [
        0.451,
@@ -7156,20 +8075,20 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.0,
-         0.0,
-         0.0
+         -0.1834,
+         -0.024,
+         0.2565
         ],
         "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
          [
           0.0,
           0.0,
           1.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
          ],
          [
           0.0,
@@ -7182,25 +8101,65 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/20"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud12",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3612,
+         0.1102,
+         0.1026
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
        }
-      }
-     ]
+      },
+      "Size": [
+       0.2138,
+       0.1021,
+       0.2138
+      ],
+      "Color": [
+       0.3529,
+       0.2745,
+       0.1961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.0938,
-       0.7101,
-       0.2308
+       0.3515,
+       0.4522,
+       -0.1753
       ],
       "orientation": [
        [
@@ -7237,14 +8196,14 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3591,
-         0.4522,
-         -0.1753
+         0.3765,
+         0.2052,
+         0.3521
         ],
         "orientation": [
          [
           0.0,
-          -1.0,
+          1.0,
           0.0
          ],
          [
@@ -7253,7 +8212,7 @@
           1.0
          ],
          [
-          -1.0,
+          1.0,
           0.0,
           0.0
          ]
@@ -7261,9 +8220,9 @@
        }
       },
       "Size": [
-       0.38,
-       0.095,
-       0.342
+       0.1154,
+       0.1209,
+       0.3078
       ],
       "Color": [
        0.3529,
@@ -7280,18 +8239,18 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.0,
-         0.0,
-         0.0
+         -0.077,
+         -0.006,
+         0.1539
         ],
         "orientation": [
          [
           0.0,
           0.0,
-          -1.0
+          1.0
          ],
          [
-          -1.0,
+          1.0,
           0.0,
           0.0
          ],
@@ -7306,64 +8265,18 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/21"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
-    }
-   ],
-   "properties": {
-    "WorldPivotData": {
-     "OptionalCFrame": {
-      "position": [
-       -0.3591,
-       0.4522,
-       -0.1753
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
      }
-    }
-   },
-   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud13"
-  },
-  {
-   "className": "Model",
-   "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/22"
-   },
-   "children": [
+    },
     {
-     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud14",
+     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud13",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.3591,
-         0.4522,
-         -0.1753
+         0.368,
+         0.1283,
+         0.2943
         ],
         "orientation": [
          [
@@ -7385,133 +8298,9 @@
        }
       },
       "Size": [
-       0.285,
-       0.0855,
-       0.266
-      ],
-      "Color": [
-       0.3529,
-       0.2745,
-       0.1961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.0,
-         0.0
-        ],
-        "orientation": [
-         [
-          0.0,
-          0.0,
-          1.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/22"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
-    }
-   ],
-   "properties": {
-    "WorldPivotData": {
-     "OptionalCFrame": {
-      "position": [
-       0.3591,
-       0.4522,
-       -0.1753
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    }
-   },
-   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud14"
-  },
-  {
-   "className": "Model",
-   "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Muffin_Dirty_Sit/24"
-   },
-   "children": [
-    {
-     "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud16",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.3781,
-         0.3591,
-         0.2751
-        ],
-        "orientation": [
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.38,
-       0.095,
-       0.342
+       0.1154,
+       0.0886,
+       0.1924
       ],
       "Color": [
        0.451,
@@ -7524,53 +8313,15 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.0,
-         0.0
-        ],
-        "orientation": [
-         [
-          0.0,
-          0.0,
-          1.0
-         ],
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Cat_Muffin_Dirty_Sit/24"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.3781,
+       0.3705,
        0.3591,
        0.2751
       ],
@@ -7594,7 +8345,7 @@
      }
     }
    },
-   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud16"
+   "name": "CleanACat_Cat_Muffin_Dirty_Sit_Mud13"
   },
   {
    "className": "Model",

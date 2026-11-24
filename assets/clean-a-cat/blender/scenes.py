@@ -263,6 +263,36 @@ def street_views(mat, out_dir):
     return made
 
 
+def mud_close(mat, out):
+    """#107: the mud up close on a light coat, a grey coat and a dark coat: Muffin sitting, Smudge walking, Inky
+    sitting, with no tangles or fluff."""
+    allo = []
+    for i, (name, body) in enumerate((("Muffin", "sit"), ("Smudge", "walk"), ("Inky", "sit"))):
+        c, _, _ = dirt.build_dirty(name, mat, body)
+        c = _drop(c, ["_Tangle", "_Fluff", "_Claw"])
+        _move(c, (i * 1.9, 0, 0))
+        for o in c:
+            o.name = f"M{i}_{o.name}"
+        allo += c
+    common.render_preview(allo, out, res=(1500, 640), samples=32, azimuth=-18, elevation=18, margin=0.72)
+
+
+def foam_close(mat, out):
+    """#107: the foam up close: the wash tub and the bubble bath, each with a rinsed cat at the stations' scale."""
+    allo = []
+    rows = (("Muffin", stations.build_tub, stations.SEAT_Z), ("Cotton", stations.build_bubble_bath, stations.BATH_SEAT))
+    for i, (name, build, seat) in enumerate(rows):
+        x = i * 6.0
+        st = [o for o in build(mat) if not o.name.endswith("_Barrier")]
+        _move(st, (x, 0, 0))
+        c = cats.build_cat(name, mat, body="sit")
+        _move(c, (x, 0, seat + 0.02), stations.STATION_CAT_SCALE)
+        for o in st + c:
+            o.name = f"F{i}_{o.name}"
+        allo += st + c
+    common.render_preview(allo, out, res=(1500, 700), samples=32, azimuth=-14, elevation=24, margin=0.8)
+
+
 def _move(objs, offset, k=1.0):
     for o in objs:
         o.location = o.location * k + Vector(offset)
@@ -416,4 +446,6 @@ if __name__ == "__main__":
     mat = common.palette_material(png)
     {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
      "customers": customers_sheet, "stations": stations_sheet,
-     "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "street": street_views, "later": later_stations_sheet, "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
+     "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "street": street_views, "mud": mud_close,
+     "foam": foam_close, "later": later_stations_sheet,
+     "builder-close": lambda m, o: builder_sheet(m, o, close=True)}[which](mat, out)
