@@ -29,6 +29,7 @@ local ScrubRules = require(Shared:WaitForChild("ScrubRules"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
+local Trove = require(Shared:WaitForChild("Vendor"):WaitForChild("Trove"))
 
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
@@ -107,7 +108,7 @@ local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
 local controls: any = nil -- the default PlayerModule's controls, found on the first touch scrub
 local heldControls = false -- walking is paused while a finger scrubs
-local connections: { RBXScriptConnection } = {}
+local trove = Trove.new() -- everything a visit makes; one Clean ends it
 local nextCatThread: thread? = nil
 local reportedScrub = false -- the funnel's first_scrub was sent this session
 local turningCat: Model? = nil -- the cat turning in the tub; the sponge waits until it stops
@@ -953,87 +954,78 @@ local function enable()
 		return
 	end
 	enabled = true
-	local folder = Instance.new("Folder")
+	local folder: Folder = trove:Add(Instance.new("Folder"))
 	folder.Name = "PH_SpaPrototype"
 	visit = buildVisit(folder)
 	folder.Parent = Workspace
 
-	table.insert(connections, Remotes.event("CatReady").OnClientEvent:Connect(onCatReady))
-	table.insert(connections, Remotes.event("PhotoPaid").OnClientEvent:Connect(onPhotoPaid))
-	table.insert(connections, Remotes.event("CatStage").OnClientEvent:Connect(onCatStage))
-	table.insert(
-		connections,
-		UserInputService.InputBegan:Connect(function(input: InputObject, processed: boolean)
-			-- `processed` is true for taps on buttons, the thumbstick and the jump button: those never scrub.
-			local v = visit
-			if processed or activeInput ~= nil or not isPress(input) or not v then
-				return
-			end
-			if tapButton(v, input) then
-				return
-			end
-			-- Only a press that lands on the cat scrubs or brushes; a press anywhere else stays a camera drag.
-			local ray = pointerRay(input)
-			if
-				(v.stage ~= "dirty" and v.stage ~= "clean")
-				or not ray
-				or not cast(ray, v.catParams)
-			then
-				return
-			end
-			activeInput = input
-			holdCamera(input.UserInputType == Enum.UserInputType.Touch)
-			holdControls(input.UserInputType == Enum.UserInputType.Touch)
-			onPointer(input)
-		end)
-	)
-	table.insert(
-		connections,
-		UserInputService.InputChanged:Connect(function(input: InputObject)
-			local active = activeInput
-			if active == nil then
-				return
-			end
-			if active.UserInputType == Enum.UserInputType.Touch then
-				-- Only the finger that started. A second finger on the thumbstick walks, unless scrubFeel pauses
-				-- walking while a finger scrubs.
-				if input == active then
-					onPointer(input)
-				end
-			elseif
-				active.UserInputType == Enum.UserInputType.MouseButton1
-				and input.UserInputType == Enum.UserInputType.MouseMovement
-			then
+	trove:Connect(Remotes.event("CatReady").OnClientEvent, onCatReady)
+	trove:Connect(Remotes.event("PhotoPaid").OnClientEvent, onPhotoPaid)
+	trove:Connect(Remotes.event("CatStage").OnClientEvent, onCatStage)
+	trove:Connect(UserInputService.InputBegan, function(input: InputObject, processed: boolean)
+		-- `processed` is true for taps on buttons, the thumbstick and the jump button: those never scrub.
+		local v = visit
+		if processed or activeInput ~= nil or not isPress(input) or not v then
+			return
+		end
+		if tapButton(v, input) then
+			return
+		end
+		-- Only a press that lands on the cat scrubs or brushes; a press anywhere else stays a camera drag.
+		local ray = pointerRay(input)
+		if (v.stage ~= "dirty" and v.stage ~= "clean") or not ray or not cast(ray, v.catParams) then
+			return
+		end
+		activeInput = input
+		holdCamera(input.UserInputType == Enum.UserInputType.Touch)
+		holdControls(input.UserInputType == Enum.UserInputType.Touch)
+		onPointer(input)
+	end)
+	trove:Connect(UserInputService.InputChanged, function(input: InputObject)
+		local active = activeInput
+		if active == nil then
+			return
+		end
+		if active.UserInputType == Enum.UserInputType.Touch then
+			-- Only the finger that started. A second finger on the thumbstick walks, unless scrubFeel pauses
+			-- walking while a finger scrubs.
+			if input == active then
 				onPointer(input)
 			end
-		end)
-	)
-	table.insert(
-		connections,
-		UserInputService.InputEnded:Connect(function(input: InputObject)
-			if input == activeInput then
-				release()
-				local v = visit
-				local cat = if v then v.cat else nil
-				if v and cat then
-					turnToShow(v, cat)
-				end
+		elseif
+			active.UserInputType == Enum.UserInputType.MouseButton1
+			and input.UserInputType == Enum.UserInputType.MouseMovement
+		then
+			onPointer(input)
+		end
+	end)
+	trove:Connect(UserInputService.InputEnded, function(input: InputObject)
+		if input == activeInput then
+			release()
+			local v = visit
+			local cat = if v then v.cat else nil
+			if v and cat then
+				turnToShow(v, cat)
 			end
-		end)
-	)
+		end
+	end)
 	-- When the app loses focus mid-scrub (a call, a swipe home), Roblox can skip that touch's InputEnded. Let go
 	-- here so the camera and the controls are never left held and the next press can scrub.
-	table.insert(connections, UserInputService.WindowFocusReleased:Connect(release))
+	trove:Connect(UserInputService.WindowFocusReleased, release)
 	-- A held trigger has no pointer movement: the middle of the screen moves as the camera turns.
-	table.insert(
-		connections,
-		RunService.Heartbeat:Connect(function()
-			local active = activeInput
-			if active and active.KeyCode == GAMEPAD_BUTTON then
-				onPointer(active)
-			end
-		end)
-	)
+	trove:Connect(RunService.Heartbeat, function()
+		local active = activeInput
+		if active and active.KeyCode == GAMEPAD_BUTTON then
+			onPointer(active)
+		end
+	end)
+
+	trove:Add(function()
+		if nextCatThread then
+			task.cancel(nextCatThread)
+			nextCatThread = nil
+		end
+	end)
 
 	Remotes.event("RequestCat"):FireServer()
 end
@@ -1044,19 +1036,8 @@ local function disable()
 	end
 	enabled = false
 	release()
-	for _, connection in connections do
-		connection:Disconnect()
-	end
-	table.clear(connections)
-	if nextCatThread then
-		task.cancel(nextCatThread)
-		nextCatThread = nil
-	end
-	local v = visit
 	visit = nil
-	if v then
-		v.folder:Destroy()
-	end
+	trove:Clean()
 end
 
 local function refresh()
