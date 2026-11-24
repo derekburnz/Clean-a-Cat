@@ -131,6 +131,8 @@ Roblox's engine-level styling replaces copy-pasted property values:
 
 ## Frameworks
 
+> Clean a Cat (local note): no UI framework for now (`docs/decisions.md`, 2026-11-24). Build screens as plain instances. A Vide trial needs its own issue.
+
 For more than a few screens, a declarative framework keeps state and UI in sync:
 - **React** (`jsdotlua/react` + `react-roblox`) — components + hooks, familiar to web devs, scales to big apps.
 - **Fusion** — reactive state objects and declarative instance creation.

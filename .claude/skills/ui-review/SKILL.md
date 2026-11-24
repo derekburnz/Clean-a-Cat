@@ -46,7 +46,7 @@ Check every changed screen on a phone (about 844 x 390), a small phone (about 66
 ## 4. Look
 - One font pair. Buttons use one component, and colour keeps its meaning: green buy or claim, red close, gold rare or featured, grey owned or disabled.
 - Motion: windows pop in and close fast (under 0.2 s). Press feedback is a scale, not a size change. Nothing with text pulses forever. Check `GuiService.ReducedMotionEnabled` before shakes, bobs and long tweens.
-- Small transitions take about 0.12 to 0.3 s. Save Back, Elastic and Bounce easing for reward moments. Cancel the old tween before starting a new one on the same thing.
+- Other small transitions take about 0.12 to 0.3 s; window open and close stay under 0.2 s. Save Back, Elastic and Bounce easing for reward moments. Cancel the old tween before starting a new one on the same thing.
 - Show the press was taken: pressed, disabled, waiting ("...") and failed states where they apply. Show real progress when there is any, never fake progress.
 - A reward moment goes in order: the result, then the reward, then the sparkle and sound, then details, then one clear next button.
 
