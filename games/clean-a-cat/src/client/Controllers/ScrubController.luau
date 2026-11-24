@@ -33,6 +33,7 @@ local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
 local TURN_FLAG = "scrubTurn" -- the cat turns to show its muddy side when too little faces the camera
+local FEEL_FLAG = "scrubFeel" -- a patch takes a few strokes, and a finger on the cat never walks the player
 local TURN_TWEEN = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 local DRY_FLAG = "stations" -- with the Blow Dryer built, a fluffed cat sits on its stool before the bows
 local DRY_SECONDS = 2.5
@@ -104,6 +105,8 @@ local stroking = false -- the active press is on the cat right now
 local lastHit: Vector3? = nil
 local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
+local controls: any = nil -- the default PlayerModule's controls, found on the first touch scrub
+local heldControls = false -- walking is paused while a finger scrubs
 local connections: { RBXScriptConnection } = {}
 local nextCatThread: thread? = nil
 local reportedScrub = false -- the funnel's first_scrub was sent this session
@@ -433,6 +436,36 @@ local function holdCamera(hold: boolean)
 	end
 end
 
+-- On a phone the default thumbstick also reads a finger that lands in its corner, so a scrub that starts near the
+-- lower left would walk the player away from the tub (issue #149). While a finger scrubs, the default controls
+-- are paused; they come back when it lifts. Needs the scrubFeel switch, and does nothing when the game has no
+-- default PlayerModule.
+local function holdControls(hold: boolean)
+	if hold == heldControls or (hold and not LiveFlags.isOn(FEEL_FLAG)) then
+		return
+	end
+	if controls == nil then
+		local playerScripts = Players.LocalPlayer:FindFirstChild("PlayerScripts")
+		local module = if playerScripts then playerScripts:FindFirstChild("PlayerModule") else nil
+		if not module or not module:IsA("ModuleScript") then
+			return
+		end
+		local ok, found = pcall(function()
+			return (require :: any)(module):GetControls()
+		end)
+		if not ok or found == nil then
+			return
+		end
+		controls = found
+	end
+	if hold then
+		controls:Disable()
+	else
+		controls:Enable()
+	end
+	heldControls = hold
+end
+
 -- The press left the cat or lifted: a scrub stroke ends (ScrubStop) and brush travel starts over.
 local function endStroke()
 	local v = visit
@@ -477,6 +510,9 @@ local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number, hit: In
 		return
 	end
 	local radius = spongeRadius()
+	local toClear = if LiveFlags.isOn(FEEL_FLAG)
+		then ScrubRules.RUB_TO_CLEAR_PACED
+		else ScrubRules.RUB_TO_CLEAR
 	for index, piece in cat.mud do
 		local touched = hit ~= nil and hit:IsDescendantOf(piece.model)
 		if
@@ -488,7 +524,7 @@ local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number, hit: In
 				reportedScrub = true
 				Remotes.event("ReportStep"):FireServer("first_scrub")
 			end
-			if ScrubRules.rub(v.scrub, index, travel) then
+			if ScrubRules.rub(v.scrub, index, travel, toClear) then
 				hidePiece(piece)
 				Moments.MudPatchCleared:Fire(
 					cat.model,
@@ -648,6 +684,7 @@ local function release()
 	activeInput = nil
 	endStroke()
 	holdCamera(false)
+	holdControls(false)
 end
 
 -- When the finger lifts and less mud faces the camera than the reveal still needs, the cat turns in the tub
@@ -946,6 +983,7 @@ local function enable()
 			end
 			activeInput = input
 			holdCamera(input.UserInputType == Enum.UserInputType.Touch)
+			holdControls(input.UserInputType == Enum.UserInputType.Touch)
 			onPointer(input)
 		end)
 	)
@@ -957,7 +995,8 @@ local function enable()
 				return
 			end
 			if active.UserInputType == Enum.UserInputType.Touch then
-				-- Only the finger that started; a second finger on the thumbstick is someone walking.
+				-- Only the finger that started. A second finger on the thumbstick walks, unless scrubFeel pauses
+				-- walking while a finger scrubs.
 				if input == active then
 					onPointer(input)
 				end

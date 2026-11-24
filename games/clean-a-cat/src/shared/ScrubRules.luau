@@ -9,6 +9,9 @@ local ScrubRules = {}
 ScrubRules.MAX_PATCHES = 20 -- the design's range is 12 to 20; cheap phones cap at 20 (blobs past it are removed)
 ScrubRules.SPONGE_RADIUS = 0.9 -- studs around the touch point that the sponge reaches
 ScrubRules.RUB_TO_CLEAR = 1.2 -- studs of sponge travel over a patch to clear it
+-- With the scrubFeel switch on: a patch takes about two passes of the sponge, so a first scrub is a few strokes
+-- back and forth rather than one swipe (one short drag cleared 14 of 20 patches at RUB_TO_CLEAR, issue #149).
+ScrubRules.RUB_TO_CLEAR_PACED = 3.6
 ScrubRules.REVEAL_FRACTION = 0.8 -- at this share cleared, the rest pops off
 ScrubRules.MAX_RUB_PER_STEP = 1.5 -- studs counted from one input step at most, so a teleporting pointer is not a free clear
 
@@ -35,8 +38,9 @@ function ScrubRules.newState(total: number): State
 end
 
 -- Rub patch `index` by `amount` studs of sponge travel. Returns true only on the step that clears it.
--- Ignores bad input (unknown index, NaN, negative) and does nothing once the cat is revealed.
-function ScrubRules.rub(state: State, index: number, amount: number): boolean
+-- `toClear` is the travel a patch needs (RUB_TO_CLEAR when nil). Ignores bad input (unknown index, NaN,
+-- negative) and does nothing once the cat is revealed.
+function ScrubRules.rub(state: State, index: number, amount: number, toClear: number?): boolean
 	if state.revealed or state.cleared[index] == nil or state.cleared[index] then
 		return false
 	end
@@ -45,7 +49,7 @@ function ScrubRules.rub(state: State, index: number, amount: number): boolean
 	end
 	local step = math.min(amount, ScrubRules.MAX_RUB_PER_STEP)
 	state.rub[index] += step
-	if state.rub[index] >= ScrubRules.RUB_TO_CLEAR then
+	if state.rub[index] >= (toClear or ScrubRules.RUB_TO_CLEAR) then
 		state.cleared[index] = true
 		state.clearedCount += 1
 		return true
