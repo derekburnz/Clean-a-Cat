@@ -23,7 +23,7 @@ return function()
 	end)
 
 	describe("the Settings card's choices (#230)", function()
-		it("Less screen shake or Less sparkle turns on reduced motion; only Less sparkle turns on less sparkle", function()
+		it("either toggle reduces motion; only Less sparkle means less sparkle", function()
 			local robloxOn = Comfort.reducedMotion()
 			Comfort.setChoices(true, false)
 			expect(Comfort.reducedMotion()).to.equal(true)
