@@ -206,6 +206,24 @@ local SCENES = {
 		UI.setWashPlan({ "noBows" })
 		UI.setWashStage("clean")
 	end },
+	-- Suds's help bubble (switch sudsBubble) at the bottom, with its longest words, while the player walks.
+	{ "SudsBubble", function()
+		hud(true)
+		flag("sudsBubble", true)
+		UI.setCoins(1240)
+		UI.setWashStage(nil)
+		local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
+		UI.showBubble(BubbleRules.get("longBuild"))
+	end },
+	-- The same over a wash: the card sits above the tool tray.
+	{ "SudsBubbleWash", function()
+		hud(true)
+		flag("sudsBubble", true)
+		UI.setCoins(0)
+		UI.setWashStage("dirty")
+		local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
+		UI.showBubble(BubbleRules.get("firstCustomer"))
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
@@ -238,6 +256,8 @@ function Scenes.close()
 	flag("catIndexWindow", false)
 	flag("queueWindow", false)
 	flag("tutorialDim", false)
+	UI.hideBubble()
+	flag("sudsBubble", false)
 	flag("tutorialTip", false)
 	flag("windowsHideControls", false)
 	UI.setTip(nil)

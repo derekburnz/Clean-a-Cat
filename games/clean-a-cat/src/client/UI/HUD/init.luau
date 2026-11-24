@@ -10,6 +10,8 @@
 --   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar;
 --                        SudsRules.NO_BOWS in it leaves the bows out (the opening's kitten, #285)
 --   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil
+--   HUD.bottomUsed()     real px the tool tray takes up from the bottom while it shows (0 when hidden), so Suds's
+--                        help bubble (UI/SudsBubble) can sit above it; HUD.onTrayChanged(fn) when that may change
 --
 -- The look follows the screens' README: numbers and status are white words with an ink outline and no box, Fredoka
 -- One only, and every piece is laid out in design pixels on a 1280 x 720 canvas and scaled like Scale.luau:
@@ -376,6 +378,29 @@ function HUD.setPlan(later: { string })
 	end
 	plan = table.clone(later)
 	redraw()
+end
+
+function HUD.bottomUsed(): number
+	local p = pieces
+	if p == nil or not p.tray.Visible then
+		return 0
+	end
+	local parent = p.tray.Parent
+	if parent == nil or not parent:IsA("GuiObject") then
+		return 0
+	end
+	local holder = parent :: GuiObject
+	local bottom = holder.AbsolutePosition.Y + holder.AbsoluteSize.Y
+	return math.max(0, bottom - p.tray.AbsolutePosition.Y)
+end
+
+function HUD.onTrayChanged(fn: () -> ())
+	local p = pieces
+	if p == nil then
+		return
+	end
+	p.tray:GetPropertyChangedSignal("Visible"):Connect(fn)
+	p.tray:GetPropertyChangedSignal("AbsoluteSize"):Connect(fn)
 end
 
 function HUD.setStage(value: string?)
