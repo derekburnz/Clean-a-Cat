@@ -227,7 +227,13 @@ local function updateWashView(v: {
 		and v.stage ~= "waiting"
 		and v.stage ~= "done"
 		and LiveFlags.isOn(WASH_FLAG)
-	WashView.set(WASH_REASON, washing and v ~= nil and not v.steppedOut)
+	-- the Walk button lets go at once (an onDone skips WashView's release grace): the player asked for their view
+	local walkedOut = washing and v ~= nil and v.steppedOut
+	WashView.set(
+		WASH_REASON,
+		washing and v ~= nil and not v.steppedOut,
+		if walkedOut then function() end else nil
+	)
 	local walk = washing
 		and v ~= nil
 		and not v.steppedOut
