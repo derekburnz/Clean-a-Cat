@@ -62,6 +62,7 @@ local FLAP_SIGN = 1 -- each flap turns outward about its hinge edge
 -- The shot camera, in scene space: behind and above the player, who stands about 6 studs behind the landing spot.
 local SHOT_FROM = Vector3.new(0, 6, -11)
 local SHOT_LOOK_Y = 1.5
+local MAX_STEP = 0.1 -- the most the scene's clock moves on in one frame
 local CHEST = 0.55 -- how far up a sitting cat its chest is, as a share of its height
 
 export type Options = { shot: boolean?, onTap: (() -> ())?, bump: Vector3? }
@@ -408,6 +409,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	-- The shot can start before the player's first spawn, so it never trusts what it found: it holds the camera
 	-- (re-taking it if a spawn resets it mid-shot) and always hands back the default Custom camera on the player's
 	-- own Humanoid (Review-QA on #314).
+	-- The scene's own clock: it moves on by at most MAX_STEP a frame, so a long first frame while the place streams in
+	-- (Sync-Agent measured up to 0.86 s on a phone-like run) pauses the scene instead of skipping its beats.
+	local clock = 0
+	local lastFrame = os.clock()
 	local holdingShot = useShot and Workspace.CurrentCamera ~= nil
 	local function shotCamera(): Camera?
 		local cam = Workspace.CurrentCamera -- re-read: a respawn can replace it
@@ -419,11 +424,13 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	if holdingShot then
 		shotCamera()
 	end
-	local function giveCameraBack()
+	-- `why` goes to the output, so a playtest shows when and why the shot ended (Sync-Agent's speed runs).
+	local function giveCameraBack(why: string)
 		if not holdingShot then
 			return
 		end
 		holdingShot = false
+		print(`[Opening] camera back {string.format("%.2f", clock)} s into the scene ({why})`)
 		local cam = Workspace.CurrentCamera
 		if cam == nil then
 			return
@@ -437,7 +444,6 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		cam.CameraType = Enum.CameraType.Custom
 	end
 
-	local started = os.clock()
 	local last = -1
 	local landed = false
 	local opened: number? = nil
@@ -567,7 +573,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	end
 
 	local function frame()
-		local t = os.clock() - started
+		local now = os.clock()
+		clock += math.min(now - lastFrame, MAX_STEP)
+		lastFrame = now
+		local t = clock
 		for _, name in TruckDrop.eventsBetween(last, t) do
 			event(name, t)
 		end
@@ -626,7 +635,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		if holdingShot then
 			local cam = if t >= TruckDrop.BEATS.done then nil else shotCamera()
 			if cam == nil then
-				giveCameraBack()
+				giveCameraBack(if t >= TruckDrop.BEATS.done then "shot over" else "no camera")
 			else
 				local look = at(TruckDrop.lookX(t, bumpX), SHOT_LOOK_Y, TruckDrop.ROAD_Z * 0.45)
 				cam.CFrame = CFrame.lookAt(at(SHOT_FROM.X, SHOT_FROM.Y, SHOT_FROM.Z), look)
@@ -750,7 +759,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				connection:Disconnect()
 			end
 			rumble.stop()
-			giveCameraBack()
+			giveCameraBack("scene ended early")
 			folder:Destroy()
 		end,
 	}
