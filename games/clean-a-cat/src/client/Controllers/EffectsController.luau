@@ -156,10 +156,11 @@ function EffectsController.Start()
 		Moments.DryStop:Connect(stopDrying)
 	end
 
-	-- The opening scene (#281), once per session while `openingBox` is on. A stand-in trigger so the scene can be
-	-- watched in Studio: the box lands OPENING_AHEAD studs in front of the player and opens on a tap. Gameplay
+	-- The opening scene (#281), once per session while `openingBox` is on, in Studio only. A stand-in trigger so the
+	-- scene can be watched there: the box lands OPENING_AHEAD studs in front of the player and opens on a tap. Gameplay
 	-- replaces this with the real start (once per save, the spawn spot, the server's box_opened step).
-	local openingPlayed = false
+	-- Studio only: a live flip of `openingBox` must never drop a truck on every player mid-session (Review-QA, #284).
+	local openingPlayed = not RunService:IsStudio()
 	local function playOpening()
 		if openingPlayed or not LiveFlags.isOn(OPENING_FLAG) then
 			return
