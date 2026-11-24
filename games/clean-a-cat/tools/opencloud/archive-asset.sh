@@ -61,7 +61,8 @@ for id in "$@"; do
 	name=$(jq -r '.displayName // "?"' <<<"$body")
 	type=$(jq -r '.assetType // "?"' <<<"$body")
 	state=$(jq -r '.state // "?"' <<<"$body")
-	owner=$(jq -r '.creationContext.creator | if .groupId then "group \(.groupId)" else "user \(.userId // "?")" end' <<<"$body")
+	# a group id is public; a user id stays out of the public Actions log
+	owner=$(jq -r '.creationContext.creator | if .groupId then "group \(.groupId)" else "a user" end' <<<"$body")
 	echo "$id: $type \"$name\", owned by $owner, state $state"
 	if [ "$state" = Archived ]; then
 		echo "$id is already archived."
