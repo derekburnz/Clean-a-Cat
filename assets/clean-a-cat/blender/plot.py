@@ -26,6 +26,13 @@ faces there (the Attachment's LookVector), all at floor height:
                        Bath beside the tub and a little behind it, and the Pawdicure in front of the bath
   SpotVipDoor          the middle of the VIP Room door, facing into the room
   SpotBoard            the chance board (CleanACat_Prop_ChanceBoard stands here), beside the entrance, facing in
+  SpotOpening          where the player stands for the opening scene (#279): on the pavement in front of the
+                       entrance, facing the street. The near pavement, not the far one: the houses stand 2 studs
+                       behind the far pavement, so a follow camera there would sit inside a house
+  SpotBox              where the box that falls off the truck comes to rest, 3.6 studs in front of SpotOpening, its
+                       far side just short of the curb
+  SpotBump             the speed bump (CleanACat_Prop_SpeedBump) across the near lane, on the road top; the truck
+                       drives toward Roblox +X, the player's right
 
 Every gap a player or the camera goes through is 6 studs or wider, but for one: the way round the tub's left to the
 back of the room is about 5.5 studs at its narrowest, between the tub and the Bubble Bath once that is built. It is
@@ -80,6 +87,9 @@ SPOTS = {
     "SpotStation4": (-15.2, 1.0, 0.0, 0.0),
     "SpotStation5": (-15.2, -6.6, 0.0, 0.0),
     "SpotVipDoor": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
+    "SpotOpening": (5.0, -27.0, 0.0, 0.0),
+    "SpotBox": (5.0, -30.6, 0.0, 0.0),
+    "SpotBump": (1.0, -37.6, -0.28, 90.0),
     "SpotBoard": (13.5, ROOM_Y[0] + 1.4, 0.0, 180.0),
 }
 # Floor pads that show each spot in the graybox: (spot, size x, size y, swatch)
