@@ -414,7 +414,9 @@ def _eye(spec, c, h, side):
     b = Builder()
     k = h["k"] * spec.get("eye_k", 1.0)
     eye = c["eyes"] if side > 0 else c["eyes2"]         # an odd-eyed cat's right eye (Eye2, screen left) is eyes2
-    b.box((0, 0, 0), (0.2 * k, 0.07, EYE_H * k), eye, bevel=False)
+    # its back 6 mm deeper than its front is proud: a back at the same depth lies in the plane of a face inside
+    # the chamfered head (#160)
+    b.box((0, 0.003, 0), (0.2 * k, 0.076, EYE_H * k), eye, bevel=False)
     if not spec.get("glow_eyes"):
         b.box((side * 0.01, -0.025, -0.02 * k), (0.12 * k, 0.04, EYE_H * 0.72 * k), "fur_black", bevel=False)
     if spec.get("lids"):                                # half closed: a lid over the top, the gloss under it
@@ -922,7 +924,8 @@ def _body_b(spec, c, d):
         for side in (-1, 1):
             _spot(b, spec, c, (side * (csx / 2 + 0.01), cy0, 0.86), (0.04, lw, ls), side_rot)
     elif pat == "gradient":                             # chest in the fur, haunches in second, the rump in third
-        b.box_base((0, hy0 - 0.02, 0.005), (hsx + 0.03, hsy * 0.62, hsz + 0.01), c["second"], bevel=False)   # off the floor
+        b.box_base((0, hy0 - 0.02, 0.005), (hsx + 0.024, hsy * 0.62, hsz + 0.01), c["second"], bevel=False)  # off the floor,
+        # and its sides 2 mm short of the plane of a long coat's chest fringe (#160)
         b.box_base((0, hy0 + hsy * 0.36, 0.008), (hsx + 0.04, hsy * 0.3, hsz + 0.012), c["third"], bevel=False)
     _coat_extras(b, spec, c, d["haunch"][0], d["haunch"][1], front=False)
     if spec.get("checker"):                             # along each haunch, over the stripes
@@ -968,7 +971,7 @@ def _body_s(spec, c, d):
         cloth, trim = spec["smock"]                     # helper reads as staff from every side, not as a loose cat
         top = cz0 + csz / 2 - 0.07
         b.box((cx0, cy0, (bottom - 0.015 + top) / 2), (csx + 0.05, csy + 0.05, top - bottom + 0.015), cloth)
-        b.box((cx0, cy0, bottom + 0.025), (csx + 0.08, csy + 0.08, 0.07), trim, bevel=False)         # the hem
+        b.box((cx0, cy0, bottom + 0.022), (csx + 0.08, csy + 0.08, 0.064), trim, bevel=False)        # the hem
         b.box((0, front - 0.035, bottom + 0.2), (csx * 0.5, 0.03, 0.15), trim, bevel=False)          # the pocket
     elif spec.get("tuxedo"):
         b.box((0, front - 0.01, cz0), (0.42, 0.06, 0.6), c["second"], bevel=False)                   # bib

@@ -296,6 +296,18 @@ def _cells(block, frac, k):
     return span, n
 
 
+BOXES = [0]                        # counts the mud boxes of the cat being built, see STAGGER
+STAGGER = 0.0013                   # studs: each mud box stands this much prouder than the one before, twelve steps
+# round. Two boxes on one edge (a leg's and its paw's, a piece's and its drip's) would otherwise end in one plane,
+# and two faces in one plane flicker (#160, the blender-asset-qa check). Far too small to see.
+FLOOR_INSET = 0.02                 # an underside that would reach the floor stops this far up inside the block
+CUT_SHIFT = 0.0017                 # studs: the sides of a mud box cut inside the block lie this far off the mud
+# pixel grid, all the same way, so boxes still meet edge to edge. The coat's own patches end on that grid, and a
+# mud side ending in the plane of a stripe's end flickers (#160).
+DRIP_TUCK = 0.002                  # a drip hanging under a block: slimmer by this on its cut sides, and this far up
+# into the block, so it shares no plane with the box it hangs from
+
+
 def _shell(ob, block, span, n, k, eyes, head):
     """The mud box for a span of a block: (centre, axes, size, its outer sides) in asset space, or None when it would lie on the
     face's drawing or too near an eye. Each side that reaches the block's surface comes out of it by MUD_PROUD over
@@ -305,7 +317,11 @@ def _shell(ob, block, span, n, k, eyes, head):
     dg = bpy.context.evaluated_depsgraph_get()
     lo = [-size[a] / 2 + size[a] * span[a][0] / n[a] for a in range(3)]
     hi = [-size[a] / 2 + size[a] * span[a][1] / n[a] for a in range(3)]
-    out_lo, out_hi = list(lo), list(hi)
+    under = span[2][0] < 0                             # a drip hanging under the block
+    out_lo = [lo[a] - CUT_SHIFT + (DRIP_TUCK if under and a != 2 else 0.0) for a in range(3)]
+    out_hi = [hi[a] - CUT_SHIFT - (DRIP_TUCK if under and a != 2 else 0.0) for a in range(3)]
+    if under:
+        out_hi[2] = hi[2] + DRIP_TUCK
     out = set()                                        # the sides that come out of the block: (axis, sign)
     for a in range(3):
         u, v = [i for i in range(3) if i != a]
@@ -315,8 +331,8 @@ def _shell(ob, block, span, n, k, eyes, head):
             nrm = R.col[a] * sign
             down = (c + R @ Vector([edge[i] if i == a else 0.0 for i in range(3)])).z if nrm.z < -0.9 else None
             relief = 0.0
-            for fu in (0.08, 0.3, 0.5, 0.7, 0.92):
-                for fv in (0.08, 0.3, 0.5, 0.7, 0.92):
+            for fu in (0.02, 0.15, 0.3, 0.5, 0.7, 0.85, 0.98):
+                for fv in (0.02, 0.15, 0.3, 0.5, 0.7, 0.85, 0.98):
                     q = [0.0, 0.0, 0.0]
                     q[a], q[u], q[v] = edge[a], lo[u] + (hi[u] - lo[u]) * fu, lo[v] + (hi[v] - lo[v]) * fv
                     p = c + R @ Vector(q)
@@ -330,14 +346,20 @@ def _shell(ob, block, span, n, k, eyes, head):
                             return None
                         if z <= RELIEF_MAX * k:
                             relief = max(relief, z)
-            grow = relief + MUD_PROUD * k
-            if down is not None:                       # an underside never goes below the floor the cat stands on
-                grow = max(0.0, min(grow, down))
-            out.add((a, sign))
+            step = STAGGER * (BOXES[0] % 12)
+            grow = relief + MUD_PROUD * k + step
+            if down is not None and grow > down - 0.004:
+                # An underside never goes below the floor the cat stands on. It stops inside the block, where
+                # nothing sees it and it shares a plane with no other underside. Not an outer side: its edges
+                # stay square.
+                grow = -(FLOOR_INSET + step)
+            else:
+                out.add((a, sign))
             if sign < 0:
                 out_lo[a] = lo[a] - grow
             else:
                 out_hi[a] = hi[a] + grow
+    BOXES[0] += 1
     mid = Vector([(out_lo[a] + out_hi[a]) / 2 for a in range(3)])
     return c + R @ mid, R, Vector([out_hi[a] - out_lo[a] for a in range(3)]), out
 
@@ -402,9 +424,96 @@ def _reach(shells):
     return lo, hi
 
 
+# Settling (#160). The blender-asset-qa check fails a model when two faces that look the same way lie within a
+# millimetre of one plane and overlap, because they flicker. The stagger and the cut shift keep most mud faces
+# clear, but a cat has hundreds of faces and a mud side still lands on one now and then: a stripe's end, another
+# piece's box where the head overhangs the body. So every side of every mud box is tested against the cat's own
+# faces and the mud boxes before it, the way the check tests them, and a side that lands in a taken plane moves
+# out by SETTLE_STEP until it is clear.
+SETTLE_EPS = 0.0012                # studs: a hair over the check's own millimetre
+SETTLE_STEP = 0.0016
+# where the check samples a face, as fractions of the rectangle: both ways it can be cut into two triangles
+_SAMPLES = [(u, v) for a, b in ((2 / 3, 1 / 3), (0.267, 0.133), (0.867, 0.133), (0.867, 0.733))
+            for u, v in ((a, b), (b, a), (1 - a, b), (1 - b, a))]
+
+
+def _facing(objs):
+    """The cat's faces that look along an axis: {(axis, sign): [(plane, the points the check samples, corners)]}."""
+    out = {(a, sg): [] for a in range(3) for sg in (-1, 1)}
+    for ob in objs:
+        M, N = ob.matrix_world, ob.matrix_world.to_3x3()
+        me = ob.data
+        me.calc_loop_triangles()
+        for t in me.loop_triangles:
+            nrm = (N @ t.normal).normalized()
+            for a in range(3):
+                if abs(nrm[a]) > 0.999:
+                    v = [M @ me.vertices[j].co for j in t.vertices]
+                    cen = (v[0] + v[1] + v[2]) / 3
+                    out[(a, 1 if nrm[a] > 0 else -1)].append((cen[a], [cen] + [cen.lerp(q, 0.6) for q in v], v))
+    return out
+
+
+def _in_tri(p, tri, u, v):
+    d = [(tri[j][u] - tri[j - 1][u]) * (p[1] - tri[j - 1][v]) - (tri[j][v] - tri[j - 1][v]) * (p[0] - tri[j - 1][u])
+         for j in range(3)]
+    return all(x >= -1e-9 for x in d) or all(x <= 1e-9 for x in d)
+
+
+def _settle(objs, pieces):
+    """The pieces' boxes with every side clear of the cat's faces and of each other: same shape as `pieces`."""
+    faces = _facing(objs)
+    flat = [(pi, bi) for pi, boxes in enumerate(pieces) for bi in range(len(boxes))]
+    square = {}                                        # only boxes that stand square to the asset are settled:
+    for pi, bi in flat:                                # a tail segment's lie in no plane of anything else
+        c, R, s, _sides = pieces[pi][bi]
+        if all(abs(R[r][q] - (1.0 if r == q else 0.0)) < 1e-6 for r in range(3) for q in range(3)):
+            square[(pi, bi)] = [list(c - s / 2), list(c + s / 2)]
+    order = [key for key in flat if key in square]
+    for _round in range(40):
+        moved = False
+        for at, key in enumerate(order):
+            lo, hi = square[key]
+            for a in range(3):
+                u, v = [q for q in range(3) if q != a]
+                for sign in (-1, 1):
+                    plane = hi[a] if sign > 0 else lo[a]
+                    pts = [(lo[u] + (hi[u] - lo[u]) * fu, lo[v] + (hi[v] - lo[v]) * fv) for fu, fv in _SAMPLES]
+                    hit = any(abs(pl - plane) < SETTLE_EPS
+                              and (any(lo[u] < q[u] < hi[u] and lo[v] < q[v] < hi[v] for q in own)
+                                   or any(_in_tri(q, tri, u, v) for q in pts))
+                              for pl, own, tri in faces[(a, sign)])
+                    for other in order[:at]:
+                        if hit:
+                            break
+                        lo2, hi2 = square[other]
+                        hit = (abs((hi2[a] if sign > 0 else lo2[a]) - plane) < SETTLE_EPS
+                               and min(hi[u], hi2[u]) - max(lo[u], lo2[u]) > 1e-4
+                               and min(hi[v], hi2[v]) - max(lo[v], lo2[v]) > 1e-4)
+                    if hit:
+                        moved = True
+                        if sign > 0:
+                            hi[a] += SETTLE_STEP
+                        else:
+                            lo[a] -= SETTLE_STEP
+        if not moved:
+            break
+    out = []
+    for pi, boxes in enumerate(pieces):
+        row = []
+        for bi, (c, R, s, sides) in enumerate(boxes):
+            if (pi, bi) in square:
+                lo, hi = (Vector(q) for q in square[(pi, bi)])
+                c, s = (lo + hi) / 2, hi - lo
+            row.append((c, R, s, sides))
+        out.append(row)
+    return out
+
+
 def _coat(objs, base, body, k, eyes, mat):
     """The MUD pieces of the coat for a built cat: [(object, the cat piece it rides)]."""
     pieces = {_piece(o, base): o for o in objs}
+    BOXES[0] = 0
     taken = {}                                         # (piece, block): the mud pixels already used
     placed = []
     for i, (piece, boxes) in enumerate(COAT[body]):    # first every piece's own boxes, so a ragged edge never
@@ -424,7 +533,7 @@ def _coat(objs, base, body, k, eyes, mat):
             used |= cells
             got.append((key, block, span, n, shell))
         placed.append((ob, piece, got))
-    out = []
+    out, ready = [], []
     for i, (ob, piece, got) in enumerate(placed):
         shells = [g[4] for g in got]
         fringe = []
@@ -447,9 +556,12 @@ def _coat(objs, base, body, k, eyes, mat):
             raise RuntimeError(f"{base}: mud piece {i + 1} is too big to scrub ({(hi - lo).length / 2:.2f})")
         if body == "sit" and hi.z < TUB_WATER + WATER_CLEAR * k:
             raise RuntimeError(f"{base}: mud piece {i + 1} would sit under the tub's water")
+        ready.append((ob, piece, shells + fringe))
+    for i, ((ob, piece, _b), boxes) in enumerate(zip(ready, _settle(objs, [r[2] for r in ready]))):
+        lo, hi = _reach(boxes)
         at = (lo + hi) / 2
         probe = []
-        c0, R0, s0, _o = shells[0]                     # the fur under the wrap picks the mud's shade
+        c0, R0, s0, _o = boxes[0]                      # the fur under the wrap picks the mud's shade
         for a in range(3):
             for sign in (1, -1):
                 probe.append(_swatch_at(ob, c0 + R0.col[a] * sign * s0[a] / 2))
@@ -457,7 +569,7 @@ def _coat(objs, base, body, k, eyes, mat):
         fur = max(dict.fromkeys(furs), key=furs.count) if furs else None    # on a tie the fur probed first wins
         tone = _mud_for(fur, wet=i % 3 == 2)           # every third piece the wet shade
         b = Builder()
-        for c, R, s, sides in shells + fringe:
+        for c, R, s, sides in boxes:
             verts = b.box(tuple(c - at), tuple(s), tone, bevel=False, rot=R)
             for e in {e for v in verts for e in v.link_edges}:      # soften the edges that wrap an edge of the block,
                 p = R.transposed() @ ((e.verts[0].co + e.verts[1].co) / 2 - (c - at))   # as the block's own are

@@ -26,7 +26,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `common.py` | `Builder` primitives tagged with a swatch, FBX export, previews (library port); `render_still` draws objects of soap bubbles see-through in pictures only |
 | `rbx_export.py` | Part-built `.model.json` from the Builder's log; Clean a Cat's collision, tag and naming tables at the top |
 | `rbx_zfight.py` | finds and fixes faces that would flicker in the Part models; `python3 rbx_zfight.py` reports |
-| `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming |
+| `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming, and the `blender-asset-qa` skill's `qa_check.py` (roblox profile) |
 | `contact_sheet.py` | tiles previews into sheets |
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
 | `dirt.py` | the dirty cats (#12): the mud coat (#113: 20 pieces that wrap the cat's own blocks, listed once per body), tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
@@ -51,4 +51,4 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 ## Adding a model
 1. Add a module with an `ASSETS` dict (name to `(builder(mat) -> objects, triangle budget)`), and add it to `all_assets()` in `build_all.py`.
 2. Use only palette swatches. New colours go at the end of `palette.py` and in the style guide.
-3. Rebuild, check `exports/gates.md`, run `python3 rbx_zfight.py`, look at the preview, and post the sheet in the PR.
+3. Rebuild, check `exports/gates.md` (it now holds the QA skill's result too: a `qa` FAIL names the two objects whose faces share a plane), run `python3 rbx_zfight.py`, look at the preview, and post the sheet in the PR.

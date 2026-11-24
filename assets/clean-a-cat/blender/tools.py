@@ -175,7 +175,7 @@ def build_towel(mat):
     for i, (w, d) in enumerate(((1.04, 0.74), (1.0, 0.7), (0.96, 0.66))):
         b.box((0, 0, -0.12 + i * 0.12), (w, d, 0.13), "spa_bubblegum")         # each fold sunk into the one below
     for x in (0.2, 0.36):                                                      # stripes over the top fold
-        b.box((x, 0, 0.125), (0.09, 0.68, 0.14), "spa_cream", bevel=False)
+        b.box((x, 0, 0.13), (0.09, 0.68, 0.13), "spa_cream", bevel=False)    # its underside off the fold's (#160)
     return [b.finalize("CleanACat_Tool_Towel", mat)]
 
 
@@ -205,7 +205,7 @@ def build_dryer(mat):
     """The blow dry step. Held by the grip, pivot at its middle; the barrel points forward."""
     b = Builder()
     b.box((0, 0.03, 0), (0.24, 0.28, 0.66), "bow_pink", rot=(math.radians(-10), "X"))        # the grip
-    b.box((0, -0.13, 0.08), (0.1, 0.05, 0.16), "spa_cream", bevel=False, rot=(math.radians(-10), "X"))   # the switch
+    b.box((0, -0.115, 0.08), (0.1, 0.05, 0.16), "spa_cream", bevel=False, rot=(math.radians(-10), "X"))   # the switch
     b.cyl((0, -0.08, DRYER_Z), 0.32, 0.8, "spa_bubblegum", segments=12, rot=_ALONG_Y)        # the barrel
     b.cyl((0, 0.34, DRYER_Z), 0.26, 0.08, "metal", segments=12, rot=_ALONG_Y, bevel=False)   # the grille at the back
     b.cyl((0, -0.66, DRYER_Z), 0.27, 0.4, "spa_cream", segments=12, rot=_ALONG_Y, radius2=0.22)   # the nozzle
