@@ -26,6 +26,8 @@ faces there (the Attachment's LookVector), all at floor height:
                        Bath beside the tub and a little behind it, and the Pawdicure in front of the bath
   SpotVipDoor          the middle of the VIP Room door, facing into the room
   SpotBoard            the chance board (CleanACat_Prop_ChanceBoard stands here), beside the entrance, facing in
+  SpotMascot           the mascot's bed (CleanACat_Prop_SudsBed, #297), just inside the entrance between the door
+                       and the chance board, turned to look across the room at the tub
   SpotOpening          where the player stands for the opening scene (#279): on the pavement in front of the
                        entrance, facing the street. The near pavement, not the far one: the houses stand 2 studs
                        behind the far pavement, so a follow camera there would sit inside a house
@@ -87,6 +89,7 @@ SPOTS = {
     "SpotStation4": (-15.2, 1.0, 0.0, 0.0),
     "SpotStation5": (-15.2, -6.6, 0.0, 0.0),
     "SpotVipDoor": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
+    "SpotMascot": (10.25, -14.3, 0.0, 230.0),
     "SpotOpening": (5.0, -27.0, 0.0, 0.0),
     "SpotBox": (5.0, -30.6, 0.0, 0.0),
     "SpotBump": (1.0, -37.6, -0.28, 90.0),

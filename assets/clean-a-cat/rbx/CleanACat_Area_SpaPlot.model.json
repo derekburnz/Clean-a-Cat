@@ -663,6 +663,38 @@
      }
     },
     {
+     "name": "SpotMascot",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -10.25,
+         0.25,
+         -14.3
+        ],
+        "orientation": [
+         [
+          -0.6428,
+          0.0,
+          -0.766
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.766,
+          0.0,
+          -0.6428
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
      "name": "SpotOpening",
      "className": "Attachment",
      "properties": {

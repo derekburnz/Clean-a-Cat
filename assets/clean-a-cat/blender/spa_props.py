@@ -163,6 +163,32 @@ def cushion_rbx_extras():
             "attributes": {"CatScale": {"Float64": WINDOW_CAT_SCALE}}}
 
 
+BED_R, BED_STAND, BED_PAD = 1.15, 1.5, 0.2
+BED_CAT_SCALE = 1.2      # the mascot sits a little bigger than life, so he reads from the tub and from the street
+BED = "CleanACat_Prop_SudsBed"
+
+
+def build_suds_bed(mat):
+    """The mascot's bed (#297): a round bed with a mint rim and a bubblegum pad on a low cream stand, and a gold bell
+    on the front of the rim like the one on his collar. It stands just inside the entrance, between the door and
+    the chance board (SpotMascot): 2.3 wide, because that stretch of wall is 2.5."""
+    b = Builder()
+    b.cyl_base((0, 0, 0), 0.85, 0.16, "spa_mint", segments=12, bevel=False)                      # the foot
+    b.cyl_base((0, 0, 0.15), 0.4, BED_STAND - 0.28, "spa_cream", segments=10, bevel=False)       # the post
+    b.cyl_base((0, 0, BED_STAND - 0.14), BED_R - 0.04, 0.14, "spa_cream", segments=14, bevel=False)   # the tray
+    b.ring((0, 0, BED_STAND + 0.16), BED_R, 0.2, 0.36, "spa_mint", segments=14)                  # the rim
+    b.cyl_base((0, 0, BED_STAND - 0.01), BED_R - 0.17, BED_PAD, "spa_bubblegum", segments=14, bevel=False)   # the pad
+    b.box((0, -BED_R - 0.03, BED_STAND + 0.2), (0.14, 0.1, 0.14), "spa_mint", bevel=False)       # the bell's loop
+    b.sphere((0, -BED_R - 0.1, BED_STAND + 0.03), 0.17, "fur_golden", segments=8, rings=5)
+    b.box((0, -BED_R - 0.24, BED_STAND - 0.03), (0.04, 0.07, 0.1), "fur_brown", bevel=False)     # its slot
+    return [_tris(b.finalize(BED, mat))]
+
+
+def suds_bed_rbx_extras():
+    return {"attachments": [(BED, "CatSeat", Matrix.Translation((0.0, 0.0, BED_STAND - 0.01 + BED_PAD)))],
+            "attributes": {"CatScale": {"Float64": BED_CAT_SCALE}}}
+
+
 JAR = (0.9, 0.9, 1.2)    # the glass jar's outer size
 JAR_WALL = 0.06
 
@@ -271,6 +297,8 @@ ASSETS = {
     "CleanACat_Prop_StrayBox": (build_stray_box, 200),
     "CleanACat_Prop_ChanceBoard": (build_chance_board, 400),
     "CleanACat_Prop_QueueMat": (build_queue_mat, 200),
+    BED: (build_suds_bed, 800),
 }
 EXTRAS = {"CleanACat_Prop_Carrier": carrier_rbx_extras, "CleanACat_Prop_StrayBox": stray_box_rbx_extras,
-          "CleanACat_Prop_Cushion": cushion_rbx_extras, "CleanACat_Prop_TipJar": tip_jar_rbx_extras}
+          "CleanACat_Prop_Cushion": cushion_rbx_extras, "CleanACat_Prop_TipJar": tip_jar_rbx_extras,
+          BED: suds_bed_rbx_extras}

@@ -462,12 +462,186 @@ def plot_views(mat, out_dir, stem="plot-real", date="2026-11-23", built=False):
     return made
 
 
+def opening_board(mat, out_dir, only=""):
+    """The opening as the owner described it (2026-11-24), in eight frames for the ui-designer's storyboard (#279,
+    #297): a delivery truck jolts over a bump outside the spa, a plain brown box falls out of the back and lands in
+    front of the player, a muddy stray is inside, the player washes him, and he becomes Suds the mascot.
+    a1 and a2 are the quick intro shot (a low road camera, then the box at the player's feet); a to f are from a play
+    camera. Poses are stand-ins for Motion-FX's motion: the cats have a walking and a sitting body only."""
+    import math
+    import opening
+    import plot
+    import spa_props
+    import street
+    from mathutils import Matrix
+    F, ROADZ = plot.FLOOR, 0.22
+    rad = math.radians
+    n = [0]
+
+    def fresh(objs):
+        n[0] += 1
+        for o in objs:
+            o.name = f"O{n[0]}_{o.name}"
+        return objs
+
+    def xf(objs, M):
+        bpy.context.view_layer.update()                # a new object's matrix_world lags its location until now
+        for o in objs:
+            o.matrix_world = M @ o.matrix_world
+        return objs
+
+    def T(x, y, z):
+        return Matrix.Translation((x, y, z))
+
+    def R(deg, axis):
+        return Matrix.Rotation(rad(deg), 4, axis)
+
+    def at_spot(objs, spot, lift=0.0, k=1.0):
+        x, y, z, turn = plot.SPOTS[spot]
+        return xf(objs, T(x, y, F + z + lift) @ R(turn, "Z") @ Matrix.Scale(k, 4))
+
+    def turn_about(objs, suffixes, pivot, M):
+        """Turn the pieces whose names end in `suffixes` about `pivot` (a pose: a head roll, a tail whip)."""
+        P = Matrix.Translation(pivot)
+        bpy.context.view_layer.update()
+        xf([o for o in objs if o.name.endswith(suffixes)], P @ M @ P.inverted())
+
+    HEAD = ("_Head", "_Eye1", "_Eye2", "_EarL", "_EarR")
+
+    # -- the world: the street, the player's spa in slot 1 and its two neighbours, empty
+    world = [o for o in street.build_street(mat) if not o.name.endswith("_Barrier")]
+    for slot in (1, 2, 3):
+        objs = plot.build_plot(mat)
+        _move(objs, (street.slot_x(slot), 0, 0))
+        for o in objs:
+            o.name = f"P{slot}_{o.name}"
+        world += objs
+    world += fresh(at_spot(stations.build_tub(mat), "SpotTub"))
+    world += fresh(at_spot(spa_props.build_chance_board(mat), "SpotBoard"))
+    world += fresh(at_spot(spa_props.build_window_sign(mat), "SpotSign"))
+    world += fresh(at_spot(spa_props.build_tip_jar(mat), "SpotTipJar"))
+    for i in range(1, 5):
+        world += fresh(at_spot(spa_props.build_cushion(mat), f"SpotWindow{i}"))
+    bump_x, lane = plot.SPOTS["SpotBump"][0], plot.SPOTS["SpotBump"][1]         # the near lane's middle
+    world += fresh(at_spot(opening.build_bump(mat), "SpotBump"))
+
+    def truck(x, pitch=0.0, door=0.0):
+        """The truck in the near lane, nose toward -X (the player's right), its middle at x."""
+        objs = opening.build_truck(mat)
+        bpy.context.view_layer.update()
+        axle = (0.0, opening.WHEELS["BL"][1], opening.AXLE_Z)
+        M = T(x, lane, ROADZ) @ R(-90, "Z") @ T(*axle) @ R(-pitch, "X") @ T(*axle).inverted()
+        for o in objs:
+            if o.name.endswith("_Door"):
+                o.matrix_world = o.matrix_world @ R(door, "X")
+        return fresh(xf(objs, M))
+
+    def box(M, open_=0.0):
+        objs = opening.build_box(mat)
+        bpy.context.view_layer.update()
+        for o in objs:
+            for kind, (axis, sign) in opening.FLAP_TURN.items():
+                if o.name.endswith("_Flap" + kind):
+                    o.matrix_world = o.matrix_world @ R(sign * open_, axis)
+        return fresh(xf(objs, M))
+
+    def player(x, y, turn=0.0, z=F):
+        return fresh(xf([avatar(mat, skin="skin_tan", shirt="spa_sky", pants="pants_navy")], T(x, y, z) @ R(turn, "Z")))
+
+    def stray(body="sit", keep_mud=True):
+        objs = dirt.build_dirty("Suds", mat, body)[0]
+        if not keep_mud:
+            objs = _drop(objs, [f"_Mud{i:02d}" for i in range(1, 21, 2)] + ["_Tangle01", "_Tangle03", "_Tangle05"])
+        return objs
+
+    PX, PY = plot.SPOTS["SpotOpening"][0], plot.SPOTS["SpotOpening"][1]       # the player, on the pavement
+    BX, BY = plot.SPOTS["SpotBox"][0], plot.SPOTS["SpotBox"][1]               # where the box comes to rest
+    jolt = bump_x - opening.WHEELS["FL"][1]                                   # the truck's middle, front wheels on the bump
+    tail = jolt + opening.T_L / 2
+    frames = {}
+
+    # a1: the jolt, from a low camera on the road behind the truck
+    tr = truck(jolt, pitch=6.0, door=58.0)
+    air = box(T(tail - 1.6, lane + 0.3, 3.4) @ R(28, "Y") @ R(-24, "X") @ R(15, "Z") @ T(0, 0, -0.9))
+    frames["a1-truck-jolt"] = dict(objs=tr + air + player(PX, PY), eye=(tail + 13.5, -47.0, 1.5),
+                                   target=(jolt - 3.0, -35.5, 3.9), lens=24, hide=("_Glass",))
+    # a2: the box bouncing on the pavement at the player's feet, the truck driving off
+    far = truck(jolt - 21.0, door=20.0)
+    bounce = box(T(BX + 0.4, BY - 0.2, F + 0.75) @ R(-22, "Y") @ R(14, "X") @ T(0, 0, -0.2))
+    frames["a2-box-bounce"] = dict(objs=far + bounce + player(PX, PY), eye=(BX + 7.5, BY - 3.4, 1.5),
+                                   target=(BX - 0.8, BY + 0.6, 2.3), lens=28, hide=("_Glass",))
+    # a: a beat later from the play camera: the back wheels cross the bump, the box is out and falling
+    on = bump_x - opening.WHEELS["BL"][1]
+    tr2 = truck(on, pitch=-3.0, door=42.0)
+    air2 = box(T(on + opening.T_L / 2 + 2.6, lane + 2.6, 3.3) @ R(30, "Y") @ R(-20, "X") @ R(25, "Z") @ T(0, 0, -0.9))
+    cam = dict(eye=(PX + 6.5, PY + 9.6, F + 7.2), target=(PX - 1.5, -35.0, 2.2), lens=22, hide=("_Glass", "_Roof"))
+    frames["a-truck-passes"] = dict(objs=tr2 + air2 + player(PX, PY), **cam)
+    # b: the box landed, rocking
+    rock = box(T(BX, BY, F) @ R(18, "Z") @ T(-1.2, 0, 0) @ R(7, "Y") @ T(1.2, 0, 0))
+    near = dict(eye=(PX + 9.0, PY + 3.2, F + 5.6), target=(BX, BY + 1.3, F + 1.5), lens=30, hide=("_Glass", "_Roof"))
+    frames["b-box-landed"] = dict(objs=rock + player(PX, PY), **near)
+    # c: the box open, the muddy stray looking out
+    Mb = T(BX, BY, F) @ R(18, "Z")
+    opened = box(Mb, open_=opening.FLAP_OPEN)
+    peek = fresh(xf(stray("sit"), Mb @ R(160, "Z") @ T(0, 0, opening.BOX_SEAT + 0.72)))
+    frames["c-stray-peeks"] = dict(objs=opened + peek + player(PX - 2.4, BY + 1.6, turn=-35),
+                                   eye=(BX + 0.8, BY + 6.4, F + 4.6), target=(BX, BY, F + 1.6), lens=34,
+                                   hide=("_Glass", "_Roof"))
+    # d: in the tub, half scrubbed
+    wash = fresh(at_spot(stray("sit", keep_mud=False), "SpotTub", lift=stations.SEAT_Z, k=1.5))
+    sp = tools.build_sponge("CleanACat_Tool_Sponge", mat)
+    tx, ty = plot.SPOTS["SpotTub"][0], plot.SPOTS["SpotTub"][1]
+    fresh(xf(sp, T(tx + 1.25, ty - 1.0, F + 4.5) @ R(25, "Y") @ R(-20, "Z")))
+    fb = Builder()
+    for x, y, z, r in ((0.5, -0.5, 3.0, 0.3), (-0.6, -0.3, 3.6, 0.26), (0.1, -0.7, 4.2, 0.22), (-0.2, 0.2, 4.6, 0.3),
+                       (0.75, 0.1, 3.9, 0.2), (-0.75, -0.55, 2.7, 0.24), (1.5, -1.4, 4.9, 0.16), (1.9, -0.9, 5.4, 0.12)):
+        fb.sphere((tx + x, ty + y, F + z), r, "foam", segments=8, rings=5)
+    foam = fresh([fb.finalize("Lather", mat)])
+    tubcam = dict(eye=(tx + 4.4, ty - 8.8, F + 6.0), target=(tx - 0.4, ty, F + 3.0), lens=30, hide=("_Roof",))
+    by_tub = (tx - 3.3, ty - 2.4, 128)
+    frames["d-scrub"] = dict(objs=wash + sp + foam + player(by_tub[0], by_tub[1], turn=by_tub[2]), **tubcam)
+    # e: clean, collar on, shaking off
+    clean = cats.build_cat("Suds", mat, body="sit")
+    k = cats.scale_of(cats.spec_of("Suds"), "sit")
+    j = cats.joints(cats.spec_of("Suds"), "sit")
+    turn_about(clean, HEAD, j["Head"], R(20, "Y") @ R(-8, "X"))
+    turn_about(clean, ("_Tail",), j["Tail"], R(35, "Z"))
+    shake = fresh(at_spot(clean, "SpotTub", lift=stations.SEAT_Z, k=1.5))
+    sb = Builder()
+    X = (rad(90), "X")
+    for x, z, r in ((-1.7, 4.9, 0.34), (1.6, 5.3, 0.3), (-1.2, 3.2, 0.22), (1.9, 3.6, 0.24), (0.2, 6.0, 0.26)):
+        sb.star((tx + x, ty - 0.9, F + z), r, r * 0.42, 0.1, "fur_golden", points=4, rot=X)
+    for x, y, z in ((-1.5, -0.6, 4.2), (1.3, -0.7, 4.6), (-0.9, -0.4, 5.6), (1.0, 0.2, 5.8), (-2.0, 0.1, 3.7), (2.2, -0.2, 4.4)):
+        sb.sphere((tx + x, ty + y, F + z), 0.11, "water", segments=6, rings=4)
+    spark = fresh([sb.finalize("Sparkles", mat)])
+    frames["e-suds-clean"] = dict(objs=shake + spark + player(by_tub[0], by_tub[1], turn=by_tub[2]), **tubcam)
+    # f: Suds in his bed by the entrance
+    bed = fresh(at_spot(spa_props.build_suds_bed(mat), "SpotMascot"))
+    seat = spa_props.BED_STAND - 0.01 + spa_props.BED_PAD
+    home = fresh(at_spot(cats.build_cat("Suds", mat, body="sit"), "SpotMascot", lift=seat, k=spa_props.BED_CAT_SCALE))
+    mx, my = plot.SPOTS["SpotMascot"][0], plot.SPOTS["SpotMascot"][1]
+    frames["f-suds-home"] = dict(objs=bed + home + player(mx + 3.0, my + 3.8, turn=137),
+                                 eye=(mx - 5.5, my + 7.5, F + 5.4), target=(mx + 0.6, my + 0.6, F + 2.7), lens=30,
+                                 hide=("_Roof",))
+    os.makedirs(out_dir, exist_ok=True)
+    made = []
+    for key, f in frames.items():
+        if only and not any(w in key for w in only.split(",")):
+            continue
+        path = os.path.join(out_dir, f"2026-11-24-opening-{key}.png")
+        shot(world + f["objs"], path, f["eye"], f["target"], f["lens"], res=(1280, 720), samples=32, hide=f["hide"])
+        made.append(path)
+    del math
+    return made
+
+
 if __name__ == "__main__":
     which, out = sys.argv[-2], sys.argv[-1]
     common.reset_scene()
     png = os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png")
     mat = common.palette_material(png)
     {"plot-built": lambda m, o: plot_views(m, o, stem="plot-built", date="2026-11-24", built=True),
+     "opening": lambda m, o: opening_board(m, o, os.environ.get("ONLY", "")),
      "tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
      "customers": customers_sheet, "stations": stations_sheet,
      "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "street": street_views, "mud": mud_close,
