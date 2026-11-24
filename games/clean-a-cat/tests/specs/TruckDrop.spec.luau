@@ -51,6 +51,16 @@ return function()
 			expect(TruckDrop.bumpAt(TruckDrop.BUMP_RANGE + 1)).to.equal(TruckDrop.BUMP_X)
 			expect(TruckDrop.bumpAt(-6)).to.equal(-6)
 		end)
+		it("matches the plot fallback: SpotBump sits BUMP_X along the road from SpotBox", function()
+			local SpaLayout = require(game:GetService("ReplicatedStorage").Shared.SpaLayout) :: any
+			local box = SpaLayout.PLOT_SPOTS.SpotBox
+			local bump = SpaLayout.PLOT_SPOTS.SpotBump
+			-- the road runs along the box spot's right vector; yaw turns it about Y
+			local dx = bump.position.X - box.position.X
+			local dz = bump.position.Z - box.position.Z
+			local along = dx * math.cos(box.yaw) - dz * math.sin(box.yaw)
+			expect(math.abs(along - TruckDrop.BUMP_X) <= 1).to.equal(true)
+		end)
 		it("starts and ends off to the sides", function()
 			expect(TruckDrop.truckX(0) < -30).to.equal(true)
 			expect(TruckDrop.truckX(B.done) > 30).to.equal(true)

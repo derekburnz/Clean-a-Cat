@@ -11,7 +11,7 @@
 --   OpeningScene.play(origin, options?) -> Handle
 --       origin: the box's landing spot on the pavement (the plot's SpotBox, set to one side of the player so their
 --       avatar does not hide it), LookVector across the road (the way the player faces). The box lands exactly there.
---       options.shot: true takes the camera for a framed shot until BEATS.done (Derek's lean, option A); false
+--       options.shot: true takes the camera for a framed shot until BEATS.done (Derek picked option A 2026-11-24: the default); false
 --       leaves the camera the player's (option B). Reduced Motion or Less shake always leaves it the player's.
 --       options.onTap: called when the player taps the box or uses its prompt, once it has landed.
 --       options.bump: the speed bump's world position. Left out, the scene uses the plot's SpotBump when the player
