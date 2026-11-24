@@ -22,6 +22,7 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local StandRules = require(Shared:WaitForChild("StandRules"))
 
 local SPAWN_NAME = "PH_Spawn" -- the spawn in default.project.json
 local FLOOR_NAME = "PH_Floor" -- the placeholder floor in default.project.json
@@ -132,8 +133,9 @@ local function placeSpawnLocation()
 	end
 end
 
--- Stands a character on `spot` (the base of its feet), facing the way the spot faces. Nothing when it already
--- stands there, so the camera is left alone. False for a character with no humanoid or root yet.
+-- Stands a character on `spot` (the base of its feet), facing the way the spot faces, R6 or R15 (StandRules).
+-- Nothing when it already stands there, so the camera is left alone; one that sank or fell below the spot is moved.
+-- False for a character with no humanoid or root yet.
 local function standAt(character: Model, spot: CFrame): boolean
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	local root = character:FindFirstChild("HumanoidRootPart")
@@ -141,10 +143,15 @@ local function standAt(character: Model, spot: CFrame): boolean
 		return false
 	end
 	local rootPart = root :: BasePart
-	local height = (humanoid :: Humanoid).HipHeight + rootPart.Size.Y / 2
+	local body = humanoid :: Humanoid
+	local height = StandRules.rootHeight(
+		body.RigType == Enum.HumanoidRigType.R15,
+		body.HipHeight,
+		rootPart.Size.Y
+	)
 	local target = spot * CFrame.new(0, height, 0)
 	local offset = rootPart.Position - target.Position
-	if Vector3.new(offset.X, 0, offset.Z).Magnitude < 1 then
+	if Vector3.new(offset.X, 0, offset.Z).Magnitude < 1 and math.abs(offset.Y) < 1 then
 		return true
 	end
 	character:PivotTo(target)
