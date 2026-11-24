@@ -21,9 +21,10 @@
 8. [StarterGui & LocalScript Interaction](#startergui--localscript-interaction)
 9. [ProximityPrompt](#proximityprompt)
 10. [Best Practices](#best-practices)
-11. [UIShadow — Native Drop Shadows](#uishadow--native-drop-shadows)
-12. [StyleQuery — Responsive Style Queries (May 2026)](#stylequery--responsive-style-queries-may-2026)
-13. [Per-Corner UICorner Rounding](#per-corner-uicorner-rounding)
+11. [Readable Text: `Color3` Contrast Methods](#readable-text-color3-contrast-methods)
+12. [UIShadow — Native Drop Shadows](#uishadow--native-drop-shadows)
+13. [StyleQuery — Responsive Style Queries (May 2026)](#stylequery--responsive-style-queries-may-2026)
+14. [Per-Corner UICorner Rounding](#per-corner-uicorner-rounding)
 
 ---
 
@@ -379,6 +380,28 @@ end
 
 ---
 
+## Readable Text: `Color3` Contrast Methods
+
+`Color3:GetLuminance()`, `GetContrastRatio(other)` and `GetContrastingColor(...)` (documented
+2026-11-03) follow the WCAG 2.1 definitions and work from a Script and a LocalScript in Studio 0.746.
+With no arguments `GetContrastingColor` chooses between black and white; a tie resolves to the earliest
+candidate. They return 32-bit values, so compare with a threshold: in Studio black against white gives
+`20.999998…`, not the documented `21`, and pure red gives `0.2125999…`, not `0.2126`.
+
+<!-- skilltest: defs-behind; expect color3-contrast; defines-only -->
+```lua
+--!strict
+-- Pick a readable label colour for any background, keeping brand colours when they pass.
+local MIN_CONTRAST = 4.5 -- WCAG AA for normal-size text
+
+local function readableTextColor(background: Color3, preferred: Color3?): Color3
+	if preferred and preferred:GetContrastRatio(background) >= MIN_CONTRAST then
+		return preferred
+	end
+	return background:GetContrastingColor()
+end
+```
+
 ## UIShadow — Native Drop Shadows
 
 `UIShadow` renders a native drop shadow beneath its parent `GuiObject`,
@@ -464,16 +487,27 @@ shadowImage.Parent = card  -- layered behind content
 -- NEW approach: one line of UIShadow (shown above)
 ```
 
-### UIGradient shapes — the Upgraded UIGradients beta (October 2026)
+### `UIGradient` shapes (`Type`, `Scale`, `TileMode` — engine 0.746 / 0.748)
 
 Since 2026-10-15 the UI guide (*Appearance modifiers → Gradient*) documents `UIGradient.Type`
 (`Enum.GradientType.Linear` / `Radial` / `Elliptical` / `Conical`), `Scale` and `TileMode`
-(`Enum.GradientTileMode.Clamp` / `Repeat` / `Mirror`), each behind **File ⟩ Beta Features ⟩
-Upgraded UIGradients**. All three are `NotBrowsable` in the 0.743 API dump (hidden from the
-Properties window). In Studio 0.743 a `LocalScript` set and read back `Type = Elliptical`,
-`Scale` and `TileMode = Mirror` without error, so a successful write does **not** mean the beta is
-on, and rendering was not checked. As with the UIShadow beta: build on the default linear gradient
-for a published game, and use these only while experimenting in Studio until the beta is released.
+(`Enum.GradientTileMode.Clamp` / `Repeat` / `Mirror`). All three were `NotBrowsable` in the 0.743
+API dump and lost the tag in 0.746 (a Script reads `Linear`, `1`, `Clamp` on a new gradient). In
+published flags (`clientsettingscdn`, 2026-11-23), `FFlagUpgradedUIGradientsBetaFeature` is now
+`False` in Studio while `FFlagUIGradientExtendedModes4` is `True` across Studio and all player
+clients; the UI guide still labels them under the **Upgraded UIGradients** beta, and rendering was
+not visually verified here, so check visually in a playtest before relying on non-`Linear` gradients
+in production.
+
+### `GuiObject.SelectionGained` / `SelectionLost` and `ParticleEmitter2D` (0.748)
+
+- **`GuiObject.SelectionGained` / `SelectionLost`** now include `inputDirection: Enum.GuiNavigationDirection`
+  in the 0.748 dump (`None`, `Up`, `Down`, `Left`, `Right`, `Forward`, `Backward`), and `SelectionGained`
+  passes one argument (`Enum.GuiNavigationDirection.None`) in Studio `0.748.0.7481526` *(Studio)*.
+- **`ParticleEmitter2D`** (2D UI particles emitted from a `GuiObject` under `ScreenGui`, `SurfaceGui`,
+  or `BillboardGui`): behind the **UI Particles** Studio beta (`ui/2D-particle-emitters.md`,
+  2026-11-19). In 0.748 `ParticleEmitter2D.LightEmission` was removed and replaced by
+  `ParticleEmitter2D.LightInfluence`. Treat as Studio beta until full release.
 
 ---
 
