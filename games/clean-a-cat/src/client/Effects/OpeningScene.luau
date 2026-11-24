@@ -15,13 +15,16 @@
 --       leaves the camera the player's (option B). Reduced Motion or Less shake always leaves it the player's.
 --       options.onTap: called when the player taps the box or uses its prompt, once it has landed.
 --       options.bump: the speed bump's world position. Left out, the scene uses the plot's SpotBump when the player
---       is on a plot, else TruckDrop.BUMP_X. The truck's jolt is timed to it, so it hits the bump the player sees.
+--       is on a plot, else TruckDrop.BUMP_X. The truck's jolt is timed to it, so it hits the bump the player sees,
+--       and a speed bump (CleanACat_Prop_SpeedBump) is laid there if the road has none.
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
 --   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point; onDone when he lands. The
 --                                   camera turn toward the tub is gone (Sync-Agent: Roblox's camera undid it, and with
 --                                   the carry the player walks to the tub themselves)
---   handle.pickUp(character, onDone?)  the player lifts the kitten out of the box into folded arms (Effects/Carry),
---                                   with a purr; he stays in their arms as they walk. onDone once he is in them.
+--   handle.pickUp(character, onDone?)  the player bends and reaches into the box, then lifts the kitten into their
+--                                   arms (Effects/Carry), with a purr; he stays in their arms as they walk. Call it
+--                                   once the player stands at the box facing it. onDone once he is in them
+--                                   (Carry.settleSeconds(true) later).
 --                                   He becomes the loaf body as he leaves the box, so handle.kitten changes here
 --   handle.placeIn(target, onDone?) the arms open and the carried kitten hops in, his base on `target` (the tub's
 --                                   seat); onDone when he lands. Then Gameplay eases into the wash (Effects/WashCamera)
@@ -48,6 +51,8 @@ local BOX_ASSET = "CleanACat_Prop_DeliveryBox"
 local KITTEN_ASSETS = { "CleanACat_Cat_Suds_Dirty_Sit", "CleanACat_Cat_Suds_Dirty" }
 local LOAF_ASSET = "CleanACat_Cat_Suds_Dirty_Loaf" -- the held body: legs tucked, carried across the arms
 local FOLDER_NAME = "CleanACat_OpeningScene"
+local BUMP_ASSET = "CleanACat_Prop_SpeedBump" -- Model-Agent's bump; its long side is its X
+local BUMP_NAME = "CleanACat_OpeningBump" -- the copy this client lays on the road, kept after the scene
 
 -- Signs for the hinge turns, so a prop built the other way round is a one-character fix.
 local DOOR_SIGN = -1 -- the rear door is hinged on its top edge and swings out behind the truck
@@ -279,18 +284,18 @@ local function squashBox(rests: { PartRest }, boxCF: CFrame, squash: number)
 	end
 end
 
--- The plot's SpotBump in world space while the player is on a plot, else nil. Read lazily and guarded, so the scene
--- still plays (with BUMP_X) if the layout module is missing.
-local function plotBump(): Vector3?
+-- The plot's SpotBump (a CFrame: on the road top, its X across the lane) while the player is on a plot, else nil.
+-- Read lazily and guarded, so the scene still plays (with BUMP_X) if the layout module is missing.
+local function plotBump(): CFrame?
 	local shared = ReplicatedStorage:FindFirstChild("Shared")
 	local module = shared and shared:FindFirstChild("SpaLayout")
 	if module == nil or not module:IsA("ModuleScript") then
 		return nil
 	end
-	local ok, found = pcall(function(): Vector3?
+	local ok, found = pcall(function(): CFrame?
 		local SpaLayout = require(module) :: any
 		if SpaLayout.onPlot() and SpaLayout.PLOT_SPOTS.SpotBump then
-			return (SpaLayout.spot("SpotBump") :: CFrame).Position
+			return SpaLayout.spot("SpotBump") :: CFrame
 		end
 		return nil
 	end)
@@ -299,11 +304,44 @@ end
 
 -- How far along the road (scene +X) the bump sits from the box's landing spot, or nil when there is no bump.
 local function bumpOffset(origin: CFrame, bump: Vector3?): number?
-	local world = bump or plotBump()
+	local spot = plotBump()
+	local world = bump or (if spot then spot.Position else nil)
 	if world == nil then
 		return nil
 	end
 	return (world - origin.Position):Dot(origin.RightVector)
+end
+
+-- Lays the speed bump on the road where the truck jolts (Derek's dev test: "no bump in road was there"). Nothing in
+-- the world places one yet, so this client puts its own copy there once and keeps it after the scene; a bump
+-- already on the road (a later plot build, or the last play's copy) is used as it is. `cframe` is the bump's place:
+-- on the road top, its X across the lane.
+local function layBump(cframe: CFrame)
+	local existing = Workspace:FindFirstChild(BUMP_NAME)
+	if existing and existing:IsA("Model") then
+		existing:PivotTo(cframe)
+		return
+	end
+	local bump: Model
+	local asset = findAsset({ BUMP_ASSET })
+	if asset then
+		bump = asset:Clone() :: Model
+	else
+		bump = Instance.new("Model")
+		local stripe = part(
+			bump,
+			"PH_SpeedBump",
+			Vector3.new(10, 0.35, 1.4),
+			CFrame.new(0, 0.175, 0),
+			Color3.fromRGB(255, 205, 60)
+		)
+		bump.PrimaryPart = stripe
+		bump.WorldPivot = CFrame.identity
+	end
+	makeClientOnly(bump)
+	bump.Name = BUMP_NAME
+	bump:PivotTo(cframe)
+	bump.Parent = Workspace
 end
 
 function OpeningScene.play(origin: CFrame, options: Options?): Handle
@@ -325,6 +363,13 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local boxFacing = CFrame.lookAt(Vector3.zero, across, up)
 
 	local bumpX = TruckDrop.bumpAt(bumpOffset(origin, opts.bump))
+	local spot = if opts.bump == nil then plotBump() else nil
+	if spot and math.abs((spot.Position - origin.Position):Dot(right) - bumpX) < 0.01 then
+		layBump(spot)
+	else
+		-- on the road under the truck's lane, its X across the road
+		layBump(CFrame.fromMatrix(at(bumpX, 0, TruckDrop.ROAD_Z), across, up))
+	end
 
 	local truck = clone({ TRUCK_ASSET }, placeholderTruck)
 	makeClientOnly(truck)
@@ -667,9 +712,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				handle.kitten = loaf
 				held = "loaf"
 			end
-			carry = Carry.hold(character, cat, held)
+			-- he bends and reaches into the box first, then lifts Suds into his arms (Derek's dev test)
+			carry = Carry.hold(character, cat, held, true)
 			if onDone then
-				task.delay(Carry.FOLD_SECONDS, onDone)
+				task.delay(Carry.settleSeconds(true), onDone)
 			end
 		end,
 		placeIn = function(target: Vector3, onDone: (() -> ())?)

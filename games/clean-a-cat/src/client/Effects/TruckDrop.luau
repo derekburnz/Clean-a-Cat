@@ -9,30 +9,44 @@
 -- Every beat is in BEATS, so a change of mind is a one-line edit. Derek's lean is not locked (2026-11-24 ET).
 local TruckDrop = {}
 
+-- Derek's dev test (2026-11-24 3:10 PM ET): "the truck comes a little too fast so start it further back and slower",
+-- "make the falling out animation better", "no bump in road was there". So the truck now starts about 55 studs up
+-- the road and drives at 20 studs a second (was 45 and 32), and the box no longer slides off later on its own: the
+-- back wheels' hit kicks it out of the door, so the fall is plainly the bump's doing. It flips once in the air, lands
+-- on its back edge, slams flat and bounces twice.
 TruckDrop.BEATS = {
-	honk = 0.4, -- one soft honk so the player looks up
-	frontHit = 1.2, -- front wheels hit the bump: nose jolts up, thunk, dust puff
-	backHit = 1.45, -- back wheels hit it: nose dips, the back door swings open
-	drop = 1.85, -- the box slides off the back: the truck is far enough on that it falls back along the road
-	land = 2.45, -- the box hits the pavement: squash, one bounce
-	settle = 2.83, -- the box is at rest
-	done = 3.7, -- the truck is gone and the camera is the player's again
+	honk = 0.8, -- one soft honk so the player looks up
+	frontHit = 2.4, -- front wheels hit the bump: nose jolts up, thunk, dust puff
+	backHit = 2.8, -- back wheels hit it: the back kicks up, the door bursts open
+	drop = 2.92, -- the kick throws the box up out of the door; it drifts on along the road, slower than the truck
+	land = 3.6, -- the box hits the pavement on its back edge and slams flat: squash, two bounces
+	settle = 4.14, -- the box is at rest
+	done = 5, -- the truck is gone and the camera is the player's again
 }
 
 TruckDrop.ROAD_Z = 8 -- the middle of the truck's lane, across the road from the landing spot
 TruckDrop.BUMP_X = -3 -- where the bump is along the road when the scene has no bump to time to (off the plot)
 TruckDrop.BUMP_RANGE = 20 -- a bump further than this along the road from the box is ignored, and BUMP_X is used
-TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.25 s apart the truck drives at 32 studs a second
+TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.4 s apart the truck drives at 20 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
 TruckDrop.TAILGATE = { back = 6.5, up = 1.9, side = 2 } -- where the box leaves (the Tailgate attachment), from the
 -- truck's pivot; `side` studs from the lane's middle toward the curb, the door's near corner
 -- (on the road under the middle of the 13 stud truck, Model-Agent's CleanACat_Prop_DeliveryTruck)
 
-TruckDrop.JOLT = { lift = 0.35, frontPitch = math.rad(5), backPitch = math.rad(-4), seconds = 0.22 }
+TruckDrop.JOLT = { lift = 0.45, frontPitch = math.rad(5), backPitch = math.rad(-6), seconds = 0.24 }
 TruckDrop.RATTLE = { pitch = math.rad(1.2), seconds = 0.7 } -- the little rattle after each hit
-TruckDrop.DOOR = { open = math.rad(100), seconds = 0.25, swing = math.rad(8) } -- hinged along its top edge, flaps up
-TruckDrop.ARC = { height = 1.2, spin = math.pi / 2 } -- a quarter tumble that ends flat, so a cube lands square
-TruckDrop.LANDING = { squash = 0.22, squashSeconds = 0.1, bounce = 0.5, bounceSeconds = 0.28 }
+TruckDrop.DOOR = { open = math.rad(100), seconds = 0.12, swing = math.rad(10) } -- hinged along its top edge, bursts up
+-- One whole flip in the air (so it lands flaps up), short of flat by `flop`: it lands on its back edge and slams
+-- flat over LANDING.squashSeconds.
+TruckDrop.ARC = { height = 1.4, spin = 2 * math.pi, flop = math.rad(22) }
+TruckDrop.LANDING = {
+	squash = 0.25,
+	squashSeconds = 0.1,
+	bounce = 0.5,
+	bounceSeconds = 0.28,
+	bounce2 = 0.14, -- a second, small bounce
+	bounce2Seconds = 0.16,
+}
 TruckDrop.WIGGLE = { start = 0.4, every = 1.6, seconds = 0.45, angle = math.rad(7), meowEvery = 2 }
 TruckDrop.OPEN = {
 	flap = math.rad(215),
@@ -173,16 +187,23 @@ function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 		-- through the launch height at u = 0 and the ground at u = 1, peaking ARC.height above the straight line
 		box.y = ly * (1 - u) + TruckDrop.ARC.height * 4 * u * (1 - u)
 		if not reduced then
-			box.tumble = -TruckDrop.ARC.spin * (1 - u)
+			box.tumble = -(TruckDrop.ARC.spin - TruckDrop.ARC.flop) * u
 		end
 		return box
 	end
 	local l = TruckDrop.LANDING
 	local after = t - b.land
+	if not reduced and after < l.squashSeconds then
+		-- on its back edge, slamming flat (a whole turn is flat again)
+		local k = after / l.squashSeconds
+		box.tumble = -(TruckDrop.ARC.spin - TruckDrop.ARC.flop * (1 - k * k))
+	end
 	box.squash = 1 - l.squash * TruckDrop.hump(after, l.squashSeconds)
 	local bounce = after - l.squashSeconds
 	box.y = l.bounce * TruckDrop.hump(bounce, l.bounceSeconds)
-	box.squash -= l.squash * 0.5 * TruckDrop.hump(bounce - l.bounceSeconds, l.squashSeconds)
+	local second = bounce - l.bounceSeconds
+	box.squash -= l.squash * 0.5 * TruckDrop.hump(second, l.squashSeconds)
+	box.y += l.bounce2 * TruckDrop.hump(second, l.bounce2Seconds)
 	if not reduced then
 		box.roll = TruckDrop.wiggle(t)
 	end
