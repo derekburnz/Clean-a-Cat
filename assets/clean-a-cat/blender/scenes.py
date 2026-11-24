@@ -43,15 +43,17 @@ AVATAR_ATT = {"HatAttachment": (0.0, 0.0, 4.75), "NeckAttachment": (0.0, 0.0, 3.
 # against the body with his head end at the carrier's left shoulder. The game's arms are Effects/Carry.luau
 # (Motion-FX); these are a stand-in with an elbow, so the picture reads on the avatars most players wear.
 HOLD_UPPER = 12.0                  # degrees the upper arm goes forward of straight down
-HOLD_IN, HOLD_DOWN = 42.0, 25.0    # degrees the forearm turns in toward the middle, and slopes down to the hand
-HOLD_SEAT = (0.4, -0.95, 2.55)     # the held loaf's base in the avatar's space: to its left, ahead, and up
+HOLD_IN, HOLD_DOWN = 50.0, 22.0    # degrees the forearm turns in toward the middle, and slopes down to the hand
+HOLD_SEAT = (0.2, -1.25, 2.62)     # the held loaf's base in the avatar's space: to its left, ahead, and up (the
+                                   # torso's middle, as in the owner's carry screenshots, #340)
 HOLD_ROLL = 8.0                    # degrees his head end is raised
 
 
 def held_at():
-    """The held loaf's place in the avatar's space: across the arms, his front to the carrier's left."""
+    """The held loaf's place in the avatar's space: across the arms, his front to the carrier's left, at his
+    carried size (cats.LOAF_CARRY_SCALE)."""
     return (Matrix.Translation(HOLD_SEAT) @ Matrix.Rotation(math.radians(90), 4, "Z")
-            @ Matrix.Rotation(math.radians(-HOLD_ROLL), 4, "X"))
+            @ Matrix.Rotation(math.radians(-HOLD_ROLL), 4, "X") @ Matrix.Scale(cats.LOAF_CARRY_SCALE, 4))
 
 
 def suds_on_bed(mat):

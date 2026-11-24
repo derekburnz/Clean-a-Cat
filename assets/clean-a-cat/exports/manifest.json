@@ -6198,14 +6198,14 @@
   "budget": 2600,
   "parts": 83,
   "size_studs": {
-   "x": 1.37,
-   "y": 1.87,
-   "z": 1.59
+   "x": 1.54,
+   "y": 1.85,
+   "z": 1.27
   },
   "size_roblox": [
-   1.37,
-   1.59,
-   1.87
+   1.54,
+   1.27,
+   1.85
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -6216,6 +6216,7 @@
   "dirt": {
    "attributes": {
     "Loaf": true,
+    "CarryScale": 1.4,
     "Dirty": true
    },
    "rides": {
@@ -6263,7 +6264,7 @@
   "joints_roblox": {
    "Head": [
     0.0,
-    0.58,
+    0.26,
     -0.3
    ],
    "Tail": [
@@ -6272,24 +6273,24 @@
     0.58
    ],
    "Eye1": [
-    0.37,
-    0.84,
-    -0.87
+    -0.25,
+    0.52,
+    -0.93
    ],
    "Eye2": [
-    0.66,
-    0.84,
-    -0.45
+    0.25,
+    0.52,
+    -0.93
    ],
    "EarL": [
-    -0.04,
-    1.29,
-    -0.64
+    -0.3,
+    0.97,
+    -0.46
    ],
    "EarR": [
     0.3,
-    1.29,
-    -0.15
+    0.97,
+    -0.46
    ]
   },
   "gates": {
@@ -6300,7 +6301,7 @@
    ],
    "qa_accepted": {
     "shared corners": 7,
-    "back to back": 17
+    "back to back": 18
    },
    "checks": {
     "budget": "1246/2600 tris",
@@ -6309,7 +6310,7 @@
     "uv": "712 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=-0.16 y=-0.16",
+    "centered": "footprint center x=-0.07 y=-0.15",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -6542,17 +6543,17 @@
    "CleanACat_Cat_Suds_Loaf_Paws",
    "CleanACat_Cat_Suds_Loaf_Tail"
   ],
-  "triangles": 680,
+  "triangles": 668,
   "budget": 1500,
-  "parts": 36,
+  "parts": 35,
   "size_studs": {
-   "x": 1.3,
+   "x": 1.35,
    "y": 1.85,
-   "z": 1.59
+   "z": 1.27
   },
   "size_roblox": [
-   1.3,
-   1.59,
+   1.35,
+   1.27,
    1.85
   ],
   "pivot": "base center (floor contact)",
@@ -6563,7 +6564,8 @@
   "dirty": false,
   "dirt": {
    "attributes": {
-    "Loaf": true
+    "Loaf": true,
+    "CarryScale": 1.4
    },
    "rides": {}
   },
@@ -6600,7 +6602,7 @@
   "joints_roblox": {
    "Head": [
     0.0,
-    0.58,
+    0.26,
     -0.3
    ],
    "Tail": [
@@ -6609,24 +6611,24 @@
     0.58
    ],
    "Eye1": [
-    0.37,
-    0.84,
-    -0.87
+    -0.25,
+    0.52,
+    -0.93
    ],
    "Eye2": [
-    0.66,
-    0.84,
-    -0.45
+    0.25,
+    0.52,
+    -0.93
    ],
    "EarL": [
-    -0.04,
-    1.29,
-    -0.64
+    -0.3,
+    0.97,
+    -0.46
    ],
    "EarR": [
     0.3,
-    1.29,
-    -0.15
+    0.97,
+    -0.46
    ]
   },
   "gates": {
@@ -6637,13 +6639,13 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "680/1500 tris",
+    "budget": "668/1500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "384 faces on swatch centers",
+    "uv": "378 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=-0.20 y=-0.15",
+    "centered": "footprint center x=-0.17 y=-0.15",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }

@@ -1,9 +1,10 @@
-"""The held loaf (issues #318, #324). The owner, 2026-11-24, on the opening: "we should pick him up out of crate". The
-player lifts the muddy kitten out of the box and carries him to the tub. His clip of the hold ("here is how the
-carrying should look"): the arms reach forward, down and in, and the load lies across them close against the body
-with its head end at the carrier's left shoulder.
+"""The held loaf (issues #318, #324, #340). The owner, 2026-11-24, on the opening: "we should pick him up out of
+crate". The player lifts the muddy kitten out of the box and carries him to the tub. His clip of the hold ("here is
+how the carrying should look"): the arms reach forward, down and in, and the load lies across them close against the
+body with its head end at the carrier's left shoulder. After his dev test he sent six screenshots of the carry in his
+own earlier game: the carried cat was "a little too small and in wrong pose" and "should look closer to the attached".
 
-  CleanACat_Cat_Suds_Dirty_Loaf   the muddy stray as a loaf: no collar, legs tucked under, two paw tips at the front
+  CleanACat_Cat_Suds_Dirty_Loaf   the muddy stray as a loaf: no collar, legs tucked under, forelegs stretched forward
   CleanACat_Cat_Suds_Loaf         the same body clean, in his collar
 
 A loaf is the walking body (A) with its legs taken away and everything lowered until the belly lies LOAF_LIFT over
@@ -12,10 +13,15 @@ pieces keep A's names (`_Body`, `_Head`, `_Eye1`, `_Eye2`, `_EarL`, `_EarR`, `_T
 there is one more, `_Paws`. Pivot at the bottom middle, front at -Z in Roblox, like every cat.
 
 He is made for that hold: lying across the arms, his front to the carrier's left, so his right side faces out.
-  - The head is turned cats.LOAF_LOOK degrees to his right, so he looks out ahead over his shoulder. Its eyes, ears
-    and mud turn with it about the neck. The pieces keep rotation 0: the turn is in the mesh and the primitive log.
+  - The head lies low (cats.LOAF_HEAD_DROP): the chin rests on the forelegs, whose tips show past it, as the
+    carried cat's head does in the screenshots. It faces along the body (cats.LOAF_LOOK is 0 now; any turn is in the
+    mesh and the primitive log, and the pieces keep rotation 0).
   - The tail is not A's raised one: it lies on the base along his right side (cats.loaf_tail); the muddy loaf's
     tail has a muddy tip.
+  - The clean loaf's collar is its own: the band sits behind the lowered head and the bell hangs at his right side,
+    where it shows from the front of the carrier.
+  - Root attribute `CarryScale` (cats.LOAF_CARRY_SCALE, 1.4): his size in the arms. He is 1.0 in the box and 1.5
+    at a station. `Effects/Carry.luau` scales him by it.
 
 The muddy loaf is for carrying only. Its mud and tangles are the walking stray's, less what was on the legs and less
 the drips that hung under the belly and the jaw (under a lowered head a drip reads as a third front leg), and they
@@ -35,8 +41,10 @@ from common import PRIMS, Builder, scale_mesh
 NAMES = ("Suds",)                  # the cats that have a loaf so far
 LEG_PIECES = cats.LEGS["walk"]
 HEAD_FAMILY = ("_Head",) + tuple("_" + p for p in cats.HEAD_PIECES)
-PAW = (0.26, 0.24, 0.15)           # one paw tip, unscaled: its width, how far it reaches and its height
-PAW_X, PAW_OUT = 0.2, 0.07         # each tip's middle off the centre line, and in front of the chest
+PAW = (0.26, 0.72, 0.17)           # one foreleg, unscaled: its width, its length and its height. It lies stretched
+                                   # forward from the chest under the lowered head, and its tip shows past the chin
+PAW_X, PAW_OUT = 0.2, 0.36         # each foreleg's middle off the centre line, and in front of the chest
+BELL_BACK = 0.44                   # the clean loaf's collar band behind the chest front: clear of the lowered head
 
 
 def _corners_z(ob, m):
@@ -101,7 +109,7 @@ def build_loaf(name, mat, dirty):
     out = []
     for ob in objs:                                    # the legs go, and with them what rode them; no fluff, no claws
         suffix = ob.name[len(base):]
-        gone = legs + ("_Tail",)                       # A's tail stands up: the loaf gets its own lying one below
+        gone = legs + ("_Tail", "_Collar")             # A's tail stands up and its bell hangs where the head now lies
         if suffix in gone or nest.get(suffix) in gone or suffix.startswith(("_Fluff", "_Claw")):
             nest.pop(suffix, None)
             bpy.data.objects.remove(ob, do_unlink=True)
@@ -114,10 +122,25 @@ def build_loaf(name, mat, dirty):
         if "_Mud" in ob.name or "_Tangle" in ob.name:  # no drips under the belly, and none under the jaw
             _cut_below(ob, jaw if nest.get(ob.name[len(base):]) == "_Head" else belly)
         ob.location.z -= drop
+        if ob.name[len(base):] in HEAD_FAMILY or nest.get(ob.name[len(base):]) == "_Head":
+            ob.location.z -= cats.LOAF_HEAD_DROP * k   # the head lies low, chin on the paws (#340)
     d = cats.dims(spec, "loaf")
-    (cx, cy, _cz), (_sx, sy, _sz) = d["body"]
+    (cx, cy, cz), (sx_, sy, sz) = d["body"]
     front = cy - sy / 2
-    b = Builder()                                      # the paw tips, on the base, half under the chest
+    if spec.get("collar") and not dirty:               # the loaf's own collar: the bell hangs at his right side, which
+        band, bell = spec["collar"]                    # faces out when he lies across the arms
+        z, y = cz - drop / k, front + BELL_BACK
+        at = (cx - sx_ / 2 - 0.14, y, z - 0.08)
+        b = Builder()
+        b.box((cx, y, z), (sx_ + 0.12, 0.18, sz + 0.12), band)
+        b.box((at[0] + 0.1, y, at[2] + 0.17), (0.2, 0.12, 0.1), band, bevel=False)      # the tab the bell hangs from
+        b.sphere(at, 0.17, bell, segments=8, rings=5)
+        b.box((at[0] - 0.14, y, at[2] - 0.06), (0.07, 0.04, 0.1), "fur_brown", bevel=False)   # its slot
+        collar = b.finalize(f"{base}_Collar", mat, location=(0.0, 0.0, 0.0))
+        if k != 1.0:
+            scale_mesh(collar, k)
+        out.append(collar)
+    b = Builder()                                      # the forelegs, on the base, from the chest out past the chin
     for sx in (1, -1):
         b.box_base((sx * PAW_X, -PAW_OUT, 0.0), PAW, cats.look(spec)["paw"])
     paws = b.finalize(f"{base}_Paws", mat, location=(cx * k, front * k, 0.0))
@@ -161,7 +184,7 @@ def build_loaf(name, mat, dirty):
     low = min((ob.matrix_world @ v.co).z for ob in out for v in ob.data.vertices)
     if low < -1e-4:
         raise RuntimeError(f"{base}: a piece reaches {low:.3f} below the base; raise cats.LOAF_LIFT")
-    attributes = {"Loaf": True}
+    attributes = {"Loaf": True, "CarryScale": {"Float64": cats.LOAF_CARRY_SCALE}}
     if dirty:
         attributes["Dirty"] = True
     return out, nest, attributes
