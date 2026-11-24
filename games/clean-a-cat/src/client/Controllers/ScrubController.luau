@@ -162,7 +162,6 @@ local stroking = false -- the active press is on the cat right now
 local lastHit: Vector3? = nil
 local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
-local heldControls = false -- walking is paused while a finger scrubs
 local trove = Trove.new() -- everything a visit makes; one Clean ends it
 local nextCatThread: thread? = nil
 local reportedScrub = false -- the funnel's first_scrub was sent this session
@@ -546,11 +545,11 @@ end
 -- are paused; they come back when it lifts. Needs the scrubFeel switch, and does nothing when the game has no
 -- default PlayerModule.
 local function holdControls(hold: boolean)
-	if hold == heldControls or (hold and not LiveFlags.isOn(FEEL_FLAG)) then
+	-- ControlHold owns the state, so a reset (which clears every reason) leaves nothing stale here
+	if hold == ControlHold.holds("scrub") or (hold and not LiveFlags.isOn(FEEL_FLAG)) then
 		return
 	end
 	ControlHold.set("scrub", hold)
-	heldControls = hold
 end
 
 -- The press left the cat or lifted: a scrub stroke ends (ScrubStop) and brush travel starts over.

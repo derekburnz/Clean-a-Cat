@@ -61,7 +61,8 @@ function ControlHold.holds(reason: string): boolean
 	return held[reason] == true
 end
 
--- Drops every reason and frees walking (a new character after a reset).
+-- Drops every reason and frees walking. Runs by itself for every new character (a reset), since nothing that held
+-- walking for the old one should hold the new one.
 function ControlHold.clear()
 	table.clear(held)
 	-- Roblox keeps the controls' enabled state across a respawn, so free them even if this module thinks they are.
@@ -71,5 +72,9 @@ function ControlHold.clear()
 	end
 	disabled = false
 end
+
+Players.LocalPlayer.CharacterAdded:Connect(function()
+	ControlHold.clear()
+end)
 
 return ControlHold

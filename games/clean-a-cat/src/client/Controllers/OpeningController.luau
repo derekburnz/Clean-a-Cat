@@ -269,7 +269,7 @@ end
 
 -- The player walks up to `target` (stopping PICK_STAND short of it) and turns to face it, then `onArrive`. Their
 -- own walking is held on the way, so a stray thumb on the stick does not fight it. Gives up after WALK_SECONDS.
-local function walkUpTo(character: Model, target: Vector3, onArrive: () -> ())
+local function walkUpTo(character: Model, target: Vector3, onArrive: () -> (), onLost: () -> ())
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	local root = character:FindFirstChild("HumanoidRootPart")
 	if humanoid == nil or root == nil or not root:IsA("BasePart") then
@@ -303,6 +303,10 @@ local function walkUpTo(character: Model, target: Vector3, onArrive: () -> ())
 			connection:Disconnect()
 		end
 		holdControls(false)
+		if player.Character ~= character then
+			onLost() -- a reset on the way: the new character starts over, nothing is lifted to where it spawned
+			return
+		end
 		face()
 		onArrive()
 	end
@@ -313,7 +317,8 @@ end
 
 -- The kitten peeked out of the open box: "Pick him up", and a tap on him walks the player up to the box, then lifts
 -- him into their arms (Derek: no teleport into the arms).
-local function offerPickUp(scene: OpeningScene.Handle)
+local offerPickUp: (scene: OpeningScene.Handle) -> ()
+function offerPickUp(scene: OpeningScene.Handle)
 	if handle ~= scene or boxState() ~= false then
 		return
 	end
@@ -341,7 +346,9 @@ local function offerPickUp(scene: OpeningScene.Handle)
 			lift()
 			return
 		end
-		walkUpTo(character, at :: Vector3, lift)
+		walkUpTo(character, at :: Vector3, lift, function()
+			offerPickUp(scene)
+		end)
 	end
 	local kitten = scene.kitten
 	local body = if kitten
