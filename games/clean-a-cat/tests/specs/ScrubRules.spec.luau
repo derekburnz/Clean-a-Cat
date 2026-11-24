@@ -109,5 +109,36 @@ return function()
 			expect(turnedX).to.be.near(0, 1e-6)
 			expect(turnedZ).to.be.near(1, 1e-6)
 		end)
+
+		it("turns when the mud sits on the flanks, though on the camera's half", function()
+			-- Sync-Agent's run on 4ae0e33: patches a little in front of the side were counted as facing
+			local yaw = ScrubRules.turnToShow(
+				{ Vector3.new(1, 0, 0.3), Vector3.new(1, 0.5, 0.2), Vector3.new(0, 0, 1) },
+				toCamera,
+				2
+			)
+			expect(yaw).never.to.equal(nil)
+		end)
+
+		it("counts mud on top of the cat as facing the camera", function()
+			expect(
+				ScrubRules.turnToShow(
+					{ Vector3.new(0, 1, 0.05), Vector3.new(0.1, 1, 0) },
+					toCamera,
+					2
+				)
+			).to.equal(nil)
+		end)
+
+		it("turns the hidden mud round, not the middle of all of it", function()
+			-- one patch in front and one on each flank: the middle of the hidden two is the +X side here
+			local yaw = ScrubRules.turnToShow(
+				{ Vector3.new(0, 0, 1), Vector3.new(1, 0, -0.2), Vector3.new(1, 0, 0.2) },
+				toCamera,
+				3
+			) :: number
+			local turnedZ = -1 * math.sin(yaw)
+			expect(turnedZ).to.be.near(1, 1e-6)
+		end)
 	end)
 end
