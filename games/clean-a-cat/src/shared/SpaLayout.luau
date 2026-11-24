@@ -79,10 +79,10 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	-- The opening (#285, Model-Agent): the player stands mid-entrance facing the street, the box lands in front on the
 	-- near pavement, and the truck hits the bump across the near lane.
 	SpotOpening = at(-5, 0.5, -27, 0),
-	SpotBox = at(-8, 0.5, -30.6, 0), -- 3 studs to the player's left, so their own avatar never hides it (Sync-Agent)
+	SpotBox = at(-9.5, 0.5, -30.6, 0), -- 4.5 studs to the player's left, so their own avatar never hides it (Sync-Agent, a06)
 	-- The truck jolts 3 studs along the road from the box (TruckDrop.BUMP_X = -3, Motion-FX); a quarter turn lies the
 	-- bump across the lane.
-	SpotBump = at(-11, 0.22, -37.6, math.pi / 2),
+	SpotBump = at(-12.5, 0.22, -37.6, math.pi / 2),
 	SpotMascot = at(-10.25, 0.5, -14.3, math.rad(230)), -- Suds's bed right of the door, looking at the tub (#285, Model-Agent)
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
 	Tools = at(-1, 0.5, -2, 0),
