@@ -30,6 +30,14 @@ Write the steps from the design's core loop. The shape is always the same:
 6. Abuse pass: spam the interact key 50 times, buy with a zero balance, act on something from across the map (teleport the test character). Anything the server accepted is a **blocker** and goes to luau-reviewer.
 Record: pass or fail per step, console errors (full text), screenshot paths.
 
+### Roblox's Studio skills (#178)
+The Studio MCP serves Roblox's own skills through `list_roblox_skills` and `get_roblox_skill`. Use these three:
+- **Device check, every changed screen** (a must, see `ui-review` section 7): `rbx-device-simulator-lua` captures at the iPhone 14, iPad 10th gen, Xbox One and average Windows PC presets. The report links all four pictures.
+- **Speed check, once per milestone:** `rbx-perf-profiling` on a full street (switch `streetLoadTest` in the dev place). Record the average, median, 95th percentile and worst CPU frame time, and the biggest work items. Flag any of our own scripts in the top items.
+- **Scene check, once per milestone:** `rbx-scene-analysis` on a full street. Record triangles and draw calls at the worst view, instance counts, script memory, and anything unparented in our code (a leak). The skill's reference for 60 fps on most devices is about 800,000 triangles and 600 draw calls. Until the owner's low-end phone (#182) gives real numbers, flag a rise of 25 percent or more since the last milestone, or a worst view over 200,000 triangles or 150 draw calls. On 2026-11-24 the worst view was about 186,000 triangles and 106 draw calls.
+
+All three run on the PC, so the numbers are the PC's, not a phone's. Say so in the report. The owner's real phone run is the final gate.
+
 Rules for every Studio test:
 - Use an unsaved dev copy built from main. Never the real place window, and never save the test place.
 - Never join live servers to test. Live players are not test subjects, and a tester's actions pollute the stats.
