@@ -42,6 +42,10 @@ local BODY_GAP = 22 -- design px between the portrait column and the rows
 local STRIP_LIFT = 28 -- design px from the bottom
 local STRIP_SHIFT = 34 -- design px right on a short screen: clear of the touch thumbstick (Review-QA on #229)
 local CHIP_GAP = 6 -- design px between the rarity and New! chips
+local TITLE = "Great job!"
+local NEXT_CAT = "Next cat"
+local WELCOME = "He's your spa cat now!" -- the naming card only (#285)
+local OPEN_SPA = "Open the spa!" -- the naming card's button: the first customer comes next
 local TOPBAR_SHIFT = 33 -- real px: the card sits a little below the middle, clear of Roblox's top bar
 
 -- Sizes in design pixels: full, then compact for a short screen.
@@ -118,6 +122,7 @@ type Parts = {
 	newText: TextLabel,
 	right: Frame,
 	stars: Frame,
+	welcome: TextLabel,
 	rows: Frame,
 	foot: Frame,
 	total: Frame,
@@ -336,6 +341,12 @@ local function redraw()
 	p.card.Size = UDim2.fromOffset(s.width, 0)
 	p.band.Size = UDim2.new(1, 0, 0, s.band)
 	p.title.TextSize = s.title
+	-- The opening's kitten's naming card (#285, Design-Agent): Meet Suds!, his line, and Open the spa!
+	p.title.Text = if recap.mascot then `Meet {recap.cat}!` else TITLE
+	-- out of the column on a customer's card, so its list gap never pushes the card taller
+	p.welcome.Parent = if recap.mascot then p.right else nil
+	p.welcome.TextSize = s.starText
+	p.next.Text = if recap.mascot then OPEN_SPA else NEXT_CAT
 	p.title.Position = UDim2.new(0, s.badge + 4, 0.5, 0)
 	p.badge.Size = UDim2.fromOffset(s.badge, s.badge)
 	local bodyPad = p.bodyPad
@@ -467,7 +478,7 @@ function Recap.build(root: Frame)
 	Kit.corner(band, UDim.new(0, 22))
 	local title = Kit.outlined("Title", band)
 	title.AnchorPoint = Vector2.new(0, 0.5)
-	title.Text = "Great job!"
+	title.Text = TITLE
 
 	local body = frame("Body", stack)
 	body.LayoutOrder = 2
@@ -505,13 +516,18 @@ function Recap.build(root: Frame)
 	stars.LayoutOrder = 1
 	stars.Size = UDim2.fromScale(1, 0)
 	list(stars, true, 8)
+	-- The naming card's line under the stars (the opening's kitten, #285); hidden on a customer's card.
+	local welcome = words("Welcome", right, Kit.FONT, Kit.INK)
+	welcome.LayoutOrder = 2
+	welcome.Text = WELCOME
+	welcome.Parent = nil -- in the column only on the naming card (redraw)
 	local rows = frame("Rows", right)
-	rows.LayoutOrder = 2
+	rows.LayoutOrder = 3
 	rows.Size = UDim2.fromScale(1, 0)
 	rows.AutomaticSize = Enum.AutomaticSize.Y
 	list(rows, false, 6)
 	local foot = frame("Foot", right)
-	foot.LayoutOrder = 3
+	foot.LayoutOrder = 4
 	foot.Size = UDim2.fromScale(1, 0)
 	list(foot, true, 12)
 	local total = frame("Total", foot)
@@ -531,7 +547,7 @@ function Recap.build(root: Frame)
 	Icons.draw("Coins", totalIcon)
 	local totalText = words("Amount", total, Kit.FONT, Kit.GOLD_INK)
 	totalText.LayoutOrder = 2
-	local nextButton = chunky("NextCat", "Next cat", foot, GREEN_TOP, GREEN_BOTTOM)
+	local nextButton = chunky("NextCat", NEXT_CAT, foot, GREEN_TOP, GREEN_BOTTOM)
 	nextButton.LayoutOrder = 2
 	nextButton.AutomaticSize = Enum.AutomaticSize.X
 	local nextPad = Instance.new("UIPadding")
@@ -622,6 +638,7 @@ function Recap.build(root: Frame)
 		newText = newText,
 		right = right,
 		stars = stars,
+		welcome = welcome,
 		rows = rows,
 		foot = foot,
 		total = total,

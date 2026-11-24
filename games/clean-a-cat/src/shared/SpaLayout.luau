@@ -76,6 +76,11 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotStation5 = at(15.2, 0.5, -6.6, 0), -- the Pawdicure, in front of it
 	SpotVipDoor = at(-7, 0.5, 10.5, 0),
 	SpotBoard = at(-13.5, 0.5, -14.6, TURNED),
+	-- The opening (#285, Model-Agent): the player stands mid-entrance facing the street, the box lands in front on the
+	-- near pavement, and the truck hits the bump across the near lane.
+	SpotOpening = at(-5, 0.5, -27, 0),
+	SpotBox = at(-5, 0.5, -30.6, 0),
+	SpotBump = at(-1, 0.22, -37.6, math.pi / 2), -- a quarter turn: the bump lies across the lane
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
 	Tools = at(-1, 0.5, -2, 0),
 }) :: { [string]: Spot }

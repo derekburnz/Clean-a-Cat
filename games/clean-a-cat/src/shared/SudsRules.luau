@@ -8,7 +8,7 @@
 -- him"), so the star tiers, the pick gate and the first customer stay as they are.
 --
 -- The save keeps how far the player got (save.suds), so leaving part way resumes the right way:
---   NONE  never met him: with openingBox on the scene plays (again), else he waits in the tub
+--   NONE  never met him: with openingBox on the scene plays (again) and he waits in the box, else in the tub
 --   BOX   the box is open: he waits in the tub
 --   DONE  washed and named: he never comes back as a cat to wash
 local SudsRules = {}
@@ -16,10 +16,17 @@ local SudsRules = {}
 SudsRules.NAME = "Suds" -- Model-Agent's ReplicatedStorage.Assets.CleanACat_Cat_Suds... models; never on CatRules.ROSTER
 SudsRules.STAND_IN = "Inky" -- the black roster cat, drawn while the Suds models are missing
 SudsRules.FLAG = "sudsWash"
+SudsRules.BOX_FLAG = "openingBox" -- the truck, the box and the tap that finds him (Effects/OpeningScene, OpeningController)
 SudsRules.NEEDS = table.freeze({ "mud", "tangles" }) :: { string }
 SudsRules.STARS = 3 -- his score; never added to the save
 SudsRules.NO_BOWS = "noBows" -- in the wash plan (ScrubController.plan): the step bar leaves the bows out for him
 SudsRules.ATTRIBUTE = "SudsStage" -- Player attribute: the save's stage, set by the server, for the client's opening
+SudsRules.BOX_ATTRIBUTE = "SudsBox" -- Player attribute: true while the server holds the kitten back for the box
+-- Seconds from the box tap to the kitten in the tub: the flaps, the peek and the hop out (Effects/TruckDrop) come
+-- first, so the tub's kitten never shows while the box's is still peeking.
+SudsRules.HOP_SECONDS = 2
+SudsRules.OPENING_SPOT = "SpotOpening" -- plot spot where the player stands for the opening, facing the street
+SudsRules.BOX_SPOT = "SpotBox" -- plot spot where the box lands, in front of SpotOpening
 
 SudsRules.NONE = 0
 SudsRules.BOX = 1
@@ -49,6 +56,19 @@ function SudsRules.isNext(
 		return false
 	end
 	return clean > SudsRules.NONE or (stars <= 0 and residents <= 0)
+end
+
+-- Whether the server holds the kitten back until the player opens the box (switch openingBox): only before the
+-- box was ever opened, so a player who left after opening it finds him waiting in the tub.
+function SudsRules.waitsForBox(
+	stage: number,
+	stars: number,
+	residents: number,
+	isOn: (flag: string) -> boolean
+): boolean
+	return isOn(SudsRules.BOX_FLAG)
+		and SudsRules.cleanStage(stage) == SudsRules.NONE
+		and SudsRules.isNext(stage, stars, residents, isOn)
 end
 
 -- The model name for his look: the Suds model when the place has it, else the stand-in's. `has` says whether
