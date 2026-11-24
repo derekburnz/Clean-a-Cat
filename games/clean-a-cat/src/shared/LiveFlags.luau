@@ -19,6 +19,12 @@ local LiveFlags = {}
 LiveFlags.STORE = "CleanACat_Flags"
 LiveFlags.ATTRIBUTE_PREFIX = "LiveFlag_"
 LiveFlags.CHECK_SECONDS = 60
+-- Set true on ReplicatedStorage once a server has read every switch for the first time (or gave up after
+-- READ_WAIT_SECONDS). Until then every switch reads as its default, so code that decides something once per join,
+-- like whether the opening plays, waits for it with LiveFlags.waitForRead (the first player in a new server joins
+-- before the store has answered).
+LiveFlags.READ_ATTRIBUTE = "LiveFlagsRead"
+LiveFlags.READ_WAIT_SECONDS = 8
 
 LiveFlags.KEYS = {
 	"exampleFeature", -- an example to copy: say what the switch does and which module reads it; off by default
@@ -128,6 +134,20 @@ end
 -- attribute is missing, which gives each switch its default.
 function LiveFlags.isOn(key: string): boolean
 	return LiveFlags.resolve(key, ReplicatedStorage:GetAttribute(LiveFlags.ATTRIBUTE_PREFIX .. key))
+end
+
+-- Has this server read the switches yet (READ_ATTRIBUTE)?
+function LiveFlags.read(): boolean
+	return ReplicatedStorage:GetAttribute(LiveFlags.READ_ATTRIBUTE) == true
+end
+
+-- Yields until the first read is done, at most `seconds` (default READ_WAIT_SECONDS). True when it was read.
+function LiveFlags.waitForRead(seconds: number?): boolean
+	local deadline = os.clock() + (seconds or LiveFlags.READ_WAIT_SECONDS)
+	while not LiveFlags.read() and os.clock() < deadline do
+		task.wait(0.1)
+	end
+	return LiveFlags.read()
 end
 
 return LiveFlags

@@ -1,24 +1,37 @@
 # Publish the game to Roblox from GitHub, with no Studio window.
 #
-# By hand: Actions > publish > Run workflow (or a thread dispatches it). Published goes live for new servers;
-# Saved only adds a version to the place history.
-# Automatic: when the repo variable AUTO_PUBLISH is "true", the tip of main is published after every check
-# run on main that passes. So every merge ships, and only work that is ready to ship gets merged.
+# Dev first, then live on the owner's word (Derek, 2026-11-24: "everything can always get uploaded to dev then when I
+# confirm its good then we send that to live"):
+# - Automatic: when the repo variable AUTO_PUBLISH is "true", the tip of main is published to the DEV copy after every
+#   check run on main that passes. Automatic runs never touch the live place.
+# - Promote to live: only when the owner says so in their own words. Actions > publish > Run workflow with target
+#   "live", and commit set to the commit the owner tested on dev (each dev publish prints it in its summary). Leave
+#   commit empty to send the tip of main.
+# - By hand to dev: target "dev" (the default).
+# Published goes live for new servers of that place; Saved only adds a version to the place history.
 #
 # A publish reaches NEW servers only. Running servers keep their version until they empty or are restarted.
 # Restarting disconnects players, so it happens only when the owner says so: tick restart_servers on a hand
-# run, or run restart-servers.yml. The repo variable AUTO_RESTART ("true") makes every automatic publish
-# restart the servers too; leave it unset unless the owner asks for that.
+# run, or run restart-servers.yml. The repo variable AUTO_RESTART ("true") makes every automatic publish (dev)
+# restart the dev servers too.
 #
-# Needs: secret ROBLOX_PUBLISH_KEY, variables ROBLOX_UNIVERSE_ID and ROBLOX_PLACE_ID (docs/setup-guide.md step 8).
-# This is a minimal outline. Worth adding once the game has saves: an engine smoke test before going live
-# (Open Cloud Luau Execution). A restart from here first shows players the in-game countdown
-# (tools/opencloud/restart-countdown.sh).
+# Needs: secret ROBLOX_PUBLISH_KEY (or OWNER_KEY) with universe-places Write on both experiences. The ids are public and
+# built in below; repo variables of the same name override them (docs/setup-guide.md step 8).
+# A restart from here first shows players the in-game countdown (tools/opencloud/restart-countdown.sh).
 name: publish
 
 on:
   workflow_dispatch:
     inputs:
+      target:
+        description: "dev: the dev copy (the default). live: the real game, only on the owner's word"
+        type: choice
+        options: [dev, live]
+        default: dev
+      commit:
+        description: "Which commit to build (a sha or branch). Empty: the tip of main. For live, the one tested on dev"
+        type: string
+        default: ""
       version_type:
         description: "Published goes live for players; Saved only adds a version to the place history"
         type: choice
@@ -44,8 +57,12 @@ concurrency:
 env:
   GAME_DIR: games/clean-a-cat
   # The ids are public. A repo variable of the same name overrides the default.
-  UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
-  PLACE_ID: ${{ vars.ROBLOX_PLACE_ID || '79301459457383' }}
+  LIVE_UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
+  LIVE_PLACE_ID: ${{ vars.ROBLOX_PLACE_ID || '79301459457383' }}
+  DEV_UNIVERSE_ID: ${{ vars.ROBLOX_DEV_UNIVERSE_ID || '' }}
+  DEV_PLACE_ID: ${{ vars.ROBLOX_DEV_PLACE_ID || '' }}
+  # Only a hand run can pick live; every automatic run goes to dev.
+  TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'dev' }}
 
 jobs:
   publish:
@@ -64,18 +81,31 @@ jobs:
       # merges still ends with the newest main live.
       - uses: actions/checkout@v5
         with:
-          ref: main
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.commit || 'main' }}
 
-      - name: Check the key and ids are set
+      - name: Pick the place (dev unless a hand run says live) and check the key
         run: |
           if [ -z "$ROBLOX_PUBLISH_KEY" ]; then
             echo "::error::The repo secret ROBLOX_PUBLISH_KEY (or OWNER_KEY) is missing. Steps: docs/setup-guide.md step 8."
             exit 1
           fi
-          if [ -z "$UNIVERSE_ID" ] || [ -z "$PLACE_ID" ]; then
-            echo "::error::Set the repo variables ROBLOX_UNIVERSE_ID and ROBLOX_PLACE_ID. Steps: docs/setup-guide.md step 8."
+          case "$TARGET" in
+          live) universe=$LIVE_UNIVERSE_ID place=$LIVE_PLACE_ID ;;
+          dev) universe=$DEV_UNIVERSE_ID place=$DEV_PLACE_ID ;;
+          *) echo "::error::target must be dev or live, got: $TARGET"; exit 1 ;;
+          esac
+          # Never falls back to the live ids: with no dev ids, nothing is published.
+          if [ -z "$universe" ] || [ -z "$place" ]; then
+            echo "::error::No $TARGET ids. Set ROBLOX_DEV_UNIVERSE_ID and ROBLOX_DEV_PLACE_ID (docs/setup-guide.md step 8)."
             exit 1
           fi
+          echo "UNIVERSE_ID=$universe" >> "$GITHUB_ENV"
+          echo "PLACE_ID=$place" >> "$GITHUB_ENV"
+          echo "Publishing commit $(git rev-parse --short HEAD) to $TARGET (place $place)"
+          {
+            echo "- Target: **$TARGET**, place $place"
+            echo "- Commit: \`$(git rev-parse HEAD)\` (to promote this to live: target live, commit this sha)"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Install Rokit
         env:

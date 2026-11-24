@@ -125,6 +125,7 @@ end
 local isOwner: { [Player]: boolean } = {}
 
 local function checkOwner(player: Player)
+	LiveFlags.waitForRead()
 	if not LiveFlags.isOn(SudsRules.REPLAY_FLAG) then
 		return
 	end
@@ -273,6 +274,12 @@ local function holdForBox(player: Player): boolean
 end
 
 local function onRequestCat(player: Player)
+	-- A new server's first player can ask before the switches are read, when every switch still reads off; the ask
+	-- waits for the read, so the opening is never skipped for them (2026-11-24).
+	if not LiveFlags.read() then
+		waiting[player] = true
+		return
+	end
 	if not LiveFlags.isOn(FLAG) then
 		return
 	end
@@ -567,6 +574,12 @@ function SpaService.Start()
 		end
 		-- The board shows the chances of the player's star tier, the same table their rolls use.
 		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+		-- Whether the opening plays is decided once, here, so it waits for the server's first read of the switches
+		-- (a fraction of a second; at most LiveFlags.READ_WAIT_SECONDS).
+		LiveFlags.waitForRead()
+		if player.Parent ~= Players then
+			return
+		end
 		-- The owner's opening replay (switch openingReplay): their kitten starts over. The owner check started as they
 		-- joined and is usually done; wait a moment for it if not.
 		if LiveFlags.isOn(SudsRules.REPLAY_FLAG) then
@@ -588,6 +601,18 @@ function SpaService.Start()
 		if waiting[player] then
 			waiting[player] = nil
 			onRequestCat(player)
+		end
+	end)
+	-- Asks that came before the first read of the switches (onRequestCat), for saves that are already loaded.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.READ_ATTRIBUTE):Connect(function()
+		if not LiveFlags.read() then
+			return
+		end
+		for player in table.clone(waiting) do
+			if DataService.get(player) ~= nil then
+				waiting[player] = nil
+				onRequestCat(player)
+			end
 		end
 	end)
 	NetService.on("ReportScrubbed", { perSecond = 2 }, onScrubbed)

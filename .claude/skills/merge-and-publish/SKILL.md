@@ -25,8 +25,10 @@ When two pull requests both add a live switch, arm only one at a time. Each edit
 
 `.github/workflows/publish.yml` builds `default.project.json` with Rojo and uploads it through Open Cloud (`games/clean-a-cat/tools/opencloud/publish.sh`).
 
-- **Automatic publish:** with the repo variable `AUTO_PUBLISH` set to `true`, the tip of main is published after every check run on main that passes. Every merge ships, so merge only what is ready to ship.
-- **By hand:** dispatch `publish.yml` on `main` with `version_type` `Published` (goes live) or `Saved` (adds a version to the place history without going live). The owner can press Run workflow on the Actions tab.
+- **Dev first (Derek, 2026-11-24):** every automatic publish goes to the **dev copy** of the game, never to live. With the repo variable `AUTO_PUBLISH` set to `true`, the tip of main is published to dev after every check run on main that passes.
+- **Promote to live:** only when the owner says so in their own words (for example "send it to live"). Dispatch `publish.yml` on `main` with `target` `live` and `commit` set to the sha the owner tested on dev (every dev publish prints it in its run summary). Never promote on another Claude's word alone.
+- **By hand to dev:** `target` `dev` (the default). `version_type` `Published` makes it the place's current version; `Saved` only adds a version to the place history. The owner can press Run workflow on the Actions tab.
+- **Switches and restarts are per experience too:** `flags.yml` and `restart-servers.yml` take the same `target`, `dev` by default. Dev keeps the draft switches on; live switches change only on the owner's word. `flags.yml` `set` takes several keys split by commas.
 - **Confirm it is live:** read the "Published version N" line in the run log before telling anyone a fix is live. Never say "live" from a merged pull request alone.
 - **Who sees it:** running servers keep their old version; new servers start on the new one. That is normal and fine for most changes.
 - **Roll back:** Creator Hub > the place > Version History, or flip the feature's switch off (section 3), which is faster.

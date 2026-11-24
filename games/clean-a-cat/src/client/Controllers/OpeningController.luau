@@ -387,6 +387,13 @@ end
 function OpeningController.Start()
 	player:GetAttributeChangedSignal(SudsRules.BOX_ATTRIBUTE):Connect(onBoxChanged)
 	player:GetAttributeChangedSignal(SudsRules.ATTRIBUTE):Connect(onStage)
+	-- The box can arrive a moment before the switch itself replicates; the scene starts when the switch shows on.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SudsRules.BOX_FLAG)
+		:Connect(function()
+			if boxState() == true then
+				task.spawn(play)
+			end
+		end)
 	Remotes.event("CatReady").OnClientEvent:Connect(onCatReady)
 	-- a new character (a reset) is the player's own again
 	-- (Roblox's controls keep their enabled state across a respawn, so leaveWash's Enable is what frees them.)
