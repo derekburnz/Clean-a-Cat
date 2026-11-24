@@ -13,6 +13,8 @@
 --   UI.setIndex(entries, newCats, tier)  the Cat Index window (UI/CatIndex, switch catIndexWindow, #238)
 --   UI.setQueue(cards, headline, pickable)  the "Who's next?" window and the HUD's waiting faces (UI/QueueWindow,
 --                             HUD/Waiting, switch queueWindow, #246); UI.onQueuePick(fn) gets fn(place) on Wash next
+--   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
+--                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
@@ -37,6 +39,7 @@ local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
+local Spotlight = require(script:WaitForChild("Spotlight"))
 local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
 
 local UI = {}
@@ -197,6 +200,7 @@ function UI.init()
 	toast.Parent = root
 	toastLabel = toast
 
+	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
@@ -265,6 +269,20 @@ end
 -- fn(place) when the player presses Wash next on "Who's next?".
 function UI.onQueuePick(fn: (place: number) -> ())
 	QueueWindow.onPick(fn)
+end
+
+-- The tutorial's dim step on the HUD button that opens `window`; false when that button is not on screen.
+function UI.pointAt(window: string, say: string, done: (() -> ())?): boolean
+	local button = SideButtons.find(window)
+	if button == nil or not button.Visible then
+		return false
+	end
+	Spotlight.point(button, say, done)
+	return Spotlight.isOn()
+end
+
+function UI.clearPointer()
+	Spotlight.clear()
 end
 
 function UI.onSettingsChanged(fn: (SettingsRules.Settings) -> ())

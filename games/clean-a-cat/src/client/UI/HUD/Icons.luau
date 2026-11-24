@@ -31,6 +31,7 @@ Icons.IMAGES = {
 	Mud = "",
 	Tangles = "",
 	Wet = "",
+	Pointer = "",
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
@@ -63,6 +64,7 @@ local STAND_INS: { [string]: StandIn } = {
 	Mud = { glyph = "🟤", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Tangles = { glyph = "🧶", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Wet = { glyph = "💧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
 }
 
 -- Puts icon `name` inside `parent`, filling it, and returns it. `faded` dims it (a step already done).

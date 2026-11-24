@@ -6,6 +6,7 @@
 --   SideButtons.build(root, open)   makes the row once; open(windowName) runs when a button is pressed
 --   SideButtons.any()               true while the HUD is on and at least one button shows
 --   SideButtons.onChanged(fn)       fn() when a switch that shows or hides a button flips
+--   SideButtons.find(window)        the button that opens `window`, or nil
 --
 -- A button shows only while the game HUD (gameHud) and its own window's switch are on, so a switched-off window
 -- never has a way in. While any button shows, the starter Menu hides (UI/init). With a gamepad the row is reached
@@ -73,6 +74,15 @@ function SideButtons.any(): boolean
 		end
 	end
 	return false
+end
+
+function SideButtons.find(window: string): TextButton?
+	for _, entry in buttons do
+		if entry.spec.window == window then
+			return entry.button
+		end
+	end
+	return nil
 end
 
 function SideButtons.onChanged(fn: () -> ())
