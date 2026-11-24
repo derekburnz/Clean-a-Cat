@@ -133,12 +133,35 @@ function SpaSignController.Init(_controllers: { [string]: any }) end
 function SpaSignController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(refresh)
-	-- The street can reach this client a moment after the attribute that says it is placed.
+	-- The street can reach this client a moment after the attribute that says it is placed, and a plot rebuilt or
+	-- streamed in late brings its sign face after that: redraw once a sign's Screen shows up.
+	local pending = false
+	local function refreshSoon()
+		if not pending then
+			pending = true
+			task.defer(function()
+				pending = false
+				refresh()
+			end)
+		end
+	end
+	local function watchPlots(folder: Instance)
+		folder.DescendantAdded:Connect(function(descendant: Instance)
+			if descendant.Name == SCREEN_NAME and descendant:FindFirstAncestor(SIGN_NAME) then
+				refreshSoon()
+			end
+		end)
+		refreshSoon()
+	end
 	Workspace.ChildAdded:Connect(function(child: Instance)
 		if child.Name == SpaLayout.PLOTS_FOLDER then
-			task.defer(refresh)
+			watchPlots(child)
 		end
 	end)
+	local plots = Workspace:FindFirstChild(SpaLayout.PLOTS_FOLDER)
+	if plots then
+		watchPlots(plots)
+	end
 	Players.PlayerAdded:Connect(watch)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		leaving[player] = true
