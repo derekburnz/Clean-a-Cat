@@ -21,6 +21,7 @@ local GUI_NAME = "CleanACat_SpaSign"
 local EMPTY_TEXT = "Clean a Cat Spa"
 local INK = Color3.fromHex("2F3E5C") -- pants_navy: about 10 to 1 on the cream face
 local PIXELS_PER_STUD = 60 -- the 5.5 by 1.9 stud face is a 330 by 114 canvas
+local MAX_NAME = 12 -- longer display names end in "..." on the sign (shortName)
 local MAX_TEXT = 64 -- short names stop growing here, so "Jo's Spa" does not fill the whole board
 
 local SpaSignController = {}
@@ -37,6 +38,21 @@ local function ownerOf(slot: number): Player?
 	return nil
 end
 
+-- A long display name would shrink the whole sign to a thin line nobody reads from the road (Sync-Agent's run
+-- on 507cdce), so the sign keeps the first MAX_NAME - 1 characters and adds "..." (plain dots, which every font
+-- has). Counted in UTF-8 characters, so a name is never cut in the middle of one.
+local function shortName(name: string): string
+	local length = utf8.len(name)
+	if length == nil or length <= MAX_NAME then
+		return name
+	end
+	local cut = utf8.offset(name, MAX_NAME) -- the byte where character MAX_NAME starts
+	if cut == nil then
+		return name
+	end
+	return string.sub(name, 1, cut - 1) .. "..."
+end
+
 local function signText(owner: Player?): string
 	if owner == nil then
 		return EMPTY_TEXT
@@ -45,7 +61,7 @@ local function signText(owner: Player?): string
 	if name == "" then
 		name = owner.Name
 	end
-	return `{name}'s Spa`
+	return `{shortName(name)}'s Spa`
 end
 
 local function screenOf(plot: Model): BasePart?
