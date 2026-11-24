@@ -4,7 +4,9 @@
 --
 -- API
 --   Audio.start()                         builds the SoundGroups and preloads the few `preload` cues
---   Audio.applySettings({ music, sound }) mutes groups; music starts only after the first call
+--   Audio.applySettings({ music, sound, musicLevel?, soundLevel? })
+--                                         mutes groups and sets their levels (0..1, default 1, from the Settings card's
+--                                         sliders); music starts only after the first call
 --   Audio.play(cueId, options?)           one shot, 2D or at a BasePart / Attachment (options.at)
 --   Audio.loop(cueId, at?)                a looping cue; returns a handle with stop() and setSpeed()
 local ContentProvider = game:GetService("ContentProvider")
@@ -16,7 +18,7 @@ local Cues = require(script:WaitForChild("Cues"))
 
 type Cue = CueRules.Cue
 
-export type Settings = { music: boolean, sound: boolean }
+export type Settings = { music: boolean, sound: boolean, musicLevel: number?, soundLevel: number? }
 export type PlayOptions = { at: Instance?, variant: number?, pitch: number? }
 export type LoopHandle = { stop: () -> (), setSpeed: (speed: number) -> () }
 
@@ -182,17 +184,26 @@ local function playNextTrack()
 	TweenService:Create(sound, TweenInfo.new(MUSIC_FADE), { Volume = cue.volume }):Play()
 end
 
+-- A slider level kept inside 0..1; a missing or broken one is full volume.
+local function level(raw: number?): number
+	if raw == nil or raw ~= raw then
+		return 1
+	end
+	return math.clamp(raw, 0, 1)
+end
+
 function Audio.applySettings(settings: Settings)
 	if not started then
 		Audio.start()
 	end
 	current = { music = settings.music, sound = settings.sound }
 	settingsRead = true
-	local soundOn = if settings.sound then 1 else 0
+	local soundOn = if settings.sound then level(settings.soundLevel) else 0
+	local musicOn = if settings.music then level(settings.musicLevel) else 0
 	groups.Sfx.Volume = (CueRules.GROUP_VOLUME["Sfx"] or 0) * soundOn
 	groups.Ui.Volume = (CueRules.GROUP_VOLUME["Ui"] or 0) * soundOn
 	groups.Ambience.Volume = (CueRules.GROUP_VOLUME["Ambience"] or 0) * soundOn
-	groups.Music.Volume = if settings.music then (CueRules.GROUP_VOLUME["Music"] or 0) else 0
+	groups.Music.Volume = (CueRules.GROUP_VOLUME["Music"] or 0) * musicOn
 
 	local playing = musicSound
 	if settings.music and not playing then

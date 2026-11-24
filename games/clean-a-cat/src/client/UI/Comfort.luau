@@ -5,7 +5,10 @@
 --   Comfort.backdrop(frame, 0.2)  sets a see-through panel background that turns solid for players who ask for less
 --                                 see-through UI (GuiService.PreferredTransparency, 1 = Roblox default, 0 = solid).
 --                                 Only for backgrounds meant to show: an invisible layout frame (1) would turn solid.
---   Comfort.reducedMotion()       true when the player turned on Reduced Motion: skip shakes, bobs and long tweens
+--   Comfort.reducedMotion()       true when the player turned on Reduced Motion in Roblox, or Less screen shake or
+--                                 Less sparkle on our Settings card: skip shakes, bobs and long tweens
+--   Comfort.lessSparkle()         true with Roblox's Reduced Motion or our Less sparkle: fewer flashes and particles
+--   Comfort.setChoices(shake, sparkle)  the Settings card's two toggles (#230); kept for this session only
 --   Comfort.input()               the input the player is using now (Touch, KeyboardAndMouse or Gamepad)
 --   Comfort.onInputChanged(fn)    calls fn(input) when that changes, for swapping button prompts
 --   Comfort.autoHeight(label)     lets a label grow taller when larger text wraps to more lines
@@ -86,11 +89,27 @@ function Comfort.autoHeight(object: GuiObject)
 	watch()
 end
 
-function Comfort.reducedMotion(): boolean
+local lessShakeChosen = false
+local lessSparkleChosen = false
+
+local function robloxReducedMotion(): boolean
 	local ok, value = pcall(function()
 		return GuiService.ReducedMotionEnabled
 	end)
 	return ok and value == true
+end
+
+function Comfort.setChoices(lessShake: boolean, lessSparkle: boolean)
+	lessShakeChosen = lessShake
+	lessSparkleChosen = lessSparkle
+end
+
+function Comfort.reducedMotion(): boolean
+	return robloxReducedMotion() or lessShakeChosen or lessSparkleChosen
+end
+
+function Comfort.lessSparkle(): boolean
+	return robloxReducedMotion() or lessSparkleChosen
 end
 
 Comfort.TV_INSET = 0.05 -- share of the screen kept clear on every edge of a TV

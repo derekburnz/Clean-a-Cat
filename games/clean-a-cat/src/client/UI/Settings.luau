@@ -1,0 +1,482 @@
+--!strict
+-- Settings: the Settings card (#230), from Design-Agent's draft (settings.html). Behind the live switch settingsCard,
+-- off by default: while it is off the starter Menu opens the example window as before and nothing here shows.
+--
+--   Settings.build(root, onChange)   makes the window once and returns its layer (UI registers it as "Settings")
+--   Settings.show(settings)          draws these values (a SettingsRules.Settings)
+--
+-- Rows: the Music and Sounds sliders (the whole slider is the touch area; a gamepad press steps it a quarter), then
+-- Less screen shake and Less sparkle as switches that say On or Off in words, then "Odds on boards", an info line
+-- with no switch because the game never hides odds. A wide screen has one column; a phone held sideways has two, so
+-- nothing scrolls. Nothing here is destructive. UI never fires remotes: onChange(settings) runs on every change and
+-- SettingsController applies it.
+--
+-- "Tips on screen" from the draft waits until the game has tips to turn off: a switch that does nothing would mislead.
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SettingsRules =
+	require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("SettingsRules"))
+
+local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
+local Kit = require(script.Parent:WaitForChild("Kit"))
+local Window = require(script.Parent:WaitForChild("Window"))
+
+local SettingsCard = {}
+
+type Settings = SettingsRules.Settings
+type RowKind = "slider" | "toggle" | "info"
+type RowSpec = { key: string, kind: RowKind, icon: string, say: string, detail: string? }
+
+local ROWS: { RowSpec } = {
+	{ key = "music", kind = "slider", icon = "Music", say = "Music" },
+	{ key = "sounds", kind = "slider", icon = "Speaker", say = "Sounds" },
+	{
+		key = "lessShake",
+		kind = "toggle",
+		icon = "Shake",
+		say = "Less screen shake",
+		detail = "Softer bumps",
+	},
+	{
+		key = "lessSparkle",
+		kind = "toggle",
+		icon = "Sparkle",
+		say = "Less sparkle",
+		detail = "Fewer flashes",
+	},
+	{
+		key = "odds",
+		kind = "info",
+		icon = "Dice",
+		say = "Odds on boards",
+		detail = "Always shown, for every cat",
+	},
+}
+local SHORT_FIRST_COLUMN = 3 -- rows in the left column on a short screen
+
+local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
+local OFF_TOP, OFF_BOTTOM = Color3.fromHex("E4DBD2"), Color3.fromHex("CFC2B4")
+local TRACK = Color3.fromHex("F7E9DA")
+local FILL_TOP, FILL_BOTTOM = Color3.fromHex("BFE9FF"), Color3.fromHex("4FB4F0")
+local BODY_FONT = Enum.Font.GothamBold
+local THUMB = 48 -- design px: the slider's bubble
+local SLIDER_TOUCH = 60 -- design px tall: the slider's touch area, 45 real px at the smallest scale (44 needed)
+local TRACK_HEIGHT = 18
+local SCREEN_MARGIN = 64 -- design px kept clear beside the window
+
+-- Sizes in design pixels: full, then compact for a short screen.
+local SIZES = {
+	full = {
+		width = 760,
+		band = 72,
+		title = 38,
+		badge = 96,
+		padX = 26,
+		padY = 12,
+		gap = 26,
+		row = 74,
+		icon = 40,
+		label = 24,
+		detail = 19,
+		sliderLabel = 150,
+		switchW = 92,
+		switchH = 46,
+		knob = 34,
+	},
+	short = {
+		width = 900,
+		band = 56,
+		title = 32,
+		badge = 80,
+		padX = 18,
+		padY = 6,
+		gap = 26,
+		row = 74,
+		icon = 34,
+		label = 22,
+		detail = 19,
+		sliderLabel = 86,
+		switchW = 86,
+		switchH = 44,
+		knob = 32,
+	},
+}
+type Sizes = typeof(SIZES.full)
+
+type Row = {
+	spec: RowSpec,
+	frame: GuiObject,
+	line: Frame,
+	iconBox: Frame,
+	words: Frame,
+	say: TextLabel,
+	detail: TextLabel?,
+	-- slider rows
+	slider: TextButton?,
+	fill: Frame?,
+	thumb: Frame?,
+	-- toggle rows
+	switch: Frame?,
+	switchGradient: UIGradient?,
+	switchWord: TextLabel?,
+	knob: Frame?,
+	-- info rows
+	check: Frame?,
+}
+
+type Parts = { window: Window.Window, pad: UIPadding, columns: { Frame }, rows: { Row } }
+
+local parts: Parts? = nil
+local current: Settings = SettingsRules.defaults()
+local changed: ((Settings) -> ())? = nil
+
+local function frame(name: string, parent: Instance): Frame
+	local f = Instance.new("Frame")
+	f.Name = name
+	f.BackgroundTransparency = 1
+	f.BorderSizePixel = 0
+	f.Parent = parent
+	return f
+end
+
+local function words(name: string, parent: Instance, font: Enum.Font, colour: Color3): TextLabel
+	local label = Instance.new("TextLabel")
+	label.Name = name
+	label.BackgroundTransparency = 1
+	label.Font = font
+	label.TextColor3 = colour
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.AutomaticSize = Enum.AutomaticSize.X
+	Kit.minText(label)
+	label.Parent = parent
+	return label
+end
+
+local function gradient(parent: Instance, top: Color3, bottom: Color3): UIGradient
+	local g = Instance.new("UIGradient")
+	g.Rotation = 90
+	g.Color = ColorSequence.new(top, bottom)
+	g.Parent = parent
+	return g
+end
+
+local function level(key: string): number
+	return if key == "music" then current.music else current.sounds
+end
+
+local function setValue(key: string, value: any)
+	local copy = table.clone(current) :: { [string]: any }
+	copy[key] = value
+	current = copy :: any
+	local fn = changed
+	if fn then
+		fn(table.clone(current) :: any)
+	end
+end
+
+local function usingGamepad(): boolean
+	local last = UserInputService:GetLastInputType()
+	return last.Name:sub(1, 7) == "Gamepad"
+end
+
+local redraw: () -> ()
+
+-- The whole slider takes the press: a touch or click jumps the bubble there and dragging moves it; a gamepad
+-- press steps it up a quarter, wrapping back to 0.
+local function wireSlider(row: Row, slider: TextButton, thumb: Frame)
+	local dragging: InputObject? = nil
+	local function moveTo(x: number)
+		local value = SettingsRules.fromPointer(
+			x,
+			slider.AbsolutePosition.X,
+			slider.AbsoluteSize.X,
+			thumb.AbsoluteSize.X
+		)
+		setValue(row.spec.key, value)
+		redraw()
+	end
+	slider.InputBegan:Connect(function(input: InputObject)
+		local kind = input.UserInputType
+		if kind == Enum.UserInputType.MouseButton1 or kind == Enum.UserInputType.Touch then
+			dragging = input
+			moveTo(input.Position.X)
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input: InputObject)
+		local active = dragging
+		if active == nil then
+			return
+		end
+		if input == active or input.UserInputType == Enum.UserInputType.MouseMovement then
+			moveTo(input.Position.X)
+		end
+	end)
+	UserInputService.InputEnded:Connect(function(input: InputObject)
+		local active = dragging
+		if
+			active ~= nil
+			and (input == active or input.UserInputType == Enum.UserInputType.MouseButton1)
+		then
+			dragging = nil
+		end
+	end)
+	slider.Activated:Connect(function()
+		if usingGamepad() then
+			setValue(row.spec.key, SettingsRules.step(level(row.spec.key)))
+			redraw()
+		end
+	end)
+end
+
+local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
+	local holder: GuiObject
+	if spec.kind == "toggle" then
+		-- A switch row is pressable anywhere along its length.
+		local button = Instance.new("TextButton")
+		button.Name = spec.key
+		button.Text = ""
+		button.AutoButtonColor = false
+		button.BackgroundTransparency = 1
+		button.Parent = parent
+		holder = button
+	else
+		holder = frame(spec.key, parent)
+	end
+	holder.LayoutOrder = order
+
+	local line = frame("Line", holder)
+	line.BackgroundTransparency = 0
+	line.BackgroundColor3 = Kit.LINE
+	line.Size = UDim2.new(1, 0, 0, 3)
+
+	local iconBox = frame("IconBox", holder)
+	iconBox.AnchorPoint = Vector2.new(0, 0.5)
+	Icons.draw(spec.icon, iconBox)
+
+	local block = frame("Words", holder)
+	block.AnchorPoint = Vector2.new(0, 0.5)
+	block.AutomaticSize = Enum.AutomaticSize.X -- its height is set in redraw, so the words sit centred in the row
+	local blockList = Instance.new("UIListLayout")
+	blockList.SortOrder = Enum.SortOrder.LayoutOrder
+	blockList.Padding = UDim.new(0, 4)
+	blockList.Parent = block
+	local say = words("Say", block, Kit.FONT, Kit.INK)
+	say.LayoutOrder = 1
+	say.Text = spec.say
+	local detail: TextLabel? = nil
+	if spec.detail then
+		local d = words("Detail", block, BODY_FONT, Kit.INK_SOFT)
+		d.LayoutOrder = 2
+		d.Text = spec.detail
+		detail = d
+	end
+
+	local row: Row = {
+		spec = spec,
+		frame = holder,
+		line = line,
+		iconBox = iconBox,
+		words = block,
+		say = say,
+		detail = detail,
+	}
+
+	if spec.kind == "slider" then
+		local slider = Instance.new("TextButton")
+		slider.Name = "Slider"
+		slider.Text = ""
+		slider.AutoButtonColor = false
+		slider.BackgroundTransparency = 1
+		slider.AnchorPoint = Vector2.new(1, 0.5)
+		slider.Parent = holder
+		local track = frame("Track", slider)
+		track.AnchorPoint = Vector2.new(0, 0.5)
+		track.Position = UDim2.fromScale(0, 0.5)
+		track.Size = UDim2.new(1, 0, 0, TRACK_HEIGHT)
+		track.BackgroundTransparency = 0
+		track.BackgroundColor3 = TRACK
+		track.ClipsDescendants = true
+		Kit.corner(track, UDim.new(0.5, 0))
+		Kit.stroke(track, 3)
+		local fill = frame("Fill", track)
+		fill.BackgroundTransparency = 0
+		fill.BackgroundColor3 = Kit.WHITE
+		gradient(fill, FILL_TOP, FILL_BOTTOM)
+		local thumb = frame("Thumb", slider)
+		thumb.AnchorPoint = Vector2.new(0.5, 0.5)
+		thumb.Size = UDim2.fromOffset(THUMB, THUMB)
+		thumb.BackgroundTransparency = 0
+		thumb.BackgroundColor3 = Color3.fromHex("E8F7FF")
+		Kit.corner(thumb, UDim.new(0.5, 0))
+		Kit.stroke(thumb, 4)
+		row.slider, row.fill, row.thumb = slider, fill, thumb
+		wireSlider(row, slider, thumb)
+	elseif spec.kind == "toggle" then
+		local switch = frame("Switch", holder)
+		switch.AnchorPoint = Vector2.new(1, 0.5)
+		switch.BackgroundTransparency = 0
+		switch.BackgroundColor3 = Kit.WHITE
+		Kit.corner(switch, UDim.new(0.5, 0))
+		Kit.stroke(switch, 4)
+		local switchGradient = gradient(switch, OFF_TOP, OFF_BOTTOM)
+		local word = words("Word", switch, Kit.FONT, Kit.INK)
+		word.AnchorPoint = Vector2.new(0.5, 0.5)
+		word.AutomaticSize = Enum.AutomaticSize.None
+		word.TextXAlignment = Enum.TextXAlignment.Center
+		word.Size = UDim2.fromScale(0.55, 1)
+		local knob = frame("Knob", switch)
+		knob.AnchorPoint = Vector2.new(0, 0.5)
+		knob.BackgroundTransparency = 0
+		knob.BackgroundColor3 = Kit.WHITE
+		Kit.corner(knob, UDim.new(0.5, 0))
+		Kit.stroke(knob, 3)
+		row.switch, row.switchGradient, row.switchWord, row.knob =
+			switch, switchGradient, word, knob
+		local button = holder :: TextButton
+		button.Activated:Connect(function()
+			local key = spec.key
+			local now = if key == "lessShake" then current.lessShake else current.lessSparkle
+			setValue(key, not now)
+			redraw()
+		end)
+	else
+		local check = frame("Check", holder)
+		check.AnchorPoint = Vector2.new(1, 0.5)
+		Icons.draw("Check", check)
+		row.check = check
+	end
+	return row
+end
+
+local function screenWidth(scale: number): number
+	local camera = Workspace.CurrentCamera
+	local width = if camera then camera.ViewportSize.X else 1280
+	return width / scale
+end
+
+redraw = function()
+	local p = parts
+	if p == nil then
+		return
+	end
+	local scale, short = Kit.screenScale()
+	local s: Sizes = if short then SIZES.short else SIZES.full
+	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
+	Window.fit(p.window, width, s.band, s.title, s.badge)
+
+	local padding = p.pad
+	padding.PaddingLeft, padding.PaddingRight = UDim.new(0, s.padX), UDim.new(0, s.padX)
+	padding.PaddingTop, padding.PaddingBottom = UDim.new(0, s.padY), UDim.new(0, s.padY + 6)
+	local inner = width - 2 * s.padX
+	local columnWidth = if short then (inner - s.gap) / 2 else inner
+	p.columns[2].Visible = short
+	for index, column in p.columns do
+		column.Size = UDim2.fromOffset(columnWidth, 0)
+		column.LayoutOrder = index
+	end
+
+	local inColumn = { 0, 0 }
+	for index, row in p.rows do
+		local columnIndex = if short and index > SHORT_FIRST_COLUMN then 2 else 1
+		row.frame.Parent = p.columns[columnIndex]
+		inColumn[columnIndex] += 1
+		row.line.Visible = inColumn[columnIndex] > 1
+		row.frame.Size = UDim2.new(1, 0, 0, s.row)
+		row.iconBox.Size = UDim2.fromOffset(s.icon, s.icon)
+		row.iconBox.Position = UDim2.new(0, 2, 0.5, 0)
+		row.words.Position = UDim2.new(0, s.icon + 14, 0.5, 0)
+		row.say.TextSize = s.label
+		row.say.Size = UDim2.fromOffset(0, s.label + 2)
+		local detail = row.detail
+		local blockHeight = s.label + 2
+		if detail then
+			detail.TextSize = s.detail
+			detail.Size = UDim2.fromOffset(0, s.detail + 2)
+			blockHeight += 4 + s.detail + 2
+		end
+		row.words.Size = UDim2.fromOffset(0, blockHeight)
+		local slider, fill, thumb = row.slider, row.fill, row.thumb
+		if slider and fill and thumb then
+			local left = s.icon + 14 + s.sliderLabel
+			slider.Position = UDim2.new(1, -4, 0.5, 0)
+			slider.Size = UDim2.new(1, -left - 4, 0, SLIDER_TOUCH)
+			local value = level(row.spec.key)
+			-- the bubble's middle travels from THUMB / 2 to the width less THUMB / 2 (SettingsRules.thumbCentre)
+			thumb.Position = UDim2.new(value, THUMB / 2 - THUMB * value, 0.5, 0)
+			fill.Size = UDim2.new(value, THUMB / 2 - THUMB * value, 1, 0)
+		end
+		local switch, switchGradient, word, knob =
+			row.switch, row.switchGradient, row.switchWord, row.knob
+		if switch and switchGradient and word and knob then
+			local on = if row.spec.key == "lessShake"
+				then current.lessShake
+				else current.lessSparkle
+			switch.Size = UDim2.fromOffset(s.switchW, s.switchH)
+			switch.Position = UDim2.new(1, -4, 0.5, 0)
+			switchGradient.Color = if on
+				then ColorSequence.new(GREEN_TOP, GREEN_BOTTOM)
+				else ColorSequence.new(OFF_TOP, OFF_BOTTOM)
+			word.Text = if on then "On" else "Off"
+			word.TextSize = 19
+			word.Position = UDim2.new(if on then 0.32 else 0.68, 0, 0.5, 0)
+			knob.Size = UDim2.fromOffset(s.knob, s.knob)
+			knob.Position = if on
+				then UDim2.new(1, -s.knob - 3, 0.5, 0)
+				else UDim2.new(0, 3, 0.5, 0)
+		end
+		local check = row.check
+		if check then
+			check.Size = UDim2.fromOffset(s.icon, s.icon)
+			check.Position = UDim2.new(1, -14, 0.5, 0)
+		end
+	end
+end
+
+function SettingsCard.show(settings: Settings)
+	current = table.clone(settings) :: any
+	redraw()
+end
+
+function SettingsCard.build(root: Instance, onChange: (Settings) -> ()): Frame
+	changed = onChange
+	local window = Window.new("Settings", "Settings", "Gear", root)
+	window.close.Activated:Connect(function()
+		window.layer.Visible = false
+	end)
+
+	local pad = Instance.new("UIPadding")
+	pad.Name = "Pad"
+	pad.Parent = window.body
+	local columnsList = Instance.new("UIListLayout")
+	columnsList.FillDirection = Enum.FillDirection.Horizontal
+	columnsList.SortOrder = Enum.SortOrder.LayoutOrder
+	columnsList.Padding = UDim.new(0, SIZES.full.gap)
+	columnsList.Parent = window.body
+
+	local columns: { Frame } = {}
+	for index = 1, 2 do
+		local column = frame(`Column{index}`, window.body)
+		column.AutomaticSize = Enum.AutomaticSize.Y
+		local list = Instance.new("UIListLayout")
+		list.SortOrder = Enum.SortOrder.LayoutOrder
+		list.Parent = column
+		columns[index] = column
+	end
+
+	local rows: { Row } = {}
+	for index, spec in ROWS do
+		rows[index] = buildRow(spec, columns[1], index)
+	end
+
+	parts = { window = window, pad = pad, columns = columns, rows = rows }
+	local camera = Workspace.CurrentCamera
+	if camera then
+		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)
+	end
+	redraw()
+	return window.layer
+end
+
+return SettingsCard
