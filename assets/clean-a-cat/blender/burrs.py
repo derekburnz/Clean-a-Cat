@@ -1,7 +1,7 @@
 """Things stuck in a cat's fur (#126), for the "pick it out" wash step: the player lifts each one off with the
 tweezers or the comb.
 
-  CleanACat_Prop_Burr   a round seed head, moss green with darker spikes on every side, 0.4 studs across
+  CleanACat_Prop_Burr   a round seed head 0.4 studs across: a dark green core with pale moss spikes on every side
   CleanACat_Prop_Leaf   a small leaf lying flat: a tapered blade with a darker rib and a short stalk
   CleanACat_Prop_Twig   a forked twig with a small leaf at the end of each arm
 
@@ -24,14 +24,14 @@ BURR_R = 0.13
 def build_burr(mat):
     b = Builder()
     c = Vector((0, 0, BURR_R + 0.05))
-    b.sphere(c, BURR_R, "fur_moss", segments=8, rings=5)
+    b.sphere(c, BURR_R, "paw_woods", segments=8, rings=5)              # a dark core, so it never reads as a leaf
     long = 2 * BURR_R + 0.14                                           # a spike pair is one bar through the middle
     for axis in ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
         size = tuple(long if a else 0.07 for a in axis)
-        b.box(c, size, "leaf_dark", bevel=False)
+        b.box(c, size, "fur_moss", bevel=False)
     for i, (rz, rx) in enumerate(((45, 50), (135, 50), (45, -50), (135, -50))):          # and four slanted pairs
         rot = Matrix.Rotation(math.radians(rz), 3, "Z") @ Matrix.Rotation(math.radians(rx), 3, "X")
-        b.box(c, (0.06, 0.06, long - 0.02 - 0.004 * i), "leaf_dark", bevel=False, rot=rot)
+        b.box(c, (0.06, 0.06, long - 0.02 - 0.004 * i), "fur_moss", bevel=False, rot=rot)
     return [b.finalize("CleanACat_Prop_Burr", mat)]
 
 

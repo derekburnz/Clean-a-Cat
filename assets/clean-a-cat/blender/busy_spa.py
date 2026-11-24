@@ -8,13 +8,17 @@
   CleanACat_Station_FrontDesk  where a customer checks in: a cream desk with a bubblegum front and the spa's paw on it,
                                a mint top, a gold bell (Attachment `Bell`), an appointment book and a standing card
                                whose face is the part `Screen`. Attachment `TipJarSpot` on the top for the tip jar.
-  CleanACat_NPC_Helper         a hired helper: the standing kitten body in a peach coat no index cat has, in a mint
-                               smock with a cream hem and pocket, the desk's mint, which no customer's cat wears. Same pieces as the builder kitten, so it shares its
-                               motion. Attachments `HatSlot` on the head and `ToolGrip` in its right paw (a sponge's
-                               or a brush's Handle goes there).
-  CleanACat_Prop_HelperCap     the helper's bath cap: a puffy bubblegum cap with a cream frill, an ear shape over each ear and a
-                               mint paw. Its pivot
-                               goes on the helper's `HatSlot`, like the builder's hard hat.
+  CleanACat_NPC_Helper         a hired helper: the standing kitten body in a peach coat and a mint smock with a cream
+                               hem and pocket. The smock wraps the whole chest and no customer's cat wears one, so it
+                               reads as staff. Same pieces as the builder kitten, so it shares its motion. Attachments
+                               `HatSlot` on the head and `ToolGrip` in its right paw (a sponge's or a brush's Handle
+                               goes there). Attributes `Look` 1 and `Cap` (its cap's model name).
+  CleanACat_NPC_Helper2        the second look: an ink coat with white muzzle and paws, a bubblegum smock. `Look` 2.
+  CleanACat_NPC_Helper3        the third look: a custard coat with latte paws, a sky smock. `Look` 3.
+  CleanACat_Prop_HelperCap     the first helper's bath cap: a puffy bubblegum cap with a cream frill, an ear shape over
+                               each ear (the cap covers the ears) and a mint paw. Its pivot goes on `HatSlot`.
+  CleanACat_Prop_HelperCap2    the second's: mint with a bubblegum paw
+  CleanACat_Prop_HelperCap3    the third's: butter with a sky paw
   CleanACat_NPC_StarBeret      for the rare visitor: a lilac beret with a gold star pin        Attachment HatAttachment
   CleanACat_NPC_StarShades     for the rare visitor: violet shades with gold rims             Attachment FaceFrontAttachment
 
@@ -123,50 +127,74 @@ def front_desk_rbx_extras():
                             (DESK, "TipJarSpot", Matrix.Translation((JAR_AT[0], JAR_AT[1], DESK_H)))]}
 
 
-# -- the helper ----------------------------------------------------------------------------------------------------
-HELPER = dict(rarity="Common", fur="fur_peach", second="fur_peach", eyes="eye_mint", pattern="solid",
-              muzzle="fur_vanilla", socks="fur_vanilla", eye_k=1.08, scale=1.0,
-              smock=("spa_mint", "spa_cream"))
-HELPER_NAME = "CleanACat_NPC_Helper"
+# -- the helpers ---------------------------------------------------------------------------------------------------
+HELPER_NAME, CAP = "CleanACat_NPC_Helper", "CleanACat_Prop_HelperCap"
+CAP_R = 0.42        # a little wider than the builder's hard hat: a bath cap puffs out
+# Three looks on one body, so the Helpers screen's three spots show three different helpers that share one motion.
+# Each differs in coat, smock and cap at once, the three things that still read at phone size.
+# model, coat spec, cap model, cap cloth, the cap's paw
+_BASE = dict(rarity="Common", pattern="solid", eye_k=1.08, scale=1.0)
+HELPERS = [
+    (HELPER_NAME, dict(_BASE, fur="fur_peach", second="fur_peach", eyes="eye_mint", muzzle="fur_vanilla",
+                       socks="fur_vanilla", smock=("spa_mint", "spa_cream")),
+     CAP, "spa_bubblegum", "spa_mint"),
+    (HELPER_NAME + "2", dict(_BASE, fur="fur_ink", second="fur_ink", eyes="eye_sky", muzzle="fur_white",
+                             socks="fur_white", smock=("spa_bubblegum", "spa_cream")),
+     CAP + "2", "spa_mint", "spa_bubblegum"),
+    (HELPER_NAME + "3", dict(_BASE, fur="fur_custard", second="fur_custard", eyes="eye_violet", muzzle="fur_white",
+                             socks="fur_latte", smock=("spa_sky", "spa_cream")),
+     CAP + "3", "pastel_butter", "spa_sky"),
+]
+HELPER = HELPERS[0][1]
 
 
-def build_helper(mat):
-    return cats.build_cat("Helper", mat, spec=HELPER, base=HELPER_NAME, body="work", held=False)
+def _helper(i):
+    name, spec = HELPERS[i][0], HELPERS[i][1]
+    return lambda mat: cats.build_cat(name.replace("CleanACat_NPC_", ""), mat, spec=spec, base=name, body="work",
+                                      held=False)
 
 
-def helper_rbx_extras():
-    k = cats.scale_of(HELPER, "work")
-    j = cats.joints(HELPER, "work")
-    h = cats.dims(HELPER, "work")["head"]
+build_helper = _helper(0)
+
+
+def helper_rbx_extras(i=0):
+    spec = HELPERS[i][1]
+    k = cats.scale_of(spec, "work")
+    j = cats.joints(spec, "work")
+    h = cats.dims(spec, "work")["head"]
     top = Vector(j["Head"]) + Vector((0.0, h["c"][1], h["top"])) * k
     paw = Vector(j["LegF2"]) + Vector((0.0, -0.01, cats.S_PAW_Z)) * k
     return {"attachments": [("_Head", "HatSlot", Matrix.Translation(top)),
                             ("_LegF2", "ToolGrip", Matrix.Translation(paw))],
-            "attributes": {"Scale": {"Float64": HELPER["scale"]}, "Role": "Helper"}}
+            "attributes": {"Scale": {"Float64": spec["scale"]}, "Role": "Helper", "Look": {"Float64": i + 1},
+                           "Cap": HELPERS[i][2]}}
 
 
-CAP = "CleanACat_Prop_HelperCap"
-CAP_R = 0.42        # a little wider than the builder's hard hat: a bath cap puffs out
+def _cap(i):
+    name, cloth, paw = HELPERS[i][2], HELPERS[i][3], HELPERS[i][4]
+
+    def build(mat):
+        """Drawn for a kitten at scale 0.8 and grown with it like the hard hat (build_props.FIT). Pivot at the head
+        top."""
+        b = Builder()
+        b.sphere((0, 0, 0.05), CAP_R, cloth, segments=10, rings=5, scale=(1, 1, 0.7))            # the puff
+        b.cyl_base((0, 0, -0.03), CAP_R + 0.04, 0.09, "spa_cream", segments=10, bevel=False)      # the frill
+        for side in (1, -1):                           # the cap covers the ears, so it has an ear shape over each
+            b.pyramid((side * 0.2, 0.045, 0.17), 0.3, 0.36, cloth, rot=Matrix.Rotation(math.radians(side * 12), 3, "Y"))
+        lean = Matrix.Rotation(math.radians(-30), 3, "X")
+        at = Vector((0, -CAP_R * 0.86, 0.17))
+        b.box(at, (0.17, 0.04, 0.12), paw, bevel=False, rot=lean)                                 # a paw on the front
+        for x in (-0.09, 0.0, 0.09):
+            b.box(at + lean @ Vector((x, 0, 0.11 - 0.02 * abs(x) / 0.09)), (0.06, 0.04, 0.06), paw, bevel=False,
+                  rot=lean)
+        ob = _tris(b.finalize(name, mat))
+        if build_props.FIT != 1.0:
+            common.scale_mesh(ob, build_props.FIT)
+        return [ob]
+    return build
 
 
-def build_helper_cap(mat):
-    """Drawn for a kitten at scale 0.8 and grown with it like the hard hat (build_props.FIT). Pivot at the head top."""
-    b = Builder()
-    b.sphere((0, 0, 0.05), CAP_R, "spa_bubblegum", segments=10, rings=5, scale=(1, 1, 0.7))       # the puff
-    b.cyl_base((0, 0, -0.03), CAP_R + 0.04, 0.09, "spa_cream", segments=10, bevel=False)          # the frill
-    for side in (1, -1):                               # the cap covers the ears, so it has an ear shape over each
-        b.pyramid((side * 0.2, 0.045, 0.17), 0.3, 0.36, "spa_bubblegum",
-                  rot=Matrix.Rotation(math.radians(side * 12), 3, "Y"))
-    lean = Matrix.Rotation(math.radians(-30), 3, "X")
-    at = Vector((0, -CAP_R * 0.86, 0.17))
-    b.box(at, (0.17, 0.04, 0.12), "spa_mint", bevel=False, rot=lean)                              # a paw on the front
-    for x in (-0.09, 0.0, 0.09):
-        b.box(at + lean @ Vector((x, 0, 0.11 - 0.02 * abs(x) / 0.09)), (0.06, 0.04, 0.06), "spa_mint", bevel=False,
-              rot=lean)
-    ob = _tris(b.finalize(CAP, mat))
-    if build_props.FIT != 1.0:
-        common.scale_mesh(ob, build_props.FIT)
-    return [ob]
+build_helper_cap = _cap(0)
 
 
 # -- the rare visitor ----------------------------------------------------------------------------------------------
@@ -208,10 +236,11 @@ def _att(name):
 ASSETS = {
     BENCH: (build_wait_bench, 1200),
     DESK: (build_front_desk, 1200),
-    HELPER_NAME: (build_helper, 1500),
-    CAP: (build_helper_cap, 300),
     BERET: (build_star_beret, 400),
     SHADES: (build_star_shades, 200),
 }
-EXTRAS = {BENCH: wait_bench_rbx_extras, DESK: front_desk_rbx_extras, HELPER_NAME: helper_rbx_extras,
-          BERET: _att(BERET), SHADES: _att(SHADES)}
+EXTRAS = {BENCH: wait_bench_rbx_extras, DESK: front_desk_rbx_extras, BERET: _att(BERET), SHADES: _att(SHADES)}
+for _i, _look in enumerate(HELPERS):
+    ASSETS[_look[0]] = (_helper(_i), 1500)
+    ASSETS[_look[2]] = (_cap(_i), 300)
+    EXTRAS[_look[0]] = (lambda i=_i: helper_rbx_extras(i))

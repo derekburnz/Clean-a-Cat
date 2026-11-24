@@ -6,7 +6,7 @@ Runs in Blender's Python (bpy). Writes one raw PNG per picture, twice the final 
 Python with Pillow) trims them, adds the ink outline and writes the finals and the check sheet:
 
   portrait_<Cat>.png, portrait_<Cat>_Dirty.png   head and shoulders of every roster cat, sitting, clean and muddy
-  portrait_Helper.png                            the helper kitten in its bath cap, same crop as the cats
+  portrait_Helper.png, _Helper2, _Helper3        each helper look in its bath cap, same crop as the cats
   icon_<Model name without CleanACat_>.png       one three-quarter picture of each model in ICONS
   icon_Customer_<Name>.png, icon_Visitor_<Name>.png   head and shoulders of each customer and rare visitor look, on
                                                  the stand-in block figure (the game's customers are R15 rigs)
@@ -39,6 +39,8 @@ PORTRAIT_RAW, ICON_RAW = 1024, 512
 PORTRAIT_VIEW = (16, 6)            # azimuth and elevation, degrees: nearly face on, so both eyes show
 ICON_VIEW = (35, 24)
 # model -> (azimuth, elevation) where the family view hides what the thing is; None for the family view
+# (the coin stack is seen from the left so no light glints off its top; the dryer from the side so its hood, pole
+# and stool sit side by side; the bench from above so its three mats show)
 ICONS = {
     "CleanACat_Tool_Sponge": None, "CleanACat_Tool_SpongeBubble": None, "CleanACat_Tool_SpongeGolden": None,
     "CleanACat_Tool_Brush": None, "CleanACat_Tool_Shower": None, "CleanACat_Tool_Comb": (-62, 16),
@@ -46,11 +48,12 @@ ICONS = {
     "CleanACat_Tool_Dryer": (-50, 16), "CleanACat_Tool_Shampoo": (20, 14), "CleanACat_Station_BubbleBath": (28, 26),
     "CleanACat_Station_Tub": (28, 26), "CleanACat_Station_Pawdicure": (28, 26),
     "CleanACat_Station_BrushTable": (28, 26), "CleanACat_Station_BrushTableUp": (28, 26),
-    "CleanACat_Station_Dryer": (28, 26), "CleanACat_Prop_Carrier": None,
+    "CleanACat_Station_Dryer": (60, 10), "CleanACat_Prop_Carrier": None,
     "CleanACat_Bow_Pink": (0, 20), "CleanACat_Bow_Mint": (0, 20), "CleanACat_Bow_Sky": (0, 20),
-    "CleanACat_Prop_Coin": (18, 8), "CleanACat_Prop_Star": (14, 6), "CleanACat_Prop_CoinStack": (30, 26),
+    "CleanACat_Prop_Coin": (18, 8), "CleanACat_Prop_Star": (14, 6), "CleanACat_Prop_CoinStack": (-30, 30),
     "CleanACat_NPC_BuilderKitten": (18, 8), "CleanACat_NPC_Helper": (18, 8),
-    "CleanACat_Station_WaitBench": (28, 26), "CleanACat_Station_FrontDesk": (28, 26),
+    "CleanACat_NPC_Helper2": (18, 8), "CleanACat_NPC_Helper3": (18, 8),
+    "CleanACat_Station_WaitBench": (15, 55), "CleanACat_Station_FrontDesk": (28, 26),
     "CleanACat_Prop_Burr": None, "CleanACat_Prop_Leaf": (35, 55), "CleanACat_Prop_Twig": (35, 55),
 }
 FACE_FRONT = (0.0, -0.575, 4.175)          # R15's FaceFrontAttachment on the stand-in figure (scenes.avatar)
@@ -131,18 +134,19 @@ def portrait(name, mat, out, dirty=False):
     return path
 
 
-def helper_portrait(mat, out):
-    """The helper in its cap, framed like a cat's portrait (the cap counts as part of the head)."""
-    objs = busy_spa.build_helper(mat)
-    cap = busy_spa.build_helper_cap(mat)
-    top = busy_spa.helper_rbx_extras()["attachments"][0][2].translation
+def helper_portrait(i, mat, out):
+    """Helper look i in its cap, framed like a cat's portrait (the cap counts as part of the head)."""
+    name, cap_name = busy_spa.HELPERS[i][0], busy_spa.HELPERS[i][2]
+    objs = busy_spa.ASSETS[name][0](mat)
+    cap = busy_spa.ASSETS[cap_name][0](mat)
+    top = busy_spa.helper_rbx_extras(i)["attachments"][0][2].translation
     for o in cap:
         o.location = o.location + top
     bpy.context.view_layer.update()
     head = [o for o in objs if o.name.endswith(("_Head", "_EarL", "_EarR", "_Eye1", "_Eye2"))] + cap
     lo, hi = common.bounds(head)
     lo = Vector((lo.x, lo.y, lo.z - (hi.z - lo.z) * 0.3))
-    path = os.path.join(out, "portrait_Helper.png")
+    path = os.path.join(out, f"portrait_{name.replace('CleanACat_NPC_', '')}.png")
     shot(objs + cap, path, PORTRAIT_RAW, PORTRAIT_VIEW, focus=(lo, hi), pad=1.1)
     _clear()
     return path
@@ -207,8 +211,9 @@ def main(argv):
         for dirty in (False, True):
             if want(f"portrait_{name}{'_dirty' if dirty else ''}"):
                 print("ui:", portrait(name, mat, out, dirty))
-    if want("portrait_helper"):
-        print("ui:", helper_portrait(mat, out))
+    for i, look in enumerate(busy_spa.HELPERS):
+        if want("portrait_" + look[0].replace("CleanACat_NPC_", "")):
+            print("ui:", helper_portrait(i, mat, out))
     for asset in ICONS:
         if asset in makers and want("icon_" + asset):
             print("ui:", icon(asset, mat, out, makers))
