@@ -19,15 +19,15 @@ The server keeps one cat per player in its own table, with a stage: dirty, clean
 
 | Remote | Rate | What an exploiter tries | Server rule |
 |---|---|---|---|
-| `RequestCat()` | 1/s, burst 2 | Reroll cats until a rare one comes up | A dirty cat is resent, not rerolled. **Open (#164):** a cat past dirty is replaced at once with no pay, so a script can scrub, skip and reroll about once a second until a Rare or better cat comes up. The kind is rolled on the server, but the skip is free. Planned fix: no replacement of an unfinished cat until `MIN_VISIT_SECONDS` after it arrived. |
+| `RequestCat()` | 1/s, burst 2 | Reroll cats until a rare one comes up | A dirty cat is resent, not rerolled. A done cat is replaced. An unfinished cat is replaced only once `MIN_VISIT_SECONDS` have passed since it arrived (`SpaRules.canReplace`). Before that it goes back to dirty and is resent, with the same id, kind and arrival time (`SpaRules.restart`). A skip costs as long as a paid visit and earns nothing (#164). The kind is rolled on the server. |
 | `ReportScrubbed(catId, seq)` | 2/s | Skip the scrub, or report it for a cat that isn't theirs | `catId` and `seq` pass `Guard.int`. The cat must be the player's current cat. `SpaRules.scrubbed` moves only dirty to clean. |
 | `ReportBrushStroke(catId, seq)` | 8/s | Fire every stroke at once to fluff instantly | Same cat check. The cat must be clean. `BRUSH_STROKES` (3) strokes fluff it. The rate limit caps how fast that happens. The pay does not depend on speed, because the photo gate below holds it. |
 | `RequestPickBow(catId, seq, bowId)` | 2/s | Pick a bow that doesn't exist, or skip the brush | `bowId` passes `Guard.oneOf(SpaRules.BOWS)`. The cat must be fluffed. |
 | `RequestPhoto(catId, seq)` | 2/s | Get paid twice, get paid early, or get paid for a cat that isn't theirs | The cat must be styled, and only one photo can be waiting (`photoTaken`). The pay comes no sooner than `MIN_VISIT_SECONDS` (15 s) after the cat arrived, and only once (the stage becomes done). Nothing is paid without a loaded save. Coins, tips and stars come from `CatRules` and `BuildRules` on the server. The client never sends an amount. |
 
-**Open (#164):** `MIN_VISIT_SECONDS` caps how often a photo pays, not how much. Through the free skip in `RequestCat` above, a script can serve only Rare and better cats (30 to 95 coins against 12 for a Common) every 15 to 20 s. That is roughly twice an honest player's coins, and stars climb faster, which raises the tier odds. Strays roll the same way. This stays open until #164 lands.
+**Pay cap:** a script earns no more than one cat's pay per `MIN_VISIT_SECONDS`, and skipping a cat costs a full visit's time and pays nothing, so serving only rare cats earns less than serving every cat (#164).
 
-**Also accepted for now:** the spa remotes have no distance check to the tub, so a script can play the loop without walking there. Once #164 lands, that earns no more than an honest fast player. Revisit before a stage pays much more than a common cat, with a reach check from `SpaLayout.spot("Tub", player)` or a longer visit for higher pay.
+**Accepted for now:** the spa remotes have no distance check to the tub, so a script can play the loop without walking there. It still earns no more than an honest fast player. Revisit before a stage pays much more than a common cat, with a reach check from `SpaLayout.spot("Tub", player)` or a longer visit for higher pay.
 
 ## Economy
 

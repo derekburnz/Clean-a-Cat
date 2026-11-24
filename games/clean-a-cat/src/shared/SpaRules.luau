@@ -55,6 +55,24 @@ function SpaRules.scrubbed(cat: Cat): boolean
 	return true
 end
 
+-- May the player's cat be swapped for a new one at `now`? Only once it is done, or once a whole visit's time
+-- (MIN_VISIT_SECONDS) has passed since it arrived. A free swap mid-visit would let a script skip cheap cats and
+-- serve only rare ones (issue #164); waiting a visit's time for a cat that pays nothing makes skipping a loss.
+function SpaRules.canReplace(cat: Cat, now: number): boolean
+	return cat.stage == "done" or now - cat.arrivedAt >= SpaRules.MIN_VISIT_SECONDS
+end
+
+-- Puts an unfinished cat back to dirty for the same visit: same id, kind and arrival time, so the photo still
+-- waits from when it first arrived and nothing is rolled again. Used when the client asks for a cat too soon
+-- (it lost its place, for example after the plot moved) and the cat may not be swapped yet.
+function SpaRules.restart(cat: Cat)
+	cat.stage = "dirty"
+	cat.strokes = 0
+	cat.lastStrokeAt = -math.huge
+	cat.bow = nil
+	cat.photoTaken = false
+end
+
 -- One brush stroke landed. Returns (counted, fluffed): counted is false for a stroke out of order; fluffed is
 -- true on the stroke that finishes the brushing.
 function SpaRules.brushStroke(cat: Cat, now: number): (boolean, boolean)
