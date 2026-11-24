@@ -37,24 +37,29 @@ TruckDrop.BUMP_X = -7.5
 TruckDrop.BUMP_RANGE = 20 -- a pothole further than this along the road from the box is ignored, and BUMP_X is used
 TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.4 s apart the truck drives at 20 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
-TruckDrop.TAILGATE = { back = 6.5, up = 1.9, side = 1.4 } -- where the box leaves (the Tailgate attachment), from the
--- truck's pivot; `side` studs from the lane's middle toward the curb, toward the door's near corner but with the whole
--- box inside the 5.5 stud opening, clear of the side wall and the corner posts (on the road under the middle of the
+TruckDrop.TAILGATE = { back = 6.5, up = 1.95, side = 0.9 } -- where the box leaves (the Tailgate attachment), from the
+-- truck's pivot; `up` is the cargo floor's top; `side` studs from the lane's middle toward the curb, toward the door's
+-- near corner but with the whole box inside the 5.5 stud opening, clear of the side wall, the corner posts and the
+-- rear lamps (their inner edge 2.32 from the middle; Sync-Agent's overlap check) (on the road under the middle of the
 -- 13 stud truck, Model-Agent's CleanACat_Prop_DeliveryTruck; posts and trim added in #352)
-TruckDrop.OPENING = 2.75 -- half the cargo opening's width, the side walls' inner faces from the lane's middle
+TruckDrop.OPENING = 2.32 -- the box keeps inside this from the lane's middle at the back: the rear lamps' inner edge
 
 -- The pothole jolt: each axle dips `dip` studs and bounces back over `seconds`; the front's dip tips the nose down
 -- by `frontPitch`, the back's tips it up by `backPitch`.
 TruckDrop.JOLT = { dip = 0.4, frontPitch = math.rad(4), backPitch = math.rad(5), seconds = 0.3 }
 TruckDrop.RATTLE = { pitch = math.rad(1.2), seconds = 0.7 } -- the little rattle after each hit
 -- The back door (hinged along its top edge): kicked open by the front wheels' drop over `seconds`, held open until
--- `hold` after the box drops, then slammed shut over `closeSeconds` with a small rebound.
+-- `hold` after the box drops, then slammed shut over `closeSeconds` with a small rebound. The hold lets the box fall
+-- clear of the door's sweep first (Sync-Agent saw the slamming door clip it; the clearance spec checks it).
+-- `model` is the door's real shape for the clearance spec (Model-Agent's truck: hinge height over the pivot, how far
+-- back of it, the panel's length and thickness with its ribs, and the model's DoorOpenDegrees that `open` scales to).
 TruckDrop.DOOR = {
+	model = { hinge = 7.18, back = 6.5, length = 5.43, thick = 0.22, openDegrees = 75 },
 	open = math.rad(100),
 	seconds = 0.1,
 	swing = math.rad(10),
-	hold = 0.12,
-	closeSeconds = 0.22,
+	hold = 0.4,
+	closeSeconds = 0.16,
 	rebound = math.rad(6),
 }
 -- The box (Model-Agent's CleanACat_Prop_DeliveryBox): its footprint along the road and its height.
@@ -261,13 +266,25 @@ function TruckDrop.truck(t: number, reduced: boolean, bumpX: number?): Truck
 	}
 end
 
+-- Where the box's base sits on the cargo floor at time t, `behind` studs back from the truck's pivot: the floor rides
+-- the truck's dip and pitch (positive pitch lowers the back), and a level box on a tipped floor rests on its lower
+-- edge, so it never sinks in (Sync-Agent measured up to 0.15 studs before).
+function TruckDrop.floorAt(t: number, reduced: boolean, bumpX: number?, behind: number): number
+	local state = TruckDrop.truck(t, reduced, bumpX)
+	local p = state.pitch
+	return state.lift
+		+ TruckDrop.TAILGATE.up * math.cos(p)
+		- behind * math.sin(p)
+		+ TruckDrop.BOX.width / 2 * math.abs(math.sin(p))
+end
+
 -- The box's middle as it tips off the door's edge (BEATS.drop), in scene space: x along the road, y, z across.
-function TruckDrop.launch(bumpX: number?): (number, number, number)
+function TruckDrop.launch(bumpX: number?, reduced: boolean?): (number, number, number)
 	local w = TruckDrop.BOX.width
-	return TruckDrop.truckX(TruckDrop.BEATS.drop, bumpX)
-		- TruckDrop.TAILGATE.back
-		- TruckDrop.SLIDE.out * w,
-		TruckDrop.TAILGATE.up + TruckDrop.BOX.height / 2,
+	local behind = TruckDrop.TAILGATE.back + TruckDrop.SLIDE.out * w
+	return TruckDrop.truckX(TruckDrop.BEATS.drop, bumpX) - behind,
+		TruckDrop.floorAt(TruckDrop.BEATS.drop, reduced == true, bumpX, behind)
+			+ TruckDrop.BOX.height / 2,
 		TruckDrop.ROAD_Z - TruckDrop.TAILGATE.side
 end
 
@@ -282,7 +299,7 @@ function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 	if t < b.slide then
 		return box
 	end
-	local lx, ly, lz = TruckDrop.launch(bumpX)
+	local lx, ly, lz = TruckDrop.launch(bumpX, reduced)
 	-- across the road: from the door's corner to the pavement, over the fall and the roll. It eases out (so the box
 	-- leaves the truck straight back, clear of the side wall, #352) and slows to a stop as it rolls.
 	local across = math.clamp((t - b.drop) / (TruckDrop.rollEnd() - b.drop), 0, 1)
@@ -293,7 +310,7 @@ function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 		local w = TruckDrop.BOX.width
 		local rel = TruckDrop.SLIDE.inside * w * (1 - u) - TruckDrop.SLIDE.out * w * u
 		box.x = TruckDrop.truckX(t, bumpX) - TruckDrop.TAILGATE.back + rel
-		box.y = ly - half
+		box.y = TruckDrop.floorAt(t, reduced, bumpX, TruckDrop.TAILGATE.back - rel)
 		return box
 	end
 	local cx0, cy0 = TruckDrop.rollCenter(TruckDrop.rollAngle(0, reduced))

@@ -21,7 +21,8 @@ local Sky = {}
 
 -- Tuned down 2026-11-24 after Sync-Agent's phone check (studio-reports/opening-sky-2026-11-24.md): the first draft
 -- washed the street out (pavement L 0.52 to 0.97, road against pavement 5.4:1 to 3.0:1, the spa's sign panel lost
--- in the wall), so less brightness, exposure and bloom, and the haze pushed out to the horizon.
+-- in the wall), so less brightness, exposure and bloom, and the haze pushed out to the horizon. The second check had
+-- road against pavement at 4.3:1 on the a06 view, so a touch less exposure and more contrast for 4.5:1.
 
 local PREFIX = "CleanACat_Sky_"
 
@@ -36,7 +37,7 @@ Sky.LOOK = table.freeze({
 		EnvironmentDiffuseScale = 0.45,
 		EnvironmentSpecularScale = 0.35,
 		ShadowSoftness = 0.35,
-		ExposureCompensation = -0.2,
+		ExposureCompensation = -0.3,
 	} :: { [string]: any }),
 	atmosphere = table.freeze({
 		Density = 0.22,
@@ -59,7 +60,7 @@ Sky.LOOK = table.freeze({
 	} :: { [string]: any }),
 	colorCorrection = table.freeze({
 		Saturation = 0.1,
-		Contrast = 0.1,
+		Contrast = 0.15,
 		Brightness = 0,
 		TintColor = Color3.fromRGB(255, 250, 244),
 	} :: { [string]: any }),

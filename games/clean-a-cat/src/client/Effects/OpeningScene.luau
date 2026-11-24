@@ -26,8 +26,8 @@
 --                                   once the player stands at the box facing it. onDone once he is in them
 --                                   (Carry.settleSeconds(true) later).
 --                                   He becomes the loaf body as he leaves the box, so handle.kitten changes here
---   handle.placeIn(target, onDone?) the arms open and the carried kitten hops in, his base on `target` (the tub's
---                                   seat); onDone when he lands. Then Gameplay eases into the wash (Effects/WashCamera)
+--   handle.placeIn(target, onDone?, endScale?) the arms open and the carried kitten hops in, his base on `target`
+--                                   (the tub's seat), easing to `endScale` (the tub body's size); onDone when he lands. Then Gameplay eases into the wash (Effects/WashCamera)
 --   Derek 2026-11-24 picked the carry over the hop-out ("we should pick him up out of crate"); hopOut stays for now.
 --   Both onDone callbacks fire exactly once, deferred, even when the call does nothing (not landed yet, already
 --   opened or hopping, no kitten, destroyed) or the scene is destroyed part way.
@@ -72,7 +72,7 @@ export type Handle = {
 	open: (onDone: (() -> ())?) -> (),
 	hopOut: (toward: Vector3, onDone: (() -> ())?) -> (),
 	pickUp: (character: Model, onDone: (() -> ())?) -> (),
-	placeIn: (target: Vector3, onDone: (() -> ())?) -> (),
+	placeIn: (target: Vector3, onDone: (() -> ())?, endScale: number?) -> (),
 	destroy: () -> (),
 }
 
@@ -732,7 +732,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				task.delay(Carry.settleSeconds(true), onDone)
 			end
 		end,
-		placeIn = function(target: Vector3, onDone: (() -> ())?)
+		placeIn = function(target: Vector3, onDone: (() -> ())?, endScale: number?)
 			local held = carry
 			if held == nil or destroyed then
 				if onDone then
@@ -740,7 +740,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				end
 				return
 			end
-			held.placeIn(target, onDone)
+			held.placeIn(target, onDone, endScale)
 		end,
 		destroy = function()
 			if destroyed then
