@@ -26,6 +26,8 @@ local Workspace = game:GetService("Workspace")
 
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
 local ControlHold = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ControlHold"))
+local Icons =
+	require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("HUD"):WaitForChild("Icons"))
 local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
@@ -49,6 +51,10 @@ local TURN_FLAG = "scrubTurn" -- the cat turns to show its muddy side when too l
 local FEEL_FLAG = "scrubFeel" -- a patch takes a few strokes, and a finger on the cat never walks the player
 local WASH_FLAG = "washView" -- every cat in the tub is washed in the close-up wash view, the avatar hidden
 local WASH_REASON = "scrub" -- this controller's hold on Spa/WashView
+local OPENING_REASON = "opening" -- the opening's own hold on the view (OpeningController): no Walk button then
+local MARKER_UP = 3.6 -- studs over the cat's seat where the paw marker bobs while the player has stepped out
+local MARKER_BOB = TweenInfo.new(0.7, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+local WASH_PROMPT_REACH = 12 -- studs: the tub's "Wash" prompt while the player has stepped out
 local TURN_TWEEN = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 local DRY_FLAG = "stations" -- with the Blow Dryer built, a fluffed cat sits on its stool before the bows
 local DRY_SECONDS = 2.5
@@ -145,6 +151,8 @@ type Visit = {
 	holdSince: number,
 	ring: Highlight?, -- the outline on the paw to press next
 	mascot: boolean, -- the opening's kitten (SudsRules, #285): no bows, and his collar pops on at the naming
+	steppedOut: boolean, -- the player pressed Walk: the cat waits in the tub, the close-up is let go (washView)
+	marker: BasePart?, -- while stepped out: the paw marker over the cat and the tub's "Wash" prompt
 }
 
 type Args = { n: number, [number]: any }
@@ -156,6 +164,9 @@ local ScrubController = {}
 ScrubController.stageChanged = Signal.new() :: Signal.Signal<string?>
 -- Fires (later) when the cat's later steps are known: their HUD names in order ("bath", "claws"), maybe none.
 ScrubController.planChanged = Signal.new() :: Signal.Signal<{ string }>
+-- Fires (shown) when the Walk button (UI/HUD/WalkButton) should show or hide: while a customer's cat is washed in
+-- the close-up wash view (switch washView), never during Suds's opening. Pressing it calls ScrubController.stepOut.
+ScrubController.walkChanged = Signal.new() :: Signal.Signal<boolean>
 
 -- The recap card (#224, switch recapCard): RecapController sets a handler that shows the card after a customer's cat
 -- goes home and calls `nextCat` once when the player closes it. With no handler, or the switch off, the next cat
@@ -199,14 +210,33 @@ end
 -- The close-up wash view (Spa/WashView) is held while a cat is being washed in the tub: from the moment it sits
 -- down dirty until its photo is taken, but not while it sits at a later step's station away from the tub. Behind
 -- the switch washView; the opening holds the same view for Suds on its own.
-local function updateWashView(v: { stage: Stage, away: boolean, cat: Cat? }?)
+-- With the player stepped out (the Walk button), the cat waits in the tub and the view is let go until they come
+-- back (a tap on the cat, or the tub's "Wash" prompt). The Walk button shows only while this controller's hold is
+-- what keeps the view up: never for Suds, whose opening holds it on its own.
+local walkShown = false
+local function updateWashView(v: {
+	stage: Stage,
+	away: boolean,
+	cat: Cat?,
+	steppedOut: boolean,
+	mascot: boolean,
+}?)
 	local washing = v ~= nil
 		and v.cat ~= nil
 		and not v.away
 		and v.stage ~= "waiting"
 		and v.stage ~= "done"
 		and LiveFlags.isOn(WASH_FLAG)
-	WashView.set(WASH_REASON, washing)
+	WashView.set(WASH_REASON, washing and v ~= nil and not v.steppedOut)
+	local walk = washing
+		and v ~= nil
+		and not v.steppedOut
+		and not v.mascot
+		and not WashView.holds(OPENING_REASON)
+	if walk ~= walkShown then
+		walkShown = walk
+		ScrubController.walkChanged:Fire(walk)
+	end
 end
 
 local function setStage(v: Visit, stage: Stage)
@@ -1190,6 +1220,12 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	local cat = buildCat(asset, v.folder, seat)
 	v.cat = cat
 	v.away = false -- a new cat sits in the tub
+	v.steppedOut = false
+	local marker = v.marker
+	v.marker = nil
+	if marker then
+		marker:Destroy()
+	end
 	v.catParams.FilterDescendantsInstances = { cat.model }
 	v.catId = catId
 	setStage(v, "dirty")
@@ -1322,6 +1358,9 @@ local function onCatReady(
 		v.needs, v.locked = needArray(rawNeeds), needArray(rawLocked)
 		v.mascot = mascot
 		armLater(v, cat)
+		if visit == v then
+			updateWashView(v) -- now that it is known whether this is Suds: the Walk button never shows for him
+		end
 	end
 	if cat and kind then
 		-- For the need icons (UI): which cat, what it needs and which needs wait on a station not built yet.
@@ -1492,6 +1531,74 @@ local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, raw
 	end)
 end
 
+-- Back into the close-up from a step out: the marker and the prompt go and the view comes back.
+local function stepIn(v: Visit)
+	if not v.steppedOut then
+		return
+	end
+	v.steppedOut = false
+	local marker = v.marker
+	v.marker = nil
+	if marker then
+		marker:Destroy()
+	end
+	updateWashView(v)
+end
+
+-- The paw marker bobbing over the waiting cat and the tub's "Wash" prompt, on one invisible part over the seat.
+local function buildMarker(v: Visit): BasePart
+	local seat = v.seat or SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
+	local anchor =
+		makePart("WashMarker", Vector3.new(1, 1, 1), BUTTON_COLOR, CFrame.new(seat.Position))
+	anchor.Transparency = 1
+	anchor.CanQuery = false
+	anchor.CanTouch = false
+	local board = Instance.new("BillboardGui")
+	board.Name = "Paw"
+	board.Size = UDim2.fromOffset(56, 56)
+	board.StudsOffset = Vector3.new(0, MARKER_UP, 0)
+	board.AlwaysOnTop = true
+	board.Parent = anchor
+	local box = Instance.new("Frame")
+	box.Name = "IconBox"
+	box.BackgroundTransparency = 1
+	box.Size = UDim2.fromScale(1, 1)
+	box.Parent = board
+	Icons.draw("Paw", box)
+	TweenService:Create(board, MARKER_BOB, { StudsOffset = Vector3.new(0, MARKER_UP + 0.5, 0) })
+		:Play()
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "Wash"
+	prompt.ActionText = "Wash"
+	prompt.ObjectText = ""
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = WASH_PROMPT_REACH
+	prompt.RequiresLineOfSight = false
+	prompt.Triggered:Connect(function()
+		if visit == v then
+			stepIn(v)
+		end
+	end)
+	prompt.Parent = anchor
+	anchor.Parent = v.folder
+	return anchor
+end
+
+-- The Walk button: the close-up is let go and the player has their camera and walking back, while the cat waits
+-- in the tub with its stage kept. Nothing is sent to the server, and it never cancels or costs anything.
+function ScrubController.stepOut()
+	local v = visit
+	if v == nil or not walkShown then
+		return
+	end
+	release()
+	v.steppedOut = true
+	if v.marker == nil then
+		v.marker = buildMarker(v)
+	end
+	updateWashView(v)
+end
+
 local function buildVisit(folder: Folder): Visit
 	local bowButtons, camera = buildButtons(folder)
 	local catParams = RaycastParams.new()
@@ -1532,6 +1639,8 @@ local function buildVisit(folder: Folder): Visit
 		holdSince = 0,
 		ring = nil,
 		mascot = false,
+		steppedOut = false,
+		marker = nil,
 	}
 end
 
@@ -1565,6 +1674,13 @@ local function enable()
 		end
 		-- Only a press that lands on the cat scrubs or brushes; a press anywhere else stays a camera drag.
 		local ray = pointerRay(input)
+		if v.steppedOut then
+			-- stepped out (the Walk button): a tap on the waiting cat brings the close-up back, and does not scrub
+			if ray and cast(ray, v.catParams) then
+				stepIn(v)
+			end
+			return
+		end
 		if
 			(v.stage ~= "dirty" and v.stage ~= "clean" and v.step == nil)
 			or not ray
@@ -1658,6 +1774,7 @@ local function disable()
 	release()
 	visit = nil
 	WashView.set(WASH_REASON, false)
+	updateWashView(nil)
 	trove:Clean()
 	ScrubController.stageChanged:Fire(nil)
 end

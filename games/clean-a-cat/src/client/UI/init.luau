@@ -51,6 +51,7 @@ local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons
 local Spotlight = require(script:WaitForChild("Spotlight"))
 local SudsBubble = require(script:WaitForChild("SudsBubble"))
 local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
+local WalkButton = require(script:WaitForChild("HUD"):WaitForChild("WalkButton"))
 
 local UI = {}
 
@@ -69,6 +70,7 @@ local CONTROLS_FLAG = "windowsHideControls"
 
 local windows: { [string]: Frame } = {}
 local settingsListeners: { (SettingsRules.Settings) -> () } = {}
+local walkListeners: { () -> () } = {}
 local toastLabel: TextLabel? = nil
 local revealRecap: RBXScriptConnection? = nil -- shows the recap again when the window over it closes
 local toastToken = 0
@@ -237,6 +239,12 @@ function UI.init()
 	toast.Parent = root
 	toastLabel = toast
 
+	-- the way out of the close-up wash view (switch washView), in Roblox's top bar row; ScrubController.stepOut
+	WalkButton.build(playerGui, function()
+		for _, listener in walkListeners do
+			listener()
+		end
+	end)
 	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
 	SudsBubble.build(root) -- Suds's help bubble (switch sudsBubble), at the bottom while the tub is empty
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
@@ -272,6 +280,15 @@ function UI.init()
 	Recap.onShownChanged(syncControls)
 
 	hud.Parent = playerGui
+end
+
+-- Shows or hides the Walk button (ScrubController.walkChanged); UI.onWalk(fn) runs fn when it is pressed.
+function UI.setWalk(shown: boolean)
+	WalkButton.set(shown)
+end
+
+function UI.onWalk(fn: () -> ())
+	table.insert(walkListeners, fn)
 end
 
 function UI.setCoins(coins: unknown)

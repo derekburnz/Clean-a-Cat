@@ -33,6 +33,13 @@ function HudController.Start()
 		end)
 		UI.setWashPlan(scrub.plan())
 		UI.setWashStage(scrub.stage())
+		-- the Walk button out of the close-up wash view (switch washView)
+		scrub.walkChanged:Connect(function(shown: boolean)
+			UI.setWalk(shown)
+		end)
+		UI.onWalk(function()
+			scrub.stepOut()
+		end)
 	end
 end
 
