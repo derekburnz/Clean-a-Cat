@@ -27,6 +27,9 @@ layout, not a locked design. Owner: Design-Agent. Plans: issues #5 (first sessio
 - Notifications: any "Notify me" bell (the Builder's) and its "Bell is on" state stay hidden unless the server says
   the player may get experience notifications. Players under 13 never see the opt-in prompt, so they never see the bell.
 - Young audience: no fake timers, no fake discounts, no pressure words, nothing "limited".
+- Words: never under 14 real px. `kit.js` raises any label that would scale under 14, like a UITextSizeConstraint with
+  MinTextSize 14 on every label in the build. Cat names fit at up to 11 letters; coin counts over 999,999 show short
+  (1.2M, 3.4B).
 
 ## Check
 ```
@@ -35,5 +38,5 @@ node check.mjs [--screen name] [--profile smallphone] [--out dir]
 Opens every screen and state at small phone, phone, Galaxy A06, tablet, 4:3 iPad, desktop and console sizes, saves a
 picture of each and fails on: taps under 44 px on touch (36 with a mouse), words under 9 px, anything off screen or
 under Roblox's menu buttons, buttons under the thumbstick or jump button, buttons on top of each other, words cut off,
-a third font. Words under 12 px are listed as notes. Default output: `shots/` (not committed). Phone and desktop
+a third font. Words under 14 px are listed as notes. Default output: `shots/` (not committed). Phone and desktop
 pictures of the 2026-11-24 drafts are in `docs/concepts/clean-a-cat/ui-2026-11-24/`.

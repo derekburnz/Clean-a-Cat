@@ -1,6 +1,6 @@
 // Screen check for the HTML mockups (Design-Agent, 2026-11-24). The same limits as the game's UI gate
 // (games/clean-a-cat/tools/cloudcheck/uigate-checks.mjs): 44 px taps on touch and 36 with a mouse, no text under 9 px
-// (12 px is flagged as small), nothing off screen or under Roblox's menu buttons (184 x 58 at the top left), two
+// (14 px is flagged as small, the ui-review body text rule), nothing off screen or under Roblox's menu buttons (184 x 58 at the top left), two
 // fonts, plus overlapping buttons, buttons under the thumbstick or jump button, and words cut off.
 //
 //   node check.mjs [--out dir] [--screen name] [--profile name]
@@ -20,7 +20,7 @@ const PROFILES = [
   { name: 'desktop', width: 1280, height: 720, touch: false },
   { name: 'console', width: 1920, height: 1080, touch: false },
 ];
-const LIMITS = { tapTouch: 44, tapMouse: 36, textMin: 9, textSmall: 12, topbarLeft: 184, inset: 58, fonts: ['Fredoka One', 'Nunito'] };
+const LIMITS = { tapTouch: 44, tapMouse: 36, textMin: 9, textSmall: 14, topbarLeft: 184, inset: 58, fonts: ['Fredoka One', 'Nunito'] };
 
 const args = { out: path.join(HERE, 'shots'), screen: null, profile: null };
 for (let i = 2; i < process.argv.length; i++) {
