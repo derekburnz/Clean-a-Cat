@@ -952,11 +952,14 @@ local function renderedTextSize(self, w, h, k)
 	local em = GLYPH[familyName(self)] or 0.5
 	local constraint = textConstraint(self)
 	if rawProp(self, "TextScaled") then
-		local maxSize = 100 * k
+		-- TextScaled sizes the text to the box as drawn on screen, and a UITextSizeConstraint's sizes are screen
+		-- pixels too: a UIScale over the label does not scale them. A MinTextSize of 19 under a 0.75 scale draws
+		-- 19 px text, not 14.25 (an iPhone 14 showed "Uncomm..." in an 87 px box, #262)
+		local maxSize = 100
 		local minSize = 1
 		if constraint then
-			maxSize = math.min(maxSize, (rawProp(constraint, "MaxTextSize") or 100) * k)
-			minSize = (rawProp(constraint, "MinTextSize") or 1) * k
+			maxSize = math.min(maxSize, rawProp(constraint, "MaxTextSize") or 100)
+			minSize = rawProp(constraint, "MinTextSize") or 1
 		end
 		if text == "" then
 			return maxSize

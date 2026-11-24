@@ -70,16 +70,19 @@ function Kit.minText(label: TextLabel | TextButton)
 end
 
 -- A one-line name in a box of fixed width: it draws at `size` when it fits, shrinks as far as the text floor when it
--- does not, and only past that ends with "..." (#262). Safe to call on every redraw. TextScaled text keeps to its box
--- when the player picks a larger text size, so a long name never spills its card.
+-- does not, and only past that ends with "..." (#262). Call it on every redraw, as the screen's scale can change.
+-- TextScaled text keeps to its box when the player picks a larger text size, so a long name never spills its card.
+-- TextScaled works in screen pixels: a UIScale does not scale a UITextSizeConstraint, so its sizes take the screen
+-- scale here (a floor of 19 under a 0.75 scale would draw 19 px text, too big for the box, on an iPhone 14).
 function Kit.shrinkToFit(label: TextLabel, size: number)
+	local scale = Kit.screenScale()
 	local found = label:FindFirstChildOfClass("UITextSizeConstraint")
 	local limit: UITextSizeConstraint = if found
 		then found :: UITextSizeConstraint
 		else Instance.new("UITextSizeConstraint")
 	limit.Parent = label
-	limit.MinTextSize = MIN_TEXT
-	limit.MaxTextSize = math.max(size, MIN_TEXT)
+	limit.MinTextSize = MIN_TEXT * scale
+	limit.MaxTextSize = math.max(size, MIN_TEXT) * scale
 	label.TextSize = size
 	label.TextScaled = true
 	label.TextWrapped = false
