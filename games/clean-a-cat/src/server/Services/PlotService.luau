@@ -2,7 +2,7 @@
 -- PlotService: places the street of spa plots (Model-Agent's ReplicatedStorage.Assets.CleanACat_Area_SpaPlot,
 -- SpaLayout.PLOT_COUNT copies side by side) in Workspace.SpaPlots and gives every player their own (#88): the
 -- lowest free slot, in the Player attribute SpaLayout.SLOT_ATTRIBUTE, freed when they leave. Each character
--- spawns at its own plot's SpotSpawn, facing the tub, or with `spawnView` on behind the tub facing the street. Behind the LiveFlags switch `spaPlot`: off, the street is
+-- spawns at its own plot's SpotSpawn, facing the tub, or with `spawnView` on beside the turned tub facing the street. Behind the LiveFlags switch `spaPlot`: off, the street is
 -- taken away and the spawn goes back to the placeholder room, so the world is exactly as before.
 -- Clients and other services read the spots through Shared.SpaLayout; the ReplicatedStorage attribute
 -- SpaLayout.PLACED_ATTRIBUTE says whether the street is placed, so they redraw when it changes.
@@ -25,12 +25,15 @@ local SPAWN_NAME = "PH_Spawn" -- the spawn in default.project.json
 local FLOOR_NAME = "PH_Floor" -- the placeholder floor in default.project.json
 local ASSET_WAIT_SECONDS = 10
 -- With the switch `spawnView` (off by default): the tub turns to face into the spa (SpaLayout.tubSpot) and the
--- player spawns this many studs in front of it, facing it and the street beyond, instead of on SpotSpawn.
--- SpotSpawn sits 8 studs inside the front window facing in, so the camera (about 12.5 studs behind) starts outside
--- the window and the first frame is a blur of glass and wall (#169). Here the camera rests inside the spa against
--- the solid back wall, with the cat's face, the window and the door line ahead.
+-- player spawns SPAWN_FROM_TUB studs in front of it and SPAWN_SIDE studs to the side (toward the door line),
+-- facing the street, instead of on SpotSpawn. SpotSpawn sits 8 studs inside the front window facing in, so the
+-- camera (about 12.5 studs behind) starts outside the window and the first frame is a blur of glass and wall
+-- (#169). Here the camera rests inside the spa against the solid back wall, with the window and the door line
+-- ahead and the cat's face beside the avatar's shoulder. Straight behind the tub, the avatar hid all of the cat
+-- and most of the tub; facing the street (not the tub) keeps the avatar off the line from the camera to the cat.
 local VIEW_FLAG = SpaLayout.VIEW_FLAG
 local SPAWN_FROM_TUB = 5
+local SPAWN_SIDE = 4
 
 local PlotService = {}
 
@@ -93,9 +96,10 @@ end
 -- Where a character in plot `slot` spawns: the base of its feet and the way it faces.
 local function spawnSpot(slot: number): CFrame
 	if LiveFlags.isOn(VIEW_FLAG) then
-		-- The turned tub's front (-Z) faces into the spa: stand there, turned back to face the tub.
+		-- The turned tub's front (-Z) faces into the spa: stand in front of it and to its right (+X, the door
+		-- line's side of the plot), turned back to face the street.
 		return SpaLayout.slotTubSpot(slot)
-			* CFrame.new(0, 0, -SPAWN_FROM_TUB)
+			* CFrame.new(SPAWN_SIDE, 0, -SPAWN_FROM_TUB)
 			* CFrame.Angles(0, math.pi, 0)
 	end
 	return SpaLayout.slotSpot("SpotSpawn", slot)
@@ -122,8 +126,11 @@ local function moveToPlot(player: Player, character: Model)
 	if humanoid == nil or root == nil or not root:IsA("BasePart") then
 		return
 	end
-	local height = (humanoid :: Humanoid).HipHeight + (root :: BasePart).Size.Y / 2
+	local rootPart = root :: BasePart
+	local height = (humanoid :: Humanoid).HipHeight + rootPart.Size.Y / 2
 	character:PivotTo(spawnSpot(slot) * CFrame.new(0, height, 0))
+	-- Drop any speed from the first spawn, so the move never carries a fall into the new plot.
+	rootPart.AssemblyLinearVelocity = Vector3.zero
 end
 
 local function place()
