@@ -92,20 +92,31 @@ end
 -- How far to turn the cat (radians about the up axis, as CFrame.Angles(0, yaw, 0) turns) so the middle of the mud
 -- still on it faces the camera, or nil when enough of it faces the camera already. `offsets` are the remaining
 -- patches' positions minus the cat's centre; `toCamera` points from the cat's centre to the camera. Heights are
--- ignored. A patch faces the camera when it sits on the camera's half of the cat.
+-- ignored. A patch faces the camera when it sits within FACING_ANGLE of the camera's side, or on top of the cat
+-- (within ON_TOP of its middle, seen from the camera above). The turn brings round the middle of the patches that do
+-- not face it, so each turn shows mud that was hidden; a cat whose mud sits on both flanks turns to one, then the
+-- other. Sync-Agent's run on 4ae0e33: with "the camera's half" as facing, Suds's flank patches counted as facing, so
+-- he never turned, yet the close-up's fixed camera could only reach them through his head and body.
+ScrubRules.FACING_ANGLE = math.rad(55)
+ScrubRules.ON_TOP = 0.2 -- studs from the middle, seen from above
+
 function ScrubRules.turnToShow(offsets: { Vector3 }, toCamera: Vector3, needed: number): number?
 	local camera = Vector3.new(toCamera.X, 0, toCamera.Z)
 	if needed <= 0 or #offsets == 0 or camera.Magnitude < 1e-6 then
 		return nil
 	end
+	local look = camera.Unit
+	local cone = math.cos(ScrubRules.FACING_ANGLE)
 	local facing = 0
 	local sum = Vector3.zero
 	for _, offset in offsets do
 		local flat = Vector3.new(offset.X, 0, offset.Z)
-		if flat:Dot(camera) > 0 then
+		local size = flat.Magnitude
+		if size <= ScrubRules.ON_TOP or flat:Dot(look) >= cone * size then
 			facing += 1
+		else
+			sum += flat
 		end
-		sum += flat
 	end
 	if facing >= math.min(needed, #offsets) or sum.Magnitude < 1e-6 then
 		return nil

@@ -1174,7 +1174,7 @@ local function release()
 end
 
 -- When the finger lifts and less mud faces the camera than the reveal still needs, the cat turns in the tub
--- (about its seat) so the middle of the remaining mud faces the camera. Then the first scrub finishes from the
+-- (about its seat) so the middle of the mud that is hidden from it faces the camera (ScrubRules.turnToShow). Then the first scrub finishes from the
 -- spawn side without walking round the tub. Behind the switch scrubTurn.
 local function turnToShow(v: Visit, cat: Cat)
 	local camera = Workspace.CurrentCamera
@@ -1229,6 +1229,47 @@ local function turnToShow(v: Visit, cat: Cat)
 		end
 	end)
 	tween:Play()
+end
+
+-- Studio only, for Sync-Agent's runs: a test sets the Workspace attribute TEST_STEP_ATTRIBUTE (from the server or the
+-- client) and the drag the current step needs is finished through the same paths a finger takes: every mud patch is
+-- rubbed off, the brush strokes run out, the Bubble Bath's swirl ends or each long-clawed paw is clipped. Taps (a bow,
+-- the photo camera) are left to the test. RunService:IsStudio() gates it, so a published game never listens.
+local TEST_STEP_ATTRIBUTE = "CleanACat_TestStep"
+
+local function testFinishStep()
+	local v = visit
+	local cat = if v then v.cat else nil
+	if v == nil or cat == nil then
+		return
+	end
+	if v.step == "claws" then
+		for _, paw in cat.paws do
+			if not paw.clipped then
+				clipPaw(v, cat, paw)
+			end
+		end
+	elseif v.step == "smell" then
+		swirlAt(v, cat, WashDraft.SWIRL_TRAVEL * 2)
+	elseif v.stage == "dirty" then
+		turningCat = nil
+		for _ = 1, 100 do
+			if v.cat ~= cat or v.stage ~= "dirty" or v.scrub.revealed then
+				break
+			end
+			for _, piece in cat.mud do
+				rubAt(v, cat, piece.position, ScrubRules.MAX_RUB_PER_STEP, nil)
+			end
+		end
+	elseif v.stage == "clean" then
+		for _ = 1, v.brushStrokes do
+			if v.cat ~= cat or v.stage ~= "clean" then
+				break
+			end
+			v.lastStrokeAt = -math.huge
+			brushAt(v, cat, STROKE_TRAVEL)
+		end
+	end
 end
 
 -- A new dirty cat in the tub (the server's cat `catId`): the last cat goes and a fresh copy sits down.
@@ -1750,6 +1791,9 @@ local function enable()
 	-- When the app loses focus mid-scrub (a call, a swipe home), Roblox can skip that touch's InputEnded. Let go
 	-- here so the camera and the controls are never left held and the next press can scrub.
 	trove:Connect(UserInputService.WindowFocusReleased, release)
+	if RunService:IsStudio() then
+		trove:Connect(Workspace:GetAttributeChangedSignal(TEST_STEP_ATTRIBUTE), testFinishStep)
+	end
 	-- A held trigger has no pointer movement: the middle of the screen moves as the camera turns.
 	for _, need in CatRules.LATER_NEEDS do
 		trove:Connect(
