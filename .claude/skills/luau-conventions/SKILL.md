@@ -180,6 +180,7 @@ end
 - **CI's luau-lsp is stricter than a quick local check.** Type a value read from a table before comparing it with nil (`local x: T? = map[key]`), annotate the result of an if-expression before looping over it, and use `local _, x = f()` rather than assigning to a bare `_`.
 - **Selene fails the job on any warning.** An unused `local X = require(...)` left behind after moving code is the usual cause.
 - **StyLua** runs from `games/clean-a-cat` with `--respect-ignores`, never from the repo root, or it reformats vendored files.
+- **Is an API current?** Look first at Roblox's own lists. The retired APIs are at `https://create.roblox.com/docs/reference/engine/deprecated.md`, and the newest features are at `https://create.roblox.com/docs/latest-features.json` (both are named in Roblox's `llms.txt`). Then check `roblox-dev-skill`. A fact from memory or from a skill can be weeks old, because Roblox ships roughly every week.
 - **Deferred signals:** code that connects to a property change right after changing the property should survive handlers running later. Do not rely on a handler firing synchronously.
 
 ## 11. Done gate

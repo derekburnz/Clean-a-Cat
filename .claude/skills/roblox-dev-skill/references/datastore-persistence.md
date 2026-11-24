@@ -12,7 +12,7 @@
 5. [Rate Limits & Throttling](#rate-limits--throttling)
 6. [OrderedDataStore](#ordereddatastore)
 7. [Versioning](#versioning)
-8. [Storage & Access Limits (2026)](#storage--access-limits-2026)
+8. [Storage & Access Limits (Updated April 2026)](#storage--access-limits-updated-april-2026)
 9. [ProfileStore (Community Framework)](#profilestore-community-framework)
 10. [Data Schema Best Practices](#data-schema-best-practices)
 11. [LEGACY](#legacy)
@@ -27,6 +27,11 @@ per **experience** — every place/server in that experience shares the same dat
 **Critical rule:** DataStoreService is **server-side only**. Attempting to access
 it from a `LocalScript` throws an error. All DataStore calls must live in `Script`
 objects (typically in `ServerScriptService`).
+
+**From an MCP client,** use `DataStoreService` through `execute_luau`, not Open Cloud, and remember
+Studio uses the **live** stores: a write changes real player data. It takes the **Save & load data**
+scopes in MCP Permissions plus **Game Settings → Security → Enable Studio Access to API Services**.
+See `mcp-integration.md`.
 
 ```luau
 --!strict
