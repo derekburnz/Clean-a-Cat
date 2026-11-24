@@ -20,6 +20,7 @@ local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
+local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
@@ -79,6 +80,15 @@ local function newCat(player: Player): SpaRules.Cat
 	local count = handedOut[player] or 0
 	handedOut[player] = count + 1
 	local save = DataService.get(player)
+	-- The Pro Brush (switch proBrush, #267) brushes the tangles out in fewer strokes; the save says who owns it.
+	local tools: { [string]: boolean } = if save then save.tools else {}
+	cat.brushStrokes = ToolRules.brushStrokes(
+		SpaRules.BRUSH_STROKES,
+		function(toolId: string): boolean
+			return tools[toolId] == true
+		end,
+		LiveFlags.isOn
+	)
 	if LiveFlags.isOn(STRAYS_FLAG) and save then
 		local residents = #WindowService.residents(player)
 		local brandNew = save.stars <= 0 and residents == 0
@@ -103,17 +113,18 @@ local function newCat(player: Player): SpaRules.Cat
 end
 
 -- Tells the client a dirty cat is in the tub; for a customer's cat, which cat, its needs and the needs whose
--- station is not built yet.
+-- station is not built yet. Last, the brush strokes this cat takes (fewer with the Pro Brush), so the client
+-- counts the same strokes as the server.
 local function sendCat(player: Player, cat: SpaRules.Cat)
 	local kind = cat.kind
 	if kind == nil then
-		NetService.fire(player, "CatReady", cat.id)
+		NetService.fire(player, "CatReady", cat.id, nil, nil, nil, nil, cat.brushStrokes)
 		return
 	end
 	local save = DataService.get(player)
 	local needs = CatRules.needs(kind)
 	local locked = CatRules.lockedNeeds(needs, if save then save.stations else {})
-	NetService.fire(player, "CatReady", cat.id, kind, needs, locked, cat.stray)
+	NetService.fire(player, "CatReady", cat.id, kind, needs, locked, cat.stray, cat.brushStrokes)
 end
 
 -- Sends the door line to the client and the figures (switch customers).

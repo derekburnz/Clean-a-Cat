@@ -8,6 +8,8 @@
 -- A finished build is saved as save.stations[id] = true. These ids are the only station keys in the save; the
 -- tub and the hand brush are there from the start (CatRules.STARTING_STATIONS) and never saved.
 
+local WashDraft = require(script.Parent:WaitForChild("WashDraft"))
+
 local BuildRules = {}
 
 export type Item = {
@@ -17,7 +19,21 @@ export type Item = {
 	seconds: number, -- build time
 	requires: string?, -- an id that must be built first
 	payBonus: number, -- extra coins every customer's cat pays once this is built
+	flag: string?, -- a LiveFlags switch: while it is off the item is not offered (offered)
 }
+
+-- A WashDraft station as a build item (#267).
+local function later(draft: WashDraft.Station): Item
+	return table.freeze({
+		name = draft.name,
+		slot = "station",
+		price = draft.price,
+		seconds = draft.seconds,
+		requires = draft.requires,
+		payBonus = draft.payBonus,
+		flag = draft.flag,
+	}) :: Item
+end
 
 BuildRules.SLOTS = table.freeze({ "station", "room" }) -- the slot count is this list's length
 
@@ -37,6 +53,8 @@ BuildRules.ITEMS = table.freeze({
 		requires = "BrushTable",
 		payBonus = 5,
 	}) :: Item,
+	BubbleBath = later(WashDraft.BUBBLE_BATH),
+	Pawdicure = later(WashDraft.PAWDICURE),
 	VipRoom = table.freeze({
 		name = "VIP Room",
 		slot = "room",
@@ -47,7 +65,8 @@ BuildRules.ITEMS = table.freeze({
 	}) :: Item,
 }) :: { [string]: Item }
 
-BuildRules.IDS = table.freeze({ "BrushTable", "Dryer", "VipRoom" }) -- board order; every id is a key of ITEMS
+-- board order; every id is a key of ITEMS
+BuildRules.IDS = table.freeze({ "BrushTable", "Dryer", "BubbleBath", "Pawdicure", "VipRoom" })
 BuildRules.LONG_SECONDS = 3600 -- a build this long or longer logs long_build_started
 BuildRules.PROMPT_REACH = 10 -- studs; the board's prompts show within this distance
 BuildRules.SERVER_REACH = 16 -- studs; the server's distance check, with room for lag
@@ -150,6 +169,18 @@ function BuildRules.longRunningAt(state: State, at: number): boolean
 		end
 	end
 	return false
+end
+
+-- The ids the board shows and the server takes: IDS less those whose switch `isOn` says is off.
+function BuildRules.offered(isOn: (flag: string) -> boolean): { string }
+	local out: { string } = {}
+	for _, id in BuildRules.IDS do
+		local flag = BuildRules.ITEMS[id].flag
+		if flag == nil or isOn(flag) then
+			table.insert(out, id)
+		end
+	end
+	return out
 end
 
 -- Extra coins a customer's cat pays for the stations built.

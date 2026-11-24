@@ -139,7 +139,7 @@ local function enable()
 	part.Color = Color3.fromRGB(120, 150, 190)
 	part.Anchored = true
 	part.CFrame = boardCFrame()
-	for index, id in BuildRules.IDS do
+	for index, id in BuildRules.offered(LiveFlags.isOn) do
 		local spot = Instance.new("Attachment")
 		spot.Name = id
 		spot.Position = Vector3.new(0, BOARD_SIZE.Y / 2 - index, -BOARD_SIZE.Z / 2) -- down the front (-Z)
@@ -269,6 +269,17 @@ function BuildBoardController.Init(_controllers: { [string]: any }) end
 
 function BuildBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	-- An item's own switch (the Bubble Bath's, the Pawdicure's) changed: the board is drawn again with or without it.
+	for _, id in BuildRules.IDS do
+		local itemFlag = BuildRules.ITEMS[id].flag
+		if itemFlag then
+			ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. itemFlag)
+				:Connect(function()
+					disable()
+					refresh()
+				end)
+		end
+	end
 	-- The plot placed or taken away: the board moves to its spot.
 	SpaLayout.changed(function()
 		local part = board

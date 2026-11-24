@@ -4,10 +4,12 @@
 -- (#33) shows the same tables, so a shown chance is always the real one. Numbers are draft tuning from the
 -- first session plan (gdd-draft.md); Design-Agent owns them.
 
+local WashDraft = require(script.Parent:WaitForChild("WashDraft"))
+
 local CatRules = {}
 
 export type Rarity = string -- one of RARITIES
-export type Need = string -- "mud", "tangles" or "wet": a key of NEED_STATION
+export type Need = string -- "mud", "tangles", "wet", "smell" or "claws": a key of NEED_STATION
 
 CatRules.RARITIES =
 	table.freeze({ "Common", "Uncommon", "Rare", "Epic", "Legendary" }) :: { Rarity }
@@ -63,7 +65,12 @@ CatRules.NEED_STATION = table.freeze({
 	mud = "Tub",
 	tangles = "Brush",
 	wet = "Dryer",
+	smell = "BubbleBath", -- WashDraft, switch bubbleBath (#267)
+	claws = "Pawdicure", -- WashDraft, switch pawdicure (#267)
 }) :: { [string]: string }
+
+-- The needs a cat may bring on top of its rarity's, in the order the wash does them: rolled per customer.
+CatRules.LATER_NEEDS = table.freeze({ "smell", "claws" }) :: { Need }
 
 CatRules.STARTING_STATIONS = table.freeze({ Tub = true, Brush = true }) :: { [string]: boolean }
 
@@ -137,6 +144,24 @@ function CatRules.needs(name: string): { Need }
 		return { "mud", "tangles" }
 	end
 	return { "mud", "tangles", "wet" }
+end
+
+-- A customer's cat's needs: its rarity's (needs) plus each later need whose switch `isOn` and whose chance
+-- (WashDraft.NEED_CHANCES) comes up. `random()` returns a number in [0, 1). With the switches off this is needs(name).
+function CatRules.rollNeeds(
+	name: string,
+	random: () -> number,
+	isOn: (flag: string) -> boolean
+): { Need }
+	local out = CatRules.needs(name)
+	local rarity = CatRules.rarityOf(name) or "Common"
+	for _, need in CatRules.LATER_NEEDS do
+		local chance = WashDraft.NEED_CHANCES[need][rarity] or 0
+		if isOn(WashDraft.NEED_FLAG[need]) and random() * 100 < chance then
+			table.insert(out, need)
+		end
+	end
+	return out
 end
 
 -- The needs whose station is not in `stations` (built stations plus the starting ones).

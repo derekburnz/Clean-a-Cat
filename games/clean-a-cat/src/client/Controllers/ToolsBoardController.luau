@@ -41,7 +41,7 @@ local function enable()
 	part.Anchored = true
 	part.CanCollide = true
 	part.CFrame = boardCFrame()
-	for index, id in ToolRules.IDS do
+	for index, id in ToolRules.offered(LiveFlags.isOn) do
 		local tool = ToolRules.TOOLS[id]
 		local spot = Instance.new("Attachment")
 		spot.Name = id
@@ -98,6 +98,17 @@ function ToolsBoardController.Init(_controllers: { [string]: any }) end
 
 function ToolsBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	-- A tool's own switch (the Pro Brush's) changed: the board is drawn again with or without it.
+	for _, id in ToolRules.IDS do
+		local toolFlag = ToolRules.TOOLS[id].flag
+		if toolFlag then
+			ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. toolFlag)
+				:Connect(function()
+					disable()
+					refresh()
+				end)
+		end
+	end
 	-- The plot placed or taken away: the board moves to its spot.
 	SpaLayout.changed(function()
 		local part = board
