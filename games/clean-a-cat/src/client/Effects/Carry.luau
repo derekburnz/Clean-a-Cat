@@ -30,28 +30,32 @@ local Carry = {}
 -- swings it out to the side (negative: in), tw turns the upper arm in about its length, el bends the elbow. arms6 is
 -- the R6 hold (no elbows).
 --
--- POSE is Derek's hold (his clip, 2026-11-24: "here is how the carrying should look"): upper arms down at the sides,
--- elbows bent to a right angle so both forearms point straight ahead at belly height, a little in toward each
--- other, head up, and the cat sitting on the forearms in front of the belly. On R6 both straight arms reach forward
--- level-ish and in. Behind the switch `carryHold` (dev first; Studio always uses it) until Derek confirms it.
+-- POSE is Derek's hold (his clip, 2026-11-24: "here is how the carrying should look"; his avatar is R6): both arms
+-- reach forward and down from the shoulders and swing in, so the hands meet in front of the lower chest and the
+-- item is held close against the body, head up. On R15 the upper arms go 30 forward and the elbows bend 55, so the
+-- forearms come in level under the cat at the bottom of the chest. Behind the switch `carryHold`: on in the dev experience, off in live until Derek confirms it. A Studio playtest
+-- also uses it, since Studio does not read the dev switches.
 Carry.POSE = table.freeze({
 	arms = table.freeze({
-		shL = 12,
-		shR = 12,
-		spL = -8,
-		spR = -8,
-		twL = 10,
-		twR = 10,
-		elL = 88,
-		elR = 88,
+		shL = 30,
+		shR = 30,
+		spL = -15,
+		spR = -15,
+		twL = 15,
+		twR = 15,
+		elL = 55,
+		elR = 55,
 		neck = 0,
 		waist = 0,
 	} :: { [string]: number }),
 	arms6 = table.freeze(
-		{ shL = 75, shR = 75, spL = -18, spR = -18, neck = 0 } :: { [string]: number }
+		{ shL = 45, shR = 45, spL = -28, spR = -28, neck = 0 } :: { [string]: number }
 	),
-	gap = -0.1, -- the cat's base this far above the higher forearm's top
-	forward = -0.35, -- and this far ahead of the forearms' middles (-Z is ahead), over the hands
+	-- Measured from the hands (the far end of each arm), not the arm's highest point: with arms angled down, the
+	-- highest point is up by the shoulder and would put the cat over the face (Review-QA on #330).
+	fromHands = true,
+	gap = 0.25, -- the cat's base this far above the higher hand end
+	forward = 0.3, -- and this far back from the hands toward the chest (+Z is back), so he rests on the arms
 	sitTurn = 0, -- facing straight out
 	sitSide = 0,
 })
@@ -80,6 +84,7 @@ Carry.CROSSED = table.freeze({
 	forward = -0.6, -- and this far ahead of the forearms (a sit; -Z is ahead)
 	sitTurn = 15, -- degrees the sitting cat turns to the character's left, so its face shows past the chest
 	sitSide = -0.55, -- studs to the character's left
+	fromHands = false,
 })
 
 Carry.FOLD_SECONDS = 0.3 -- the arms fold and the cat rises onto them (Derek's ask, about 0.3 s)
@@ -249,7 +254,7 @@ end
 
 -- Where the sitting cat's base goes this frame (Avatar.cradle): on top of the higher forearm, ahead of halfway
 -- between the two, level with the chest, turned a little to show its face. nil without arms.
-local function cradle(rig: Rig): CFrame?
+local function cradle(rig: Rig, halfDepth: number): CFrame?
 	local left: BasePart? = rig.parts.LeftElbow or rig.parts.LeftShoulder
 	local right: BasePart? = rig.parts.RightElbow or rig.parts.RightShoulder
 	if left == nil or right == nil then
@@ -265,12 +270,21 @@ local function cradle(rig: Rig): CFrame?
 				* 0.5
 				* (math.abs(r10) * s.X + math.abs(r11) * s.Y + math.abs(r12) * s.Z)
 	end
-	local a, b = top(left :: BasePart), top(right :: BasePart)
 	local c = rig.hold
+	local function hand(arm: BasePart): Vector3
+		local frame: CFrame = torso:Inverse() * arm.CFrame * CFrame.new(0, -arm.Size.Y / 2, 0)
+		return frame.Position
+	end
+	local useHands = c.fromHands == true
+	local a: Vector3 = if useHands then hand(left :: BasePart) else top(left :: BasePart)
+	local b: Vector3 = if useHands then hand(right :: BasePart) else top(right :: BasePart)
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + c.sitSide,
 		math.max(a.Y, b.Y) + c.gap,
-		(a.Z + b.Z) / 2 + c.forward
+		-- never back inside the chest: the cat's rear (halfDepth behind its middle) stays at the chest's front
+		if useHands
+			then math.min((a.Z + b.Z) / 2 + c.forward, -(rig.chest.Size.Z / 2 + halfDepth + 0.05))
+			else (a.Z + b.Z) / 2 + c.forward
 	)
 	return torso * CFrame.new(spot) * CFrame.Angles(0, math.rad(c.sitTurn), 0)
 end
@@ -288,7 +302,7 @@ local function ownPart(cat: Model): Instance?
 	return cat.PrimaryPart or cat:FindFirstChildWhichIsA("BasePart", true)
 end
 
--- Derek's hold when its switch is on, and always in Studio (the dev copy); else the first, crossed hold. A missing
+-- Derek's hold when its switch is on (the dev experience sets it), and in a Studio playtest; else the first, crossed hold. A missing
 -- switch module keeps the crossed one.
 function Carry.chooseHold(switchOn: boolean, studio: boolean): Hold
 	return if switchOn or studio then Carry.POSE else Carry.CROSSED
@@ -311,6 +325,8 @@ function Carry.hold(character: Model, cat: Model): Handle
 	local reduced = Effects.reducedMotion()
 	local rig = bind(character, Carry.holdPose())
 	local offset = baseOffset(cat)
+	local _, catSize = cat:GetBoundingBox()
+	local halfDepth = catSize.Z / 2 -- he faces out, so his length runs along the character's facing
 	local from = cat:GetPivot()
 	local started = os.clock()
 	local weight = 0
@@ -386,7 +402,7 @@ function Carry.hold(character: Model, cat: Model): Handle
 			end
 			return
 		end
-		local arms = if rig then cradle(rig) else nil
+		local arms = if rig then cradle(rig, halfDepth) else nil
 		if arms then
 			local along, arc = Carry.lift(os.clock() - started, reduced)
 			local base = (from * offset:Inverse()):Lerp(arms, along) + Vector3.yAxis * arc
