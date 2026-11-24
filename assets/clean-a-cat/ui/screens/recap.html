@@ -14,7 +14,9 @@
    side: the full card as a narrow column at the left with no dim (switch recapSide), so the clean cat stays in view
    in the middle. Same content, stacked: portrait and name, stars, rows, total, one full-width button at the bottom.
    The thumbstick and jump button are hidden while it shows (as for any window), and the button sits at the card's
-   bottom left half of the screen, away from the bottom right corner where Roblox's badge note appears. */
+   bottom left half of the screen, away from the bottom right corner where Roblox's badge note appears.
+   On phones the card is 330 wide and the wash camera slides the cat to the right while the card shows (here the
+   world picture is shifted), so the cat's whole body stays clear of the card. Walking is blocked while it shows. */
 .win.recap { width: 760px; }
 .recap .body { display: grid; grid-template-columns: 230px 1fr; gap: 22px; }
 .who { display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -75,7 +77,19 @@ body[data-state="side"] .full { display: none; }
 .sidecard .total .xpb .bar { width: 120px; }
 .sidecard .sfoot { display: flex; flex-direction: column; gap: 8px; }
 .sidecard .sfoot .btn { width: 100%; }
-body.short .sidecard { width: 400px; }
+body.short .sidecard { width: 330px; }
+body.short .sidelane { left: 14px; }
+body.short[data-state="side"] #stage { background: linear-gradient(#f5e0c3, #fff6d9); }
+body.short[data-state="side"] .world { left: 20%; right: -20%; background-color: transparent; }
+body.short .sidecard .who2 { gap: 10px; }
+body.short .sidecard .who2 .tags { margin-top: 3px; }
+body.short .sidecard .rows .line { padding: 0 10px; gap: 8px; font-size: 15px; }
+body.short .sidecard .sfoot .total { padding: 3px 8px; gap: 6px; }
+body.short .sidecard .sfoot .total .big { font-size: 24px; gap: 4px; }
+body.short .sidecard .sfoot .total .xpb .t { font-size: 15px; }
+body.short .sidecard .sfoot .total .xpb .bar { display: none; }
+body.short .sidecard .sfoot .total .xpb { margin-left: 0; }
+body.short .sidecard .sfoot .btn { padding: 0 12px 4px; font-size: 22px; }
 body.short .sidecard > .band { height: 50px; }
 body.short .sidecard > .band .title { font-size: 27px; }
 body.short .sidecard .in { padding: 10px 14px 12px; gap: 6px; }
