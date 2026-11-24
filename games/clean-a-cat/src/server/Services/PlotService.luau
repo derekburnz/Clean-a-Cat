@@ -1,8 +1,10 @@
 --!strict
 -- PlotService: places the street of spa plots (Model-Agent's ReplicatedStorage.Assets.CleanACat_Area_SpaPlot,
 -- SpaLayout.PLOT_COUNT copies side by side) in Workspace.SpaPlots and gives every player their own (#88): the
--- lowest free slot, in the Player attribute SpaLayout.SLOT_ATTRIBUTE, freed when they leave. Each character
--- spawns at its own plot's SpotSpawn, facing the tub, or with `spawnView` on beside the turned tub facing the street. Behind the LiveFlags switch `spaPlot`: off, the street is
+-- lowest free slot, in the Player attribute SpaLayout.SLOT_ATTRIBUTE, freed when they leave. Each plot has its own
+-- SpawnLocation on its spawn spot (SpaLayout.spawnSpot: SpotSpawn facing the tub, or with `spawnView` on beside the
+-- turned tub facing the street), and each player's Player.RespawnLocation is their plot's, so a character appears
+-- in its own plot and is never carried over from plot 1 (#188). Behind the LiveFlags switch `spaPlot`: off, the street is
 -- taken away and the spawn goes back to the placeholder room, so the world is exactly as before.
 -- Clients and other services read the spots through Shared.SpaLayout; the ReplicatedStorage attribute
 -- SpaLayout.PLACED_ATTRIBUTE says whether the street is placed, so they redraw when it changes.
@@ -30,6 +32,7 @@ local PlotService = {}
 
 local street: Folder? = nil
 local roomSpawn: CFrame? = nil -- where PH_Spawn stood before the plot, to put it back
+local plotSpawns: { [number]: SpawnLocation } = {} -- copies of PH_Spawn for slot 2 and up, in the street folder
 local storedFloor: Instance? = nil -- PH_Floor while the street is placed
 local owners: { [number]: Player? } = {}
 
@@ -86,13 +89,46 @@ end
 
 local spawnSpot = SpaLayout.spawnSpot
 
--- The spawn's top sits on the floor at slot 1's spawn spot, facing the same way, so the camera's first angle
--- already matches; characters then move to their own plot. Every plot faces the same way.
+-- Sets where the player respawns; nil goes back to Roblox's pick. The engine's type has no nil, though it takes one.
+local function setRespawn(player: Player, spawn: SpawnLocation?)
+	(player :: any).RespawnLocation = spawn
+end
+
+-- Slot `slot`'s spawn: PH_Spawn itself for slot 1, its copy for the others.
+local function spawnFor(slot: number): SpawnLocation?
+	if slot == 1 then
+		local spawn = spawnLocation()
+		return if spawn then spawn :: any else nil
+	end
+	return plotSpawns[slot]
+end
+
+-- Every plot gets a spawn whose top sits on the floor at its spawn spot, facing the same way, so the character and
+-- the camera start there already turned right. Before #188 there was one spawn, in plot 1, and players in slot 2
+-- and up were moved about 44 studs after spawning: the camera swung along the move and started sideways.
+-- Then every player's RespawnLocation is set to their own plot's spawn (a Neutral spawn in Workspace).
 local function placeSpawnLocation()
 	local spawn = spawnLocation()
-	if spawn and street then
-		roomSpawn = roomSpawn or spawn.CFrame
-		spawn.CFrame = spawnSpot(1) * CFrame.new(0, -spawn.Size.Y / 2, 0)
+	local folder = street
+	if spawn == nil or folder == nil then
+		return
+	end
+	roomSpawn = roomSpawn or spawn.CFrame
+	for slot = 1, SpaLayout.PLOT_COUNT do
+		local target: BasePart? = spawnFor(slot)
+		if target == nil then
+			local copy = spawn:Clone() :: SpawnLocation
+			copy.Name = `{SPAWN_NAME}{slot}`
+			copy.Parent = folder
+			plotSpawns[slot] = copy
+			target = copy
+		end
+		local part = target :: BasePart
+		part.CFrame = spawnSpot(slot) * CFrame.new(0, -spawn.Size.Y / 2, 0)
+	end
+	for _, player in Players:GetPlayers() do
+		local slot = SpaLayout.slotOf(player)
+		setRespawn(player, if slot then spawnFor(slot) else nil)
 	end
 end
 
@@ -109,7 +145,13 @@ local function moveToPlot(player: Player, character: Model)
 	end
 	local rootPart = root :: BasePart
 	local height = (humanoid :: Humanoid).HipHeight + rootPart.Size.Y / 2
-	character:PivotTo(spawnSpot(slot) * CFrame.new(0, height, 0))
+	local target = spawnSpot(slot) * CFrame.new(0, height, 0)
+	local offset = rootPart.Position - target.Position
+	if Vector3.new(offset.X, 0, offset.Z).Magnitude < 1 then
+		return -- it spawned on its own plot's spawn: leave it, and the camera, alone
+	end
+	-- A fallback, for a character that spawned before its plot's spawn existed.
+	character:PivotTo(target)
 	-- Drop any speed from the first spawn, so the move never carries a fall into the new plot.
 	rootPart.AssemblyLinearVelocity = Vector3.zero
 end
@@ -167,6 +209,10 @@ local function remove()
 	if floor then
 		floor.Parent = Workspace
 	end
+	table.clear(plotSpawns) -- destroyed with the street folder
+	for _, player in Players:GetPlayers() do
+		setRespawn(player, nil)
+	end
 	local spawn = spawnLocation()
 	if spawn and roomSpawn then
 		spawn.CFrame = roomSpawn :: CFrame
@@ -191,6 +237,9 @@ local function assign(player: Player)
 		if owners[slot] == nil then
 			owners[slot] = player
 			player:SetAttribute(SpaLayout.SLOT_ATTRIBUTE, slot)
+			if street then
+				setRespawn(player, spawnFor(slot))
+			end
 			return
 		end
 	end
@@ -207,6 +256,13 @@ end
 
 local function onPlayer(player: Player)
 	assign(player)
+	-- Whatever sets the slot (assign, or a test that changes it by hand), the next spawn is in that plot.
+	player:GetAttributeChangedSignal(SpaLayout.SLOT_ATTRIBUTE):Connect(function()
+		local slot = SpaLayout.slotOf(player)
+		if street then
+			setRespawn(player, if slot then spawnFor(slot) else nil)
+		end
+	end)
 	player.CharacterAdded:Connect(function(character: Model)
 		character:WaitForChild("HumanoidRootPart", 5)
 		task.defer(moveToPlot, player, character)
