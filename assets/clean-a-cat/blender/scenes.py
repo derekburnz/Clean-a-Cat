@@ -37,12 +37,20 @@ AVATAR_ATT = {"HatAttachment": (0.0, 0.0, 4.75), "NeckAttachment": (0.0, 0.0, 3.
               "LeftShoulderAttachment": (1.0, 0.0, 3.6)}
 
 
-def avatar(mat, at=(0.0, 0.0, 0.0), skin="skin_tan", shirt="shirt_green", pants="shirt_blue"):
-    """A plain blocky avatar, R15 proportions: legs 2, torso 1.6, head 1.2 studs; front -Y."""
+CARRY_Y, CARRY_Z = -0.82, 2.75     # the folded arms' shelf: its middle in front of the avatar, and its top
+
+
+def avatar(mat, at=(0.0, 0.0, 0.0), skin="skin_tan", shirt="shirt_green", pants="shirt_blue", arms="down"):
+    """A plain blocky avatar, R15 proportions: legs 2, torso 1.6, head 1.2 studs; front -Y. `arms` "carry" folds
+    the forearms across the chest into a shelf a cat can lie on (top at CARRY_Z, CARRY_Y in front of the middle)."""
     b = Builder()
     for sx in (1, -1):
         b.box_base((sx * 0.5, 0, 0), (0.95, 0.95, 2.0), pants)
-        b.box_base((sx * 1.5, 0, 2.0), (0.95, 0.95, 1.6), skin)
+        if arms == "carry":
+            b.box_base((sx * 1.5, 0, 2.3), (0.95, 0.95, 1.3), skin)                                # shoulder to elbow
+            b.box_base((sx * 0.8, CARRY_Y - 0.03 * sx, CARRY_Z - 0.8 - 0.04 * sx), (2.3, 0.8, 0.8), skin)   # the forearm, across
+        else:
+            b.box_base((sx * 1.5, 0, 2.0), (0.95, 0.95, 1.6), skin)
     b.box_base((0, 0, 2.0), (1.95, 0.95, 1.6), shirt)
     b.box_base((0, 0, 3.6), (1.15, 1.15, 1.15), skin)
     return b.finalize("Avatar", mat, location=at)
@@ -431,6 +439,9 @@ def plot_views(mat, out_dir, stem="plot-real", date="2026-11-23", built=False):
                 for o in c:
                     o.location += Vector((0.0, 0.35 / 1.5, 0.0))       # the pawdicure's CatSeat is 0.35 back
             allo += fresh(place(c, spot, lift=lift, k=stations.STATION_CAT_SCALE))
+        allo += fresh(place(spa_props.build_suds_bed(mat), "SpotMascot"))          # the mascot at home (#297)
+        allo += fresh(place(cats.build_cat("Suds", mat, body="sit"), "SpotMascot",
+                            lift=spa_props.BED_STAND - 0.01 + spa_props.BED_PAD, k=spa_props.BED_CAT_SCALE))
         tb = Builder()                                                 # the game's placeholder Tools board
         tb.box_base((1.0, -2.0, F), (3.0, 0.5, 4.0), "wood_light", bevel=False)
         allo += fresh([tb.finalize("ToolsBoardStandIn", mat, bevel=0)])
@@ -545,8 +556,20 @@ def opening_board(mat, out_dir, only=""):
                     o.matrix_world = o.matrix_world @ R(sign * open_, axis)
         return fresh(xf(objs, M))
 
-    def player(x, y, turn=0.0, z=F):
-        return fresh(xf([avatar(mat, skin="skin_tan", shirt="spa_sky", pants="pants_navy")], T(x, y, z) @ R(turn, "Z")))
+    def player(x, y, turn=0.0, z=F, arms="down"):
+        return fresh(xf([avatar(mat, skin="skin_tan", shirt="spa_sky", pants="pants_navy", arms=arms)],
+                        T(x, y, z) @ R(turn, "Z")))
+
+    def loaf():
+        """The stray held: the walking body with its legs tucked away (a stand-in: there is no loaf body yet), two
+        paw tips showing at the front, its belly at z 0."""
+        low = ["_LegF", "_LegB", "_Claw", "_Mud11", "_Mud14", "_Mud15", "_Mud16", "_Mud17", "_Mud18"]
+        objs = _drop(stray("walk"), low)
+        pb = Builder()
+        for sx in (1, -1):
+            pb.box((sx * 0.2, -0.36, 0.4), (0.24, 0.2, 0.16), "fur_white", bevel=False)
+        objs.append(pb.finalize("Paws", mat, bevel=0))
+        return xf(objs, T(0, 0, -0.33))
 
     def stray(body="sit", keep_mud=True):
         objs = dirt.build_dirty("Suds", mat, body)[0]
@@ -587,19 +610,28 @@ def opening_board(mat, out_dir, only=""):
     frames["c-stray-peeks"] = dict(objs=opened + peek + player(PX - 2.4, BY + 1.6, turn=-35),
                                    eye=(BX + 0.8, BY + 6.4, F + 4.6), target=(BX, BY, F + 1.6), lens=34,
                                    hide=("_Glass", "_Roof"))
-    # d: in the tub, half scrubbed
-    wash = fresh(at_spot(stray("sit", keep_mud=False), "SpotTub", lift=stations.SEAT_Z, k=1.5))
+    # c2: the player lifts him out and carries him to the spa door (owner 2026-11-24: "we should pick him up out of
+    # crate"). Seen from the front: from behind, the player's own body hides him.
+    cx, cy = BX - 4.5, BY + 4.4
+    empty = box(Mb, open_=opening.FLAP_OPEN)
+    held = fresh(xf(loaf(), T(cx, cy, F) @ R(180, "Z") @ T(0.62, CARRY_Y - 0.05, CARRY_Z) @ R(62, "Z") @ Matrix.Scale(0.95, 4)))
+    frames["c2-carry"] = dict(objs=empty + held + player(cx, cy, turn=180, arms="carry"),
+                              eye=(cx - 1.5, cy + 8.4, F + 5.0), target=(cx + 1.0, cy, F + 3.0), lens=30,
+                              hide=("_Glass", "_Roof"))
+    # d: in the tub, still muddy, in the close wash view: the sponge beside him and foam on one side
+    wash = fresh(at_spot(stray("sit"), "SpotTub", lift=stations.SEAT_Z, k=1.5))
     sp = tools.build_sponge("CleanACat_Tool_Sponge", mat)
     tx, ty = plot.SPOTS["SpotTub"][0], plot.SPOTS["SpotTub"][1]
-    fresh(xf(sp, T(tx + 1.25, ty - 1.0, F + 4.5) @ R(25, "Y") @ R(-20, "Z")))
+    fresh(xf(sp, T(tx - 1.2, ty - 1.15, F + 4.15) @ R(-18, "Y") @ R(24, "Z")))
     fb = Builder()
-    for x, y, z, r in ((0.5, -0.5, 3.0, 0.3), (-0.6, -0.3, 3.6, 0.26), (0.1, -0.7, 4.2, 0.22), (-0.2, 0.2, 4.6, 0.3),
-                       (0.75, 0.1, 3.9, 0.2), (-0.75, -0.55, 2.7, 0.24), (1.5, -1.4, 4.9, 0.16), (1.9, -0.9, 5.4, 0.12)):
+    for x, y, z, r in ((1.5, -0.9, 3.5, 0.3), (1.9, -0.3, 3.55, 0.26), (1.45, 0.4, 3.5, 0.3), (1.75, -1.25, 3.6, 0.22),
+                       (1.2, -1.3, 3.45, 0.24), (1.6, -0.5, 3.95, 0.2), (2.0, -1.0, 4.7, 0.14), (2.3, -0.5, 5.2, 0.11)):
         fb.sphere((tx + x, ty + y, F + z), r, "foam", segments=8, rings=5)
     foam = fresh([fb.finalize("Lather", mat)])
-    tubcam = dict(eye=(tx + 4.4, ty - 8.8, F + 6.0), target=(tx - 0.4, ty, F + 3.0), lens=30, hide=("_Roof",))
-    by_tub = (tx - 3.3, ty - 2.4, 128)
-    frames["d-scrub"] = dict(objs=wash + sp + foam + player(by_tub[0], by_tub[1], turn=by_tub[2]), **tubcam)
+    # the close wash view (owner 2026-11-24: once he is in the tub the view switches to the close-up wash view): no
+    # avatar in it
+    tubcam = dict(eye=(tx + 4.5, ty - 9.3, F + 9.2), target=(tx + 0.1, ty - 0.1, F + 2.5), lens=40, hide=("_Roof",))
+    frames["d-scrub"] = dict(objs=wash + sp + foam, **tubcam)
     # e: clean, collar on, shaking off
     clean = cats.build_cat("Suds", mat, body="sit")
     k = cats.scale_of(cats.spec_of("Suds"), "sit")
@@ -614,7 +646,7 @@ def opening_board(mat, out_dir, only=""):
     for x, y, z in ((-1.5, -0.6, 4.2), (1.3, -0.7, 4.6), (-0.9, -0.4, 5.6), (1.0, 0.2, 5.8), (-2.0, 0.1, 3.7), (2.2, -0.2, 4.4)):
         sb.sphere((tx + x, ty + y, F + z), 0.11, "water", segments=6, rings=4)
     spark = fresh([sb.finalize("Sparkles", mat)])
-    frames["e-suds-clean"] = dict(objs=shake + spark + player(by_tub[0], by_tub[1], turn=by_tub[2]), **tubcam)
+    frames["e-suds-clean"] = dict(objs=shake + spark, **tubcam)
     # f: Suds in his bed by the entrance
     bed = fresh(at_spot(spa_props.build_suds_bed(mat), "SpotMascot"))
     seat = spa_props.BED_STAND - 0.01 + spa_props.BED_PAD

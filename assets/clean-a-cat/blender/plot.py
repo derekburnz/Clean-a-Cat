@@ -88,8 +88,8 @@ SPOTS = {
     "SpotBuilder": (13.0, 6.0, 0.0, 0.0),
     "SpotStation2": (7.0, -1.0, 0.0, 0.0),
     "SpotStation3": (13.5, -1.0, 0.0, 0.0),
-    "SpotStation4": (-15.2, 1.0, 0.0, 0.0),
-    "SpotStation5": (-15.2, -6.6, 0.0, 0.0),
+    "SpotStation4": (-15.2, 1.0, 0.0, 90.0),     # a quarter turn: these two stand against the side wall and face
+    "SpotStation5": (-15.2, -6.6, 0.0, 90.0),    # the room, so the cat on them faces the player (#298)
     "SpotVipDoor": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
     "SpotMascot": (10.25, -14.3, 0.0, 230.0),
     "SpotOpening": (5.0, -27.0, 0.0, 0.0),
@@ -343,11 +343,13 @@ def _decor(b):
     b.sphere((px - 0.12, 2.0, F + 6.7), 0.55, "spa_bubblegum", segments=8, rings=4, scale=(0.3, 1, 0.85))
     for dy, dz in ((-0.65, 0.65), (-0.22, 0.95), (0.22, 0.95), (0.65, 0.65)):
         b.sphere((px - 0.12, 2.0 + dy, F + 6.7 + dz), 0.22, "spa_bubblegum", segments=6, rings=4, scale=(0.3, 1, 1))
-    # plants in two corners
-    for x, y in ((x1 - 1.4, y1 - 1.4), (x0 + 1.4, -10.4)):
-        b.cyl_base((x, y, F - 0.006), 0.7, 1.4, "terracotta", segments=10, bevel=False, radius2=0.85)
-        b.sphere((x, y, F + 2.2), 1.1, "leaf_green", segments=8, rings=6)
-        b.sphere((x + 0.3, y - 0.2, F + 3.0), 0.7, "leaf_dark", segments=8, rings=5)
+    # Plants in two corners: the back right one, and a smaller one in the front right corner beside the chance board.
+    # The front one stood by the left wall in front of the window seat until the Studio playtest (#298): there it
+    # filled the follow camera on the walk back from the Bubble Bath.
+    for x, y, k in ((x1 - 1.4, y1 - 1.4, 1.0), (x1 - 1.25, ROOM_Y[0] + 1.25, 0.85)):
+        b.cyl_base((x, y, F - 0.006), 0.7 * k, 1.4 * k, "terracotta", segments=10, bevel=False, radius2=0.85 * k)
+        b.sphere((x, y, F + 2.2 * k), 1.1 * k, "leaf_green", segments=8, rings=6)
+        b.sphere((x + 0.3 * k, y - 0.2 * k, F + 3.0 * k), 0.7 * k, "leaf_dark", segments=8, rings=5)
     # pendant lamp cords and shades (the bulbs glow, in _glow)
     for x, y in LAMPS:
         b.cyl((x, y, F + WALL_H - 1.0), 0.05, 2.0, "fur_charcoal", segments=6, bevel=False)
