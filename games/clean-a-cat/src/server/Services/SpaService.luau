@@ -92,6 +92,7 @@ local function newCat(player: Player): SpaRules.Cat
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
 		-- The front customer hands over their cat; queueFor refills the line when it is next read.
 		cat.kind = table.remove(queueFor(player), 1)
+		FigureService.served(player, cat.kind :: string) -- that customer's figure leaves the line
 		Telemetry.onboarding(player, "first_customer")
 	end
 	cats[player] = cat
