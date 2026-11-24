@@ -1714,6 +1714,13 @@ function ScrubController.Start()
 		:Connect(function()
 			updateWashView(visit)
 		end)
+	-- A reset clears every hold on the view (Spa/WashView); a cat still in the tub takes it back, once the new
+	-- character is in (deferred, after WashView and ControlHold have cleared). Review-QA on #368.
+	Players.LocalPlayer.CharacterAdded:Connect(function()
+		task.defer(function()
+			updateWashView(visit)
+		end)
+	end)
 	-- spawnView turns the tub (SpaLayout.tubSpot): start the visit again so the tub and buttons turn with it.
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SpaLayout.VIEW_FLAG)
 		:Connect(restart)
