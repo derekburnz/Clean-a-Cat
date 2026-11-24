@@ -35,6 +35,11 @@ local TipLine = require(script:WaitForChild("TipLine"))
 local HUD = {}
 
 HUD.FLAG = "gameHud"
+-- With this switch on the tool tray does not show: each step already takes its own tool, so a row of tools read as a
+-- menu to pick from (Derek's dev test, 2026-11-24: "should be more like animal salon where it just auto changes to
+-- proper tool no need for a selector menu"). The top line says the step and the tick list shows the rest; on a short
+-- screen, with no tick list, the step pips come back to show the progress the tray's ticks showed.
+HUD.AUTO_TOOL_FLAG = "autoTool"
 
 local FONT = Kit.FONT
 local WHITE = Kit.WHITE
@@ -209,16 +214,18 @@ local function redraw()
 	end
 	StepList.set(listSteps, current or 0)
 	local listNow = StepList.isShown()
-	-- with the switch on the pips go on every screen: a short one has no card, and the tray's ticks show the progress
+	-- with the switch on the pips go on every screen: a short one has no card, and the tray's ticks show the progress;
+	-- with no tray (switch autoTool) the pips stay where there is no card
 	local checklist = StepList.isOn()
-	p.pipRow.Parent = if checklist then nil else p.steps
+	local noTray = LiveFlags.isOn(HUD.AUTO_TOOL_FLAG)
+	p.pipRow.Parent = if checklist and not (noTray and not listNow) then nil else p.steps
 	if listNow ~= listWas then
 		listWas = listNow
 		for _, fn in listListeners do
 			task.spawn(fn)
 		end
 	end
-	p.tray.Visible = washing
+	p.tray.Visible = washing and not noTray
 	if current == nil then
 		return
 	end
@@ -401,6 +408,8 @@ function HUD.build(root: Frame)
 	}
 
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HUD.FLAG)
+		:Connect(redraw)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HUD.AUTO_TOOL_FLAG)
 		:Connect(redraw)
 	local camera = Workspace.CurrentCamera
 	if camera then
