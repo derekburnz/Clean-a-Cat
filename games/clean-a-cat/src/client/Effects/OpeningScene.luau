@@ -14,6 +14,8 @@
 --       options.shot: true takes the camera for a framed shot until BEATS.done (Derek's lean, option A); false
 --       leaves the camera the player's (option B). Reduced Motion or Less shake always leaves it the player's.
 --       options.onTap: called when the player taps the box or uses its prompt, once it has landed.
+--       options.bump: the speed bump's world position. Left out, the scene uses the plot's SpotBump when the player
+--       is on a plot, else TruckDrop.BUMP_X. The truck's jolt is timed to it, so it hits the bump the player sees.
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
 --   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point, and the player's camera turns
 --                                   to face it; onDone when he lands
@@ -48,7 +50,7 @@ local SHOT_FROM = Vector3.new(0, 6, -11)
 local SHOT_LOOK_Y = 1.5
 local CHEST = 0.55 -- how far up a sitting cat its chest is, as a share of its height
 
-export type Options = { shot: boolean?, onTap: (() -> ())? }
+export type Options = { shot: boolean?, onTap: (() -> ())?, bump: Vector3? }
 export type Handle = {
 	box: Model,
 	kitten: Model?,
@@ -268,6 +270,33 @@ end
 -- Reduced Motion. It runs just after Roblox's camera each frame and only adds the turn, so the player can still look
 -- around while it plays.
 local turnCount = 0
+-- The plot's SpotBump in world space while the player is on a plot, else nil. Read lazily and guarded, so the scene
+-- still plays (with BUMP_X) if the layout module is missing.
+local function plotBump(): Vector3?
+	local shared = ReplicatedStorage:FindFirstChild("Shared")
+	local module = shared and shared:FindFirstChild("SpaLayout")
+	if module == nil or not module:IsA("ModuleScript") then
+		return nil
+	end
+	local ok, found = pcall(function(): Vector3?
+		local SpaLayout = require(module) :: any
+		if SpaLayout.onPlot() and SpaLayout.PLOT_SPOTS.SpotBump then
+			return (SpaLayout.spot("SpotBump") :: CFrame).Position
+		end
+		return nil
+	end)
+	return if ok then found else nil
+end
+
+-- How far along the road (scene +X) the bump sits from the box's landing spot, or nil when there is no bump.
+local function bumpOffset(origin: CFrame, bump: Vector3?): number?
+	local world = bump or plotBump()
+	if world == nil then
+		return nil
+	end
+	return (world - origin.Position):Dot(origin.RightVector)
+end
+
 local function turnCameraToward(target: Vector3, seconds: number, reduced: boolean)
 	local camera = Workspace.CurrentCamera
 	if camera == nil or camera.CameraType ~= Enum.CameraType.Custom then
@@ -320,9 +349,11 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local truckFacing = CFrame.lookAt(Vector3.zero, right, up)
 	local boxFacing = CFrame.lookAt(Vector3.zero, across, up)
 
+	local bumpX = TruckDrop.bumpAt(bumpOffset(origin, opts.bump))
+
 	local truck = clone({ TRUCK_ASSET }, placeholderTruck)
 	makeClientOnly(truck)
-	truck:PivotTo(CFrame.new(at(TruckDrop.truckX(0), 0, TruckDrop.ROAD_Z)) * truckFacing)
+	truck:PivotTo(CFrame.new(at(TruckDrop.truckX(0, bumpX), 0, TruckDrop.ROAD_Z)) * truckFacing)
 	local truckJoints = joints(truck, { "Door", "FL_Wheel", "FR_Wheel", "BL_Wheel", "BR_Wheel" })
 	local doorScale = attributeNumber(truck, "DoorOpenDegrees", math.deg(TruckDrop.DOOR.open))
 		/ math.deg(TruckDrop.DOOR.open)
@@ -394,7 +425,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	end
 
 	local function stepTruck(t: number)
-		local state = TruckDrop.truck(t, reduced)
+		local state = TruckDrop.truck(t, reduced, bumpX)
 		local truckCF = CFrame.new(at(state.x, state.lift, TruckDrop.ROAD_Z))
 			* truckFacing
 			* CFrame.Angles(state.pitch, 0, 0)
@@ -405,7 +436,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				truckCF * j.rest * CFrame.Angles(DOOR_SIGN * state.door * doorScale, 0, 0)
 			)
 		end
-		local roll = WHEEL_SIGN * (state.x - TruckDrop.truckX(0)) / wheelRadius
+		local roll = WHEEL_SIGN * (state.x - TruckDrop.truckX(0, bumpX)) / wheelRadius
 		for _, key in { "FL_Wheel", "FR_Wheel", "BL_Wheel", "BR_Wheel" } do
 			local wheels: { Joint } = truckJoints[key] or {}
 			for _, j in wheels do
@@ -418,7 +449,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		if name == "honk" then
 			Audio.play("truckHonk", { at = truckBody })
 		elseif name == "frontHit" or name == "backHit" then
-			local x = TruckDrop.BUMP_X
+			local x = bumpX
 			Audio.play(
 				"truckBump",
 				{ at = truckBody, variant = if name == "frontHit" then 1 else 2 }
@@ -507,7 +538,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			openStep(os.clock() - opened)
 			hopStep()
 		else
-			local state = TruckDrop.box(t, reduced)
+			local state = TruckDrop.box(t, reduced, bumpX)
 			if state.visible then
 				if box.Parent == nil then
 					box.Parent = folder -- only once it leaves the truck
@@ -551,7 +582,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			if t >= TruckDrop.BEATS.done then
 				giveCameraBack()
 			else
-				local look = at(TruckDrop.lookX(t), SHOT_LOOK_Y, TruckDrop.ROAD_Z * 0.45)
+				local look = at(TruckDrop.lookX(t, bumpX), SHOT_LOOK_Y, TruckDrop.ROAD_Z * 0.45)
 				camera.CFrame = CFrame.lookAt(at(SHOT_FROM.X, SHOT_FROM.Y, SHOT_FROM.Z), look)
 			end
 		end
