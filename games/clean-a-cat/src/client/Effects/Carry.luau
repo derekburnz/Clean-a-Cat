@@ -254,7 +254,7 @@ end
 
 -- Where the sitting cat's base goes this frame (Avatar.cradle): on top of the higher forearm, ahead of halfway
 -- between the two, level with the chest, turned a little to show its face. nil without arms.
-local function cradle(rig: Rig): CFrame?
+local function cradle(rig: Rig, halfDepth: number): CFrame?
 	local left: BasePart? = rig.parts.LeftElbow or rig.parts.LeftShoulder
 	local right: BasePart? = rig.parts.RightElbow or rig.parts.RightShoulder
 	if left == nil or right == nil then
@@ -281,7 +281,10 @@ local function cradle(rig: Rig): CFrame?
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + c.sitSide,
 		math.max(a.Y, b.Y) + c.gap,
-		(a.Z + b.Z) / 2 + c.forward
+		-- never back inside the chest: the cat's rear (halfDepth behind its middle) stays at the chest's front
+		if useHands
+			then math.min((a.Z + b.Z) / 2 + c.forward, -(rig.chest.Size.Z / 2 + halfDepth + 0.05))
+			else (a.Z + b.Z) / 2 + c.forward
 	)
 	return torso * CFrame.new(spot) * CFrame.Angles(0, math.rad(c.sitTurn), 0)
 end
@@ -322,6 +325,8 @@ function Carry.hold(character: Model, cat: Model): Handle
 	local reduced = Effects.reducedMotion()
 	local rig = bind(character, Carry.holdPose())
 	local offset = baseOffset(cat)
+	local _, catSize = cat:GetBoundingBox()
+	local halfDepth = catSize.Z / 2 -- he faces out, so his length runs along the character's facing
 	local from = cat:GetPivot()
 	local started = os.clock()
 	local weight = 0
@@ -397,7 +402,7 @@ function Carry.hold(character: Model, cat: Model): Handle
 			end
 			return
 		end
-		local arms = if rig then cradle(rig) else nil
+		local arms = if rig then cradle(rig, halfDepth) else nil
 		if arms then
 			local along, arc = Carry.lift(os.clock() - started, reduced)
 			local base = (from * offset:Inverse()):Lerp(arms, along) + Vector3.yAxis * arc
