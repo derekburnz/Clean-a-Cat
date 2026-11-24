@@ -7,7 +7,8 @@
 --   HUD.setCoins(n)      the coin counter, top right: the save's coins as the server mirrored them
 --   HUD.setStage(stage)  the wash step bar (top centre) and tool tray (bottom centre) for a ScrubController stage;
 --                        nil, "waiting" or "done" hides them
---   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar
+--   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar;
+--                        SudsRules.NO_BOWS in it leaves the bows out (the opening's kitten, #285)
 --   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil
 --
 -- The look follows the screens' README: numbers and status are white words with an ink outline and no box, Fredoka
@@ -19,6 +20,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local Wallet = require(Shared:WaitForChild("Wallet"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
 
@@ -95,7 +97,11 @@ local plan: { string } = {} -- the later steps this wash takes
 -- The steps this wash shows, as indexes into HUD.STEPS, in order.
 local function shownSteps(): { number }
 	local out: { number } = {}
+	local noBows = table.find(plan, SudsRules.NO_BOWS) ~= nil
 	for index, step in HUD.STEPS do
+		if step.stage == "fluffed" and noBows then
+			continue
+		end
 		if not step.later or table.find(plan, step.stage) ~= nil then
 			table.insert(out, index)
 		end

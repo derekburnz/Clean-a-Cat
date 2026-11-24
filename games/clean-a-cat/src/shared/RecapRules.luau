@@ -30,6 +30,7 @@ export type Recap = {
 	stars: number, -- the spa stars this customer gave
 	isNew: boolean, -- the cat's first Washed stamp in the Cat Index
 	full: boolean, -- the full card, or the slim strip
+	mascot: boolean, -- the opening's kitten (SudsRules, #285): his name and score only, no rarity and no coins
 }
 
 export type Row = { key: string, say: string, value: number }
@@ -65,6 +66,23 @@ function RecapRules.make(
 		stars = pay.stars,
 		isNew = isNew,
 		full = RecapRules.isFull(starsBefore, rarity),
+		mascot = false,
+	}
+end
+
+-- The card for the opening's kitten at his naming: the full card with his name and his score (always the same
+-- stars), nothing paid and no Cat Index stamp.
+function RecapRules.mascot(name: string, stars: number): Recap
+	return {
+		cat = name,
+		rarity = "Common",
+		coins = 0,
+		tip = 0,
+		bonus = 0,
+		stars = stars,
+		isNew = false,
+		full = true,
+		mascot = true,
 	}
 end
 
@@ -123,6 +141,7 @@ function RecapRules.clean(raw: unknown): Recap?
 		stars = stars,
 		isNew = t.isNew == true,
 		full = t.full == true,
+		mascot = t.mascot == true,
 	}
 end
 

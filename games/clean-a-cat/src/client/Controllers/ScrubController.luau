@@ -36,6 +36,7 @@ local ScrubRules = require(Shared:WaitForChild("ScrubRules"))
 local Signal = require(Shared:WaitForChild("Signal"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
+local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local Trove = require(Shared:WaitForChild("Vendor"):WaitForChild("Trove"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
@@ -129,6 +130,7 @@ type Visit = {
 	hold: Paw?, -- the paw under the press in the Pawdicure, held since holdSince
 	holdSince: number,
 	ring: Highlight?, -- the outline on the paw to press next
+	mascot: boolean, -- the opening's kitten (SudsRules, #285): no bows, and his collar pops on at the naming
 }
 
 type Args = { n: number, [number]: any }
@@ -169,7 +171,6 @@ local reportSeq = 0 -- numbers each spa report; the server echoes it in CatStage
 local answeredSeq = 0 -- the newest report the server has answered
 local warnedMissing: { [string]: boolean } = {}
 
--- Every step change goes through here, so the HUD hears each one.
 -- The step the HUD shows: a later step under way, or the next one while the cat dries before it (so the bar never
 -- says "Pick a bow" before the bath), else the stage.
 local function hudStage(v: Visit): string
@@ -182,6 +183,7 @@ local function hudStage(v: Visit): string
 	return v.stage
 end
 
+-- Every step change goes through here, so the HUD hears each one.
 local function setStage(v: Visit, stage: Stage)
 	v.stage = stage
 	ScrubController.stageChanged:Fire(hudStage(v))
@@ -344,6 +346,11 @@ local function findHead(model: Model): BasePart?
 		end
 	end
 	return nil
+end
+
+local function hasAsset(name: string): boolean
+	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
+	return assets ~= nil and assets:FindFirstChild(name) ~= nil
 end
 
 local function findAsset(name: string): Model?
@@ -735,6 +742,9 @@ local function armLater(v: Visit, cat: Cat)
 	for _, need in v.later do
 		table.insert(plan, LATER_STAGE[need])
 	end
+	if v.mascot then
+		table.insert(plan, SudsRules.NO_BOWS) -- the step bar leaves the bows out for the kitten
+	end
 	v.plan = plan
 	ScrubController.planChanged:Fire(table.clone(plan))
 end
@@ -759,9 +769,15 @@ local function makeSuds(v: Visit, cat: Cat)
 	end
 end
 
--- Shows the bows once the later steps are done.
+-- Shows the bows once the later steps are done. The kitten skips them (his collar is his style moment), so the
+-- camera shows instead; the server already moved him on to styled with his last brush stroke.
 local function showBows(v: Visit, cat: Cat)
 	if visit == v and v.cat == cat and v.stage == "fluffed" then
+		if v.mascot then
+			setStage(v, "styled")
+			show(v.camera, true)
+			return
+		end
 		for _, button in v.bowButtons do
 			show(button, true)
 		end
@@ -1101,6 +1117,7 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	v.strokeTravel = 0
 	v.lastStrokeAt = -math.huge
 	v.needs, v.locked = {}, {}
+	v.mascot = false
 	armLater(v, cat)
 	for _, button in v.bowButtons do
 		show(button, false)
@@ -1145,9 +1162,18 @@ local function onCatReady(
 	if not v or type(rawId) ~= "number" then
 		return
 	end
-	-- A customer's cat is its own kind; anything else is the prototype's cat.
-	local kind = if type(rawKind) == "string" and CatRules.rarityOf(rawKind) then rawKind else nil
-	local asset = findAsset(if kind then `CleanACat_Cat_{kind}_Dirty_Sit` else CAT_ASSET)
+	-- A customer's cat is its own kind, the opening's kitten is Suds (or his stand-in until his models are in);
+	-- anything else is the prototype's cat.
+	local mascot = rawKind == SudsRules.NAME
+	local kind = if type(rawKind) == "string" and (mascot or CatRules.rarityOf(rawKind))
+		then rawKind
+		else nil
+	local asset = findAsset(
+		if mascot
+			then SudsRules.asset("_Dirty_Sit", hasAsset)
+			elseif kind then `CleanACat_Cat_{kind}_Dirty_Sit`
+			else CAT_ASSET
+	)
 	if not asset or visit ~= v then
 		return
 	end
@@ -1171,12 +1197,14 @@ local function onCatReady(
 	local cat = v.cat
 	if cat then
 		v.needs, v.locked = needArray(rawNeeds), needArray(rawLocked)
+		v.mascot = mascot
 		armLater(v, cat)
 	end
 	if cat and kind then
 		-- For the need icons (UI): which cat, what it needs and which needs wait on a station not built yet.
-		cat.model:SetAttribute("Customer", rawStray ~= true)
+		cat.model:SetAttribute("Customer", rawStray ~= true and not mascot)
 		cat.model:SetAttribute("Stray", rawStray == true)
+		cat.model:SetAttribute("Mascot", mascot)
 		cat.model:SetAttribute("Needs", needList(rawNeeds))
 		cat.model:SetAttribute("LockedNeeds", needList(rawLocked))
 	end
@@ -1258,6 +1286,37 @@ local function onCatStage(
 	)
 end
 
+-- The naming moment (#285): the clean Suds model's collar (a child Model ending _Collar, Model-Agent) goes onto the
+-- kitten in the same place, scaled like the cat. Nothing to wear while only the stand-in is in the place.
+local function wearCollar(cat: Cat)
+	local clean = findAsset(SudsRules.asset("_Sit", hasAsset))
+	if clean == nil then
+		return
+	end
+	local source: Model? = nil
+	for _, child in clean:GetDescendants() do
+		if child:IsA("Model") and string.sub(child.Name, -7) == "_Collar" then
+			source = child :: Model
+			break
+		end
+	end
+	if source == nil then
+		return
+	end
+	local offset = clean:GetPivot():ToObjectSpace(source:GetPivot())
+	local scale = cat.model:GetScale() / clean:GetScale()
+	local collar = source:Clone()
+	collar:ScaleTo(collar:GetScale() * scale)
+	collar:PivotTo(cat.model:GetPivot() * (offset - offset.Position + offset.Position * scale))
+	for _, part in partsOf(collar) do
+		part.Anchored = true
+		part.CanCollide = false
+		part.CanTouch = false
+		part.CanQuery = false
+	end
+	collar.Parent = cat.model
+end
+
 local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, rawRecap: unknown)
 	local v = visit
 	local cat = if v then v.cat else nil
@@ -1268,6 +1327,10 @@ local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, raw
 	setStage(v, "done")
 	show(v.camera, false)
 	Moments.PhotoTaken:Fire(cat.model)
+	if v.mascot then
+		wearCollar(cat)
+		Moments.SudsNamed:Fire(cat.model)
+	end
 	nextCatThread = task.delay(LEAVE_SECONDS, function()
 		if visit ~= v or v.cat ~= cat then
 			return
@@ -1344,6 +1407,7 @@ local function buildVisit(folder: Folder): Visit
 		hold = nil,
 		holdSince = 0,
 		ring = nil,
+		mascot = false,
 	}
 end
 

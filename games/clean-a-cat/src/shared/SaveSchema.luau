@@ -46,6 +46,7 @@ export type Save = {
 	index: { [string]: IndexEntry }, -- Cat Index stamps by coat name
 	indexBonusPaid: boolean, -- the full set bonus, paid once
 	tutorialStep: number, -- the highest first session step reached (0 before the first scrub)
+	suds: number, -- how far the opening's kitten got: SudsRules.NONE, BOX (box opened) or DONE (washed and named)
 }
 
 local SaveSchema = {}
@@ -68,6 +69,7 @@ function SaveSchema.template(now: number): Save
 		index = {},
 		indexBonusPaid = false,
 		tutorialStep = 0,
+		suds = 0,
 	}
 end
 

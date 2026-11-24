@@ -46,6 +46,8 @@ local clawsDone: Signal<Model> = Signal.new()
 local bowChosen: Signal<Model, string> = Signal.new()
 -- (cat): the before and after photo card shows.
 local photoTaken: Signal<Model> = Signal.new()
+-- (cat): the opening's kitten is named Suds and his collar pops on (#285, switch sudsWash): a jingle and a sparkle.
+local sudsNamed: Signal<Model> = Signal.new()
 -- (cat): a stray hops onto a window cushion.
 local catToWindow: Signal<Model> = Signal.new()
 -- (cat): a customer's cat goes home.
@@ -70,6 +72,7 @@ local Moments = {
 	ClawsDone = clawsDone,
 	BowChosen = bowChosen,
 	PhotoTaken = photoTaken,
+	SudsNamed = sudsNamed,
 	CatToWindow = catToWindow,
 	CatReturned = catReturned,
 
@@ -93,6 +96,7 @@ local Moments = {
 		"ClawsDone",
 		"BowChosen",
 		"PhotoTaken",
+		"SudsNamed",
 		"CatToWindow",
 		"CatReturned",
 	}),
