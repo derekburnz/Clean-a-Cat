@@ -878,8 +878,50 @@ local function clipPaw(v: Visit, cat: Cat, paw: Paw)
 	end)
 	if left == 0 then
 		Moments.ClawsDone:Fire(cat.model)
-		nextLater(v, cat)
+		-- the bar moves on once the last paw's snips have played out, not before
+		task.delay((#paw.claws - 1) * WashDraft.SNIP_GAP + SNIP.Time, function()
+			if visit == v and v.cat == cat and v.step == "claws" then
+				nextLater(v, cat)
+			end
+		end)
 	end
+end
+
+-- A later step's switch went off mid-visit (the rollback, Review-QA on #267): the step is dropped at once. Its suds or
+-- long claws go, the bar loses it, and a cat at that station moves on to the next step, or back to the tub and the
+-- bows. A step still to come is just taken out.
+local function dropLater(need: string)
+	local v = visit
+	local cat = if v then v.cat else nil
+	local flag = WashDraft.NEED_FLAG[need]
+	if not v or not cat or flag == nil or LiveFlags.isOn(flag) then
+		return
+	end
+	local waiting = table.find(v.later, need)
+	if waiting then
+		table.remove(v.later, waiting)
+	end
+	local shown = table.find(v.plan, LATER_STAGE[need])
+	if shown == nil then
+		return -- this cat never took that step
+	end
+	table.remove(v.plan, shown)
+	ScrubController.planChanged:Fire(table.clone(v.plan))
+	if need == "claws" then
+		showClaws(cat, false)
+	end
+	if v.step ~= need then
+		ScrubController.stageChanged:Fire(hudStage(v))
+		return
+	end
+	for _, puff in v.suds do
+		puff:Destroy()
+	end
+	v.suds = {}
+	v.hold = nil
+	ringPaw(v, nil)
+	setStep(v, nil)
+	nextLater(v, cat)
 end
 
 -- After the fluff: with the Blow Dryer built (StationService places it in this player's plot), the cat sits on
@@ -948,8 +990,10 @@ local function onPointer(input: InputObject)
 	local ray = pointerRay(input)
 	local result = if ray then cast(ray, v.catParams) else nil
 	if v.step == "claws" then
-		-- the Pawdicure: a press resting on a paw with long claws starts its hold; sliding to another paw restarts
-		local paw = if result then pawAt(cat, result.Instance) else nil
+		-- the Pawdicure: a press resting on a paw with long claws starts its hold; sliding to another paw restarts.
+		-- A paw is small on a phone and the far one hides behind the body, so a press anywhere else on the cat holds
+		-- the outlined paw (Sync-Agent's playtest of #267).
+		local paw = if result then pawAt(cat, result.Instance) or nextPaw(cat) else nil
 		if paw ~= v.hold then
 			v.hold = paw
 			v.holdSince = os.clock()
@@ -1479,6 +1523,16 @@ local function enable()
 	-- here so the camera and the controls are never left held and the next press can scrub.
 	trove:Connect(UserInputService.WindowFocusReleased, release)
 	-- A held trigger has no pointer movement: the middle of the screen moves as the camera turns.
+	for _, need in CatRules.LATER_NEEDS do
+		trove:Connect(
+			ReplicatedStorage:GetAttributeChangedSignal(
+				LiveFlags.ATTRIBUTE_PREFIX .. WashDraft.NEED_FLAG[need]
+			),
+			function()
+				dropLater(need)
+			end
+		)
+	end
 	trove:Connect(RunService.Heartbeat, function()
 		local active = activeInput
 		if active and active.KeyCode == GAMEPAD_BUTTON then

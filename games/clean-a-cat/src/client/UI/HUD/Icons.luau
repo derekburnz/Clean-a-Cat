@@ -70,7 +70,7 @@ local STAND_INS: { [string]: StandIn } = {
 	Mud = { glyph = "🟤", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Tangles = { glyph = "🧶", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Wet = { glyph = "💧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
-	Smell = { glyph = "🫧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Smell = { glyph = "🧼", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Claws = { glyph = "💅", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
 }
