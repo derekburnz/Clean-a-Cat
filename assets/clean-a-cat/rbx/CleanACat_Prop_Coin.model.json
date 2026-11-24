@@ -142,7 +142,7 @@
      "CFrame": {
       "position": [
        0.0,
-       -0.09,
+       -0.1,
        -0.11
       ],
       "orientation": [
@@ -166,7 +166,7 @@
     },
     "Size": [
      0.3,
-     0.22,
+     0.2,
      0.05
     ],
     "Color": [
@@ -190,8 +190,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.19,
-       0.1,
+       0.23,
+       0.06,
        -0.11
       ],
       "orientation": [
@@ -214,8 +214,8 @@
      }
     },
     "Size": [
-     0.13,
-     0.13,
+     0.11,
+     0.11,
      0.05
     ],
     "Color": [
@@ -239,8 +239,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       0.19,
+       0.08,
+       0.17,
        -0.11
       ],
       "orientation": [
@@ -263,8 +263,8 @@
      }
     },
     "Size": [
-     0.13,
-     0.13,
+     0.11,
+     0.11,
      0.05
     ],
     "Color": [
@@ -288,8 +288,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.19,
-       0.1,
+       -0.08,
+       0.17,
        -0.11
       ],
       "orientation": [
@@ -312,8 +312,57 @@
      }
     },
     "Size": [
-     0.13,
-     0.13,
+     0.11,
+     0.11,
+     0.05
+    ],
+    "Color": [
+     0.7882,
+     0.5608,
+     0.1647
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Coin",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.23,
+       0.06,
+       -0.11
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.11,
+     0.11,
      0.05
     ],
     "Color": [
@@ -388,7 +437,7 @@
      "CFrame": {
       "position": [
        0.0,
-       -0.09,
+       -0.1,
        0.11
       ],
       "orientation": [
@@ -412,7 +461,7 @@
     },
     "Size": [
      0.3,
-     0.22,
+     0.2,
      0.05
     ],
     "Color": [
@@ -436,8 +485,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.19,
-       0.1,
+       0.23,
+       0.06,
        0.11
       ],
       "orientation": [
@@ -460,8 +509,8 @@
      }
     },
     "Size": [
-     0.13,
-     0.13,
+     0.11,
+     0.11,
      0.05
     ],
     "Color": [
@@ -485,8 +534,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       0.19,
+       0.08,
+       0.17,
        0.11
       ],
       "orientation": [
@@ -509,8 +558,8 @@
      }
     },
     "Size": [
-     0.13,
-     0.13,
+     0.11,
+     0.11,
      0.05
     ],
     "Color": [
@@ -534,8 +583,8 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.19,
-       0.1,
+       -0.08,
+       0.17,
        0.11
       ],
       "orientation": [
@@ -558,8 +607,57 @@
      }
     },
     "Size": [
-     0.13,
-     0.13,
+     0.11,
+     0.11,
+     0.05
+    ],
+    "Color": [
+     0.7882,
+     0.5608,
+     0.1647
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Prop_Coin",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.23,
+       0.06,
+       0.11
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.11,
+     0.11,
      0.05
     ],
     "Color": [

@@ -7155,6 +7155,44 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BuildPad.png"
  },
  {
+  "name": "CleanACat_Prop_Burr",
+  "category": "Prop",
+  "module": "burrs",
+  "objects": [
+   "CleanACat_Prop_Burr"
+  ],
+  "triangles": 148,
+  "budget": 250,
+  "parts": 8,
+  "size_studs": {
+   "x": 0.4,
+   "y": 0.4,
+   "z": 0.4
+  },
+  "size_roblox": [
+   0.4,
+   0.4,
+   0.4
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "148/250 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "82 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.02 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Burr.png"
+ },
+ {
   "name": "CleanACat_Prop_Carrier",
   "category": "Prop",
   "module": "spa_props",
@@ -7241,9 +7279,9 @@
   "objects": [
    "CleanACat_Prop_Coin"
   ],
-  "triangles": 364,
+  "triangles": 388,
   "budget": 400,
-  "parts": 11,
+  "parts": 13,
   "size_studs": {
    "x": 0.97,
    "y": 0.27,
@@ -7263,10 +7301,10 @@
     "pivot"
    ],
    "checks": {
-    "budget": "364/400 tris",
+    "budget": "388/400 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "166 faces on swatch centers",
+    "uv": "178 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.49 (want 0)",
     "centered": "footprint center x=0.00 y=0.00"
@@ -7435,6 +7473,47 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HardHat.png"
  },
  {
+  "name": "CleanACat_Prop_Leaf",
+  "category": "Prop",
+  "module": "burrs",
+  "objects": [
+   "CleanACat_Prop_Leaf"
+  ],
+  "triangles": 184,
+  "budget": 250,
+  "parts": 6,
+  "size_studs": {
+   "x": 0.32,
+   "y": 0.7,
+   "z": 0.15
+  },
+  "size_roblox": [
+   0.32,
+   0.15,
+   0.7
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "184/250 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "108 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.05 (want 0)",
+    "centered": "footprint center x=0.00 y=0.07"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Leaf.png"
+ },
+ {
   "name": "CleanACat_Prop_QueueMat",
   "category": "Prop",
   "module": "spa_props",
@@ -7479,18 +7558,18 @@
   "objects": [
    "CleanACat_Prop_Star"
   ],
-  "triangles": 120,
+  "triangles": 80,
   "budget": 200,
-  "parts": 30,
+  "parts": 20,
   "size_studs": {
    "x": 1.14,
-   "y": 0.25,
+   "y": 0.24,
    "z": 1.09
   },
   "size_roblox": [
    1.14,
    1.09,
-   0.25
+   0.24
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -7501,13 +7580,13 @@
     "pivot"
    ],
    "checks": {
-    "budget": "120/200 tris",
+    "budget": "80/200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "90 faces on swatch centers",
+    "uv": "60 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.49 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00"
+    "centered": "footprint center x=0.00 y=-0.01"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Star.png"
@@ -7628,6 +7707,46 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Toolbox.png"
+ },
+ {
+  "name": "CleanACat_Prop_Twig",
+  "category": "Prop",
+  "module": "burrs",
+  "objects": [
+   "CleanACat_Prop_Twig"
+  ],
+  "triangles": 172,
+  "budget": 400,
+  "parts": 11,
+  "size_studs": {
+   "x": 0.67,
+   "y": 0.9,
+   "z": 0.08
+  },
+  "size_roblox": [
+   0.67,
+   0.08,
+   0.9
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "172/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "98 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.05 y=-0.12"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Twig.png"
  },
  {
   "name": "CleanACat_Prop_WindowSign",
