@@ -6995,6 +6995,56 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_BuilderKitten.png"
  },
  {
+  "name": "CleanACat_NPC_Helper",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_Helper_Body",
+   "CleanACat_NPC_Helper_Head",
+   "CleanACat_NPC_Helper_Eye1",
+   "CleanACat_NPC_Helper_Eye2",
+   "CleanACat_NPC_Helper_EarL",
+   "CleanACat_NPC_Helper_EarR",
+   "CleanACat_NPC_Helper_Tail",
+   "CleanACat_NPC_Helper_LegF1",
+   "CleanACat_NPC_Helper_LegF2",
+   "CleanACat_NPC_Helper_LegB1",
+   "CleanACat_NPC_Helper_LegB2"
+  ],
+  "triangles": 1052,
+  "budget": 1500,
+  "parts": 50,
+  "size_studs": {
+   "x": 1.07,
+   "y": 1.62,
+   "z": 1.93
+  },
+  "size_roblox": [
+   1.07,
+   1.93,
+   1.62
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "1052/1500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "598 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.11"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Helper.png"
+ },
+ {
   "name": "CleanACat_NPC_Scarf",
   "category": "NPC",
   "module": "customers",
@@ -7033,6 +7083,88 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Scarf.png"
+ },
+ {
+  "name": "CleanACat_NPC_StarBeret",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_StarBeret"
+  ],
+  "triangles": 268,
+  "budget": 400,
+  "parts": 14,
+  "size_studs": {
+   "x": 1.61,
+   "y": 1.64,
+   "z": 0.58
+  },
+  "size_roblox": [
+   1.61,
+   0.58,
+   1.64
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "268/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "138 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.04 (want 0)",
+    "centered": "footprint center x=0.11 y=0.02"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_StarBeret.png"
+ },
+ {
+  "name": "CleanACat_NPC_StarShades",
+  "category": "NPC",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_NPC_StarShades"
+  ],
+  "triangles": 116,
+  "budget": 200,
+  "parts": 7,
+  "size_studs": {
+   "x": 1.25,
+   "y": 0.51,
+   "z": 0.38
+  },
+  "size_roblox": [
+   1.25,
+   0.38,
+   0.51
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "116/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "66 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.11 (want 0)",
+    "centered": "footprint center x=0.00 y=0.18"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_StarShades.png"
  },
  {
   "name": "CleanACat_NPC_SunHat",
@@ -7471,6 +7603,46 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HardHat.png"
+ },
+ {
+  "name": "CleanACat_Prop_HelperCap",
+  "category": "Prop",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Prop_HelperCap"
+  ],
+  "triangles": 164,
+  "budget": 300,
+  "parts": 6,
+  "size_studs": {
+   "x": 1.09,
+   "y": 1.15,
+   "z": 0.74
+  },
+  "size_roblox": [
+   1.09,
+   0.74,
+   1.15
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "164/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "100 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.31 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HelperCap.png"
  },
  {
   "name": "CleanACat_Prop_Leaf",
@@ -7961,6 +8133,47 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Dryer.png"
  },
  {
+  "name": "CleanACat_Station_FrontDesk",
+  "category": "Station",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Station_FrontDesk",
+   "CleanACat_Station_FrontDesk_Screen"
+  ],
+  "triangles": 452,
+  "budget": 1200,
+  "parts": 17,
+  "size_studs": {
+   "x": 5.0,
+   "y": 2.3,
+   "z": 3.39
+  },
+  "size_roblox": [
+   5.0,
+   3.39,
+   2.3
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "452/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "268 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.12"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_FrontDesk.png"
+ },
+ {
   "name": "CleanACat_Station_Pawdicure",
   "category": "Station",
   "module": "stations",
@@ -8042,6 +8255,45 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Tub.png"
+ },
+ {
+  "name": "CleanACat_Station_WaitBench",
+  "category": "Station",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Station_WaitBench",
+   "CleanACat_Station_WaitBench_Barrier"
+  ],
+  "triangles": 944,
+  "budget": 1200,
+  "parts": 28,
+  "size_studs": {
+   "x": 7.2,
+   "y": 3.05,
+   "z": 1.36
+  },
+  "size_roblox": [
+   7.2,
+   1.36,
+   3.05
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "checks": {
+    "budget": "944/1200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "564 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.02"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_WaitBench.png"
  },
  {
   "name": "CleanACat_Tool_Brush",
