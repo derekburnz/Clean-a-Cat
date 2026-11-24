@@ -53,6 +53,7 @@ LiveFlags.KEYS = {
 	"tutorialTrail", -- the tutorial's floor trail: green arrows on the floor to a spot, a ring and a gold arrow over it (Spa/FloorTrail); off by default
 	"tutorialTip", -- the tutorial's tip line "Step 2 of 3: Scrub the mud" in the step bar's place (UI/HUD/TipLine); off by default
 	"tutorialDim", -- the tutorial's dim step: the screen dims round one HUD button and an arrow says tap it (UI/Spotlight); off by default
+	"windowsHideControls", -- the phone's thumbstick and jump button hide while a window is open (UI/init); off by default
 	"settingsCard", -- the Settings card: sound sliders, less shake and less sparkle; the Menu opens it (UI/Settings, SettingsController); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
@@ -92,6 +93,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	tutorialDim = true,
 	tutorialTip = true,
 	tutorialTrail = true,
+	windowsHideControls = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

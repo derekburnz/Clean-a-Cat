@@ -31,7 +31,6 @@ local Recap = {}
 
 Recap.FLAG = "recapCard"
 
-local BODY_FONT = Enum.Font.GothamBold
 local MAX_STARS_SHOWN = 5
 local ROW_ICONS = { wash = "Paw", tip = "Heart", bonus = "Station" } :: { [string]: string }
 local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
@@ -283,7 +282,8 @@ local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes)
 		icon.Position = UDim2.fromScale(0, 0.5)
 		icon.Size = UDim2.fromOffset(s.rowIcon, s.rowIcon)
 		Icons.draw(ROW_ICONS[row.key] or "Paw", icon)
-		local say = words("Say", line, BODY_FONT, Kit.INK)
+		local say = words("Say", line, Kit.FONT, Kit.INK)
+		say.FontFace = Kit.BODY_FACE
 		say.AnchorPoint = Vector2.new(0, 0.5)
 		say.Position = UDim2.new(0, s.rowIcon + 10, 0.5, 0)
 		say.TextSize = s.rowText
@@ -337,8 +337,8 @@ local function redraw()
 	p.who.Size = UDim2.fromOffset(s.who, 0)
 	p.tileBox.Size = UDim2.fromOffset(s.tile, s.tile)
 	Portraits.draw(recap.cat, recap.rarity, p.tileBox)
-	p.name.TextSize = s.name
 	p.name.Size = UDim2.new(1, 0, 0, s.name + 8)
+	Kit.shrinkToFit(p.name, s.name)
 	p.name.Text = recap.cat
 	-- The short card's column is narrower than "Legendary" plus "New!" side by side (Sync-Agent on an iPhone 14), so
 	-- there the New! chip goes under the rarity chip.
@@ -477,7 +477,6 @@ function Recap.build(root: Frame)
 	local name = words("Name", who, Kit.FONT, Kit.INK)
 	name.LayoutOrder = 2
 	name.AutomaticSize = Enum.AutomaticSize.None -- one line: names are at most 11 letters (Design-Agent)
-	name.TextTruncate = Enum.TextTruncate.AtEnd
 	local chipRow = frame("Tags", who)
 	chipRow.LayoutOrder = 3
 	chipRow.Size = UDim2.fromScale(1, 0)

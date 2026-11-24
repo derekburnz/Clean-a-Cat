@@ -50,7 +50,7 @@ export const LIMITS = {
 };
 
 // gate: fails the run when new; warn: in the report only
-const GATED = new Set(['tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke']);
+const GATED = new Set(['tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke', 'cut']);
 
 // The HUD's buttons (a tile can sit on its neighbours, or a key badge half under one): a Components/Button is a holder with a Depth frame (the outlined shape) and a Face. What a
 // tile draws is every piece under it, each grown by its outline (UIStroke Border draws outside the box): the
@@ -61,6 +61,7 @@ const GATED = new Set(['tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 
 // warning, until those rows get the same pass. A
 // list that opens over the icon row (Pop) sits over it on purpose and is left out.
 export const HUD_GUI = 'HUD'; // the ScreenGui name of the always-on HUD (src/client/UI)
+const STARTER_PIECES = /^HUD\/(Root\/(Menu|Toast)|Example)(\/|$)/; // the template's live starter UI, still in Gotham
 const GATED_TILES = /^HUD\/Root\/[^/]+$/; // HUD tiles that must keep their outline apart
 const SKIPPED_TILES = /^HUD\/Root\/Pop\//; // pop ups that sit over the HUD on purpose
 
@@ -254,6 +255,15 @@ export function checkScene(profile, scene) {
         add('fit', node, `wrapped text about ${px(node.th)} px tall in a ${px(node.h)} px box${label(node)}`);
       }
     }
+    // a label that ends its words with "..." (TextTruncate) because they do not fit: "Uncom..." on an iPhone 14
+    // (#262). FredokaOne is measured letter by letter, so a miss of half a pixel counts for it; other fonts use average
+    // widths and need the same clear miss as 'fit'.
+    if (node.text !== undefined && node.trunc && !node.wrap && node.iw !== undefined) {
+      const exact = node.font === 'FredokaOne';
+      if (exact ? node.twx > node.iw + 0.5 : node.twx > node.iw + 4 && node.twx > node.iw * 1.15) {
+        add('cut', node, `text about ${px(node.twx)} px wide is cut off with "..." in a ${px(node.iw)} px box${label(node)}`);
+      }
+    }
     // Cut off outlines: a Border stroke draws outside
     // its box, so a card flush with the edge of the list or grid that clips it loses that side of its outline. Only
     // an edge whose box is inside the clip counts, and only while the list's row it sits in is all in view; a row
@@ -301,6 +311,9 @@ export function checkScene(profile, scene) {
   for (const { node } of shown) {
     // an emoji or a symbol draws from the emoji font whatever the label's font
     if (node.text === undefined || !/[\p{L}\p{N}]/u.test(node.text)) continue;
+    // the template's starter Menu, toast and example window keep Gotham: they are live with every switch off, so
+    // their font changes only behind a switch (rule 16; Review-QA on #263). The HUD's own pieces replace them.
+    if (STARTER_PIECES.test(node.path)) continue;
     if (!families.has(node.font)) families.set(node.font, node);
   }
   if (families.size > LIMITS.fonts) {
