@@ -13,10 +13,10 @@ TruckDrop.BEATS = {
 	honk = 0.4, -- one soft honk so the player looks up
 	frontHit = 1.2, -- front wheels hit the bump: nose jolts up, thunk, dust puff
 	backHit = 1.45, -- back wheels hit it: nose dips, the back door swings open
-	drop = 1.55, -- the box leaves the tailgate
-	land = 2.25, -- the box hits the pavement: squash, one bounce
-	settle = 2.63, -- the box is at rest
-	done = 3.5, -- the truck is gone and the camera is the player's again
+	drop = 1.85, -- the box slides off the back: the truck is far enough on that it falls back along the road
+	land = 2.45, -- the box hits the pavement: squash, one bounce
+	settle = 2.83, -- the box is at rest
+	done = 3.7, -- the truck is gone and the camera is the player's again
 }
 
 TruckDrop.ROAD_Z = 8 -- the middle of the truck's lane, across the road from the landing spot
@@ -24,13 +24,14 @@ TruckDrop.BUMP_X = -3 -- where the bump is along the road when the scene has no 
 TruckDrop.BUMP_RANGE = 20 -- a bump further than this along the road from the box is ignored, and BUMP_X is used
 TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.25 s apart the truck drives at 32 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
-TruckDrop.TAILGATE = { back = 6.5, up = 1.9 } -- where the box leaves (the Tailgate attachment), from the truck's pivot
+TruckDrop.TAILGATE = { back = 6.5, up = 1.9, side = 2 } -- where the box leaves (the Tailgate attachment), from the
+-- truck's pivot; `side` studs from the lane's middle toward the curb, the door's near corner
 -- (on the road under the middle of the 13 stud truck, Model-Agent's CleanACat_Prop_DeliveryTruck)
 
 TruckDrop.JOLT = { lift = 0.35, frontPitch = math.rad(5), backPitch = math.rad(-4), seconds = 0.22 }
 TruckDrop.RATTLE = { pitch = math.rad(1.2), seconds = 0.7 } -- the little rattle after each hit
 TruckDrop.DOOR = { open = math.rad(100), seconds = 0.25, swing = math.rad(8) } -- hinged along its top edge, flaps up
-TruckDrop.ARC = { height = 3.5, spin = math.pi / 2 } -- a quarter tumble that ends flat, so a cube lands square
+TruckDrop.ARC = { height = 1.2, spin = math.pi / 2 } -- a quarter tumble that ends flat, so a cube lands square
 TruckDrop.LANDING = { squash = 0.22, squashSeconds = 0.1, bounce = 0.5, bounceSeconds = 0.28 }
 TruckDrop.WIGGLE = { start = 0.4, every = 1.6, seconds = 0.45, angle = math.rad(7), meowEvery = 2 }
 TruckDrop.OPEN = {
@@ -45,7 +46,6 @@ TruckDrop.OPEN = {
 -- The kitten hops out of the box toward the spa (Gameplay-Engineer's ask): a small arc, then onDone.
 TruckDrop.HOP = { distance = 2.5, height = 1.4, seconds = 0.42, squash = 0.15 }
 -- As the kitten hops out, the player's camera turns to face where he is going (the tub), over this many seconds.
-TruckDrop.CAMERA_TURN_SECONDS = 0.6
 
 -- Sound and effect beats, in the order they happen. OpeningScene plays each once as the clock passes it.
 TruckDrop.EVENTS = {
@@ -155,7 +155,7 @@ end
 function TruckDrop.launch(bumpX: number?): (number, number, number)
 	return TruckDrop.truckX(TruckDrop.BEATS.drop, bumpX) - TruckDrop.TAILGATE.back,
 		TruckDrop.TAILGATE.up,
-		TruckDrop.ROAD_Z
+		TruckDrop.ROAD_Z - TruckDrop.TAILGATE.side
 end
 
 -- The box at time t (scene clock), before it is opened. After settle it rests at the origin, wiggling.

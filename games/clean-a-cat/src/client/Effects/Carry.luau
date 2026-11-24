@@ -295,10 +295,17 @@ function Carry.hold(character: Model, cat: Model): Handle
 		if destroyed then
 			return
 		end
-		if cat.Parent == nil then
+		if cat.Parent == nil and holding then
+			-- the cat was removed without destroy: let go, and stop once the arms are open
 			holding = false
+			purr.stop()
 		end
 		writeArms(dt)
+		if not holding and hop == nil and weight <= 0 and connection then
+			connection:Disconnect()
+			connection = nil
+			return
+		end
 		local h = hop
 		if h then
 			local e = os.clock() - h.start
