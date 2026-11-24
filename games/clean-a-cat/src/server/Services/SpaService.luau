@@ -152,6 +152,12 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 	if index == nil or queues[player] == nil then
 		return
 	end
+	-- A new save's first customer is the guaranteed common cat; picking past it would skip that. Picks open once a
+	-- customer has been served (stars > 0), the same moment the chance board lights.
+	local save = DataService.get(player)
+	if save == nil or save.stars <= 0 then
+		return
+	end
 	if SpaRules.pickNext(queueFor(player), index) then
 		sendQueue(player)
 	end

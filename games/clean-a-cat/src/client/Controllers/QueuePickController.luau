@@ -5,6 +5,9 @@
 -- the line, so the next cat out of the line is the one picked. It only asks; the server owns the line.
 -- The prompt shows no name, coat or pay: the coat stays hidden under the mud until the wash.
 -- Behind the LiveFlags switch `queuePick`, with `scrubPrototype` and `customers`; all off by default.
+-- The prompts appear only once a customer has been served (Player attribute ChanceBoardLit, set by SpaService), so a
+-- new save's first cat stays the guaranteed common one. The server refuses a pick before that too.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -18,6 +21,7 @@ local Trove = require(Shared:WaitForChild("Vendor"):WaitForChild("Trove"))
 local FLAGS = { "queuePick", "scrubPrototype", "customers" }
 local PROMPT_HEIGHT = 3 -- studs above the queue spot, about a customer's chest
 local PROMPT_REACH = 10
+local SERVED = "ChanceBoardLit" -- Player attribute SpaService sets once a customer has been served
 
 local QueuePickController = {}
 
@@ -34,7 +38,7 @@ end
 
 local function refresh()
 	trove:Clean()
-	if not allOn() then
+	if not allOn() or Players.LocalPlayer:GetAttribute(SERVED) ~= true then
 		return
 	end
 	local folder: Folder = trove:Add(Instance.new("Folder"))
@@ -71,6 +75,7 @@ function QueuePickController.Start()
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(refresh)
 	end
+	Players.LocalPlayer:GetAttributeChangedSignal(SERVED):Connect(refresh)
 	-- The plot came or went: the line's spots moved.
 	SpaLayout.changed(function()
 		task.delay(1, refresh)
