@@ -27,8 +27,11 @@ th.src small { font-weight: 800; font-size: 14px; color: #6b5a80; }
 .hudbtn .cap { font-family: var(--font-head); font-size: 14px; margin: 2px 0 4px; }
 .ui { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .cell h3 { font-family: var(--font-head); font-weight: 400; font-size: 19px; margin: 0 0 8px; }
-.kbtn { width: 210px; height: 64px; display: grid; place-items: center; background: url(kenney/button_green.png) center/100% 100% no-repeat; font-family: var(--font-head); font-size: 24px; color: #fff; text-shadow: 0 2px 0 #1e7a3a; image-rendering: pixelated; }
-.kpanel { width: 300px; height: 150px; border: 18px solid transparent; border-image: url(kenney/panel_cream.png) 12 round; display: grid; place-items: center; font-weight: 800; font-size: 16px; }
+.kbtn { position: relative; isolation: isolate; width: 210px; height: 64px; display: grid; place-items: center; font-family: var(--font-head); font-size: 24px; color: #fff; text-shadow: 0 2px 0 #1e7a3a; }
+.kbtn::before { content: ''; position: absolute; inset: 0; z-index: -1; background: url(kenney/button_green.png) center/100% 100% no-repeat; image-rendering: pixelated; filter: var(--inked); }
+.kpanel { position: relative; isolation: isolate; width: 300px; height: 150px; display: grid; place-items: center; font-weight: 800; font-size: 16px; }
+.kpanel::before { content: ''; position: absolute; inset: 0; z-index: -1; border: 18px solid transparent; border-image: url(kenney/panel_cream.png) 12 fill round; filter: var(--inked); }
+.sheet { --inked: drop-shadow(3px 0 0 var(--ink)) drop-shadow(-3px 0 0 var(--ink)) drop-shadow(0 3px 0 var(--ink)) drop-shadow(0 -3px 0 var(--ink)) drop-shadow(0 6px 0 var(--ink)); }
 .opanel { width: 300px; height: 150px; box-sizing: border-box; background: var(--cream); border: 4px solid var(--ink); border-radius: 22px; box-shadow: 0 6px 0 var(--ink); display: grid; place-items: center; font-weight: 800; font-size: 16px; }
 .row { display: flex; gap: 22px; align-items: center; }
 .note { font-weight: 800; font-size: 15px; color: #6b5a80; margin-top: 8px; }
@@ -52,9 +55,9 @@ th.src small { font-weight: 800; font-size: 14px; color: #6b5a80; }
 <div class="panel"><h2>Buttons and panels: Kenney UI Pack (CC0) beside ours</h2>
 <div class="ui">
 <div class="cell"><h3>Ours</h3><div class="row"><button class="btn green"><span class="lbl">Wash</span></button><div class="opanel">Our window body</div></div></div>
-<div class="cell"><h3>Kenney, recoloured</h3><div class="row"><div class="kbtn">Wash</div><div class="kpanel">Kenney panel, 9-slice</div></div></div>
+<div class="cell"><h3>Kenney, recoloured, our ink outline and lip added</h3><div class="row"><div class="kbtn">Wash</div><div class="kpanel">Kenney panel, 9-slice</div></div></div>
 </div>
-<p class="note"><b>My pick:</b> keep our own icons and Model-Agent renders as the main set, and use Phosphor two tone, recoloured, only for icons we have not drawn yet. Phosphor filled loses detail at 48 px, Lucide is too thin over the world and Kenney looks generic beside our chunky style. Kenney's pieces are flat and thin edged, made for many games; ours have the thick ink outline and the chunky lip of the store art. The Kenney files here come from a GitHub mirror of the older 148 file pack, because kenney.nl is blocked from this machine.</p>
+<p class="note"><b>My pick:</b> keep our own icons and Model-Agent renders as the main set, and use Phosphor two tone, recoloured, only for icons we have not drawn yet. Phosphor filled reads well except the coins, which blur at 48 px, Lucide is too thin over the world and Kenney, even with our outline and lip added, keeps its pale flat shading and small, pixel-edged corners, so it reads more generic than ours. The Kenney files here come from a GitHub mirror of the older 148 file pack, because kenney.nl is blocked from this machine.</p>
 </div>
 </div>
 <script src="../screens/kit.js"></script>
