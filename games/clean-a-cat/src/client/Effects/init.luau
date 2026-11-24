@@ -69,6 +69,7 @@ local function newEmitter(name: string, preset: Emitter): ParticleEmitter
 	emitter.Acceleration = preset.acceleration
 	emitter.Drag = preset.drag
 	emitter.LightEmission = preset.lightEmission
+	emitter.EmissionDirection = Enum.NormalId.Top
 	emitter.Rate = 0
 	emitter.Enabled = false
 	return emitter
@@ -129,6 +130,19 @@ function Effects.tier(): PresetData.Tier
 	return tier
 end
 
+-- Writes Rate and Enabled only when they change: stream and streamFrom run on every pointer move or every frame,
+-- and a property write costs even when the value is the same (Gameplay-Engineer's phone-lag check, #182).
+-- foamRate already returns whole numbers, so the rate only changes in steps of one particle a second.
+local function setRate(emitter: ParticleEmitter, rate: number)
+	if emitter.Rate ~= rate then
+		emitter.Rate = rate
+	end
+	local on = rate > 0
+	if emitter.Enabled ~= on then
+		emitter.Enabled = on
+	end
+end
+
 function Effects.stream(name: string, position: Vector3, dragSpeed: number)
 	if not started then
 		return
@@ -138,9 +152,7 @@ function Effects.stream(name: string, position: Vector3, dragSpeed: number)
 		return
 	end
 	entry.attachment.WorldPosition = position
-	local rate = Tier.foamRate(preset.maxRate, dragSpeed, FAST_DRAG, reducedMotion())
-	entry.emitter.Rate = rate
-	entry.emitter.Enabled = rate > 0
+	setRate(entry.emitter, Tier.foamRate(preset.maxRate, dragSpeed, FAST_DRAG, reducedMotion()))
 end
 
 function Effects.streamFrom(name: string, cframe: CFrame, strength: number)
@@ -151,16 +163,19 @@ function Effects.streamFrom(name: string, cframe: CFrame, strength: number)
 	if entry == nil or preset == nil then
 		return
 	end
-	entry.attachment.WorldCFrame = cframe
-	entry.emitter.EmissionDirection = Enum.NormalId.Top
-	local rate = Tier.foamRate(preset.maxRate, math.clamp(strength, 0, 1), 1, reducedMotion())
-	entry.emitter.Rate = rate
-	entry.emitter.Enabled = rate > 0
+	-- EmissionDirection is Top from newEmitter, so only the aim and the rate can change here.
+	if entry.attachment.WorldCFrame ~= cframe then
+		entry.attachment.WorldCFrame = cframe
+	end
+	setRate(
+		entry.emitter,
+		Tier.foamRate(preset.maxRate, math.clamp(strength, 0, 1), 1, reducedMotion())
+	)
 end
 
 function Effects.stopStream(name: string)
 	local entry = pool[name]
-	if entry then
+	if entry and entry.emitter.Enabled then
 		entry.emitter.Enabled = false
 	end
 end

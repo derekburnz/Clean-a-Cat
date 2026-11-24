@@ -149,8 +149,13 @@ local function refresh(on: boolean)
 		if rate > 0 then
 			budget -= 1
 		end
-		entry.emitter.Rate = rate
-		entry.emitter.Enabled = rate > 0
+		-- Compare before writing: this runs on every stink emitter once a second (#182).
+		if entry.emitter.Rate ~= rate then
+			entry.emitter.Rate = rate
+		end
+		if entry.emitter.Enabled ~= (rate > 0) then
+			entry.emitter.Enabled = rate > 0
+		end
 	end
 end
 
@@ -198,7 +203,7 @@ function Stink.setLeft(cat: Model, left: number)
 	end
 	entry.left = left
 	local rate = Tier.stinkRate(entry.maxRate, left, entry.total, Effects.reducedMotion())
-	if entry.emitter.Enabled then
+	if entry.emitter.Enabled and entry.emitter.Rate ~= rate then
 		entry.emitter.Rate = rate
 	end
 end
