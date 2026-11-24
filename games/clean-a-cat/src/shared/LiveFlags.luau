@@ -72,6 +72,7 @@ LiveFlags.KEYS = {
 	"openingReplay", -- testing only: the game's owner gets the opening again on every join, nobody else (SpaService); off by default
 	"carryHold", -- Derek's carry hold from his clip (forearms out at belly height, Effects/Carry) instead of the crossed arms; on in dev, Studio playtests always use it; off by default
 	"openingBox", -- the opening scene: the truck, the bump and the box landing in front of the player (Effects/OpeningScene); off by default
+	"worldBackdrop", -- the draft world behind the street: hills, houses and trees the road runs into (Model-Agent's CleanACat_Area_Backdrop, BackdropController), this player's own copy; off by default
 	"skyDraft", -- the draft sky and light: pastel haze, soft clouds, warm tint and gentle bloom (Effects/Sky), this player's own; off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
@@ -120,6 +121,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	openingBox = true,
 	carryHold = true,
 	skyDraft = true,
+	worldBackdrop = true,
 	openingReplay = true,
 	sudsBubble = true,
 	recapSide = true,
