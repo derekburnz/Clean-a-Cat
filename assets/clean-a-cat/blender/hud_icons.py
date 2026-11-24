@@ -15,8 +15,9 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
   Build     a blue hammer with a wooden handle and a white paw on its head
 
 There is no coin here on purpose. The owner picked his library's own coin picture for the HUD (2026-11-24: "use
-library coin ... the other new coin doesn't look as good"), so CleanACat_Icon_Hud_Coins.png is a copy of the library's
-CatCafe_Icon_Coins.png and a rebuild must not bring a rendered coin back.
+library coin ... the other new coin doesn't look as good", the paw on it was done badly), then asked for it to be
+re-outlined to match. hud_coin.py does that from the library's CatCafe_Icon_Coins.png; a rebuild here must not bring a
+rendered coin back.
 
 Nothing here is a game model and nothing is uploaded: the ui-designer decides what goes into the game.
 """
