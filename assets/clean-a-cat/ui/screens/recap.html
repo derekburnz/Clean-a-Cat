@@ -3,14 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="full,compact">
+<meta name="states" content="full,compact,side">
 <title>Recap card</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <style>
 /* After each cat: stars, then the coins and XP breakdown (Derek liked this in My Pet Salon!).
    full: the card the first times, and for a rare cat. compact: the slim strip for every other cat, so 20 cats a
-   session do not mean 20 windows to close. The player taps Next cat (or X); nothing here closes by itself. */
+   session do not mean 20 windows to close. The player taps Next cat (or X); nothing here closes by itself.
+   side: the full card as a narrow column at the left with no dim (switch recapSide), so the clean cat stays in view
+   in the middle. Same content, stacked: portrait and name, stars, rows, total, one full-width button at the bottom.
+   The thumbstick and jump button are hidden while it shows (as for any window), and the button sits at the card's
+   bottom left half of the screen, away from the bottom right corner where Roblox's badge note appears.
+   On phones the card is 330 wide and the wash camera slides the cat to the right while the card shows (here the
+   world picture is shifted), so the cat's whole body stays clear of the card. Walking is blocked while it shows. */
 .win.recap { width: 760px; }
 .recap .body { display: grid; grid-template-columns: 230px 1fr; gap: 22px; }
 .who { display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -47,6 +53,57 @@
 body:not([data-state="compact"]) .strip { display: none; }
 body[data-state="compact"] .full { display: none; }
 body[data-state="compact"] { }
+body:not([data-state="side"]) .side { display: none; }
+body[data-state="side"] .full { display: none; }
+
+/* ---------- side: a narrow card at the left, no dim ---------- */
+.sidelane { position: absolute; left: 22px; top: calc(58px / var(--s) + 12px); bottom: 18px; display: flex; align-items: center; }
+.sidecard { position: relative; width: 430px; background: var(--cream); border: var(--stroke) solid var(--ink); border-radius: var(--radius-win); box-shadow: 0 var(--lip) 0 var(--ink); }
+.sidecard > .band { position: relative; height: 62px; margin: -1px -1px 0; border-radius: calc(var(--radius-win) - 4px) calc(var(--radius-win) - 4px) 0 0;
+  background: linear-gradient(90deg, #d9c7f5, #ffb3c7); border-bottom: var(--stroke) solid var(--ink); display: flex; align-items: center; padding-left: 20px; }
+.sidecard > .band .title { font-size: 32px; }
+.sidecard .xbtn { top: -22px; right: -22px; }
+.sidecard .in { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; }
+.sidecard .who2 { display: flex; align-items: center; gap: 14px; }
+.sidecard .who2 .tile { width: 112px; height: 112px; flex: none; }
+.sidecard .who2 .name { font-family: var(--font-head); font-size: 30px; line-height: 1.05; }
+.sidecard .who2 .tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+.sidecard .who2 .new { display: inline-flex; align-items: center; height: 28px; background: #ff86cf; color: #fff; border: 2px solid var(--ink);
+  border-radius: 14px; padding: 0 10px; font-family: var(--font-head); font-size: 17px; }
+.sidecard .who2 .st { display: flex; gap: 4px; font-size: 36px; margin-top: 4px; }
+.sidecard .rows .line { height: 36px; font-size: 18px; }
+.sidecard .total { margin-top: 0; }
+.sidecard .total .big { font-size: 30px; }
+.sidecard .total .xpb .bar { width: 120px; }
+.sidecard .sfoot { display: flex; flex-direction: column; gap: 8px; }
+.sidecard .sfoot .btn { width: 100%; }
+body.short .sidecard { width: 330px; }
+body.short .sidelane { left: 14px; }
+body.short[data-state="side"] #stage { background: linear-gradient(#f5e0c3, #fff6d9); }
+body.short[data-state="side"] .world { left: 20%; right: -20%; background-color: transparent; }
+body.short .sidecard .who2 { gap: 10px; }
+body.short .sidecard .who2 .tags { margin-top: 3px; }
+body.short .sidecard .rows .line { padding: 0 10px; gap: 8px; font-size: 15px; }
+body.short .sidecard .sfoot .total { padding: 3px 8px; gap: 6px; }
+body.short .sidecard .sfoot .total .big { font-size: 24px; gap: 4px; }
+body.short .sidecard .sfoot .total .xpb .t { font-size: 15px; }
+body.short .sidecard .sfoot .total .xpb .bar { display: none; }
+body.short .sidecard .sfoot .total .xpb { margin-left: 0; }
+body.short .sidecard .sfoot .btn { padding: 0 12px 4px; font-size: 22px; }
+body.short .sidecard > .band { height: 50px; }
+body.short .sidecard > .band .title { font-size: 27px; }
+body.short .sidecard .in { padding: 10px 14px 12px; gap: 6px; }
+body.short .sidecard .who2 .tile { width: 84px; height: 84px; }
+body.short .sidecard .who2 .name { font-size: 25px; }
+body.short .sidecard .who2 .st { font-size: 28px; margin-top: 2px; }
+body.short .sidecard .rows { gap: 4px; }
+body.short .sidecard .rows .line { height: 30px; font-size: 16px; }
+body.short .sidecard .total { padding: 3px 12px; }
+body.short .sidecard .total .big { font-size: 26px; }
+body.short .sidecard .sfoot { flex-direction: row; align-items: stretch; }
+body.short .sidecard .sfoot .total { flex: 1; min-width: 0; }
+body.short .sidecard .sfoot .total .xpb .bar { width: 70px; }
+body.short .sidecard .sfoot .btn { width: auto; padding: 0 18px 4px; }
 
 body.short .win.recap { width: 700px; }
 body.short .who .tile { width: 150px; height: 150px; }
@@ -96,6 +153,33 @@ body.short .foot .actions .btn { padding: 0 26px 4px; }
             <button class="btn green" data-tap><span class="lbl">Next cat</span></button>
           </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="side sidelane">
+    <div class="sidecard" role="dialog" aria-label="Muffin is clean">
+      <div class="band"><span class="title outlined">Great job!</span></div>
+      <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+      <div class="in">
+        <div class="who2">
+          <div class="tile common"><img src="img/portrait_Muffin_ink.png" alt=""></div>
+          <div><span class="name">Muffin</span>
+            <div class="st"><i data-ic="star"></i><i data-ic="star"></i><i data-ic="starEmpty"></i></div>
+            <span class="tags"><span class="rar common">Common</span><span class="new">New!</span></span></div>
+        </div>
+        <div class="rows">
+          <div class="line"><i data-ic="paw"></i>Washed and dried<span class="v">+40</span></div>
+          <div class="line"><i data-ic="clock"></i>Quick job<span class="v">+10</span></div>
+          <div class="line"><i data-ic="heart"></i>Happy owner tip<span class="v">+8</span></div>
+        </div>
+        <div class="sfoot">
+          <div class="total">
+            <span class="big"><i data-ic="coin"></i>+58</span>
+            <div class="xpb"><span class="t">+25 XP</span><div class="bar"><i style="width:74%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
+          </div>
+          <button class="btn green" data-tap><span class="lbl">Next cat</span></button>
         </div>
       </div>
     </div>
