@@ -76,6 +76,9 @@ ROUND = 4
 # SignBoard or Screen (found with a recursive FindFirstChild), so the UI can hang a SurfaceGui on it.
 RENAME_BIGGEST = {n: "Handle" for n in ("CleanACat_Tool_Sponge", "CleanACat_Tool_SpongeBubble",
                                           "CleanACat_Tool_SpongeGolden", "CleanACat_Tool_Brush",
+                                          "CleanACat_Tool_Shower", "CleanACat_Tool_Comb", "CleanACat_Tool_Tweezers",
+                                          "CleanACat_Tool_Towel", "CleanACat_Tool_Clipper", "CleanACat_Tool_Dryer",
+                                          "CleanACat_Tool_Shampoo",
                                           "CleanACat_NPC_SunHat", "CleanACat_NPC_Scarf", "CleanACat_NPC_ToteBag")}   # a Roblox Tool's grip part
 PART_NAMES = {"_SignBoard": "SignBoard", "_Screen": "Screen", "_Fill": "Fill", "_Nozzle": "Nozzle", "_Spout": "Spout"}
 # CollectionService tags, keyed by object name, or by name suffix when the key starts with "_".

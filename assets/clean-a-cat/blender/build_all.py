@@ -113,7 +113,7 @@ def main():
             extra = stations.EXTRAS[name]()
         if name in props.EXTRAS:
             extra = props.EXTRAS[name]()
-        for maker in (plot, spa_props, customers, build_props, street):
+        for maker in (tools, plot, spa_props, customers, build_props, street):
             if name in maker.EXTRAS:
                 extra = maker.EXTRAS[name]()
         if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)
