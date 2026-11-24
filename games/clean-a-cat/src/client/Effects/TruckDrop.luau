@@ -37,9 +37,11 @@ TruckDrop.BUMP_X = -7.5
 TruckDrop.BUMP_RANGE = 20 -- a pothole further than this along the road from the box is ignored, and BUMP_X is used
 TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.4 s apart the truck drives at 20 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
-TruckDrop.TAILGATE = { back = 6.5, up = 1.9, side = 2 } -- where the box leaves (the Tailgate attachment), from the
--- truck's pivot; `side` studs from the lane's middle toward the curb, the door's near corner
--- (on the road under the middle of the 13 stud truck, Model-Agent's CleanACat_Prop_DeliveryTruck)
+TruckDrop.TAILGATE = { back = 6.5, up = 1.9, side = 1.4 } -- where the box leaves (the Tailgate attachment), from the
+-- truck's pivot; `side` studs from the lane's middle toward the curb, toward the door's near corner but with the whole
+-- box inside the 5.5 stud opening, clear of the side wall and the corner posts (on the road under the middle of the
+-- 13 stud truck, Model-Agent's CleanACat_Prop_DeliveryTruck; posts and trim added in #352)
+TruckDrop.OPENING = 2.75 -- half the cargo opening's width, the side walls' inner faces from the lane's middle
 
 -- The pothole jolt: each axle dips `dip` studs and bounces back over `seconds`; the front's dip tips the nose down
 -- by `frontPitch`, the back's tips it up by `backPitch`.
@@ -281,9 +283,10 @@ function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 		return box
 	end
 	local lx, ly, lz = TruckDrop.launch(bumpX)
-	-- across the road: from the door's corner to the pavement, over the fall and the roll, slowing as it rolls
+	-- across the road: from the door's corner to the pavement, over the fall and the roll. It eases out (so the box
+	-- leaves the truck straight back, clear of the side wall, #352) and slows to a stop as it rolls.
 	local across = math.clamp((t - b.drop) / (TruckDrop.rollEnd() - b.drop), 0, 1)
-	box.z = lz * (1 - across) ^ 2
+	box.z = lz * (1 - across * across * (3 - 2 * across))
 	if t < b.drop then
 		-- sliding out of the door, riding with the truck
 		local u = (t - b.slide) / (b.drop - b.slide)

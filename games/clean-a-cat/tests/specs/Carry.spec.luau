@@ -38,6 +38,8 @@ return function()
 			expect(p.hug).to.equal(true)
 			expect(Carry.CROSSED.hug).to.equal(false)
 			expect(p.loafRoll > 0 and p.loafRoll <= 15).to.equal(true)
+			-- #353's head tipped onto his paws stands taller, so the loaf sits lower than a sit to keep it under the chin
+			expect(p.loafGap < p.gap and p.loafGap >= 0).to.equal(true)
 			-- his width faces the chest, not his length: the muddy loaf is 1.38 wide and 1.87 long
 			local size = Vector3.new(1.38, 1.59, 1.87)
 			expect(near(Carry.reach(1, size, true), 0.5 + 0.69 + 0.05)).to.equal(true)

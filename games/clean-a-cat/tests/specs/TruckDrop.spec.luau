@@ -130,6 +130,24 @@ return function()
 			local start = TruckDrop.box(B.slide, false)
 			expect(start.x > TruckDrop.truckX(B.slide) - TruckDrop.TAILGATE.back).to.equal(true)
 		end)
+		it("leaves through the opening, clear of the side wall and corner posts (#352)", function()
+			-- while any part of the box is still inside the truck's rear (plus the 0.2 stud posts), its curb-side
+			-- edge stays inside the opening; checked in both motion modes
+			local W = TruckDrop.BOX.width
+			for _, reduced in { false, true } do
+				local t = B.slide
+				while t < B.land do
+					local box = TruckDrop.box(t, reduced)
+					local rear = TruckDrop.truckX(t) - TruckDrop.TAILGATE.back
+					local reachBack = math.sqrt(W * W + H * H) / 2 -- the farthest a corner reaches toward the truck, rolled or not
+					if box.x + reachBack > rear - 0.2 then
+						local edge = TruckDrop.ROAD_Z - box.z + W / 2
+						expect(edge <= TruckDrop.OPENING).to.equal(true)
+					end
+					t += 0.01
+				end
+			end
+		end)
 		it("falls with the truck's way and weight: no float toward the player", function()
 			local lx = TruckDrop.launch()
 			local cx0 = TruckDrop.rollCenter(TruckDrop.ROLL.tilt)
