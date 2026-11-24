@@ -1411,6 +1411,106 @@
     "CFrame": {
      "CFrame": {
       "position": [
+       -0.45,
+       1.18,
+       1.605
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.056,
+     0.38,
+     0.38
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Tub",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.1,
+       0.98,
+       1.605
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.06,
+     0.22,
+     0.22
+    ],
+    "Color": [
+     0.8667,
+     0.949,
+     1.0
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Tub",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
        -1.2802,
        0.3,
        0.8702

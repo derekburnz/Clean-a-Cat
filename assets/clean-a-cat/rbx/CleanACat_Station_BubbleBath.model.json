@@ -4,7 +4,7 @@
   "Rojo_Target_PrimaryPart": "CleanACat_Station_BubbleBath/0",
   "PartBuilt": true,
   "SeatHeight": {
-   "Float64": 1.32
+   "Float64": 1.5
   },
   "CatScale": {
    "Float64": 1.5
@@ -19,7 +19,7 @@
      "CFrame": {
       "position": [
        0.0,
-       0.715,
+       1.22,
        0.0
       ],
       "orientation": [
@@ -42,9 +42,9 @@
      }
     },
     "Size": [
-     1.13,
-     3.9,
-     3.9
+     0.8,
+     4.3,
+     4.3
     ],
     "Color": [
      1.0,
@@ -62,7 +62,7 @@
     "PivotOffset": {
      "CFrame": {
       "position": [
-       -0.715,
+       -1.22,
        0.0,
        0.0
       ],
@@ -97,7 +97,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.605,
+         0.28,
          0.0,
          0.0
         ],
@@ -132,7 +132,7 @@
      "CFrame": {
       "position": [
        0.0,
-       0.08,
+       0.09,
        0.0
       ],
       "orientation": [
@@ -155,9 +155,9 @@
      }
     },
     "Size": [
-     0.2,
-     3.3,
-     3.3
+     0.22,
+     4.6,
+     4.6
     ],
     "Color": [
      1.0,
@@ -181,33 +181,83 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.7193,
-       1.45,
-       0.4607
+       0.0,
+       0.22,
+       0.0
       ],
       "orientation": [
        [
-        0.9659,
         0.0,
-        0.2588
-       ],
-       [
-        0.0,
-        1.0,
+        -1.0,
         0.0
        ],
        [
-        -0.2588,
+        1.0,
         0.0,
-        0.9659
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.16,
+     4.12,
+     4.12
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.55,
+       0.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.62,
+     3.58,
+     3.58
     ],
     "Color": [
      1.0,
@@ -217,6 +267,106 @@
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": true,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.845,
+       0.0
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.13,
+     4.38,
+     4.38
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.3824,
+       1.635,
+       -1.9223
+      ],
+      "orientation": [
+       [
+        0.1951,
+        0.0,
+        -0.9808
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9808,
+        0.0,
+        0.1951
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.42,
+     0.09,
+     0.8933
+    ],
+    "Color": [
+     1.0,
+     0.702,
+     0.7804
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
@@ -230,15 +380,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.7193,
-       1.71,
-       0.4607
+       -0.3824,
+       1.745,
+       -1.9223
       ],
       "orientation": [
        [
-        0.9659,
+        0.1951,
         0.0,
-        0.2588
+        -0.9808
        ],
        [
         0.0,
@@ -246,17 +396,17 @@
         0.0
        ],
        [
-        -0.2588,
+        0.9808,
         0.0,
-        0.9659
+        0.1951
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9133
     ],
     "Color": [
      1.0,
@@ -279,15 +429,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.2587,
-       1.453,
-       1.2587
+       -1.0889,
+       1.6355,
+       -1.6297
       ],
       "orientation": [
        [
-        0.7071,
+        0.5556,
         0.0,
-        0.7071
+        -0.8315
        ],
        [
         0.0,
@@ -295,17 +445,17 @@
         0.0
        ],
        [
-        -0.7071,
+        0.8315,
         0.0,
-        0.7071
+        0.5556
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     0.097,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -314,7 +464,7 @@
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
-    "CanCollide": true,
+    "CanCollide": false,
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
@@ -328,15 +478,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.2587,
-       1.714,
-       1.2587
+       -1.0889,
+       1.749,
+       -1.6297
       ],
       "orientation": [
        [
-        0.7071,
+        0.5556,
         0.0,
-        0.7071
+        -0.8315
        ],
        [
         0.0,
@@ -344,17 +494,17 @@
         0.0
        ],
        [
-        -0.7071,
+        0.8315,
         0.0,
-        0.7071
+        0.5556
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9133
     ],
     "Color": [
      1.0,
@@ -377,15 +527,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.4607,
-       1.45,
-       1.7193
+       -1.6297,
+       1.635,
+       -1.0889
       ],
       "orientation": [
        [
-        0.2588,
+        0.8315,
         0.0,
-        0.9659
+        -0.5556
        ],
        [
         0.0,
@@ -393,17 +543,17 @@
         0.0
        ],
        [
-        -0.9659,
+        0.5556,
         0.0,
-        0.2588
+        0.8315
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     0.09,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -412,7 +562,7 @@
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
-    "CanCollide": true,
+    "CanCollide": false,
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
@@ -426,15 +576,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.4607,
-       1.71,
-       1.7193
+       -1.6297,
+       1.745,
+       -1.0889
       ],
       "orientation": [
        [
-        0.2588,
+        0.8315,
         0.0,
-        0.9659
+        -0.5556
        ],
        [
         0.0,
@@ -442,17 +592,17 @@
         0.0
        ],
        [
-        -0.9659,
+        0.5556,
         0.0,
-        0.2588
+        0.8315
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9133
     ],
     "Color": [
      1.0,
@@ -475,15 +625,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.4607,
-       1.453,
-       1.7193
+       -1.9223,
+       1.6356,
+       -0.3824
       ],
       "orientation": [
        [
-        -0.2588,
+        0.9808,
         0.0,
-        0.9659
+        -0.1951
        ],
        [
         0.0,
@@ -491,17 +641,17 @@
         0.0
        ],
        [
-        -0.9659,
+        0.1951,
         0.0,
-        -0.2588
+        0.9808
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     0.0972,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -510,7 +660,7 @@
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
-    "CanCollide": true,
+    "CanCollide": false,
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
@@ -524,15 +674,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.4607,
-       1.714,
-       1.7193
+       -1.9223,
+       1.7492,
+       -0.3824
       ],
       "orientation": [
        [
-        -0.2588,
+        0.9808,
         0.0,
-        0.9659
+        -0.1951
        ],
        [
         0.0,
@@ -540,17 +690,17 @@
         0.0
        ],
        [
-        -0.9659,
+        0.1951,
         0.0,
-        -0.2588
+        0.9808
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9133
     ],
     "Color": [
      1.0,
@@ -573,15 +723,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.2587,
-       1.45,
-       1.2587
+       -1.9223,
+       1.7449,
+       0.3824
       ],
       "orientation": [
        [
-        -0.7071,
+        0.9808,
         0.0,
-        0.7071
+        0.1951
        ],
        [
         0.0,
@@ -589,17 +739,17 @@
         0.0
        ],
        [
-        -0.7071,
+        -0.1951,
         0.0,
-        -0.7071
+        0.9808
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     0.3098,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -608,7 +758,7 @@
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
-    "CanCollide": true,
+    "CanCollide": false,
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
@@ -622,15 +772,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.2587,
-       1.71,
-       1.2587
+       -1.9243,
+       1.9648,
+       0.3726
       ],
       "orientation": [
        [
-        -0.7071,
+        0.9808,
         0.0,
-        0.7071
+        0.1951
        ],
        [
         0.0,
@@ -638,17 +788,17 @@
         0.0
        ],
        [
-        -0.7071,
+        -0.1951,
         0.0,
-        -0.7071
+        0.9808
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
     ],
     "Color": [
      1.0,
@@ -671,15 +821,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.7193,
-       1.453,
-       0.4607
+       -1.6297,
+       1.9456,
+       1.0889
       ],
       "orientation": [
        [
-        -0.9659,
+        0.8315,
         0.0,
-        0.2588
+        0.5556
        ],
        [
         0.0,
@@ -687,17 +837,17 @@
         0.0
        ],
        [
-        -0.2588,
+        -0.5556,
         0.0,
-        -0.9659
+        0.8315
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     0.7171,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -720,15 +870,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.7193,
-       1.714,
-       0.4607
+       -1.6353,
+       2.3691,
+       1.0806
       ],
       "orientation": [
        [
-        -0.9659,
+        0.8315,
         0.0,
-        0.2588
+        0.5556
        ],
        [
         0.0,
@@ -736,17 +886,17 @@
         0.0
        ],
        [
-        -0.2588,
+        -0.5556,
         0.0,
-        -0.9659
+        0.8315
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
     ],
     "Color": [
      1.0,
@@ -769,15 +919,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.7193,
-       1.45,
-       -0.4607
+       -1.0889,
+       2.1452,
+       1.6297
       ],
       "orientation": [
        [
-        -0.9659,
+        0.5556,
         0.0,
-        -0.2588
+        0.8315
        ],
        [
         0.0,
@@ -785,17 +935,17 @@
         0.0
        ],
        [
-        0.2588,
+        -0.8315,
         0.0,
-        -0.9659
+        0.5556
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     1.1104,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -818,15 +968,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.7193,
-       1.71,
-       -0.4607
+       -1.0972,
+       2.7654,
+       1.6241
       ],
       "orientation": [
        [
-        -0.9659,
+        0.5556,
         0.0,
-        -0.2588
+        0.8315
        ],
        [
         0.0,
@@ -834,17 +984,17 @@
         0.0
        ],
        [
-        0.2588,
+        -0.8315,
         0.0,
-        -0.9659
+        0.5556
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
     ],
     "Color": [
      1.0,
@@ -867,15 +1017,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.2587,
-       1.453,
-       -1.2587
+       -0.3824,
+       2.2689,
+       1.9223
       ],
       "orientation": [
        [
-        -0.7071,
+        0.1951,
         0.0,
-        -0.7071
+        0.9808
        ],
        [
         0.0,
@@ -883,17 +1033,17 @@
         0.0
        ],
        [
-        0.7071,
+        -0.9808,
         0.0,
-        -0.7071
+        0.1951
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     1.3639,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -916,15 +1066,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.2587,
-       1.714,
-       -1.2587
+       -0.3922,
+       3.0159,
+       1.9203
       ],
       "orientation": [
        [
-        -0.7071,
+        0.1951,
         0.0,
-        -0.7071
+        0.9808
        ],
        [
         0.0,
@@ -932,17 +1082,17 @@
         0.0
        ],
        [
-        0.7071,
+        -0.9808,
         0.0,
-        -0.7071
+        0.1951
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
     ],
     "Color": [
      1.0,
@@ -965,15 +1115,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.4607,
-       1.45,
-       -1.7193
+       0.3824,
+       2.2684,
+       1.9223
       ],
       "orientation": [
        [
-        -0.2588,
+        -0.1951,
         0.0,
-        -0.9659
+        0.9808
        ],
        [
         0.0,
@@ -981,17 +1131,17 @@
         0.0
        ],
        [
-        0.9659,
+        -0.9808,
         0.0,
-        -0.2588
+        -0.1951
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     1.3569,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -1014,15 +1164,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.4607,
-       1.71,
-       -1.7193
+       0.3922,
+       3.0119,
+       1.9203
       ],
       "orientation": [
        [
-        -0.2588,
+        -0.1951,
         0.0,
-        -0.9659
+        0.9808
        ],
        [
         0.0,
@@ -1030,17 +1180,17 @@
         0.0
        ],
        [
-        0.9659,
+        -0.9808,
         0.0,
-        -0.2588
+        -0.1951
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
     ],
     "Color": [
      1.0,
@@ -1063,15 +1213,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.4607,
-       1.453,
-       -1.7193
+       1.0889,
+       2.1457,
+       1.6297
       ],
       "orientation": [
        [
-        0.2588,
+        -0.5556,
         0.0,
-        -0.9659
+        0.8315
        ],
        [
         0.0,
@@ -1079,17 +1229,17 @@
         0.0
        ],
        [
-        0.9659,
+        -0.8315,
         0.0,
-        0.2588
+        -0.5556
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     1.1174,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -1112,15 +1262,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.4607,
-       1.714,
-       -1.7193
+       1.0972,
+       2.7694,
+       1.6241
       ],
       "orientation": [
        [
-        0.2588,
+        -0.5556,
         0.0,
-        -0.9659
+        0.8315
        ],
        [
         0.0,
@@ -1128,17 +1278,17 @@
         0.0
        ],
        [
-        0.9659,
+        -0.8315,
         0.0,
-        0.2588
+        -0.5556
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
     ],
     "Color": [
      1.0,
@@ -1161,15 +1311,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.2587,
-       1.45,
-       -1.2587
+       1.6297,
+       1.9451,
+       1.0889
       ],
       "orientation": [
        [
-        0.7071,
+        -0.8315,
         0.0,
-        -0.7071
+        0.5556
        ],
        [
         0.0,
@@ -1177,17 +1327,17 @@
         0.0
        ],
        [
-        0.7071,
+        -0.5556,
         0.0,
-        0.7071
+        -0.8315
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     0.7101,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -1210,15 +1360,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.2587,
-       1.71,
-       -1.2587
+       1.6353,
+       2.3651,
+       1.0806
       ],
       "orientation": [
        [
-        0.7071,
+        -0.8315,
         0.0,
-        -0.7071
+        0.5556
        ],
        [
         0.0,
@@ -1226,17 +1376,17 @@
         0.0
        ],
        [
-        0.7071,
+        -0.5556,
         0.0,
-        0.7071
+        -0.8315
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
     ],
     "Color": [
      1.0,
@@ -1259,15 +1409,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.7193,
-       1.453,
-       -0.4607
+       1.9223,
+       1.7454,
+       0.3824
       ],
       "orientation": [
        [
-        0.9659,
+        -0.9808,
         0.0,
-        -0.2588
+        0.1951
        ],
        [
         0.0,
@@ -1275,17 +1425,17 @@
         0.0
        ],
        [
-        0.2588,
+        -0.1951,
         0.0,
-        0.9659
+        -0.9808
        ]
       ]
      }
     },
     "Size": [
-     0.36,
-     0.4,
-     1.0494
+     0.42,
+     0.3168,
+     0.8933
     ],
     "Color": [
      1.0,
@@ -1294,7 +1444,7 @@
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
-    "CanCollide": true,
+    "CanCollide": false,
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
@@ -1308,15 +1458,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.7193,
-       1.714,
-       -0.4607
+       1.9243,
+       1.9688,
+       0.3726
       ],
       "orientation": [
        [
-        0.9659,
+        -0.9808,
         0.0,
-        -0.2588
+        0.1951
        ],
        [
         0.0,
@@ -1324,17 +1474,409 @@
         0.0
        ],
        [
-        0.2588,
+        -0.1951,
         0.0,
-        0.9659
+        -0.9808
        ]
       ]
      }
     },
     "Size": [
-     0.46,
-     0.14,
-     1.0694
+     0.51,
+     0.17,
+     0.9333
+    ],
+    "Color": [
+     1.0,
+     0.9647,
+     0.9255
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.9223,
+       1.6351,
+       -0.3824
+      ],
+      "orientation": [
+       [
+        -0.9808,
+        0.0,
+        -0.1951
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.1951,
+        0.0,
+        -0.9808
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.42,
+     0.0902,
+     0.8933
+    ],
+    "Color": [
+     1.0,
+     0.702,
+     0.7804
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.9223,
+       1.7452,
+       -0.3824
+      ],
+      "orientation": [
+       [
+        -0.9808,
+        0.0,
+        -0.1951
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.1951,
+        0.0,
+        -0.9808
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.51,
+     0.17,
+     0.9133
+    ],
+    "Color": [
+     1.0,
+     0.9647,
+     0.9255
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.6297,
+       1.6355,
+       -1.0889
+      ],
+      "orientation": [
+       [
+        -0.8315,
+        0.0,
+        -0.5556
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5556,
+        0.0,
+        -0.8315
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.42,
+     0.097,
+     0.8933
+    ],
+    "Color": [
+     1.0,
+     0.702,
+     0.7804
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.6297,
+       1.749,
+       -1.0889
+      ],
+      "orientation": [
+       [
+        -0.8315,
+        0.0,
+        -0.5556
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.5556,
+        0.0,
+        -0.8315
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.51,
+     0.17,
+     0.9133
+    ],
+    "Color": [
+     1.0,
+     0.9647,
+     0.9255
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.0889,
+       1.635,
+       -1.6297
+      ],
+      "orientation": [
+       [
+        -0.5556,
+        0.0,
+        -0.8315
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.8315,
+        0.0,
+        -0.5556
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.42,
+     0.09,
+     0.8933
+    ],
+    "Color": [
+     1.0,
+     0.702,
+     0.7804
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.0889,
+       1.745,
+       -1.6297
+      ],
+      "orientation": [
+       [
+        -0.5556,
+        0.0,
+        -0.8315
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.8315,
+        0.0,
+        -0.5556
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.51,
+     0.17,
+     0.9133
+    ],
+    "Color": [
+     1.0,
+     0.9647,
+     0.9255
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.3824,
+       1.6355,
+       -1.9223
+      ],
+      "orientation": [
+       [
+        -0.1951,
+        0.0,
+        -0.9808
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9808,
+        0.0,
+        -0.1951
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.42,
+     0.097,
+     0.8933
+    ],
+    "Color": [
+     1.0,
+     0.702,
+     0.7804
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.3824,
+       1.749,
+       -1.9223
+      ],
+      "orientation": [
+       [
+        -0.1951,
+        0.0,
+        -0.9808
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.9808,
+        0.0,
+        -0.1951
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.51,
+     0.17,
+     0.9133
     ],
     "Color": [
      1.0,
@@ -1358,43 +1900,43 @@
      "CFrame": {
       "position": [
        0.0,
-       1.285,
-       0.0
+       1.13,
+       -2.144
       ],
       "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
        [
         0.0,
         -1.0,
         0.0
        ],
        [
-        1.0,
+        -1.0,
         0.0,
         0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
        ]
       ]
      }
     },
     "Size": [
-     0.03,
-     3.3,
-     3.3
+     0.04,
+     0.46,
+     0.46
     ],
     "Color": [
-     0.9333,
-     0.9569,
-     0.9647
+     1.0,
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth",
     "Shape": "Cylinder"
@@ -1407,9 +1949,359 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.3636,
-       1.96,
-       -1.1442
+       0.2761,
+       1.4,
+       -2.1261
+      ],
+      "orientation": [
+       [
+        0.1288,
+        0.0,
+        -0.9917
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        -0.9917,
+        0.0,
+        -0.1288
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.044,
+     0.21,
+     0.21
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       1.5,
+       -2.144
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        -1.0
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.048,
+     0.22,
+     0.22
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.2761,
+       1.4,
+       -2.1261
+      ],
+      "orientation": [
+       [
+        -0.1288,
+        0.0,
+        -0.9917
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        -0.9917,
+        0.0,
+        0.1288
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.052,
+     0.21,
+     0.21
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       1.13,
+       2.144
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.04,
+     0.46,
+     0.46
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.2761,
+       1.4,
+       2.1261
+      ],
+      "orientation": [
+       [
+        -0.1288,
+        0.0,
+        0.9917
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        0.9917,
+        0.0,
+        0.1288
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.044,
+     0.21,
+     0.21
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       1.5,
+       2.144
+      ],
+      "orientation": [
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.048,
+     0.22,
+     0.22
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.2761,
+       1.4,
+       2.1261
+      ],
+      "orientation": [
+       [
+        0.1288,
+        0.0,
+        0.9917
+       ],
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        0.9917,
+        0.0,
+        -0.1288
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.052,
+     0.21,
+     0.21
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -1.5445,
+       1.97,
+       -1.2067
       ],
       "orientation": [
        [
@@ -1431,9 +2323,9 @@
      }
     },
     "Size": [
-     0.48,
-     0.32,
-     0.4
+     0.504,
+     0.336,
+     0.42
     ],
     "Color": [
      0.9647,
@@ -1444,7 +2336,7 @@
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": false,
+    "CastShadow": true,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    },
@@ -1465,9 +2357,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.2836,
-       2.15,
-       -1.2642
+       -1.4645,
+       2.17,
+       -1.3267
       ],
       "orientation": [
        [
@@ -1489,9 +2381,9 @@
      }
     },
     "Size": [
-     0.26,
-     0.26,
-     0.26
+     0.28,
+     0.28,
+     0.28
     ],
     "Color": [
      0.9647,
@@ -1515,9 +2407,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.2436,
-       2.13,
-       -1.4142
+       -1.4245,
+       2.15,
+       -1.4867
       ],
       "orientation": [
        [
@@ -1564,9 +2456,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       2.43,
-       2.13
+       -1.0889,
+       2.8804,
+       1.6297
       ],
       "orientation": [
        [
@@ -1588,16 +2480,66 @@
      }
     },
     "Size": [
-     4.9,
-     0.26,
-     0.26
+     0.1,
+     0.44,
+     0.44
     ],
     "Color": [
-     0.6627,
-     0.6863,
-     0.7216
+     0.949,
+     0.7569,
+     0.3059
     ],
-    "Material": "SmoothPlastic",
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -1.0889,
+       3.8752,
+       1.6297
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     1.9696,
+     0.24,
+     0.24
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
@@ -1614,9 +2556,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       4.82,
-       1.665
+       -1.0889,
+       3.3504,
+       1.6297
       ],
       "orientation": [
        [
@@ -1638,22 +2580,223 @@
      }
     },
     "Size": [
-     0.18,
-     0.18,
-     1.05
+     0.4,
+     0.4,
+     0.4
     ],
     "Color": [
-     0.6627,
-     0.6863,
-     0.7216
+     0.9843,
+     0.8941,
+     0.6039
     ],
-    "Material": "SmoothPlastic",
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": true,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Ball"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -1.0167,
+       4.975,
+       1.5216
+      ],
+      "orientation": [
+       [
+        0.3928,
+        -0.8315,
+        -0.3928
+       ],
+       [
+        0.7071,
+        0.0,
+        0.7071
+       ],
+       [
+        -0.5879,
+        -0.5556,
+        0.5879
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.44,
+     0.24,
+     0.24
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.8722,
+       5.09,
+       1.3054
+      ],
+      "orientation": [
+       [
+        0.5556,
+        -0.8315,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        -0.8315,
+        -0.5556,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.44,
+     0.24,
+     0.24
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.7278,
+       4.975,
+       1.0892
+      ],
+      "orientation": [
+       [
+        0.3928,
+        -0.8315,
+        0.3928
+       ],
+       [
+        -0.7071,
+        0.0,
+        0.7071
+       ],
+       [
+        -0.5879,
+        -0.5556,
+        -0.5879
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.44,
+     0.24,
+     0.24
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_BubbleBath",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.6556,
+       4.77,
+       0.9811
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.16,
+     0.38,
+     0.38
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
    }
   },
   {
@@ -1670,7 +2813,7 @@
        "CFrame": {
         "position": [
          0.0,
-         1.44,
+         1.697,
          0.0
         ],
         "orientation": [
@@ -1693,9 +2836,9 @@
        }
       },
       "Size": [
-       0.28,
-       3.26,
-       3.26
+       0.146,
+       3.54,
+       3.54
       ],
       "Color": [
        0.2471,
@@ -1714,7 +2857,7 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -1.44,
+         -1.697,
          0.0,
          0.0
         ],
@@ -1749,9 +2892,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.55,
-         1.586,
-         -1.25
+         -0.25,
+         1.776,
+         -1.4
         ],
         "orientation": [
          [
@@ -1773,7 +2916,7 @@
        }
       },
       "Size": [
-       0.6,
+       0.7,
        0.04,
        0.07
       ],
@@ -1799,9 +2942,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.05,
-         1.586,
-         -1.05
+         -0.85,
+         1.776,
+         -1.2
         ],
         "orientation": [
          [
@@ -1849,9 +2992,59 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.2,
-         1.586,
-         -1.38
+         0.45,
+         1.776,
+         -1.52
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.34,
+       0.04,
+       0.07
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "Glass",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 0.3
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Water",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.0,
+         1.776,
+         -0.95
         ],
         "orientation": [
          [
@@ -1936,9 +3129,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.6711,
-         1.626,
-         0.9584
+         0.7511,
+         1.82,
+         0.9614
         ],
         "orientation": [
          [
@@ -1960,9 +3153,9 @@
        }
       },
       "Size": [
-       0.92,
-       0.506,
-       0.92
+       1.0,
+       0.55,
+       1.0
       ],
       "Color": [
        0.9922,
@@ -1979,9 +3172,9 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.6711,
-         -1.626,
-         -0.9584
+         -0.7511,
+         -1.82,
+         -0.9614
         ],
         "orientation": [
          [
@@ -2023,9 +3216,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.9231,
-         1.78,
-         0.8428
+         -0.7511,
+         1.82,
+         0.9614
         ],
         "orientation": [
          [
@@ -2047,59 +3240,9 @@
        }
       },
       "Size": [
-       0.4,
-       0.4,
-       0.4
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
+       1.0,
+       0.55,
        1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Foam",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.6711,
-         1.62,
-         0.9584
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.8,
-       0.44,
-       0.8
       ],
       "Color": [
        0.9922,
@@ -2131,9 +3274,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.4762,
-         1.766,
-         1.1557
+         1.2992,
+         1.812,
+         0.0454
         ],
         "orientation": [
          [
@@ -2155,59 +3298,9 @@
        }
       },
       "Size": [
-       0.36,
-       0.36,
-       0.36
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Foam",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         1.17,
-         1.616,
-         0.0
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.72,
-       0.396,
-       0.72
+       0.84,
+       0.462,
+       0.84
       ],
       "Color": [
        0.9922,
@@ -2239,9 +3332,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.2199,
-         1.752,
-         -0.2728
+         -1.2992,
+         1.812,
+         0.0454
         ],
         "orientation": [
          [
@@ -2263,9 +3356,9 @@
        }
       },
       "Size": [
-       0.32,
-       0.32,
-       0.32
+       0.84,
+       0.462,
+       0.84
       ],
       "Color": [
        0.9922,
@@ -2276,11 +3369,19 @@
       "Anchored": true,
       "CanCollide": false,
       "CanTouch": false,
-      "CastShadow": false,
+      "CastShadow": true,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     }
+      "BottomSurface": "Smooth"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
     },
     {
      "name": "CleanACat_Station_BubbleBath_Foam",
@@ -2289,9 +3390,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.7829,
-         1.624,
-         -0.8695
+         0.8892,
+         1.814,
+         -0.9208
         ],
         "orientation": [
          [
@@ -2347,59 +3448,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.6135,
-         1.78,
-         -1.0891
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.4,
-       0.4,
-       0.4
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Foam",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -1.1444,
-         1.616,
-         -0.2433
+         -0.8004,
+         1.806,
+         -1.0244
         ],
         "orientation": [
          [
@@ -2455,9 +3506,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.2499,
-         1.766,
-         0.0132
+         0.0,
+         1.816,
+         1.3
         ],
         "orientation": [
          [
@@ -2479,9 +3530,67 @@
        }
       },
       "Size": [
-       0.36,
-       0.36,
-       0.36
+       0.92,
+       0.506,
+       0.92
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.3923,
+         1.969,
+         -0.1463
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.34,
+       0.34,
+       0.34
       ],
       "Color": [
        0.9922,
@@ -2497,6 +3606,1064 @@
       "BottomSurface": "Smooth",
       "Shape": "Ball"
      }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.3923,
+         1.969,
+         -0.1463
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.34,
+       0.34,
+       0.34
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.7605,
+         1.983,
+         -1.1275
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       0.38,
+       0.38
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.9927,
+         1.955,
+         -0.9586
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3,
+       0.3,
+       0.3
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.0777,
+         1.962,
+         -0.727
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.32,
+       0.32,
+       0.32
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.1109,
+         2.057,
+         0.7493
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.68,
+       0.68,
+       0.68
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.8364,
+         1.9965,
+         0.8993
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4216,
+       0.4216,
+       0.4216
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.378,
+         1.9679,
+         0.9121
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3264,
+       0.3264,
+       0.3264
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.1183,
+         1.9965,
+         0.4366
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4216,
+       0.4216,
+       0.4216
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.1069,
+         2.3188,
+         0.9193
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.272,
+       0.272,
+       0.272
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.1109,
+         2.046,
+         0.7493
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.64,
+       0.64,
+       0.64
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.8448,
+         1.989,
+         0.8751
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3968,
+       0.3968,
+       0.3968
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.135,
+         1.9622,
+         0.4559
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3072,
+       0.3072,
+       0.3072
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.353,
+         1.989,
+         0.9169
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3968,
+       0.3968,
+       0.3968
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.9794,
+         2.2924,
+         0.6582
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.256,
+       0.256,
+       0.256
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.2313,
+         1.905,
+         -1.576
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.6,
+       0.6,
+       0.6
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.7417,
+         1.86,
+         -1.8358
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4,
+       0.4,
+       0.4
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.5973,
+         1.855,
+         -1.2036
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.44,
+       0.44,
+       0.44
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.3971,
+         1.555,
+         -1.7253
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.52,
+       0.52,
+       0.52
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.2254,
+         1.1375,
+         -1.887
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       0.38,
+       0.38
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.5481,
+         0.785,
+         -1.6602
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.28,
+       0.28,
+       0.28
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.427,
+         0.23,
+         -1.7006
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.6,
+       0.33,
+       0.6
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "children": [
+      {
+       "name": "Mesh",
+       "className": "SpecialMesh",
+       "properties": {
+        "MeshType": "Sphere"
+       }
+      }
+     ]
     }
    ],
    "properties": {
@@ -2542,9 +4709,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.56,
-         2.08,
-         0.9699
+         0.7265,
+         2.32,
+         0.9299
         ],
         "orientation": [
          [
@@ -2566,9 +4733,9 @@
        }
       },
       "Size": [
-       0.52,
-       0.52,
-       0.52
+       0.54,
+       0.54,
+       0.54
       ],
       "Color": [
        0.749,
@@ -2588,9 +4755,9 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.56,
-         -2.08,
-         -0.9699
+         -0.7265,
+         -2.32,
+         -0.9299
         ],
         "orientation": [
          [
@@ -2623,9 +4790,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.6467,
-         2.2071,
-         0.8544
+         0.8165,
+         2.452,
+         0.8099
         ],
         "orientation": [
          [
@@ -2647,9 +4814,9 @@
        }
       },
       "Size": [
-       0.104,
-       0.104,
-       0.104
+       0.108,
+       0.108,
+       0.108
       ],
       "Color": [
        0.9922,
@@ -2673,519 +4840,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.56,
-         2.02,
-         0.9699
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.4,
-       0.4,
-       0.4
-      ],
-      "Color": [
-       0.749,
-       0.902,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Transparency": 0.4,
-      "CanQuery": false,
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.4933,
-         2.1178,
-         0.8811
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.08,
-       0.08,
-       0.08
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanQuery": false
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.792,
-         2.06,
-         -0.792
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.48,
-       0.48,
-       0.48
-      ],
-      "Color": [
-       0.749,
-       0.902,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Transparency": 0.4,
-      "CanQuery": false,
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.872,
-         2.1773,
-         -0.8986
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.096,
-       0.096,
-       0.096
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanQuery": false
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -1.103,
-         1.98,
-         -0.1945
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.36,
-       0.36,
-       0.36
-      ],
-      "Color": [
-       0.749,
-       0.902,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Transparency": 0.4,
-      "CanQuery": false,
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -1.043,
-         2.068,
-         -0.2745
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.072,
-       0.072,
-       0.072
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanQuery": false
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         1.55,
-         1.96,
-         -1.0
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.38,
-       0.38,
-       0.38
-      ],
-      "Color": [
-       0.749,
-       0.902,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Transparency": 0.4,
-      "CanQuery": false,
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         1.6133,
-         2.0529,
-         -1.0844
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.076,
-       0.076,
-       0.076
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanQuery": false
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -1.35,
-         1.92,
-         1.3
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.32,
-       0.32,
-       0.32
-      ],
-      "Color": [
-       0.749,
-       0.902,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Transparency": 0.4,
-      "CanQuery": false,
-      "Shape": "Ball"
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -1.2967,
-         1.9982,
-         1.2289
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.064,
-       0.064,
-       0.064
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "CanQuery": false
-     }
-    },
-    {
-     "name": "CleanACat_Station_BubbleBath_Bubbles",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         1.9,
-         2.9,
-         0.35
+         -0.7265,
+         2.29,
+         0.9299
         ],
         "orientation": [
          [
@@ -3235,9 +4892,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.9767,
-         3.0124,
-         0.2478
+         -0.6498,
+         2.4024,
+         0.8276
         ],
         "orientation": [
          [
@@ -3285,9 +4942,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.95,
-         3.4,
-         -0.3
+         0.8475,
+         2.27,
+         -0.8776
         ],
         "orientation": [
          [
@@ -3309,9 +4966,9 @@
        }
       },
       "Size": [
-       0.36,
-       0.36,
-       0.36
+       0.48,
+       0.48,
+       0.48
       ],
       "Color": [
        0.749,
@@ -3337,9 +4994,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.89,
-         3.488,
-         -0.38
+         0.9275,
+         2.3873,
+         -0.9843
         ],
         "orientation": [
          [
@@ -3361,9 +5018,9 @@
        }
       },
       "Size": [
-       0.072,
-       0.072,
-       0.072
+       0.096,
+       0.096,
+       0.096
       ],
       "Color": [
        0.9922,
@@ -3387,9 +5044,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.6,
-         3.75,
-         -0.9
+         -1.2592,
+         2.21,
+         0.044
         ],
         "orientation": [
          [
@@ -3411,9 +5068,9 @@
        }
       },
       "Size": [
-       0.26,
-       0.26,
-       0.26
+       0.38,
+       0.38,
+       0.38
       ],
       "Color": [
        0.749,
@@ -3439,9 +5096,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.6433,
-         3.8136,
-         -0.9578
+         -1.1959,
+         2.3029,
+         -0.0405
         ],
         "orientation": [
          [
@@ -3463,9 +5120,9 @@
        }
       },
       "Size": [
-       0.052,
-       0.052,
-       0.052
+       0.076,
+       0.076,
+       0.076
       ],
       "Color": [
        0.9922,
@@ -3489,9 +5146,621 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.6,
-         2.6,
-         0.8
+         -0.7757,
+         2.17,
+         -0.9929
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.32,
+       0.32,
+       0.32
+      ],
+      "Color": [
+       0.749,
+       0.902,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 0.4,
+      "CanQuery": false,
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.7224,
+         2.2482,
+         -1.064
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.064,
+       0.064,
+       0.064
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanQuery": false
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.9172,
+         2.0,
+         -0.4075
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       0.38,
+       0.38
+      ],
+      "Color": [
+       0.749,
+       0.902,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 0.4,
+      "CanQuery": false,
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.8538,
+         2.0929,
+         -0.4919
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.076,
+       0.076,
+       0.076
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanQuery": false
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.0756,
+         4.18,
+         0.7811
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3,
+       0.3,
+       0.3
+      ],
+      "Color": [
+       0.749,
+       0.902,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 0.4,
+      "CanQuery": false,
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.0256,
+         4.2533,
+         0.7145
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.06,
+       0.06,
+       0.06
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanQuery": false
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.7556,
+         4.9,
+         0.4811
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.24,
+       0.24,
+       0.24
+      ],
+      "Color": [
+       0.749,
+       0.902,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 0.4,
+      "CanQuery": false,
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.7156,
+         4.9587,
+         0.4278
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.048,
+       0.048,
+       0.048
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanQuery": false
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         2.15,
+         3.0,
+         -0.5
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.48,
+       0.48,
+       0.48
+      ],
+      "Color": [
+       0.749,
+       0.902,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 0.4,
+      "CanQuery": false,
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         2.23,
+         3.1173,
+         -0.6067
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.096,
+       0.096,
+       0.096
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanQuery": false
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -2.2,
+         3.45,
+         -0.7
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.38,
+       0.38,
+       0.38
+      ],
+      "Color": [
+       0.749,
+       0.902,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Transparency": 0.4,
+      "CanQuery": false,
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -2.1367,
+         3.5429,
+         -0.7844
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.076,
+       0.076,
+       0.076
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "CanQuery": false
+     }
+    },
+    {
+     "name": "CleanACat_Station_BubbleBath_Bubbles",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.75,
+         3.85,
+         -1.2
         ],
         "orientation": [
          [
@@ -3541,9 +5810,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.5533,
-         2.6684,
-         0.7378
+         1.7967,
+         3.9184,
+         -1.2622
         ],
         "orientation": [
          [
@@ -3628,9 +5897,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.0,
-         4.7,
-         1.2
+         -0.6556,
+         4.6,
+         0.9811
         ],
         "orientation": [
          [
@@ -3653,8 +5922,8 @@
       },
       "Size": [
        0.2,
-       0.34,
-       0.34
+       0.5,
+       0.5
       ],
       "Color": [
        0.6588,
@@ -3665,7 +5934,7 @@
       "Anchored": true,
       "CanCollide": false,
       "CanTouch": false,
-      "CastShadow": false,
+      "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
       "Shape": "Cylinder",
@@ -3739,9 +6008,9 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.0,
-       4.7,
-       1.2
+       -0.6556,
+       4.6,
+       0.9811
       ],
       "orientation": [
        [
@@ -3779,7 +6048,7 @@
        "CFrame": {
         "position": [
          0.0,
-         0.565,
+         0.7,
          0.0
         ],
         "orientation": [
@@ -3802,9 +6071,9 @@
        }
       },
       "Size": [
-       2.4,
-       1.05,
-       2.4
+       2.9,
+       1.32,
+       2.9
       ],
       "Color": [
        0.6627,
@@ -3824,7 +6093,7 @@
        "CFrame": {
         "position": [
          0.0,
-         -0.565,
+         -0.7,
          0.0
         ],
         "orientation": [

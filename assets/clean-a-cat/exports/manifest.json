@@ -8639,40 +8639,36 @@
    "CleanACat_Station_BubbleBath_Spout",
    "CleanACat_Station_BubbleBath_Barrier"
   ],
-  "triangles": 2032,
-  "budget": 2500,
-  "parts": 68,
+  "triangles": 4472,
+  "budget": 4600,
+  "parts": 113,
   "size_studs": {
-   "x": 4.24,
-   "y": 4.34,
-   "z": 4.93
+   "x": 4.76,
+   "y": 4.6,
+   "z": 5.24
   },
   "size_roblox": [
-   4.24,
-   4.93,
-   4.34
+   4.76,
+   5.24,
+   4.6
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
   "gates": {
    "pass": true,
    "failed": [],
-   "warnings": [
-    "pivot",
-    "centered"
-   ],
+   "warnings": [],
    "qa_accepted": {
-    "back to back": 2,
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2032/2500 tris",
+    "budget": "4472/4600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1250 faces on swatch centers",
+    "uv": "2822 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.02 (want 0)",
-    "centered": "footprint center x=0.00 y=0.09",
+    "centered": "footprint center x=0.00 y=0.00",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -8825,9 +8821,9 @@
    "CleanACat_Station_Tub_Bubbles",
    "CleanACat_Station_Tub_Stream"
   ],
-  "triangles": 3328,
+  "triangles": 3384,
   "budget": 3400,
-  "parts": 89,
+  "parts": 91,
   "size_studs": {
    "x": 4.65,
    "y": 3.57,
@@ -8848,10 +8844,10 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "3328/3400 tris",
+    "budget": "3384/3400 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2118 faces on swatch centers",
+    "uv": "2158 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.01 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01",
