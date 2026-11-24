@@ -8,10 +8,21 @@ type Cue = CueRules.Cue
 
 local Cues: { [string]: Cue } = {
 	-- synth: CleanACat_Sfx_SpongeLoop (seamless 2 s loop)
-	scrubLoop = { ids = {}, group = "Sfx", volume = 0.5, voices = 1, preload = true, looped = true },
+	scrubLoop = {
+		ids = { "rbxassetid://125803317425310" },
+		group = "Sfx",
+		volume = 0.5,
+		voices = 1,
+		preload = true,
+		looped = true,
+	},
 	-- synth: CleanACat_Sfx_BubblePop_1..3
 	bubblePop = {
-		ids = {},
+		ids = {
+			"rbxassetid://130114968601790",
+			"rbxassetid://110755365796073",
+			"rbxassetid://116414110656793",
+		},
 		group = "Sfx",
 		volume = 0.35,
 		pitch = { 0.92, 1.08 },
@@ -20,10 +31,17 @@ local Cues: { [string]: Cue } = {
 		preload = true,
 	},
 	-- synth: CleanACat_Sfx_MudPlop (pitch set per play by CueRules.mudPlopPitch)
-	mudPlop = { ids = {}, group = "Sfx", volume = 0.5, minGap = 0.05, voices = 3, preload = true },
+	mudPlop = {
+		ids = { "rbxassetid://107329071536560" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 0.05,
+		voices = 3,
+		preload = true,
+	},
 	-- synth: CleanACat_Sfx_RevealChime
 	revealChime = {
-		ids = {},
+		ids = { "rbxassetid://84312583849520" },
 		group = "Sfx",
 		volume = 0.55,
 		minGap = 0.5,
@@ -32,7 +50,7 @@ local Cues: { [string]: Cue } = {
 	},
 	-- synth: CleanACat_Sfx_FurShake
 	catShake = {
-		ids = {},
+		ids = { "rbxassetid://128546270034088" },
 		group = "Sfx",
 		volume = 0.5,
 		pitch = { 0.95, 1.05 },
@@ -41,7 +59,11 @@ local Cues: { [string]: Cue } = {
 	},
 	-- synth: CleanACat_Sfx_BrushSwish_1..3, variant = stroke index
 	brushSwish = {
-		ids = {},
+		ids = {
+			"rbxassetid://134072180392503",
+			"rbxassetid://121263183608677",
+			"rbxassetid://99870851025492",
+		},
 		group = "Sfx",
 		volume = 0.45,
 		pitch = { 0.97, 1.03 },
@@ -50,10 +72,17 @@ local Cues: { [string]: Cue } = {
 		preload = true,
 	},
 	-- synth: CleanACat_Sfx_Purr_1..2
-	purr = { ids = {}, group = "Sfx", volume = 0.5, pitch = { 0.95, 1.05 }, minGap = 1, voices = 1 },
+	purr = {
+		ids = { "rbxassetid://112652819529138", "rbxassetid://93890384660354" },
+		group = "Sfx",
+		volume = 0.5,
+		pitch = { 0.95, 1.05 },
+		minGap = 1,
+		voices = 1,
+	},
 	-- synth: CleanACat_Sfx_BowPop
 	bowPop = {
-		ids = {},
+		ids = { "rbxassetid://136883364011549" },
 		group = "Sfx",
 		volume = 0.5,
 		pitch = { 0.95, 1.05 },
@@ -61,10 +90,16 @@ local Cues: { [string]: Cue } = {
 		voices = 1,
 	},
 	-- synth: CleanACat_Ui_Camera
-	camera = { ids = {}, group = "Ui", volume = 0.5, minGap = 0.3, voices = 1 },
+	camera = {
+		ids = { "rbxassetid://138137408834946" },
+		group = "Ui",
+		volume = 0.5,
+		minGap = 0.3,
+		voices = 1,
+	},
 	-- synth: CleanACat_Ui_Click
 	uiClick = {
-		ids = {},
+		ids = { "rbxassetid://133323658066149" },
 		group = "Ui",
 		volume = 0.4,
 		pitch = { 0.98, 1.02 },
@@ -73,9 +108,26 @@ local Cues: { [string]: Cue } = {
 		preload = true,
 	},
 	-- synth: CleanACat_Sfx_DryerHum (seamless 2 s loop); played at the dryer (3D) while a cat dries
-	dryerHum = { ids = {}, group = "Sfx", volume = 0.35, voices = 1, looped = true },
+	dryerHum = {
+		ids = { "rbxassetid://105566818572862" },
+		group = "Sfx",
+		volume = 0.35,
+		voices = 1,
+		looped = true,
+	},
 	-- synth: CleanACat_Sfx_Meow_1..3; played at the cat (3D)
-	meow = { ids = {}, group = "Sfx", volume = 0.45, pitch = { 0.9, 1.15 }, minGap = 4, voices = 2 },
+	meow = {
+		ids = {
+			"rbxassetid://100957394631396",
+			"rbxassetid://89957276276636",
+			"rbxassetid://70877155078126",
+		},
+		group = "Sfx",
+		volume = 0.45,
+		pitch = { 0.9, 1.15 },
+		minGap = 4,
+		voices = 2,
+	},
 	-- Opening scene (#281, Effects/OpeningScene), all 3D at the truck or the box.
 	-- synth: CleanACat_Sfx_TruckRumble (seamless 2 s loop); follows the truck
 	truckRumble = {

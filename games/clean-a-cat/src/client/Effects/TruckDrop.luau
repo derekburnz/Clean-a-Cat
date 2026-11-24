@@ -20,7 +20,8 @@ TruckDrop.BEATS = {
 }
 
 TruckDrop.ROAD_Z = 8 -- the middle of the truck's lane, across the road from the landing spot
-TruckDrop.BUMP_X = -3 -- where the bump is along the road
+TruckDrop.BUMP_X = -3 -- where the bump is along the road when the scene has no bump to time to (off the plot)
+TruckDrop.BUMP_RANGE = 20 -- a bump further than this along the road from the box is ignored, and BUMP_X is used
 TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.25 s apart the truck drives at 32 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
 TruckDrop.TAILGATE = { back = 6.5, up = 1.9 } -- where the box leaves (the Tailgate attachment), from the truck's pivot
@@ -43,6 +44,8 @@ TruckDrop.OPEN = {
 }
 -- The kitten hops out of the box toward the spa (Gameplay-Engineer's ask): a small arc, then onDone.
 TruckDrop.HOP = { distance = 2.5, height = 1.4, seconds = 0.42, squash = 0.15 }
+-- As the kitten hops out, the player's camera turns to face where he is going (the tub), over this many seconds.
+TruckDrop.CAMERA_TURN_SECONDS = 0.6
 
 -- Sound and effect beats, in the order they happen. OpeningScene plays each once as the clock passes it.
 TruckDrop.EVENTS = {
@@ -102,15 +105,25 @@ function TruckDrop.speed(): number
 	return TruckDrop.WHEELBASE / (TruckDrop.BEATS.backHit - TruckDrop.BEATS.frontHit)
 end
 
+-- The bump's place along the road for the scene's timing: the real bump's offset when it is a sane number, else
+-- BUMP_X. The scene passes the plot's SpotBump, so the jolt always lands on the bump the player can see.
+function TruckDrop.bumpAt(offset: number?): number
+	if offset == nil or offset ~= offset or math.abs(offset) > TruckDrop.BUMP_RANGE then
+		return TruckDrop.BUMP_X
+	end
+	return offset
+end
+
 -- The truck's pivot along the road: the front axle is over the bump at frontHit, the back axle at backHit.
-function TruckDrop.truckX(t: number): number
-	return TruckDrop.BUMP_X
+-- bumpX (from bumpAt) defaults to BUMP_X; every function below that takes it passes it on.
+function TruckDrop.truckX(t: number, bumpX: number?): number
+	return (bumpX or TruckDrop.BUMP_X)
 		- TruckDrop.WHEELBASE / 2
 		+ TruckDrop.speed() * (t - TruckDrop.BEATS.frontHit)
 end
 
 -- The truck at time t. `reduced` (Reduced Motion or Less shake) drops the jolt, the rattle and the door's swing.
-function TruckDrop.truck(t: number, reduced: boolean): Truck
+function TruckDrop.truck(t: number, reduced: boolean, bumpX: number?): Truck
 	local b = TruckDrop.BEATS
 	local jolt = TruckDrop.JOLT
 	local lift, pitch = 0, 0
@@ -135,18 +148,18 @@ function TruckDrop.truck(t: number, reduced: boolean): Truck
 				+ d.swing * math.sin(opened * 9) * math.exp(-opened * 1.5)
 		end
 	end
-	return { x = TruckDrop.truckX(t), lift = lift, pitch = pitch, door = door }
+	return { x = TruckDrop.truckX(t, bumpX), lift = lift, pitch = pitch, door = door }
 end
 
 -- Where the box leaves the truck, in scene space.
-function TruckDrop.launch(): (number, number, number)
-	return TruckDrop.truckX(TruckDrop.BEATS.drop) - TruckDrop.TAILGATE.back,
+function TruckDrop.launch(bumpX: number?): (number, number, number)
+	return TruckDrop.truckX(TruckDrop.BEATS.drop, bumpX) - TruckDrop.TAILGATE.back,
 		TruckDrop.TAILGATE.up,
 		TruckDrop.ROAD_Z
 end
 
 -- The box at time t (scene clock), before it is opened. After settle it rests at the origin, wiggling.
-function TruckDrop.box(t: number, reduced: boolean): Box
+function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 	local b = TruckDrop.BEATS
 	local box: Box =
 		{ x = 0, y = 0, z = 0, tumble = 0, roll = 0, squash = 1, visible = t >= b.drop }
@@ -155,7 +168,7 @@ function TruckDrop.box(t: number, reduced: boolean): Box
 	end
 	if t < b.land then
 		local u = (t - b.drop) / (b.land - b.drop)
-		local lx, ly, lz = TruckDrop.launch()
+		local lx, ly, lz = TruckDrop.launch(bumpX)
 		box.x = lx * (1 - u)
 		box.z = lz * (1 - u)
 		-- through the launch height at u = 0 and the ground at u = 1, peaking ARC.height above the straight line
@@ -255,12 +268,12 @@ end
 
 -- Where the shot camera looks at t, as an X along the road: it follows the truck in, holds on the box from the
 -- drop and stays there, so the landing is always framed.
-function TruckDrop.lookX(t: number): number
+function TruckDrop.lookX(t: number, bumpX: number?): number
 	local b = TruckDrop.BEATS
-	local follow = math.clamp(TruckDrop.truckX(t) - TruckDrop.TAILGATE.back, -8, 0)
+	local follow = math.clamp(TruckDrop.truckX(t, bumpX) - TruckDrop.TAILGATE.back, -8, 0)
 	if t >= b.drop then
 		local u = math.clamp((t - b.drop) / (b.land - b.drop), 0, 1)
-		local lx = TruckDrop.launch()
+		local lx = TruckDrop.launch(bumpX)
 		return lx * (1 - u)
 	end
 	return follow

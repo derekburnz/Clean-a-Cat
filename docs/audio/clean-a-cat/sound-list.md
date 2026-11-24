@@ -10,18 +10,18 @@ Moments are the shared list in issue #3. Source: **synth** means made by `assets
 
 | Cue id | Moment | Bus | What it sounds like | Source | File or asset | Vol | Pitch | minGap | Voices | Preload | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| scrubLoop | ScrubStart to ScrubStop | Sfx | gentle wet sponge rub, loops; speed follows drag | synth | CleanACat_Sfx_SpongeLoop (2 s seamless loop, four strokes, small squeaks) | 0.5 | 0.9 to 1.15 by drag speed | - | 1 | yes | made, gate PASS, seam clean |
-| bubblePop | ScrubMove | Sfx | tiny soft pops | synth | CleanACat_Sfx_BubblePop_1..3 | 0.35 | 0.92 to 1.08 | 0.12 | 3 | yes | made, gate PASS |
-| mudPlop | MudPatchCleared | Sfx | small wet plop, pitch rises as fewer patches remain | synth | CleanACat_Sfx_MudPlop | 0.5 | 0.9 + 0.02 per cleared patch, max 1.3 | 0.05 | 3 | yes | made, gate PASS |
-| revealChime | CatClean | Sfx | two soft bright notes rising | synth | CleanACat_Sfx_RevealChime | 0.55 | 1.0 | 0.5 | 1 | yes | made, gate PASS |
-| dryerHum | DryStart to DryStop | Sfx | soft rushing air over a low fan hum, loops, at the dryer | synth | CleanACat_Sfx_DryerHum (2 s seamless loop, 110 Hz hum, 3 Hz fan flutter) | 0.35 | - | - | 1 | no | made, gate PASS; waits on DryStart and DryStop |
-| catShake | CatClean (with the shake-off) | Sfx | fur shake with a few droplets | synth | CleanACat_Sfx_FurShake (four fur flaps and droplet ticks, 0.75 s) | 0.5 | 0.95 to 1.05 | 0.5 | 1 | no | made, gate PASS |
-| brushSwish | BrushSwipe | Sfx | soft brush swish, one step higher per stroke | synth | CleanACat_Sfx_BrushSwish_1..3 (stroke 1, 2, 3) | 0.45 | 0.97 to 1.03 | 0.1 | 2 | yes | made, gate PASS |
-| purr | CatFluffed | Sfx | short content purr, about 1.5 s | library | CleanACat_Sfx_Purr_1..2 (ported from the library's purr code into make_sfx.py) | 0.5 | 0.95 to 1.05 | 1.0 | 1 | no | made, gate PASS |
-| bowPop | BowChosen | Sfx | light round pop | synth | CleanACat_Sfx_BowPop | 0.5 | 0.95 to 1.05 | 0.15 | 1 | no | made, gate PASS |
-| camera | PhotoTaken | Ui | soft double shutter click | synth | CleanACat_Ui_Camera | 0.5 | 1.0 | 0.3 | 1 | no | made, gate PASS |
-| uiClick | any button | Ui | short soft tick | synth | CleanACat_Ui_Click | 0.4 | 0.98 to 1.02 | 0.05 | 2 | yes | made, gate PASS |
-| meow | customer arrives, window cat idle | Sfx (3D at the cat) | short friendly meow, 3 variants, never a hiss | library | CleanACat_Sfx_Meow_1..3 (mew, rising mew, trilled mrrp; ported from the library's cat_voice code) | 0.45 | 0.9 to 1.15 | 4.0 | 2 | no | made, gate PASS |
+| scrubLoop | ScrubStart to ScrubStop | Sfx | gentle wet sponge rub, loops; speed follows drag | synth | CleanACat_Sfx_SpongeLoop (2 s seamless loop, four strokes, small squeaks) | 0.5 | 0.9 to 1.15 by drag speed | - | 1 | yes | uploaded to the group 2026-11-24, gate PASS, seam clean |
+| bubblePop | ScrubMove | Sfx | tiny soft pops | synth | CleanACat_Sfx_BubblePop_1..3 | 0.35 | 0.92 to 1.08 | 0.12 | 3 | yes | uploaded to the group 2026-11-24, gate PASS |
+| mudPlop | MudPatchCleared | Sfx | small wet plop, pitch rises as fewer patches remain | synth | CleanACat_Sfx_MudPlop | 0.5 | 0.9 + 0.02 per cleared patch, max 1.3 | 0.05 | 3 | yes | uploaded to the group 2026-11-24, gate PASS |
+| revealChime | CatClean | Sfx | two soft bright notes rising | synth | CleanACat_Sfx_RevealChime | 0.55 | 1.0 | 0.5 | 1 | yes | uploaded to the group 2026-11-24, gate PASS |
+| dryerHum | DryStart to DryStop | Sfx | soft rushing air over a low fan hum, loops, at the dryer | synth | CleanACat_Sfx_DryerHum (2 s seamless loop, 110 Hz hum, 3 Hz fan flutter) | 0.35 | - | - | 1 | no | uploaded to the group 2026-11-24, gate PASS; waits on DryStart and DryStop |
+| catShake | CatClean (with the shake-off) | Sfx | fur shake with a few droplets | synth | CleanACat_Sfx_FurShake (four fur flaps and droplet ticks, 0.75 s) | 0.5 | 0.95 to 1.05 | 0.5 | 1 | no | uploaded to the group 2026-11-24, gate PASS |
+| brushSwish | BrushSwipe | Sfx | soft brush swish, one step higher per stroke | synth | CleanACat_Sfx_BrushSwish_1..3 (stroke 1, 2, 3) | 0.45 | 0.97 to 1.03 | 0.1 | 2 | yes | uploaded to the group 2026-11-24, gate PASS |
+| purr | CatFluffed | Sfx | short content purr, about 1.5 s | library | CleanACat_Sfx_Purr_1..2 (ported from the library's purr code into make_sfx.py) | 0.5 | 0.95 to 1.05 | 1.0 | 1 | no | uploaded to the group 2026-11-24, gate PASS |
+| bowPop | BowChosen | Sfx | light round pop | synth | CleanACat_Sfx_BowPop | 0.5 | 0.95 to 1.05 | 0.15 | 1 | no | uploaded to the group 2026-11-24, gate PASS |
+| camera | PhotoTaken | Ui | soft double shutter click | synth | CleanACat_Ui_Camera | 0.5 | 1.0 | 0.3 | 1 | no | uploaded to the group 2026-11-24, gate PASS |
+| uiClick | any button | Ui | short soft tick | synth | CleanACat_Ui_Click | 0.4 | 0.98 to 1.02 | 0.05 | 2 | yes | uploaded to the group 2026-11-24, gate PASS |
+| meow | customer arrives, window cat idle | Sfx (3D at the cat) | short friendly meow, 3 variants, never a hiss | library | CleanACat_Sfx_Meow_1..3 (mew, rising mew, trilled mrrp; ported from the library's cat_voice code) | 0.45 | 0.9 to 1.15 | 4.0 | 2 | no | uploaded to the group 2026-11-24, gate PASS |
 | truckRumble | opening scene (#281), while the truck is in view | Sfx (3D at the truck) | a small friendly truck rolling by: soft low engine chug, light tyre hiss, a little rattle | synth | CleanACat_Sfx_TruckRumble (2 s seamless loop) | 0.4 | - | - | 1 | no | uploaded to the group 2026-11-24; waits on openingBox |
 | truckHonk | opening scene, 0.4 s in | Sfx (3D at the truck) | one soft toot-toot, two round notes a third apart, so players look up | synth | CleanACat_Sfx_TruckHonk | 0.4 | - | 2.0 | 1 | no | uploaded to the group 2026-11-24; Derek to say honk or quiet (Design-Agent open point 3) |
 | truckBump | opening scene, each axle over the bump | Sfx (3D at the truck) | rubbery thunk with a springy boing; the back wheels add a cargo rattle | synth | CleanACat_Sfx_TruckBump_1..2 (front, back) | 0.5 | - | 0.1 | 2 | no | uploaded to the group 2026-11-24 |
