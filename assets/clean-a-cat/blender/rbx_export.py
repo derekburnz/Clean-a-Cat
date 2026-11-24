@@ -49,7 +49,8 @@ RZ90 = Matrix(((0, -1, 0), (1, 0, 0), (0, 0, 1)))   # Roblox local X (cylinder a
 
 # Asset families whose big parts block players. Everything else (cats, people, tools, small props) is walk-through.
 COLLIDE_PREFIXES = ("CleanACat_Station_", "CleanACat_Area_", "CleanACat_Street_")
-NO_COLLIDE_OBJECTS = ("_Bulb", "_Bulbs", "_Tube", "_Water", "_Foam", "_Decor", "_Glow", "_Flowers", "_Canopy")
+NO_COLLIDE_OBJECTS = ("_Bulb", "_Bulbs", "_Tube", "_Water", "_Foam", "_Decor", "_Glow", "_Flowers", "_Canopy",
+                      "_Bubbles", "_Stream")
 INVISIBLE_OBJECTS = ("_Barrier",)     # volumes never drawn: walls that keep players out of a spot
 BARRIER_OBJECTS = ("_Barrier",)       # invisible and always solid
 NO_QUERY_BARRIERS = ("CleanACat_Station_", "CleanACat_Area_Vip", "CleanACat_Area_Street")   # barriers the camera and clicks pass through (#18: under a
@@ -232,8 +233,10 @@ def _material(obname, swatch):
     if swatch == "glass" or obname.endswith("_Glass"):   # SmoothPlastic, not Glass: Roblox's Glass bends what is
         return "SmoothPlastic", 0.6                       # behind it, so a room seen through a window looked broken
                                                           # (Derek 2026-10-30, "windows have distortion problems")
-    if swatch == "puddle" or obname.endswith("_Water"):
+    if swatch == "puddle" or obname.endswith(("_Water", "_Stream")):
         return "Glass", 0.3
+    if swatch in palette.CLEAR_SWATCHES:            # a soap bubble: SmoothPlastic, since Glass hides the water behind
+        return "SmoothPlastic", palette.CLEAR_SWATCHES[swatch]
     if obname.endswith("_Bars"):
         return "ForceField", 0.0
     if obname.endswith(INVISIBLE_OBJECTS):
@@ -254,7 +257,8 @@ def _material(obname, swatch):
 def _props(p, asset, uid):
     material, transparency = _material(p["name"], p["swatch"])
     material = SWATCH_MATERIALS.get(asset, {}).get(p["swatch"], material)
-    see_through = material == "Glass" or p["swatch"] == "glass" or p["name"].endswith("_Glass")
+    see_through = (material == "Glass" or p["swatch"] == "glass" or p["name"].endswith("_Glass")
+                   or p["swatch"] in palette.CLEAR_SWATCHES)
     climb = p["name"].endswith(CLIMB_OBJECTS)
     thin_ok = (asset.startswith(OUTDOOR_PREFIXES) and not any(k in asset for k in THIN_SKIP)
                and min(p["size"]) >= THIN_COLLIDE - 1e-3
@@ -293,6 +297,8 @@ def _props(p, asset, uid):
         props["CanQuery"] = False                 # clicks pass through to the floor and the props
     if any(k in p["name"] for k in SHOWN_LATER):
         props["CanQuery"] = False                 # scrub and brush rays reach the fur, not the hidden puffs
+    if p["name"].endswith(("_Bubbles", "_Stream")):
+        props["CanQuery"] = False                 # soap bubbles and running water (#111): taps pass through
     if p["name"].endswith("_RingIcon_Decor"):     # #2449: flat pictures in the walk-up rings, never in the way
         props["CanQuery"] = False
         props["CastShadow"] = False

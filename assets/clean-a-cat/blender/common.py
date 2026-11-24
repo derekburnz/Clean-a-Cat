@@ -95,6 +95,60 @@ def palette_material(png_path):
     return mat
 
 
+def clear_material():
+    """The palette material with the CLEAR_SWATCHES see-through, for pictures only (the game sets Transparency on
+    those parts): the palette colour, a mask in memory into Alpha, and a gloss. Never exported."""
+    name = palette.TEXTURE_NAME + "_Clear"
+    mat = bpy.data.materials.get(name)
+    if mat:
+        return mat
+    w, h = palette.GRID * palette.SWATCH_PX, palette.ROWS * palette.SWATCH_PX
+    img = bpy.data.images.new(name, w, h, alpha=False)
+    img.colorspace_settings.name = "Non-Color"
+    px = [1.0] * (w * h * 4)
+    for i, (sw, _hx) in enumerate(palette.SWATCHES):
+        if sw in palette.CLEAR_SWATCHES:
+            a = 1.0 - palette.CLEAR_SWATCHES[sw]
+            col, row = i % palette.GRID, i // palette.GRID
+            y0 = (palette.ROWS - 1 - row) * palette.SWATCH_PX
+            for y in range(y0, y0 + palette.SWATCH_PX):
+                for x in range(col * palette.SWATCH_PX, (col + 1) * palette.SWATCH_PX):
+                    o = (y * w + x) * 4
+                    px[o], px[o + 1], px[o + 2] = a, a, a
+    img.pixels.foreach_set(px)
+    img.update()
+    img.pack()
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nodes, links = mat.node_tree.nodes, mat.node_tree.links
+    bsdf = nodes.get("Principled BSDF")
+    tex = nodes.new("ShaderNodeTexImage")
+    tex.image = bpy.data.images.get(palette.TEXTURE_NAME)
+    tex.interpolation = "Closest"
+    links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
+    mask = nodes.new("ShaderNodeTexImage")
+    mask.image = img
+    mask.interpolation = "Closest"
+    links.new(mask.outputs["Color"], bsdf.inputs["Alpha"])
+    bsdf.inputs["Roughness"].default_value = 0.12
+    return mat
+
+
+def render_still():
+    """Render the scene to its filepath. Objects of soap bubbles (name holding "Bubbles") wear clear_material for
+    the picture and get the palette material back after it, so the gates and the FBX still see one material."""
+    worn = {}
+    for ob in bpy.context.scene.objects:
+        if ob.type == "MESH" and "Bubbles" in ob.name and ob.data.materials and ob.data.name not in worn:
+            worn[ob.data.name] = (ob.data, ob.data.materials[0])
+            ob.data.materials[0] = clear_material()
+    try:
+        bpy.ops.render.render(write_still=True)
+    finally:
+        for mesh, mat in worn.values():
+            mesh.materials[0] = mat
+
+
 # -------------------------------------------------------------- builder -----
 def _mat(center, size=(1, 1, 1), rot=None):
     """Translation @ rotation @ scale. rot = (angle_rad, 'X'|'Y'|'Z') or a Matrix."""
@@ -619,7 +673,7 @@ def render_preview(objs, path, res=(640, 480), samples=32, azimuth=35, elevation
                 hidden.append(ob)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     sc.render.filepath = path
-    bpy.ops.render.render(write_still=True)
+    render_still()
     for ob in hidden:
         ob.hide_render = False
     return path
@@ -756,7 +810,7 @@ def render_views(objs, path, size=256, margin=1.12, bg=(0.96, 0.92, 0.87), engin
         tile = os.path.join(os.path.dirname(path), f"._view_{vname}.png")
         os.makedirs(os.path.dirname(path), exist_ok=True)
         sc.render.filepath = tile
-        bpy.ops.render.render(write_still=True)
+        render_still()
         tmp.append(tile)
 
     contact_sheet.sheet(tmp, path, cols=len(tmp), factor=1, bg=(*bg, 1.0))

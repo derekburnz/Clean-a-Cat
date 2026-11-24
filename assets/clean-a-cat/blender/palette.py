@@ -23,6 +23,8 @@ GOLD_DEEP = "gold_dark"           # what a near-black coat colour becomes
 # Swatches that are metal: Material Metal on the Roblox Part models, metallic in the palette material (a mask
 # texture, CatCafe_Palette_Metal.png). Only the golds, so only gold cats shine.
 METAL_SWATCHES = ("gold_light", "gold_mid", "gold_dark")
+# Swatches Roblox draws see-through, with their Transparency (#111): a soap bubble. The pictures draw them the same.
+CLEAR_SWATCHES = {"bubble": 0.4}
 SPA = ("spa_cream", "spa_mint", "spa_bubblegum", "spa_sky", "mud")   # the five style guide colours
 
 # (name, hex) in index order. Row comments match the style guide tables.
@@ -88,8 +90,8 @@ SWATCHES = [
     ("eye_mint", "#73DDB4"), ("eye_sky", "#5EBEFF"), ("eye_gold", "#F2B53A"), ("nose_bubblegum", "#F28DAE"),
     ("bow_pink", "#FF86AC"), ("bow_mint", "#5FD2A8"), ("bow_sky", "#64B2FF"), ("wood_light", "#E3C49C"),
     # row 20 (#22): dusty dried mud for dark fur, where the brown mud would vanish; the Uncommon badge colour; free
-    ("mud_dust", "#B99569"), ("mud_dust_wet", "#A88257"), ("rarity_uncommon", "#5FC98B"), ("free_20_4", "#000000"),
-    ("free_20_5", "#000000"), ("free_20_6", "#000000"), ("free_20_7", "#000000"), ("free_20_8", "#000000"),
+    ("mud_dust", "#B99569"), ("mud_dust_wet", "#A88257"), ("rarity_uncommon", "#5FC98B"), ("water", "#3FAEF2"),
+    ("bubble", "#BFE6FF"), ("free_20_6", "#000000"), ("free_20_7", "#000000"), ("free_20_8", "#000000"),
 ]
 assert len(SWATCHES) % GRID == 0 and len(SWATCHES) <= GRID * ROWS
 
