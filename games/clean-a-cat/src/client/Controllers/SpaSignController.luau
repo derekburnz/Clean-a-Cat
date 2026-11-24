@@ -120,7 +120,8 @@ local function refresh()
 end
 
 local function watch(player: Player)
-	if watched[player] == nil then
+	local existing: RBXScriptConnection? = watched[player]
+	if existing == nil then
 		watched[player] =
 			player:GetAttributeChangedSignal(SpaLayout.SLOT_ATTRIBUTE):Connect(refresh)
 	end
@@ -141,7 +142,7 @@ function SpaSignController.Start()
 	Players.PlayerAdded:Connect(watch)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		leaving[player] = true
-		local connection = watched[player]
+		local connection: RBXScriptConnection? = watched[player]
 		watched[player] = nil
 		if connection then
 			connection:Disconnect()
