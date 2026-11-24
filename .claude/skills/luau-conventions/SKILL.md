@@ -165,6 +165,7 @@ local function create<T>(className: string, props: { [string]: any }, children: 
 	return instance :: any
 end
 ```
+- **A screen or controller that opens and closes cleans up with a Trove** (`Shared.Vendor.Trove`, #184). Make one `Trove.new()`, then `trove:Connect(signal, fn)` for each connection and `trove:Add(x)` for each instance, thread or cleanup function. One `trove:Clean()` on close ends it all. `ScrubController`'s visit is the example. Don't add things that come and go during a long open (one per cat, say) to the same Trove, or it grows: clean those up when they finish.
 - Layouts via `UIListLayout` or `UIGridLayout`, sizes in `UDim2.fromScale` with `UIAspectRatioConstraint` or `UISizeConstraint`, never pixel offsets alone.
 
 ## 9. Style and comments
