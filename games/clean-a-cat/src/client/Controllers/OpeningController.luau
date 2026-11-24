@@ -21,7 +21,6 @@
 -- The console says how long after the join the truck started, to measure on a phone.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -36,7 +35,7 @@ local ControlHold = require(Client:WaitForChild("Spa"):WaitForChild("ControlHold
 local FloorTrail = require(Client:WaitForChild("Spa"):WaitForChild("FloorTrail"))
 local OpeningScene = require(Client:WaitForChild("Effects"):WaitForChild("OpeningScene"))
 local UI = require(Client:WaitForChild("UI"))
-local WashCamera = require(Client:WaitForChild("Effects"):WaitForChild("WashCamera"))
+local WashView = require(Client:WaitForChild("Spa"):WaitForChild("WashView"))
 
 local AHEAD = 6 -- studs in front of the player where the box lands without a SpotBox
 local RETAP_SECONDS = 2 -- a tap the server did not answer can be tried again after this
@@ -50,7 +49,6 @@ local SUDS = SudsRules.NAME
 local RECAP_FLAG = "recapCard"
 local PICK_STAND = 2.6 -- studs from the kitten where the player stops to lift him (Derek: walk up, then pick up)
 local WALK_SECONDS = 4 -- the walk up gives up after this and the lift plays where they are
-local HIDE_BIND = "CleanACat_WashHide"
 local TIP_PICK = { step = 1, total = 3, icon = "Paw", say = "Pick him up" }
 local TIP_WASH = { step = 2, total = 3, icon = "Sponge", say = "Wash him" }
 
@@ -64,12 +62,8 @@ local leading = false -- the trail and tip point at the tub until he is set down
 local picker: Instance? = nil -- the prompt and click on the kitten in the box
 local placer: BasePart? = nil -- the tub's prompt while he is carried
 local placing = false -- he is being set down: his hop plays while the server hands him out
-local wash: WashCamera.Handle? = nil
 local scrub: any = nil
 local walking = false -- the player is walking up to the box to lift him
-local hiddenParts: { BasePart } = {}
-local hiddenDecals: { Decal } = {}
-local hideConnection: RBXScriptConnection? = nil
 
 local function boxState(): unknown
 	return player:GetAttribute(SudsRules.BOX_ATTRIBUTE)
@@ -79,68 +73,20 @@ local function holdControls(hold: boolean)
 	ControlHold.set("opening", hold)
 end
 
--- The player's own avatar is hidden on their screen while the close-up wash view is up (Derek: "your character gets
--- in way"): it stands by the tub, so it would sit between the camera and the cat. Only on this device; everyone else
--- still sees it. Set every frame after the camera, because Roblox's camera scripts set the same fade themselves.
-local function hideCharacter(hide: boolean)
-	if hideConnection then
-		hideConnection:Disconnect()
-		hideConnection = nil
-	end
-	pcall(function()
-		RunService:UnbindFromRenderStep(HIDE_BIND)
-	end)
-	for _, part in hiddenParts do
-		part.LocalTransparencyModifier = 0
-	end
-	for _, decal in hiddenDecals do
-		decal.LocalTransparencyModifier = 0
-	end
-	table.clear(hiddenParts)
-	table.clear(hiddenDecals)
-	local character = player.Character
-	if not hide or character == nil then
-		return
-	end
-	local function add(item: Instance)
-		if item:IsA("BasePart") then
-			table.insert(hiddenParts, item :: BasePart)
-		elseif item:IsA("Decal") then
-			table.insert(hiddenDecals, item :: Decal)
-		end
-	end
-	for _, item in character:GetDescendants() do
-		add(item)
-	end
-	hideConnection = character.DescendantAdded:Connect(add)
-	RunService:BindToRenderStep(HIDE_BIND, Enum.RenderPriority.Camera.Value + 2, function()
-		for _, part in hiddenParts do
-			part.LocalTransparencyModifier = 1
-		end
-		for _, decal in hiddenDecals do
-			decal.LocalTransparencyModifier = 1
-		end
-	end)
-end
-
 -- The close-up wash view goes back to the player's camera, and they can walk again.
+-- The view itself, with the avatar hidden (Derek: "your character gets in way"), is Spa/WashView's, held here under
+-- "opening"; with the switch washView on, ScrubController holds it too while Suds is in the tub.
 function OpeningController.leaveWash()
-	local view = wash
-	wash = nil
-	if view then
-		view.exit()
-	end
-	hideCharacter(false)
+	WashView.set("opening", false)
 	holdControls(false)
 end
 
 local function enterWash()
-	if wash ~= nil then
+	if WashView.holds("opening") then
 		return
 	end
 	holdControls(true)
-	wash = WashCamera.enter(WashCamera.shot(SpaLayout.tubSpot()))
-	hideCharacter(true)
+	WashView.set("opening", true)
 end
 
 local function clearPicker()
