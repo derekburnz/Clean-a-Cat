@@ -4,7 +4,9 @@
 -- owned tools, the builds, the cats handed out, the opening's stage) and shows the first bubble that is due and that
 -- this save has not shown, one at a time. It waits while a window, the recap card or the dim step is up, while the
 -- opening's box waits for its tap, and for a moment after the screen frees up, so a bubble never lands on the frame a
--- card closes.
+-- card closes. Nothing talks over a wash (Design-Agent): from the player's first scrub on a cat until the next cat
+-- comes, a due bubble waits, so it shows once the recap card has closed. A bubble still up when the player starts
+-- scrubbing goes away.
 --
 -- "Show me" only points the way: the floor trail (switch tutorialTrail) to the tub, the Tools board or the builder
 -- board, and Moments.SudsPoint so Suds can trot there from his bed. It never opens a window, buys, builds or moves
@@ -49,6 +51,7 @@ local haveBuilds = false
 local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
 local freeSince = -math.huge
+local washing = false -- from the first scrub on this cat until the next cat or the tub empties
 local trailUntil: number? = nil -- os.clock() when our trail goes; nil while it is not ours
 local trailTo: Vector3? = nil
 
@@ -148,7 +151,8 @@ local function check()
 	end
 	local now = os.clock()
 	if
-		UI.busy()
+		washing
+		or UI.busy()
 		or player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true
 		or FloorTrail.isShown()
 	then
@@ -189,6 +193,7 @@ local function onCatReady(
 	locked: unknown,
 	stray: unknown
 )
+	washing = false -- a new cat: nothing has been scrubbed yet
 	if type(kind) == "string" and kind ~= SudsRules.NAME and stray ~= true then
 		happened.firstCustomer = true
 	end
@@ -210,7 +215,11 @@ local function onBuilds(rawBuilds: unknown, rawBuilt: unknown)
 	haveBuilds = true
 end
 
-function BubbleController.Init(_controllers: { [string]: any }) end
+local scrub: any = nil
+
+function BubbleController.Init(controllers: { [string]: any })
+	scrub = controllers.ScrubController
+end
 
 function BubbleController.Start()
 	Remotes.event("CatReady").OnClientEvent:Connect(onCatReady)
@@ -221,8 +230,17 @@ function BubbleController.Start()
 		end
 	end)
 	Moments.ScrubStart:Connect(function()
+		washing = true
 		stopTrail()
+		UI.hideBubble()
 	end)
+	if scrub then
+		scrub.stageChanged:Connect(function(stage: string?)
+			if stage == nil or stage == "waiting" or stage == "done" then
+				washing = false -- the wash is over (the recap card, if any, holds the bubble until it closes)
+			end
+		end)
+	end
 	task.spawn(function()
 		while true do
 			task.wait(CHECK_SECONDS)

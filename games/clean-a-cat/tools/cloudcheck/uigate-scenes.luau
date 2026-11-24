@@ -215,7 +215,7 @@ local SCENES = {
 		local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
 		UI.showBubble(BubbleRules.get("longBuild"))
 	end },
-	-- The same over a wash: the card sits above the tool tray.
+	-- A customer's cat in the tub before the first scrub: the tool tray steps aside while the card shows.
 	{ "SudsBubbleWash", function()
 		hud(true)
 		flag("sudsBubble", true)

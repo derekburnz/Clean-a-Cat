@@ -232,8 +232,7 @@ function UI.init()
 	toastLabel = toast
 
 	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
-	SudsBubble.build(root, HUD.bottomUsed) -- Suds's help bubble (switch sudsBubble), above the tool tray
-	HUD.onTrayChanged(SudsBubble.refresh)
+	SudsBubble.build(root, HUD.hideTray) -- Suds's help bubble (switch sudsBubble); the tool tray steps aside for it
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)

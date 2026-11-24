@@ -3,8 +3,8 @@
 -- at the bottom of the screen, Suds's round face poking up over its top edge so it reads as him talking, a title,
 -- one short line that says why, one chunky mint button and a small X. Design-Agent's look (2026-11-24).
 --
---   SudsBubble.build(root, bottomUsed)  makes it once; bottomUsed() is the real px the HUD's tool tray takes at the
---                                       bottom centre right now, so the card sits above it
+--   SudsBubble.build(root, onShown)     makes it once; onShown(true or false) as the card comes and goes (the HUD
+--                                       hides its tool tray meanwhile, so nothing stacks at the bottom centre)
 --   SudsBubble.show(bubble, onPress)    shows one bubble; onPress() runs when the player presses its button
 --   SudsBubble.hide()
 --   SudsBubble.isShown()
@@ -62,7 +62,7 @@ local PAD = 14 -- design px inside the card's edge
 local GAP = 12 -- design px between the face, the words and the button
 local CLOSE = 60 -- design px: the X's press area (45 real px at the smallest scale, over the 44 px floor)
 local CLOSE_DOT = 40 -- design px: the X's drawn circle inside it
-local BOTTOM_GAP = 12 -- real px between the card and the screen's bottom (or the tool tray)
+local BOTTOM_GAP = 12 -- real px between the card and the screen's bottom
 local EDGE = 16 -- real px from the side with no touch controls
 -- Real px each side keeps clear on a touch screen: the thumbstick's right edge and the jump button's left edge, plus
 -- a margin (TouchThumbstick and TouchJump in Roblox's PlayerModule; the UI gate's zones are the same).
@@ -83,9 +83,8 @@ type Parts = {
 local parts: Parts? = nil
 local shown: BubbleRules.Bubble? = nil
 local pressed: (() -> ())? = nil
-local bottomUsed: () -> number = function(): number
-	return 0
-end
+local onShown: (boolean) -> () = function(_on: boolean) end
+local wasOn = false
 
 function SudsBubble.isShown(): boolean
 	return shown ~= nil and LiveFlags.isOn(SudsBubble.FLAG)
@@ -118,6 +117,10 @@ local function redraw()
 	local current = shown
 	local on = current ~= nil and LiveFlags.isOn(SudsBubble.FLAG)
 	p.card.Visible = on
+	if on ~= wasOn then
+		wasOn = on
+		onShown(on)
+	end
 	if not on or current == nil then
 		return
 	end
@@ -128,7 +131,7 @@ local function redraw()
 	local designWidth = width / scale
 	p.scale.Scale = scale
 	p.card.Size = UDim2.fromOffset(designWidth, s.height)
-	p.card.Position = UDim2.new(0, centre, 1, -(BOTTOM_GAP + bottomUsed()))
+	p.card.Position = UDim2.new(0, centre, 1, -BOTTOM_GAP)
 
 	p.face.Size = UDim2.fromOffset(s.face, s.face)
 	-- The face sits on the card's left with its top s.poke above the card's top edge.
@@ -193,9 +196,9 @@ local function chunky(name: string, parent: Instance): TextButton
 	return b
 end
 
-function SudsBubble.build(root: Frame, used: (() -> number)?)
-	if used then
-		bottomUsed = used
+function SudsBubble.build(root: Frame, shownChanged: ((boolean) -> ())?)
+	if shownChanged then
+		onShown = shownChanged
 	end
 	local card = Instance.new("Frame")
 	card.Name = "SudsBubble"
@@ -292,11 +295,6 @@ function SudsBubble.build(root: Frame, used: (() -> number)?)
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SudsBubble.FLAG)
 		:Connect(redraw)
-end
-
--- Draws the card again (the tool tray came or went).
-function SudsBubble.refresh()
-	redraw()
 end
 
 return SudsBubble
