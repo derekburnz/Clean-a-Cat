@@ -72,6 +72,10 @@ Carry.POSE = table.freeze({
 	-- 1.23 high at its top corner, so he sits 0.2 lower on the arms with the head end rolled up 5 degrees, not 8, and
 	-- that corner stays under the carrier's chin (Model-Agent's numbers from his stand-in).
 	loafGap = 0,
+	-- R6 has one-stud block arms in a V narrower than the 2.9 stud loaf at CarryScale 1.4, so on the hands' middle
+	-- he sat half a stud inside both; raised 0.4 his head and body read 0.23 to 0.26 into the arms and the chin
+	-- still has room (Model-Agent's numbers from Sync-Agent's 63ff1f6 run)
+	loafGap6 = 0.4,
 	loafRoll = 5,
 })
 
@@ -104,6 +108,7 @@ Carry.CROSSED = table.freeze({
 	loafTurn = 90,
 	loafSide = 0,
 	loafGap = -0.15, -- as a sit
+	loafGap6 = -0.15,
 	loafRoll = 0,
 	fromHands = false,
 	hug = false,
@@ -343,7 +348,7 @@ local function cradle(rig: Rig, reach: number, loaf: boolean): CFrame?
 	-- never back inside the chest (the spot is the middle of his bounding box's base, not his pivot)
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + (if loaf then c.loafSide else c.sitSide),
-		math.max(a.Y, b.Y) + (if loaf then c.loafGap else c.gap),
+		math.max(a.Y, b.Y) + (if not loaf then c.gap elseif rig.r15 then c.loafGap else c.loafGap6),
 		if not useHands then ahead elseif loaf and c.hug then -reach else math.min(ahead, -reach)
 	)
 	return torso
