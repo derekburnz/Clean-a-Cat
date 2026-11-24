@@ -1,21 +1,32 @@
-"""The held loaf (issue #318). The owner, 2026-11-24, on the opening: "we should pick him up out of crate". The player
-lifts the muddy kitten out of the box and carries him to the tub, lying across their folded arms.
+"""The held loaf (issues #318, #324). The owner, 2026-11-24, on the opening: "we should pick him up out of crate". The
+player lifts the muddy kitten out of the box and carries him to the tub. His clip of the hold ("here is how the
+carrying should look"): the arms reach forward, down and in, and the load lies across them close against the body
+with its head end at the carrier's left shoulder.
 
   CleanACat_Cat_Suds_Dirty_Loaf   the muddy stray as a loaf: no collar, legs tucked under, two paw tips at the front
   CleanACat_Cat_Suds_Loaf         the same body clean, in his collar
 
 A loaf is the walking body (A) with its legs taken away and everything lowered until the belly lies LOAF_LIFT over
-the base, so the head, the coat and the mud are the walking cat's own and the two bodies swap without a jump in the
-look. The pieces keep A's names (`_Body`, `_Head`, `_Eye1`, `_Eye2`, `_EarL`, `_EarR`, `_Tail`, the clean one's
-`_Collar`) and there is one more, `_Paws`. Pivot at the bottom middle, front at -Z in Roblox, like every cat.
+the base, so the coat and the mud are the walking cat's own and the two bodies swap without a jump in the look. The
+pieces keep A's names (`_Body`, `_Head`, `_Eye1`, `_Eye2`, `_EarL`, `_EarR`, `_Tail`, the clean one's `_Collar`) and
+there is one more, `_Paws`. Pivot at the bottom middle, front at -Z in Roblox, like every cat.
+
+He is made for that hold: lying across the arms, his front to the carrier's left, so his right side faces out.
+  - The head is turned cats.LOAF_LOOK degrees to his right, so he looks out ahead over his shoulder. Its eyes, ears
+    and mud turn with it about the neck. The pieces keep rotation 0: the turn is in the mesh and the primitive log.
+  - The tail is not A's raised one: it lies on the base along his right side (cats.loaf_tail); the muddy loaf's
+    tail has a muddy tip.
 
 The muddy loaf is for carrying only. Its mud and tangles are the walking stray's, less what was on the legs and less
-the drips that hung under the belly, and they are not counted: there is no MudCount on it, and it has no fluff and no
-claws. Wash him on `_Dirty_Sit`. Root attribute `Loaf` on both.
+the drips that hung under the belly and the jaw (under a lowered head a drip reads as a third front leg), and they
+are not counted: there is no MudCount on it, and it has no fluff and no claws. Wash him on `_Dirty_Sit`. Root
+attribute `Loaf` on both.
 """
+import math
+
 import bmesh
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 import cats
 import dirt
@@ -23,6 +34,7 @@ from common import PRIMS, Builder, scale_mesh
 
 NAMES = ("Suds",)                  # the cats that have a loaf so far
 LEG_PIECES = cats.LEGS["walk"]
+HEAD_FAMILY = ("_Head",) + tuple("_" + p for p in cats.HEAD_PIECES)
 PAW = (0.26, 0.24, 0.15)           # one paw tip, unscaled: its width, how far it reaches and its height
 PAW_X, PAW_OUT = 0.2, 0.07         # each tip's middle off the centre line, and in front of the chest
 
@@ -65,6 +77,15 @@ def _cut_below(ob, z):
     ob.data.update()
 
 
+def _turn(ob, pivot, turn):
+    """Turn a piece about a point of the asset: the mesh and its primitive log turn about the piece's own origin,
+    and the origin swings round the point. The piece keeps rotation 0 (the transforms gate)."""
+    ob.data.transform(turn)
+    PRIMS[ob.data.name] = [(k, turn @ m, sw, extra) for k, m, sw, extra in PRIMS.get(ob.data.name, [])]
+    ob.location = pivot + turn.to_3x3() @ (Vector(ob.location) - pivot)
+    ob.data.update()
+
+
 def build_loaf(name, mat, dirty):
     """(objects, nest map for rbx_export, root attributes) of one cat's loaf."""
     spec = cats.spec_of(name)
@@ -80,23 +101,18 @@ def build_loaf(name, mat, dirty):
     out = []
     for ob in objs:                                    # the legs go, and with them what rode them; no fluff, no claws
         suffix = ob.name[len(base):]
-        if suffix in legs or nest.get(suffix) in legs or suffix.startswith(("_Fluff", "_Claw")):
+        gone = legs + ("_Tail",)                       # A's tail stands up: the loaf gets its own lying one below
+        if suffix in gone or nest.get(suffix) in gone or suffix.startswith(("_Fluff", "_Claw")):
             nest.pop(suffix, None)
             bpy.data.objects.remove(ob, do_unlink=True)
             continue
         out.append(ob)
-    for kind in ("_Mud", "_Tangle"):                   # number what is left 01, 02, ... with no gaps
-        left = sorted((ob for ob in out if ob.name[len(base):].startswith(kind)), key=lambda ob: ob.name)
-        for i, ob in enumerate(left, start=1):
-            old, new = ob.name[len(base):], f"{kind}{i:02d}"
-            if old != new:
-                ob.name = base + new
-                if old in nest:
-                    nest[new] = nest.pop(old)
     belly = drop + cats.LOAF_LIFT * k                  # the belly's height while the cat still stands
+    head = [ob for ob in out if ob.name == base + "_Head"][0]
+    jaw = min((head.matrix_world @ v.co).z for v in head.data.vertices)
     for ob in out:
-        if "_Mud" in ob.name or "_Tangle" in ob.name:
-            _cut_below(ob, belly)
+        if "_Mud" in ob.name or "_Tangle" in ob.name:  # no drips under the belly, and none under the jaw
+            _cut_below(ob, jaw if nest.get(ob.name[len(base):]) == "_Head" else belly)
         ob.location.z -= drop
     d = cats.dims(spec, "loaf")
     (cx, cy, _cz), (_sx, sy, _sz) = d["body"]
@@ -108,6 +124,39 @@ def build_loaf(name, mat, dirty):
     if k != 1.0:
         scale_mesh(paws, k)
     out.append(paws)
+    look = cats.look(spec)
+    root, chain = cats.loaf_tail(spec)
+    tail = cats._tail(look, chain).finalize(f"{base}_Tail", mat, location=tuple(v * k for v in root))
+    if k != 1.0:
+        scale_mesh(tail, k)
+    out.append(tail)
+    if dirty:                                          # the tip dipped in mud, as the walking stray's is
+        tip, way, th = cats.tail_tip(chain)
+        length = chain["seg"] * 0.5 + 0.06
+        mid = tip + way * (0.06 - length / 2)
+        heading = math.atan2(way.y, way.x)
+        b = Builder()
+        b.box(tuple(mid), (th + 0.05, length, th + 0.05), dirt._mud_for(look["tip"]), bevel=False,
+              rot=(heading - math.pi / 2, "Z"))
+        mud = b.finalize(f"{base}_Mud99", mat, location=tuple(v * k for v in root))   # numbered below
+        if k != 1.0:
+            scale_mesh(mud, k)
+        out.append(mud)
+        nest["_Mud99"] = "_Tail"
+    for kind in ("_Mud", "_Tangle"):                   # number what is left 01, 02, ... with no gaps
+        left = sorted((ob for ob in out if ob.name[len(base):].startswith(kind)), key=lambda ob: ob.name)
+        for i, ob in enumerate(left, start=1):
+            old, new = ob.name[len(base):], f"{kind}{i:02d}"
+            if old != new:
+                ob.name = base + new
+                if old in nest:
+                    nest[new] = nest.pop(old)
+    neck = Vector(cats.joints(spec, "loaf")["Head"])
+    look = Matrix.Rotation(math.radians(-cats.LOAF_LOOK), 4, "Z")
+    for ob in out:                                     # he looks out over his right shoulder: the head and its riders
+        suffix = ob.name[len(base):]
+        if suffix in HEAD_FAMILY or nest.get(suffix) == "_Head":
+            _turn(ob, neck, look)
     bpy.context.view_layer.update()
     low = min((ob.matrix_world @ v.co).z for ob in out for v in ob.data.vertices)
     if low < -1e-4:

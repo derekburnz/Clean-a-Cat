@@ -155,6 +155,7 @@ HEADS["work"] = dict(HEADS["walk"], c=(0.0, -0.17, 0.32), arms=True)
 # A's boxes lowered by loaf_drop, so A's head, coat and joints serve as they are.
 HEADS["loaf"] = HEADS["walk"]
 LOAF_LIFT = 0.06            # the belly's height over the loaf's base: room for the mud under it and the paw tips
+LOAF_LOOK = 55.0            # degrees the loaf's head is turned to the cat's right: he looks out over his shoulder
 # Each role's held thing (HELD) rides one arm, and the role's pose turns the arms (Blender XYZ degrees about the
 # shoulders; poses.CAT_POSES work_<role>): the barista holds out a cup in the right paw, the waiter a tray with a
 # cake at its left side, the greeter waves its left paw, the entertainer holds a microphone up under its chin in the
@@ -181,6 +182,16 @@ def loaf_drop(spec):
     """How far the loaf's pieces sit below body A's, in the built model's space (scale included)."""
     low = -SHORT_LEGS if spec.get("short_legs") else 0.0
     return (A_BELLY_Z + low - LOAF_LIFT) * scale_of(spec, "loaf")
+
+
+def loaf_tail(spec):
+    """The loaf's tail: (its root, unscaled, in the loaf's own space; its chain for _tail). It lies on the base along
+    the cat's right side, B's lying tail mirrored: when the cat lies across the carrier's arms with its head to the
+    carrier's left, its right side faces out. No curl: a curled tail's tip would stand up into the carrier's arm."""
+    d = dims(spec, "sit")["tail_chain"]
+    (cx, cy, _cz), (_sx, sy, _sz) = dims(spec, "loaf")["body"]
+    chain = dict(d, angles=tuple(180 - a for a in d["angles"]), curl=False)
+    return (cx - B_TAIL[0] * _body_scale(spec)[0], cy + sy / 2 - 0.015, d["thick"] / 2 + 0.03), chain
 
 
 def _body_scale(spec):
@@ -271,7 +282,15 @@ def joints(spec, body="walk"):
     if body == "loaf":                                  # no legs, and everything loaf_drop lower
         drop = loaf_drop(spec)
         out = {p: (x, y, z - drop if p != "Body" else z) for p, (x, y, z) in out.items() if p not in LEGS["walk"]}
+        out["Tail"] = tuple(v * k for v in loaf_tail(spec)[0])
+        for p in HEAD_PIECES:                           # the head is turned, and what rides it turns about the neck
+            out[p] = tuple(Vector(out["Head"]) + loaf_look(Vector(out[p]) - Vector(out["Head"])))
     return out
+
+
+def loaf_look(v):
+    """A point or a way on the loaf's head, given from the neck with the head straight, after the head's turn."""
+    return Matrix.Rotation(math.radians(-LOAF_LOOK), 3, "Z") @ Vector(v)
 
 
 def carry_at(spec, body="walk"):
