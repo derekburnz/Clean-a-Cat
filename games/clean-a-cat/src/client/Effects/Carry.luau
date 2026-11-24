@@ -66,7 +66,11 @@ Carry.POSE = table.freeze({
 	loafForward = 0,
 	loafTurn = 90,
 	loafSide = -0.2, -- a touch left, so his head pokes out past the left arm (Model-Agent)
-	loafRoll = 8,
+	-- Derek's ten-angle hold picture (#353): the loaf's head now tips 45 degrees nose down onto his paws and stands
+	-- 1.23 high at its top corner, so he sits 0.2 lower on the arms with the head end rolled up 5 degrees, not 8, and
+	-- that corner stays under the carrier's chin (Model-Agent's numbers from his stand-in).
+	loafGap = 0,
+	loafRoll = 5,
 })
 
 Carry.HOLD_FLAG = "carryHold"
@@ -97,6 +101,7 @@ Carry.CROSSED = table.freeze({
 	loafForward = -1.15, -- the library's loaf: further out on the arms, straight across them
 	loafTurn = 90,
 	loafSide = 0,
+	loafGap = -0.15, -- as a sit
 	loafRoll = 0,
 	fromHands = false,
 	hug = false,
@@ -336,7 +341,7 @@ local function cradle(rig: Rig, reach: number, loaf: boolean): CFrame?
 	-- never back inside the chest (the spot is the middle of his bounding box's base, not his pivot)
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + (if loaf then c.loafSide else c.sitSide),
-		math.max(a.Y, b.Y) + c.gap,
+		math.max(a.Y, b.Y) + (if loaf then c.loafGap else c.gap),
 		if not useHands then ahead elseif loaf and c.hug then -reach else math.min(ahead, -reach)
 	)
 	return torso
