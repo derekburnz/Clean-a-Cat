@@ -60,12 +60,11 @@ Carry.POSE = table.freeze({
 	sitSide = 0,
 	-- The held loaf (Model-Agent's CleanACat_Cat_Suds_Dirty_Loaf, his head built turned to look out) lies across the
 	-- forearms as in Derek's clip: his front to the character's left, a little left of middle, the head end rolled
-	-- up, and his pivot at least loafClear ahead of the chest's front (his chest side reaches 0.53 with mud).
+	-- up, and his bounding box clear of the chest's front (Carry.reach: his width, not his length, faces the chest).
 	loafForward = 0.3,
 	loafTurn = 90,
 	loafSide = -0.4,
 	loafRoll = 8,
-	loafClear = 0.55,
 })
 
 Carry.HOLD_FLAG = "carryHold"
@@ -96,7 +95,6 @@ Carry.CROSSED = table.freeze({
 	loafTurn = 90,
 	loafSide = 0,
 	loafRoll = 0,
-	loafClear = 0,
 	fromHands = false,
 })
 
@@ -267,7 +265,15 @@ end
 
 -- Where the sitting cat's base goes this frame (Avatar.cradle): on top of the higher forearm, ahead of halfway
 -- between the two, level with the chest, turned a little to show its face. nil without arms.
-local function cradle(rig: Rig, halfDepth: number, loaf: boolean): CFrame?
+-- How far the cat's middle must sit ahead of the chest's middle so he never sinks into it: half the chest, half
+-- the cat along the character's facing, and a small gap. A sit faces out, so his length (Z) runs along the facing;
+-- the loaf lies across the arms, turned 90, so his width (X, about 1.38 muddy) does (Review-QA on #331).
+function Carry.reach(chestDepth: number, catSize: Vector3, loaf: boolean): number
+	local half = (if loaf then catSize.X else catSize.Z) / 2
+	return chestDepth / 2 + half + 0.05
+end
+
+local function cradle(rig: Rig, reach: number, loaf: boolean): CFrame?
 	local left: BasePart? = rig.parts.LeftElbow or rig.parts.LeftShoulder
 	local right: BasePart? = rig.parts.RightElbow or rig.parts.RightShoulder
 	if left == nil or right == nil then
@@ -292,12 +298,11 @@ local function cradle(rig: Rig, halfDepth: number, loaf: boolean): CFrame?
 	local a: Vector3 = if useHands then hand(left :: BasePart) else top(left :: BasePart)
 	local b: Vector3 = if useHands then hand(right :: BasePart) else top(right :: BasePart)
 	local ahead = (a.Z + b.Z) / 2 + (if loaf then c.loafForward else c.forward)
-	-- never back inside the chest: a sit's rear (halfDepth behind its middle), a loaf's chest side (loafClear)
-	local clear = rig.chest.Size.Z / 2 + (if loaf then c.loafClear else halfDepth + 0.05)
+	-- never back inside the chest (the spot is the middle of his bounding box's base, not his pivot)
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + (if loaf then c.loafSide else c.sitSide),
 		math.max(a.Y, b.Y) + c.gap,
-		if useHands then math.min(ahead, -clear) else ahead
+		if useHands then math.min(ahead, -reach) else ahead
 	)
 	return torso
 		* CFrame.new(spot)
@@ -345,7 +350,6 @@ function Carry.hold(character: Model, cat: Model, held: Held?): Handle
 	local rig = bind(character, Carry.holdPose())
 	local offset = baseOffset(cat)
 	local _, catSize = cat:GetBoundingBox()
-	local halfDepth = catSize.Z / 2 -- he faces out, so his length runs along the character's facing
 	local from = cat:GetPivot()
 	local started = os.clock()
 	local weight = 0
@@ -421,7 +425,9 @@ function Carry.hold(character: Model, cat: Model, held: Held?): Handle
 			end
 			return
 		end
-		local arms = if rig then cradle(rig, halfDepth, loaf) else nil
+		local arms = if rig
+			then cradle(rig, Carry.reach(rig.chest.Size.Z, catSize, loaf), loaf)
+			else nil
 		if arms then
 			local along, arc = Carry.lift(os.clock() - started, reduced)
 			local base = (from * offset:Inverse()):Lerp(arms, along) + Vector3.yAxis * arc
