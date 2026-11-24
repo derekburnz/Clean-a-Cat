@@ -82,8 +82,9 @@ end
 -- The close-up wash view goes back to the player's camera, and they can walk again.
 -- The view itself, with the avatar hidden (Derek: "your character gets in way"), is Spa/WashView's, held here under
 -- "opening"; with the switch washView on, ScrubController holds it too while Suds is in the tub.
-function OpeningController.leaveWash()
-	WashView.set("opening", false)
+-- onDone runs once the view has eased back to the player (WashView.set), so what comes next waits for it.
+function OpeningController.leaveWash(onDone: (() -> ())?)
+	WashView.set("opening", false, onDone)
 	holdControls(false)
 end
 

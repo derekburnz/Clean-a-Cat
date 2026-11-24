@@ -23,14 +23,20 @@ function RecapController.Start()
 	if scrub then
 		scrub.setRecapHandler(function(recap, nextCat: () -> ())
 			UI.showRecap(recap, function()
-				-- "Open the spa!" on Suds's naming card: the close-up wash view eases back to the player
-				if recap.mascot and opening then
-					opening.leaveWash()
+				local function onward()
+					if bubbles then
+						bubbles.afterRecap(nextCat)
+					else
+						nextCat()
+					end
 				end
-				if bubbles then
-					bubbles.afterRecap(nextCat)
+				-- "Open the spa!" on Suds's naming card: the close-up wash view eases back to the player, and Suds's
+				-- bubbles and the first customer wait for the ease (Sync-Agent's run on 507cdce: the next cat's view
+				-- cut in 20 ms after the ease began)
+				if recap.mascot and opening then
+					opening.leaveWash(onward)
 				else
-					nextCat()
+					onward()
 				end
 			end)
 		end)

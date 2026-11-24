@@ -3,7 +3,7 @@
 -- own avatar hidden and walking paused, so two parts of the game that each want it cannot end it for the other. Each
 -- caller holds it under its own reason, like ControlHold: the opening while Suds is set down and washed
 -- (OpeningController, "opening"), and every cat in the tub with the switch washView on (ScrubController, "scrub").
--- The view eases in when the first reason holds and back out when none does.
+-- The view eases in when the first reason holds and back out when none does, RELEASE_GRACE seconds later.
 -- Why: Derek's dev test ("cleaning doesn't enter the minigame screen yet and your character gets in way"), and
 -- Sync-Agent's run on 1a38eeb, where the second cat had no close-up view: the avatar stood behind the tub and the tool
 -- tray covered the cat's lower half, so the wash could not be finished.
@@ -19,8 +19,14 @@ local WashCamera = require(Client:WaitForChild("Effects"):WaitForChild("WashCame
 
 local HIDE_BIND = "CleanACat_WashHide"
 local HOLD_REASON = "washView"
+-- Seconds the view waits after its last reason lets go before it eases out. A reason that takes it again in that time
+-- keeps the view up with no cut: Suds's "Open the spa!" lets go and the first customer's cat sits in the tub a moment
+-- later (Sync-Agent's run on 507cdce: the avatar showed for one frame and the next cat's view cut in 20 ms later).
+local RELEASE_GRACE = 0.4
 
 local WashView = {}
+
+WashView.RELEASE_GRACE = RELEASE_GRACE
 
 local player = Players.LocalPlayer
 local held: { [string]: boolean } = {}
@@ -29,6 +35,7 @@ local spot: CFrame? = nil -- what the shot frames (WashView.frame): nil is the t
 local hiddenParts: { BasePart } = {}
 local hiddenDecals: { Decal } = {}
 local hideConnection: RBXScriptConnection? = nil
+local releaseTurn = 0 -- bumped whenever a waiting release is called off or replaced
 
 -- The player's own avatar is hidden on their screen while the view is up: it stands by the tub, so it would sit
 -- between the camera and the cat. Only on this device; everyone else still sees it. Set every frame after the camera,
@@ -74,8 +81,21 @@ local function hideCharacter(hide: boolean)
 	end)
 end
 
+local function release(onDone: (() -> ())?)
+	local view = wash
+	wash = nil
+	if view then
+		view.exit(onDone)
+	elseif onDone then
+		task.defer(onDone)
+	end
+	hideCharacter(false)
+	ControlHold.set(HOLD_REASON, false)
+end
+
 local function apply()
 	local want = next(held) ~= nil
+	releaseTurn += 1 -- any release still waiting is called off; it is set again below if it is still wanted
 	if want == (wash ~= nil) then
 		return
 	end
@@ -84,24 +104,34 @@ local function apply()
 		wash = WashCamera.enter(WashCamera.shot(spot or SpaLayout.tubSpot()))
 		hideCharacter(true)
 	else
-		local view = wash
-		wash = nil
-		if view then
-			view.exit()
-		end
-		hideCharacter(false)
-		ControlHold.set(HOLD_REASON, false)
+		local turn = releaseTurn
+		task.delay(RELEASE_GRACE, function()
+			if turn == releaseTurn and next(held) == nil then
+				release()
+			end
+		end)
 	end
 end
 
--- Holds (true) or lets go of (false) the close-up wash view for `reason`.
-function WashView.set(reason: string, on: boolean)
+-- Holds (true) or lets go of (false) the close-up wash view for `reason`. Letting go with `onDone` eases out at once,
+-- with no grace, when no other reason holds the view, and runs onDone once the camera is back with the player: what
+-- comes next waits for the ease (Suds's "Open the spa!", then the first customer). onDone always runs once, deferred,
+-- also when the view stays up for another reason or was not up.
+function WashView.set(reason: string, on: boolean, onDone: (() -> ())?)
 	if on then
 		held[reason] = true
 	else
 		held[reason] = nil
 	end
+	if onDone ~= nil and not on and next(held) == nil and wash ~= nil then
+		releaseTurn += 1
+		release(onDone)
+		return
+	end
 	apply()
+	if onDone then
+		task.defer(onDone)
+	end
 end
 
 -- Frames the view on `where` (a spot on the floor that faces the player, like SpaLayout.tubSpot), or back on the
@@ -127,6 +157,7 @@ end
 
 -- A new character (a reset) starts with no view: the camera goes back at once and nothing holds it.
 player.CharacterAdded:Connect(function()
+	releaseTurn += 1
 	table.clear(held)
 	local view = wash
 	wash = nil
