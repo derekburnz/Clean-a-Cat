@@ -13,7 +13,7 @@ layout, not a locked design. Owner: Design-Agent. Plans: issues #5 (first sessio
 - `<meta name="states" content="a,b">` lists a screen's variants; `?state=a` sets `body[data-state="a"]`.
 - Mark everything a player can press with `data-tap`. Put scrolling lists in `.scroll`.
 - Icons: `<i data-ic="coin"></i>` (the list is in `kit.js`). Pictures: `img/` (Model-Agent's see-through cat portraits and tool icons, the `_ink`
-  outlined versions; the helper faces are still stand-ins until capped helper portraits arrive).
+  outlined versions and helper portraits).
 - Fonts: Fredoka One for titles, buttons and numbers, Nunito for body words. No third font (the UI gate allows two).
 
 ## The look
