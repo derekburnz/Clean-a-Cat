@@ -23,6 +23,7 @@
 -- Every screen honours the player's Roblox comfort settings through UI/Comfort (#181), behind the live switch
 -- comfortSettings: see-through backgrounds go through Comfort.backdrop, and text leaves room to grow
 -- (Comfort.autoHeight) when the player picks a larger text size.
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -57,12 +58,14 @@ local MENU_HEIGHT = 0.5 -- share of the root's height at the Menu's centre
 local MENU_HEIGHT_HUD = 0.36 -- with the game HUD on: clear of the touch thumbstick on a small phone (#222)
 
 local SETTINGS_FLAG = "settingsCard"
+local CONTROLS_FLAG = "windowsHideControls"
 
 local windows: { [string]: Frame } = {}
 local settingsListeners: { (SettingsRules.Settings) -> () } = {}
 local toastLabel: TextLabel? = nil
 local revealRecap: RBXScriptConnection? = nil -- shows the recap again when the window over it closes
 local toastToken = 0
+local controlsHidden = false -- true while this module has Roblox's touch controls hidden
 
 local function corner(parent: Instance, radius: number)
 	local c = Instance.new("UICorner")
@@ -122,6 +125,25 @@ local function window(name: string, title: string, gui: ScreenGui): Frame
 	frame.Parent = gui
 	windows[name] = frame
 	return frame
+end
+
+-- Roblox's thumbstick and jump button sit over a window's lower corners on a phone held sideways (Sync-Agent's
+-- iPhone 14 check of the Cat Index). With the switch windowsHideControls on, they hide while any window is open and
+-- come back when the last one closes. Off by default. A window is for tapping, not walking, so nothing is lost.
+local function syncControls()
+	local anyOpen = false
+	for _, frame in windows do
+		if frame.Visible then
+			anyOpen = true
+			break
+		end
+	end
+	local hide = anyOpen and LiveFlags.isOn(CONTROLS_FLAG)
+	if hide == controlsHidden then
+		return
+	end
+	controlsHidden = hide
+	GuiService.TouchControlsEnabled = not hide
 end
 
 function UI.init()
@@ -228,6 +250,12 @@ function UI.init()
 	body.Text =
 		"Replace this window with the game's own. The UI gate checks every window at phone, tablet and desktop sizes."
 	body.Parent = example
+
+	for _, frame in windows do
+		frame:GetPropertyChangedSignal("Visible"):Connect(syncControls)
+	end
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CONTROLS_FLAG)
+		:Connect(syncControls)
 
 	hud.Parent = playerGui
 end
