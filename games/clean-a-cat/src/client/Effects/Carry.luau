@@ -17,6 +17,7 @@
 --   handle.destroy()                  lets go at once: the arms go back to the character's own, the purr stops
 --   onDone fires exactly once, deferred, also when placeIn is called twice or the handle is destroyed first.
 --   Reduced Motion (or Less screen shake): no arc on the lift or the hop, so nothing bounces; the arms still fold.
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Audio = require(script.Parent.Parent:WaitForChild("Audio"))
@@ -25,10 +26,41 @@ local TruckDrop = require(script.Parent:WaitForChild("TruckDrop"))
 
 local Carry = {}
 
--- Presets.carryPose from the library. Degrees about each joint, in the character's axes (it faces -Z, +X is its
--- right): sh raises an arm forward, sp swings it out to the side (negative: in), tw turns the upper arm in about its
--- length, el bends the elbow. arms6 is the R6 cradle (no elbows): both arms reach forward and in under the cat.
+-- Degrees about each joint, in the character's axes (it faces -Z, +X is its right): sh raises an arm forward, sp
+-- swings it out to the side (negative: in), tw turns the upper arm in about its length, el bends the elbow. arms6 is
+-- the R6 hold (no elbows).
+--
+-- POSE is Derek's hold (his clip, 2026-11-24: "here is how the carrying should look"): upper arms down at the sides,
+-- elbows bent to a right angle so both forearms point straight ahead at belly height, a little in toward each
+-- other, head up, and the cat sitting on the forearms in front of the belly. On R6 both straight arms reach forward
+-- level-ish and in. Behind the switch `carryHold` (dev first; Studio always uses it) until Derek confirms it.
 Carry.POSE = table.freeze({
+	arms = table.freeze({
+		shL = 12,
+		shR = 12,
+		spL = -8,
+		spR = -8,
+		twL = 10,
+		twR = 10,
+		elL = 88,
+		elR = 88,
+		neck = 0,
+		waist = 0,
+	} :: { [string]: number }),
+	arms6 = table.freeze(
+		{ shL = 75, shR = 75, spL = -18, spR = -18, neck = 0 } :: { [string]: number }
+	),
+	gap = -0.1, -- the cat's base this far above the higher forearm's top
+	forward = -0.35, -- and this far ahead of the forearms' middles (-Z is ahead), over the hands
+	sitTurn = 0, -- facing straight out
+	sitSide = 0,
+})
+
+Carry.HOLD_FLAG = "carryHold"
+
+-- The first hold (Presets.carryPose from Derek's library): arms crossed over the chest, head tipped down. Live keeps
+-- it until `carryHold` is on.
+Carry.CROSSED = table.freeze({
 	arms = table.freeze({
 		shL = 25,
 		twL = 25,
@@ -119,12 +151,15 @@ local R6: { [string]: { string } } = {
 }
 
 type Joint = Motor6D | AnimationConstraint
+export type Hold = typeof(Carry.POSE)
+
 type Rig = {
 	joints: { [string]: Joint },
 	axes: { [string]: CFrame }, -- each joint's frame in its parent part, turned only
 	parts: { [string]: BasePart }, -- the part each joint moves
 	chest: BasePart,
 	r15: boolean,
+	hold: Hold, -- the pose set this carry uses (POSE or CROSSED)
 }
 
 local function jointParts(joint: Instance): (BasePart?, BasePart?, CFrame)
@@ -144,7 +179,7 @@ local function jointParts(joint: Instance): (BasePart?, BasePart?, CFrame)
 	return nil, nil, CFrame.identity
 end
 
-local function bind(character: Model): Rig?
+local function bind(character: Model, hold: Hold): Rig?
 	local r15 = character:FindFirstChild("UpperTorso") ~= nil
 	local names: { [string]: { string } } = if r15 then R15 else R6
 	local joints: { [string]: Joint } = {}
@@ -178,7 +213,14 @@ local function bind(character: Model): Rig?
 	then
 		return nil
 	end
-	return { joints = joints, axes = axes, parts = parts, chest = chest :: BasePart, r15 = r15 }
+	return {
+		joints = joints,
+		axes = axes,
+		parts = parts,
+		chest = chest :: BasePart,
+		r15 = r15,
+		hold = hold,
+	}
 end
 
 -- The folded arms' Transforms (Avatar.carryArms): waist, neck, shoulders and elbows, wrists straight.
@@ -191,7 +233,8 @@ local function armFrames(rig: Rig): { [Joint]: CFrame }
 			out[joint] = axes:Inverse() * frame * axes
 		end
 	end
-	local p = Carry.pose(if rig.r15 then Carry.POSE.arms else Carry.POSE.arms6)
+	local hold = rig.hold
+	local p = Carry.pose(if rig.r15 then hold.arms else hold.arms6)
 	local rad = math.rad
 	set("Waist", CFrame.Angles(rad(-p.waist), 0, 0))
 	set("Neck", CFrame.Angles(rad(p.neck), 0, 0))
@@ -223,7 +266,7 @@ local function cradle(rig: Rig): CFrame?
 				* (math.abs(r10) * s.X + math.abs(r11) * s.Y + math.abs(r12) * s.Z)
 	end
 	local a, b = top(left :: BasePart), top(right :: BasePart)
-	local c = Carry.POSE
+	local c = rig.hold
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + c.sitSide,
 		math.max(a.Y, b.Y) + c.gap,
@@ -245,9 +288,28 @@ local function ownPart(cat: Model): Instance?
 	return cat.PrimaryPart or cat:FindFirstChildWhichIsA("BasePart", true)
 end
 
+-- Derek's hold when its switch is on, and always in Studio (the dev copy); else the first, crossed hold. A missing
+-- switch module keeps the crossed one.
+function Carry.chooseHold(switchOn: boolean, studio: boolean): Hold
+	return if switchOn or studio then Carry.POSE else Carry.CROSSED
+end
+
+function Carry.holdPose(): Hold
+	local on = false
+	local shared = ReplicatedStorage:FindFirstChild("Shared")
+	local module = shared and shared:FindFirstChild("LiveFlags")
+	if module and module:IsA("ModuleScript") then
+		local ok, result = pcall(function(): boolean
+			return (require(module) :: any).isOn(Carry.HOLD_FLAG) == true
+		end)
+		on = ok and result == true
+	end
+	return Carry.chooseHold(on, RunService:IsStudio())
+end
+
 function Carry.hold(character: Model, cat: Model): Handle
 	local reduced = Effects.reducedMotion()
-	local rig = bind(character)
+	local rig = bind(character, Carry.holdPose())
 	local offset = baseOffset(cat)
 	local from = cat:GetPivot()
 	local started = os.clock()
