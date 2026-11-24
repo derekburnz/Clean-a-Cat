@@ -256,6 +256,13 @@ end
 
 local function onPlayer(player: Player)
 	assign(player)
+	-- Whatever sets the slot (assign, or a test that changes it by hand), the next spawn is in that plot.
+	player:GetAttributeChangedSignal(SpaLayout.SLOT_ATTRIBUTE):Connect(function()
+		local slot = SpaLayout.slotOf(player)
+		if street then
+			setRespawn(player, if slot then spawnFor(slot) else nil)
+		end
+	end)
 	player.CharacterAdded:Connect(function(character: Model)
 		character:WaitForChild("HumanoidRootPart", 5)
 		task.defer(moveToPlot, player, character)
