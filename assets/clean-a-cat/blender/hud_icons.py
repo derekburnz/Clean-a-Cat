@@ -1,18 +1,22 @@
-"""The HUD button pictures (#185): CleanACat_Icon_Hud_<Name>, 512 px, see-through, with a thick ink outline.
+"""Five of the six HUD button pictures (#185): CleanACat_Icon_Hud_<Name>, 512 px, see-through, with a thick ink
+outline.
 
-    python hud_icons.py <out folder> [--only Index,Coins]
+    python hud_icons.py <out folder> [--only Index,Tools]
 
-Runs in Blender's Python (bpy). A draft of one of the two blends Derek is comparing (2026-11-24): our look mixed
-with his library's HUD icons. Each picture is one bold object you can name at 48 px (ours), built fat with rounded
+Runs in Blender's Python (bpy). The blend the owner picked "for now" (2026-11-24): our look mixed with his
+library's HUD icons. Each picture is one bold object you can name at 48 px (ours), built fat with rounded
 edges, soft light and a slight three-quarter tilt (his library's; the camera, the two lights and the outline pass are
 ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
 
   Index     the Cat Index: a purple book with a cream cat's face on the cover and a pink bookmark
-  Coins     two fat gold coins with a paw stamped on the top one and a white twinkle
   Settings  a blue grey gear with a cream middle
   Tools     the game's pink scrub brush with soap bubbles
   Helper    the first helper kitten's head in its bath cap
   Build     a blue hammer with a wooden handle and a white paw on its head
+
+There is no coin here on purpose. The owner picked his library's own coin picture for the HUD (2026-11-24: "use
+library coin ... the other new coin doesn't look as good"), so CleanACat_Icon_Hud_Coins.png is a copy of the library's
+CatCafe_Icon_Coins.png and a rebuild must not bring a rendered coin back.
 
 Nothing here is a game model and nothing is uploaded: the ui-designer decides what goes into the game.
 """
@@ -26,7 +30,7 @@ sys.path.insert(0, HERE)
 
 import bpy  # noqa: E402
 import numpy as np  # noqa: E402
-from mathutils import Euler, Matrix, Vector  # noqa: E402
+from mathutils import Matrix, Vector  # noqa: E402
 
 import common  # noqa: E402
 import palette  # noqa: E402
@@ -72,11 +76,6 @@ def _fin(b, name, mat, tilt=0.0, ink=None):
     return objs
 
 
-def _facing(view):
-    """The turn that stands a flat shape square to the camera of `view`."""
-    return Euler((math.radians(90 - view[1]), 0, math.radians(view[0]))).to_matrix()
-
-
 def _paw(b, x, y, z, r, swatch, rot=None, depth=0.05):
     """A paw print lying flat at (x, y, z), toes toward +Y: one pad and three toes. `rot` turns it to face out."""
     m = rot or Matrix.Identity(3)
@@ -86,9 +85,9 @@ def _paw(b, x, y, z, r, swatch, rot=None, depth=0.05):
         b.cyl(tuple(c), r * k, depth, swatch, segments=14, bevel=False, rot=rot, scale=sc)
 
 
-def _twinkle(b, x, y, z, r, rot=X):
+def _twinkle(b, x, y, z, r):
     """The white four-point twinkle from the library's coin picture: the set's shared highlight."""
-    b.star((x, y, z), r, r * 0.3, 0.07, "foam", points=4, rot=rot)
+    b.star((x, y, z), r, r * 0.3, 0.07, "foam", points=4, rot=X)
 
 
 def index(mat):
@@ -113,20 +112,6 @@ def index(mat):
     b.box((0.5, 0.08, -0.14), (0.26, 0.05, 0.5), "bow_pink")                             # the bookmark
     _twinkle(b, 0.82, fy - 0.02, 2.26, 0.34)
     return _fin(b, "Index", mat, ink=k)
-
-
-VIEW_COINS = (-14.0, 46.0)
-
-
-def coins(mat):
-    """Two fat gold coins, a paw stamped on the top one."""
-    b = Builder()
-    for x, y, z in ((-0.22, 0.1, 0.0), (0.14, -0.06, 0.38)):
-        b.cyl((x, y, z + 0.18), 1.0, 0.36, "gold_mid", segments=28)
-        b.cyl((x, y, z + 0.37), 0.8, 0.04, "gold_light", segments=28, bevel=False)
-    _paw(b, 0.14, -0.1, 0.78, 0.36, "gold_dark")
-    _twinkle(b, 1.0, 0.5, 1.15, 0.4, rot=_facing(VIEW_COINS))
-    return _fin(b, "Coins", mat)
 
 
 def settings(mat):
@@ -196,7 +181,6 @@ def helper(mat):
 
 BUILDERS = {                                       # name -> (builder, (yaw, pitch))
     "Index": (index, (22.0, 12.0)),
-    "Coins": (coins, VIEW_COINS),
     "Settings": (settings, (-16.0, 8.0)),
     "Tools": (tools, (-24.0, 18.0)),
     "Helper": (helper, (-18.0, 8.0)),
