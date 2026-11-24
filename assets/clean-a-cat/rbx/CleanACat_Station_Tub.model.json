@@ -1935,9 +1935,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.55,
-         1.4,
-         1.05
+         -1.4,
+         1.538,
+         0.95
         ],
         "orientation": [
          [
@@ -1959,9 +1959,9 @@
        }
       },
       "Size": [
-       0.6,
-       0.42,
-       0.6
+       0.72,
+       0.72,
+       0.72
       ],
       "Color": [
        0.9922,
@@ -1975,12 +1975,13 @@
       "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
+      "Shape": "Ball",
       "PivotOffset": {
        "CFrame": {
         "position": [
-         1.55,
-         -1.4,
-         -1.05
+         1.4,
+         -1.538,
+         -0.95
         ],
         "orientation": [
          [
@@ -2004,16 +2005,7 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Station_Tub/2"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2022,9 +2014,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.55,
          1.4,
-         -1.05
+         1.527,
+         -0.95
         ],
         "orientation": [
          [
@@ -2046,9 +2038,9 @@
        }
       },
       "Size": [
-       0.56,
-       0.392,
-       0.56
+       0.68,
+       0.68,
+       0.68
       ],
       "Color": [
        0.9922,
@@ -2061,17 +2053,9 @@
       "CanTouch": false,
       "CastShadow": true,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2080,9 +2064,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.2,
-         1.38,
-         -1.2
+         1.1255,
+         1.4665,
+         -0.8
         ],
         "orientation": [
          [
@@ -2104,9 +2088,9 @@
        }
       },
       "Size": [
-       0.4,
-       0.28,
-       0.4
+       0.4216,
+       0.4216,
+       0.4216
       ],
       "Color": [
        0.9922,
@@ -2119,17 +2103,9 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2138,9 +2114,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.2,
-         1.38,
-         1.2
+         1.55,
+         1.4379,
+         -0.6755
         ],
         "orientation": [
          [
@@ -2162,9 +2138,9 @@
        }
       },
       "Size": [
-       0.36,
-       0.252,
-       0.36
+       0.3264,
+       0.3264,
+       0.3264
       ],
       "Color": [
        0.9922,
@@ -2177,17 +2153,9 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2196,9 +2164,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.6,
-         1.39,
-         -0.9
+         1.6745,
+         1.4665,
+         -1.1
         ],
         "orientation": [
          [
@@ -2220,9 +2188,9 @@
        }
       },
       "Size": [
-       0.44,
-       0.308,
-       0.44
+       0.4216,
+       0.4216,
+       0.4216
       ],
       "Color": [
        0.9922,
@@ -2235,17 +2203,9 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2254,9 +2214,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.6,
-         1.39,
-         0.95
+         1.25,
+         1.4379,
+         -1.2245
         ],
         "orientation": [
          [
@@ -2278,9 +2238,9 @@
        }
       },
       "Size": [
-       0.48,
-       0.336,
-       0.48
+       0.3264,
+       0.3264,
+       0.3264
       ],
       "Color": [
        0.9922,
@@ -2293,17 +2253,309 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.3521,
+         1.7888,
+         -0.7869
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
        }
-      }
-     ]
+      },
+      "Size": [
+       0.272,
+       0.272,
+       0.272
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.2328,
+         1.4739,
+         1.2359
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4464,
+       0.4464,
+       0.4464
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.1141,
+         1.4437,
+         0.7828
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3456,
+       0.3456,
+       0.3456
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.5672,
+         1.4739,
+         0.6641
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4464,
+       0.4464,
+       0.4464
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.6859,
+         1.4437,
+         1.1172
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3456,
+       0.3456,
+       0.3456
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.2259,
+         1.8152,
+         0.9956
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.288,
+       0.288,
+       0.288
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2313,7 +2565,7 @@
        "CFrame": {
         "position": [
          1.85,
-         1.77,
+         1.71,
          -1.5
         ],
         "orientation": [
@@ -2336,9 +2588,9 @@
        }
       },
       "Size": [
-       0.44,
-       0.308,
-       0.44
+       0.4,
+       0.4,
+       0.4
       ],
       "Color": [
        0.9922,
@@ -2351,17 +2603,9 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2370,9 +2614,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.55,
-         1.75,
-         -1.6
+         1.7356,
+         1.6744,
+         -1.3559
         ],
         "orientation": [
          [
@@ -2394,9 +2638,9 @@
        }
       },
       "Size": [
-       0.3,
-       0.21,
-       0.3
+       0.248,
+       0.248,
+       0.248
       ],
       "Color": [
        0.9922,
@@ -2409,17 +2653,9 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     },
     {
      "name": "CleanACat_Station_Tub_Foam",
@@ -2428,9 +2664,159 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.85,
-         1.76,
-         1.5
+         2.032,
+         1.6576,
+         -1.473
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.192,
+       0.192,
+       0.192
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.7824,
+         1.6744,
+         -1.6711
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.248,
+       0.248,
+       0.248
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.8868,
+         1.864,
+         -1.407
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.16,
+       0.16,
+       0.16
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.6,
+         1.48,
+         -1.1
         ],
         "orientation": [
          [
@@ -2453,7 +2839,7 @@
       },
       "Size": [
        0.4,
-       0.28,
+       0.4,
        0.4
       ],
       "Color": [
@@ -2467,17 +2853,159 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.2,
+         1.431,
+         -1.25
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
        }
-      }
-     ]
+      },
+      "Size": [
+       0.26,
+       0.26,
+       0.26
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.55,
+         1.494,
+         1.0
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.44,
+       0.44,
+       0.44
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_Tub_Foam",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -1.9,
+         1.712,
+         1.5
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.32,
+       0.32,
+       0.32
+      ],
+      "Color": [
+       0.9922,
+       0.9961,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
     }
    ],
    "properties": {

@@ -460,6 +460,14 @@ def bake_transform(ob):
     PRIMS[ob.data.name] = [(k, M @ m, sw, extra) for k, m, sw, extra in PRIMS.get(ob.data.name, [])]
 
 
+def shade_smooth(ob):
+    """Round shading for an object of balls (foam, bubbles): Roblox draws a Ball part smooth, so the previews and the
+    store art should too. Returns the object."""
+    for poly in ob.data.polygons:
+        poly.use_smooth = True
+    return ob
+
+
 def scale_mesh(ob, s):
     """Scale an object's mesh about its origin (big cats, tall customers), keeping its primitive log in step."""
     ob.data.transform(Matrix.Scale(s, 4))

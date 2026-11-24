@@ -89,24 +89,22 @@ def cat_state(name, mat, body, state, at=(0, 0, 0), k=1.0, rot_z=0.0):
 
 
 def bubbles(mat, spots, seed=3):
-    """White foam puffs: spots are (x, y, z, size) in world space; each spot is a little cluster of 3 to 5 balls."""
+    """Soap foam: at each spot (x, y, z, size) a tidy pile of round bubbles (stations.foam_pile, the game's foam),
+    drawn finer and smooth for a picture. `seed` turns the piles differently from shot to shot."""
     rnd = random.Random(seed)
     b = Builder()
     for x, y, z, s in spots:
-        for i in range(rnd.randint(3, 5)):
-            r = s * rnd.uniform(0.35, 0.6)
-            off = Vector((rnd.uniform(-1, 1), rnd.uniform(-0.5, 0.5), rnd.uniform(-0.6, 0.6))) * s * 0.6
-            b.sphere((x + off.x, y + off.y, z + off.z), r, "offwhite" if i % 4 else "pearl", segments=10, rings=6)
-    return _fresh([b.finalize("Foam", mat, bevel=0)])
+        stations.foam_pile(b, x, y, z - 0.45 * s, 0.6 * s, ring=4, turn=rnd.uniform(0, 6.28), segments=24, rings=14)
+    return _fresh([common.shade_smooth(b.finalize("Foam", mat, bevel=0))])
 
 
 def floating(mat, spots):
-    """Loose rising bubbles, sky tinted rings shown as small spheres."""
+    """Loose rising bubbles, each with a small sky glint."""
     b = Builder()
     for x, y, z, r in spots:
-        b.sphere((x, y, z), r, "offwhite", segments=12, rings=8)
-        b.sphere((x - r * 0.35, y - r * 0.8, z + r * 0.35), r * 0.22, "spa_sky", segments=6, rings=4)
-    return _fresh([b.finalize("Bubbles", mat, bevel=0)])
+        b.sphere((x, y, z), r, "offwhite", segments=24, rings=14)
+        b.sphere((x - r * 0.35, y - r * 0.8, z + r * 0.35), r * 0.22, "spa_sky", segments=12, rings=8)
+    return _fresh([common.shade_smooth(b.finalize("Bubbles", mat, bevel=0))])
 
 
 SHOULDER_Z, ARM = 3.35, 1.75

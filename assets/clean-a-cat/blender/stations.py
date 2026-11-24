@@ -28,6 +28,7 @@ import math
 
 from mathutils import Matrix
 
+import common
 from common import Builder
 
 TUB_W, TUB_D = 4.6, 3.8          # outer footprint, studs
@@ -106,16 +107,40 @@ def _water():
     return b
 
 
-# Foam: clusters on the water by the walls and on two rim corners. (x, y, z, radius)
-FOAM = [(-1.55, -1.05, WATER_Z + 0.06, 0.28), (-1.2, -1.2, WATER_Z + 0.04, 0.2), (1.55, 1.05, WATER_Z + 0.06, 0.3),
-        (1.2, 1.2, WATER_Z + 0.04, 0.18), (1.6, -0.9, WATER_Z + 0.05, 0.22), (-1.6, 0.95, WATER_Z + 0.05, 0.24),
-        (-1.85, -1.5, RIM_Z + 0.17, 0.22), (-1.55, -1.6, RIM_Z + 0.15, 0.15), (1.85, 1.5, RIM_Z + 0.16, 0.2)]
+def foam_pile(b, x, y, z, r, ring=4, turn=0.0, segments=8, rings=5, swatch="foam"):
+    """Soap foam as a tidy pile of round bubbles (#107), not loose puffs: one big bubble, `ring` smaller ones tucked
+    round its foot (big and small in turn) and a little one on top. (x, y, z) is where the pile rests (the water or a
+    rim); it sits a little into that surface. Every bubble is a Ball part in Roblox."""
+    b.sphere((x, y, z + 0.55 * r), r, swatch, segments=segments, rings=rings)
+    for j in range(ring):
+        t = turn + 2 * math.pi * j / ring
+        rr = r * (0.62 if j % 2 == 0 else 0.48)
+        d = r * 0.92
+        b.sphere((x + math.cos(t) * d, y + math.sin(t) * d, z + 0.6 * rr), rr, swatch, segments=segments, rings=rings)
+    t = turn + math.pi / ring
+    b.sphere((x + math.cos(t) * 0.5 * r, y + math.sin(t) * 0.5 * r, z + 1.32 * r), 0.4 * r, swatch,
+             segments=segments, rings=rings)
+
+
+def foam_bubble(b, x, y, z, r, segments=8, rings=5, swatch="foam"):
+    """One bubble resting on a surface at (x, y, z)."""
+    b.sphere((x, y, z + 0.7 * r), r, swatch, segments=segments, rings=rings)
+
+
+# The tub's foam: a pile on the water in two opposite corners, a small pile spilling on a rim corner and four single
+# bubbles. Piles: (x, y, z, radius, bubbles in the ring, turn). Bubbles: (x, y, z, radius).
+FOAM_PILES = [(-1.4, -0.95, WATER_Z, 0.34, 4, 0.5), (1.4, 0.95, WATER_Z, 0.36, 4, 2.1),
+              (-1.85, -1.5, RIM_Z, 0.2, 3, 0.9)]
+FOAM_BUBBLES = [(1.6, -1.1, WATER_Z, 0.2), (1.2, -1.25, WATER_Z, 0.13), (-1.55, 1.0, WATER_Z, 0.22),
+                (1.9, 1.5, RIM_Z, 0.16)]
 
 
 def _foam():
     b = Builder()
-    for x, y, z, r in FOAM:
-        b.sphere((x, y, z), r, "foam", segments=8, rings=4, scale=(1, 1, 0.7))
+    for x, y, z, r, ring, turn in FOAM_PILES:
+        foam_pile(b, x, y, z, r, ring, turn)
+    for x, y, z, r in FOAM_BUBBLES:
+        foam_bubble(b, x, y, z, r)
     return b
 
 
@@ -138,7 +163,7 @@ def build_tub(mat):
     _tap(b)
     objs = [_tris(b.finalize(name, mat)),
             _water().finalize(name + "_Water", mat),
-            _foam().finalize(name + "_Foam", mat)]
+            common.shade_smooth(_foam().finalize(name + "_Foam", mat))]
     return objs
 
 
@@ -321,15 +346,14 @@ def build_bubble_bath(mat):
     w_.cyl_base((0, 0, BATH_SEAT), BATH_R - 0.32, 0.12, "spa_sky", segments=14, bevel=False)
     water = _tris(w_.finalize(name + "_Water", mat))
     f = Builder()
-    for i in range(11):                                                          # foam heaped round the edge
-        t = 2 * math.pi * i / 11 + 0.3
-        r = BATH_R - 0.62 - 0.08 * (i % 3)
-        size = 0.45 + 0.07 * (i % 3)
-        f.sphere((math.cos(t) * r, math.sin(t) * r, BATH_SEAT + 0.2 + 0.05 * (i % 2)), size, "foam", segments=6,
-                 rings=4, scale=(1, 1, 0.75))
-    for i, (x, y) in enumerate(((-1.4, 1.2), (1.3, 1.35), (-1.5, -1.0))):        # and spilling over the rim
-        f.sphere((x, y, BATH_RIM + 0.15), 0.26 - 0.03 * i, "foam", segments=6, rings=4, scale=(1, 1, 0.7))
-    foam = f.finalize(name + "_Foam", mat)
+    for i in range(5):                                                           # foam piled round the cat
+        t = 2 * math.pi * i / 5 + 0.95
+        r = BATH_R - 0.85
+        foam_pile(f, math.cos(t) * r, math.sin(t) * r, BATH_SEAT + 0.1, 0.36 + 0.04 * (i % 2), ring=3,
+                  turn=t + 0.4 * i)
+    for i, (x, y) in enumerate(((-1.45, 1.15), (1.3, 1.4), (-1.55, -0.95))):     # and bubbles spilling on the rim
+        foam_bubble(f, x, y, BATH_RIM - 0.02, 0.2 - 0.03 * i)
+    foam = common.shade_smooth(f.finalize(name + "_Foam", mat))
     s_ = Builder()                                                                # the spout's mouth
     s_.cyl((0, 0, 0), 0.17, 0.2, "spa_mint", segments=8, bevel=False)
     spout = _tris(s_.finalize(name + "_Spout", mat, bevel=0, location=(0, SPOUT_Y, SPOUT_Z)))
@@ -382,11 +406,14 @@ def pawdicure_rbx_extras():
             "attributes": {"SeatHeight": {"Float64": PAW_Z}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
 
 
-ASSETS = {"CleanACat_Station_Tub": (build_tub, 1500),
+# The two baths carry round foam bubbles (#107). Each bubble is a Ball part in Roblox, which the engine draws itself,
+# so its triangles here are only the preview mesh: 64 a bubble, 1,344 on the tub and 1,792 on the bubble bath.
+# Without the foam the tub is 1,040 triangles and the bubble bath 676, inside the 1,500 and 1,200 the others keep.
+ASSETS = {"CleanACat_Station_Tub": (build_tub, 2500),
           "CleanACat_Station_BrushTable": (build_brush_table, 1200),
           "CleanACat_Station_BrushTableUp": (build_brush_table_up, 1200),
           "CleanACat_Station_Dryer": (build_dryer, 1200),
-          "CleanACat_Station_BubbleBath": (build_bubble_bath, 1200),
+          "CleanACat_Station_BubbleBath": (build_bubble_bath, 2500),
           "CleanACat_Station_Pawdicure": (build_pawdicure, 1200)}
 EXTRAS = {"CleanACat_Station_Tub": tub_rbx_extras,
           "CleanACat_Station_BrushTable": brush_table_rbx_extras("CleanACat_Station_BrushTable"),

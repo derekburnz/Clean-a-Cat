@@ -29,7 +29,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming |
 | `contact_sheet.py` | tiles previews into sheets |
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
-| `dirt.py` | the dirty cats (#12): mud blobs, tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
+| `dirt.py` | the dirty cats (#12): pixel mud splats fitted to each fur face (#107), tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
 | `stations.py` | the spa stations: the wash tub (#13), the brush table, its upgrade and the hood dryer with its `Nozzle` (#18), the bubble bath with its `Spout` and the pawdicure (#23), each with a `CatSeat` attachment |
 | `tools.py` | hand tools: the three sponges (#13) and the brush (#14), each with a `Handle` part |
 | `plot.py` | the spa plot (#15): the real build on the graybox layout, every gameplay spot an Attachment (`SPOTS`) |
@@ -42,7 +42,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `store_compose.py` | store art (#24), plain Python with Pillow: backdrops, the game's name as the only words, the 512 icon and 1280 or 1920 thumbnails, and the draft sheet with 150 and 48 px checks; `compose_spa` makes the picked look (stacked title, bubble backdrop; title font Lilita One, OFL, via `TITLE_FONT`) |
 | `customers.py` | the customers' accessories for the R15 rig and the four looks (`LOOKS`, #16) |
 | `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
-| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, `street <folder>`, or `customers`, `later` for the #23 stations); exports nothing |
+| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, `street <folder>`, or `customers`, `later` for the #23 stations, `mud <out.png>` and `foam <out.png>` for the #107 close-ups); exports nothing |
 
 ## Adding a model
 1. Add a module with an `ASSETS` dict (name to `(builder(mat) -> objects, triangle budget)`), and add it to `all_assets()` in `build_all.py`.
