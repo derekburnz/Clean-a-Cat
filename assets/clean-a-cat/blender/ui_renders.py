@@ -39,8 +39,9 @@ PORTRAIT_RAW, ICON_RAW = 1024, 512
 PORTRAIT_VIEW = (16, 6)            # azimuth and elevation, degrees: nearly face on, so both eyes show
 ICON_VIEW = (35, 24)
 # model -> (azimuth, elevation) where the family view hides what the thing is; None for the family view
-# (the coin stack is seen from the left so no light glints off its top; the dryer from the side so its hood, pole
-# and stool sit side by side; the bench from above so its three mats show)
+# (the coin stack is seen a little lower than the family view so its tops stay gold and the tall pile stands
+# clear; the dryer from the side so its hood, pole and stool sit side by side; the bench from above so its three
+# mats show)
 ICONS = {
     "CleanACat_Tool_Sponge": None, "CleanACat_Tool_SpongeBubble": None, "CleanACat_Tool_SpongeGolden": None,
     "CleanACat_Tool_Brush": None, "CleanACat_Tool_BrushFluffy": None, "CleanACat_Tool_BrushGolden": None,
@@ -51,7 +52,7 @@ ICONS = {
     "CleanACat_Station_BrushTable": (28, 26), "CleanACat_Station_BrushTableUp": (28, 26),
     "CleanACat_Station_Dryer": (60, 10), "CleanACat_Prop_Carrier": None,
     "CleanACat_Bow_Pink": (0, 20), "CleanACat_Bow_Mint": (0, 20), "CleanACat_Bow_Sky": (0, 20),
-    "CleanACat_Prop_Coin": (18, 8), "CleanACat_Prop_Star": (14, 6), "CleanACat_Prop_CoinStack": (-30, 30),
+    "CleanACat_Prop_Coin": (18, 8), "CleanACat_Prop_Star": (14, 6), "CleanACat_Prop_CoinStack": (35, 20),
     "CleanACat_NPC_BuilderKitten": (18, 8), "CleanACat_NPC_Helper": (18, 8),
     "CleanACat_NPC_Helper2": (18, 8), "CleanACat_NPC_Helper3": (18, 8),
     "CleanACat_Station_WaitBench": (15, 55), "CleanACat_Station_FrontDesk": (28, 26),
