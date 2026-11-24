@@ -10,6 +10,8 @@
 --   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar;
 --                        SudsRules.NO_BOWS in it leaves the bows out (the opening's kitten, #285)
 --   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil
+--   HUD.listShown()      true while the tick list of this cat's steps shows (HUD/StepList, switch washChecklist), in
+--                        the pips' place; HUD.onListChanged(fn) when that flips (the button row steps aside for it)
 --
 -- The look follows the screens' README: numbers and status are white words with an ink outline and no box, Fredoka
 -- One only, and every piece is laid out in design pixels on a 1280 x 720 canvas and scaled like Scale.luau:
@@ -27,6 +29,7 @@ local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local Comfort = require(script.Parent:WaitForChild("Comfort"))
 local Icons = require(script:WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
+local StepList = require(script:WaitForChild("StepList"))
 local TipLine = require(script:WaitForChild("TipLine"))
 
 local HUD = {}
@@ -79,10 +82,12 @@ type Pieces = {
 	coinText: TextLabel,
 	steps: Frame,
 	stepText: TextLabel,
+	pipRow: Frame,
 	pips: { Frame },
 	ticks: { TextLabel },
 	tray: Frame,
 	slots: { Frame },
+	slotTicks: { TextLabel },
 	faces: { Frame },
 	iconBoxes: { Frame },
 	faded: { boolean },
@@ -93,6 +98,8 @@ local pieces: Pieces? = nil
 local coins = 0
 local stage: string? = nil
 local plan: { string } = {} -- the later steps this wash takes
+local listWas = false
+local listListeners: { () -> () } = {}
 
 -- The steps this wash shows, as indexes into HUD.STEPS, in order.
 local function shownSteps(): { number }
@@ -192,6 +199,25 @@ local function redraw()
 	local current = stepIndex(stage, shown)
 	local washing = on() and current ~= nil
 	p.steps.Visible = washing and not TipLine.isShown() -- one line at the top centre: a tutorial tip wins
+	-- The tick list (switch washChecklist) shows this cat's steps at the left and takes the pips' place; the top line
+	-- keeps its words. Parent, not Visible: a hidden child still counts in the list's gaps in some layouts.
+	local listSteps: { StepList.Step } = {}
+	if washing then
+		for _, index in shown do
+			table.insert(listSteps, { icon = HUD.STEPS[index].icon, say = HUD.STEPS[index].say })
+		end
+	end
+	StepList.set(listSteps, current or 0)
+	local listNow = StepList.isShown()
+	-- with the switch on the pips go on every screen: a short one has no card, and the tray's ticks show the progress
+	local checklist = StepList.isOn()
+	p.pipRow.Parent = if checklist then nil else p.steps
+	if listNow ~= listWas then
+		listWas = listNow
+		for _, fn in listListeners do
+			task.spawn(fn)
+		end
+	end
 	p.tray.Visible = washing
 	if current == nil then
 		return
@@ -227,6 +253,7 @@ local function redraw()
 			then Color3.fromHex("FFC94D")
 			elseif at < current then Color3.fromHex("E7F6EF")
 			else WHITE
+		p.slotTicks[index].Visible = checklist and at > 0 and at < current
 		local iconBox = p.iconBoxes[index]
 		iconBox.Size = UDim2.fromOffset(s.slotIcon, s.slotIcon) -- model icons never under 48 (Design-Agent)
 		local fade = at < current
@@ -306,6 +333,7 @@ function HUD.build(root: Frame)
 	pad.Parent = tray
 	list(tray, true, 12)
 	local slots: { Frame } = {}
+	local slotTicks: { TextLabel } = {}
 	local faces: { Frame } = {}
 	local iconBoxes: { Frame } = {}
 	local faded: { boolean } = {}
@@ -327,6 +355,22 @@ function HUD.build(root: Frame)
 		iconBox.Parent = face
 		Icons.draw(step.icon, iconBox)
 		faded[index] = false
+		-- a green tick on a finished step's slot, with the tick list's switch on (washChecklist)
+		local slotTick = Instance.new("TextLabel")
+		slotTick.Name = "Tick"
+		slotTick.BackgroundTransparency = 1
+		slotTick.AnchorPoint = Vector2.new(1, 0)
+		slotTick.Position = UDim2.new(1, 2, 0, -2)
+		slotTick.Size = UDim2.fromOffset(30, 30)
+		slotTick.Text = "✓"
+		slotTick.TextScaled = true -- a mark, not words
+		slotTick.TextColor3 = Color3.fromHex("3FA868")
+		slotTick.TextStrokeColor3 = WHITE
+		slotTick.TextStrokeTransparency = 0
+		slotTick.Font = FONT
+		slotTick.Visible = false
+		slotTick.Parent = face
+		slotTicks[index] = slotTick
 		slot.Parent = tray
 		slots[index] = slot
 		faces[index] = face
@@ -335,6 +379,8 @@ function HUD.build(root: Frame)
 
 	TipLine.build(root)
 	TipLine.onChanged(redraw)
+	StepList.build(root)
+	StepList.onFlagsChanged(redraw)
 
 	pieces = {
 		coins = coinsFrame,
@@ -342,10 +388,12 @@ function HUD.build(root: Frame)
 		coinText = coinText,
 		steps = steps,
 		stepText = stepText,
+		pipRow = pipRow,
 		pips = pips,
 		ticks = ticks,
 		tray = tray,
 		slots = slots,
+		slotTicks = slotTicks,
 		faces = faces,
 		iconBoxes = iconBoxes,
 		faded = faded,
@@ -368,6 +416,14 @@ end
 
 function HUD.setTip(tip: TipLine.Tip?)
 	TipLine.set(tip)
+end
+
+function HUD.listShown(): boolean
+	return StepList.isShown()
+end
+
+function HUD.onListChanged(fn: () -> ())
+	table.insert(listListeners, fn)
 end
 
 function HUD.setPlan(later: { string })

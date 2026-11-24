@@ -7,6 +7,8 @@
 --   SideButtons.any()               true while the HUD is on and at least one button shows
 --   SideButtons.onChanged(fn)       fn() when a switch that shows or hides a button flips
 --   SideButtons.find(window)        the button that opens `window`, or nil
+--   SideButtons.setAside(on)        hides the row while the wash's tick list has its place (HUD/StepList); the
+--                                   windows are for between washes. SideButtons.isAside()
 --
 -- A button shows only while the game HUD (gameHud) and its own window's switch are on, so a switched-off window
 -- never has a way in. While any button shows, the starter Menu hides (UI/init). With a gamepad the row is reached
@@ -62,6 +64,7 @@ type Button = { spec: Spec, button: TextButton, iconBox: Frame }
 local row: Frame? = nil
 local rowScale: UIScale? = nil
 local buttons: { Button } = {}
+local aside = false
 
 local function shown(spec: Spec): boolean
 	return LiveFlags.isOn(HUD_FLAG) and LiveFlags.isOn(spec.flag)
@@ -117,7 +120,18 @@ local function redraw()
 		button.NextSelectionLeft = visible[index - 1]
 		button.NextSelectionRight = visible[index + 1]
 	end
-	r.Visible = #visible > 0
+	r.Visible = #visible > 0 and not aside
+end
+
+function SideButtons.setAside(on: boolean)
+	if aside ~= on then
+		aside = on
+		redraw()
+	end
+end
+
+function SideButtons.isAside(): boolean
+	return aside
 end
 
 function SideButtons.build(root: Instance, open: (window: string) -> ())

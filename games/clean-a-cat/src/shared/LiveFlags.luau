@@ -61,6 +61,7 @@ LiveFlags.KEYS = {
 	"proBrush", -- the Pro Brush on the Tools board: the tangles brush out in fewer strokes (WashDraft, #267); off by default
 	"settingsCard", -- the Settings card: sound sliders, less shake and less sparkle; the Menu opens it (UI/Settings, SettingsController); off by default
 	"sudsBubble", -- Suds's help bubble at the bottom of the screen: his face, why, one button that points the way, once each per save (UI/SudsBubble, BubbleController); off by default
+	"washChecklist", -- a tick list of this cat's wash steps at the left in the step pips' place; the HUD button row steps aside during the wash (UI/HUD/StepList); off by default
 	"openingBox", -- the opening scene: the truck, the bump and the box landing in front of the player (Effects/OpeningScene); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
@@ -108,6 +109,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	proBrush = true,
 	openingBox = true,
 	sudsBubble = true,
+	washChecklist = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

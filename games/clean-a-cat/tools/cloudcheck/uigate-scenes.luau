@@ -227,6 +227,17 @@ local SCENES = {
 		local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
 		UI.showBubble(BubbleRules.get("firstCustomer"))
 	end },
+	-- The tick list of this cat's steps (switch washChecklist) with both later steps, on the bath: two ticked, the
+	-- bath gold, the button row stepped aside. Icons only on a short screen.
+	{ "HudChecklist", function()
+		hud(true)
+		flag("washChecklist", true)
+		flag("catIndexWindow", true)
+		flag("settingsCard", true)
+		UI.setCoins(1240)
+		UI.setWashPlan({ "bath", "claws" })
+		UI.setWashStage("bath")
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
@@ -261,6 +272,7 @@ function Scenes.close()
 	flag("tutorialDim", false)
 	UI.hideBubble()
 	flag("sudsBubble", false)
+	flag("washChecklist", false)
 	flag("tutorialTip", false)
 	flag("windowsHideControls", false)
 	UI.setTip(nil)
