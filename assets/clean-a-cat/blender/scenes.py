@@ -574,11 +574,11 @@ def opening_board(mat, out_dir, only=""):
     on = bump_x - opening.WHEELS["BL"][1]
     tr2 = truck(on, pitch=-3.0, door=42.0)
     air2 = box(T(on + opening.T_L / 2 + 2.6, lane + 2.6, 3.3) @ R(30, "Y") @ R(-20, "X") @ R(25, "Z") @ T(0, 0, -0.9))
-    cam = dict(eye=(PX + 6.5, PY + 9.6, F + 7.2), target=(PX - 1.5, -35.0, 2.2), lens=22, hide=("_Glass", "_Roof"))
+    cam = dict(eye=(PX + 1.0, PY + 10.5, F + 7.6), target=(on + 2.5, -35.0, 2.2), lens=22, hide=("_Glass", "_Roof"))
     frames["a-truck-passes"] = dict(objs=tr2 + air2 + player(PX, PY), **cam)
     # b: the box landed, rocking
     rock = box(T(BX, BY, F) @ R(18, "Z") @ T(-1.2, 0, 0) @ R(7, "Y") @ T(1.2, 0, 0))
-    near = dict(eye=(PX + 9.0, PY + 3.2, F + 5.6), target=(BX, BY + 1.3, F + 1.5), lens=30, hide=("_Glass", "_Roof"))
+    near = dict(eye=(PX + 11.5, PY + 3.6, F + 6.4), target=(BX - 1.2, BY + 1.6, F + 2.1), lens=30, hide=("_Glass", "_Roof"))
     frames["b-box-landed"] = dict(objs=rock + player(PX, PY), **near)
     # c: the box open, the muddy stray looking out
     Mb = T(BX, BY, F) @ R(18, "Z")
