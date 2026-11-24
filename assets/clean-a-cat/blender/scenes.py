@@ -44,9 +44,9 @@ AVATAR_ATT = {"HatAttachment": (0.0, 0.0, 4.75), "NeckAttachment": (0.0, 0.0, 3.
 # (Motion-FX); these are a stand-in with an elbow, so the picture reads on the avatars most players wear.
 HOLD_UPPER = 12.0                  # degrees the upper arm goes forward of straight down
 HOLD_IN, HOLD_DOWN = 50.0, 22.0    # degrees the forearm turns in toward the middle, and slopes down to the hand
-HOLD_SEAT = (0.2, -1.25, 2.62)     # the held loaf's base in the avatar's space: to its left, ahead, and up (the
-                                   # torso's middle, as in the owner's carry screenshots, #340)
-HOLD_ROLL = 8.0                    # degrees his head end is raised
+HOLD_SEAT = (0.2, -1.25, 2.42)     # the held loaf's base in the avatar's space: to its left, ahead, and up. 0.2
+                                   # lower since #353: his tipped head stands higher and must stay under the chin
+HOLD_ROLL = 5.0                    # degrees his head end is raised
 
 
 def held_at():
