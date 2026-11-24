@@ -62,17 +62,37 @@ local function part(name: string, parent: Instance): Part
 	return p
 end
 
--- The floor under the player: their feet, from the root part and the hip height.
+-- The floor under the player: a short ray down from the root part, past the character and the trail itself. With no
+-- floor in reach (a jump), the feet: an R15 body stands HipHeight below its root part, an R6 one on two-stud legs
+-- (its HipHeight is 0). Review-QA on #260.
+local DOWN = Vector3.new(0, -12, 0)
+local R6_LEGS = 2
+
 local function feet(): (Vector3?, number)
 	local character = Players.LocalPlayer.Character
 	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
-	local humanoid = if character then character:FindFirstChildOfClass("Humanoid") else nil
-	if root == nil or not root:IsA("BasePart") then
+	local found = if character then character:FindFirstChildOfClass("Humanoid") else nil
+	local humanoid: Humanoid? = if found then found :: Humanoid else nil
+	if character == nil or root == nil or not root:IsA("BasePart") then
 		return nil, 0
 	end
-	local hip = if humanoid then humanoid.HipHeight else 2
 	local rootPart = root :: BasePart
-	return rootPart.Position, rootPart.Position.Y - rootPart.Size.Y / 2 - hip + 0.05
+	local skip: { Instance } = { character }
+	local f = folder
+	if f then
+		table.insert(skip, f)
+	end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = skip
+	local hit = Workspace:Raycast(rootPart.Position, DOWN, params)
+	if hit then
+		return rootPart.Position, hit.Position.Y + 0.05
+	end
+	local legs = if humanoid and humanoid.RigType == Enum.HumanoidRigType.R15
+		then humanoid.HipHeight
+		else R6_LEGS
+	return rootPart.Position, rootPart.Position.Y - rootPart.Size.Y / 2 - legs + 0.05
 end
 
 local function draw(dt: number)
