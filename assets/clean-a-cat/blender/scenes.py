@@ -54,6 +54,16 @@ def held_at():
             @ Matrix.Rotation(math.radians(-HOLD_ROLL), 4, "X"))
 
 
+def suds_on_bed(mat):
+    """Sitting Suds, moved to his seat in the basket (its CatSeat is off the middle); place him at the bed's spot
+    with lift BED_SEAT and scale BED_CAT_SCALE."""
+    import spa_props
+    objs = cats.build_cat("Suds", mat, body="sit")
+    for o in objs:
+        o.location += Vector((*spa_props.BED_SIT, 0.0)) / spa_props.BED_CAT_SCALE
+    return objs
+
+
 def avatar(mat, at=(0.0, 0.0, 0.0), skin="skin_tan", shirt="shirt_green", pants="shirt_blue", arms="down"):
     """A plain blocky avatar, R15 proportions: legs 2, torso 1.6, head 1.2 studs; front -Y. `arms` "hold" is the
     owner's carry hold (HOLD_FWD, HOLD_IN): the arms reach forward, down and in, and a loaf lies across them at
@@ -465,8 +475,7 @@ def plot_views(mat, out_dir, stem="plot-real", date="2026-11-23", built=False):
                     o.location += Vector((0.0, 0.35 / 1.5, 0.0))       # the pawdicure's CatSeat is 0.35 back
             allo += fresh(place(c, spot, lift=lift, k=stations.STATION_CAT_SCALE))
         allo += fresh(place(spa_props.build_suds_bed(mat), "SpotMascot"))          # the mascot at home (#297)
-        allo += fresh(place(cats.build_cat("Suds", mat, body="sit"), "SpotMascot",
-                            lift=spa_props.BED_STAND - 0.01 + spa_props.BED_PAD, k=spa_props.BED_CAT_SCALE))
+        allo += fresh(place(suds_on_bed(mat), "SpotMascot", lift=spa_props.BED_SEAT, k=spa_props.BED_CAT_SCALE))
         tb = Builder()                                                 # the game's placeholder Tools board
         tb.box_base((1.0, -2.0, F), (3.0, 0.5, 4.0), "wood_light", bevel=False)
         allo += fresh([tb.finalize("ToolsBoardStandIn", mat, bevel=0)])
@@ -487,9 +496,14 @@ def plot_views(mat, out_dir, stem="plot-real", date="2026-11-23", built=False):
     if built:
         views = {"top": views["top"], "player": views["player"],
                  "left": dict(eye=(4.0, -11.0, F + 10.0), target=(-13.0, -3.0, F + 1.5), lens=20),
-                 "back": dict(eye=(0.0, 9.3, F + 8.0), target=(-4.0, -6.0, F + 1.5), lens=18)}
+                 "back": dict(eye=(0.0, 9.3, F + 8.0), target=(-4.0, -6.0, F + 1.5), lens=18),
+                 # the mascot from the queue side (#333), at the follow camera's distance, the line full
+                 "mascot": dict(eye=(1.5, -3.0, F + 7.5), target=(9.3, -14.0, F + 1.3), lens=26)}
     made = []
+    only = os.environ.get("ONLY", "")
     for key, v in views.items():
+        if only and key != only:
+            continue
         path = os.path.join(out_dir, f"{date}-{stem}-{key}.png")
         hide = ("_Roof",) if key in ("top", "player", "entrance", "left", "back") else ("_Glass",)   # Roblox draws the glass 0.6 clear
         shot(allo, path, v["eye"], v["target"], v["lens"], hide=hide)
@@ -668,8 +682,7 @@ def opening_board(mat, out_dir, only=""):
     frames["e-suds-clean"] = dict(objs=shake + spark, **tubcam)
     # f: Suds in his bed by the entrance
     bed = fresh(at_spot(spa_props.build_suds_bed(mat), "SpotMascot"))
-    seat = spa_props.BED_STAND - 0.01 + spa_props.BED_PAD
-    home = fresh(at_spot(cats.build_cat("Suds", mat, body="sit"), "SpotMascot", lift=seat, k=spa_props.BED_CAT_SCALE))
+    home = fresh(at_spot(suds_on_bed(mat), "SpotMascot", lift=spa_props.BED_SEAT, k=spa_props.BED_CAT_SCALE))
     mx, my = plot.SPOTS["SpotMascot"][0], plot.SPOTS["SpotMascot"][1]
     frames["f-suds-home"] = dict(objs=bed + home + player(mx + 3.0, my + 3.8, turn=137),
                                  eye=(mx - 5.5, my + 7.5, F + 5.4), target=(mx + 0.6, my + 0.6, F + 2.7), lens=30,

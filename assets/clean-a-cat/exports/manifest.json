@@ -9478,18 +9478,18 @@
   "objects": [
    "CleanACat_Prop_SudsBed"
   ],
-  "triangles": 720,
+  "triangles": 640,
   "budget": 800,
-  "parts": 21,
+  "parts": 19,
   "size_studs": {
-   "x": 2.24,
-   "y": 2.56,
-   "z": 1.84
+   "x": 2.14,
+   "y": 2.45,
+   "z": 0.63
   },
   "size_roblox": [
-   2.24,
-   1.84,
-   2.56
+   2.14,
+   0.63,
+   2.45
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -9501,10 +9501,10 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "720/800 tris",
+    "budget": "640/800 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "410 faces on swatch centers",
+    "uv": "352 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.14",
