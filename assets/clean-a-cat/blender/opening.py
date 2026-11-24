@@ -58,6 +58,8 @@ FLOOR_Z = 1.95                    # the cargo floor's top
 WALL = 0.25
 DOOR_Z = T_H - 0.42               # the hinge line
 DOOR_OPEN = 75.0
+SCREEN_TOP = NOSE + 1.6           # where the raked windscreen meets the cabin's roof
+CABIN_H = 2.2                     # the cabin's height over the nose
 X90 = (math.radians(90), "X")
 Y90 = (math.radians(90), "Y")
 
@@ -77,16 +79,28 @@ def build_truck(mat):
     # the cab: a low nose and the cabin set back on it
     cab, sky = "pastel_butter", "pastel_sky"
     b.box_base((0, (NOSE + CAB_END) / 2 + 0.05, 1.5), (T_W - 0.2, CAB_END - NOSE - 0.1, 2.0), cab)
-    b.box_base((0, (NOSE + CAB_END) / 2 + 0.38, 3.46), (T_W - 0.3, CAB_END - NOSE - 0.86, 2.2), cab)
-    b.box_base((0, (NOSE + CAB_END) / 2 + 0.38, 5.62), (T_W - 0.7, CAB_END - NOSE - 1.3, 0.16), "spa_cream")   # roof cap
-    front = NOSE + 0.72                                                                          # the cabin's front face
-    b.box((0, front - 0.02, 4.62), (T_W - 1.1, 0.1, 1.5), sky, bevel=False)                      # windscreen
-    b.box((-1.2, front - 0.05, 4.95), (1.3, 0.06, 0.2), "foam", bevel=False,
-          rot=Matrix.Rotation(math.radians(-20), 3, "Y"))                                        # its glint
+    # the cabin (#348: "the vehicle model should be a bit better looking"): a raked windscreen instead of a flat
+    # face, a short visor, a fairing up to the cargo box's roof and three marker lamps
+    front = NOSE + 0.6                                                                           # the windscreen's foot
+    b.box_base((0, (SCREEN_TOP + CAB_END) / 2 - 0.02, 3.46), (T_W - 0.3, CAB_END - SCREEN_TOP - 0.06, CABIN_H), cab)
+    b.wedge((0, (front + SCREEN_TOP) / 2, 3.46 + CABIN_H / 2), (T_W - 0.3, SCREEN_TOP - front, CABIN_H), cab, bevel=False)
+    b.box_base((0, SCREEN_TOP + 0.85, 3.46 + CABIN_H - 0.04), (T_W - 0.7, 2.2, 0.16), "spa_cream")   # roof cap and visor
+    run = Vector((0.0, SCREEN_TOP - front, CABIN_H))                                             # up the windscreen
+    rake = -math.atan2(run.y, run.z)
+    out = Vector((0.0, -run.z, run.y)).normalized()                                              # off its face
+    mid = Vector((0.0, (front + SCREEN_TOP) / 2, 3.46 + CABIN_H / 2))
+    b.box(tuple(mid + out * 0.02), (T_W - 1.1, 0.08, run.length - 0.5), sky, bevel=False, rot=(rake, "X"))   # windscreen
+    b.box(tuple(mid + out * 0.05 + run.normalized() * 0.35 + Vector((-1.2, 0, 0))), (1.3, 0.05, 0.2), "foam", bevel=False,
+          rot=Matrix.Rotation(rake, 3, "X") @ Matrix.Rotation(math.radians(-20), 3, "Y"))        # its glint
+    b.wedge((0, CAB_END - 0.62, 3.46 + CABIN_H + 0.1 + 0.85), (T_W - 1.4, 1.7, 1.7), cab, bevel=False)   # the fairing
+    for i in (-1, 0, 1):                                                                         # marker lamps
+        b.box_base((i * 1.3, SCREEN_TOP + 0.12, 3.46 + CABIN_H + 0.11), (0.34, 0.22, 0.13), "lamp_warm", bevel=False)
     for sx in (1, -1):
-        b.box((sx * (w - 0.13), -4.3, 4.62), (0.1, 1.9, 1.4), sky, bevel=False)                  # side windows
-        b.box((sx * (w - 0.11), -4.3, 3.0), (0.08, 0.5, 0.14), "spa_cream", bevel=False)         # door handles
-        b.box((sx * (w - 0.05), front + 0.25, 4.5), (0.34, 0.14, 0.7), "spa_cream")              # mirrors
+        b.box((sx * (w - 0.13), -3.95, 4.62), (0.1, 1.6, 1.4), sky, bevel=False)                 # side windows
+        b.box((sx * (w - 0.11), -3.6, 3.25), (0.08, 0.5, 0.14), "spa_cream", bevel=False)        # door handles
+        b.box((sx * (w - 0.05), front + 0.42, 4.5), (0.34, 0.14, 0.7), "spa_cream")              # mirrors
+        b.box((sx * (w - 0.08), (NOSE + CAB_END) / 2 + 0.1, 2.75), (0.06, CAB_END - NOSE - 0.5, 0.5), "spa_sky",
+              bevel=False)                                                                       # the cargo stripe, carried on
         b.cyl((sx * 1.85, NOSE + 0.07, 2.75), 0.42, 0.16, "foam", segments=10, bevel=False, rot=X90)   # headlamps
         b.cyl((sx * 1.85, NOSE + 0.03, 2.75), 0.27, 0.16, "lamp_warm", segments=10, bevel=False, rot=X90)
     b.box((0, NOSE + 0.08, 2.72), (1.7, 0.12, 0.5), "spa_cream", bevel=False)                    # grille
@@ -117,6 +131,21 @@ def build_truck(mat):
         b.box((xs, yc + 0.3, 5.1), (0.07, 2.2, 1.8), "cardboard", bevel=False)                   # a parcel picture:
         b.box((xs + sx * 0.008, yc + 0.3, 5.86), (0.07, 2.36, 0.3), "fur_latte", bevel=False)      # its lid, a little wider
         b.box((xs + sx * 0.016, yc + 0.3, 5.58), (0.07, 0.4, 0.78), "paving_sand", bevel=False)    # the tape's end
+    for sx in (1, -1):                                                                           # the cargo box's trim
+        for y in (y0 + 0.06, REAR - 0.06):                                                       # corner posts, proud
+            b.box_base((sx * (w - 0.06), y, 1.66), (0.2, 0.2, T_H - 1.66 + 0.02), "spa_sky", bevel=False)
+        b.box((sx * (w - 0.03), yc, T_H - 0.07), (0.12, ln - 0.1, 0.2), "spa_sky", bevel=False)  # the roof rail
+        for y in (yc - 3.3, yc + 3.5):                                                           # panel ribs
+            b.box_base((sx * (w + 0.01), y, 3.1), (0.05, 0.12, T_H - 3.1 - 0.3), "paving_light", bevel=False)
+        b.box((sx * WHEEL_X, WHEELS["BL"][1] + WHEEL_R + 0.25, 1.26), (WHEEL_W, 0.08, 0.9), "fur_black", bevel=False)   # mud flaps
+    for sx in (1, -1):                                                                           # wheel wells: a dark
+        for _side, wy in (WHEELS["FL"], WHEELS["BL"]):                                           # panel over each wheel's top
+            cab_side = wy < CAB_END
+            x = sx * (w - 0.095 if cab_side else w + 0.005)
+            y1 = min(wy + WHEEL_R + 0.2, CAB_END - 0.05) if cab_side else wy + WHEEL_R + 0.2
+            y0_ = wy - WHEEL_R - 0.2
+            b.box((x, (y0_ + y1) / 2, 2.05), (0.03, y1 - y0_, 0.8), "fur_black", bevel=False)
+    b.box((0, REAR + 0.21, 1.27), (1.1, 0.05, 0.36), "foam", bevel=False)                        # a blank number plate
     for sx in (1, -1):                                                                           # rear lamps, back step
         b.box((sx * (w - 0.42), REAR + 0.04, 2.2), (0.5, 0.1, 0.34), "nose_pink", bevel=False)
     b.box((0, REAR - 0.1, 1.5), (T_W - 2.2, 0.6, 0.2), "metal")
