@@ -16,19 +16,24 @@
                                   fountain whose mint mouth is the part `Spout` (Attachment `Bubbles`). `CatSeat`
                                   1.5 up, as at the tub.
 
-  CleanACat_Station_BrushTable    the grooming table: a wooden table on four legs with a mint rubber mat, a towel on
-                                  the shelf underneath. `CatSeat` on the mat.
-  CleanACat_Station_BrushTableUp  its upgrade, same footprint, pivot and CatSeat: painted cream with round legs and
-                                  bubblegum feet, a puffy cushion top and a mint brush rack at the back with three
-                                  brushes and a bow. Swap one for the other in place.
-  CleanACat_Station_Dryer         a hood dryer over a round stool: the hood hangs from an arm on a pole behind the
-                                  stool. Its nozzle is a part named `Nozzle` under the hood, with an Attachment `Air`
-                                  whose +Y points down at the cat, for Motion-FX's air puffs. `CatSeat` on the stool.
+  CleanACat_Station_BrushTable    the grooming table: a cream cabinet on a wooden foot with a brass band, a mint
+                                  drawer and a towel on a brass bar, a wooden top with a mint rubber mat, and a
+                                  brass post at the back corner with a brush hanging from it. `CatSeat` on the mat.
+  CleanACat_Station_BrushTableUp  its upgrade, same footprint, pivot and CatSeat: the cabinet in bubblegum with a
+                                  gold band, a puffy cushion top, two towels, and a mint brush rack at the back
+                                  with three brushes and a bow. Swap one for the other in place.
+  CleanACat_Station_Dryer         a hood dryer over a round pouf, both on one cream plinth: the hood hangs from an
+                                  arm on a pole behind the pouf. Its nozzle is a part named `Nozzle` under the hood,
+                                  with an Attachment `Air` whose +Y points down at the cat, for Motion-FX's air
+                                  puffs. `CatSeat` on the pouf.
+  CleanACat_Station_Pawdicure     a lilac cabinet with a gold band and a painted paw print, a cushion top, a tray
+                                  of polish bottles and a brass lamp. `CatSeat` on the cushion.
 
-The brush tables and the dryer fit the 5 by 5 stud station pads (SpotStation2, SpotStation3 in the plot) and stand
-inside them. The cat sits on them at ScaleTo(CatScale) (root attribute, 1.5, the same as at the tub). Their thin
-legs and boards are too slim to collide, so an invisible `_Barrier` under each top keeps players from walking through
-(CanQuery off: taps and the camera pass through it).
+Since #193 every station stands on a solid body (a cabinet, a pouf, a plinth), not on thin legs, so it reads at phone
+size beside the two baths. The stations fit the 5 by 5 stud station pads (SpotStation2, SpotStation3 in the plot)
+and stand inside them. The cat sits on them at ScaleTo(CatScale) (root attribute, 1.5, the same as at the tub). The
+bodies collide; an invisible `_Barrier` inside each one stays for the game code that looks for it (CanQuery off:
+taps and the camera pass through it).
 
 Pivot at the base centre on the floor, the front (where the player stands) at -Y in Blender, -Z in Roblox.
 """
@@ -315,20 +320,61 @@ def _barrier(name, mat, size, at=(0.0, 0.0, 0.0)):
     return ob
 
 
+GROOM_FLARE = 0.5         # where a grooming cabinet's foot flares out to its body, with a metal band (as the tub's)
+GROOM_FRONT = TOP_Y - 0.95   # the cabinet body's front face
+
+
+def _groom_body(b, top_z, foot, body, band, face, knob):
+    """What both brush tables stand on (#193): a solid cabinet in place of four thin legs, so the table reads at
+    phone size beside the baths. A foot, a body that flares out over it, a metal band at the flare and a drawer
+    with a round knob on the front. `top_z` is the top board's top."""
+    under = top_z - 0.16
+    b.box_base((0, TOP_Y, 0), (2.5, 1.5, GROOM_FLARE + 0.04), foot)
+    b.box_base((0, TOP_Y, GROOM_FLARE), (2.9, 1.9, under - GROOM_FLARE + 0.02), body)
+    b.box_base((0, TOP_Y, GROOM_FLARE - 0.04), (2.98, 1.98, 0.13), band, bevel=False)
+    dz = (GROOM_FLARE + 0.1 + under) / 2
+    b.box((-0.55, GROOM_FRONT - 0.02, dz), (1.4, 0.08, 0.5), face)                    # the drawer
+    b.sphere((-0.55, GROOM_FRONT - 0.1, dz), 0.1, knob, segments=8, rings=4)          # its knob
+
+
+def _towel_bar(b, top_z, metal, towels):
+    """A towel bar on the front of the cabinet, right of the drawer, with a towel (or two) hung over it:
+    (swatch, x, width, drop) each."""
+    z = top_z - 0.42
+    y = GROOM_FRONT - 0.16
+    b.cyl((0.82, y, z), 0.045, 1.08, metal, segments=6, bevel=False, rot=Matrix.Rotation(math.pi / 2, 3, "Y"))
+    for sx in (-1, 1):
+        b.box((0.82 + sx * 0.5, y + 0.07, z), (0.07, 0.2, 0.09), metal, bevel=False)    # the brackets
+    for k, (sw, x, w, drop) in enumerate(towels):
+        b.box((x, y - 0.062 - 0.004 * k, z + 0.03 - drop / 2), (w, 0.06, drop), sw)    # the front fall
+        b.box((x, y, z + 0.055 + 0.004 * k), (w - 0.01, 0.17, 0.05), sw, bevel=False)  # over the bar
+        b.box((x, y - 0.066 - 0.004 * k, z - drop + 0.2), (w + 0.004, 0.06, 0.07), "offwhite", bevel=False)   # a stripe
+
+
 def build_brush_table(mat):
+    """The grooming table: a cream cabinet on a wooden foot with a brass band, a mint drawer and a towel on a
+    brass bar; a wooden top with a mint rubber mat; and a brass post at the back right corner with a brush
+    hanging from its arm, which says what the table is for."""
     name = "CleanACat_Station_BrushTable"
     b = Builder()
     top_z = GROOM_Z - 0.1                                                           # the board's top; the mat on it
+    _groom_body(b, top_z, "wood_light", "spa_cream", "brass", "spa_mint", "brass")
     b.box_base((0, TOP_Y, top_z - 0.16), (TOP_W, TOP_D, 0.16), "wood_light")        # the top board
     b.box_base((0, TOP_Y - 0.03, top_z - 0.01), (TOP_W - 0.5, TOP_D - 0.46, 0.11), "spa_mint")   # the rubber mat
-    for sx in (1, -1):
-        for sy in (1, -1):
-            b.box_base((sx * LEG_X, TOP_Y + sy * LEG_Y, 0), (0.28, 0.28, top_z - 0.12), "wood_light")
-    b.box_base((0, TOP_Y, 0.42), (2.62, 1.66, 0.12), "wood_light", bevel=False)     # the shelf between the legs
-    b.box_base((-0.55, TOP_Y + 0.05, 0.53), (1.1, 0.8, 0.32), "spa_sky")            # a folded towel on it
-    b.box_base((-0.55, TOP_Y + 0.05, 0.84), (1.0, 0.72, 0.03), "offwhite", bevel=False)   # its stripe
-    b.cyl_base((0.7, TOP_Y - 0.1, 0.53), 0.2, 0.55, "spa_bubblegum", segments=8)    # a shampoo bottle
-    b.cyl_base((0.7, TOP_Y - 0.1, 1.07), 0.08, 0.14, "spa_cream", segments=6, bevel=False)
+    _towel_bar(b, top_z, "brass", (("spa_sky", 0.82, 0.78, 0.72),))
+    # the brush post: a brass post on a cream foot, an arm towards the middle and one brush on it
+    px, py = TOP_W / 2 - 0.2, TOP_Y + TOP_D / 2 - 0.2
+    post_top = top_z + 2.35
+    b.cyl_base((px, py, top_z - 0.02), 0.19, 0.1, "spa_cream", segments=8, bevel=False)
+    b.cyl_base((px, py, top_z + 0.03), 0.08, post_top - top_z, "brass", segments=8, bevel=False)
+    b.sphere((px, py, post_top + 0.07), 0.13, "brass", segments=8, rings=4)
+    b.cyl((px - 0.42, py, post_top - 0.12), 0.05, 0.9, "brass", segments=6, bevel=False,
+          rot=Matrix.Rotation(math.pi / 2, 3, "Y"))
+    _hanging_brush(b, px - 0.62, py, post_top - 0.12, "spa_bubblegum")
+    # a shampoo bottle at the back left corner
+    bx, by = -(TOP_W / 2 - 0.3), TOP_Y + TOP_D / 2 - 0.3
+    b.cyl_base((bx, by, top_z - 0.02), 0.19, 0.52, "spa_bubblegum", segments=8)
+    b.cyl_base((bx, by, top_z + 0.49), 0.08, 0.14, "spa_cream", segments=6, bevel=False)
     main = _tris(b.finalize(name, mat))
     return [main, _barrier(name, mat, (TOP_W - 0.62, TOP_D - 0.66, top_z - 0.3), (0, TOP_Y, 0.03))]
 
@@ -342,33 +388,29 @@ def _hanging_brush(b, x, y, z, head):
 
 
 def build_brush_table_up(mat):
+    """The upgraded grooming table: the same cabinet in bubblegum on a cream foot with a gold band, a cream top
+    with a puffy cushion, two towels on a gold bar, and a mint brush rack at the back with three brushes and a
+    bow. Same footprint, pivot and CatSeat as the first table."""
     name = "CleanACat_Station_BrushTableUp"
     b = Builder()
     top_z = GROOM_Z - 0.24                                                          # the board; the cushion on it
+    _groom_body(b, top_z, "spa_cream", "spa_bubblegum", "gold_mid", "spa_cream", "gold_mid")
     b.box_base((0, TOP_Y, top_z - 0.16), (TOP_W, TOP_D, 0.16), "spa_cream")
-    b.box_base((0, TOP_Y, top_z - 0.13), (TOP_W + 0.06, TOP_D + 0.06, 0.09), "spa_bubblegum", bevel=False)  # a band
+    b.box_base((0, TOP_Y, top_z - 0.13), (TOP_W + 0.06, TOP_D + 0.06, 0.09), "gold_mid", bevel=False)      # a band
     b.box_base((0, TOP_Y - 0.03, top_z - 0.02), (TOP_W - 0.42, TOP_D - 0.5, 0.2), "spa_bubblegum")         # cushion
     b.box_base((0, TOP_Y - 0.03, top_z + 0.15), (TOP_W - 0.82, TOP_D - 0.86, 0.09), "spa_bubblegum")       # its puff
-    for sx in (1, -1):                                                              # round legs on ball feet
-        for sy in (1, -1):
-            x, y = sx * LEG_X, TOP_Y + sy * LEG_Y
-            b.cyl_base((x, y, 0.2), 0.15, top_z - 0.3, "spa_cream", segments=8, bevel=False)
-            b.sphere((x, y, 0.2), 0.22, "spa_bubblegum", segments=6, rings=4)
-    b.box_base((0, TOP_Y, 0.52), (2.66, 1.62, 0.12), "spa_cream", bevel=False)      # the shelf
-    for i, sw in enumerate(("spa_sky", "spa_mint")):                               # two folded towels
-        b.box_base((-0.6, TOP_Y + 0.05, 0.63 + 0.25 * i), (1.0 - 0.08 * i, 0.74 - 0.06 * i, 0.26), sw)
-    b.cyl_base((0.55, TOP_Y - 0.1, 0.63), 0.2, 0.55, "spa_bubblegum", segments=8)   # shampoo and conditioner
-    b.cyl_base((0.98, TOP_Y + 0.1, 0.63), 0.17, 0.45, "spa_sky", segments=8)
-    # the brush rack at the back: two posts off the back legs, a mint board, a rail with three brushes, a bow on top
+    _towel_bar(b, top_z, "gold_mid", (("spa_sky", 0.58, 0.5, 0.74), ("spa_mint", 1.1, 0.46, 0.6)))
+    # the brush rack at the back: two posts, a mint board, a rail with three brushes, a bow on top
     ry = TOP_Y + TOP_D / 2 + 0.11
     for sx in (1, -1):
         b.box_base((sx * 1.52, ry, top_z - 0.5), (0.22, 0.22, 2.95), "spa_mint")
     b.box_base((0, ry + 0.02, top_z + 0.45), (2.86, 0.1, 1.85), "spa_mint", bevel=False)
-    b.box_base((0, ry + 0.01, top_z + 2.24), (3.34, 0.2, 0.24), "spa_bubblegum")     # the header
+    b.box_base((0, ry, top_z + 2.24), (3.34, 0.26, 0.24), "spa_bubblegum")     # the header, 0.02 proud of the
+    #                                                                                  posts front and back
     rail_z = top_z + 1.95
-    b.cyl((0, ry - 0.16, rail_z), 0.05, 2.9, "metal", segments=6, bevel=False, rot=Matrix.Rotation(math.pi / 2, 3, "Y"))
+    b.cyl((0, ry - 0.16, rail_z), 0.05, 2.9, "gold_mid", segments=6, bevel=False, rot=Matrix.Rotation(math.pi / 2, 3, "Y"))
     for sx in (1, -1):
-        b.box((sx * 1.445, ry - 0.08, rail_z), (0.08, 0.2, 0.12), "metal", bevel=False)   # the rail's brackets
+        b.box((sx * 1.445, ry - 0.08, rail_z), (0.08, 0.2, 0.12), "gold_mid", bevel=False)   # the rail's brackets
     for x, head in ((-0.85, "spa_bubblegum"), (0.0, "spa_sky"), (0.85, "pastel_butter")):
         _hanging_brush(b, x, ry - 0.16, rail_z, head)
     kz = top_z + 2.6                                                                 # the bow on the header
@@ -387,31 +429,41 @@ HOOD_R = 1.3
 
 
 def build_dryer(mat):
+    """The hood dryer (#193 made it solid): a butter pouf with a bubblegum cushion and a gold band, where the cat
+    sits, and behind it a cream pole with brass collars and a mint control box, both on one cream plinth. An arm
+    from the pole holds the hood over the cat: a cream dome with a butter rim, sky vents and a brass knuckle."""
     name = "CleanACat_Station_Dryer"
     b = Builder()
     sx_, sy_ = STOOL
-    b.cyl_base((sx_, sy_, 0), 0.75, 0.16, "spa_cream", segments=12)                 # the stool's foot
-    b.cyl_base((sx_, sy_, 0.12), 0.16, SEAT_DRYER - 0.3, "metal", segments=8, bevel=False)    # its post
-    b.cyl_base((sx_, sy_, 0.42), 0.55, 0.07, "metal", segments=10, bevel=False)      # a foot ring
+    # one plinth under the pouf and the pole: two discs and a bridge between them
+    b.cyl_base((sx_, sy_, -0.02), 1.3, 0.2, "spa_cream", segments=16, bevel=False)
+    b.cyl_base((0, POLE_Y, -0.014), 0.7, 0.2, "spa_cream", segments=12, bevel=False)
+    b.box_base((0, (sy_ + POLE_Y) / 2, -0.008), (1.1, POLE_Y - sy_, 0.18), "spa_cream", bevel=False)
+    # the pouf: a drum narrower than its cushion, a gold band round its foot
+    b.cyl_base((sx_, sy_, 0.14), 0.9, SEAT_DRYER - 0.36, "pastel_butter", segments=14, bevel=False)
+    b.cyl_base((sx_, sy_, 0.16), 0.94, 0.14, "gold_mid", segments=14, bevel=False)
     b.cyl_base((sx_, sy_, SEAT_DRYER - 0.24), 1.0, 0.18, "spa_bubblegum", segments=14, bevel=False)   # the seat
     b.cyl_base((sx_, sy_, SEAT_DRYER - 0.07), 0.94, 0.07, "spa_bubblegum", segments=14, radius2=0.8,
                bevel=False)                                                          # its puffed top
-    b.cyl_base((0, POLE_Y, 0), 0.62, 0.2, "spa_cream", segments=12)                  # the pole's heavy base
-    b.cyl_base((0, POLE_Y, 0.15), 0.12, HOOD_Z + 1.0, "metal", segments=8, bevel=False)   # the pole
-    b.box((0, POLE_Y - 0.12, 2.2), (0.42, 0.24, 0.6), "spa_mint")                    # a control box with two dials
+    # the pole, its collars and the control box with two dials
+    b.cyl_base((0, POLE_Y, 0.15), 0.17, HOOD_Z + 1.0, "spa_cream", segments=8, bevel=False)
+    b.cyl_base((0, POLE_Y, 0.16), 0.3, 0.3, "brass", segments=10, bevel=False)
+    b.cyl_base((0, POLE_Y, 3.3), 0.22, 0.14, "brass", segments=8, bevel=False)
+    b.box((0, POLE_Y - 0.17, 2.2), (0.62, 0.3, 0.8), "spa_mint")
     for i, sw in enumerate(("spa_bubblegum", "spa_sky")):
-        b.cyl((0.1 - 0.2 * i, POLE_Y - 0.25, 2.25 - 0.14 * i), 0.07, 0.06, sw, segments=8, bevel=False,
+        b.cyl((0.13 - 0.26 * i, POLE_Y - 0.33, 2.33 - 0.24 * i), 0.1, 0.07, sw, segments=8, bevel=False,
               rot=Matrix.Rotation(math.pi / 2, 3, "X"))
     hy = STOOL[1] + 0.25                                                             # the hood, a little back
     arm_z = HOOD_Z + 1.25
-    b.box((0, (POLE_Y + hy) / 2, arm_z), (0.24, POLE_Y - hy + 0.1, 0.24), "metal", bevel=False)   # the arm
-    b.cyl_base((0, POLE_Y, HOOD_Z + 1.1), 0.18, 0.3, "spa_mint", segments=8, bevel=False)          # the arm's collar
+    b.box((0, (POLE_Y + hy) / 2, arm_z), (0.3, POLE_Y - hy + 0.1, 0.3), "spa_cream", bevel=False)   # the arm
+    b.cyl_base((0, POLE_Y, HOOD_Z + 1.06), 0.24, 0.4, "brass", segments=8, bevel=False)            # the arm's collar
+    b.sphere((0, hy, arm_z + 0.02), 0.26, "brass", segments=8, rings=4)                            # the knuckle
     b.cyl_base((0, hy, HOOD_Z), HOOD_R, 0.75, "spa_cream", segments=14, radius2=HOOD_R - 0.38, bevel=False)
     b.sphere((0, hy, HOOD_Z + 0.73), HOOD_R - 0.4, "spa_cream", segments=14, rings=6, scale=(1, 1, 0.55))
-    b.cyl_base((0, hy, HOOD_Z - 0.04), HOOD_R + 0.06, 0.22, "spa_mint", segments=14, bevel=False)  # the rim band
+    b.cyl_base((0, hy, HOOD_Z - 0.06), HOOD_R + 0.07, 0.28, "pastel_butter", segments=14, bevel=False)   # the rim
     for i in range(5):                                                               # vent slots round the dome
         t = math.radians(-90 + 45 * (i - 2))
-        b.box((math.cos(t) * (HOOD_R - 0.17), hy + math.sin(t) * (HOOD_R - 0.17), HOOD_Z + 0.42), (0.12, 0.12, 0.34),
+        b.box((math.cos(t) * (HOOD_R - 0.17), hy + math.sin(t) * (HOOD_R - 0.17), HOOD_Z + 0.45), (0.14, 0.12, 0.36),
               "spa_sky", bevel=False, rot=Matrix.Rotation(t + math.pi / 2, 3, "Z"))
     main = _tris(b.finalize(name, mat))
     n = Builder()                                                                    # the nozzle, under the hood
@@ -612,30 +664,45 @@ PAW_Z = 1.6                       # the pawdicure table's cushion top, the CatSe
 
 
 def build_pawdicure(mat):
-    """A small padded table: mint legs, a cream top with a bubblegum cushion and a paw rest at the front, and a tray of
-    three polish bottles and a nail file at the side."""
+    """The pawdicure (#193 made it solid): a lilac cabinet on a cream foot with a gold band and a white paw print
+    painted on the front; a cream top with a bubblegum cushion and a mint paw rest at the front; a tray of three
+    polish bottles and a nail file at the side; and a brass lamp at the back corner shining down on the paws."""
     name = "CleanACat_Station_Pawdicure"
     b = Builder()
     tw, td, ty = 2.8, 2.2, 0.2
     top = PAW_Z - 0.22
-    b.box_base((0, ty, top - 0.14), (tw, td, 0.14), "spa_cream")                 # the top
-    for sx in (1, -1):
-        for sy in (1, -1):
-            b.box_base((sx * (tw / 2 - 0.28), ty + sy * (td / 2 - 0.28), 0), (0.26, 0.26, top - 0.12), "spa_mint")
+    under = top - 0.14
+    flare = 0.46
+    b.box_base((0, ty, 0), (tw - 0.74, td - 0.64, flare + 0.04), "spa_cream")              # the foot
+    b.box_base((0, ty, flare), (tw - 0.4, td - 0.3, under - flare + 0.02), "pastel_lilac")  # the body
+    b.box_base((0, ty, flare - 0.04), (tw - 0.32, td - 0.22, 0.13), "gold_mid", bevel=False)   # the gold band
+    b.box_base((0, ty, under), (tw, td, 0.14), "spa_cream")                      # the top
+    front = ty - (td - 0.3) / 2
+    turn = Matrix.Rotation(math.pi / 2, 3, "X")
+    for k, (dx, z, rad) in enumerate(((0, 0.82, 0.19), (-0.24, 1.04, 0.085), (0, 1.12, 0.09), (0.24, 1.04, 0.085))):
+        b.cyl((dx, front - 0.004, z), rad, 0.04 + 0.004 * k, "offwhite", segments=8, bevel=False, rot=turn)   # paw print
     b.box_base((0, ty + 0.15, top - 0.02), (tw - 0.9, td - 0.9, 0.24), "spa_bubblegum")      # the cushion
-    b.box_base((0, ty - td / 2 + 0.3, top - 0.02), (1.2, 0.5, 0.12), "spa_mint")  # the paw rest at the front edge
+    b.box_base((0, ty - td / 2 + 0.3, top - 0.012), (1.2, 0.5, 0.112), "spa_mint")  # the paw rest at the front edge
     # the tray at the cat's left front corner (+X, -Y): three bottles and a file
     tx, tyy = tw / 2 - 0.38, ty - td / 2 + 0.42
-    b.box_base((tx, tyy, top - 0.02), (0.6, 0.62, 0.06), "metal", bevel=False)
-    for i, (dx, dy, sw) in enumerate(((-0.14, 0.14, "spa_bubblegum"), (0.13, 0.12, "spa_sky"), (0.0, -0.14, "bow_mint"))):
-        b.cyl_base((tx + dx, tyy + dy, top + 0.03), 0.09, 0.22, sw, segments=8, bevel=False)
-        b.cyl_base((tx + dx, tyy + dy, top + 0.24), 0.045, 0.1, "offwhite", segments=6, bevel=False)
+    b.box_base((tx, tyy, top - 0.008), (0.64, 0.66, 0.05), "gold_mid", bevel=False)
+    for i, (dx, dy, sw) in enumerate(((-0.15, 0.15, "spa_bubblegum"), (0.14, 0.13, "spa_sky"), (0.0, -0.15, "bow_mint"))):
+        b.cyl_base((tx + dx, tyy + dy, top + 0.03), 0.11, 0.28, sw, segments=8, bevel=False)
+        b.cyl_base((tx + dx, tyy + dy, top + 0.3), 0.05, 0.12, "offwhite", segments=6, bevel=False)
     b.box((tx - 0.02, tyy - 0.02, top + 0.08), (0.08, 0.52, 0.025), "pastel_butter", bevel=False,
           rot=Matrix.Rotation(math.radians(30), 3, "Z"))                          # the nail file
-    b.box_base((0, ty, 0.5), (tw - 0.8, td - 0.8, 0.1), "spa_cream", bevel=False)  # a shelf with a towel
-    b.box_base((0.3, ty + 0.1, 0.59), (0.9, 0.7, 0.24), "spa_sky")
+    # the lamp at the back left corner: a brass post, a neck arching forward and a butter shade over the paws
+    lx, ly = -(tw / 2 - 0.25), ty + td / 2 - 0.25
+    lamp_top = top + 1.7
+    b.cyl_base((lx, ly, top - 0.02), 0.2, 0.1, "brass", segments=8, bevel=False)
+    b.cyl_base((lx, ly, top + 0.03), 0.07, lamp_top - top, "brass", segments=8, bevel=False)
+    for dy, dz, deg in ((0.1, 0.09, 45), (0.3, 0.17, 90), (0.5, 0.09, 135)):
+        b.cyl((lx, ly - dy, lamp_top + dz), 0.07, 0.3, "brass", segments=8, bevel=False,
+              rot=Matrix.Rotation(math.radians(deg), 3, "X"))
+    b.cyl((lx, ly - 0.62, lamp_top - 0.1), 0.3, 0.3, "pastel_butter", segments=10, bevel=False, radius2=0.13)   # shade
+    b.cyl((lx, ly - 0.62, lamp_top - 0.27), 0.2, 0.06, "lamp_warm", segments=8, bevel=False)                   # bulb
     main = _tris(b.finalize(name, mat))
-    return [main, _barrier(name, mat, (tw - 0.74, td - 0.74, top - 0.35), (0, ty, 0.03))]
+    return [main, _barrier(name, mat, (tw - 0.84, td - 0.8, top - 0.35), (0, ty, 0.03))]
 
 
 def pawdicure_rbx_extras():
