@@ -12,6 +12,35 @@ return function()
 		return cat
 	end
 
+	describe("SpaRules.canReplace and restart", function()
+		it("swaps a done cat at once and an unfinished one only after a visit's time", function()
+			local cat = SpaRules.newCat(1, 100)
+			SpaRules.scrubbed(cat)
+			expect(SpaRules.canReplace(cat, 101)).to.equal(false)
+			expect(SpaRules.canReplace(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(true)
+			local done = styledCat(100)
+			SpaRules.askPhoto(done, 100 + SpaRules.MIN_VISIT_SECONDS)
+			SpaRules.photo(done, 100 + SpaRules.MIN_VISIT_SECONDS)
+			expect(done.stage).to.equal("done")
+			expect(SpaRules.canReplace(done, 0)).to.equal(true)
+		end)
+
+		it("puts the same cat back to dirty without resetting its arrival or paying", function()
+			local cat = styledCat(100)
+			cat.kind = "Smudge"
+			expect(SpaRules.askPhoto(cat, 101)).to.equal(SpaRules.MIN_VISIT_SECONDS - 1)
+			SpaRules.restart(cat)
+			expect(cat.stage).to.equal("dirty")
+			expect(cat.arrivedAt).to.equal(100)
+			expect(cat.kind).to.equal("Smudge")
+			expect(cat.photoTaken).to.equal(false)
+			expect(cat.bow).to.equal(nil)
+			expect(cat.strokes).to.equal(0)
+			-- The held photo finds the cat dirty again and pays nothing.
+			expect(SpaRules.photo(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(0)
+		end)
+	end)
+
 	describe("SpaRules visit order", function()
 		it("goes dirty, clean, fluffed, styled, done and pays once", function()
 			local cat = SpaRules.newCat(7, 100)

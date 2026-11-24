@@ -114,10 +114,17 @@ local function onRequestCat(player: Player)
 		return
 	end
 	local cat = cats[player]
-	-- A dirty cat is resent (the client may have missed it); any other cat is replaced by a fresh dirty one.
-	-- Starting over never pays sooner: the photo still waits MIN_VISIT_SECONDS from the new cat's arrival.
-	if cat == nil or cat.stage ~= "dirty" then
+	-- A dirty cat is resent (the client may have missed it). A done cat is replaced by a fresh dirty one. An
+	-- unfinished cat is replaced only after a whole visit's time; sooner, it goes back to dirty and is resent,
+	-- so asking again never rerolls a cheap cat into a rare one (issue #164).
+	if cat == nil then
 		cat = newCat(player)
+	elseif cat.stage ~= "dirty" then
+		if not SpaRules.canReplace(cat, os.clock()) then
+			SpaRules.restart(cat)
+		else
+			cat = newCat(player)
+		end
 	end
 	sendCat(player, cat :: SpaRules.Cat)
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
