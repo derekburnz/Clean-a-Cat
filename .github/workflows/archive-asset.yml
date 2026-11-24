@@ -1,0 +1,69 @@
+# Archive Roblox assets by id: an upload that was replaced (an old icon) leaves the group's inventory. Start it from
+# the Actions tab (archive-asset > Run workflow) or from a thread, with the ids to archive. An archived asset stops
+# loading in games and can be restored from the Creator Dashboard, so it is a cleanup, not a delete.
+#
+# Safety: the ids are typed in, never found by a search; an empty list is refused; an id the repo still mentions
+# anywhere is refused, so nothing the game uses is archived; each id is read and logged (name, type, owner) before it
+# is archived. The key is the one upload-asset uses (ROBLOX_GROUP_KEY, else ROBLOX_PUBLISH_KEY) and must be able to
+# write the asset (asset:read and asset:write, made by its owner).
+name: archive-asset
+
+on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: "Asset ids to archive, separated by spaces, commas or new lines"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: archive-asset
+  cancel-in-progress: false
+
+env:
+  GAME_DIR: games/clean-a-cat
+
+jobs:
+  archive:
+    name: Archive on Roblox
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ROBLOX_UPLOAD_KEY: ${{ secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY }}
+      ASSET_IDS: ${{ inputs.ids }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check the ids
+        run: |
+          if [ -z "$ROBLOX_UPLOAD_KEY" ]; then
+            echo "::error::Neither ROBLOX_GROUP_KEY nor ROBLOX_PUBLISH_KEY is set. Steps: docs/setup-guide.md step 8."
+            exit 1
+          fi
+          read -r -a ids <<<"$(printf '%s' "$ASSET_IDS" | tr ',\n\r\t' '    ')"
+          if [ "${#ids[@]}" = 0 ]; then
+            echo "::error::no asset ids given"
+            exit 1
+          fi
+          for id in "${ids[@]}"; do
+            case "$id" in
+            *[!0-9]*)
+              echo "::error::an asset id is digits only, got: $id"
+              exit 1
+              ;;
+            esac
+            # anything the repo still names may be in use: never archive it
+            if git grep -n -w -F "$id" -- . ':!.github/workflows/archive-asset.yml'; then
+              echo "::error::$id is still referenced in the repo (above); remove those uses first"
+              exit 1
+            fi
+          done
+          echo "Archiving ${#ids[@]} asset(s): ${ids[*]}"
+          printf '%s\n' "${ids[@]}" >"$RUNNER_TEMP/archive-ids"
+
+      - name: Archive
+        run: |
+          mapfile -t ids <"$RUNNER_TEMP/archive-ids"
+          bash "$GAME_DIR/tools/opencloud/archive-asset.sh" "${ids[@]}"
