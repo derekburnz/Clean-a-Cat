@@ -8,7 +8,7 @@
 --                                       then onGone() once the card goes for any reason (button, X, hide, or another
 --                                       bubble taking its place)
 --   SudsBubble.hide()
---   SudsBubble.isShown()
+--   SudsBubble.isShown(), SudsBubble.current()   whether a bubble shows, and which
 --
 -- The button and the X only close the card; whatever "Show me" does is the caller's (it points the way and never
 -- opens a window). The card never takes a press anywhere else, so walking and washing go on under it.
@@ -88,6 +88,10 @@ local gone: (() -> ())? = nil
 
 function SudsBubble.isShown(): boolean
 	return shown ~= nil and LiveFlags.isOn(SudsBubble.FLAG)
+end
+
+function SudsBubble.current(): BubbleRules.Bubble?
+	return shown
 end
 
 local function viewport(): Vector2

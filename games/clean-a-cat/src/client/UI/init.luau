@@ -353,6 +353,11 @@ function UI.bubbleShown(): boolean
 	return SudsBubble.isShown()
 end
 
+-- The bubble on screen now, or nil.
+function UI.shownBubble(): BubbleRules.Bubble?
+	return if SudsBubble.isShown() then SudsBubble.current() else nil
+end
+
 -- True while something the player is reading or choosing is up: a window, the recap card or strip, or the dim step.
 function UI.busy(): boolean
 	for _, frame in windows do

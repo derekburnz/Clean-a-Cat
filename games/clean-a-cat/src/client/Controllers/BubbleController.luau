@@ -7,8 +7,9 @@
 -- Nothing talks over a wash (Design-Agent): a bubble only shows while the tub is empty, and one still up when a cat
 -- lands in the tub goes. The natural moment is as a recap card closes: RecapController hands us the next cat request
 -- (afterRecap), so the due bubbles show one after another with the tub still empty, and the next cat is asked for
--- once the last one goes (by its button, its X, a window opening or the switch going off), never before. That is
--- where "Let's open the spa!" and "First customer!" land, after Suds's naming card, before the customer's cat comes.
+-- once the last one goes (by its button, its X, a window opening or the switch going off). A bubble never holds the
+-- game up (Design-Agent): at most CHAIN in a row, and one left up for WAIT_SECONDS goes and the next cat comes
+-- anyway, so the player never has to clear bubbles to keep playing. That is where "Let's open the spa!" and "First customer!" land, after Suds's naming card, before the customer's cat comes.
 -- Between washes it also checks once a second, waiting while a window, the recap card or the dim step is up, while
 -- the opening runs, and for a moment after the screen frees up.
 --
@@ -38,7 +39,8 @@ local UI = require(Client:WaitForChild("UI"))
 
 local CHECK_SECONDS = 1
 local SETTLE_SECONDS = 1.5 -- the screen stays free this long before a bubble shows between washes
-local CHAIN = 3 -- at most this many bubbles one after another as a recap card closes
+local CHAIN = 2 -- at most this many bubbles one after another as a recap card closes
+local WAIT_SECONDS = 6 -- a bubble left up this long as the next cat waits goes, and the next cat comes
 local ARRIVE = 8 -- studs from the spot where the trail is done
 local TRAIL_SECONDS = 30
 local SOAP = "BubbleSoap"
@@ -200,6 +202,12 @@ function BubbleController.afterRecap(nextCat: () -> ())
 		end
 		left -= 1
 		show(bubble, step)
+		task.delay(WAIT_SECONDS, function()
+			if UI.shownBubble() == bubble then
+				left = 0 -- no more in this row: the next cat comes as this one goes
+				UI.hideBubble()
+			end
+		end)
 	end
 	local failure = ""
 	local ok = xpcall(step, function(err: unknown)
