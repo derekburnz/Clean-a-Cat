@@ -15,6 +15,8 @@
 --       options.onTap: called when the player taps the box or uses its prompt, once it has landed.
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
 --   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point; onDone when he lands
+--   Both onDone callbacks fire exactly once, deferred, even when the call does nothing (not landed yet, already
+--   opened or hopping, no kitten, destroyed) or the scene is destroyed part way.
 --   handle.destroy()   removes everything this scene made and gives the camera back
 --
 -- Props come from ReplicatedStorage.Assets by name (Model-Agent, #279 and #278); until they land, plain PH_ parts of
@@ -528,15 +530,15 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		box = box,
 		kitten = nil :: Model?,
 		open = function(onDone: (() -> ())?)
+			-- onDone always fires exactly once, even when there is nothing to open, so a caller never hangs.
 			if opened or destroyed or not landed then
+				if onDone then
+					task.defer(onDone)
+				end
 				return
 			end
 			if onDone then
-				task.delay(TruckDrop.openDoneSeconds(), function()
-					if not destroyed then
-						onDone()
-					end
-				end)
+				task.delay(TruckDrop.openDoneSeconds(), onDone)
 			end
 			opened = os.clock()
 			if prompt then
@@ -558,6 +560,9 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		hopOut = function(toward: Vector3, onDone: (() -> ())?)
 			local cat = kitten
 			if cat == nil or destroyed or hopping then
+				if onDone then
+					task.defer(onDone) -- nothing to hop: still answer, so a caller never hangs
+				end
 				return
 			end
 			local from = cat:GetPivot().Position
@@ -577,6 +582,11 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				return
 			end
 			destroyed = true
+			local hop = hopping
+			if hop and hop.onDone then
+				task.defer(hop.onDone) -- destroyed mid-hop: the caller still hears back
+				hop.onDone = nil
+			end
 			if connection then
 				connection:Disconnect()
 			end
