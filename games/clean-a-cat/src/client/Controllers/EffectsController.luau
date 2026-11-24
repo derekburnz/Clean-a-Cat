@@ -3,16 +3,14 @@
 -- Scrub effects sit behind the LiveFlags switch `scrubEffects`, reveal effects behind `revealEffects` and brush and bow
 -- effects behind `fluffEffects`, and the cats' procedural motion (Effects/CatMotion) behind `catMotion`, all off by
 -- default, because they change the first session. Dryer air is behind `dryEffects`, stink wisps
--- over dirty cats behind `stinkEffects`, the opening truck and box scene (Effects/OpeningScene) behind `openingBox`.
-local Players = game:GetService("Players")
+-- over dirty cats behind `stinkEffects`. The opening truck and box scene (Effects/OpeningScene) is
+-- started by Controllers/OpeningController.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
 local CatPose = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatPose"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
-local OpeningScene =
-	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("OpeningScene"))
 local Stink = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Stink"))
 
 local SCRUB_FLAG = "scrubEffects"
@@ -21,8 +19,6 @@ local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
 local STINK_FLAG = "stinkEffects"
-local OPENING_FLAG = "openingBox"
-local OPENING_AHEAD = 6 -- studs in front of the player where the box lands
 local BOW_DROP = 0.3 -- studs below the top of the cat, about where a bow sits
 local GLOW_SECONDS = 0.6
 local BOW_POP_SECONDS = 0.25
@@ -155,46 +151,6 @@ function EffectsController.Start()
 		end)
 		Moments.DryStop:Connect(stopDrying)
 	end
-
-	-- The opening scene (#281), once per session while `openingBox` is on, in Studio only. A stand-in trigger so the
-	-- scene can be watched there: the box lands OPENING_AHEAD studs in front of the player and opens on a tap. Gameplay
-	-- replaces this with the real start (once per save, the spawn spot, the server's box_opened step).
-	-- Studio only: a live flip of `openingBox` must never drop a truck on every player mid-session (Review-QA, #284).
-	local openingPlayed = not RunService:IsStudio()
-	local function playOpening()
-		if openingPlayed or not LiveFlags.isOn(OPENING_FLAG) then
-			return
-		end
-		local character = Players.LocalPlayer.Character
-		local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
-		if root == nil or not root:IsA("BasePart") then
-			return
-		end
-		openingPlayed = true
-		local rootPart = root :: BasePart
-		local facing = rootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
-		facing = if facing.Magnitude > 0.01 then facing.Unit else Vector3.new(0, 0, -1)
-		local above = rootPart.Position + facing * OPENING_AHEAD
-		local params = RaycastParams.new()
-		params.FilterDescendantsInstances = { character :: Model }
-		params.FilterType = Enum.RaycastFilterType.Exclude
-		local hit = workspace:Raycast(above, Vector3.new(0, -30, 0), params)
-		local ground = if hit then hit.Position else above - Vector3.new(0, 3, 0)
-		local handle: OpeningScene.Handle
-		handle = OpeningScene.play(CFrame.lookAt(ground, ground + facing), {
-			shot = true,
-			onTap = function()
-				handle.open()
-			end,
-		})
-	end
-	Players.LocalPlayer.CharacterAdded:Connect(function()
-		task.wait(1)
-		playOpening()
-	end)
-	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. OPENING_FLAG)
-		:Connect(playOpening)
-	task.delay(1, playOpening)
 
 	Moments.MudPatchCleared:Connect(
 		function(cat: Model, patchPosition: Vector3, patchesLeft: number)

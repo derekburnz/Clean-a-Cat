@@ -42,6 +42,33 @@ return function()
 		end)
 	end)
 
+	describe("SudsRules.waitsForBox", function()
+		local function allBut(flag: string): (string) -> boolean
+			return function(name: string): boolean
+				return name ~= flag
+			end
+		end
+
+		it("holds a brand new save's kitten in the box while both switches are on", function()
+			expect(SudsRules.waitsForBox(SudsRules.NONE, 0, 0, on)).to.equal(true)
+		end)
+
+		it("never holds him once the box was opened, so a rejoin finds him in the tub", function()
+			expect(SudsRules.waitsForBox(SudsRules.BOX, 0, 0, on)).to.equal(false)
+			expect(SudsRules.waitsForBox(SudsRules.DONE, 0, 0, on)).to.equal(false)
+		end)
+
+		it("holds nothing with either switch off or for an older save", function()
+			expect(SudsRules.waitsForBox(SudsRules.NONE, 0, 0, allBut(SudsRules.BOX_FLAG))).to.equal(
+				false
+			)
+			expect(SudsRules.waitsForBox(SudsRules.NONE, 0, 0, allBut(SudsRules.FLAG))).to.equal(
+				false
+			)
+			expect(SudsRules.waitsForBox(SudsRules.NONE, 2, 0, on)).to.equal(false)
+		end)
+	end)
+
 	describe("SudsRules.asset", function()
 		it("uses his own model when the place has it, else the stand-in's", function()
 			local function has(name: string): boolean

@@ -12,6 +12,8 @@
 -- only reorders the line, so it can never reroll or skip paying for a cat.
 -- With `sudsWash` on, a brand new save's first cat is the opening's kitten (SudsRules, #285): ahead of strays and
 -- customers, no bows, a 3 star score that is never added to the save, and nothing paid. His photo names him Suds.
+-- With `openingBox` on too, he waits in the box from the opening scene: no cat comes until the player taps the box
+-- (RequestOpenBox), which the save remembers, so the scene never plays again once he is out.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -31,6 +33,7 @@ local DataService = require(script.Parent:WaitForChild("DataService"))
 local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PlotService = require(script.Parent:WaitForChild("PlotService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
 local WindowService = require(script.Parent:WaitForChild("WindowService"))
@@ -115,6 +118,18 @@ local function sudsNext(player: Player): boolean
 	local save = DataService.get(player)
 	return save ~= nil
 		and SudsRules.isNext(
+			save.suds,
+			save.stars,
+			#WindowService.residents(player),
+			LiveFlags.isOn
+		)
+end
+
+-- Whether the kitten is still in the box (switch openingBox): the server hands out no cat until it is opened.
+local function inBox(player: Player): boolean
+	local save = DataService.get(player)
+	return save ~= nil
+		and SudsRules.waitsForBox(
 			save.suds,
 			save.stars,
 			#WindowService.residents(player),
@@ -207,6 +222,15 @@ local function onRequestCat(player: Player)
 		return
 	end
 	local cat = cats[player]
+	if cat == nil and inBox(player) then
+		-- The opening: the kitten is in the box in front of the player. The client plays the scene while this is set.
+		-- The first time, the player stands at their entrance facing the street, where the box lands (Model-Agent).
+		if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) ~= true then
+			PlotService.standOn(player, SudsRules.OPENING_SPOT)
+		end
+		player:SetAttribute(SudsRules.BOX_ATTRIBUTE, true)
+		return
+	end
 	-- A dirty cat is resent (the client may have missed it). A done cat is replaced by a fresh dirty one. An
 	-- unfinished cat is replaced only after a whole visit's time; sooner, it goes back to dirty and is resent,
 	-- so asking again never rerolls a cheap cat into a rare one (issue #164).
@@ -223,6 +247,37 @@ local function onRequestCat(player: Player)
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
 		sendQueue(player)
 	end
+end
+
+-- The kitten's first cat for a player whose box just opened or whose wait ended: sent unless a cat is already out.
+local function handOut(player: Player)
+	player:SetAttribute(SudsRules.BOX_ATTRIBUTE, nil)
+	if player.Parent ~= Players or cats[player] ~= nil or not LiveFlags.isOn(FLAG) then
+		return
+	end
+	sendCat(player, newCat(player))
+	if LiveFlags.isOn(CUSTOMERS_FLAG) then
+		sendQueue(player)
+	end
+end
+
+-- The player tapped the box (switch openingBox): the save remembers it, and the kitten goes to the tub once the
+-- box's peek and hop are over.
+local function onOpenBox(player: Player)
+	if not LiveFlags.isOn(FLAG) or cats[player] ~= nil or not inBox(player) then
+		return
+	end
+	local save = DataService.get(player)
+	if save == nil then
+		return
+	end
+	save.suds = SudsRules.BOX
+	player:SetAttribute(SudsRules.ATTRIBUTE, save.suds)
+	player:SetAttribute(SudsRules.BOX_ATTRIBUTE, false)
+	if LiveFlags.isOn("onboardingFunnel") then
+		Telemetry.event(player, "box_opened")
+	end
+	task.delay(SudsRules.HOP_SECONDS, handOut, player)
 end
 
 -- The player picks a waiting customer to be washed next: it moves to the front of the line (#201).
@@ -419,6 +474,19 @@ function SpaService.Start()
 	NetService.on("RequestPickBow", { perSecond = 2 }, onPickBow)
 	NetService.on("RequestPhoto", { perSecond = 2 }, onPhoto)
 	NetService.on("RequestPickCustomer", { perSecond = 1, burst = 2 }, onPickCustomer)
+	NetService.on("RequestOpenBox", { perSecond = 1 }, onOpenBox)
+	-- The opening switched off while a kitten waits in a box: he goes straight to the tub.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SudsRules.BOX_FLAG)
+		:Connect(function()
+			if LiveFlags.isOn(SudsRules.BOX_FLAG) then
+				return
+			end
+			for _, player in Players:GetPlayers() do
+				if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true then
+					handOut(player)
+				end
+			end
+		end)
 
 	-- Switch turned off: drop every cat, so turning it on again starts clean.
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG)
