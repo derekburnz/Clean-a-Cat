@@ -46,7 +46,6 @@ LiveFlags.KEYS = {
 	"comfortSettings", -- see-through panels honour the player's solid-background choice and the toast grows with larger text (UI/Comfort); off by default
 	"springUi", -- trial (#183): windows pop in and buttons squash with spr springs (UI/Motion); off by default
 	"queuePick", -- the player picks which waiting customer is washed next (SpaService, QueuePickController); off by default
-	"styleSheetUi", -- trial (#186): builds the Settings card styled by a Roblox StyleSheet, closed until opened from Studio (UI/StyleTrial); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
 
@@ -75,7 +74,6 @@ LiveFlags.OFF_BY_DEFAULT = {
 	streetLoadTest = true,
 	comfortSettings = true,
 	springUi = true,
-	styleSheetUi = true,
 	spawnView = true,
 	queuePick = true,
 } :: { [string]: boolean }
