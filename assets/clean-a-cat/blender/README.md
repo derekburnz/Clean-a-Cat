@@ -31,14 +31,14 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
 | `dirt.py` | the dirty cats (#12): the mud coat (#113: 20 pieces that wrap the cat's own blocks, listed once per body), tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
 | `stations.py` | the spa stations: the wash tub (#13), the brush table, its upgrade and the hood dryer with its `Nozzle` (#18), the bubble bath with its `Spout` and the pawdicure (#23), each with a `CatSeat` attachment |
-| `tools.py` | hand tools: the three sponges (#13), the brush (#14) and drafts for the other wash steps (#123: shower, comb, tweezers, towel, nail clipper, hand dryer, shampoo), each with a `Handle` part |
+| `tools.py` | hand tools: the three sponges (#13), the brush (#14) with its fluffy and golden upgrades and the rain and golden showers (#142), and drafts for the other wash steps (#123: shower, comb, tweezers, towel, nail clipper, hand dryer, shampoo), each with a `Handle` part |
 | `plot.py` | the spa plot (#15): the real build on the graybox layout, every gameplay spot an Attachment (`SPOTS`) |
 | `street.py` | the street (#15): ground, pavements, road, houses, hedges, trees and edge barriers round six plots, with `PlotSlot1` to `PlotSlot6` |
 | `spa_props.py` | the carrier, stray box, chance board and queue mat (#16); the window cushion, tip jar and spa sign (#17); the build pad for a locked station (#18) |
 | `build_props.py` | the builder kitten (#20): the kitten in its own coat with `HatSlot` and `HammerGrip`, the hard hat, the hammer pivoted at its grip and the toolbox with `CountdownAnchor` |
 | `rewards.py` | reward props (#125): the paw coin, the star and the coin stack, pivoted at their middles for spinning and popping |
 | `burrs.py` | things stuck in the fur (#126): the burr, the leaf and the forked twig, pivoted at the underside with up out of the fur |
-| `busy_spa.py` | a busy spa (#124): the waiting bench with `Spot1..3` and `Tag1..3`, the front desk with `Bell`, `TipJarSpot` and a `Screen` card, three helper kittens in smocks with `HatSlot` and `ToolGrip`, their bath caps, and the rare visitor's beret and shades |
+| `busy_spa.py` | a busy spa (#124): the waiting bench with `Spot1..3` and `Tag1..3`, the front desk with `Bell`, `TipJarSpot` and a `Screen` card, three helper kittens in smocks with `HatSlot` and `ToolGrip`, their bath caps, the rare visitor's beret and shades, and the framed star photo the visitor leaves (#142) |
 | `ui_renders.py`, `ui_compose.py` | pictures of the models for the screens (#127): see-through cat portraits and model icons rendered from the real models, then trimmed, outlined in the UI's ink and laid out on a check sheet at 128, 64 and 32 px |
 | `vip.py` | the VIP Room before it is built (#21): the locked look (door, sign `Screen`, tarp over scaffold) and the building look (frame half up) at `SpotVipDoor` |
 | `coat_table.py` | the coat table (#22): `rbx/CleanACat_CoatTable.json`, read in game as `ReplicatedStorage.Assets.CleanACat_CoatTable` (rarity, index order, colours and model names per cat) |

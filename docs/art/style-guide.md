@@ -112,6 +112,17 @@ Drafts, not wired into the game. Each follows the sponge's rules: one Model of P
 - `CleanACat_Tool_Dryer` (blow dry): a bubblegum barrel, a cream nozzle, a darker pink grip with a cream switch. Attachment `Air` at the nozzle's mouth, its +Y along the air.
 - `CleanACat_Tool_Shampoo` (lather): a lilac pump bottle, a cream label with a pink paw, a white pump with its spout to the front.
 
+### Draft upgrade tiers for the brush and the shower (#142)
+Upgrades follow the sponge's pattern: tier 2 is a step up in shape and colour that reads at phone size, tier 3 is tier 2 in gold. A tier keeps its tool's grip, `Handle` and attachments, so the game swaps the model without moving the hand. Drafts, not wired.
+
+| Tool | Tier 1 | Tier 2 | Tier 3 |
+|---|---|---|---|
+| Sponge | `CleanACat_Tool_Sponge` | `CleanACat_Tool_SpongeBubble` | `CleanACat_Tool_SpongeGolden` |
+| Brush | `CleanACat_Tool_Brush`: pink back, wood handle, three rows | `CleanACat_Tool_BrushFluffy`: a quarter bigger, lilac back, mint handle, four rows in white and pink | `CleanACat_Tool_BrushGolden`: the fluffy brush in gold with a star on its back |
+| Shower | `CleanACat_Tool_Shower`: sky head, five holes | `CleanACat_Tool_ShowerRain`: a wide rain head with a broad mint rim, seven holes | `CleanACat_Tool_ShowerGolden`: the rain head in gold with a pale gold plate |
+
+The colour is what tells the tiers apart at phone size, so no two tiers of one tool share a body colour. Gold is kept for tier 3 of each tool and the reward props.
+
 ## 14. Spa plot and the street (#15)
 `plot.py` builds `CleanACat_Area_SpaPlot`. It began as a graybox and is now the real build on the same layout, so every spot, wall and opening is where the graybox had it. The front apron sits on the pavement; the room has an open front (an entrance with no door, and the display window with a window seat and four cushions behind 0.6 see-through glass); a back door leads to the stray box; an opening in the back wall is the VIP Room door, with the back yard behind it for the VIP Room build. No room, tub or space is made for avatars: only cats bathe.
 
@@ -227,6 +238,7 @@ All three are green or wear green, the one colour family no coat and no mud uses
 
 - The caps are bath caps: a puffy cap with a cream frill, an ear shape over each ear (the cap covers the ears, so without them the helper stops reading as a cat) and a paw on the front. A cap's pivot goes on `HatSlot`, like the hard hat. Coat, smock and cap all differ between looks because those three are what still reads at phone size.
 - `CleanACat_NPC_StarBeret` and `CleanACat_NPC_StarShades`: what the rare visitor wears, a lilac beret with a gold star pin (R15 `HatAttachment`) and gold rimmed violet shades (`FaceFrontAttachment`). The visitor is a customer like the others (Roblox's own R15 rig with body colours); `busy_spa.VISITORS` has the look: Vivi, skin `#C98E6A`, a lilac top `#9479BE` and pearl trousers `#F4EEF6`, wearing both. An original character: no real person, brand or other game's character.
+- `CleanACat_Prop_StarPhoto`: the keepsake the rare visitor leaves, a permanent reward a player sees in their spa. A gold framed photo 1.7 studs wide and 2.1 tall for a wall, a cream mat with a lilac paw print and signature line, and a lilac rosette with a gold star on the top corner. The picture is the child Model `CleanACat_Prop_StarPhoto_Screen` (part `Screen`) for a SurfaceGui or a Decal, pale lilac until the game sets it. Pivot at the middle of its back, which goes on the wall. Does not collide.
 
 The bench and the desk are named `Station` so they collide like the other furniture a player walks round. The helper is the builder kitten's size (1.9 studs), far smaller than a player, so it stands at a station and is hidden behind the desk: do not put it there.
 

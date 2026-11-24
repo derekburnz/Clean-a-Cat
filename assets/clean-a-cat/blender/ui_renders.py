@@ -43,7 +43,8 @@ ICON_VIEW = (35, 24)
 # and stool sit side by side; the bench from above so its three mats show)
 ICONS = {
     "CleanACat_Tool_Sponge": None, "CleanACat_Tool_SpongeBubble": None, "CleanACat_Tool_SpongeGolden": None,
-    "CleanACat_Tool_Brush": None, "CleanACat_Tool_Shower": None, "CleanACat_Tool_Comb": (-62, 16),
+    "CleanACat_Tool_Brush": None, "CleanACat_Tool_BrushFluffy": None, "CleanACat_Tool_BrushGolden": None,
+    "CleanACat_Tool_ShowerRain": None, "CleanACat_Tool_ShowerGolden": None, "CleanACat_Prop_StarPhoto": (20, 12), "CleanACat_Tool_Shower": None, "CleanACat_Tool_Comb": (-62, 16),
     "CleanACat_Tool_Tweezers": None, "CleanACat_Tool_Towel": None, "CleanACat_Tool_Clipper": (-55, 18),
     "CleanACat_Tool_Dryer": (-50, 16), "CleanACat_Tool_Shampoo": (20, 14), "CleanACat_Station_BubbleBath": (28, 26),
     "CleanACat_Station_Tub": (28, 26), "CleanACat_Station_Pawdicure": (28, 26),

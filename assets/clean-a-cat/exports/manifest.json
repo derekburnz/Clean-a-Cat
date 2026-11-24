@@ -7944,6 +7944,48 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Star.png"
  },
  {
+  "name": "CleanACat_Prop_StarPhoto",
+  "category": "Prop",
+  "module": "busy_spa",
+  "objects": [
+   "CleanACat_Prop_StarPhoto",
+   "CleanACat_Prop_StarPhoto_Screen"
+  ],
+  "triangles": 252,
+  "budget": 300,
+  "parts": 23,
+  "size_studs": {
+   "x": 1.88,
+   "y": 0.26,
+   "z": 2.28
+  },
+  "size_roblox": [
+   1.88,
+   2.28,
+   0.26
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "252/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "134 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-1.05 (want 0)",
+    "centered": "footprint center x=0.09 y=-0.13"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_StarPhoto.png"
+ },
+ {
   "name": "CleanACat_Prop_StrayBox",
   "category": "Prop",
   "module": "spa_props",
@@ -8517,6 +8559,88 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Brush.png"
  },
  {
+  "name": "CleanACat_Tool_BrushFluffy",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_BrushFluffy"
+  ],
+  "triangles": 136,
+  "budget": 200,
+  "parts": 6,
+  "size_studs": {
+   "x": 0.7,
+   "y": 1.18,
+   "z": 0.32
+  },
+  "size_roblox": [
+   0.7,
+   0.32,
+   1.18
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "136/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "76 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.21 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.29"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushFluffy.png"
+ },
+ {
+  "name": "CleanACat_Tool_BrushGolden",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_BrushGolden"
+  ],
+  "triangles": 176,
+  "budget": 250,
+  "parts": 16,
+  "size_studs": {
+   "x": 0.7,
+   "y": 1.18,
+   "z": 0.35
+  },
+  "size_roblox": [
+   0.7,
+   0.35,
+   1.18
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "176/250 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "106 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.21 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.29"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushGolden.png"
+ },
+ {
   "name": "CleanACat_Tool_Clipper",
   "category": "Tool",
   "module": "tools",
@@ -8718,6 +8842,88 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Shower.png"
+ },
+ {
+  "name": "CleanACat_Tool_ShowerGolden",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_ShowerGolden"
+  ],
+  "triangles": 388,
+  "budget": 400,
+  "parts": 15,
+  "size_studs": {
+   "x": 1.0,
+   "y": 0.69,
+   "z": 1.52
+  },
+  "size_roblox": [
+   1.0,
+   1.52,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "388/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "202 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.53 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.19"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_ShowerGolden.png"
+ },
+ {
+  "name": "CleanACat_Tool_ShowerRain",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_ShowerRain"
+  ],
+  "triangles": 388,
+  "budget": 400,
+  "parts": 15,
+  "size_studs": {
+   "x": 1.0,
+   "y": 0.69,
+   "z": 1.52
+  },
+  "size_roblox": [
+   1.0,
+   1.52,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "388/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "202 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.53 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.19"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_ShowerRain.png"
  },
  {
   "name": "CleanACat_Tool_Sponge",

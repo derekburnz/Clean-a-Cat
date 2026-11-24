@@ -21,6 +21,8 @@
   CleanACat_Prop_HelperCap3    the third's: butter with a sky paw
   CleanACat_NPC_StarBeret      for the rare visitor: a lilac beret with a gold star pin        Attachment HatAttachment
   CleanACat_NPC_StarShades     for the rare visitor: violet shades with gold rims             Attachment FaceFrontAttachment
+  CleanACat_Prop_StarPhoto     the keepsake the rare visitor leaves (#142): a gold framed photo for the spa wall with a
+                               lilac rosette and a gold star. Its picture is the part `Screen`. Pivot on the wall.
 
 The bench and the desk are named Station so they collide like the other furniture a player walks round (the bench
 by an invisible `_Barrier` under its top, as its boards are too slim to collide themselves).
@@ -228,6 +230,39 @@ def build_star_shades(mat):
     return [b.finalize(SHADES, mat)]
 
 
+PHOTO = "CleanACat_Prop_StarPhoto"
+PHOTO_W, PHOTO_H = 1.7, 2.1
+
+
+def build_star_photo(mat):
+    """The keepsake a rare visitor leaves (#142): a framed photo for the spa wall. Pivot at the middle of its back,
+    which goes on the wall; front -Y. The picture is the part `Screen` (a SurfaceGui or a Decal goes there); under
+    it the mat carries a paw print and a signature line, and a lilac rosette with a gold star sits on the top
+    corner, so it reads as a star's signed photo before any picture is set."""
+    b = Builder()
+    d = 0.14
+    b.box((0, -d / 2, 0), (PHOTO_W, d, PHOTO_H), "gold_mid")                                     # the frame
+    b.box((0, -d - 0.005, 0), (PHOTO_W - 0.3, 0.03, PHOTO_H - 0.3), "spa_cream", bevel=False)    # the mat
+    y = -d - 0.03
+    b.box((-0.38, y, -0.7), (0.2, 0.02, 0.12), "velvet_lilac", bevel=False)                      # a paw print: a pad
+    for dx, dz in ((-0.15, 0.1), (-0.05, 0.16), (0.05, 0.16), (0.15, 0.1)):                      # and four toes
+        b.box((-0.38 + dx, y, -0.7 + dz), (0.07, 0.02, 0.07), "velvet_lilac", bevel=False)
+    b.box((0.2, y, -0.66), (0.62, 0.02, 0.05), "velvet_lilac", bevel=False)                      # the signature
+    b.box((0.08, y, -0.56), (0.3, 0.02, 0.04), "velvet_lilac", bevel=False,
+          rot=Matrix.Rotation(math.radians(12), 3, "Y"))
+    rx, rz = PHOTO_W / 2 - 0.12, PHOTO_H / 2 - 0.12                                              # the rosette
+    for a in (-25, 25):
+        b.box((rx + math.sin(math.radians(a)) * 0.3, -d - 0.02, rz - 0.36), (0.16, 0.03, 0.46), "velvet_lilac",
+              bevel=False, rot=Matrix.Rotation(math.radians(-a), 3, "Y"))                        # its two tails
+    face = Matrix.Rotation(math.radians(90), 3, "X")
+    b.cyl((rx, -d - 0.05, rz), 0.3, 0.06, "velvet_lilac", segments=10, bevel=False, rot=face)
+    b.star((rx, -d - 0.1, rz), 0.22, 0.1, 0.04, "rarity_legend", rot=face)
+    main = b.finalize(PHOTO, mat)
+    s = Builder()
+    s.box((0, -d - 0.03, 0.2), (PHOTO_W - 0.5, 0.02, PHOTO_H - 0.9), "pastel_lilac", bevel=False)
+    return [main, s.finalize(PHOTO + "_Screen", mat, bevel=0)]
+
+
 def _att(name):
     return lambda: {"attachments": [(name, ATTACH[name], Matrix.Identity(4))],
                     "attributes": {"Accessory": ATTACH[name]}}
@@ -238,6 +273,7 @@ ASSETS = {
     DESK: (build_front_desk, 1200),
     BERET: (build_star_beret, 400),
     SHADES: (build_star_shades, 200),
+    PHOTO: (build_star_photo, 300),
 }
 EXTRAS = {BENCH: wait_bench_rbx_extras, DESK: front_desk_rbx_extras, BERET: _att(BERET), SHADES: _att(SHADES)}
 for _i, _look in enumerate(HELPERS):
