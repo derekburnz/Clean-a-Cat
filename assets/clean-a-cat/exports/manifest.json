@@ -8544,18 +8544,18 @@
    "CleanACat_Station_BrushTable",
    "CleanACat_Station_BrushTable_Barrier"
   ],
-  "triangles": 440,
+  "triangles": 672,
   "budget": 1200,
-  "parts": 12,
+  "parts": 24,
   "size_studs": {
    "x": 3.4,
-   "y": 2.4,
-   "z": 1.8
+   "y": 2.41,
+   "z": 4.25
   },
   "size_roblox": [
    3.4,
-   1.8,
-   2.4
+   4.25,
+   2.41
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8567,10 +8567,10 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "440/1200 tris",
+    "budget": "672/1200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "266 faces on swatch centers",
+    "uv": "414 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.20",
@@ -8588,17 +8588,17 @@
    "CleanACat_Station_BrushTableUp",
    "CleanACat_Station_BrushTableUp_Barrier"
   ],
-  "triangles": 1152,
+  "triangles": 968,
   "budget": 1200,
-  "parts": 40,
+  "parts": 41,
   "size_studs": {
    "x": 3.46,
    "y": 2.65,
-   "z": 4.37
+   "z": 4.35
   },
   "size_roblox": [
    3.46,
-   4.37,
+   4.35,
    2.65
   ],
   "pivot": "base center (floor contact)",
@@ -8610,16 +8610,15 @@
     "centered"
    ],
    "qa_accepted": {
-    "back to back": 1,
-    "pivot off the floor": 1
+    "back to back": 1
    },
    "checks": {
-    "budget": "1152/1200 tris",
+    "budget": "968/1200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "708 faces on swatch centers",
+    "uv": "564 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.02 (want 0)",
+    "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.30",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
@@ -8684,18 +8683,18 @@
    "CleanACat_Station_Dryer_Nozzle",
    "CleanACat_Station_Dryer_Barrier"
   ],
-  "triangles": 968,
+  "triangles": 956,
   "budget": 1200,
-  "parts": 24,
+  "parts": 28,
   "size_studs": {
-   "x": 2.65,
-   "y": 3.56,
-   "z": 5.85
+   "x": 2.67,
+   "y": 3.85,
+   "z": 6.0
   },
   "size_roblox": [
-   2.65,
-   5.85,
-   3.56
+   2.67,
+   6.0,
+   3.85
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8703,17 +8702,20 @@
    "pass": true,
    "failed": [],
    "warnings": [
+    "pivot",
     "centered"
    ],
-   "qa_accepted": {},
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
    "checks": {
-    "budget": "968/1200 tris",
+    "budget": "956/1200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "640 faces on swatch centers",
+    "uv": "646 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.57",
+    "pivot": "floor at z=-0.02 (want 0)",
+    "centered": "footprint center x=0.00 y=0.53",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -8774,17 +8776,17 @@
    "CleanACat_Station_Pawdicure",
    "CleanACat_Station_Pawdicure_Barrier"
   ],
-  "triangles": 528,
+  "triangles": 712,
   "budget": 1200,
-  "parts": 18,
+  "parts": 28,
   "size_studs": {
-   "x": 2.8,
+   "x": 2.84,
    "y": 2.2,
-   "z": 1.72
+   "z": 3.33
   },
   "size_roblox": [
-   2.8,
-   1.72,
+   2.84,
+   3.33,
    2.2
   ],
   "pivot": "base center (floor contact)",
@@ -8797,13 +8799,13 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "528/1200 tris",
+    "budget": "712/1200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "326 faces on swatch centers",
+    "uv": "474 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.20",
+    "centered": "footprint center x=-0.02 y=0.20",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -8841,6 +8843,7 @@
    "failed": [],
    "warnings": [],
    "qa_accepted": {
+    "back to back": 1,
     "pivot off the floor": 1
    },
    "checks": {

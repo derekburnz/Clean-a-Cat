@@ -19,6 +19,216 @@
      "CFrame": {
       "position": [
        0.0,
+       0.86,
+       0.2
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     2.4,
+     0.8,
+     1.9
+    ],
+    "Color": [
+     0.7882,
+     0.7216,
+     0.9098
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": true,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "PivotOffset": {
+     "CFrame": {
+      "position": [
+       0.0,
+       -0.86,
+       -0.2
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "attributes": {
+    "Rojo_Id": "CleanACat_Station_Pawdicure/0"
+   },
+   "children": [
+    {
+     "name": "CatSeat",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.74,
+         0.15
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.25,
+       0.2
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     2.06,
+     0.5,
+     1.56
+    ],
+    "Color": [
+     1.0,
+     0.9647,
+     0.9255
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": true,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.485,
+       0.2
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     2.48,
+     0.13,
+     1.98
+    ],
+    "Color": [
+     0.949,
+     0.7569,
+     0.3059
+    ],
+    "Material": "Metal",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
        1.31,
        0.2
       ],
@@ -57,119 +267,57 @@
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "PivotOffset": {
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
      "CFrame": {
       "position": [
        0.0,
-       -1.31,
-       -0.2
+       0.82,
+       -0.754
       ],
       "orientation": [
        [
-        1.0,
         0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
+        -1.0,
         0.0
        ],
        [
         0.0,
         0.0,
         1.0
-       ]
-      ]
-     }
-    }
-   },
-   "attributes": {
-    "Rojo_Id": "CleanACat_Station_Pawdicure/0"
-   },
-   "children": [
-    {
-     "name": "CatSeat",
-     "className": "Attachment",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.29,
-         0.15
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     }
-    }
-   ]
-  },
-  {
-   "name": "CleanACat_Station_Pawdicure",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -1.12,
-       0.63,
-       1.02
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
        ],
        [
+        -1.0,
         0.0,
-        1.0,
         0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
        ]
       ]
      }
     },
     "Size": [
-     0.26,
-     1.26,
-     0.26
+     0.04,
+     0.38,
+     0.38
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     1.0,
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
    }
   },
   {
@@ -179,46 +327,47 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.12,
-       0.63,
-       -0.62
+       0.24,
+       1.04,
+       -0.754
       ],
       "orientation": [
        [
-        1.0,
         0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
+        -1.0,
         0.0
        ],
        [
         0.0,
         0.0,
         1.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
        ]
       ]
      }
     },
     "Size": [
-     0.26,
-     1.26,
-     0.26
+     0.044,
+     0.17,
+     0.17
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     1.0,
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
    }
   },
   {
@@ -228,46 +377,47 @@
     "CFrame": {
      "CFrame": {
       "position": [
+       0.0,
        1.12,
-       0.63,
-       1.02
+       -0.754
       ],
       "orientation": [
        [
-        1.0,
         0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
+        -1.0,
         0.0
        ],
        [
         0.0,
         0.0,
         1.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
        ]
       ]
      }
     },
     "Size": [
-     0.26,
-     1.26,
-     0.26
+     0.048,
+     0.18,
+     0.18
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     1.0,
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
    }
   },
   {
@@ -277,46 +427,47 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.12,
-       0.63,
-       -0.62
+       -0.24,
+       1.04,
+       -0.754
       ],
       "orientation": [
        [
-        1.0,
         0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
+        -1.0,
         0.0
        ],
        [
         0.0,
         0.0,
         1.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
        ]
       ]
      }
     },
     "Size": [
-     0.26,
-     1.26,
-     0.26
+     0.052,
+     0.17,
+     0.17
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     1.0,
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
    }
   },
   {
@@ -376,7 +527,7 @@
      "CFrame": {
       "position": [
        0.0,
-       1.42,
+       1.424,
        -0.6
       ],
       "orientation": [
@@ -400,7 +551,7 @@
     },
     "Size": [
      1.2,
-     0.12,
+     0.112,
      0.5
     ],
     "Color": [
@@ -425,7 +576,7 @@
      "CFrame": {
       "position": [
        -1.02,
-       1.39,
+       1.397,
        -0.48
       ],
       "orientation": [
@@ -448,16 +599,16 @@
      }
     },
     "Size": [
-     0.6,
-     0.06,
-     0.62
+     0.64,
+     0.05,
+     0.66
     ],
     "Color": [
-     0.6627,
-     0.6863,
-     0.7216
+     0.949,
+     0.7569,
+     0.3059
     ],
-    "Material": "SmoothPlastic",
+    "Material": "Metal",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
@@ -473,9 +624,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.88,
-       1.52,
-       -0.34
+       -0.87,
+       1.55,
+       -0.33
       ],
       "orientation": [
        [
@@ -497,9 +648,9 @@
      }
     },
     "Size": [
+     0.28,
      0.22,
-     0.18,
-     0.18
+     0.22
     ],
     "Color": [
      1.0,
@@ -523,9 +674,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.88,
-       1.67,
-       -0.34
+       -0.87,
+       1.74,
+       -0.33
       ],
       "orientation": [
        [
@@ -547,9 +698,9 @@
      }
     },
     "Size": [
+     0.12,
      0.1,
-     0.09,
-     0.09
+     0.1
     ],
     "Color": [
      1.0,
@@ -573,9 +724,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.15,
-       1.52,
-       -0.36
+       -1.16,
+       1.55,
+       -0.35
       ],
       "orientation": [
        [
@@ -597,9 +748,9 @@
      }
     },
     "Size": [
+     0.28,
      0.22,
-     0.18,
-     0.18
+     0.22
     ],
     "Color": [
      0.5608,
@@ -623,9 +774,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.15,
-       1.67,
-       -0.36
+       -1.16,
+       1.74,
+       -0.35
       ],
       "orientation": [
        [
@@ -647,9 +798,9 @@
      }
     },
     "Size": [
+     0.12,
      0.1,
-     0.09,
-     0.09
+     0.1
     ],
     "Color": [
      1.0,
@@ -674,8 +825,8 @@
      "CFrame": {
       "position": [
        -1.02,
-       1.52,
-       -0.62
+       1.55,
+       -0.63
       ],
       "orientation": [
        [
@@ -697,9 +848,9 @@
      }
     },
     "Size": [
+     0.28,
      0.22,
-     0.18,
-     0.18
+     0.22
     ],
     "Color": [
      0.3725,
@@ -724,8 +875,8 @@
      "CFrame": {
       "position": [
        -1.02,
-       1.67,
-       -0.62
+       1.74,
+       -0.63
       ],
       "orientation": [
        [
@@ -747,9 +898,9 @@
      }
     },
     "Size": [
+     0.12,
      0.1,
-     0.09,
-     0.09
+     0.1
     ],
     "Color": [
      1.0,
@@ -822,19 +973,19 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       0.55,
-       0.2
+       1.15,
+       1.41,
+       1.05
       ],
       "orientation": [
        [
-        1.0,
         0.0,
+        -1.0,
         0.0
        ],
        [
-        0.0,
         1.0,
+        0.0,
         0.0
        ],
        [
@@ -846,22 +997,23 @@
      }
     },
     "Size": [
-     2.0,
      0.1,
-     1.4
+     0.4,
+     0.4
     ],
     "Color": [
-     1.0,
-     0.9647,
-     0.9255
+     0.7216,
+     0.5686,
+     0.2275
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
    }
   },
   {
@@ -871,19 +1023,19 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.3,
-       0.71,
-       0.3
+       1.15,
+       2.26,
+       1.05
       ],
       "orientation": [
        [
-        1.0,
         0.0,
+        -1.0,
         0.0
        ],
        [
-        0.0,
         1.0,
+        0.0,
         0.0
        ],
        [
@@ -895,14 +1047,14 @@
      }
     },
     "Size": [
-     0.9,
-     0.24,
-     0.7
+     1.7,
+     0.14,
+     0.14
     ],
     "Color": [
-     0.5608,
-     0.8275,
-     0.9961
+     0.7216,
+     0.5686,
+     0.2275
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -910,7 +1062,358 @@
     "CanTouch": false,
     "CastShadow": true,
     "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.15,
+       3.17,
+       0.95
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        0.7071,
+        0.0,
+        0.7071
+       ],
+       [
+        -0.7071,
+        0.0,
+        0.7071
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.3,
+     0.14,
+     0.14
+    ],
+    "Color": [
+     0.7216,
+     0.5686,
+     0.2275
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.15,
+       3.25,
+       0.75
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ],
+       [
+        -1.0,
+        0.0,
+        0.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.3,
+     0.14,
+     0.14
+    ],
+    "Color": [
+     0.7216,
+     0.5686,
+     0.2275
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.15,
+       3.17,
+       0.55
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        -0.7071,
+        0.0,
+        0.7071
+       ],
+       [
+        -0.7071,
+        0.0,
+        -0.7071
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.3,
+     0.14,
+     0.14
+    ],
+    "Color": [
+     0.7216,
+     0.5686,
+     0.2275
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.15,
+       2.88,
+       0.43
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1,
+     0.5433,
+     0.5433
+    ],
+    "Color": [
+     0.9647,
+     0.8745,
+     0.6275
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.15,
+       2.98,
+       0.43
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1,
+     0.43,
+     0.43
+    ],
+    "Color": [
+     0.9647,
+     0.8745,
+     0.6275
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.15,
+       3.08,
+       0.43
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1,
+     0.3167,
+     0.3167
+    ],
+    "Color": [
+     0.9647,
+     0.8745,
+     0.6275
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
+   }
+  },
+  {
+   "name": "CleanACat_Station_Pawdicure",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       1.15,
+       2.81,
+       0.43
+      ],
+      "orientation": [
+       [
+        0.0,
+        -1.0,
+        0.0
+       ],
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.06,
+     0.4,
+     0.4
+    ],
+    "Color": [
+     1.0,
+     0.851,
+     0.6588
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Cylinder"
    }
   },
   {
@@ -950,9 +1453,9 @@
        }
       },
       "Size": [
-       2.06,
+       1.96,
        1.03,
-       1.46
+       1.4
       ],
       "Color": [
        0.6627,
