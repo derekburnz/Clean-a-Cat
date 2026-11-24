@@ -948,7 +948,11 @@ local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, raw
 		local handler = recapHandler
 		if recap ~= nil and handler ~= nil and LiveFlags.isOn(RECAP_FLAG) then
 			-- The tub stays empty until the player closes the card: a natural place to stop, with no countdown.
-			handler(recap, nextCat)
+			-- If the card fails to show, the next cat comes anyway so the tub is never left empty for good.
+			local ok = pcall(handler, recap, nextCat)
+			if not ok then
+				nextCat()
+			end
 		else
 			nextCat()
 		end

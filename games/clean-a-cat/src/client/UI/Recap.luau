@@ -37,6 +37,8 @@ local NEW_PINK = Color3.fromHex("FF86CF")
 local TOTAL_FILL, TOTAL_LINE = Color3.fromHex("FFF1C7"), Color3.fromHex("F0CF6B")
 local BACKDROP = Color3.fromRGB(36, 16, 56)
 local BODY_GAP = 22 -- design px between the portrait column and the rows
+local STRIP_LIFT = 28 -- design px from the bottom
+local STRIP_SHIFT = 34 -- design px right on a short screen: clear of the touch thumbstick (Review-QA on #229)
 local TOPBAR_SHIFT = 33 -- real px: the card sits a little below the middle, clear of Roblox's top bar
 
 -- Sizes in design pixels: full, then compact for a short screen.
@@ -89,7 +91,7 @@ local SIZES = {
 type Sizes = typeof(SIZES.full)
 
 local STRIP =
-	{ tile = 72, star = 30, starText = 22, got = 28, gotIcon = 48, button = 60, buttonText = 24 }
+	{ tile = 64, star = 30, starText = 22, got = 28, gotIcon = 48, button = 60, buttonText = 24 }
 
 type Parts = {
 	layer: Frame,
@@ -309,6 +311,8 @@ local function redraw()
 
 	local total = `+{RecapRules.total(recap)}`
 	if not recap.full then
+		-- On a phone held sideways the strip moves a little right, clear of the thumbstick at the bottom left.
+		p.strip.Position = UDim2.new(0.5, if short then STRIP_SHIFT else 0, 1, -STRIP_LIFT)
 		Portraits.draw(recap.cat, recap.rarity, p.stripTile)
 		drawStars(p.stripStars, recap.stars, STRIP.star, STRIP.starText)
 		p.stripGot.Text = total
@@ -530,7 +534,7 @@ function Recap.build(root: Frame)
 	local stripHolder, stripScale = scaledHolder("StripHolder", Vector2.new(0.5, 1))
 	local strip = frame("Strip", stripHolder)
 	strip.AnchorPoint = Vector2.new(0.5, 1)
-	strip.Position = UDim2.new(0.5, 0, 1, -28)
+	strip.Position = UDim2.new(0.5, 0, 1, -STRIP_LIFT)
 	strip.AutomaticSize = Enum.AutomaticSize.XY
 	strip.BackgroundTransparency = 0
 	strip.BackgroundColor3 = Kit.CREAM
@@ -540,7 +544,7 @@ function Recap.build(root: Frame)
 	stripPad.PaddingLeft, stripPad.PaddingRight = UDim.new(0, 10), UDim.new(0, 12)
 	stripPad.PaddingTop, stripPad.PaddingBottom = UDim.new(0, 10), UDim.new(0, 10)
 	stripPad.Parent = strip
-	list(strip, true, 16)
+	list(strip, true, 12) -- kept narrow: clear of the thumbstick on a small phone
 	local stripTile = frame("TileBox", strip)
 	stripTile.LayoutOrder = 1
 	stripTile.Size = UDim2.fromOffset(STRIP.tile, STRIP.tile)
