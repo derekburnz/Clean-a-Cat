@@ -33,7 +33,7 @@ concurrency:
 
 env:
   GAME_DIR: games/clean-a-cat
-  UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID }}
+  UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
 
 jobs:
   flags:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_PUBLISH_KEY }}
+      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
       ACTION: ${{ inputs.action }}
       KEY: ${{ inputs.key }}
       VALUE: ${{ inputs.value }}

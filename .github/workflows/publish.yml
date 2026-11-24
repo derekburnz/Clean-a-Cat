@@ -43,8 +43,9 @@ concurrency:
 
 env:
   GAME_DIR: games/clean-a-cat
-  UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID }}
-  PLACE_ID: ${{ vars.ROBLOX_PLACE_ID }}
+  # The ids are public. A repo variable of the same name overrides the default.
+  UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
+  PLACE_ID: ${{ vars.ROBLOX_PLACE_ID || '79301459457383' }}
 
 jobs:
   publish:
@@ -56,7 +57,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40 # 20 for the build and upload, plus the countdown when it restarts
     env:
-      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_PUBLISH_KEY }}
+      # The owner's key is saved as OWNER_KEY in this repo; ROBLOX_PUBLISH_KEY wins if it is ever added.
+      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
     steps:
       # An automatic run checks out the tip of main, never the older commit that triggered it, so a burst of
       # merges still ends with the newest main live.
@@ -67,7 +69,7 @@ jobs:
       - name: Check the key and ids are set
         run: |
           if [ -z "$ROBLOX_PUBLISH_KEY" ]; then
-            echo "::error::The repo secret ROBLOX_PUBLISH_KEY is missing. Steps: docs/setup-guide.md step 8."
+            echo "::error::The repo secret ROBLOX_PUBLISH_KEY (or OWNER_KEY) is missing. Steps: docs/setup-guide.md step 8."
             exit 1
           fi
           if [ -z "$UNIVERSE_ID" ] || [ -z "$PLACE_ID" ]; then

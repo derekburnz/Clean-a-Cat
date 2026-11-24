@@ -38,8 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY }}
-      ROBLOX_UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID }}
+      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
+      ROBLOX_UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
       ACTION: ${{ inputs.action }}
       SUBJECT_TYPE: ${{ inputs.subject_type }}
       SUBJECT_ID: ${{ inputs.subject_id }}
