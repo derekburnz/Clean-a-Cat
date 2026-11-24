@@ -21,8 +21,8 @@ The pose (#353), as in the owner's picture:
     and the primitive log; the pieces keep rotation 0. The eyes, the ears, the mud on the head and the `Carry` and
     `BowSlot` Attachments ride the head and tip with it.
   - The front paws are short and tucked under the chin, their tips turned in and just showing past it.
-  - The tail is curled up at the back (cats.loaf_tail): out of the rump, across to his right, up beside the hip and
-    the tip hooked back in. The muddy loaf's tail has a muddy tip.
+  - The tail is curled up at the back (cats.loaf_tail): out of the rump at his right hip, up beside it and the tip
+    hooked back in, all of it on his outer half so it clears the carrier's right arm. The muddy loaf's tail has a muddy tip.
   - The clean loaf's collar is its own: the band sits behind the head and the bell hangs at his right side. He lies
     across the arms with his front to the carrier's left, so his right side, the bell and the tail's curl face out.
   - Root attribute `CarryScale` (cats.LOAF_CARRY_SCALE, 1.4): his size in the arms. He is 1.0 in the box and 1.5
