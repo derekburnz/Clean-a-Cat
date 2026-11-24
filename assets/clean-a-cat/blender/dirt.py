@@ -142,13 +142,15 @@ def _contrast(a, b):
 
 
 PALE = 0.5                # fur brighter than this (white, cream, pale grey, lilac, gold) gets the drab mud
+DARK_FUR_MUD = ("mud_dust_wet", "mud_drab")   # the mud on fur too dark for the brown, and its every third piece (#326)
 
 
 def _mud_for(fur, wet=False):
     """#22: brown mud on light fur, dusty dried mud on dark fur (Inky, Tux, the black and grey patches), whichever
     stands out more from the fur under the blob, so the scrub's reveal reads on every coat. #155: on pale fur the
     brown read as a brown patched coat (a dirty Cotton looked like Patches), so pale fur gets a duller, greyer mud
-    that no coat uses."""
+    that no coat uses. #326: on dark fur the pale dust read as tan patches of a calico coat at phone size, so dark
+    fur gets the darker wet dust, and its every third piece the drab: dirt on a black cat, not a second coat."""
     pairs = (("mud", "mud_wet"), ("mud_dust", "mud_dust_wet"))
     if fur is None:
         return pairs[0][wet]
@@ -156,6 +158,8 @@ def _mud_for(fur, wet=False):
     best = max(pairs, key=lambda pr: _contrast(hexes[pr[0]], hexes[fur]))
     if best[0] == "mud" and _lum(hexes[fur]) > PALE:
         best = ("mud_drab", "mud_drab_wet")
+    elif best[0] == "mud_dust":
+        best = DARK_FUR_MUD
     return best[1] if wet else best[0]
 
 
