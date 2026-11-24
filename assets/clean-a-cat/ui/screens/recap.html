@@ -16,8 +16,9 @@
 .who { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .who .tile { width: 210px; height: 210px; }
 .who .name { font-family: var(--font-head); font-size: 30px; }
-.who .new { position: absolute; top: -10px; left: -10px; transform: rotate(-8deg); background: #ff86cf; color: #fff; border: 3px solid var(--ink);
-  border-radius: 12px; padding: 4px 10px; font-family: var(--font-head); font-size: 18px; box-shadow: 0 3px 0 var(--ink); }
+.who .tags { display: flex; gap: 6px; align-items: center; }
+.who .new { display: inline-flex; align-items: center; height: 28px; background: #ff86cf; color: #fff; border: 2px solid var(--ink);
+  border-radius: 14px; padding: 0 10px; font-family: var(--font-head); font-size: 17px; white-space: nowrap; }
 .stars-big { display: flex; justify-content: center; gap: 10px; font-size: 74px; margin: -6px 0 6px; }
 .stars-big svg:nth-child(2) { transform: translateY(-12px) scale(1.12); }
 .rows { display: flex; flex-direction: column; gap: 6px; }
@@ -75,9 +76,9 @@ body.short .foot .actions .btn { padding: 0 26px 4px; }
       <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
       <div class="body">
         <div class="who">
-          <div style="position:relative"><div class="tile common"><img src="img/portrait_Muffin_ink.png" alt=""></div><span class="new">New!</span></div>
+          <div class="tile common"><img src="img/portrait_Muffin_ink.png" alt=""></div>
           <span class="name">Muffin</span>
-          <span class="rar common">Common</span>
+          <span class="tags"><span class="rar common">Common</span><span class="new">New!</span></span>
         </div>
         <div>
           <div class="stars-big"><i data-ic="star"></i><i data-ic="star"></i><i data-ic="starEmpty"></i></div>
