@@ -1,11 +1,14 @@
 """Spa stations (issue #13 for the tub, #18 for the brush tables and the dryer).
 
-  CleanACat_Station_Tub   the wash tub, the first thing a player sees: a low bath on four feet with a mint rim, a
-                          shallow pool of water (_Water), foam (_Foam) and a tap at the back. It matches the
-                          placeholder PH_Tub's seat height (1.2 studs) but is smaller (4.6 wide, 3.8 deep) so the cat
-                          fills more of a phone screen; the design asks for the cat bigger than life at the tub.
-                          Attachment `CatSeat` on the inner floor, facing the player (-Z in Roblox): put the sitting
-                          cat's pivot there. The walls and body collide; water and foam do not.
+  CleanACat_Station_Tub   the wash tub, the first thing a player sees: the claw-foot bath of the store picture
+                          (#157). A sky blue pill-shaped body that flares out, a gold band, a rolled white rim,
+                          four gold claw feet, white bubbles painted on the front, a brass gooseneck tap on the
+                          back rim and a striped mint towel over the front. Deep blue water (_Water) stands just
+                          under the rim, with lather (_Foam), soap bubbles (_Bubbles) and the tap's stream
+                          (_Stream). 4.6 wide and 3.5 deep, so the cat fills most of a phone screen; the design
+                          asks for the cat bigger than life at the tub.
+                          Attachment `CatSeat` 1.5 studs up, facing the player (-Z in Roblox): put the sitting
+                          cat's pivot there. The body collides; the rim, water and foam do not.
 
   CleanACat_Station_BrushTable    the grooming table: a wooden table on four legs with a mint rubber mat, a towel on
                                   the shelf underneath. `CatSeat` on the mat.
@@ -31,78 +34,120 @@ from mathutils import Matrix
 import common
 from common import Builder
 
-TUB_W, TUB_D = 4.6, 3.8          # outer footprint, studs
-FOOT_H = 0.25                    # the tub stands on four feet
-SEAT_Z = 1.2                     # inner floor top: where the cat sits (PH_Tub's base top)
-RIM_Z = 1.6                      # top of the walls; a sitting cat (1.85 tall) shows above it from the chest up
-WALL = 0.35                      # wall thickness
-CORNER = 0.45                    # radius of the rounded corners
-WATER_Z = 1.47                   # water surface, just under the rim so the bath reads as full (#111)
+TUB_W, TUB_D = 4.6, 3.5          # outer footprint (the rolled rim), studs: a pill, two round ends
+FOOT_H = 0.34                    # the body's underside: the tub stands on four gold claw feet
+SEAT_Z = 1.5                     # where the cat sits (the CatSeat); it was 1.2 until #157 raised the water
+WATER_Z = SEAT_Z + 0.27          # the water's surface: 0.27 up the cat is dirt.TUB_WATER at the tub's 1.5 scale
+RIM_Z = WATER_Z + 0.06           # top of the rolled rim: the water stands just under it (Derek, #157)
+FLOOR_Z = RIM_Z - 0.21           # top of the solid body. It is a little over the CatSeat: the cat's lowest 0.12 is
+#                                  inside the body, under the water where nothing shows, and the rim needs one ring
+END_R = TUB_D / 2                # the round ends' radius at the rim
+HALF = TUB_W / 2 - END_R         # from the middle to the centre of a round end
+RIM_W = 0.42                     # the rim's width
+BODY_R = END_R - 0.13            # the body under the rim
 TAP_X = -1.25                    # the tap stands off centre on the back rim, so its stream shows past the cat
+E = 0.012                        # pieces are staggered by this so no two faces share a plane (the QA gate)
+
+
+def _pill(b, z, h, r, swatch, segments=16):
+    """A solid pill standing on height z: a block between two round ends, radius r. The three pieces differ a hair
+    in height and the block is a hair slimmer than the ends, so no two faces share a plane."""
+    b.cyl_base((HALF, 0, z), r, h, swatch, segments=segments, bevel=False)
+    b.cyl_base((-HALF, 0, z + E / 2), r, h - E, swatch, segments=segments, bevel=False)
+    # the block ends inside the round ends, each pill's at its own depth, so stacked pills share no end plane
+    b.box_base((0, 0, z + E), (2 * HALF - 0.2 * (END_R - r), 2 * r - 0.03, h - 2 * E), swatch, bevel=False)
+
+
+def _on_end(sx, deg, r):
+    """A point on a round end (sx 1 right, -1 left) at `deg` from that end's tip, counted towards the back, at radius
+    r from the end's centre: (x, y, the turn that faces a box's local +X outwards)."""
+    t = math.radians(deg) if sx > 0 else math.pi - math.radians(deg)
+    return sx * HALF + math.cos(t) * r, math.sin(t) * r, t
+
+
+def _ring(b, z, h, r_out, width, swatch, n=6):
+    """A hollow pill: two straight walls and `n` blocks round each end, their outer faces r_out from the end's
+    centre. Neighbours differ a hair in height so the corners where they cross share no plane."""
+    r = r_out - 0.03 - width / 2                       # block centres: the faces' middles 0.03 inside r_out, the
+    w = 2 * (r_out - 0.03) * math.tan(math.pi / (2 * n)) + 0.03    # corners as far outside it
+    k = 0
+    for sx in (1, -1):
+        for i in range(n):
+            x, y, t = _on_end(sx, -90 + 180 * (i + 0.5) / n, r)
+            b.box_base((x, y, z + 0.004 * (k % 3)), (width, w, h), swatch, rot=Matrix.Rotation(t, 3, "Z"))
+            k += 1
+    for sy in (1, -1):
+        b.box_base((0, sy * r, z + 0.006 + 0.004 * (sy > 0)), (2 * HALF + 0.05, width, h - 0.004), swatch)
 
 
 def _tub_shell(b):
-    """Body, rounded walls and the mint rim, all solid."""
-    w, d = TUB_W, TUB_D
-    # Every piece below is staggered by a hundredth of a stud from its neighbours (E) so no two faces share a plane:
-    # shared planes fight in the FBX and merge badly when the builder welds touching corners.
-    E = 0.012
-    # lower body under the floor, its sides tucked into the walls
-    b.box_base((0, 0, FOOT_H + 2 * E), (w - 2 * WALL + 0.04, d - 2 * WALL + 0.04, SEAT_Z - FOOT_H - 5 * E), "spa_cream",
-               bevel=False)
-    # straight walls (front and back long, sides short), stopping inside the corner posts
-    hw = RIM_Z - FOOT_H - 2 * E
-    for sy in (1, -1):
-        b.box_base((0, sy * (d / 2 - WALL / 2), FOOT_H + E), (w - 2 * CORNER, WALL, hw), "spa_cream", bevel=False)
-    for sx in (1, -1):
-        b.box_base((sx * (w / 2 - WALL / 2), 0, FOOT_H + E), (WALL, d - 2 * CORNER, hw), "spa_cream", bevel=False)
-    # round corner posts
-    for sx in (1, -1):
-        for sy in (1, -1):
-            b.cyl_base((sx * (w / 2 - CORNER), sy * (d / 2 - CORNER), FOOT_H), CORNER, RIM_Z - FOOT_H - E / 2,
-                       "spa_cream", segments=10, bevel=False)
-    # a mint band round the outside, a little proud of the walls
-    band_z, band_h = FOOT_H + 0.45, 0.3
-    for sy in (1, -1):
-        b.box_base((0, sy * (d / 2 + 0.02), band_z), (w - 2 * CORNER - 2 * E, 0.06, band_h), "spa_mint", bevel=False)
-    for sx in (1, -1):
-        b.box_base((sx * (w / 2 + 0.02), 0, band_z), (0.06, d - 2 * CORNER - 2 * E, band_h), "spa_mint", bevel=False)
-    for sx in (1, -1):
-        for sy in (1, -1):
-            b.cyl_base((sx * (w / 2 - CORNER), sy * (d / 2 - CORNER), band_z - E), CORNER + 0.03, band_h + 2 * E,
-                       "spa_mint", segments=10, bevel=False)
-    # rim cap: mint, slightly wider than the wall, so the top edge reads from the player's camera
-    cap = 0.1
-    for sy in (1, -1):
-        b.box_base((0, sy * (d / 2 - WALL / 2), RIM_Z), (w - 2 * CORNER, WALL + 0.08, cap), "spa_mint", bevel=False)
-    for sx in (1, -1):
-        b.box_base((sx * (w / 2 - WALL / 2), 0, RIM_Z), (WALL + 0.08, d - 2 * CORNER, cap), "spa_mint", bevel=False)
-    for sx in (1, -1):
-        for sy in (1, -1):
-            b.cyl_base((sx * (w / 2 - CORNER), sy * (d / 2 - CORNER), RIM_Z - 1.5 * E), CORNER + 0.04, cap + 2.5 * E,
-                       "spa_mint", segments=10, bevel=False)   # a hair taller than the straight caps both ways
-    # inner floor, a tile colour, just under the water
-    b.box_base((0, 0, SEAT_Z - 0.02), (w - 2 * WALL - 0.02, d - 2 * WALL - 0.02, 0.02), "spa_tile", bevel=False)
+    """The claw-foot bath of the store picture (Derek chose it there, #157 brings it into the game): a sky blue
+    body that flares out, a gold band at the flare, a rolled white rim, and white bubbles painted on the front."""
+    flare = FOOT_H + 0.42
+    _pill(b, FOOT_H, flare - FOOT_H + 0.05, BODY_R - 0.2, "pastel_sky")            # the foot of the body
+    _pill(b, flare, FLOOR_Z - flare, BODY_R, "pastel_sky")                         # the body, solid to its floor
+    _pill(b, flare - 0.03, 0.12, BODY_R + 0.035, "gold_mid")                       # the gold band at the flare
+    _ring(b, FLOOR_Z - 0.03, RIM_Z - FLOOR_Z + 0.03, END_R, RIM_W, "offwhite")     # the rolled rim
+    face = Matrix.Rotation(math.pi / 2, 3, "Y")
+    for k, (sx, deg, z, r) in enumerate(((0, -0.3, 1.2, 0.2), (0, 0.25, 0.98, 0.12), (1, -62, 1.26, 0.15),
+                                         (1, -38, 1.02, 0.1))):                  # painted bubbles: white discs
+        if sx == 0:                                    # on the straight front: deg is x here
+            x, y, t = deg, -BODY_R + 0.015, -math.pi / 2
+        else:
+            x, y, t = _on_end(sx, deg, BODY_R - 0.006)
+        b.cyl((x, y, z), r, 0.04 + 0.004 * k, "offwhite" if k % 2 == 0 else "fish_belly", segments=8, bevel=False,
+              rot=Matrix.Rotation(t, 3, "Z") @ face)
 
 
 def _feet(b):
+    """Four gold claw feet: an ankle under the body, a paw out on the floor and a darker row of toes."""
     for sx in (1, -1):
         for sy in (1, -1):
-            b.cyl_base((sx * (TUB_W / 2 - 0.6), sy * (TUB_D / 2 - 0.6), 0.0), 0.24, FOOT_H + 0.02, "spa_bubblegum",
-                       segments=8, bevel=False)
+            x, y, t = _on_end(sx, sy * 50, (BODY_R - 0.2) * 0.8)
+            ox, oy = math.cos(t), math.sin(t)
+            b.box((x, y, FOOT_H - 0.04), (0.3, 0.3, 0.3), "gold_mid", bevel=False, rot=Matrix.Rotation(t, 3, "Z"))
+            px, py = x + ox * 0.2, y + oy * 0.2
+            b.sphere((px, py, 0.17), 0.24, "gold_mid", segments=8, rings=4, scale=(1.1, 1.1, 0.75))
+            b.box((px + ox * 0.2, py + oy * 0.2, 0.065), (0.16, 0.4, 0.13), "gold_dark",    # the toes, one piece
+                  bevel=False, rot=Matrix.Rotation(t, 3, "Z"))
+
+
+def _tap_at():
+    """Where the tap stands: on the middle of the back rim at TAP_X, which is on the left round end."""
+    r = END_R - 0.03 - RIM_W / 2
+    return TAP_X, math.sqrt(r * r - (TAP_X + HALF) ** 2)
 
 
 def _tap(b):
-    """A tap on the back rim, pointing in."""
-    x, y = TAP_X, TUB_D / 2 - WALL / 2
-    b.cyl_base((x, y, RIM_Z + 0.08), 0.14, 0.55, "metal", segments=10)     # sunk a little into the rim
-    b.box((x, y - 0.32, RIM_Z + 0.6), (0.18, 0.75, 0.18), "metal")
-    b.cyl((x, y - 0.66, RIM_Z + 0.5), 0.1, 0.16, "metal", segments=8)
-    for sx in (1, -1):                                  # two knobs, hot pink and cool sky
-        b.sphere((x + sx * 0.38, y, RIM_Z + 0.2), 0.13, "spa_bubblegum" if sx > 0 else "spa_sky", segments=8, rings=4)
+    """A brass gooseneck tap on the back rim, arching in over the water, with a pink and a sky knob."""
+    x, y = _tap_at()
+    b.cyl_base((x, y, RIM_Z - 0.02), 0.19, 0.09, "brass", segments=10, bevel=False)       # the flange, in the rim
+    b.cyl_base((x, y, RIM_Z + 0.03), 0.09, 0.9, "brass", segments=8, bevel=False)         # the riser
+    top = RIM_Z + 0.9
+    for dy, dz, deg in ((0.11, 0.1, 45), (0.34, 0.2, 90), (0.57, 0.1, 135)):              # the neck, three pieces
+        b.cyl((x, y - dy, top + dz), 0.09, 0.38, "brass", segments=8, bevel=False,
+              rot=Matrix.Rotation(math.radians(deg), 3, "X"))
+    b.cyl((x, y - 0.68, top - 0.09), 0.13, 0.18, "brass", segments=8, bevel=False)        # the mouth
+    tx, ty = -(y) / math.hypot(x + HALF, y), (x + HALF) / math.hypot(x + HALF, y)         # along the rim
+    for sgn, sw in ((1, "spa_bubblegum"), (-1, "spa_sky")):                               # hot pink and cool sky
+        b.sphere((x + sgn * tx * 0.36, y + sgn * ty * 0.36, RIM_Z + 0.1), 0.13, sw, segments=8, rings=4)
 
 
-STREAM = (TAP_X, TUB_D / 2 - WALL / 2 - 0.66)      # where the tap's water lands
+def _towel(b):
+    """A striped mint towel hung over the front rim of the left end (the store picture's)."""
+    width = 0.86
+    x, y, t = _on_end(-1, -58, END_R - 0.03 - RIM_W / 2)
+    rot = Matrix.Rotation(t, 3, "Z")
+    b.box((x, y, RIM_Z + 0.03), (RIM_W + 0.16, width, 0.07), "spa_mint", rot=rot)          # over the rim
+    hx, hy, _t = _on_end(-1, -58, END_R + 0.045)
+    drop = 0.78
+    b.box((hx, hy, RIM_Z + 0.05 - drop / 2), (0.07, width - 0.01, drop), "spa_mint", rot=rot)   # hanging outside
+    sx_, sy_, _t = _on_end(-1, -58, END_R + 0.06)
+    for dz in (0.5, 0.64):                                                                # two cream stripes
+        b.box((sx_, sy_, RIM_Z - dz), (0.07, width + 0.004, 0.07), "spa_cream", bevel=False, rot=rot)
+
+
+STREAM = (TAP_X, _tap_at()[1] - 0.68)              # where the tap's water lands
 
 
 def water_shine(b, z, marks):
@@ -113,20 +158,24 @@ def water_shine(b, z, marks):
 
 
 def _water():
-    """The water: a deep blue slab to just under the rim, with shine marks where no foam lies."""
+    """The water: deep blue to just under the rim, with shine marks where no foam lies. Three pieces fill the pill,
+    their tops a hair apart; in the game they are Glass, and Roblox draws no see-through part behind Glass, so
+    where they cross only the top one shows."""
     b = Builder()
-    floor = SEAT_Z + 0.01
-    b.box((0, 0, (WATER_Z + floor) / 2), (TUB_W - 2 * WALL - 0.04, TUB_D - 2 * WALL - 0.04, WATER_Z - floor), "water",
-          bevel=False)
-    water_shine(b, WATER_Z, [(-0.75, -1.3, 0.7, 0), (-1.3, -1.12, 0.34, 0), (-0.1, -1.38, 0.3, 0),
-                             (-1.55, 0.35, 0.4, 90), (0.55, 1.32, 0.5, 0)])
+    r = END_R - RIM_W - 0.01
+    z = FLOOR_Z + 0.004
+    b.box_base((0, 0, z), (2 * HALF, 2 * r - 0.03, WATER_Z - z), "water", bevel=False)
+    b.cyl_base((HALF, 0, z + 0.003), r, WATER_Z - z - 0.006, "water", segments=16, bevel=False)
+    b.cyl_base((-HALF, 0, z + 0.006), r, WATER_Z - z - 0.012, "water", segments=16, bevel=False)
+    water_shine(b, WATER_Z, [(-0.55, -1.05, 0.7, 0), (-1.2, -0.8, 0.34, 0), (0.15, -1.1, 0.3, 0),
+                             (-1.6, 0.3, 0.36, 90), (0.45, 1.08, 0.5, 0)])
     return b
 
 
 def _stream():
     """Water running from the tap into the tub: its own child Model (_Stream), so the game can turn the tap off."""
     b = Builder()
-    top = RIM_Z + 0.44
+    top = RIM_Z + 0.74
     b.box((STREAM[0], STREAM[1], (top + WATER_Z) / 2 - 0.02), (0.12, 0.12, top - WATER_Z + 0.04), "water", bevel=False)
     return b
 
@@ -176,15 +225,15 @@ def soap_bubble(b, x, y, z, r):
     b.box((x + g[0], y + g[1], z + g[2]), (0.4 * r, 0.4 * r, 0.4 * r), "foam", bevel=False)
 
 
-# The tub's lather: low mounds in three corners and along one side, white balls on them, and a splash where the
-# tap's water lands. The front corner on the tap's side stays open water. Mounds and balls: (x, y, radius).
-FOAM_MOUNDS = [(1.42, 1.02, 0.52), (1.6, 0.0, 0.42), (1.45, -1.05, 0.5), (0.8, -1.28, 0.3), (-1.62, -0.35, 0.36)]
-FOAM_BALLS = [(1.55, 1.2, 0.2), (1.2, 0.8, 0.16), (1.62, -0.85, 0.18), (1.15, -1.25, 0.15), (-1.7, -0.5, 0.13)]
+# The tub's lather: low mounds round the right end and along the front, white balls on them, and a splash where the
+# tap's water lands. The front by the tap stays open water. Mounds and balls: (x, y, radius).
+FOAM_MOUNDS = [(1.3, 0.72, 0.5), (1.62, 0.0, 0.42), (1.32, -0.7, 0.48), (0.7, -1.02, 0.3), (-1.55, -0.3, 0.34)]
+FOAM_BALLS = [(1.4, 0.88, 0.2), (1.1, 0.6, 0.16), (1.55, -0.55, 0.18), (1.05, -0.95, 0.15), (-1.62, -0.42, 0.13)]
 # Soap bubbles: on the lather, one spilled on the rim and three drifting up. (x, y, z, radius), z the centre.
-SOAP_BUBBLES = [(1.3, 0.95, WATER_Z + 0.52, 0.27), (1.72, 0.1, WATER_Z + 0.42, 0.19),
-                (1.35, -1.0, WATER_Z + 0.5, 0.23), (-1.6, -0.3, WATER_Z + 0.36, 0.17),
-                (2.0, -1.62, RIM_Z + 0.3, 0.19),
-                (2.05, -0.5, 2.75, 0.22), (-2.05, 0.4, 3.2, 0.17), (-1.75, -1.3, 2.45, 0.13)]
+SOAP_BUBBLES = [(1.2, 0.68, WATER_Z + 0.52, 0.27), (1.7, 0.08, WATER_Z + 0.42, 0.19),
+                (1.25, -0.68, WATER_Z + 0.5, 0.23), (-1.5, -0.26, WATER_Z + 0.36, 0.17),
+                (1.72, -1.0, RIM_Z + 0.17, 0.19),
+                (2.05, -0.5, 2.9, 0.22), (-2.05, 0.4, 3.35, 0.17), (-1.75, -1.3, 2.6, 0.13)]
 
 
 def _foam():
@@ -223,6 +272,7 @@ def build_tub(mat):
     _tub_shell(b)
     _feet(b)
     _tap(b)
+    _towel(b)
     objs = [_tris(b.finalize(name, mat)),
             _water().finalize(name + "_Water", mat, bevel=0),
             common.shade_smooth(_foam().finalize(name + "_Foam", mat)),
@@ -481,7 +531,7 @@ def pawdicure_rbx_extras():
 # The two baths carry round foam bubbles (#107). Each bubble is a Ball part in Roblox, which the engine draws itself,
 # so its triangles here are only the preview mesh: 64 a bubble, 1,344 on the tub and 1,792 on the bubble bath.
 # Without the foam the tub is 1,040 triangles and the bubble bath 676, inside the 1,500 and 1,200 the others keep.
-ASSETS = {"CleanACat_Station_Tub": (build_tub, 2500),
+ASSETS = {"CleanACat_Station_Tub": (build_tub, 3400),   # 2500 until #157: the game loads its Parts, not this mesh
           "CleanACat_Station_BrushTable": (build_brush_table, 1200),
           "CleanACat_Station_BrushTableUp": (build_brush_table_up, 1200),
           "CleanACat_Station_Dryer": (build_dryer, 1200),
