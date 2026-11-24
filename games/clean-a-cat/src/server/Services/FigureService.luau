@@ -310,8 +310,15 @@ end
 function FigureService.drawSlot(slot: number, kinds: { string })
 	FigureService.clearSlot(slot)
 	local folder = buildFolder(slot, kinds, slot)
+	-- buildFolder may have yielded: skip if a player took the slot meanwhile, so no stand-in lands in their plot.
+	local taken = false
+	for _, player in Players:GetPlayers() do
+		if SpaLayout.slotOf(player) == slot then
+			taken = true
+		end
+	end
 	local plot = SpaLayout.plotModel(slot)
-	if plot == nil or plot:FindFirstChild(FOLDER_NAME) then
+	if taken or plot == nil or plot:FindFirstChild(FOLDER_NAME) then
 		folder:Destroy()
 		return
 	end
