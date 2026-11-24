@@ -10,12 +10,13 @@ local Portraits = {}
 -- cat name -> "rbxassetid://<id>" once uploaded under the group; a missing or "" entry draws the stand-in. Suds, the
 -- mascot (#285), has his own key here though he is not in the Cat Index.
 Portraits.IMAGES = {
-	Suds = "", -- Model-Agent's portrait_Suds_ink.png, once uploaded
+	Suds = "rbxassetid://92665897768427", -- CleanACat_UI_Portrait_Suds, uploaded to the group by Model-Agent
 } :: { [string]: string }
 
--- The stand-in glyph for a cat with no image yet; the cat glyph when not listed. Suds is a black cat.
+-- The stand-in glyph for a cat with no image yet; the cat glyph when not listed. One code point each: a joined emoji
+-- such as the black cat (cat + zero width joiner + black square) splits into two glyphs on some phones (Sync-Agent).
 Portraits.GLYPHS = {
-	Suds = "🐈‍⬛",
+	Suds = "🐈",
 } :: { [string]: string }
 
 local TILE_TINT = 0.55 -- how far the stand-in tile's rarity colour is lightened toward white
