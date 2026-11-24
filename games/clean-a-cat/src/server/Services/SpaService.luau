@@ -606,7 +606,8 @@ function SpaService.Start()
 					return
 				end
 				for _, player in Players:GetPlayers() do
-					if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true then
+					-- in the box, or opened and still being carried
+					if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) ~= nil then
 						handOut(player)
 					end
 				end

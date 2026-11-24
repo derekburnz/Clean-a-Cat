@@ -389,8 +389,8 @@ function OpeningController.Start()
 	player:GetAttributeChangedSignal(SudsRules.ATTRIBUTE):Connect(onStage)
 	Remotes.event("CatReady").OnClientEvent:Connect(onCatReady)
 	-- a new character (a reset) is the player's own again
+	-- (Roblox's controls keep their enabled state across a respawn, so leaveWash's Enable is what frees them.)
 	player.CharacterAdded:Connect(function()
-		controlsHeld = false
 		OpeningController.leaveWash()
 	end)
 	onBoxChanged()
