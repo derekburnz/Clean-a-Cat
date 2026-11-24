@@ -43,6 +43,7 @@ LiveFlags.KEYS = {
 	"customerFigures", -- real customers holding carriers at the door, drawn by the server (FigureService, DoorController); off by default
 	"scrubFeel", -- a mud patch takes a few strokes and a scrubbing finger never walks the player (Controllers/ScrubController); off by default
 	"spawnView", -- the player spawns behind their tub facing the street, so the first frame is not a wall (PlotService); off by default
+	"queuePick", -- the player picks which waiting customer is washed next (SpaService, QueuePickController); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
 
@@ -70,6 +71,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	scrubFeel = true,
 	streetLoadTest = true,
 	spawnView = true,
+	queuePick = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

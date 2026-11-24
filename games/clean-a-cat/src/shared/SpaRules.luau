@@ -126,6 +126,20 @@ function SpaRules.photo(cat: Cat, now: number): number
 	return SpaRules.PHOTO_COINS
 end
 
+-- Customers waiting at the door (SpaService keeps the line this long).
+SpaRules.QUEUE_SIZE = 3
+
+-- Moves the customer at `index` to the front of the door line, keeping the others in order (switch queuePick).
+-- Only a reorder: no customer is added, removed or rerolled. False for the front or an index outside the line.
+function SpaRules.pickNext(queue: { string }, index: number): boolean
+	if index < 2 or index > #queue or index ~= math.floor(index) then
+		return false
+	end
+	local picked = table.remove(queue, index)
+	table.insert(queue, 1, picked :: string)
+	return true
+end
+
 -- How many of a cat's `total` tangles are gone after `strokes` brush strokes: an even share per stroke, and
 -- all of them on the last stroke.
 function SpaRules.tanglesGone(strokes: number, total: number): number
