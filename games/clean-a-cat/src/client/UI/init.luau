@@ -10,6 +10,7 @@
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
 --   UI.onSettingsChanged(fn)  fn(settings) on every change on the Settings card (UI/Settings, switch settingsCard,
 --                             #230); with the switch on, the Menu opens that card
+--   UI.setIndex(entries, newCats, tier)  the Cat Index window (UI/CatIndex, switch catIndexWindow, #238)
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
@@ -20,10 +21,12 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 
+local CatIndex = require(script:WaitForChild("CatIndex"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local HUD = require(script:WaitForChild("HUD"))
 local Motion = require(script:WaitForChild("Motion"))
@@ -184,6 +187,7 @@ function UI.init()
 	toastLabel = toast
 
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
+	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -215,6 +219,25 @@ end
 
 function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
+end
+
+-- The Cat Index window's stamps, New! marks and star tier (IndexWindowController).
+function UI.setIndex(
+	entries: { [string]: IndexRules.Entry },
+	newCats: { [string]: boolean },
+	tier: number
+)
+	CatIndex.set(entries, newCats, tier)
+end
+
+-- fn() each time the Cat Index window closes.
+function UI.onIndexClosed(fn: () -> ())
+	CatIndex.onClosed(fn)
+end
+
+-- For the UI gate: the Cat Index detail for `cat`, or the grid for nil.
+function UI.showIndexDetail(cat: string?)
+	CatIndex.showDetail(cat)
 end
 
 function UI.onSettingsChanged(fn: (SettingsRules.Settings) -> ())
