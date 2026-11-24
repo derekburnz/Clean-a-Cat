@@ -281,14 +281,15 @@ def music(mat):
 
 
 def speaker(mat):
-    """Sound effects: a sky blue speaker and two sound waves, each wave three straight pieces."""
+    """Sound effects: a speaker and two sound waves, each wave three straight pieces. In the bath water's blue: the
+    pale sky blue of the camera faded on mint and on the world's green at 36 px, and so did thinner waves (#253)."""
     b = Builder()
     b.prism((-0.75, 0, 0), [(-0.9, -0.36), (-0.35, -0.36), (0.4, -1.0), (0.4, 1.0), (-0.35, 0.36), (-0.9, 0.36)],
-            0.6, "spa_sky", bevel=True, rot=X)
-    for radius, span, long in ((0.72, 34, 0.5), (1.3, 30, 0.76)):
+            0.6, "water", bevel=True, rot=X)
+    for radius, span, long in ((0.74, 34, 0.52), (1.36, 30, 0.8)):
         for a in (-span, 0, span):
             t = math.radians(a)
-            b.box((-0.35 + radius * math.cos(t), 0, radius * math.sin(t)), (0.24, 0.34, long), "spa_sky",
+            b.box((-0.35 + radius * math.cos(t), 0, radius * math.sin(t)), (0.34, 0.34, long), "water",
                   rot=(-t, "Y"))
     return _fin(b, "Speaker", mat)
 
