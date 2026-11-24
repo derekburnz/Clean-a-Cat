@@ -294,6 +294,52 @@ def build_build_pad(mat):
     return [main, screen]
 
 
+CAMERA = "CleanACat_Prop_PhotoCamera"
+CAM_BODY = (1.4, 0.7, 0.9)       # the camera's body: wide, deep, high (the placeholder block was 1.4 x 1 x 1)
+CAM_Z = 2.45                     # the body's middle over the floor: where the placeholder's middle was
+CAM_FEET = 0.72                  # how far each tripod foot stands from the middle
+
+
+def build_photo_camera(mat):
+    """The photo step's camera (#344): a small friendly camera on a short tripod beside the tub, the thing the
+    player taps to take the after photo. It stood in as a plain block (PH_Buttons.Camera), which the owner saw on dev
+    as a black block. Cream body with a bubblegum top, a mint lens ring round a dark lens with a glint, a butter
+    flash and a gold shutter button. No writing, no brand. Pivot at the base centre, the lens at the front (-Z in
+    Roblox). Attachment `Tap` at the body's middle."""
+    w, d, h = CAM_BODY
+    top, bottom, front = CAM_Z + h / 2, CAM_Z - h / 2, -d / 2
+    quarter = (math.radians(90), "X")                  # lays a cylinder along the front to back line
+    b = Builder()
+    hub = Vector((0.0, 0.0, bottom - 0.3))
+    for i in range(3):                                 # one leg to the back, two to the front corners
+        a = math.radians(90 + 120 * i)
+        foot = Vector((CAM_FEET * math.cos(a), CAM_FEET * math.sin(a), 0.0))
+        end = foot + Vector((0.0, 0.0, 0.09))          # the leg stops inside its foot, clear of the floor
+        way = (end - hub).normalized()
+        side = Vector((0, 0, 1)).cross(way).normalized()
+        rot = Matrix((side, way.cross(side), way)).transposed().to_4x4()
+        length = (end - hub).length
+        b.box(tuple(hub + way * (length / 2)), (0.13, 0.13, length), "wood_light", bevel=False, rot=rot)
+        b.cyl_base((foot.x, foot.y, 0.0), 0.13, 0.14, "spa_mint", segments=8, bevel=False)
+    b.cyl_base((0, 0, hub.z - 0.1), 0.2, 0.2, "spa_mint", segments=10, bevel=False)             # the tripod's head
+    b.cyl_base((0, 0, hub.z + 0.08), 0.1, bottom - hub.z - 0.07, "spa_cream", segments=8, bevel=False)   # its post
+    b.box((0, 0, CAM_Z), (w, d, h), "spa_cream")
+    b.box((0, 0, top - 0.11), (w + 0.04, d + 0.04, 0.24), "spa_bubblegum")                      # the top band
+    b.cyl((0.12, front - 0.07, CAM_Z - 0.08), 0.36, 0.18, "spa_mint", segments=14, rot=quarter)  # the lens ring
+    b.cyl((0.12, front - 0.2, CAM_Z - 0.08), 0.27, 0.14, "spa_sky", segments=14, bevel=False, rot=quarter)
+    b.cyl((0.12, front - 0.28, CAM_Z - 0.08), 0.19, 0.05, "fur_black", segments=14, bevel=False, rot=quarter)
+    b.box((0.05, front - 0.31, CAM_Z - 0.01), (0.08, 0.02, 0.08), "fur_white", bevel=False)     # the glint
+    b.box((-0.48, front - 0.02, top - 0.11), (0.26, 0.05, 0.14), "spa_sky", bevel=False)        # the viewfinder
+    b.box_base((-0.4, 0.02, top), (0.42, 0.36, 0.2), "pastel_butter")                           # the flash
+    b.box((-0.4, -0.17, top + 0.1), (0.3, 0.03, 0.12), "fur_white", bevel=False)                # its face
+    b.cyl_base((0.42, 0.0, top), 0.12, 0.1, "fur_golden", segments=10, bevel=False)             # the shutter button
+    return [_tris(b.finalize(CAMERA, mat))]
+
+
+def photo_camera_rbx_extras():
+    return {"attachments": [(CAMERA, "Tap", Matrix.Translation((0.0, 0.0, CAM_Z)))]}
+
+
 ASSETS = {
     "CleanACat_Prop_BuildPad": (build_build_pad, 600),
     "CleanACat_Prop_Cushion": (build_cushion, 300),
@@ -304,7 +350,8 @@ ASSETS = {
     "CleanACat_Prop_ChanceBoard": (build_chance_board, 400),
     "CleanACat_Prop_QueueMat": (build_queue_mat, 200),
     BED: (build_suds_bed, 800),
+    CAMERA: (build_photo_camera, 700),
 }
 EXTRAS = {"CleanACat_Prop_Carrier": carrier_rbx_extras, "CleanACat_Prop_StrayBox": stray_box_rbx_extras,
           "CleanACat_Prop_Cushion": cushion_rbx_extras, "CleanACat_Prop_TipJar": tip_jar_rbx_extras,
-          BED: suds_bed_rbx_extras}
+          BED: suds_bed_rbx_extras, CAMERA: photo_camera_rbx_extras}
