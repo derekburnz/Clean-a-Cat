@@ -382,10 +382,11 @@ def clawfoot_bath(mat):
     return _fresh(objs), BATH_WATER * BATH_K
 
 
-def thumb_spa(mat, out, res):
-    """The store thumbnail (Derek 2026-11-23): the bath of his ad picture, blown up, with a clean Muffin sitting in
-    it: the claw-foot tub, the striped towel over the rim, towels on a rail, the duck, lather and soap bubbles. The
-    cat is plain (no fluff, no bow), so its ears and face read at a glance. No mud."""
+def spa_scene(mat):
+    """The store art's scene (Derek 2026-11-23): the bath of his ad picture with a clean Muffin sitting in it: the
+    claw-foot tub, the striped towel over the rim, towels on a rail, the duck, lather and soap bubbles. The cat is
+    plain (no fluff, no bow), so its ears and face read at a glance. No mud. Returns (objects, the cat, the water's
+    height)."""
     tub, wz = clawfoot_bath(mat)
     cx = -0.3                                             # the cat sits left of the middle, as in the ad picture
     cat = cat_state("Muffin", mat, "sit", "plain", (cx, 0.12, wz - 0.48), TUB_K)
@@ -404,8 +405,24 @@ def thumb_spa(mat, out, res):
                            (cx + 1.55, lo.y - 0.2, hi.z - 1.1, 0.24),   # drifting up
                            (cx + 1.15, lo.y - 0.3, hi.z + 0.1, 0.15), (2.1, -0.6, hi.z - 0.2, 0.2),
                            (1.9, -0.7, hi.z - 1.6, 0.13)])
+    return objs, cat, wz
+
+
+def thumb_spa(mat, out, res):
+    """The store thumbnail: the whole bath, blown up."""
+    objs, _cat, _wz = spa_scene(mat)
     focus = [o for o in objs if "Bubbles" not in o.name]     # the drifting bubbles may leave the frame
     return render(objs, focus, out, res, az=20, el=20, margin=1.06, lens=55)
+
+
+def icon_spa(mat, out, res):
+    """The store icon: the same scene, close on the cat, so its face fills about half the square at search size
+    (Review-QA on #116: icons win clicks on a face, not on a scene). The tub's rim, the lather and the bubbles
+    frame it."""
+    objs, cat, wz = spa_scene(mat)
+    lo, hi = common.bounds(cat)
+    focus = (Vector((lo.x - 0.3, lo.y, wz - 0.5)), Vector((hi.x + 0.3, lo.y + 0.4, hi.z + 0.05)))
+    return render(objs, focus, out, res, az=12, el=14, margin=1.0, lens=60)
 
 
 def thumb_scrub(mat, out, res):
@@ -464,6 +481,7 @@ SHOTS = {
     "thumb-2": (thumb_before_after, (960, 540), (1920, 1080)),
     "thumb-3": (thumb_queue, (960, 540), (1920, 1080)),
     "thumb-spa": (thumb_spa, (900, 900), (1600, 1600)),
+    "icon-spa": (icon_spa, (512, 512), (1024, 1024)),
 }
 
 
