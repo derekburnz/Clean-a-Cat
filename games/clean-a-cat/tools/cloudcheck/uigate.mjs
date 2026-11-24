@@ -90,6 +90,7 @@ async function runProfile(profile) {
       inset: profile.inset,
       textSize: profile.textSize,
       transparency: profile.transparency,
+      displaySize: profile.displaySize,
     })[0];
   // the scenes run with the game's globals (workspace, the virtual os.time), as a LocalScript would
   const env = world.rawGet('internals').rawGet('env');

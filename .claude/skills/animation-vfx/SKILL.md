@@ -93,6 +93,7 @@ Generate the armature and weights in Python next to the asset-artist's meshes so
 - Easing: `Back, Out` for pops (0.2 to 0.3 s), `Quad, Out` for rises and slides (0.3 to 0.9 s), `Sine, InOut` for loops.
 - Cancel before restarting: keep the Tween in a table keyed by instance and call `:Cancel()` when a new one starts, or two tweens fight over the same property. A looping tween that shares a property with a one-shot must restart itself after the one-shot.
 - UI motion stays in the UI's tween helper (ui-designer). World motion goes through `src/client/Effects/`.
+- House springs for UI (Derek kept them, #183): use `src/client/UI/Motion.luau`, not new numbers. A window pops in from 60% scale with damping 0.55 at 3.2 Hz, which gives a small overshoot and settles in about half a second. A button squashes to 92% at damping 0.5 and 6 Hz, then springs back at 0.45 and 5 Hz. Springs come from the vendored `spr` (`src/shared/Vendor/spr.luau`, MIT), always drive a UIScale child (never Size or Position, so layout and the UI gate stay untouched), and are skipped when Reduced Motion is on. Use a spring only where a bounce adds feel (arrivals, presses); fades and colour changes stay plain tweens.
 
 ## 6. VFX style rules
 Write the game's own palette and shapes in the style guide. These rules hold for any game with a young audience:
