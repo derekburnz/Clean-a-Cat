@@ -14,7 +14,8 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
             for a toolbox in place of the scrub brush, whose soap bubbles "makes no sense"; shut, it could pass for a
             lunchbox)
   Helper    a member of the human staff: head and shoulders in the spa uniform, the first look in staff.py
-  Build     a blue hammer with a wooden handle and a white paw on its head
+  Build     a blue hammer with a wooden handle (no paw on it: the owner, 2026-11-24, "the toolbox and hammer paw is
+            not needed")
 
 Ten small pictures in the same style follow them (#251), for names the UI otherwise draws as a system emoji: Camera,
 Paw, Heart, Gift, Music, Speaker, Shake, Sparkle, Dice and Check. They are used in rows and badges, smaller than the
@@ -143,7 +144,8 @@ def settings(mat):
 
 def tools(mat):
     """The wash tools: a fat pink toolbox with its lid thrown open, a scrub brush standing in it with its white
-    bristles to the front and a soap bottle with a pump beside it, a gold latch and a white paw. (The first draft was
+    bristles to the front and a soap bottle with a pump beside it, and a gold latch. No paw on the front: the owner
+    asked for it to go (2026-11-24, "the toolbox and hammer paw is not needed"). (The first draft was
     a scrub brush with soap bubbles; the owner: "the bubbles on the back of brush makes no sense ... a toolbox would
     be better". Shut, the toolbox could pass for a lunchbox at 48 px (Review-QA, #234), so #242 opened it. On a phone
     the button is about 36 pt, where a brush lying inside the box blurred into it, so #247 stood the brush up to
@@ -163,7 +165,6 @@ def tools(mat):
         lid((sx * 0.66, -0.3, 2.1), (0.26, 0.32, 0.64), "spa_cream")                     # and near the lid's front, so
     lid((0, -0.3, 2.5), (1.8, 0.38, 0.28), "spa_cream")                                  # it shows above the open lid
     b.box((0, -d / 2 - 0.1, 0.9), (0.5, 0.14, 0.5), "gold_mid")                          # the latch
-    _paw(b, 0, -d / 2 - 0.02, 0.36, 0.17, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
     lean = Matrix.Rotation(math.radians(-20), 3, "Y") @ Matrix.Rotation(math.radians(12), 3, "X")
     foot = Vector((-0.72, -0.45, 0.9))                                                    # a scrub brush standing at
 
@@ -180,15 +181,14 @@ def tools(mat):
 
 
 def build(mat):
-    """Build mode: a fat hammer with a wooden handle, a flat face one side, a claw the other and a white paw on
-    it."""
+    """Build mode: a fat hammer with a wooden handle, a flat face one side and a claw the other. Plain: the owner
+    asked for the white paw on its head to go (2026-11-24)."""
     b = Builder()
     b.box((0, 0, 0.8), (0.6, 0.6, 1.6), "caramel_wood")                                  # the handle
     b.box((0, 0, 2.1), (1.5, 0.9, 1.0), "bow_sky")                                       # the head
     b.box((-0.95, 0, 2.1), (0.38, 1.06, 1.2), "bow_sky")                                 # its flat face
     b.prism((1.05, 0, 2.1), [(-0.3, 0.5), (-0.3, -0.5), (0.42, -0.42), (0.42, -0.1)], 0.84, "bow_sky",
             rot=X)                                                                       # the claw
-    _paw(b, 0.05, -0.47, 2.06, 0.21, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
     return _fin(b, "Build", mat, tilt=22)
 
 
