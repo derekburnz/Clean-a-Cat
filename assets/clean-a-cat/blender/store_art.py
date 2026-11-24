@@ -32,6 +32,7 @@ import tools  # noqa: E402
 from common import Builder  # noqa: E402
 
 TUB_K = 1.5                       # the cat's ScaleTo at the tub
+stations.DETAIL = {"ball": (24, 14), "mound": (24, 10)}   # a close picture: round balls, as Roblox draws them
 _n = [0]
 
 
@@ -99,11 +100,10 @@ def bubbles(mat, spots, seed=3):
 
 
 def floating(mat, spots):
-    """Loose rising bubbles, each with a small sky glint."""
+    """Loose soap bubbles (x, y, z, radius): clear, each with a white glint (stations.soap_bubble, the game's)."""
     b = Builder()
     for x, y, z, r in spots:
-        b.sphere((x, y, z), r, "offwhite", segments=24, rings=14)
-        b.sphere((x - r * 0.35, y - r * 0.8, z + r * 0.35), r * 0.22, "spa_sky", segments=12, rings=8)
+        stations.soap_bubble(b, x, y, z, r)
     return _fresh([common.shade_smooth(b.finalize("Bubbles", mat, bevel=0))])
 
 
@@ -185,7 +185,7 @@ def render(show, focus, path, res, az, el, margin=1.1, lens=50, lift=0.0, sample
         if ob.type == "MESH" and not ob.name.startswith("_"):
             ob.hide_render = ob not in show
     sc.render.filepath = path
-    bpy.ops.render.render(write_still=True)
+    common.render_still()
     sc.render.film_transparent = False
     fl.is_shadow_catcher = False
     return path
@@ -274,22 +274,25 @@ def thumb_spa(mat, out, res):
     lo, hi = common.bounds(cat)
     tlo, thi = common.bounds(tub)
     top = stations.SEAT_Z + 0.9
-    objs += bubbles(mat, [(-0.9, lo.y + 0.2, top, 0.5), (0.9, lo.y + 0.2, top, 0.5),
-                          (0.0, lo.y - 0.05, top - 0.1, 0.45), (-1.4, 0.3, top + 0.05, 0.5),
-                          (1.4, 0.3, top + 0.05, 0.5), (-1.7, tlo.y + 0.5, thi.z + 0.1, 0.4)], seed=11)
-    objs += floating(mat, [(-1.6, lo.y - 0.3, hi.z - 0.3, 0.26), (1.7, lo.y - 0.2, hi.z + 0.1, 0.2),
-                           (1.3, lo.y - 0.4, hi.z + 0.8, 0.14), (-1.2, lo.y - 0.2, hi.z + 0.7, 0.16),
-                           (0.3, lo.y - 0.3, hi.z + 1.2, 0.12)])
+    # lather hugging the cat's sides and back, the water left open in front of it
+    objs += bubbles(mat, [(1.3, lo.y + 0.5, top, 0.5), (1.5, 0.55, top + 0.05, 0.45)], seed=11)
+    wz = stations.WATER_Z
+    objs += floating(mat, [(-0.7, lo.y - 0.3, wz + 0.2, 0.24), (0.1, lo.y - 0.4, wz + 0.14, 0.16),      # on the water
+                           (0.75, lo.y - 0.15, wz + 0.3, 0.26), (-1.55, -0.6, wz + 0.2, 0.2),
+                           (-2.6, lo.y - 0.9, hi.z - 1.6, 0.3), (2.1, lo.y - 0.2, hi.z - 0.3, 0.28),    # drifting up
+                           (1.5, lo.y - 0.4, hi.z + 0.7, 0.18), (-1.4, lo.y - 0.2, hi.z + 0.5, 0.22),
+                           (0.4, lo.y - 0.3, hi.z + 1.1, 0.15), (-2.4, 0.2, hi.z + 0.1, 0.16)])
+    rim = stations.RIM_Z + 0.14                           # the top of the rim's cap
     tw = Builder()                                        # a mint towel with white stripes over the front rim
     x, w = 1.25, 1.0
-    tw.box((x, tlo.y + 0.25, thi.z - 0.17), (w, 0.62, 0.08), "spa_mint", bevel=False)
-    tw.box((x, tlo.y - 0.03, thi.z - 0.78), (w, 0.08, 1.22), "spa_mint", bevel=False)
+    tw.box((x, tlo.y + 0.25, rim + 0.05), (w, 0.62, 0.08), "spa_mint", bevel=False)
+    tw.box((x, tlo.y - 0.03, rim - 0.52), (w, 0.08, 1.22), "spa_mint", bevel=False)
     for dx in (-0.26, 0.26):
-        tw.box((x + dx, tlo.y - 0.08, thi.z - 0.78), (0.12, 0.04, 1.22), "offwhite", bevel=False)
+        tw.box((x + dx, tlo.y - 0.08, rim - 0.52), (0.12, 0.04, 1.22), "offwhite", bevel=False)
     objs += _fresh([tw.finalize("Towel", mat, bevel=0)])
-    objs += bubbles(mat, [(tlo.x + 0.4, tlo.y + 0.4, thi.z + 0.15, 0.45), (thi.x - 0.4, thi.y - 0.5, thi.z + 0.15, 0.4),
-                          (tlo.x + 0.5, thi.y - 0.5, thi.z + 0.1, 0.35)], seed=13)
-    return render(objs, objs, out, res, az=-20, el=13, margin=1.04, lens=55)
+    objs += bubbles(mat, [(tlo.x + 0.4, tlo.y + 0.4, rim + 0.2, 0.4)], seed=13)
+    focus = cat + [o for o in tub if not o.name.endswith("_Bubbles")]     # the drifting bubbles may leave the frame
+    return render(objs, focus, out, res, az=-20, el=21, margin=1.1, lens=55)
 
 
 def thumb_scrub(mat, out, res):

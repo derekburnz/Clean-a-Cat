@@ -22,14 +22,14 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | file | what |
 |---|---|
 | `build_all.py` | builds every asset: FBX, Part model, manifest, gates, previews; exits 1 on a gate FAIL |
-| `palette.py` | every swatch (style guide section 2) and the palette texture writer |
-| `common.py` | `Builder` primitives tagged with a swatch, FBX export, previews (library port) |
+| `palette.py` | every swatch (style guide section 2), the palette texture writer and `CLEAR_SWATCHES`, the swatches drawn see-through (a soap bubble, #111) |
+| `common.py` | `Builder` primitives tagged with a swatch, FBX export, previews (library port); `render_still` draws objects of soap bubbles see-through in pictures only |
 | `rbx_export.py` | Part-built `.model.json` from the Builder's log; Clean a Cat's collision, tag and naming tables at the top |
 | `rbx_zfight.py` | finds and fixes faces that would flicker in the Part models; `python3 rbx_zfight.py` reports |
 | `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming |
 | `contact_sheet.py` | tiles previews into sheets |
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
-| `dirt.py` | the dirty cats (#12): pixel mud splats fitted to each fur face (#107), tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
+| `dirt.py` | the dirty cats (#12): thin mud smears fitted to each fur face (#107, #111), tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
 | `stations.py` | the spa stations: the wash tub (#13), the brush table, its upgrade and the hood dryer with its `Nozzle` (#18), the bubble bath with its `Spout` and the pawdicure (#23), each with a `CatSeat` attachment |
 | `tools.py` | hand tools: the three sponges (#13) and the brush (#14), each with a `Handle` part |
 | `plot.py` | the spa plot (#15): the real build on the graybox layout, every gameplay spot an Attachment (`SPOTS`) |

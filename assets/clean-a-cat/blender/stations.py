@@ -37,7 +37,8 @@ SEAT_Z = 1.2                     # inner floor top: where the cat sits (PH_Tub's
 RIM_Z = 1.6                      # top of the walls; a sitting cat (1.85 tall) shows above it from the chest up
 WALL = 0.35                      # wall thickness
 CORNER = 0.45                    # radius of the rounded corners
-WATER_Z = 1.34                   # water surface (shallow: paws and belly in the water)
+WATER_Z = 1.47                   # water surface, just under the rim so the bath reads as full (#111)
+TAP_X = -1.25                    # the tap stands off centre on the back rim, so its stream shows past the cat
 
 
 def _tub_shell(b):
@@ -93,17 +94,40 @@ def _feet(b):
 
 def _tap(b):
     """A tap on the back rim, pointing in."""
-    y = TUB_D / 2 - WALL / 2
-    b.cyl_base((0, y, RIM_Z + 0.08), 0.14, 0.55, "metal", segments=10)     # sunk a little into the rim
-    b.box((0, y - 0.32, RIM_Z + 0.6), (0.18, 0.75, 0.18), "metal")
-    b.cyl((0, y - 0.66, RIM_Z + 0.5), 0.1, 0.16, "metal", segments=8)
+    x, y = TAP_X, TUB_D / 2 - WALL / 2
+    b.cyl_base((x, y, RIM_Z + 0.08), 0.14, 0.55, "metal", segments=10)     # sunk a little into the rim
+    b.box((x, y - 0.32, RIM_Z + 0.6), (0.18, 0.75, 0.18), "metal")
+    b.cyl((x, y - 0.66, RIM_Z + 0.5), 0.1, 0.16, "metal", segments=8)
     for sx in (1, -1):                                  # two knobs, hot pink and cool sky
-        b.sphere((sx * 0.38, y, RIM_Z + 0.2), 0.13, "spa_bubblegum" if sx > 0 else "spa_sky", segments=8, rings=4)
+        b.sphere((x + sx * 0.38, y, RIM_Z + 0.2), 0.13, "spa_bubblegum" if sx > 0 else "spa_sky", segments=8, rings=4)
+
+
+STREAM = (TAP_X, TUB_D / 2 - WALL / 2 - 0.66)      # where the tap's water lands
+
+
+def water_shine(b, z, marks):
+    """White shine marks on a water surface at height z: (x, y, length, turn in degrees) each, a hair proud."""
+    for x, y, length, turn in marks:
+        b.box((x, y, z + 0.006), (length, 0.07, 0.04), "foam", bevel=False,
+              rot=Matrix.Rotation(math.radians(turn), 3, "Z"))
 
 
 def _water():
+    """The water: a deep blue slab to just under the rim, with shine marks where no foam lies."""
     b = Builder()
-    b.box((0, 0, WATER_Z - 0.065), (TUB_W - 2 * WALL - 0.04, TUB_D - 2 * WALL - 0.04, 0.13), "spa_sky", bevel=False)
+    floor = SEAT_Z + 0.01
+    b.box((0, 0, (WATER_Z + floor) / 2), (TUB_W - 2 * WALL - 0.04, TUB_D - 2 * WALL - 0.04, WATER_Z - floor), "water",
+          bevel=False)
+    water_shine(b, WATER_Z, [(-0.75, -1.3, 0.7, 0), (-1.3, -1.12, 0.34, 0), (-0.1, -1.38, 0.3, 0),
+                             (-1.55, 0.35, 0.4, 90), (0.55, 1.32, 0.5, 0)])
+    return b
+
+
+def _stream():
+    """Water running from the tap into the tub: its own child Model (_Stream), so the game can turn the tap off."""
+    b = Builder()
+    top = RIM_Z + 0.44
+    b.box((STREAM[0], STREAM[1], (top + WATER_Z) / 2 - 0.02), (0.12, 0.12, top - WATER_Z + 0.04), "water", bevel=False)
     return b
 
 
@@ -122,25 +146,63 @@ def foam_pile(b, x, y, z, r, ring=4, turn=0.0, segments=8, rings=5, swatch="foam
              segments=segments, rings=rings)
 
 
-def foam_bubble(b, x, y, z, r, segments=8, rings=5, swatch="foam"):
-    """One bubble resting on a surface at (x, y, z)."""
-    b.sphere((x, y, z + 0.7 * r), r, swatch, segments=segments, rings=rings)
+# How finely a ball is drawn here: (segments, rings) of a ball and of a flattened mound. Roblox draws its own balls,
+# so the game's models stay coarse; store_art.py raises these for a close picture.
+DETAIL = {"ball": (8, 5), "mound": (8, 4)}
 
 
-# The tub's foam: a pile on the water in two opposite corners, a small pile spilling on a rim corner and four single
-# bubbles. Piles: (x, y, z, radius, bubbles in the ring, turn). Bubbles: (x, y, z, radius).
-FOAM_PILES = [(-1.4, -0.95, WATER_Z, 0.34, 4, 0.5), (1.4, 0.95, WATER_Z, 0.36, 4, 2.1),
-              (-1.85, -1.5, RIM_Z, 0.2, 3, 0.9)]
-FOAM_BUBBLES = [(1.6, -1.1, WATER_Z, 0.2), (1.2, -1.25, WATER_Z, 0.13), (-1.55, 1.0, WATER_Z, 0.22),
-                (1.9, 1.5, RIM_Z, 0.16)]
+def foam_mound(b, x, y, z, r, flat=0.55):
+    """A low white mound of lather lying on the water at (x, y, z) (#111): a flattened ball, half sunk."""
+    seg, rings = DETAIL["mound"]
+    b.sphere((x, y, z + 0.1 * r), r, "foam", segments=seg, rings=rings, scale=(1.0, 1.0, flat))
+
+
+def foam_bubble(b, x, y, z, r, swatch="foam"):
+    """One white ball of lather resting on a surface at (x, y, z)."""
+    seg, rings = DETAIL["ball"]
+    b.sphere((x, y, z + 0.7 * r), r, swatch, segments=seg, rings=rings)
+
+
+GLINT = (-0.45, -0.6, 0.66)       # where the light catches a soap bubble: up, to the front and a little left
+
+
+def soap_bubble(b, x, y, z, r):
+    """A soap bubble centred at (x, y, z) (#111): a clear ball (swatch `bubble`, see-through in the game) and a small
+    white square glint on its skin, the same pixel glint as in the cats' eyes."""
+    seg, rings = DETAIL["ball"]
+    b.sphere((x, y, z), r, "bubble", segments=seg, rings=rings)
+    n = math.sqrt(sum(c * c for c in GLINT))
+    g = [c / n * r * 0.74 for c in GLINT]
+    b.box((x + g[0], y + g[1], z + g[2]), (0.4 * r, 0.4 * r, 0.4 * r), "foam", bevel=False)
+
+
+# The tub's lather: low mounds in three corners and along one side, white balls on them, and a splash where the
+# tap's water lands. The front corner on the tap's side stays open water. Mounds and balls: (x, y, radius).
+FOAM_MOUNDS = [(1.42, 1.02, 0.52), (1.6, 0.0, 0.42), (1.45, -1.05, 0.5), (0.8, -1.28, 0.3), (-1.62, -0.35, 0.36)]
+FOAM_BALLS = [(1.55, 1.2, 0.2), (1.2, 0.8, 0.16), (1.62, -0.85, 0.18), (1.15, -1.25, 0.15), (-1.7, -0.5, 0.13)]
+# Soap bubbles: on the lather, one spilled on the rim and three drifting up. (x, y, z, radius), z the centre.
+SOAP_BUBBLES = [(1.3, 0.95, WATER_Z + 0.52, 0.27), (1.72, 0.1, WATER_Z + 0.42, 0.19),
+                (1.35, -1.0, WATER_Z + 0.5, 0.23), (-1.6, -0.3, WATER_Z + 0.36, 0.17),
+                (2.0, -1.62, RIM_Z + 0.3, 0.19),
+                (2.05, -0.5, 2.75, 0.22), (-2.05, 0.4, 3.2, 0.17), (-1.75, -1.3, 2.45, 0.13)]
 
 
 def _foam():
     b = Builder()
-    for x, y, z, r, ring, turn in FOAM_PILES:
-        foam_pile(b, x, y, z, r, ring, turn)
-    for x, y, z, r in FOAM_BUBBLES:
-        foam_bubble(b, x, y, z, r)
+    for x, y, r in FOAM_MOUNDS:
+        foam_mound(b, x, y, WATER_Z, r)
+    for x, y, r in FOAM_BALLS:
+        foam_bubble(b, x, y, WATER_Z + 0.08, r)
+    for j in range(3):                                  # the splash round the tap's stream
+        t = 2 * math.pi * j / 3 + 0.4
+        foam_bubble(b, STREAM[0] + math.cos(t) * 0.17, STREAM[1] + math.sin(t) * 0.17, WATER_Z - 0.06, 0.11 - 0.01 * j)
+    return b
+
+
+def _bubbles(spots):
+    b = Builder()
+    for x, y, z, r in spots:
+        soap_bubble(b, x, y, z, r)
     return b
 
 
@@ -162,8 +224,10 @@ def build_tub(mat):
     _feet(b)
     _tap(b)
     objs = [_tris(b.finalize(name, mat)),
-            _water().finalize(name + "_Water", mat),
-            common.shade_smooth(_foam().finalize(name + "_Foam", mat))]
+            _water().finalize(name + "_Water", mat, bevel=0),
+            common.shade_smooth(_foam().finalize(name + "_Foam", mat)),
+            common.shade_smooth(_bubbles(SOAP_BUBBLES).finalize(name + "_Bubbles", mat, bevel=0)),
+            _stream().finalize(name + "_Stream", mat, bevel=0)]
     return objs
 
 
@@ -313,6 +377,7 @@ def dryer_rbx_extras():
 BATH_R = 1.95                     # the bubble bath's outer radius: 3.9 across, inside the 5 stud pad
 BATH_SEAT = 1.3                   # its inner floor, where the cat sits in the water
 BATH_RIM = 1.7
+BATH_WATER = 1.58                 # the water's surface, just under the rim (#111)
 
 
 def build_bubble_bath(mat):
@@ -343,22 +408,29 @@ def build_bubble_bath(mat):
     b.box((0, (py + SPOUT_Y) / 2, SPOUT_Z + 0.12), (0.18, py - SPOUT_Y + 0.12, 0.18), "metal", bevel=False)
     main = _tris(b.finalize(name, mat))
     w_ = Builder()
-    w_.cyl_base((0, 0, BATH_SEAT), BATH_R - 0.32, 0.12, "spa_sky", segments=14, bevel=False)
-    water = _tris(w_.finalize(name + "_Water", mat))
+    w_.cyl_base((0, 0, BATH_SEAT), BATH_R - 0.32, BATH_WATER - BATH_SEAT, "water", segments=14, bevel=False)
+    water_shine(w_, BATH_WATER, [(0.55, -1.25, 0.6, 0), (1.05, -1.05, 0.3, 0), (-0.2, -1.38, 0.3, 0)])
+    water = _tris(w_.finalize(name + "_Water", mat, bevel=0))
     f = Builder()
-    for i in range(5):                                                           # foam piled round the cat
-        t = 2 * math.pi * i / 5 + 0.95
-        r = BATH_R - 0.85
-        foam_pile(f, math.cos(t) * r, math.sin(t) * r, BATH_SEAT + 0.1, 0.36 + 0.04 * (i % 2), ring=3,
-                  turn=t + 0.4 * i)
-    for i, (x, y) in enumerate(((-1.45, 1.15), (1.3, 1.4), (-1.55, -0.95))):     # and bubbles spilling on the rim
-        foam_bubble(f, x, y, BATH_RIM - 0.02, 0.2 - 0.03 * i)
+    ring = BATH_R - 0.78
+    for i, (deg, r) in enumerate(((125, 0.46), (55, 0.4), (180, 0.36), (228, 0.44), (-12, 0.36))):   # lather round
+        t = math.radians(deg)                                                                       # the cat
+        foam_mound(f, math.cos(t) * ring, math.sin(t) * ring, BATH_WATER, r)
+        foam_bubble(f, math.cos(t + 0.22) * (ring + 0.08), math.sin(t + 0.22) * (ring + 0.08), BATH_WATER + 0.06,
+                    0.2 - 0.02 * (i % 3))
     foam = common.shade_smooth(f.finalize(name + "_Foam", mat))
+    spots = []
+    for deg, lift, r in ((120, 0.5, 0.26), (60, 0.44, 0.2), (225, 0.48, 0.24), (-10, 0.4, 0.18)):   # on the lather
+        t = math.radians(deg)
+        spots.append((math.cos(t) * (ring - 0.05), math.sin(t) * (ring - 0.05), BATH_WATER + lift, r))
+    spots += [(-1.55, -1.0, BATH_RIM + 0.26, 0.19), (1.35, 1.3, BATH_RIM + 0.22, 0.16),   # spilled on the rim
+              (-1.9, 0.35, 2.9, 0.23), (1.95, -0.3, 3.4, 0.18), (-1.6, -0.9, 3.75, 0.13), (1.6, 0.8, 2.6, 0.14)]
+    bubbles = common.shade_smooth(_bubbles(spots).finalize(name + "_Bubbles", mat, bevel=0))
     s_ = Builder()                                                                # the spout's mouth
     s_.cyl((0, 0, 0), 0.17, 0.2, "spa_mint", segments=8, bevel=False)
     spout = _tris(s_.finalize(name + "_Spout", mat, bevel=0, location=(0, SPOUT_Y, SPOUT_Z)))
     barrier = _barrier(name, mat, (2.4, 2.4, BATH_SEAT - 0.25), (0, 0, 0.04))
-    return [main, water, foam, spout, barrier]
+    return [main, water, foam, bubbles, spout, barrier]
 
 
 SPOUT_Y, SPOUT_Z = 1.2, 4.7       # the spout's mouth, over the back of the bath above a 1.5 scale cat's ears

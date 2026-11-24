@@ -361,7 +361,7 @@ def shot(objs, path, eye, target, lens=24, res=(960, 600), samples=24, hide=()):
         if ob.type == "MESH" and not ob.name.startswith("_"):
             ob.hide_render = ob not in objs or any(h in ob.name for h in hide)
     sc.render.filepath = path
-    bpy.ops.render.render(write_still=True)
+    common.render_still()
     del math
 
 
