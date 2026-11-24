@@ -89,7 +89,9 @@ TAGS = {"_ChanceBoard": ["ChanceBoard"]}
 # Tags on every part of an object, by object name suffix.
 PART_TAGS = {}
 # Root Model properties by asset name suffix: a board streams in whole, so its Screen is there whenever it is.
-MODEL_PROPS = {"_ChanceBoard": {"ModelStreamingMode": "Atomic"}}
+MODEL_PROPS = {"_ChanceBoard": {"ModelStreamingMode": "Atomic"},
+               # the opening scene turns the truck's door and wheels and the box's flaps about their pivots (#279)
+               "_DeliveryTruck": {"ModelStreamingMode": "Atomic"}, "_DeliveryBox": {"ModelStreamingMode": "Atomic"}}
 # #4788 (instance streaming): a child Model that Effects/Motion moves about its pivot (`_Swing`, `_Spin`, `_Bob`)
 # streams in whole. Motion turns the Model with PivotTo, which moves only the parts a device has at that moment, so a
 # part arriving later would sit where the server left it, apart from the rest of its cloth, sails or sign.
