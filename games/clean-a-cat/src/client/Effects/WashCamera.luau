@@ -13,6 +13,11 @@
 --   WashCamera.enter(shot, onDone?) -> Handle
 --       eases into `shot` (a camera CFrame, usually WashCamera.shot(SpaLayout.tubSpot())); onDone when it is there
 --   handle.exit(onDone?)   eases back to where the player's camera was and gives it back; onDone when it is back
+--   handle.moveTo(shot)    eases from where the camera is now to another shot (a later step's station), the same
+--                          ease as the way in; the exit still goes back to the player's own camera. Nothing while
+--                          leaving: the exit always wins
+--   WashCamera.retarget(move, from, shot, now) -> Move?   the move moveTo starts, or nil while leaving; pure, for
+--                          the specs
 --   handle.destroy()       gives the camera back at once
 --   Each onDone fires exactly once, deferred, also when exit is called twice or the handle is destroyed first.
 local RunService = game:GetService("RunService")
@@ -32,7 +37,19 @@ local BIND_NAME = "CleanACat_WashCamera"
 export type Handle = {
 	exit: (onDone: (() -> ())?) -> (),
 	destroy: () -> (),
+	moveTo: (shot: CFrame) -> (),
 }
+
+-- One ease: from, to, when it started, and whether it hands the camera back at its end.
+export type Move = { from: CFrame, to: CFrame, start: number, leaving: boolean }
+
+-- The move to `shot` from where the camera is (`from`) at `now`, or nil while `move` is leaving: the exit wins.
+function WashCamera.retarget(move: Move, from: CFrame, shot: CFrame, now: number): Move?
+	if move.leaving then
+		return nil
+	end
+	return { from = from, to = shot, start = now, leaving = false }
+end
 
 -- Ease in and out (a sine curve), so the move starts and ends softly. 0 to 1.
 function WashCamera.ease(u: number): number
@@ -79,6 +96,7 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 				end
 			end,
 			destroy = function() end,
+			moveTo = function(_shot: CFrame) end,
 		}
 	end
 	local cam = camera :: Camera
@@ -89,7 +107,7 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 	cam.CameraType = Enum.CameraType.Scriptable
 
 	-- the current move: from, to, when it started, and what to do at its end
-	local move = { from = home, to = shot, start = os.clock(), leaving = false }
+	local move: Move = { from = home, to = shot, start = os.clock(), leaving = false }
 	local bound = true
 
 	local function unbind()
@@ -137,6 +155,15 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 			done = true
 			giveBack()
 			answer()
+		end,
+		moveTo = function(newShot: CFrame)
+			if done then
+				return
+			end
+			local onward = WashCamera.retarget(move, cam.CFrame, newShot, os.clock())
+			if onward then
+				move = onward
+			end
 		end,
 	}
 end
