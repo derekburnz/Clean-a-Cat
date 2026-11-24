@@ -8,6 +8,8 @@ local Icons = {}
 -- name -> "rbxassetid://<id>" once uploaded under the group (rule 18); "" draws the stand-in.
 Icons.IMAGES = {
 	Coins = "",
+	Index = "",
+	Settings = "",
 	Sponge = "",
 	Brush = "",
 	Bow = "",
@@ -40,6 +42,8 @@ local STAND_INS: { [string]: StandIn } = {
 	Paw = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Heart = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Station = { glyph = "🛁", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Index = { glyph = "📖", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Settings = { glyph = "⚙️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Gear = { glyph = "⚙️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Music = { glyph = "🎵", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Speaker = { glyph = "🔊", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },

@@ -18,7 +18,8 @@ SettingsRules.DEFAULTS = table.freeze({
 	lessSparkle = false,
 }) :: Settings
 
--- One press of a slider with a gamepad moves it this far, and wraps from full back to 0.
+-- One press of a slider with a gamepad moves it this far. It goes down from full to 0 and then back up a step at a
+-- time, so a controller player never drops from full to silence in one press (Review-QA on #231).
 SettingsRules.GAMEPAD_STEP = 0.25
 
 function SettingsRules.defaults(): Settings
@@ -48,14 +49,21 @@ function SettingsRules.thumbCentre(level: number, width: number, thumb: number):
 	return thumb / 2 + math.max(width - thumb, 0) * math.clamp(level, 0, 1)
 end
 
--- The next level for a gamepad press: up one step, back to 0 after full.
-function SettingsRules.step(level: number): number
-	if level >= 1 - 1e-6 then
-		return 0
+-- The next level and direction for a gamepad press: one step in `direction` (1 up, -1 down), turning round at
+-- either end, so the level walks 1, 0.75, 0.5, 0.25, 0, 0.25 and so on.
+function SettingsRules.step(level: number, direction: number): (number, number)
+	local stepSize = SettingsRules.GAMEPAD_STEP
+	local dir = if direction < 0 then -1 else 1
+	if dir > 0 and level >= 1 - 1e-6 then
+		dir = -1
+	elseif dir < 0 and level <= 1e-6 then
+		dir = 1
 	end
-	local next = math.floor(level / SettingsRules.GAMEPAD_STEP + 1e-6) * SettingsRules.GAMEPAD_STEP
-		+ SettingsRules.GAMEPAD_STEP
-	return math.clamp(next, 0, 1)
+	local steps = level / stepSize
+	local next = if dir > 0
+		then (math.floor(steps + 1e-6) + 1) * stepSize
+		else (math.ceil(steps - 1e-6) - 1) * stepSize
+	return math.clamp(next, 0, 1), dir
 end
 
 return SettingsRules

@@ -29,6 +29,7 @@ local HUD = require(script:WaitForChild("HUD"))
 local Motion = require(script:WaitForChild("Motion"))
 local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
+local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
 
 local UI = {}
 
@@ -152,12 +153,18 @@ function UI.init()
 			0
 		)
 		menu.TextSize = if tv then MENU_TEXT_TV else MENU_TEXT
+		-- the HUD's button row (#232) replaces the starter Menu while any of its buttons shows
+		menu.Visible = not SideButtons.any()
 	end
 	fitScreen()
 	Comfort.onTenFootChanged(fitScreen)
 	HUD.onActiveChanged(fitScreen)
+	SideButtons.onChanged(fitScreen)
 
 	HUD.build(root) -- coin counter, wash step bar and tool tray (switch gameHud, off by default)
+	SideButtons.build(root, function(name: string)
+		UI.open(name)
+	end)
 
 	local toast = Instance.new("TextLabel")
 	toast.Name = "Toast"

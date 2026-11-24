@@ -5,7 +5,8 @@
 --   Settings.build(root, onChange)   makes the window once and returns its layer (UI registers it as "Settings")
 --   Settings.show(settings)          draws these values (a SettingsRules.Settings)
 --
--- Rows: the Music and Sounds sliders (the whole slider is the touch area; a gamepad press steps it a quarter), then
+-- Rows: the Music and Sounds sliders (the whole slider is the touch area; a gamepad press steps it a quarter down
+-- to 0 and back up), then
 -- Less screen shake and Less sparkle as switches that say On or Off in words, then "Odds on boards", an info line
 -- with no switch because the game never hides odds. A wide screen has one column; a phone held sideways has two, so
 -- nothing scrolls. Nothing here is destructive. UI never fires remotes: onChange(settings) runs on every change and
@@ -184,9 +185,10 @@ end
 local redraw: () -> ()
 
 -- The whole slider takes the press: a touch or click jumps the bubble there and dragging moves it; a gamepad
--- press steps it up a quarter, wrapping back to 0.
+-- press steps it a quarter, down to 0 and back up (SettingsRules.step).
 local function wireSlider(row: Row, slider: TextButton, thumb: Frame)
 	local dragging: InputObject? = nil
+	local direction = -1 -- a gamepad press first turns a full slider down
 	local function moveTo(x: number)
 		local value = SettingsRules.fromPointer(
 			x,
@@ -224,7 +226,9 @@ local function wireSlider(row: Row, slider: TextButton, thumb: Frame)
 	end)
 	slider.Activated:Connect(function()
 		if usingGamepad() then
-			setValue(row.spec.key, SettingsRules.step(level(row.spec.key)))
+			local nextLevel, nextDirection = SettingsRules.step(level(row.spec.key), direction)
+			direction = nextDirection
+			setValue(row.spec.key, nextLevel)
 			redraw()
 		end
 	end)

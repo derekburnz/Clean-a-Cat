@@ -79,6 +79,13 @@ local SCENES = {
 		UI.showSettings({ music = 0.2, sounds = 0.85, lessShake = true, lessSparkle = false })
 		UI.open("Settings")
 	end },
+	-- The HUD's button row (#232) with the Settings button, in place of the starter Menu.
+	{ "HudButtons", function()
+		hud(true)
+		flag("settingsCard", true)
+		UI.setCoins(999999)
+		UI.setWashStage("dirty")
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
