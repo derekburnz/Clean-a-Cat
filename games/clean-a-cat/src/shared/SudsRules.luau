@@ -17,6 +17,9 @@ SudsRules.NAME = "Suds" -- Model-Agent's ReplicatedStorage.Assets.CleanACat_Cat_
 SudsRules.STAND_IN = "Inky" -- the black roster cat, drawn while the Suds models are missing
 SudsRules.FLAG = "sudsWash"
 SudsRules.BOX_FLAG = "openingBox" -- the truck, the box and the tap that finds him (Effects/OpeningScene, OpeningController)
+-- For timing the opening on a real phone (Derek 2026-11-24): with this switch on, the game's owner (the group's owner,
+-- or anyone in Studio) gets the opening again on every join, as if new; nobody else's save is touched.
+SudsRules.REPLAY_FLAG = "openingReplay"
 SudsRules.NEEDS = table.freeze({ "mud", "tangles" }) :: { string }
 SudsRules.STARS = 3 -- his score; never added to the save
 SudsRules.NO_BOWS = "noBows" -- in the wash plan (ScrubController.plan): the step bar leaves the bows out for him
@@ -26,6 +29,7 @@ SudsRules.BOX_ATTRIBUTE = "SudsBox" -- Player attribute: true while the server h
 -- first, so the tub's kitten never shows while the box's is still peeking.
 SudsRules.HOP_SECONDS = 2
 SudsRules.OPENING_SPOT = "SpotOpening" -- plot spot where the player stands for the opening, facing the street
+SudsRules.JOINED_ATTRIBUTE = "JoinedAt" -- Player attribute: the server's clock when it saw the join, for the start time
 SudsRules.BOX_SPOT = "SpotBox" -- plot spot where the box lands, in front of SpotOpening
 SudsRules.MASCOT_FLAG = "sudsMascot" -- Suds on his bed in the plot once named (MascotService, MascotController)
 SudsRules.MASCOT_SPOT = "SpotMascot" -- plot spot of his bed, by the door
