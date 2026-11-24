@@ -19,6 +19,8 @@ Remotes.ClientToServer = {
 	"ReportBrushStroke", -- (catId: int, seq: int)  8 a second; counts toward SpaRules.BRUSH_STROKES
 	"RequestPickBow", -- (catId: int, seq: int, bowId: one of SpaRules.BOWS)  2 a second; fluffed -> styled
 	"RequestPhoto", -- (catId: int, seq: int)  2 a second; styled -> done and pays once, no sooner than MIN_VISIT_SECONDS
+	"RequestPickCustomer", -- (index: int 2..SpaRules.QUEUE_SIZE)  1 a second; switches scrubPrototype, customers and
+	-- queuePick on; moves that customer to the front of the door line and nothing else (SpaRules.pickNext)
 	-- Tools board (ToolService, behind toolsBoard).
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
 	-- Builds (BuildService, behind builds).

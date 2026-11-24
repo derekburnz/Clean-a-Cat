@@ -118,4 +118,25 @@ return function()
 			expect(SpaRules.tanglesGone(2, 0)).to.equal(0)
 		end)
 	end)
+	describe("SpaRules.pickNext", function()
+		it("moves the picked customer to the front and keeps the rest in order", function()
+			local queue = { "Smudge", "Marble", "Ginger" }
+			expect(SpaRules.pickNext(queue, 3)).to.equal(true)
+			expect(table.concat(queue, ",")).to.equal("Ginger,Smudge,Marble")
+			expect(SpaRules.pickNext(queue, 2)).to.equal(true)
+			expect(table.concat(queue, ",")).to.equal("Smudge,Ginger,Marble")
+		end)
+
+		it(
+			"refuses the front, a missing place or a fraction, and never adds or drops a customer",
+			function()
+				local queue = { "Smudge", "Marble", "Ginger" }
+				expect(SpaRules.pickNext(queue, 1)).to.equal(false)
+				expect(SpaRules.pickNext(queue, 4)).to.equal(false)
+				expect(SpaRules.pickNext(queue, 0)).to.equal(false)
+				expect(SpaRules.pickNext(queue, 2.5)).to.equal(false)
+				expect(table.concat(queue, ",")).to.equal("Smudge,Marble,Ginger")
+			end
+		)
+	end)
 end
