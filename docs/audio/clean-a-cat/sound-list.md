@@ -28,6 +28,8 @@ Moments are the shared list in issue #3. Source: **synth** means made by `assets
 | truckDoor | opening scene, back wheels hit | Sfx (3D at the truck) | a latch clack and a light flap of the rear door | synth | CleanACat_Sfx_TruckDoor | 0.4 | - | 0.5 | 1 | no | uploaded to the group 2026-11-24 |
 | boxThud | opening scene, the box lands (and pitched up for its small bounce) | Sfx (3D at the box) | hollow papery cardboard thud on pavement | synth | CleanACat_Sfx_BoxThud | 0.5 | 1.0, 1.25 on the bounce | 0.1 | 2 | no | uploaded to the group 2026-11-24 |
 | boxRustle | opening scene, each wiggle of the box until it is tapped | Sfx (3D at the box) | two quick papery scrapes and a small bump from inside; the meow plays every other wiggle | synth | CleanACat_Sfx_BoxRustle | 0.4 | 0.95 to 1.05 | 0.5 | 1 | no | uploaded to the group 2026-11-24 |
+| collarJingle | SudsNamed (switch sudsWash) | Sfx (3D at the collar) | a small gold bell shaken three times, bright and warm | synth | CleanACat_Sfx_CollarJingle | 0.5 | - | 1.0 | 1 | no | made, gate PASS |
+| purr (reused) | SudsTapped (switch sudsMascot) | Sfx | the same purr as CatFluffed; minGap 1 s keeps fast taps from stacking | library | CleanACat_Sfx_Purr_1..2 | 0.5 | 0.95 to 1.05 | 1.0 | 1 | no | bound, waits on SudsTapped |
 | spaMusicA / spaMusicB | spa floor | Music | see brief | synth | CleanACat_Music_SpaA (Warm Bubbles, 92 BPM marimba) and CleanACat_Music_SpaB (Fluff and Fold, 80 BPM piano and flute), new songs from assets/clean-a-cat/audio/synth/music.py | 0.5 | 1.0 | - | 1 | no | made; SpaA gate WARN on the seam (downbeat level, same as every phrase start), listen |
 
 Later, not in the first slice: coin and tip jar, build finished celebration, builder kitten hammer, door bell, window tips.

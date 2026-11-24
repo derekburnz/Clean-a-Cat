@@ -346,6 +346,20 @@ def box_rustle(rng: np.random.Generator) -> np.ndarray:
     return out
 
 
+def collar_jingle(rng: np.random.Generator) -> np.ndarray:
+    """Suds gets his collar: a small gold bell shaken three times, a bright jingle with a warm ring under it.
+    A tiny bell's partials are inharmonic, so each strike rings at 1, 2.4 and 3.9 times its base, decaying fast."""
+    out = np.zeros(int(RATE * 0.9))
+    for at, gain, base in ((0.0, 1.0, 2350.0), (0.09, 0.8, 2420.0), (0.17, 0.65, 2300.0), (0.3, 0.45, 2380.0)):
+        d = 0.55
+        x = t(d)
+        strike = sum(a * np.sin(2 * np.pi * base * m * x) * np.exp(-x * k) for m, a, k in ((1, 1.0, 7), (2.4, 0.45, 14), (3.9, 0.2, 22)))
+        click = bandpass(rng.standard_normal(len(x)), 3000, 8000) * env(len(x), 0.0005, 300) * 0.3
+        start = int(RATE * at)
+        out[start : start + len(x)] += (strike + click) * gain
+    return out
+
+
 def ui_click(rng: np.random.Generator) -> np.ndarray:
     x = t(0.05)
     return np.sin(2 * np.pi * 1800 * x) * env(len(x), 0.0008, 120)
@@ -376,6 +390,7 @@ SOUNDS = [
     ("sfx", "CleanACat_Sfx_TruckDoor", truck_door),
     ("sfx", "CleanACat_Sfx_BoxThud", box_thud),
     ("sfx", "CleanACat_Sfx_BoxRustle", box_rustle),
+    ("sfx", "CleanACat_Sfx_CollarJingle", collar_jingle),
     ("ui", "CleanACat_Ui_Camera", camera_shutter),
     ("ui", "CleanACat_Ui_Click", ui_click),
 ]

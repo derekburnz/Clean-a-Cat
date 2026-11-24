@@ -9,6 +9,26 @@ local CueRules = require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild
 
 local AudioController = {}
 
+-- The collar piece on a named Suds: any Model or part whose name ends in "_Collar" (the naming clones the clean
+-- model's collar as it is, e.g. CleanACat_Cat_Suds_Sit_Collar). A BasePart to play at, or nil (plays 2D).
+local function collarPart(cat: any): Instance?
+	if typeof(cat) ~= "Instance" then
+		return nil
+	end
+	for _, d in (cat :: Instance):GetDescendants() do
+		if string.sub(d.Name, -7) == "_Collar" then
+			if d:IsA("BasePart") then
+				return d
+			end
+			local part = d:FindFirstChildWhichIsA("BasePart", true)
+			if part then
+				return part
+			end
+		end
+	end
+	return nil
+end
+
 local scrub: Audio.LoopHandle? = nil
 local dryer: Audio.LoopHandle? = nil
 
@@ -51,6 +71,14 @@ local HANDLERS: { [string]: (...any) -> () } = {
 	end,
 	PhotoTaken = function()
 		Audio.play("camera")
+	end,
+	-- The opening's kitten is named and his collar pops on: the bell jingles at the collar.
+	SudsNamed = function(cat: any)
+		Audio.play("collarJingle", { at = collarPart(cat) })
+	end,
+	-- A player taps Suds on his bed (sudsMascot): a purr; the cue's minGap keeps fast taps from stacking.
+	SudsTapped = function(suds: any)
+		Audio.play("purr", { at = if typeof(suds) == "Instance" then suds else nil })
 	end,
 	-- DryStart and DryStop arrive with the dry step (Gameplay-Engineer's stations PR); bind skips them until then.
 	DryStart = function(_cat: any, station: any)
