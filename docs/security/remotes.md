@@ -25,7 +25,7 @@ The server keeps one cat per player in its own table, with a stage: dirty, clean
 | `RequestPickBow(catId, seq, bowId)` | 2/s | Pick a bow that doesn't exist, or skip the brush | `bowId` passes `Guard.oneOf(SpaRules.BOWS)`. The cat must be fluffed. |
 | `RequestPhoto(catId, seq)` | 2/s | Get paid twice, get paid early, or get paid for a cat that isn't theirs | The cat must be styled, and only one photo can be waiting (`photoTaken`). The pay comes no sooner than `MIN_VISIT_SECONDS` (15 s) after the cat arrived, and only once (the stage becomes done). Nothing is paid without a loaded save. Coins, tips and stars come from `CatRules` and `BuildRules` on the server. The client never sends an amount. |
 
-**Pay cap:** a script earns no more than one cat's pay per `MIN_VISIT_SECONDS`, and it cannot pick which cats it serves, because skipping costs a full visit's time (#164).
+**Pay cap:** a script earns no more than one cat's pay per `MIN_VISIT_SECONDS`, and skipping a cat costs a full visit's time and pays nothing, so serving only rare cats earns less than serving every cat (#164).
 
 **Accepted for now:** the spa remotes have no distance check to the tub, so a script can play the loop without walking there. It still earns no more than an honest fast player. Revisit before a stage pays much more than a common cat, with a reach check from `SpaLayout.spot("Tub", player)` or a longer visit for higher pay.
 
