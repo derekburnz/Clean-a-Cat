@@ -29,6 +29,8 @@ local DIM = Color3.fromRGB(36, 16, 56)
 local DIM_SHOW = 0.38 -- the draft's 62% dim
 local RING_PAD = Vector2.new(16, 16) -- real px of room around the button
 local RING_PAD_BOTTOM = 38 -- more under it: the button's caption sits below its face
+local RING_STROKE = 4 -- real px
+local RING_CORNER = 14 -- real px: a small round, so little of the square hole shows past the ring's corners
 local GAP = 26 -- design px between the ring and the arrow
 local NUDGE = 10 -- design px the arrow nudges toward the button
 local SIZES = { full = { arrow = 66, say = 40 }, short = { arrow = 60, say = 36 } }
@@ -81,21 +83,26 @@ local function place()
 	local size = p.layer.AbsoluteSize
 	local at = lit.AbsolutePosition - origin - RING_PAD
 	local hole = lit.AbsoluteSize + RING_PAD * 2 + Vector2.new(0, RING_PAD_BOTTOM - RING_PAD.Y)
-	local left, top = math.max(at.X, 0), math.max(at.Y, 0)
-	local right, bottom = math.min(at.X + hole.X, size.X), math.min(at.Y + hole.Y, size.Y)
+	-- whole pixels, rounded outward, so no lighter seam runs between the panels (Review-QA on #256)
+	local width, height = math.ceil(size.X), math.ceil(size.Y)
+	local left, top = math.max(math.floor(at.X), 0), math.max(math.floor(at.Y), 0)
+	local right, bottom =
+		math.min(math.ceil(at.X + hole.X), width), math.min(math.ceil(at.Y + hole.Y), height)
 	-- four panels around the hole: above, below, left and right of it; the root's edges are padded past the screen
 	local over = 200
 	local above, below, beside, after = p.dims[1], p.dims[2], p.dims[3], p.dims[4]
 	above.Position = UDim2.fromOffset(-over, -over)
-	above.Size = UDim2.fromOffset(size.X + 2 * over, top + over)
+	above.Size = UDim2.fromOffset(width + 2 * over, top + over)
 	below.Position = UDim2.fromOffset(-over, bottom)
-	below.Size = UDim2.fromOffset(size.X + 2 * over, size.Y - bottom + over)
+	below.Size = UDim2.fromOffset(width + 2 * over, height - bottom + over)
 	beside.Position = UDim2.fromOffset(-over, top)
 	beside.Size = UDim2.fromOffset(left + over, bottom - top)
 	after.Position = UDim2.fromOffset(right, top)
-	after.Size = UDim2.fromOffset(size.X - right + over, bottom - top)
-	p.ring.Position = UDim2.fromOffset(at.X, at.Y)
-	p.ring.Size = UDim2.fromOffset(hole.X, hole.Y)
+	after.Size = UDim2.fromOffset(width - right + over, bottom - top)
+	-- the ring stays on screen, just inside the hole's edges
+	local edge = RING_STROKE / 2
+	p.ring.Position = UDim2.fromOffset(left + edge, top + edge)
+	p.ring.Size = UDim2.fromOffset(right - left - 2 * edge, bottom - top - 2 * edge)
 
 	local scale, short = Kit.screenScale()
 	local s = if short then SIZES.short else SIZES.full
@@ -191,15 +198,15 @@ function Spotlight.build(root: Instance)
 	-- a white ring with a warm glow around the lit button
 	local ring = frame("Ring", layer)
 	ring.ZIndex = 9
-	Kit.corner(ring, UDim.new(0, 32))
-	local edge = Kit.stroke(ring, 4)
+	Kit.corner(ring, UDim.new(0, RING_CORNER))
+	local edge = Kit.stroke(ring, RING_STROKE)
 	edge.Color = Kit.WHITE
 	local glow = frame("Glow", ring)
 	glow.AnchorPoint = Vector2.new(0.5, 0.5)
 	glow.Position = UDim2.fromScale(0.5, 0.5)
 	glow.Size = UDim2.new(1, 12, 1, 12)
 	glow.ZIndex = 9
-	Kit.corner(glow, UDim.new(0, 38))
+	Kit.corner(glow, UDim.new(0, RING_CORNER + 6))
 	local warm = Kit.stroke(glow, 6)
 	warm.Color = Color3.fromHex("FFF0AA")
 	warm.Transparency = 0.35
