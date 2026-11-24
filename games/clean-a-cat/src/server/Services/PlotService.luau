@@ -33,7 +33,7 @@ local ASSET_WAIT_SECONDS = 10
 -- and most of the tub; facing the street (not the tub) keeps the avatar off the line from the camera to the cat.
 local VIEW_FLAG = SpaLayout.VIEW_FLAG
 local SPAWN_FROM_TUB = 5
-local SPAWN_SIDE = 4
+local SPAWN_SIDE = 5 -- 4 left the avatar over exactly a quarter of the tub on an iPhone 14 (#169)
 
 local PlotService = {}
 
