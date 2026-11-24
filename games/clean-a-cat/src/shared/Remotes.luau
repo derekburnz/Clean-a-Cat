@@ -36,14 +36,15 @@ Remotes.ServerToClient = {
 	"Notice", -- (kind: "info" | "warning", text: string)  a short line the client shows as a toast
 	"CatReady", -- (catId: number, kind: string?, needs: { CatRules.Need }?, locked: { CatRules.Need }?, stray: boolean?, brushStrokes: number)
 	-- a dirty cat is in the tub; kind and needs come with a customer's cat or a stray, locked lists needs whose station
-	-- is not built, stray is true for a stray (switch strays) that moves into the window once clean
+	-- is not built, stray is true for a stray (switch strays) that moves into the window once clean; kind is SudsRules.NAME
+	-- for the opening's kitten (switch sudsWash), who skips the bows
 	"CustomerQueue", -- (kinds: { string }, needs: { { string } })  the cats waiting at the door, front first, and what each needs (switch customers)
 	"Residents", -- (list: { { cat: string, bow: string? } })  the display window's cats, in order (switch strays)
 	"WindowTips", -- (coins: number, total: number)  window cats tipped; total is the save's coins (switch strays)
 	"CatIndex", -- (index: { [cat]: { washed: boolean, resident: boolean } })  the stamped cats (switch catIndex)
 	"Builds", -- (builds: { [slot]: { item, endsAt } }, built: { string }, serverNow: number)  for the board and countdowns
 	"BuildFinished", -- (id: string)  a build just finished, or finished while the player was away: celebrate (switch builds)
-	"PhotoPaid", -- (catId: number, coins: number, total: number, recap: RecapRules.Recap?)  the photo paid; total is the save's coins; recap for a customer while recapCard is on
+	"PhotoPaid", -- (catId: number, coins: number, total: number, recap: RecapRules.Recap?)  the photo paid; total is the save's coins; recap for a customer, or the kitten's score card (mascot), while recapCard is on
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view
 	-- after every spa report, so a client whose step was refused falls back to it instead of getting stuck
 }

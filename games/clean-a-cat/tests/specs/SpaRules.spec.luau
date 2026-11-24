@@ -67,6 +67,25 @@ return function()
 			expect(SpaRules.askPhoto(cat, 1000)).to.equal(nil)
 		end)
 
+		it(
+			"skips the bows for the opening's kitten: his last stroke makes him ready for the photo",
+			function()
+				local cat = SpaRules.newCat(3, 100)
+				cat.mascot = true
+				SpaRules.scrubbed(cat)
+				for i = 1, SpaRules.BRUSH_STROKES do
+					SpaRules.brushStroke(cat, 100 + i)
+				end
+				expect(cat.stage).to.equal("styled")
+				expect(SpaRules.pickBow(cat, "BowMint")).to.equal(false)
+				expect(SpaRules.askPhoto(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(0)
+				expect(SpaRules.photo(cat, 100 + SpaRules.MIN_VISIT_SECONDS)).to.equal(
+					SpaRules.PHOTO_COINS
+				)
+				expect(cat.stage).to.equal("done")
+			end
+		)
+
 		it("refuses steps out of order", function()
 			local cat = SpaRules.newCat(1, 0)
 			local counted = SpaRules.brushStroke(cat, 10)

@@ -10,6 +10,8 @@
 -- and stars instead of PHOTO_COINS. The first customer of a save (no stars yet) always brings a common cat.
 -- With `queuePick` on as well, the player may pick which waiting customer is next (RequestPickCustomer, #201): it
 -- only reorders the line, so it can never reroll or skip paying for a cat.
+-- With `sudsWash` on, a brand new save's first cat is the opening's kitten (SudsRules, #285): ahead of strays and
+-- customers, no bows, a 3 star score that is never added to the save, and nothing paid. His photo names him Suds.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -20,6 +22,7 @@ local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
+local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
@@ -51,6 +54,9 @@ local queues: { [Player]: { string } } = {} -- customers waiting at the door, fr
 -- line, so the card shows a smell or long claws before the pick, and moved with the customer on a pick.
 local queueNeeds: { [Player]: { { CatRules.Need } } } = {}
 local handedOut: { [Player]: number } = {} -- cats handed out this session, for the stray turns
+-- Asked for a cat before the save loaded while sudsWash is on: answered once it loads, so a slow load can never hand
+-- a brand new player a customer's cat in place of the kitten.
+local waiting: { [Player]: boolean } = {}
 local random = Random.new()
 
 local function rollCustomer(player: Player): string
@@ -104,10 +110,30 @@ local function queueFor(player: Player): { string }
 	return q
 end
 
+-- Whether this player's next cat is the opening's kitten (switch sudsWash).
+local function sudsNext(player: Player): boolean
+	local save = DataService.get(player)
+	return save ~= nil
+		and SudsRules.isNext(
+			save.suds,
+			save.stars,
+			#WindowService.residents(player),
+			LiveFlags.isOn
+		)
+end
+
 local function newCat(player: Player): SpaRules.Cat
 	local id = (nextId[player] or 0) + 1
 	nextId[player] = id
 	local cat = SpaRules.newCat(id, os.clock())
+	if sudsNext(player) then
+		-- The kitten comes first and is nobody's: he takes no customer from the line and no stray turn.
+		cat.kind = SudsRules.NAME
+		cat.mascot = true
+		cat.needs = table.clone(SudsRules.NEEDS)
+		cats[player] = cat
+		return cat
+	end
 	local count = handedOut[player] or 0
 	handedOut[player] = count + 1
 	local save = DataService.get(player)
@@ -174,6 +200,10 @@ end
 
 local function onRequestCat(player: Player)
 	if not LiveFlags.isOn(FLAG) then
+		return
+	end
+	if LiveFlags.isOn(SudsRules.FLAG) and DataService.get(player) == nil then
+		waiting[player] = true
 		return
 	end
 	local cat = cats[player]
@@ -264,6 +294,19 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		return
 	end
 	Telemetry.onboarding(player, "first_photo")
+	if cat.mascot then
+		-- The kitten's naming: he is Suds from now on. Nothing is paid, stamped or added to the spa's stars.
+		save.suds = SudsRules.DONE
+		player:SetAttribute(SudsRules.ATTRIBUTE, save.suds)
+		if LiveFlags.isOn(RECAP_FLAG) then
+			local recap = RecapRules.mascot(SudsRules.NAME, SudsRules.STARS)
+			NetService.fire(player, "PhotoPaid", cat.id, 0, save.coins, recap)
+		else
+			NetService.fire(player, "PhotoPaid", cat.id, 0, save.coins)
+			NetService.notice(player, `You washed {SudsRules.NAME}!`)
+		end
+		return
+	end
 	local kind = cat.kind
 	local isNew = false
 	if kind ~= nil then
@@ -364,6 +407,12 @@ function SpaService.Start()
 		end
 		-- The board shows the chances of the player's star tier, the same table their rolls use.
 		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+		-- How far the opening's kitten got, for the client's opening and Suds (#285).
+		player:SetAttribute(SudsRules.ATTRIBUTE, SudsRules.cleanStage(save.suds))
+		if waiting[player] then
+			waiting[player] = nil
+			onRequestCat(player)
+		end
 	end)
 	NetService.on("ReportScrubbed", { perSecond = 2 }, onScrubbed)
 	NetService.on("ReportBrushStroke", { perSecond = 8 }, onBrushStroke)
@@ -406,6 +455,7 @@ function SpaService.Start()
 		queues[player] = nil
 		queueNeeds[player] = nil
 		handedOut[player] = nil
+		waiting[player] = nil
 	end)
 end
 

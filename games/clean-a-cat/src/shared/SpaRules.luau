@@ -32,6 +32,7 @@ export type Cat = {
 	stray: boolean, -- a stray: nobody pays for it and it moves into the display window once clean
 	brushStrokes: number, -- strokes this cat's brushing takes: BRUSH_STROKES, fewer with the Pro Brush (#267)
 	needs: { string }?, -- a customer's cat or stray: what it needs, rolled once (CatRules.rollNeeds, #267)
+	mascot: boolean?, -- the opening's kitten (SudsRules, #285): no bows, and nobody pays for him
 }
 
 function SpaRules.newCat(id: number, now: number): Cat
@@ -85,7 +86,8 @@ function SpaRules.brushStroke(cat: Cat, now: number): (boolean, boolean)
 	cat.strokes += 1
 	cat.lastStrokeAt = now
 	if cat.strokes >= cat.brushStrokes then
-		cat.stage = "fluffed"
+		-- The kitten skips the bows: his collar at the naming is his style moment, so he is ready for the photo.
+		cat.stage = if cat.mascot then "styled" else "fluffed"
 		return true, true
 	end
 	return true, false

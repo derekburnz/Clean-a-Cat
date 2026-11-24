@@ -81,6 +81,23 @@ local SCENES = {
 	{ "RecapStrip", function()
 		recap(false)
 	end },
+	-- The opening's kitten's card at his naming (#285, switch sudsWash): his name and three stars, nothing paid.
+	{ "RecapSuds", function()
+		flag("recapCard", true)
+		hud(true)
+		UI.setCoins(0)
+		UI.showRecap({
+			cat = "Suds",
+			rarity = "Common",
+			coins = 0,
+			tip = 0,
+			bonus = 0,
+			stars = 3,
+			isNew = false,
+			full = true,
+			mascot = true,
+		})
+	end },
 	-- The Settings card (#230, switch settingsCard): as it opens, then with a slider low and a switch on.
 	{ "Settings", function()
 		flag("settingsCard", true)
@@ -181,6 +198,13 @@ local SCENES = {
 		UI.setCoins(999999)
 		UI.setWashPlan({ "bath", "claws" })
 		UI.setWashStage("bath")
+	end },
+	-- The kitten's wash (#285): no bows, so three steps, on the brush.
+	{ "HudSuds", function()
+		hud(true)
+		UI.setCoins(0)
+		UI.setWashPlan({ "noBows" })
+		UI.setWashStage("clean")
 	end },
 	{ "HudWalking", function()
 		hud(true)

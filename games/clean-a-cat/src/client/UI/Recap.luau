@@ -240,8 +240,15 @@ local function chip(name: string, parent: Instance, fill: Color3, order: number)
 	return c, text
 end
 
--- Fills `holder` with `count` stars of `size` design px, then "+N stars".
-local function drawStars(holder: Frame, count: number, size: number, textSize: number)
+-- Fills `holder` with `count` stars of `size` design px, then "+N stars"; a `score` (the opening's kitten, #285)
+-- adds nothing to the spa, so it says "N stars".
+local function drawStars(
+	holder: Frame,
+	count: number,
+	size: number,
+	textSize: number,
+	score: boolean?
+)
 	for _, child in holder:GetChildren() do
 		if child:IsA("GuiObject") then
 			child:Destroy()
@@ -256,7 +263,7 @@ local function drawStars(holder: Frame, count: number, size: number, textSize: n
 	local caption = words("Earned", holder, Kit.FONT, Kit.GOLD_INK)
 	caption.LayoutOrder = MAX_STARS_SHOWN + 1
 	caption.TextSize = textSize
-	caption.Text = `+{count} {if count == 1 then "star" else "stars"}`
+	caption.Text = `{if score then "" else "+"}{count} {if count == 1 then "star" else "stars"}`
 end
 
 local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes)
@@ -352,17 +359,20 @@ local function redraw()
 	p.rarityText.TextSize = s.chipText
 	p.rarityText.Text = recap.rarity
 	p.newChip.Visible = recap.isNew
+	-- The opening's kitten (#285) has no rarity and pays nothing: his card is his name and his stars.
+	p.chipRow.Visible = not recap.mascot
 	p.newChip.Size = UDim2.fromOffset(0, s.chip)
 	p.newText.TextSize = s.chipText
 	p.right.Size = UDim2.fromOffset(s.width - 2 * s.pad - s.who - BODY_GAP, 0)
 	p.stars.Size = UDim2.new(1, 0, 0, s.star)
-	drawStars(p.stars, recap.stars, s.star, s.starText)
+	drawStars(p.stars, recap.stars, s.star, s.starText, recap.mascot)
 	drawRows(p.rows, recap, s)
 	p.foot.Size = UDim2.new(1, 0, 0, s.button + 6) -- room for the button's outline
 	p.total.Size = UDim2.fromOffset(0, s.button)
 	p.totalIcon.Size = UDim2.fromOffset(s.totalIcon, s.totalIcon)
 	p.totalText.TextSize = s.total
 	p.totalText.Text = total
+	p.total.Visible = not recap.mascot
 	p.next.Size = UDim2.fromOffset(0, s.button)
 	p.next.TextSize = s.buttonText
 end
