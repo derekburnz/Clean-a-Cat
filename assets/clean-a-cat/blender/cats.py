@@ -67,6 +67,21 @@ ROSTER = {
                        muzzle="coat_star_light", sparkle=True, tip="coat_star_light", nose="nose_bubblegum", eye_k=1.1),
 }
 
+# Cats outside the Cat Index: the same generator, size and build as the roster, but never a customer's cat and never
+# in the coat table. Suds is the spa's mascot (owner 2026-11-24): a muddy stray found in a box in the opening, washed
+# in the tutorial, named after the wash. The owner: "dont include him on indez". His coat is the ink kitten's
+# (CleanACat_NPC_Helper2): ink fur, a white muzzle and paws, sky eyes, a pink nose.
+EXTRA_CATS = {
+    "Suds": dict(rarity="Common", fur="fur_ink", second="fur_ink", eyes="eye_sky", pattern="solid", muzzle="fur_white",
+                 socks="fur_white", eye_k=1.08, mascot=True, collar=("spa_mint", "fur_golden")),
+}
+
+
+def spec_of(name):
+    """A cat's spec by name: a roster cat, or one of the extra cats."""
+    return ROSTER.get(name) or EXTRA_CATS[name]
+
+
 COAT_FIELDS = ("fur", "second", "third", "ruff", "muzzle", "eyes", "eyes2", "nose", "tip", "socks", "blaze", "cuff")
 
 
@@ -1059,11 +1074,34 @@ def _held(role, arm):
     return b
 
 
+def _collar(spec, body, d):
+    """The mascot's collar: a band round the neck and a round bell under the chin, its own piece `Collar` riding the
+    Body, so the game can leave it off (the muddy stray has none) and put it on when he is named. On A the band wraps
+    the front of the body just behind the head; on B it wraps the top of the chest under the head."""
+    band, bell = spec["collar"]
+    b = Builder()
+    if body == "walk":
+        (cx, cy, cz), (sx, sy, sz) = d["body"]
+        front = cy - sy / 2
+        b.box((cx, front + 0.34, cz), (sx + 0.12, 0.18, sz + 0.12), band)
+        at = (cx, front - 0.12, cz - 0.17)
+        b.box((cx, front + 0.1, cz - 0.1), (0.34, 0.34, 0.12), band, bevel=False)        # the tab the bell hangs from
+    else:
+        (cx, cy, cz), (sx, sy, sz) = d["chest"]
+        front, z = cy - sy / 2, d["neck"][2] - 0.2
+        b.box((cx, cy + 0.01, z), (sx + 0.12, sy + 0.12, 0.2), band)
+        at = (cx, front - 0.15, z - 0.17)
+    b.sphere(at, 0.17, bell, segments=8, rings=5)
+    b.box((at[0], at[1] - 0.14, at[2] - 0.06), (0.04, 0.07, 0.1), "fur_brown", bevel=False)            # its slot
+    b.box((at[0], at[1] - 0.02, at[2] + 0.16), (0.1, 0.1, 0.08), band, bevel=False)                    # its loop
+    return b
+
+
 def build_cat(name, mat, spec=None, base=None, body="walk", held=True):
     """One cat model. `spec` and `base` override the roster entry and the asset name (gold.py builds the gold cats
     here); `body` is "walk" (A), "sit" (B) or "work" (S). held=False leaves out S's held things (the builder kitten
     holds our own hammer, build_props.py)."""
-    spec = spec or ROSTER[name]
+    spec = spec or spec_of(name)
     base = base or f"CleanACat_Cat_{name}{SUFFIX[body]}"
     c = look(spec)
     d = dims(spec, body)
@@ -1090,6 +1128,9 @@ def build_cat(name, mat, spec=None, base=None, body="walk", held=True):
             at_[piece] = tuple(d["legs"][arm][i] + (0.0, -0.01, S_PAW_Z)[i] for i in range(3))
     else:
         pieces += [(n, _leg(c, d["legs"][n][2], w, paw, paw_y, toes[i], rock)) for i, n in enumerate(LEGS[body])]
+    if spec.get("collar") and body in ("walk", "sit"):
+        pieces.append(("Collar", _collar(spec, body, d)))
+        rides["Collar"] = "Body"
     import props                                        # themed cats' props (props imports this module)
     shift = {}
     if name in props.PROPS:                             # S wears B's props: the same chest, its own head
@@ -1121,6 +1162,6 @@ def parse(asset):
 
 ASSETS = {}
 BUILT_BODIES = ("walk", "sit")      # Clean a Cat builds A and B only
-for _n in ROSTER:
+for _n in (*ROSTER, *EXTRA_CATS):
     for _body in BUILT_BODIES:
         ASSETS[f"CleanACat_Cat_{_n}{SUFFIX[_body]}"] = (lambda mat, n=_n, bd=_body: build_cat(n, mat, body=bd), 1500)

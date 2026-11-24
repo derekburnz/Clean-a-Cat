@@ -266,6 +266,17 @@ Six pictures for the HUD's buttons, drawn apart from the game models because a b
 - The human staff are a draft for pictures only, in `staff.py`: no game model yet. One uniform says "works here" beside customers, who are the same blocky people in hats, scarves or berets (one in a mint tee): a mint smock (`spa_mint`) with short sleeves and cream cuffs, a cream collar with two points, a cream name badge with a pink paw, and never a hat. Two looks so far: Jo (`skin_light`, a ginger bob with a swept fringe and a bun) and Sam (`skin_deep`, short black curls). `ui_renders.py` renders `portrait_Staff_<Name>.png` on the stand-in figure, both at one scale with the shoulders running off the sides so the head is big in a round frame. The `Helper` button is a chunky head of the first look in the same colours, so button and portraits match. If staff become game models, their `HumanoidDescription` colours come from this table.
 - Nothing is uploaded by this script. The ui-designer keeps the six in `assets/clean-a-cat/ui/` and uploads are group owned.
 
+## 21g. Suds the mascot on four legs (#278)
+
+The owner on 2026-11-24: Suds "shouldn't stand". The game opens with a box that falls off a truck; a muddy stray is inside, the tutorial is washing him, and he becomes Suds and "stays with you as your spa mascot through the game". He is not in the Cat Index (the owner: "dont include him on indez").
+
+- `CleanACat_Cat_Suds` (walking) and `CleanACat_Cat_Suds_Sit`: the roster cats' generator, size and build (`cats.EXTRA_CATS`), in the coat the ink helper kitten had: ink fur, a white muzzle and paws, sky eyes, a pink nose. He wears a mint collar with a round gold bell, built as his own child Model ending `_Collar` that rides the Body, so the game can leave it off or put it on.
+- `CleanACat_Cat_Suds_Dirty` and `CleanACat_Cat_Suds_Dirty_Sit`: the muddy stray. The same mud, tangles, fluff and claws and the same attributes as every dirty roster cat, so the scrub works on him unchanged. No collar: a stray has none, and the collar goes on at the naming moment after the wash. The clean model's `_Collar` Model fits the cleaned muddy model at the same offset from the root pivot.
+- Root attributes as on every cat (`Cat` is Suds, `Scale`, `Rarity` Common so the wash has a value to read) plus `Mascot` true. He is not in the coat table or the Cat Index and never arrives as a customer's cat.
+- He must not be mistaken for the two black Cat Index cats: Inky has mint eyes, a dark nose and no white; Tux has gold eyes, a white chest and a white tail tip. Suds has sky eyes, a pink nose, white paws, a tail that is ink to the tip, and the collar. The check sheet shows the three side by side.
+- Portraits for the screens: `portrait_Suds` (clean, in his collar) and `portrait_Suds_Dirty` (the stray), made by `ui_renders.py` like every cat's.
+- The standing `CleanACat_NPC_Helper2` stays until the game stops using it. There is no lying or curled body yet: the generator draws walking and sitting cats only.
+
 ## 22. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
