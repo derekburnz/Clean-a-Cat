@@ -299,8 +299,14 @@ def compose_spa(raw_dir, final=False):
 
 
 def icon_spa(raw_dir):
-    """The matching 512 icon: the same tub shot filling the square, the bubble backdrop, no words."""
+    """The matching 512 icon: the bubble backdrop and no words. With the close shot (raw-icon-spa.png) the cat's
+    face fills about half the square and the render bleeds off the edges; without it, the whole bath."""
     bg = bubble_backdrop((512, 512), seed=9)
+    close = os.path.join(raw_dir, "raw-icon-spa.png")
+    if os.path.exists(close):
+        art = Image.open(close).convert("RGBA").resize((512, 512), Image.LANCZOS)
+        bg.alpha_composite(art, (0, 0))
+        return bg
     raw = Image.open(os.path.join(raw_dir, "raw-thumb-spa.png")).convert("RGBA")
     art = fit(soft_shadow_edges(crop_to_content(raw)), 500, 500)
     bg.alpha_composite(art, ((512 - art.width) // 2, 512 - art.height - 6))
