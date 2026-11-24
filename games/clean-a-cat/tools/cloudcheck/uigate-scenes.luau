@@ -22,6 +22,18 @@ local function hud(on)
 	flag("gameHud", on)
 end
 
+-- A Cat Index halfway through: some cats washed, some residents, the rest unseen.
+local function indexEntries()
+	return {
+		Muffin = { washed = true, resident = false },
+		Cotton = { washed = true, resident = true },
+		Inky = { washed = true, resident = false },
+		Tux = { washed = true, resident = true },
+		Marble = { washed = false, resident = true },
+		LilacCloud = { washed = true, resident = false },
+	}
+end
+
 -- The recap card (#224, switch recapCard) at its widest: the longest name, every row, five stars and New!.
 local function recap(full)
 	flag("recapCard", true)
@@ -86,6 +98,18 @@ local SCENES = {
 		UI.setCoins(999999)
 		UI.setWashStage("dirty")
 	end },
+	-- The Cat Index window (#238, switch catIndexWindow): a half-stamped grid, then one cat's detail.
+	{ "CatIndex", function()
+		flag("catIndexWindow", true)
+		UI.setIndex(indexEntries(), { Muffin = true, LilacCloud = true }, 2)
+		UI.open("CatIndex")
+	end },
+	{ "CatIndexDetail", function()
+		flag("catIndexWindow", true)
+		UI.setIndex(indexEntries(), { LilacCloud = true }, 2)
+		UI.open("CatIndex")
+		UI.showIndexDetail("LilacCloud")
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
@@ -114,6 +138,8 @@ function Scenes.close()
 	hud(false)
 	flag("recapCard", false)
 	flag("settingsCard", false)
+	flag("catIndexWindow", false)
+	UI.showIndexDetail(nil)
 	UI.showSettings({ music = 1, sounds = 1, lessShake = false, lessSparkle = false })
 end
 
