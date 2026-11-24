@@ -72,6 +72,8 @@ local Cues: { [string]: Cue } = {
 		preload = true,
 	},
 	-- synth: CleanACat_Sfx_Purr_1..2
+	-- Two variants, picked at random. A variant's first play can be silent for a moment while Roblox streams it in
+	-- (only ids[1] of a preload cue is preloaded), and minGap 1 with one voice drops a tap within a second of the last.
 	purr = {
 		ids = { "rbxassetid://112652819529138", "rbxassetid://93890384660354" },
 		group = "Sfx",
@@ -145,6 +147,7 @@ local Cues: { [string]: Cue } = {
 		volume = 0.4,
 		voices = 1,
 		looped = true,
+		preload = true,
 	},
 	-- synth: CleanACat_Sfx_TruckHonk; one soft two-note toot
 	truckHonk = {
@@ -153,6 +156,7 @@ local Cues: { [string]: Cue } = {
 		volume = 0.4,
 		minGap = 2,
 		voices = 1,
+		preload = true,
 	},
 	-- synth: CleanACat_Sfx_TruckBump_1..2; variant 1 front wheels, 2 back wheels with a cargo rattle
 	truckBump = {
@@ -161,6 +165,7 @@ local Cues: { [string]: Cue } = {
 		volume = 0.5,
 		minGap = 0.1,
 		voices = 2,
+		preload = true,
 	},
 	-- synth: CleanACat_Sfx_TruckDoor; the rear door clacks open
 	truckDoor = {

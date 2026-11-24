@@ -16,6 +16,8 @@ return function()
 				expect(order[i] > order[i - 1]).to.equal(true)
 			end
 			expect(B.done < 5).to.equal(true)
+			-- the watched intro holds the shot until the box is down and still (Derek: a watched intro)
+			expect(B.done >= B.settle + 0.5).to.equal(true)
 		end)
 		it("events are sorted and found once each", function()
 			local all = TruckDrop.eventsBetween(-1, 10)
@@ -92,6 +94,17 @@ return function()
 			local landed = TruckDrop.box(B.land, false)
 			expect(near(landed.x, 0) and near(landed.y, 0) and near(landed.z, 0)).to.equal(true)
 			expect(near(TruckDrop.box(B.land - 1e-4, false).tumble, 0, 1e-3)).to.equal(true)
+		end)
+		it("falls off the back: more along the road than across it, and barely rises", function()
+			local lx, ly, lz = TruckDrop.launch()
+			expect(lx > lz).to.equal(true)
+			local peak = 0
+			for i = 0, 20 do
+				local t = TruckDrop.BEATS.drop
+					+ i / 20 * (TruckDrop.BEATS.land - TruckDrop.BEATS.drop)
+				peak = math.max(peak, TruckDrop.box(t, false).y)
+			end
+			expect(peak - ly < 0.75).to.equal(true)
 		end)
 		it("arcs above the straight line", function()
 			local mid = TruckDrop.box((B.drop + B.land) / 2, false)
