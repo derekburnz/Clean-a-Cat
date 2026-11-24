@@ -30,29 +30,29 @@ local Carry = {}
 -- swings it out to the side (negative: in), tw turns the upper arm in about its length, el bends the elbow. arms6 is
 -- the R6 hold (no elbows).
 --
--- POSE is Derek's hold (his clip, 2026-11-24: "here is how the carrying should look"): upper arms down at the sides,
--- elbows bent to a right angle so both forearms point straight ahead at belly height, a little in toward each
--- other, head up, and the cat sitting on the forearms in front of the belly. On R6 both straight arms reach forward
--- level-ish and in. Behind the switch `carryHold`: on in the dev experience, off in live until Derek confirms it. A Studio playtest
+-- POSE is Derek's hold (his clip, 2026-11-24: "here is how the carrying should look"; his avatar is R6): both arms
+-- reach forward and down from the shoulders and swing in, so the hands meet in front of the lower chest and the
+-- item is held close against the body, head up. On R15 the upper arms go 30 forward and the elbows bend 55, so the
+-- forearms come in level under the cat at the bottom of the chest. Behind the switch `carryHold`: on in the dev experience, off in live until Derek confirms it. A Studio playtest
 -- also uses it, since Studio does not read the dev switches.
 Carry.POSE = table.freeze({
 	arms = table.freeze({
-		shL = 12,
-		shR = 12,
-		spL = -8,
-		spR = -8,
-		twL = 10,
-		twR = 10,
-		elL = 88,
-		elR = 88,
+		shL = 30,
+		shR = 30,
+		spL = -15,
+		spR = -15,
+		twL = 15,
+		twR = 15,
+		elL = 55,
+		elR = 55,
 		neck = 0,
 		waist = 0,
 	} :: { [string]: number }),
 	arms6 = table.freeze(
-		{ shL = 75, shR = 75, spL = -18, spR = -18, neck = 0 } :: { [string]: number }
+		{ shL = 45, shR = 45, spL = -28, spR = -28, neck = 0 } :: { [string]: number }
 	),
 	gap = -0.1, -- the cat's base this far above the higher forearm's top
-	forward = -0.35, -- and this far ahead of the forearms' middles (-Z is ahead), over the hands
+	forward = -0.2, -- and this far ahead of the forearms' middles (-Z is ahead): held close to the body
 	sitTurn = 0, -- facing straight out
 	sitSide = 0,
 })
