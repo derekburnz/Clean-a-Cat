@@ -252,6 +252,7 @@ end
 -- The kitten's first cat for a player whose box just opened or whose wait ended: sent unless a cat is already out.
 local function handOut(player: Player)
 	player:SetAttribute(SudsRules.BOX_ATTRIBUTE, nil)
+	PlotService.release(player)
 	if player.Parent ~= Players or cats[player] ~= nil or not LiveFlags.isOn(FLAG) then
 		return
 	end
@@ -274,6 +275,7 @@ local function onOpenBox(player: Player)
 	save.suds = SudsRules.BOX
 	player:SetAttribute(SudsRules.ATTRIBUTE, save.suds)
 	player:SetAttribute(SudsRules.BOX_ATTRIBUTE, false)
+	PlotService.release(player)
 	if LiveFlags.isOn("onboardingFunnel") then
 		Telemetry.event(player, "box_opened")
 	end
@@ -475,18 +477,21 @@ function SpaService.Start()
 	NetService.on("RequestPhoto", { perSecond = 2 }, onPhoto)
 	NetService.on("RequestPickCustomer", { perSecond = 1, burst = 2 }, onPickCustomer)
 	NetService.on("RequestOpenBox", { perSecond = 1 }, onOpenBox)
-	-- The opening switched off while a kitten waits in a box: he goes straight to the tub.
-	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SudsRules.BOX_FLAG)
-		:Connect(function()
-			if LiveFlags.isOn(SudsRules.BOX_FLAG) then
-				return
-			end
-			for _, player in Players:GetPlayers() do
-				if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true then
-					handOut(player)
+	-- The opening or the kitten switched off while a kitten waits in a box: the box goes, and the tub gets him (or,
+	-- with sudsWash off, the usual first cat).
+	for _, flag in { SudsRules.BOX_FLAG, SudsRules.FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(function()
+				if LiveFlags.isOn(flag) then
+					return
 				end
-			end
-		end)
+				for _, player in Players:GetPlayers() do
+					if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true then
+						handOut(player)
+					end
+				end
+			end)
+	end
 
 	-- Switch turned off: drop every cat, so turning it on again starts clean.
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG)

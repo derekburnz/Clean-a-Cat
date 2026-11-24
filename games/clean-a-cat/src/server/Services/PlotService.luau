@@ -153,25 +153,39 @@ local function standAt(character: Model, spot: CFrame): boolean
 	return true
 end
 
--- Puts a character on its owner's spawn spot, standing, facing the way the spot faces. A fallback, for a character
--- that spawned before its plot's spawn existed; one already there is left alone.
+-- A plot spot a player stands on instead of the spawn until released (the opening's SpotOpening, #285).
+local standSpot: { [Player]: string } = {}
+
+-- Puts a character on its owner's spawn spot (or the spot it was told to stand on), standing, facing the way the
+-- spot faces. A fallback, for a character that spawned before its plot's spawn existed; one already there is left
+-- alone.
 local function moveToPlot(player: Player, character: Model)
 	local slot = SpaLayout.slotOf(player)
 	if slot == nil or street == nil then
 		return
 	end
-	standAt(character, spawnSpot(slot))
+	local name = standSpot[player]
+	standAt(character, if name then SpaLayout.slotSpot(name, slot) else spawnSpot(slot))
 end
 
--- Stands the player on plot spot `name` of their own plot (the opening's SpotOpening, #285). False when the street,
--- the plot, the spot or the character is missing: the player then stays where they are.
+-- Stands the player on plot spot `name` of their own plot (the opening's SpotOpening, #285), now if the character
+-- is there and on every spawn until release(). False when the street, the plot or the spot is missing.
 function PlotService.standOn(player: Player, name: string): boolean
+	if SpaLayout.PLOT_SPOTS[name] == nil then
+		return false
+	end
+	standSpot[player] = name
 	local slot = SpaLayout.slotOf(player)
 	local character = player.Character
-	if slot == nil or street == nil or character == nil or SpaLayout.PLOT_SPOTS[name] == nil then
+	if slot == nil or street == nil or character == nil then
 		return false
 	end
 	return standAt(character, SpaLayout.slotSpot(name, slot))
+end
+
+-- The player spawns on their plot's spawn again (the box was opened).
+function PlotService.release(player: Player)
+	standSpot[player] = nil
 end
 
 local function place()
@@ -265,6 +279,7 @@ local function assign(player: Player)
 end
 
 local function release(player: Player)
+	standSpot[player] = nil
 	for slot, owner in owners do
 		if owner == player then
 			owners[slot] = nil
