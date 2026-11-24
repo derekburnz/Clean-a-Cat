@@ -14,8 +14,10 @@
 -- customers, no bows, a 3 star score that is never added to the save, and nothing paid. His photo names him Suds.
 -- With `openingBox` on too, he waits in the box from the opening scene: no cat comes until the player taps the box
 -- (RequestOpenBox), which the save remembers, so the scene never plays again once he is out.
+local GroupService = game:GetService("GroupService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -48,6 +50,7 @@ local RECAP_FLAG = "recapCard"
 local QUEUE_SIZE = SpaRules.QUEUE_SIZE
 local BOARD_LIT = "ChanceBoardLit" -- Player attribute: true once a customer has been served, so the board shows
 local MAX_CAT_ID = 2 ^ 31
+local OWNER_WAIT_SECONDS = 3 -- the opening replay's owner check, at most this long after the save loads
 
 local SpaService = {}
 
@@ -115,28 +118,67 @@ local function queueFor(player: Player): { string }
 	return q
 end
 
+-- The opening replay for timing on a real phone (switch openingReplay): the game's owner only. Their kitten's stage
+-- is set back to none as their save loads, and the stars and residents that would make it an old save are ignored,
+-- so the box and the kitten come again on every join. Checked as the player joins, while the save loads.
+local isOwner: { [Player]: boolean } = {}
+
+local function checkOwner(player: Player)
+	if not LiveFlags.isOn(SudsRules.REPLAY_FLAG) then
+		return
+	end
+	if RunService:IsStudio() then
+		isOwner[player] = true
+		return
+	end
+	local ok, owner = pcall(function(): boolean
+		if game.CreatorType == Enum.CreatorType.Group then
+			local info = GroupService:GetGroupInfoAsync(game.CreatorId)
+			local owner = if type(info) == "table" then info.Owner else nil
+			return type(owner) == "table" and owner.Id == player.UserId
+		end
+		return player.UserId == game.CreatorId
+	end)
+	isOwner[player] = ok and owner == true
+end
+
+local function replaying(player: Player): boolean
+	return isOwner[player] == true
+		and LiveFlags.isOn(SudsRules.REPLAY_FLAG)
+		and LiveFlags.isOn(SudsRules.FLAG)
+end
+
 -- Whether this player's next cat is the opening's kitten (switch sudsWash).
 local function sudsNext(player: Player): boolean
 	local save = DataService.get(player)
-	return save ~= nil
-		and SudsRules.isNext(
-			save.suds,
-			save.stars,
-			#WindowService.residents(player),
-			LiveFlags.isOn
-		)
+	if save == nil then
+		return false
+	end
+	if replaying(player) and SudsRules.cleanStage(save.suds) < SudsRules.DONE then
+		return true
+	end
+	return SudsRules.isNext(save.suds, save.stars, #WindowService.residents(player), LiveFlags.isOn)
 end
 
 -- Whether the kitten is still in the box (switch openingBox): the server hands out no cat until it is opened.
 local function inBox(player: Player): boolean
 	local save = DataService.get(player)
-	return save ~= nil
-		and SudsRules.waitsForBox(
-			save.suds,
-			save.stars,
-			#WindowService.residents(player),
-			LiveFlags.isOn
-		)
+	if save == nil then
+		return false
+	end
+	if
+		replaying(player)
+		and LiveFlags.isOn(SudsRules.BOX_FLAG)
+		and SudsRules.cleanStage(save.suds) == SudsRules.NONE
+	then
+		return true
+	end
+	return SudsRules.waitsForBox(
+		save.suds,
+		save.stars,
+		#WindowService.residents(player),
+		LiveFlags.isOn
+	)
 end
 
 local function newCat(player: Player): SpaRules.Cat
@@ -484,6 +526,7 @@ function SpaService.Start()
 		if player:GetAttribute(SudsRules.JOINED_ATTRIBUTE) == nil then
 			player:SetAttribute(SudsRules.JOINED_ATTRIBUTE, Workspace:GetServerTimeNow())
 		end
+		task.spawn(checkOwner, player)
 	end
 	Players.PlayerAdded:Connect(stampJoin)
 	for _, player in Players:GetPlayers() do
@@ -496,6 +539,17 @@ function SpaService.Start()
 		end
 		-- The board shows the chances of the player's star tier, the same table their rolls use.
 		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+		-- The owner's opening replay (switch openingReplay): their kitten starts over. The owner check started as they
+		-- joined and is usually done; wait a moment for it if not.
+		if LiveFlags.isOn(SudsRules.REPLAY_FLAG) then
+			local deadline = os.clock() + OWNER_WAIT_SECONDS
+			while isOwner[player] == nil and os.clock() < deadline and player.Parent == Players do
+				task.wait()
+			end
+			if replaying(player) then
+				save.suds = SudsRules.NONE
+			end
+		end
 		-- How far the opening's kitten got, for the client's opening and Suds (#285).
 		player:SetAttribute(SudsRules.ATTRIBUTE, SudsRules.cleanStage(save.suds))
 		-- A new save's box is marked the moment the save loads, not when the client first asks for a cat, so the
@@ -566,6 +620,7 @@ function SpaService.Start()
 		queueNeeds[player] = nil
 		handedOut[player] = nil
 		waiting[player] = nil
+		isOwner[player] = nil
 	end)
 end
 

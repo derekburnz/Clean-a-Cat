@@ -17,6 +17,9 @@ SudsRules.NAME = "Suds" -- Model-Agent's ReplicatedStorage.Assets.CleanACat_Cat_
 SudsRules.STAND_IN = "Inky" -- the black roster cat, drawn while the Suds models are missing
 SudsRules.FLAG = "sudsWash"
 SudsRules.BOX_FLAG = "openingBox" -- the truck, the box and the tap that finds him (Effects/OpeningScene, OpeningController)
+-- For timing the opening on a real phone (Derek 2026-11-24): with this switch on, the game's owner (the group's owner,
+-- or anyone in Studio) gets the opening again on every join, as if new; nobody else's save is touched.
+SudsRules.REPLAY_FLAG = "openingReplay"
 SudsRules.NEEDS = table.freeze({ "mud", "tangles" }) :: { string }
 SudsRules.STARS = 3 -- his score; never added to the save
 SudsRules.NO_BOWS = "noBows" -- in the wash plan (ScrubController.plan): the step bar leaves the bows out for him
