@@ -36,6 +36,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `street.py` | the street (#15): ground, pavements, road, houses, hedges, trees and edge barriers round six plots, with `PlotSlot1` to `PlotSlot6` |
 | `spa_props.py` | the carrier, stray box, chance board and queue mat (#16); the window cushion, tip jar and spa sign (#17); the build pad for a locked station (#18) |
 | `build_props.py` | the builder kitten (#20): the kitten in its own coat with `HatSlot` and `HammerGrip`, the hard hat, the hammer pivoted at its grip and the toolbox with `CountdownAnchor` |
+| `rewards.py` | reward props (#125): the paw coin, the star and the coin stack, pivoted at their middles for spinning and popping |
 | `vip.py` | the VIP Room before it is built (#21): the locked look (door, sign `Screen`, tarp over scaffold) and the building look (frame half up) at `SpotVipDoor` |
 | `coat_table.py` | the coat table (#22): `rbx/CleanACat_CoatTable.json`, read in game as `ReplicatedStorage.Assets.CleanACat_CoatTable` (rarity, index order, colours and model names per cat) |
 | `store_art.py` | store art (#24): the raw icon and thumbnail shots from the real models, with a see-through background and shadows (`store_art.py <folder> [names] [--final]`); `thumb-spa` is the picked thumbnail and uses a store-art-only claw-foot bath ported from Derek's Bathtub Sofa (#116) |

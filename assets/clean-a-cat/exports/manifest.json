@@ -7235,6 +7235,86 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_ChanceBoard.png"
  },
  {
+  "name": "CleanACat_Prop_Coin",
+  "category": "Prop",
+  "module": "rewards",
+  "objects": [
+   "CleanACat_Prop_Coin"
+  ],
+  "triangles": 364,
+  "budget": 400,
+  "parts": 11,
+  "size_studs": {
+   "x": 0.97,
+   "y": 0.27,
+   "z": 0.97
+  },
+  "size_roblox": [
+   0.97,
+   0.97,
+   0.27
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "364/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "166 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.49 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Coin.png"
+ },
+ {
+  "name": "CleanACat_Prop_CoinStack",
+  "category": "Prop",
+  "module": "rewards",
+  "objects": [
+   "CleanACat_Prop_CoinStack"
+  ],
+  "triangles": 360,
+  "budget": 400,
+  "parts": 10,
+  "size_studs": {
+   "x": 1.12,
+   "y": 1.1,
+   "z": 0.5
+  },
+  "size_roblox": [
+   1.12,
+   0.5,
+   1.1
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "checks": {
+    "budget": "360/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "120 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.07 y=-0.13"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_CoinStack.png"
+ },
+ {
   "name": "CleanACat_Prop_Cushion",
   "category": "Prop",
   "module": "spa_props",
@@ -7391,6 +7471,46 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_QueueMat.png"
+ },
+ {
+  "name": "CleanACat_Prop_Star",
+  "category": "Prop",
+  "module": "rewards",
+  "objects": [
+   "CleanACat_Prop_Star"
+  ],
+  "triangles": 120,
+  "budget": 200,
+  "parts": 30,
+  "size_studs": {
+   "x": 1.14,
+   "y": 0.25,
+   "z": 1.09
+  },
+  "size_roblox": [
+   1.14,
+   1.09,
+   0.25
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "120/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "90 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.49 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Star.png"
  },
  {
   "name": "CleanACat_Prop_StrayBox",
