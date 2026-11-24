@@ -49,7 +49,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `store_compose.py` | store art (#24), plain Python with Pillow: backdrops, the game's name as the only words, the 512 icon and 1280 or 1920 thumbnails, and the draft sheet with 150 and 48 px checks; `compose_spa` makes the picked look (stacked title, bubble backdrop; title font Lilita One, OFL, via `TITLE_FONT`) |
 | `customers.py` | the customers' accessories for the R15 rig and the four looks (`LOOKS`, #16) |
 | `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
-| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, `street <folder>`, or `customers`, `later` for the #23 stations, `mud <out.png>` and `foam <out.png>` for the #107 close-ups); exports nothing |
+| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, `plot-built <folder>` for the room with every station on its spot, `street <folder>`, or `customers`, `later` for the #23 stations, `mud <out.png>` and `foam <out.png>` for the #107 close-ups); exports nothing |
 
 ## Adding a model
 1. Add a module with an `ASSETS` dict (name to `(builder(mat) -> objects, triangle budget)`), and add it to `all_assets()` in `build_all.py`.
