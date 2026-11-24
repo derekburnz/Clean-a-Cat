@@ -27,6 +27,15 @@ return function()
 			expect(ScrubRules.patchesLeft(state)).to.equal(3)
 		end)
 
+		it("takes the travel to clear from toClear when given", function()
+			local state = ScrubRules.newState(4)
+			local toClear = ScrubRules.RUB_TO_CLEAR_PACED
+			expect(ScrubRules.rub(state, 1, ScrubRules.RUB_TO_CLEAR, toClear)).to.equal(false)
+			expect(ScrubRules.rub(state, 1, ScrubRules.MAX_RUB_PER_STEP, toClear)).to.equal(false)
+			expect(ScrubRules.rub(state, 1, ScrubRules.MAX_RUB_PER_STEP, toClear)).to.equal(true)
+			expect(state.clearedCount).to.equal(1)
+		end)
+
 		it("ignores bad input", function()
 			local state = ScrubRules.newState(4)
 			expect(ScrubRules.rub(state, 99, 10)).to.equal(false)
