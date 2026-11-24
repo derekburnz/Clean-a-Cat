@@ -13,6 +13,7 @@
 local Players = game:GetService("Players")
 
 local Comfort = require(script:WaitForChild("Comfort"))
+local Motion = require(script:WaitForChild("Motion"))
 
 local UI = {}
 
@@ -104,6 +105,7 @@ function UI.init()
 	menu.Activated:Connect(function()
 		UI.open("Example")
 	end)
+	Motion.press(menu) -- trial springs, switch springUi (#183)
 
 	local toast = Instance.new("TextLabel")
 	toast.Name = "Toast"
@@ -146,6 +148,7 @@ function UI.open(name: string)
 	local frame: Frame? = windows[name]
 	assert(frame ~= nil, `UI.open: no window {name}`)
 	frame.Visible = true
+	Motion.popIn(frame) -- trial springs, switch springUi (#183)
 end
 
 function UI.closeAll()

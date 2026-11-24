@@ -44,6 +44,7 @@ LiveFlags.KEYS = {
 	"scrubFeel", -- a mud patch takes a few strokes and a scrubbing finger never walks the player (Controllers/ScrubController); off by default
 	"spawnView", -- the player spawns behind their tub facing the street, so the first frame is not a wall (PlotService); off by default
 	"comfortSettings", -- see-through panels honour the player's solid-background choice and the toast grows with larger text (UI/Comfort); off by default
+	"springUi", -- trial (#183): windows pop in and buttons squash with spr springs (UI/Motion); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
 
@@ -71,6 +72,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	scrubFeel = true,
 	streetLoadTest = true,
 	comfortSettings = true,
+	springUi = true,
 	spawnView = true,
 } :: { [string]: boolean }
 
