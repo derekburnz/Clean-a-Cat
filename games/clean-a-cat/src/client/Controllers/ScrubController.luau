@@ -25,6 +25,7 @@ local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
+local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("BrushShine"))
 local ControlHold = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local Icons =
 	require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("HUD"):WaitForChild("Icons"))
@@ -537,6 +538,9 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 		then math.clamp(rawDarken, 0, 1)
 		else WET_DARKEN
 	model.Parent = parent
+	-- Effects/BrushShine owns the coat's colours from here: the wet look, its gradual way back to dry under the
+	-- brush, and the shine (Motion-FX's #372, Derek's dev test).
+	BrushShine.track(model, coat, wetDarken)
 	return {
 		model = model,
 		mud = mud,
@@ -566,23 +570,23 @@ local function showPiece(piece: Piece, catchRays: boolean)
 	end
 end
 
--- Fur puffs show once the cat is fluffed and hide again if it falls back to clean.
-local function showFluff(cat: Cat, visible: boolean)
+-- The fur puffs stay hidden now (Derek 2026-11-24: "the brush the fur makes random circle bubbles of furr appear
+-- on the side of their models no need for that"): a fluffed cat shows by its dry coat and the sparkle instead.
+local function hideFluff(cat: Cat)
 	for _, piece in cat.fluff do
-		if visible then
-			showPiece(piece, false)
-		else
-			hidePiece(piece)
-		end
+		hidePiece(piece)
 	end
 end
 
--- The wet look after the scrub: the coat darkens by the cat's WetDarken until the brush fluffs it dry.
-local function setWet(cat: Cat, wet: boolean)
-	local keep = 1 - cat.wetDarken
-	for part, dry in cat.coat do
-		part.Color = if wet then Color3.new(dry.R * keep, dry.G * keep, dry.B * keep) else dry
-	end
+-- How wet the coat looks: 1 just scrubbed (darkened by the cat's WetDarken), 0 dry. Each brush stroke dries a share
+-- of it, so the colour comes back gradually (BrushShine).
+local function setWet(cat: Cat, amount: number)
+	BrushShine.setWet(cat.model, math.clamp(amount, 0, 1))
+end
+
+-- The wet share left after `strokes` of this cat's brush strokes.
+local function wetAfter(v: Visit, strokes: number): number
+	return 1 - strokes / math.max(v.brushStrokes, 1)
 end
 
 -- The ray under the pointer: the touch or mouse position, or the middle of the screen for a gamepad.
@@ -652,7 +656,7 @@ local function reveal(v: Visit, cat: Cat)
 	for _, index in ScrubRules.reveal(v.scrub) do
 		hidePiece(cat.mud[index])
 	end
-	setWet(cat, true)
+	setWet(cat, 1)
 	endStroke()
 	setStage(v, "clean")
 	Moments.CatClean:Fire(cat.model)
@@ -1036,12 +1040,12 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 	for index = before + 1, SpaRules.tanglesGone(v.strokes, #cat.tangles, v.brushStrokes) do
 		hidePiece(cat.tangles[index])
 	end
+	setWet(cat, wetAfter(v, v.strokes)) -- before the swipe's shine, so the shine runs over the new colour
 	Moments.BrushSwipe:Fire(cat.model, v.strokes)
 	report("ReportBrushStroke", v)
 	if v.strokes >= v.brushStrokes then
 		setStage(v, "fluffed")
-		setWet(cat, false)
-		showFluff(cat, true)
+		setWet(cat, 0)
 		endStroke()
 		Moments.CatFluffed:Fire(cat.model)
 		task.spawn(dryThenBows, v, cat)
@@ -1215,6 +1219,7 @@ end
 local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	local old = v.cat
 	if old then
+		BrushShine.untrack(old.model)
 		old.model:Destroy()
 	end
 	local cat = buildCat(asset, v.folder, seat)
@@ -1385,8 +1390,8 @@ local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: numb
 			showPiece(piece, true)
 		end
 	end
-	setWet(cat, stage == "clean")
-	showFluff(cat, stage ~= "clean")
+	setWet(cat, if stage == "clean" then wetAfter(v, v.strokes) else 0)
+	hideFluff(cat)
 	if stage ~= "fluffed" then
 		armLater(v, cat) -- back before the fluff: the bath and the claws come again after it
 	end
@@ -1772,6 +1777,10 @@ local function disable()
 	end
 	enabled = false
 	release()
+	local ending = visit
+	if ending and ending.cat then
+		BrushShine.untrack(ending.cat.model) -- the folder and the cat go with the trove below
+	end
 	visit = nil
 	WashView.set(WASH_REASON, false)
 	updateWashView(nil)
