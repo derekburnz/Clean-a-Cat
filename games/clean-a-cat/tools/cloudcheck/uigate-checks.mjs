@@ -8,8 +8,9 @@ export const PROFILES = [
   { name: 'laptop', width: 1366, height: 768, touch: false, inset: 58 },
   { name: 'phone', width: 844, height: 390, touch: true, inset: 58 },
   // the phone again with the player's comfort settings at their limits (#181): Roblox's largest text size and fully
-  // solid backgrounds (GuiService.PreferredTextSize = Largest, PreferredTransparency = 0)
-  { name: 'phonecomfort', width: 844, height: 390, touch: true, inset: 58, textSize: 'Largest', transparency: 0 },
+  // solid backgrounds (GuiService.PreferredTextSize = Largest, PreferredTransparency = 0), with the comfortSettings
+  // switch on so the screens' answer to those settings is what gets checked
+  { name: 'phonecomfort', width: 844, height: 390, touch: true, inset: 58, textSize: 'Largest', transparency: 0, flags: ['comfortSettings'] },
 ];
 
 // More devices, run on their own with --devices: a tablet held

@@ -33,7 +33,7 @@ system temp folder), never into the repo. In CI they are kept as the `uigate-rep
 
 ## Comfort settings run
 `phonecomfort` is the phone again with Roblox's largest text size and fully solid backgrounds
-(`GuiService.PreferredTextSize = Largest`, `PreferredTransparency = 0`), so every screen is checked the way a player
+(`GuiService.PreferredTextSize = Largest`, `PreferredTransparency = 0`) and the `comfortSettings` switch on, so every screen is checked the way a player
 who picked those settings sees it (#181). Roblox does not publish how much bigger each text size draws; the shim uses
 1.15, 1.3 and 1.5 for Large, Larger and Largest (`TEXT_SCALE` in `ui-shim.luau`) until a Studio measurement replaces
 them. Text that outgrows its box shows as a `fit` note, like on every other size; taps, tiny text and anything pushed

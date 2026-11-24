@@ -122,7 +122,9 @@ async function runProfile(profile) {
   const results = [];
   // --flag a,b: those live switches read true from the start, as on a server that has them on (the UI builds its
   // windows once, at setup)
-  for (const flag of (process.env.UIGATE_FLAG || '').split(',').filter((f) => /^[A-Za-z0-9]+$/.test(f))) {
+  // a profile can name its own switches too (phonecomfort turns on comfortSettings)
+  const flags = [process.env.UIGATE_FLAG || '', ...(profile.flags || [])].join(',');
+  for (const flag of flags.split(',').filter((f) => /^[A-Za-z0-9]+$/.test(f))) {
     lua.load(`game:GetService("ReplicatedStorage"):SetAttribute("LiveFlag_${flag}", true)`, { name: 'uigate-flag', environment: env }).call();
   }
   run(scenes.rawGet('setup'), 3);

@@ -8,12 +8,21 @@
 --   Comfort.reducedMotion()       true when the player turned on Reduced Motion: skip shakes, bobs and long tweens
 --   Comfort.input()               the input the player is using now (Touch, KeyboardAndMouse or Gamepad)
 --   Comfort.onInputChanged(fn)    calls fn(input) when that changes, for swapping button prompts
+--   Comfort.autoHeight(label)     lets a label grow taller when larger text wraps to more lines
+--
+-- backdrop and autoHeight follow the live switch comfortSettings (off by default, LiveFlags). While it is off they
+-- leave the design values as they were, and they re-apply within a minute when it is flipped either way.
 --
 -- Text size needs no helper: Roblox draws fixed-size text bigger itself when the player picks Large, Larger or
 -- Largest. A screen only has to leave room for it: AutomaticSize or TextWrapped on labels, no TextScaled on body text,
 -- and no MaxTextSize below the words' normal size. The UI gate's phonecomfort run checks that at Largest.
 local GuiService = game:GetService("GuiService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
+
+local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
+
+local FLAG = "comfortSettings"
 
 local Comfort = {}
 
@@ -23,7 +32,14 @@ function Comfort.backdropValue(base: number, preferred: number?): number
 	return math.clamp(base, 0, 1) * p
 end
 
+local function enabled(): boolean
+	return LiveFlags.isOn(FLAG)
+end
+
 local function preferredTransparency(): number?
+	if not enabled() then
+		return nil
+	end
 	local ok, value = pcall(function()
 		return GuiService.PreferredTransparency
 	end)
@@ -31,6 +47,7 @@ local function preferredTransparency(): number?
 end
 
 local backdrops: { [GuiObject]: number } = setmetatable({}, { __mode = "k" }) :: any
+local growers: { [GuiObject]: boolean } = setmetatable({}, { __mode = "k" }) :: any
 local watching = false
 
 local function reapply()
@@ -38,15 +55,31 @@ local function reapply()
 	for object, base in backdrops do
 		object.BackgroundTransparency = Comfort.backdropValue(base, preferred)
 	end
+	local grow = if enabled() then Enum.AutomaticSize.Y else Enum.AutomaticSize.None
+	for object in growers do
+		object.AutomaticSize = grow
+	end
+end
+
+local function watch()
+	if watching then
+		return
+	end
+	watching = true
+	GuiService:GetPropertyChangedSignal("PreferredTransparency"):Connect(reapply)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(reapply)
 end
 
 function Comfort.backdrop(object: GuiObject, base: number)
 	backdrops[object] = base
 	object.BackgroundTransparency = Comfort.backdropValue(base, preferredTransparency())
-	if not watching then
-		watching = true
-		GuiService:GetPropertyChangedSignal("PreferredTransparency"):Connect(reapply)
-	end
+	watch()
+end
+
+function Comfort.autoHeight(object: GuiObject)
+	growers[object] = true
+	object.AutomaticSize = if enabled() then Enum.AutomaticSize.Y else Enum.AutomaticSize.None
+	watch()
 end
 
 function Comfort.reducedMotion(): boolean
