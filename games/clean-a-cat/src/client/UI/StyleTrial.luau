@@ -118,6 +118,8 @@ local function plainLook(card: Frame, buttons: { TextButton }, labels: { TextLab
 		button.FontFace = HEAD
 		button.TextSize = 22
 		button.TextColor3 = Color3.new(1, 1, 1)
+		button.TextStrokeColor3 = INK
+		button.TextStrokeTransparency = 0
 		local c = Instance.new("UICorner")
 		c.CornerRadius = UDim.new(0, 16)
 		c.Parent = button
@@ -177,8 +179,13 @@ local function styledLook(
 			if button.Name == "Close" then "Red" elseif button.Text == "Off" then "Grey" else "Green"
 		)
 	end
-	local btn =
-		rule(sheet, ".Btn", { FontFace = HEAD, TextSize = 22, TextColor3 = Color3.new(1, 1, 1) })
+	local btn = rule(sheet, ".Btn", {
+		FontFace = HEAD,
+		TextSize = 22,
+		TextColor3 = Color3.new(1, 1, 1),
+		TextStrokeColor3 = "$Ink",
+		TextStrokeTransparency = 0,
+	})
 	btn:SetPropertyTransitions({
 		BackgroundColor3 = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 	})
