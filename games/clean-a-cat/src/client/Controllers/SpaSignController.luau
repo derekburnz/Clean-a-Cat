@@ -1,9 +1,9 @@
 --!strict
 -- SpaSignController: writes each spa's name on the face of its window sign (#379). Model-Agent's
 -- CleanACat_Prop_WindowSign stands in every plot's Props folder (PlotService, SpaLayout.PROPS) with a blank cream
--- face, the part named Screen. This client draws a SurfaceGui on it: "<owner's display name>'s Spa" in navy, or
--- "Clean a Cat Spa" while nobody has the plot. Each client draws every plot's sign itself, so nothing new goes over
--- the network: the owner of a plot is the player whose attribute SpaLayout.SLOT_ATTRIBUTE holds that slot. Display
+-- face, the part named Screen. This client draws a SurfaceGui on it in navy: "<owner's display name>'s" over
+-- "Spa", or "Clean a Cat" over "Spa" while nobody has the plot. Each client draws every plot's sign itself, so
+-- nothing new goes over the network: the owner of a plot is the player whose attribute SpaLayout.SLOT_ATTRIBUTE holds that slot. Display
 -- names are Roblox's own and already moderated, so they need no text filter; a name a player types (a later spa
 -- name) must go through TextService on the server before it is shown here. Behind the LiveFlags switch `spaSign`.
 local Players = game:GetService("Players")
@@ -18,11 +18,13 @@ local FLAG = "spaSign"
 local SIGN_NAME = "WindowSign" -- its entry name in SpaLayout.PROPS
 local SCREEN_NAME = "Screen" -- the cream face inside the sign model
 local GUI_NAME = "CleanACat_SpaSign"
-local EMPTY_TEXT = "Clean a Cat Spa"
+local EMPTY_TEXT = "Clean a Cat" -- the top line of a free plot's sign; the bottom line is always SPA_TEXT
+local SPA_TEXT = "Spa"
 local INK = Color3.fromHex("2F3E5C") -- pants_navy: about 10 to 1 on the cream face
 local PIXELS_PER_STUD = 60 -- the 5.5 by 1.9 stud face is a 330 by 114 canvas
-local MAX_NAME = 12 -- longer display names end in "..." on the sign (shortName)
-local MAX_TEXT = 64 -- short names stop growing here, so "Jo's Spa" does not fill the whole board
+local MAX_NAME = 10 -- longer display names end in "..." on the sign (shortName)
+local MAX_TEXT = 56 -- short names stop growing here, so "Jo's" does not fill the whole board
+local SPA_TEXT_SIZE = 34 -- "Spa" has a line of its own at one size, so it reads whatever the name above does
 
 local SpaSignController = {}
 
@@ -61,7 +63,7 @@ local function signText(owner: Player?): string
 	if name == "" then
 		name = owner.Name
 	end
-	return `{shortName(name)}'s Spa`
+	return `{shortName(name)}'s`
 end
 
 local function screenOf(plot: Model): BasePart?
@@ -69,6 +71,31 @@ local function screenOf(plot: Model): BasePart?
 	local sign = if props then props:FindFirstChild(SIGN_NAME) else nil
 	local screen = if sign then sign:FindFirstChild(SCREEN_NAME, true) else nil
 	return if screen and screen:IsA("BasePart") then screen :: BasePart else nil
+end
+
+-- Two lines: the name on top, one line scaled to fit the width (Sync-Agent's run on 02b38ae: one wrapped line
+-- let "Spa" fall to a second line and shrank everything), and "Spa" below at a fixed size.
+local function line(
+	gui: SurfaceGui,
+	name: string,
+	top: number,
+	height: number,
+	maxSize: number
+): TextLabel
+	local label = Instance.new("TextLabel")
+	label.Name = name
+	label.Position = UDim2.fromScale(0.06, top)
+	label.Size = UDim2.fromScale(0.88, height)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.FredokaOne
+	label.TextColor3 = INK
+	label.TextScaled = true
+	label.TextWrapped = false
+	label.Parent = gui
+	local limit = Instance.new("UITextSizeConstraint")
+	limit.MaxTextSize = maxSize
+	limit.Parent = label
+	return label
 end
 
 local function draw(screen: BasePart, text: string)
@@ -88,24 +115,9 @@ local function draw(screen: BasePart, text: string)
 		gui.PixelsPerStud = PIXELS_PER_STUD
 		gui.LightInfluence = 0 -- reads the same at dusk and in shade
 		gui.Brightness = 1
-		label = Instance.new("TextLabel")
-		label.Name = "Name"
-		label.Size = UDim2.fromScale(1, 1)
-		label.BackgroundTransparency = 1
-		label.Font = Enum.Font.FredokaOne
-		label.TextColor3 = INK
-		label.TextScaled = true
-		label.TextWrapped = true
-		label.Parent = gui
-		local padding = Instance.new("UIPadding")
-		padding.PaddingLeft = UDim.new(0.06, 0)
-		padding.PaddingRight = UDim.new(0.06, 0)
-		padding.PaddingTop = UDim.new(0.12, 0)
-		padding.PaddingBottom = UDim.new(0.12, 0)
-		padding.Parent = label
-		local limit = Instance.new("UITextSizeConstraint")
-		limit.MaxTextSize = MAX_TEXT
-		limit.Parent = label
+		label = line(gui, "Name", 0.08, 0.5, MAX_TEXT)
+		local spa = line(gui, "Spa", 0.6, 0.32, SPA_TEXT_SIZE)
+		spa.Text = SPA_TEXT
 		gui.Parent = screen
 	end
 	if label.Text ~= text then
