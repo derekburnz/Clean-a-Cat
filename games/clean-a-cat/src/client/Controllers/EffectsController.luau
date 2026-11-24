@@ -205,10 +205,14 @@ function EffectsController.Start()
 		if not LiveFlags.isOn(SUDS_FLAG) or not cat:IsDescendantOf(workspace) then
 			return
 		end
-		local collar = cat:FindFirstChild("CleanACat_Cat_Suds_Collar", true)
-		local at = if collar and collar:IsA("PVInstance")
-			then (collar :: PVInstance):GetPivot().Position
-			else topPoint(cat)
+		local at = topPoint(cat)
+		for _, d in cat:GetDescendants() do
+			-- the naming clones the clean model's collar as it is, so match by suffix (CleanACat_Cat_Suds_Sit_Collar)
+			if string.sub(d.Name, -7) == "_Collar" and d:IsA("PVInstance") then
+				at = (d :: PVInstance):GetPivot().Position
+				break
+			end
+		end
 		Effects.burst("revealSparkle", at)
 		CatMotion.wiggle(cat)
 	end)
