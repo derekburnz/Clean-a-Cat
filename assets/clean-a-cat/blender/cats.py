@@ -191,6 +191,9 @@ def loaf_drop(spec):
 
 
 LOAF_TAIL = (0, 50, 95, 140)  # the loaf's tail, each segment's angle up from level: across the rump, up, the tip hooked in
+LOAF_TAIL_UP = 0.4            # the tail root's underside over the base. It was 0.14 and a Studio check on the R6 hold
+                              # found the tail's base 0.27 studs inside the right forearm, which passes under the rump
+                              # (#361); from the top of the rump it clears, and shorter segments keep the tip where it was
 
 
 def loaf_tail(spec):
@@ -201,8 +204,8 @@ def loaf_tail(spec):
     arms with its head to the carrier's left, its right side faces out, so the curl shows from the front."""
     d = dims(spec, "walk")["tail_chain"]
     (cx, cy, _cz), (_sx, sy, _sz) = dims(spec, "loaf")["body"]
-    chain = dict(d, angles=LOAF_TAIL, seg=0.3, curl=False)
-    return (cx + 0.12, cy + sy / 2 + d["thick"] / 2 - 0.03, d["thick"] / 2 + 0.14), chain
+    chain = dict(d, angles=LOAF_TAIL, seg=0.25, curl=False)
+    return (cx + 0.12, cy + sy / 2 + d["thick"] / 2 - 0.03, d["thick"] / 2 + LOAF_TAIL_UP), chain
 
 
 def _body_scale(spec):
