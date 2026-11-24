@@ -1609,6 +1609,12 @@ function ScrubController.seatSpot(): CFrame
 	return seat or SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
 end
 
+-- The size a cat sits at in the tub (the sit body is scaled to it), so the opening's carried kitten lands at it and
+-- never pops bigger as the tub's kitten appears (Sync-Agent's run on 0f020c9).
+function ScrubController.seatScale(): number
+	return CAT_SCALE
+end
+
 function ScrubController.Init(_controllers: { [string]: any }) end
 
 function ScrubController.Start()
