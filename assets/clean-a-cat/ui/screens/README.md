@@ -24,6 +24,8 @@ layout, not a locked design. Owner: Design-Agent. Plans: issues #5 (first sessio
 - Buttons: the asset library's three-colour chunky buttons (`.btn.green`, `.sky`, `.gold`, `.berry`, `.purple`,
   `.ghost`, `.off`). Green is the main action; grey `.off` is anything you cannot afford or use yet.
 - Rarity: Common grey, Uncommon green, Rare blue, Epic purple, Legendary gold. Odds are always shown on anything random.
+- Notifications: any "Notify me" bell (the Builder's) and its "Bell is on" state stay hidden unless the server says
+  the player may get experience notifications. Players under 13 never see the opt-in prompt, so they never see the bell.
 - Young audience: no fake timers, no fake discounts, no pressure words, nothing "limited".
 
 ## Check

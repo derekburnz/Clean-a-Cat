@@ -10,8 +10,8 @@
 <style>
 /* Settings window: plain, calm and roomy. Two volume sliders with big bubble thumbs (at least 44 px on touch; the
    whole slider is the touch area), then four switches. A switch row is pressable anywhere along its length and its
-   switch says On or Off in words, so colour is never the only clue. "Show odds on boards" is on and locked: a lock
-   on its knob and the note "Odds are always shown", because the game never hides odds.
+   switch says On or Off in words, so colour is never the only clue. Odds are an info line, not a switch,
+   because the game never hides odds.
    Wide screens: one column. Short phones: two columns of three rows, so nothing scrolls. */
 .win.settings { width: 760px; display: flex; flex-direction: column; }
 .win.settings > .band { flex: none; }
@@ -44,6 +44,7 @@
 .set.on .sw .w { right: auto; left: 10px; }
 .set.on .sw .knob { left: auto; right: 2px; }
 .sw .knob .ic { width: 22px; height: 22px; }
+.set .always { font-size: 40px; display: grid; place-items: center; width: 64px; }
 .set.locked .sw { box-shadow: none; margin-bottom: 0; background: linear-gradient(#a9e59a, #7fcf83); }
 
 /* short phones: two columns of three rows */
@@ -111,10 +112,10 @@ body.short .sw .knob .ic { width: 20px; height: 20px; }
           <span class="sw"><span class="w">Off</span><span class="knob"></span></span>
         </div>
 
-        <div class="set tog on locked" role="switch" aria-checked="true" aria-disabled="true" aria-label="Show odds on boards. Always on">
+        <div class="set info">
           <i data-ic="dice"></i>
-          <span class="lab"><span class="l">Show odds on boards</span><span class="d">Odds are always shown</span></span>
-          <span class="sw"><span class="w">On</span><span class="knob"><i data-ic="lock"></i></span></span>
+          <span class="lab"><span class="l">Odds on boards</span><span class="d">Always shown, for every cat</span></span>
+          <span class="always"><i data-ic="check"></i></span>
         </div>
 
       </div>
