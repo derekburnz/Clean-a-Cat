@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="scrub,pick,nails">
+<meta name="states" content="scrub,pick,nails,finger,water">
 <title>Wash</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <style>
-/* Washing one cat, close up at the tub. Derek's playtest notes: several kinds of step (scrub, aim water, pick things
+/* Washing one cat, close up at the tub. States finger and water (2026-11-24, Derek: no tool tray, the tool changes
+   by itself as in My Pet Salon; switch autoTool, PR 394): no tray, and the step's tool rides under the finger while it
+   moves, up and to the left of the touch so the thumb never hides it; it fades out when the finger lifts. Derek's playtest notes: several kinds of step (scrub, aim water, pick things
    out of the fur, hold on the claws), a step counter like "Step 2 of 4", praise with a growing combo, and the pet
    should not turn by itself, so the player turns the cat with the two round arrows. The thumbstick is hidden while
    washing so a drag on the cat never walks the avatar. */
@@ -66,6 +68,16 @@ body.touch .slot .k { display: none; }
 .hold svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .hold .lbl { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-head); font-size: 22px; }
 
+/* the tool under the finger (finger, water) */
+.touch-pt { position: absolute; width: 54px; height: 54px; border-radius: 50%; transform: translate(-50%, -50%);
+  background: rgba(255,255,255,.35); border: 4px solid rgba(255,255,255,.9); box-shadow: 0 0 0 3px rgba(69,34,107,.35); }
+.held { position: absolute; width: 104px; height: 104px; transform: translate(-100%, -100%) rotate(-14deg); filter: drop-shadow(0 5px 0 rgba(69,34,107,.45)); }
+.held .ic { width: 100%; height: 100%; }
+.foam { position: absolute; border-radius: 50%; background: #fff; border: 3px solid #cfe9ff; transform: translate(-50%, -50%); opacity: .95; }
+.spray { position: absolute; width: 110px; height: 90px; transform: translate(-50%, -10%); }
+.task.low { bottom: 36px; }
+body.short .held { width: 84px; height: 84px; }
+body.short .task.low { bottom: 24px; }
 
 body.short .scene { top: calc(50% + 34px); height: 80%; }
 body.short .task { bottom: 112px; }
@@ -95,6 +107,16 @@ body.short .turn .rbtn { width: 76px; height: 76px; }
       <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="rgba(255,255,255,.55)" stroke="#45226b" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="#ffc94d" stroke-width="9" pathLength="100" stroke-dasharray="64 100" stroke-linecap="round"/></svg>
       <span class="lbl outlined thin">Hold</span>
     </div>
+    <!-- finger: the sponge under a moving finger, foam left behind -->
+    <div class="foam" data-only="finger" style="left:44%;top:46%;width:34px;height:34px"></div>
+    <div class="foam" data-only="finger" style="left:48%;top:43%;width:26px;height:26px"></div>
+    <div class="foam" data-only="finger" style="left:52%;top:44%;width:30px;height:30px"></div>
+    <div class="touch-pt" data-only="finger" style="left:56%;top:47%"></div>
+    <div class="held" data-only="finger" style="left:56%;top:47%"><i data-ic="sponge"></i></div>
+    <!-- water: the shower head under the finger, spraying down onto the fur -->
+    <div class="touch-pt" data-only="water" style="left:58%;top:38%"></div>
+    <div class="held" data-only="water" style="left:58%;top:38%"><i data-ic="shower"></i></div>
+    <svg class="spray" data-only="water" style="left:53%;top:36%" viewBox="0 0 110 90"><g stroke="#8fd3ff" stroke-width="6" stroke-linecap="round" fill="none" opacity=".9"><path d="M40 6l-14 70"/><path d="M52 8l-4 74"/><path d="M64 8l6 72"/><path d="M76 6l16 66"/></g></svg>
   </div>
 
   <button class="btn ghost small stop" data-tap><span class="lbl">Stop</span></button>
@@ -104,8 +126,11 @@ body.short .turn .rbtn { width: 76px; height: 76px; }
     <span class="t outlined" data-only="scrub">Step 1 of 4 · <b>Scrub the mud</b></span>
     <span class="t outlined" data-only="pick">Step 2 of 4 · <b>Pick out the burrs</b></span>
     <span class="t outlined" data-only="nails">Step 4 of 4 · <b>Trim the claws</b></span>
-    <div class="pips" data-only="scrub"><span class="pip now"><i data-ic="sponge"></i></span><span class="pip next"><i data-ic="tweezers"></i></span><span class="pip next"><i data-ic="shower"></i></span><span class="pip next"><i data-ic="clipper"></i></span></div>
+    <span class="t outlined" data-only="finger">Step 1 of 4 · <b>Scrub the mud</b></span>
+    <span class="t outlined" data-only="water">Step 3 of 4 · <b>Rinse the suds</b></span>
+    <div class="pips" data-only="scrub finger"><span class="pip now"><i data-ic="sponge"></i></span><span class="pip next"><i data-ic="tweezers"></i></span><span class="pip next"><i data-ic="shower"></i></span><span class="pip next"><i data-ic="clipper"></i></span></div>
     <div class="pips" data-only="pick"><span class="pip done"><i data-ic="sponge"></i></span><span class="pip now"><i data-ic="tweezers"></i></span><span class="pip next"><i data-ic="shower"></i></span><span class="pip next"><i data-ic="clipper"></i></span></div>
+    <div class="pips" data-only="water"><span class="pip done"><i data-ic="sponge"></i></span><span class="pip done"><i data-ic="tweezers"></i></span><span class="pip now"><i data-ic="shower"></i></span><span class="pip next"><i data-ic="clipper"></i></span></div>
     <div class="pips" data-only="nails"><span class="pip done"><i data-ic="sponge"></i></span><span class="pip done"><i data-ic="tweezers"></i></span><span class="pip done"><i data-ic="shower"></i></span><span class="pip now"><i data-ic="clipper"></i></span></div>
   </div>
 
@@ -114,9 +139,11 @@ body.short .turn .rbtn { width: 76px; height: 76px; }
 
   <div class="praise" data-only="scrub"><span class="w outlined">Awesome!</span><span class="x outlined">x12</span></div>
   <div class="praise" data-only="pick"><span class="w outlined">Nice pick!</span><span class="x outlined">x3</span></div>
+  <div class="praise" data-only="finger"><span class="w outlined">Awesome!</span><span class="x outlined">x12</span></div>
+  <div class="praise" data-only="water"><span class="w outlined">So fresh!</span><span class="x outlined">x5</span></div>
   <div class="praise" data-only="nails"><span class="w outlined">Steady...</span></div>
 
-  <div class="task">
+  <div class="task" data-only="scrub pick nails">
     <span class="say outlined" data-only="scrub">Rub the mud off</span>
     <span class="say outlined" data-only="pick">Drag each burr away</span>
     <span class="say outlined" data-only="nails">Hold on the paw</span>
@@ -125,7 +152,12 @@ body.short .turn .rbtn { width: 76px; height: 76px; }
     <div class="bar gold" data-only="nails"><i style="width:50%"></i></div>
   </div>
 
-  <div class="tray">
+  <div class="task low" data-only="finger water">
+    <div class="bar sky" data-only="finger"><i style="width:70%"></i></div>
+    <div class="bar sky" data-only="water"><i style="width:45%"></i></div>
+  </div>
+
+  <div class="tray" data-only="scrub pick nails">
     <button class="slot sel" data-only="scrub" data-tap><span class="k">1</span><i data-ic="sponge"></i></button>
     <button class="slot used" data-only="pick nails" data-tap><span class="k">1</span><i data-ic="sponge"></i></button>
     <button class="slot" data-only="scrub" data-tap><span class="k">2</span><i data-ic="tweezers"></i></button>
