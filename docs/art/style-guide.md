@@ -201,9 +201,17 @@ Every pattern part sits proud of the body, and nothing is a texture. Extras cost
 
 ## 21b. Reward props (#125)
 `rewards.py` builds what a wash pays, for the world and as the source of the recap card's icons. Drafts, not wired. Nothing collides.
-- `CleanACat_Prop_Coin`: a chunky gold coin standing on edge, 1 stud across, a paw print (a pad and three toes) on both faces. Pivot at its middle so the game can spin it and pop it out of a customer. The golds are the palette's metal swatches, so it shines in Roblox.
-- `CleanACat_Prop_Star`: a fat five point star standing up, 1.1 studs across, a paler star set into both faces. Pivot at its middle. It is flat `rarity_legend`, the UI's gold, so a star in the world and a star on a card are one colour. 30 parts (a star is ten wedges), so spawn few at once: a burst of many stars is a particle picture, not this model.
+- `CleanACat_Prop_Coin`: a chunky gold coin standing on edge, 1 stud across, a paw print (a pad and four toes) on both faces. Pivot at its middle so the game can spin it and pop it out of a customer. The golds are the palette's metal swatches, so it shines in Roblox.
+- `CleanACat_Prop_Star`: a fat five point star standing up, 1.1 studs across, a paler star set into its front face. Pivot at its middle. It is flat `rarity_legend`, the UI's gold, so a star in the world and a star on a card are one colour. 20 parts (a star is ten wedges), so spawn few at once: a burst of many stars is a particle picture, not this model.
 - `CleanACat_Prop_CoinStack`: stacks of five, three and two coins. Pivot at the base centre. For the recap card and a full tip jar.
+
+## 21c. Things stuck in the fur (#126)
+`burrs.py` builds what a player picks out of a coat with the tweezers or the comb. Drafts: no dirty cat carries them yet and the scrub contract is untouched. Nothing collides.
+- `CleanACat_Prop_Burr`: a round seed head 0.4 studs across, moss green with darker spikes on every side.
+- `CleanACat_Prop_Leaf`: a small leaf lying flat, 0.7 studs long: a tapered blade, a darker rib and a short stalk.
+- `CleanACat_Prop_Twig`: a forked brown twig 0.9 studs long with a small leaf at the end of each arm.
+
+All three are green or wear green, the one colour family no coat and no mud uses, so on any cat they read as a plant thing that does not belong. Each is drawn for a scale 1 cat: `ScaleTo` it by the cat's `Scale` and the station's `CatScale`. The pivot is the middle of the underside with Roblox +Y out of the fur, so the game sets the pivot on the fur and turns its up along the surface. Placement follows the mud rule: nothing over the eyes or the face drawing. A leaf goes on a cheek, a shoulder or the back, a twig sticks up out of the head or the back, a burr sits anywhere in the fur. Three to five on a cat is plenty: at phone size a burr is about 8 px, so the pick step should also mark each one (a ring or a bounce) while the tweezers are out.
 
 ## 22. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.

@@ -1,8 +1,8 @@
 """Reward props (#125): what a wash pays, in the world and as the source of the recap card's icons.
 
-  CleanACat_Prop_Coin       a chunky gold coin standing on edge, a paw print on both faces. Pivot at its middle, so
+  CleanACat_Prop_Coin       a chunky gold coin standing on edge, a paw print (a pad and four toes) on both faces. Pivot at its middle, so
                             the game can spin it and pop it out of a customer; a face to the front (-Y in Blender).
-  CleanACat_Prop_Star       a fat five point star standing up, a paler star set into both faces. Pivot at its middle.
+  CleanACat_Prop_Star       a fat five point star standing up, a paler star set into its front face. Pivot at its middle.
                             A wash's rating and the spa's stars.
   CleanACat_Prop_CoinStack  a small pile: stacks of five, three and two coins. Pivot at the base centre, on the floor.
                             The recap card's coins and a full tip jar's overflow.
@@ -20,10 +20,11 @@ _FACING = (math.radians(90), "X")           # a disc or a star stood up, its fac
 
 
 def _paw(b, y, sw):
-    """A paw print on a coin face at depth y: one pad and three toes, each proud of the face."""
-    b.box((0, y, -0.09), (0.3, 0.05, 0.22), sw, bevel=False)
-    for x, z in ((-0.19, 0.1), (0.0, 0.19), (0.19, 0.1)):
-        b.box((x, y, z), (0.13, 0.05, 0.13), sw, bevel=False)
+    """A paw print on a coin face at depth y: one pad and four toes in an arc, each proud of the face (three toes
+    read as a crown, Review-QA on #135)."""
+    b.box((0, y, -0.1), (0.3, 0.05, 0.2), sw, bevel=False)
+    for x, z in ((-0.23, 0.06), (-0.08, 0.17), (0.08, 0.17), (0.23, 0.06)):
+        b.box((x, y, z), (0.11, 0.05, 0.11), sw, bevel=False)
 
 
 def build_coin(mat):
@@ -39,8 +40,7 @@ def build_coin(mat):
 def build_star(mat):
     b = Builder()
     b.star((0, 0, 0), 0.6, 0.3, 0.22, "rarity_legend", rot=_FACING)
-    for s in (-1, 1):                                                                         # a paler star, proud
-        b.star((0, s * 0.105, 0), 0.36, 0.18, 0.04, "sparkle", rot=_FACING)
+    b.star((0, -0.105, 0), 0.36, 0.18, 0.04, "sparkle", rot=_FACING)       # a paler star, proud of the front only
     return [b.finalize("CleanACat_Prop_Star", mat)]
 
 
