@@ -80,9 +80,9 @@ local SIZES = {
 		name = 28,
 		nameText = 24,
 		need = 32,
-		payH = 40, -- the 48 px coin overhangs the row a little
+		payH = 40,
 		stackGap = 6,
-		coin = 48,
+		coin = 32, -- the needs' size, so the needs and the pay share one row (Review-QA on #252)
 		payText = 24,
 		act = 60,
 		actText = 24,
@@ -266,20 +266,13 @@ local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: 
 		new.Rotation = -8
 		new.ZIndex = 3
 	end
-	if card.vip then
-		-- the crown sits over the card's top edge on a tall screen (the cards row leaves room above), and on the
-		-- picture's corner on a short one
+	if card.vip and not short then
+		-- the crown sits over the card's top edge, centred (the cards row leaves room above)
 		local crown = frame("Crown", pic)
 		crown.Size = UDim2.fromOffset(s.crown, s.crown)
 		crown.ZIndex = 3
-		if short then
-			crown.AnchorPoint = Vector2.new(0.5, 0.5)
-			crown.Position = UDim2.fromScale(1, 0)
-			crown.Rotation = 14
-		else
-			crown.AnchorPoint = Vector2.new(0.5, 1)
-			crown.Position = UDim2.new(0.5, 0, 0, 14)
-		end
+		crown.AnchorPoint = Vector2.new(0.5, 1)
+		crown.Position = UDim2.new(0.5, 0, 0, 14)
 		Icons.draw("Crown", crown)
 	end
 	local who = frame("Who", head)
@@ -304,6 +297,17 @@ local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: 
 	info.LayoutOrder = 2
 	info.Size = UDim2.new(1, 0, 0, infoH)
 	local needs = drawNeeds(card, info, s, short)
+	if card.vip and short then
+		-- on a short card the crown tips over the card's top right corner, clear of New! on the picture's top left
+		-- (Review-QA on #252). Info has no layout, so it is placed from there.
+		local crown = frame("Crown", info)
+		crown.Size = UDim2.fromOffset(s.crown, s.crown)
+		crown.ZIndex = 3
+		crown.AnchorPoint = Vector2.new(0.5, 0.5)
+		crown.Position = UDim2.new(1, s.inner - 4, 0, -(headH + s.stackGap + s.inner) + 4)
+		crown.Rotation = 14
+		Icons.draw("Crown", crown)
+	end
 	local pay = frame("Pay", info)
 	pay.AutomaticSize = Enum.AutomaticSize.X
 	pay.Size = UDim2.fromOffset(0, s.payH)
