@@ -63,7 +63,7 @@ Carry.POSE = table.freeze({
 	-- up, and his bounding box clear of the chest's front (Carry.reach: his width, not his length, faces the chest).
 	loafForward = 0.3,
 	loafTurn = 90,
-	loafSide = -0.4,
+	loafSide = -0.6, -- further left so his face shows past the avatar's head from the camera behind (Model-Agent, Review-QA)
 	loafRoll = 8,
 })
 
