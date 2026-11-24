@@ -13,7 +13,8 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
-local SpaRules = require(Shared:WaitForChild("SpaRules"))
+
+local LineLooks = require(script.Parent.Parent.Util.LineLooks)
 
 local FLAG = "customerFigures"
 local CUSTOMERS_FLAG = "customers"
@@ -65,11 +66,9 @@ local LOOKS: { Look } = {
 
 local templates: { [string]: Model } = {}
 local building: { [string]: boolean } = {}
-local lastKinds: { [Player]: { string } } = {}
--- Each waiting customer's look, front first, parallel to lastKinds, so a look moves up the line with its owner and
+-- Each player's door line as last drawn, with every customer's look, so a look moves up the line with its owner and
 -- goes to the front with them when picked (#206). A look number n is LOOKS[n % #LOOKS + 1].
-local looks: { [Player]: { number } } = {}
-local nextLook: { [Player]: number } = {} -- the look number the next new customer gets
+local lines: { [Player]: LineLooks.Line } = {}
 local warned: { [string]: boolean } = {}
 
 local function warnOnce(key: string, text: string)
@@ -269,11 +268,11 @@ end
 
 local function draw(player: Player)
 	clear(player)
-	local kinds = lastKinds[player]
+	local line = lines[player]
 	local plot = folderOf(player)
 	local slot = SpaLayout.slotOf(player)
 	if
-		kinds == nil
+		line == nil
 		or plot == nil
 		or slot == nil
 		or not LiveFlags.isOn(FLAG)
@@ -281,64 +280,17 @@ local function draw(player: Player)
 	then
 		return
 	end
-	local folder = buildFolder(slot, kinds, looks[player] or lookRun(0, #kinds))
+	local folder = buildFolder(slot, line.kinds, line.looks)
 	-- template() may have yielded: draw only if this is still the newest queue.
-	if lastKinds[player] ~= kinds or folderOf(player) ~= plot then
+	if lines[player] ~= line or folderOf(player) ~= plot then
 		folder:Destroy()
 		return
 	end
 	folder.Parent = plot
 end
 
--- The front customer was served when the new line is the old one moved up by one.
-local function movedUp(old: { string }?, new: { string }): boolean
-	if old == nil or #old == 0 then
-		return false
-	end
-	for index = 1, #old - 1 do
-		if new[index] ~= old[index + 1] then
-			return false
-		end
-	end
-	return true
-end
-
-local function sameLine(old: { string }?, new: { string }): boolean
-	if old == nil or #old ~= #new then
-		return false
-	end
-	for index, kind in new do
-		if old[index] ~= kind then
-			return false
-		end
-	end
-	return true
-end
-
--- The looks for the new line `clean`: shifted when the front customer was served, kept when the line is the same
--- (a resend, or the resend after `picked`), and new customers take the next look numbers.
-local function looksFor(player: Player, clean: { string }): { number }
-	local old = lastKinds[player]
-	local oldLooks = looks[player]
-	local kept: { number } = {}
-	if oldLooks and movedUp(old, clean) then
-		kept = table.move(oldLooks, 2, #oldLooks, 1, {})
-	elseif oldLooks and sameLine(old, clean) then
-		kept = table.clone(oldLooks)
-	end
-	local nextNumber = nextLook[player] or 0
-	while #kept > #clean do
-		table.remove(kept)
-	end
-	while #kept < #clean do
-		table.insert(kept, nextNumber)
-		nextNumber += 1
-	end
-	nextLook[player] = nextNumber
-	return kept
-end
-
--- Called by SpaService with the player's queue, front first.
+-- Called by SpaService with the player's queue, front first. Customers already known keep their looks
+-- (LineLooks.show); the line before a serve or a pick was already moved by `served` or `picked`.
 function FigureService.showQueue(player: Player, kinds: { string })
 	local clean: { string } = {}
 	for _, kind in kinds do
@@ -346,25 +298,25 @@ function FigureService.showQueue(player: Player, kinds: { string })
 			table.insert(clean, kind)
 		end
 	end
-	looks[player] = looksFor(player, clean)
-	lastKinds[player] = clean
+	lines[player] = LineLooks.show(lines[player], clean)
 	task.spawn(draw, player)
 end
 
--- Called by SpaService when the player picked the customer at `index` to go next (switch queuePick), before it
--- resends the line: moves that customer's look to the front with their cat, so the figures don't swap cats.
-function FigureService.picked(player: Player, index: number)
-	local old = lastKinds[player]
-	local oldLooks = looks[player]
-	if old == nil or oldLooks == nil or #oldLooks ~= #old then
-		return
+-- Called by SpaService when the front customer hands over their cat (`kind`), before the line is refilled and
+-- resent: that customer and their look leave, and everyone behind keeps theirs as they move up.
+function FigureService.served(player: Player, kind: string)
+	local line = LineLooks.served(lines[player], kind)
+	if line then
+		lines[player] = line -- a new table, so a draw still building the old line sees it is stale
 	end
-	-- New tables, so a draw still building the old line sees it is stale.
-	local kinds = table.clone(old)
-	local numbers = table.clone(oldLooks)
-	if SpaRules.pickNext(kinds, index) and SpaRules.pickNext(numbers, index) then
-		lastKinds[player] = kinds
-		looks[player] = numbers
+end
+
+-- Called by SpaService when the player picked the customer at `index` to go next (switch queuePick), before it
+-- resends the line: that customer's look goes to the front with their cat, so the figures don't swap cats.
+function FigureService.picked(player: Player, index: number)
+	local line = LineLooks.picked(lines[player], index)
+	if line then
+		lines[player] = line
 	end
 end
 
@@ -407,9 +359,7 @@ function FigureService.Init(_services: { [string]: any }) end
 function FigureService.Start()
 	Players.PlayerRemoving:Connect(function(player: Player)
 		clear(player)
-		lastKinds[player] = nil
-		looks[player] = nil
-		nextLook[player] = nil
+		lines[player] = nil
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(drawAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(drawAll)
