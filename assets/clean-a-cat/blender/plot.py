@@ -22,10 +22,14 @@ faces there (the Attachment's LookVector), all at floor height:
                        the street
   SpotBuilder          where the builder kitten works
   SpotStation2, 3      the two locked station pads (the Brush Table, then the Blow Dryer)
+  SpotStation4, 5      two more station pads on the tub's side of the room, against the left wall (#267): the Bubble
+                       Bath beside the tub and a little behind it, and the Pawdicure in front of the bath
   SpotVipDoor          the middle of the VIP Room door, facing into the room
   SpotBoard            the chance board (CleanACat_Prop_ChanceBoard stands here), beside the entrance, facing in
 
-Every gap a player or the camera goes through is 6 studs or wider.
+Every gap a player or the camera goes through is 6 studs or wider, but for one: the way round the tub's left to the
+back of the room is about 5.5 studs at its narrowest, between the tub and the Bubble Bath once that is built. It is
+the only way to the back that is not between two stations, so nothing else may stand in it.
 
 The real build: a bubblegum shop front with a mint and white awning, cream side and back walls with a bubblegum band
 outside and a mint band with a white cap rail inside, a checked tile floor with a bubblegum border, a mint roof with
@@ -73,6 +77,8 @@ SPOTS = {
     "SpotBuilder": (13.0, 6.0, 0.0, 0.0),
     "SpotStation2": (7.0, -1.0, 0.0, 0.0),
     "SpotStation3": (13.5, -1.0, 0.0, 0.0),
+    "SpotStation4": (-15.2, 1.0, 0.0, 0.0),
+    "SpotStation5": (-15.2, -6.6, 0.0, 0.0),
     "SpotVipDoor": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
     "SpotBoard": (13.5, ROOM_Y[0] + 1.4, 0.0, 180.0),
 }
@@ -81,7 +87,8 @@ PADS = [("SpotTub", 5.4, 4.6, "spa_sky"), ("SpotSpawn", 2.4, 2.4, "shirt_green")
         ("SpotQueue1", 2.4, 2.4, "spa_bubblegum"), ("SpotQueue2", 2.4, 2.4, "spa_bubblegum"),
         ("SpotQueue3", 2.4, 2.4, "spa_bubblegum"), ("SpotStray", 3.0, 3.0, "cardboard"),
         ("SpotBuilder", 3.0, 3.0, "pastel_butter"), ("SpotStation2", 5.0, 5.0, "metal"),
-        ("SpotStation3", 5.0, 5.0, "metal"), ("SpotVipDoor", 8.0, 2.0, "spa_mint")]
+        ("SpotStation3", 5.0, 5.0, "metal"), ("SpotStation4", 5.0, 5.0, "metal"),
+        ("SpotStation5", 5.0, 5.0, "metal"), ("SpotVipDoor", 8.0, 2.0, "spa_mint")]
 
 
 def _walls(b):
