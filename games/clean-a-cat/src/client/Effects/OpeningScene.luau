@@ -19,6 +19,11 @@
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
 --   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point, and the player's camera turns
 --                                   to face it; onDone when he lands
+--   handle.pickUp(character, onDone?)  the player lifts the kitten out of the box into folded arms (Effects/Carry),
+--                                   with a purr; he stays in their arms as they walk. onDone once he is in them
+--   handle.placeIn(target, onDone?) the arms open and the carried kitten hops in, his base on `target` (the tub's
+--                                   seat); onDone when he lands. Then Gameplay eases into the wash (Effects/WashCamera)
+--   Derek 2026-11-24 picked the carry over the hop-out ("we should pick him up out of crate"); hopOut stays for now.
 --   Both onDone callbacks fire exactly once, deferred, even when the call does nothing (not landed yet, already
 --   opened or hopping, no kitten, destroyed) or the scene is destroyed part way.
 --   handle.destroy()   removes everything this scene made and gives the camera back
@@ -30,6 +35,7 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Audio = require(script.Parent.Parent:WaitForChild("Audio"))
+local Carry = require(script.Parent:WaitForChild("Carry"))
 local CatMotion = require(script.Parent:WaitForChild("CatMotion"))
 local Effects = require(script.Parent)
 local TruckDrop = require(script.Parent:WaitForChild("TruckDrop"))
@@ -56,6 +62,8 @@ export type Handle = {
 	kitten: Model?,
 	open: (onDone: (() -> ())?) -> (),
 	hopOut: (toward: Vector3, onDone: (() -> ())?) -> (),
+	pickUp: (character: Model, onDone: (() -> ())?) -> (),
+	placeIn: (target: Vector3, onDone: (() -> ())?) -> (),
 	destroy: () -> (),
 }
 
@@ -375,6 +383,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local boxBody: Instance? = box.PrimaryPart
 
 	local kitten: Model? = nil
+	local carry: Carry.Handle? = nil
 	local kittenHeight = 0
 	local seat = findAttachment(box, "CatSeat")
 	local peek = findAttachment(box, "Peek")
@@ -480,7 +489,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			end
 		end
 		local cat = kitten
-		if cat and seat and hopping == nil then
+		if cat and seat and hopping == nil and carry == nil then
 			-- The chest (about CHEST of the cat's height) rises to the rim's Peek point.
 			local rim = if peek
 				then (peek.WorldPosition - seat.WorldPosition).Magnitude
@@ -622,7 +631,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		end,
 		hopOut = function(toward: Vector3, onDone: (() -> ())?)
 			local cat = kitten
-			if cat == nil or destroyed or hopping then
+			if cat == nil or destroyed or hopping or carry then
 				if onDone then
 					task.defer(onDone) -- nothing to hop: still answer, so a caller never hangs
 				end
@@ -641,11 +650,37 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			}
 			turnCameraToward(toward, TruckDrop.CAMERA_TURN_SECONDS, reduced)
 		end,
+		pickUp = function(character: Model, onDone: (() -> ())?)
+			local cat = kitten
+			if cat == nil or destroyed or hopping or carry then
+				if onDone then
+					task.defer(onDone) -- nothing to pick up: still answer, so a caller never hangs
+				end
+				return
+			end
+			carry = Carry.hold(character, cat)
+			if onDone then
+				task.delay(Carry.FOLD_SECONDS, onDone)
+			end
+		end,
+		placeIn = function(target: Vector3, onDone: (() -> ())?)
+			local held = carry
+			if held == nil or destroyed then
+				if onDone then
+					task.defer(onDone)
+				end
+				return
+			end
+			held.placeIn(target, onDone)
+		end,
 		destroy = function()
 			if destroyed then
 				return
 			end
 			destroyed = true
+			if carry then
+				carry.destroy() -- the arms go back and a pending placeIn still hears back
+			end
 			local hop = hopping
 			if hop and hop.onDone then
 				task.defer(hop.onDone) -- destroyed mid-hop: the caller still hears back

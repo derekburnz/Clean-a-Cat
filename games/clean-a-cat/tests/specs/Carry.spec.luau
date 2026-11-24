@@ -1,0 +1,65 @@
+--!strict
+return function()
+	local Effects = game:GetService("StarterPlayer")
+		:WaitForChild("StarterPlayerScripts")
+		:WaitForChild("Client")
+		:WaitForChild("Effects")
+	local Carry = require(Effects:WaitForChild("Carry")) :: any
+	local WashCamera = require(Effects:WaitForChild("WashCamera")) :: any
+
+	local function near(a: number, b: number): boolean
+		return math.abs(a - b) < 1e-6
+	end
+
+	describe("carry", function()
+		it("keeps the library's folded-arms pose", function()
+			local p = Carry.pose(Carry.POSE.arms)
+			expect(p.shL).to.equal(25)
+			expect(p.elR).to.equal(35)
+			expect(p.neck).to.equal(-12)
+			expect(Carry.pose({}).shL).to.equal(0)
+		end)
+		it("folds in FOLD_SECONDS and opens in OPEN_SECONDS", function()
+			expect(near(Carry.weight(0, true, Carry.FOLD_SECONDS), 1)).to.equal(true)
+			expect(Carry.weight(0, true, Carry.FOLD_SECONDS / 2) < 1).to.equal(true)
+			expect(near(Carry.weight(1, false, Carry.OPEN_SECONDS), 0)).to.equal(true)
+			expect(Carry.weight(1, true, 5)).to.equal(1)
+			expect(Carry.weight(0, false, 5)).to.equal(0)
+			expect(Carry.FOLD_SECONDS <= 0.35).to.equal(true)
+		end)
+		it("lifts and hops in an arc, with no arc under Reduced Motion", function()
+			local a0, h0 = Carry.lift(0, false)
+			local a1, h1 = Carry.lift(Carry.FOLD_SECONDS, false)
+			expect(a0).to.equal(0)
+			expect(h0).to.equal(0)
+			expect(near(a1, 1) and near(h1, 0)).to.equal(true)
+			local _, mid = Carry.lift(Carry.FOLD_SECONDS / 2, false)
+			local _, calm = Carry.lift(Carry.FOLD_SECONDS / 2, true)
+			expect(near(mid, Carry.LIFT_ARC)).to.equal(true)
+			expect(calm).to.equal(0)
+			local _, hopMid = Carry.hop(Carry.HOP_SECONDS / 2, false)
+			local _, hopCalm = Carry.hop(Carry.HOP_SECONDS / 2, true)
+			expect(near(hopMid, Carry.HOP_HEIGHT)).to.equal(true)
+			expect(hopCalm).to.equal(0)
+			local done = Carry.hop(Carry.HOP_SECONDS * 2, false)
+			expect(done).to.equal(1)
+		end)
+	end)
+
+	describe("wash camera", function()
+		it("eases over about 0.6 s and cuts under Reduced Motion", function()
+			expect(near(WashCamera.SECONDS, 0.6)).to.equal(true)
+			expect(WashCamera.progress(0, false)).to.equal(0)
+			expect(near(WashCamera.progress(WashCamera.SECONDS / 2, false), 0.5)).to.equal(true)
+			expect(near(WashCamera.progress(WashCamera.SECONDS, false), 1)).to.equal(true)
+			expect(WashCamera.progress(0, true)).to.equal(1)
+		end)
+		it("never overshoots", function()
+			for i = 0, 20 do
+				local k = WashCamera.ease(i / 20)
+				expect(k >= 0 and k <= 1).to.equal(true)
+			end
+			expect(WashCamera.ease(2)).to.equal(1)
+		end)
+	end)
+end
