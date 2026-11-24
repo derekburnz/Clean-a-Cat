@@ -61,6 +61,7 @@ const GATED = new Set(['tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 
 // warning, until those rows get the same pass. A
 // list that opens over the icon row (Pop) sits over it on purpose and is left out.
 export const HUD_GUI = 'HUD'; // the ScreenGui name of the always-on HUD (src/client/UI)
+const STARTER_PIECES = /^HUD\/(Root\/(Menu|Toast)|Example)(\/|$)/; // the template's live starter UI, still in Gotham
 const GATED_TILES = /^HUD\/Root\/[^/]+$/; // HUD tiles that must keep their outline apart
 const SKIPPED_TILES = /^HUD\/Root\/Pop\//; // pop ups that sit over the HUD on purpose
 
@@ -310,6 +311,9 @@ export function checkScene(profile, scene) {
   for (const { node } of shown) {
     // an emoji or a symbol draws from the emoji font whatever the label's font
     if (node.text === undefined || !/[\p{L}\p{N}]/u.test(node.text)) continue;
+    // the template's starter Menu, toast and example window keep Gotham: they are live with every switch off, so
+    // their font changes only behind a switch (rule 16; Review-QA on #263). The HUD's own pieces replace them.
+    if (STARTER_PIECES.test(node.path)) continue;
     if (!families.has(node.font)) families.set(node.font, node);
   }
   if (families.size > LIMITS.fonts) {
