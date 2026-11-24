@@ -23,3 +23,9 @@ One row per file or Creator Store id, added the moment it is picked. The asset i
 | sfx/CleanACat_Sfx_SpongeLoop.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-23 |
 | sfx/CleanACat_Sfx_FurShake.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-23 |
 | sfx/CleanACat_Sfx_DryerHum.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-23 |
+| sfx/CleanACat_Sfx_TruckRumble.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-24 |
+| sfx/CleanACat_Sfx_TruckHonk.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-24 |
+| sfx/CleanACat_Sfx_TruckBump_1..2.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-24 |
+| sfx/CleanACat_Sfx_TruckDoor.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-24 |
+| sfx/CleanACat_Sfx_BoxThud.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-24 |
+| sfx/CleanACat_Sfx_BoxRustle.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-24 |

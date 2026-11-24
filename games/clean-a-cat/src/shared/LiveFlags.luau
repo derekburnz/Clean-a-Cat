@@ -58,6 +58,7 @@ LiveFlags.KEYS = {
 	"pawdicure", -- the Pawdicure station and the long claws need it trims (WashDraft, #267); off by default
 	"proBrush", -- the Pro Brush on the Tools board: the tangles brush out in fewer strokes (WashDraft, #267); off by default
 	"settingsCard", -- the Settings card: sound sliders, less shake and less sparkle; the Menu opens it (UI/Settings, SettingsController); off by default
+	"openingBox", -- the opening scene: the truck, the bump and the box landing in front of the player (Effects/OpeningScene); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
 
@@ -100,6 +101,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	bubbleBath = true,
 	pawdicure = true,
 	proBrush = true,
+	openingBox = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

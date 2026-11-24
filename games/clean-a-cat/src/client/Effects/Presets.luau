@@ -144,6 +144,28 @@ local function mud(count: number): Emitter
 	}
 end
 
+local DUST = Color3.fromRGB(214, 200, 178)
+local DUST_PALE = Color3.fromRGB(236, 230, 220)
+
+-- A small puff of road dust where the truck's wheels hit the bump in the opening scene (#281), and under the box
+-- when it lands. Soft, slow and short.
+local function dust(count: number): Emitter
+	return {
+		texture = "",
+		color = { DUST, DUST_PALE },
+		size = { 0.35, 0.9 },
+		transparency = { 0.35, 1 },
+		lifetime = { 0.45, 0.7 },
+		speed = { 2, 4 },
+		spread = 70,
+		acceleration = Vector3.new(0, 1, 0),
+		drag = 4,
+		lightEmission = 0,
+		maxRate = 0,
+		burst = count,
+	}
+end
+
 local AIR = Color3.fromRGB(240, 248, 255)
 
 -- Warm air from the dryer nozzle: faint wisps that blow down onto the cat and spread out. Fast and short, so
@@ -200,6 +222,7 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		bowHearts = hearts(3),
 		dryerAir = air(6),
 		stinkWisps = stink(4, 0.6, 0.85),
+		roadDust = dust(5),
 	},
 	high = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 16),
@@ -212,6 +235,7 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		bowHearts = hearts(3),
 		dryerAir = air(12),
 		stinkWisps = stink(5, 0.4, 0.75),
+		roadDust = dust(9),
 	},
 }
 
