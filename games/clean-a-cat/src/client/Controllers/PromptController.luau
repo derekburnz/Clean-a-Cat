@@ -178,9 +178,12 @@ local function show(prompt: ProximityPrompt, input: Enum.ProximityPromptInputTyp
 			hide(prompt)
 		end
 	end
-	prompt:GetPropertyChangedSignal("Enabled"):Connect(gone)
-	prompt.AncestryChanged:Connect(gone)
+	local onEnabled = prompt:GetPropertyChangedSignal("Enabled"):Connect(gone)
+	local onMoved = prompt.AncestryChanged:Connect(gone)
+	-- each showing connects afresh, so the pill's end lets go of both
 	gui.Destroying:Connect(function()
+		onEnabled:Disconnect()
+		onMoved:Disconnect()
 		if drawn[prompt] == gui then
 			drawn[prompt] = nil
 		end
