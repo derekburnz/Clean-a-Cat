@@ -259,6 +259,93 @@ def meow(rng: np.random.Generator, variant: int) -> np.ndarray:
     return fade_out(cat_voice(length, f0, peak, end, trill, 4100 + variant), 0.03)
 
 
+# --- Opening scene (#281): a small pastel delivery truck passes, hits a bump and a cardboard box falls out. ---------
+
+
+def truck_rumble(rng: np.random.Generator) -> np.ndarray:
+    """A small friendly delivery truck rolling by: a soft low engine purr with a light tyre hiss on top, 2 s and
+    circular so it loops with no seam. Every tone sits on a multiple of 0.5 Hz (the loop's period)."""
+    length = 2.0
+    n = int(RATE * length)
+    x = np.arange(n) / RATE
+    f = np.fft.rfftfreq(n, 1 / RATE)
+    engine = sum(a * np.sin(2 * np.pi * h * 48.0 * x + h) for h, a in ((1, 1.0), (2, 0.6), (3, 0.35), (4, 0.2), (6, 0.1)))
+    engine *= 1 + 0.25 * np.sin(2 * np.pi * 12.0 * x)  # cylinder chug, 12 Hz wraps cleanly in 2 s
+    engine /= np.max(np.abs(engine))
+    hiss = np.fft.irfft(np.fft.rfft(rng.standard_normal(n)) * (1 / (1 + ((f - 1400) / 900) ** 2)), n)
+    hiss /= np.max(np.abs(hiss))
+    rattle = np.fft.irfft(np.fft.rfft(rng.standard_normal(n)) * (1 / (1 + ((f - 2600) / 500) ** 2)), n)
+    rattle /= np.max(np.abs(rattle))
+    rattle *= np.clip(np.sin(2 * np.pi * 3.0 * x), 0, 1) ** 4  # little body rattles, three a second
+    return 0.8 * engine + 0.25 * hiss + 0.12 * rattle
+
+
+def truck_honk(rng: np.random.Generator) -> np.ndarray:
+    """One soft friendly toot-toot: two short squeezy horn notes (a major third), round, never loud or rude."""
+    out = np.zeros(int(RATE * 0.55))
+    for at, f0, d in ((0.0, 466.0, 0.16), (0.21, 587.0, 0.24)):
+        x = t(d)
+        tone = sum(a * np.sin(2 * np.pi * h * f0 * x) for h, a in ((1, 1.0), (2, 0.5), (3, 0.3), (4, 0.12)))
+        shape = np.minimum(1, x / 0.015) * np.minimum(1, (d - x) / 0.04)
+        start = int(RATE * at)
+        out[start : start + len(x)] += lowpass(tone * shape, 2600)
+    return out
+
+
+def truck_bump(rng: np.random.Generator, variant: int) -> np.ndarray:
+    """The wheels go over the bump: a soft rubbery thunk with a springy boing in the suspension. Variant 1 (back
+    wheels) adds a short rattle of cargo, since that is the bump that throws the box."""
+    d = 0.5
+    x = t(d)
+    thump = np.sin(2 * np.pi * (90 + 60 * np.exp(-x / 0.03)) * x) * env(len(x), 0.004, 14)
+    knock = bandpass(rng.standard_normal(len(x)), 300, 1800) * env(len(x), 0.002, 45) * 0.5
+    spring = np.sin(2 * np.pi * 210 * x * (1 + 0.15 * np.exp(-x / 0.1))) * np.exp(-x / 0.12) * 0.18
+    out = thump + knock + spring
+    if variant == 1:
+        for _ in range(7):
+            at = rng.uniform(0.04, 0.3)
+            m = int(RATE * 0.03)
+            tick = bandpass(rng.standard_normal(m), 900, 4000) * env(m, 0.001, 120) * rng.uniform(0.15, 0.3)
+            start = int(RATE * at)
+            out[start : start + m] += tick
+    return out
+
+
+def truck_door(rng: np.random.Generator) -> np.ndarray:
+    """The rear door swings up: a short latch clack and a light metal flap that wobbles once."""
+    d = 0.45
+    x = t(d)
+    clack = bandpass(rng.standard_normal(len(x)), 1200, 5000) * env(len(x), 0.001, 90)
+    flap = np.sin(2 * np.pi * 340 * x) * np.sin(2 * np.pi * 7 * x) * np.exp(-x / 0.12) * 0.35
+    return clack + flap
+
+
+def box_thud(rng: np.random.Generator) -> np.ndarray:
+    """A cardboard box lands on the pavement: a hollow papery thud, a soft slap of the flaps and a tiny scuff."""
+    d = 0.4
+    x = t(d)
+    body = np.sin(2 * np.pi * (140 + 90 * np.exp(-x / 0.02)) * x) * env(len(x), 0.003, 22)
+    paper = bandpass(rng.standard_normal(len(x)), 400, 2600) * env(len(x), 0.002, 35) * 0.6
+    scuff = bandpass(rng.standard_normal(len(x)), 2000, 6000) * np.exp(-((x - 0.06) / 0.03) ** 2) * 0.15
+    return body + paper + scuff
+
+
+def box_rustle(rng: np.random.Generator) -> np.ndarray:
+    """Something small wriggles in a cardboard box: two quick papery scrapes and a little bump against the side."""
+    out = np.zeros(int(RATE * 0.5))
+    for at, gain in ((0.0, 1.0), (0.16, 0.8)):
+        m = int(RATE * 0.12)
+        scrape = bandpass(rng.standard_normal(m), 1500, 5500) * np.sin(np.pi * np.arange(m) / m) * gain * 0.6
+        start = int(RATE * at)
+        out[start : start + m] += scrape
+    m = int(RATE * 0.12)
+    tt = np.arange(m) / RATE
+    bump = np.sin(2 * np.pi * 180 * tt) * np.exp(-tt / 0.02) * 0.5
+    start = int(RATE * 0.3)
+    out[start : start + m] += bump
+    return out
+
+
 def ui_click(rng: np.random.Generator) -> np.ndarray:
     x = t(0.05)
     return np.sin(2 * np.pi * 1800 * x) * env(len(x), 0.0008, 120)
@@ -282,12 +369,19 @@ SOUNDS = [
     ("sfx", "CleanACat_Sfx_Meow_1", lambda r: meow(r, 0)),
     ("sfx", "CleanACat_Sfx_Meow_2", lambda r: meow(r, 1)),
     ("sfx", "CleanACat_Sfx_Meow_3", lambda r: meow(r, 2)),
+    ("sfx", "CleanACat_Sfx_TruckRumble", truck_rumble),
+    ("sfx", "CleanACat_Sfx_TruckHonk", truck_honk),
+    ("sfx", "CleanACat_Sfx_TruckBump_1", lambda r: truck_bump(r, 0)),
+    ("sfx", "CleanACat_Sfx_TruckBump_2", lambda r: truck_bump(r, 1)),
+    ("sfx", "CleanACat_Sfx_TruckDoor", truck_door),
+    ("sfx", "CleanACat_Sfx_BoxThud", box_thud),
+    ("sfx", "CleanACat_Sfx_BoxRustle", box_rustle),
     ("ui", "CleanACat_Ui_Camera", camera_shutter),
     ("ui", "CleanACat_Ui_Click", ui_click),
 ]
 
 
-LOOPS = {"CleanACat_Sfx_SpongeLoop", "CleanACat_Sfx_DryerHum"}  # seamless loops: no end fade
+LOOPS = {"CleanACat_Sfx_SpongeLoop", "CleanACat_Sfx_DryerHum", "CleanACat_Sfx_TruckRumble"}  # seamless loops: no end fade
 
 
 def write_ogg(sig: np.ndarray, path: Path, loop: bool = False) -> None:

@@ -223,7 +223,7 @@ def main(argv):
     mat = common.palette_material(os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png"))
     makers = build_all.all_assets()
     want = lambda n: not only or any(w in n.lower() for w in only)   # noqa: E731
-    for name in cats.ROSTER:
+    for name in (*cats.ROSTER, *cats.EXTRA_CATS):      # the mascot too: clean in his collar, and as the muddy stray
         for dirty in (False, True):
             if want(f"portrait_{name}{'_dirty' if dirty else ''}"):
                 print("ui:", portrait(name, mat, out, dirty))

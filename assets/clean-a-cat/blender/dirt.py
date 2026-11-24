@@ -589,9 +589,9 @@ def _tangle(k, swatch, swatch2):
 
 def build_dirty(name, mat, body):
     """The dirty model of a roster cat: (objects, nest map for rbx_export, root attributes)."""
-    spec = cats.ROSTER[name]
+    spec = cats.spec_of(name)
     base = f"CleanACat_Cat_{name}_Dirty{cats.SUFFIX[body]}"
-    objs = cats.build_cat(name, mat, base=base, body=body)
+    objs = cats.build_cat(name, mat, spec={**spec, "collar": None}, base=base, body=body)   # a stray wears no collar
     bpy.context.view_layer.update()
     k = cats.scale_of(spec, body)
     eyes = [_centre(o) for o in objs if o.name.endswith(("_Eye1", "_Eye2"))]
@@ -678,7 +678,7 @@ def _apply_rotation(ob):
 
 
 ASSETS = {}
-for _n in cats.ROSTER:
+for _n in (*cats.ROSTER, *cats.EXTRA_CATS):
     for _body in cats.BUILT_BODIES:   # 3,200: the long claws (#23) put the fluffiest coat a little over 3,000
         ASSETS[f"CleanACat_Cat_{_n}_Dirty{cats.SUFFIX[_body]}"] = (
             lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3200)
