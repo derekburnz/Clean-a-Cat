@@ -646,7 +646,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			end
 			-- He leaves the box as the loaf body (Model-Agent's #323) when it is there, base where the sitting one's was,
 			-- so the lift starts in the box; the sitting body (and anything parented to it) goes. Else he stays sitting.
-			local loafAsset = findAsset({ LOAF_ASSET })
+			-- Only under Derek's hold (its switch): the first, crossed hold stays as tested, with the sitting body.
+			local loafAsset = if Carry.holdPose() == Carry.POSE
+				then findAsset({ LOAF_ASSET })
+				else nil
 			local held: Carry.Held = "sit"
 			if loafAsset then
 				local loaf = loafAsset:Clone() :: Model
