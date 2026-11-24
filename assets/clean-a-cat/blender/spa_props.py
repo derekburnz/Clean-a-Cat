@@ -168,7 +168,7 @@ JAR_WALL = 0.06
 
 
 def build_tip_jar(mat):
-    """The tip jar (#17): a square glass jar (its own part, `_Glass`, 0.6 see-through), a gold coin fill (`Fill`, a
+    """The tip jar (#17): a square glass jar (its own part, `_Glass`, 0.6 see-through, one box), a gold coin fill (`Fill`, a
     Block the game sizes from empty to full: its bottom stays at the root attribute FillBottom and its full height is
     FillHeight; keep it hidden when empty), a mint lid and a cream label on the front (`Screen`, for a SurfaceGui with
     the count)."""
@@ -180,8 +180,8 @@ def build_tip_jar(mat):
     b.box_base((0, 0, h + 0.2), (0.2, 0.2, 0.12), "spa_mint", bevel=False)          # the knob
     main = _tris(b.finalize(name, mat))
     g = Builder()
-    g.box_base((0, 0, 0.09), (w, d, h - 0.02), "glass", bevel=False)
-    g.box_base((0, 0, h + 0.05), (w - 0.1, d - 0.1, 0.03), "glass", bevel=False)    # the rim under the lid
+    g.box_base((0, 0, 0.09), (w, d, h - 0.02), "glass", bevel=False)                # one box: see-through parts must
+    # never overlap (#176, #235). A rim under the lid used to sit 0.02 inside this box; it was hidden but for a sliver.
     glass = g.finalize(name + "_Glass", mat, bevel=0)
     f = Builder()
     f.box_base((0, 0, FILL_BOTTOM), (w - 2 * JAR_WALL, d - 2 * JAR_WALL, FILL_HEIGHT), "gold_mid", bevel=False)
