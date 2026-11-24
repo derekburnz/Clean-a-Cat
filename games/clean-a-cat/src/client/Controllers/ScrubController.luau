@@ -25,6 +25,7 @@ local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
+local ControlHold = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LaterStepRules = require(Shared:WaitForChild("LaterStepRules"))
@@ -161,7 +162,6 @@ local stroking = false -- the active press is on the cat right now
 local lastHit: Vector3? = nil
 local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
-local controls: any = nil -- the default PlayerModule's controls, found on the first touch scrub
 local heldControls = false -- walking is paused while a finger scrubs
 local trove = Trove.new() -- everything a visit makes; one Clean ends it
 local nextCatThread: thread? = nil
@@ -548,25 +548,7 @@ local function holdControls(hold: boolean)
 	if hold == heldControls or (hold and not LiveFlags.isOn(FEEL_FLAG)) then
 		return
 	end
-	if controls == nil then
-		local playerScripts = Players.LocalPlayer:FindFirstChild("PlayerScripts")
-		local module = if playerScripts then playerScripts:FindFirstChild("PlayerModule") else nil
-		if not module or not module:IsA("ModuleScript") then
-			return
-		end
-		local ok, found = pcall(function()
-			return (require :: any)(module):GetControls()
-		end)
-		if not ok or found == nil then
-			return
-		end
-		controls = found
-	end
-	if hold then
-		controls:Disable()
-	else
-		controls:Enable()
-	end
+	ControlHold.set("scrub", hold)
 	heldControls = hold
 end
 

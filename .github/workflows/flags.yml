@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: "dev: the dev copy's switches. live: the real game's, only on the owner's word"
+        description: "dev: the dev copy's switches. studio: what Studio playtests of the dev copy read. live: the real game's, only on the owner's word"
         type: choice
-        options: [dev, live]
+        options: [dev, studio, live]
         default: dev
       action:
         description: "show | set | clear (clear puts the switch back at its default)"
@@ -48,6 +48,7 @@ jobs:
     timeout-minutes: 5
     env:
       ROBLOX_PUBLISH_KEY: ${{ inputs.target == 'live' && (secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) || (secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) }}
+      STORE_SUFFIX: ${{ inputs.target == 'studio' && '_dev' || '' }}
       ACTION: ${{ inputs.action }}
       KEY: ${{ inputs.key }}
       VALUE: ${{ inputs.value }}
