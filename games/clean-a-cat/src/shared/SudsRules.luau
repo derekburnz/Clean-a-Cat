@@ -27,6 +27,8 @@ SudsRules.BOX_ATTRIBUTE = "SudsBox" -- Player attribute: true while the server h
 SudsRules.HOP_SECONDS = 2
 SudsRules.OPENING_SPOT = "SpotOpening" -- plot spot where the player stands for the opening, facing the street
 SudsRules.BOX_SPOT = "SpotBox" -- plot spot where the box lands, in front of SpotOpening
+SudsRules.MASCOT_FLAG = "sudsMascot" -- Suds on his bed in the plot once named (MascotService, MascotController)
+SudsRules.MASCOT_SPOT = "SpotMascot" -- plot spot of his bed, by the door
 
 SudsRules.NONE = 0
 SudsRules.BOX = 1

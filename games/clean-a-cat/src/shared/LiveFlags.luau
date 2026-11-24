@@ -54,6 +54,7 @@ LiveFlags.KEYS = {
 	"tutorialTip", -- the tutorial's tip line "Step 2 of 3: Scrub the mud" in the step bar's place (UI/HUD/TipLine); off by default
 	"tutorialDim", -- the tutorial's dim step: the screen dims round one HUD button and an arrow says tap it (UI/Spotlight); off by default
 	"windowsHideControls", -- the phone's thumbstick and jump button hide while a window is open (UI/init); off by default
+	"sudsMascot", -- Suds curls up on his bed by the door once named, and purrs and hops when tapped (MascotService, #285); off by default
 	"sudsWash", -- a brand new save's first cat is the muddy kitten who becomes Suds, washed for a 3 star score (Shared/SudsRules, #285); off by default
 	"bubbleBath", -- the Bubble Bath station and the smell need it washes (WashDraft, #267); off by default
 	"pawdicure", -- the Pawdicure station and the long claws need it trims (WashDraft, #267); off by default
@@ -100,6 +101,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	tutorialTrail = true,
 	windowsHideControls = true,
 	sudsWash = true,
+	sudsMascot = true,
 	bubbleBath = true,
 	pawdicure = true,
 	proBrush = true,

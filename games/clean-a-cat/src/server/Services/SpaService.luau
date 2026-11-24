@@ -32,6 +32,7 @@ local WindowRules = require(Shared:WaitForChild("WindowRules"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
+local MascotService = require(script.Parent:WaitForChild("MascotService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PlotService = require(script.Parent:WaitForChild("PlotService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
@@ -240,7 +241,15 @@ local function onRequestCat(player: Player)
 		if not SpaRules.canReplace(cat, os.clock()) then
 			SpaRules.restart(cat)
 		else
+			local named = cat.mascot and cat.stage == "done"
 			cat = newCat(player)
+			if named then
+				-- His wash is over and the tub has the next cat: Suds goes home to his bed (switch sudsMascot).
+				MascotService.refresh(player)
+				if LiveFlags.isOn("onboardingFunnel") and LiveFlags.isOn(SudsRules.MASCOT_FLAG) then
+					Telemetry.event(player, "suds_home")
+				end
+			end
 		end
 	end
 	sendCat(player, cat :: SpaRules.Cat)
