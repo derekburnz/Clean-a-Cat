@@ -6,8 +6,8 @@
 -- a touch screen) and the action ("Pick him up"), standing just to the right of the thing it is for, never over it.
 -- A tap on the pill does what the prompt does; keys work as before. Switch off: Roblox's own prompts come back.
 --
--- It sets the style on this device only, for every prompt there is and every one added later, so the prompts the
--- opening, the spa and the boards make all look the same without each knowing about it.
+-- It sets the style on this device only, for every prompt in Workspace (the game's own: the opening, the spa and the
+-- boards make theirs there; Roblox's core prompts live elsewhere and are left alone) and every one added later.
 local Players = game:GetService("Players")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -155,13 +155,36 @@ local function show(prompt: ProximityPrompt, input: Enum.ProximityPromptInputTyp
 	label.Parent = pill
 	pill.Parent = gui
 	pill.Activated:Connect(function()
-		if prompt.Enabled then
-			prompt:InputHoldBegin()
+		if not prompt.Enabled then
+			return
+		end
+		-- a hold prompt is held for its time, as a key would be
+		prompt:InputHoldBegin()
+		if prompt.HoldDuration > 0 then
+			task.delay(prompt.HoldDuration, function()
+				if prompt.Parent ~= nil then
+					prompt:InputHoldEnd()
+				end
+			end)
+		else
 			prompt:InputHoldEnd()
 		end
 	end)
 	gui.Parent = playerGui
 	drawn[prompt] = gui
+	-- a prompt switched off, moved or removed takes its pill with it (Roblox also sends PromptHidden)
+	local function gone()
+		if drawn[prompt] == gui and (not prompt.Enabled or prompt.Parent == nil) then
+			hide(prompt)
+		end
+	end
+	prompt:GetPropertyChangedSignal("Enabled"):Connect(gone)
+	prompt.AncestryChanged:Connect(gone)
+	gui.Destroying:Connect(function()
+		if drawn[prompt] == gui then
+			drawn[prompt] = nil
+		end
+	end)
 end
 
 function PromptController.Start()
