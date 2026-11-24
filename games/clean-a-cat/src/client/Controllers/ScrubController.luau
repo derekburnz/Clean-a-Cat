@@ -125,6 +125,7 @@ type Visit = {
 	step: string?, -- the later step under way: "smell" (the Bubble Bath) or "claws" (the Pawdicure)
 	suds: { BasePart }, -- the bath's puffs (PH_Suds), cleared in order
 	swirl: number, -- studs swirled on the cat in this bath
+	away: boolean, -- the cat sits at a later step's station, not in the tub
 	hold: Paw?, -- the paw under the press in the Pawdicure, held since holdSince
 	holdSince: number,
 	ring: Highlight?, -- the outline on the paw to press next
@@ -678,7 +679,8 @@ local function showClaws(cat: Cat, long: boolean)
 end
 
 -- Sits the cat on the CatSeat of station `id` in the player's plot (at the station's CatScale), or back in the tub
--- when `id` is nil or that station is not standing: a later step then happens in the tub.
+-- when `id` is nil or that station is not standing: a later step then happens in the tub. A cat that never left the
+-- tub is not moved, so with the later steps off nothing changes (a cat turned to show its mud stays turned).
 local function seatAt(v: Visit, cat: Cat, id: string?)
 	local station = if id then SpaLayout.station(id) else nil
 	local point = if station then station:FindFirstChild("CatSeat", true) else nil
@@ -688,6 +690,11 @@ local function seatAt(v: Visit, cat: Cat, id: string?)
 		local raw = station:GetAttribute("CatScale")
 		scale = if type(raw) == "number" and raw > 0 then raw else CAT_SCALE
 		target = (point :: Attachment).WorldCFrame
+		v.away = true
+	elseif not v.away then
+		return
+	else
+		v.away = false
 	end
 	if target == nil then
 		return
@@ -1073,6 +1080,7 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	end
 	local cat = buildCat(asset, v.folder, seat)
 	v.cat = cat
+	v.away = false -- a new cat sits in the tub
 	v.catParams.FilterDescendantsInstances = { cat.model }
 	v.catId = catId
 	setStage(v, "dirty")
@@ -1320,6 +1328,7 @@ local function buildVisit(folder: Folder): Visit
 		step = nil,
 		suds = {},
 		swirl = 0,
+		away = false,
 		hold = nil,
 		holdSince = 0,
 		ring = nil,
