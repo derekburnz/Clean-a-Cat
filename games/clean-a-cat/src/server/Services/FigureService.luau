@@ -211,22 +211,23 @@ local function clear(player: Player)
 	end
 end
 
-local function draw(player: Player)
-	clear(player)
-	local kinds = lastKinds[player]
-	local plot = folderOf(player)
-	if
-		kinds == nil
-		or plot == nil
-		or not LiveFlags.isOn(FLAG)
-		or not LiveFlags.isOn(CUSTOMERS_FLAG)
-	then
-		return
+-- The `index`th queue spot of plot `slot` (SpaLayout.lineSpot for a slot instead of a player).
+local function queueSpot(index: number, slot: number): CFrame
+	local name, past, before = SpaLayout.lineName("SpotQueue", index, true)
+	local cframe = SpaLayout.slotSpot(name, slot)
+	if past <= 0 then
+		return cframe
 	end
+	return cframe + (cframe.Position - SpaLayout.slotSpot(before, slot).Position) * past
+end
+
+-- Builds the customers for `kinds` in plot `slot`, front first, the looks starting `firstLook` along LOOKS. Not
+-- parented yet. May yield while a look's template is made.
+local function buildFolder(slot: number, kinds: { string }, firstLook: number): Folder
 	local folder = Instance.new("Folder")
 	folder.Name = FOLDER_NAME
 	for index = 1, math.min(#kinds, MAX_SHOWN) do
-		local look = LOOKS[((served[player] or 0) + index - 1) % #LOOKS + 1]
+		local look = LOOKS[(firstLook + index - 1) % #LOOKS + 1]
 		local base = template(look)
 		if base then
 			local figure = base:Clone() :: Model
@@ -238,9 +239,7 @@ local function draw(player: Player)
 					and root:IsA("BasePart")
 				then (humanoid :: Humanoid).HipHeight + (root :: BasePart).Size.Y / 2
 				else 3
-			figure:PivotTo(
-				SpaLayout.lineSpot("SpotQueue", index, player) * CFrame.new(0, height, 0)
-			)
+			figure:PivotTo(queueSpot(index, slot) * CFrame.new(0, height, 0))
 			if root and root:IsA("BasePart") then
 				(root :: BasePart).Anchored = true
 			end
@@ -252,6 +251,24 @@ local function draw(player: Player)
 			figure.Parent = folder
 		end
 	end
+	return folder
+end
+
+local function draw(player: Player)
+	clear(player)
+	local kinds = lastKinds[player]
+	local plot = folderOf(player)
+	local slot = SpaLayout.slotOf(player)
+	if
+		kinds == nil
+		or plot == nil
+		or slot == nil
+		or not LiveFlags.isOn(FLAG)
+		or not LiveFlags.isOn(CUSTOMERS_FLAG)
+	then
+		return
+	end
+	local folder = buildFolder(slot, kinds, served[player] or 0)
 	-- template() may have yielded: draw only if this is still the newest queue.
 	if lastKinds[player] ~= kinds or folderOf(player) ~= plot then
 		folder:Destroy()
@@ -286,6 +303,34 @@ function FigureService.showQueue(player: Player, kinds: { string })
 	end
 	lastKinds[player] = clean
 	task.spawn(draw, player)
+end
+
+-- Draws a full door line of `kinds` in plot `slot` whatever the switches say, replacing what is there. Only for
+-- StreetLoadService's frame check on a full street; a player's own line goes through showQueue.
+function FigureService.drawSlot(slot: number, kinds: { string })
+	FigureService.clearSlot(slot)
+	local folder = buildFolder(slot, kinds, slot)
+	-- buildFolder may have yielded: skip if a player took the slot meanwhile, so no stand-in lands in their plot.
+	local taken = false
+	for _, player in Players:GetPlayers() do
+		if SpaLayout.slotOf(player) == slot then
+			taken = true
+		end
+	end
+	local plot = SpaLayout.plotModel(slot)
+	if taken or plot == nil or plot:FindFirstChild(FOLDER_NAME) then
+		folder:Destroy()
+		return
+	end
+	folder.Parent = plot
+end
+
+function FigureService.clearSlot(slot: number)
+	local plot = SpaLayout.plotModel(slot)
+	local old = if plot then plot:FindFirstChild(FOLDER_NAME) else nil
+	if old then
+		old:Destroy()
+	end
 end
 
 local function drawAll()

@@ -133,19 +133,13 @@ local function clear(plot: Model)
 	end
 end
 
--- Draws the player's stations and pads in their plot.
-function StationService.refresh(player: Player)
-	local slot = SpaLayout.slotOf(player)
-	local plot = if slot then SpaLayout.plotModel(slot) else nil
-	if slot == nil or plot == nil then
-		return
-	end
-	clear(plot)
-	local save = DataService.get(player)
-	local assets = ReplicatedStorage:FindFirstChild("Assets")
-	if not LiveFlags.isOn(FLAG) or save == nil or assets == nil then
-		return
-	end
+-- Draws stations, pads, the kitten and the VIP door in plot `slot` from a save's `stations` and `builds`.
+local function drawInto(
+	plot: Model,
+	slot: number,
+	assets: Instance,
+	save: { stations: any, builds: any }
+)
 	local folder = Instance.new("Folder")
 	folder.Name = SpaLayout.STATIONS_FOLDER
 	for _, entry in SpaLayout.STATIONS do
@@ -202,6 +196,45 @@ function StationService.refresh(player: Player)
 		end
 	end
 	folder.Parent = plot
+end
+
+-- Draws the player's stations and pads in their plot.
+function StationService.refresh(player: Player)
+	local slot = SpaLayout.slotOf(player)
+	local plot = if slot then SpaLayout.plotModel(slot) else nil
+	if slot == nil or plot == nil then
+		return
+	end
+	clear(plot)
+	local save = DataService.get(player)
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	if not LiveFlags.isOn(FLAG) or save == nil or assets == nil then
+		return
+	end
+	drawInto(plot, slot, assets :: Instance, save)
+end
+
+-- Draws plot `slot` as if its owner had these stations and builds, whatever the switches say, replacing what is
+-- there. Only for StreetLoadService's frame check on a full street.
+function StationService.drawSlot(
+	slot: number,
+	stations: { [string]: boolean },
+	builds: { [string]: any }
+)
+	local plot = SpaLayout.plotModel(slot)
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	if plot == nil or assets == nil then
+		return
+	end
+	clear(plot)
+	drawInto(plot, slot, assets :: Instance, { stations = stations, builds = builds })
+end
+
+function StationService.clearSlot(slot: number)
+	local plot = SpaLayout.plotModel(slot)
+	if plot then
+		clear(plot)
+	end
 end
 
 local function refreshAll()

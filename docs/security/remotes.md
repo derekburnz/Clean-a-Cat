@@ -29,6 +29,8 @@ The server keeps one cat per player in its own table, with a stage: dirty, clean
 
 **Accepted for now:** the spa remotes have no distance check to the tub, so a script can play the loop without walking there. It still earns no more than an honest fast player. Revisit before a stage pays much more than a common cat, with a reach check from `SpaLayout.spot("Tub", player)` or a longer visit for higher pay.
 
+**Accepted for now:** a rejoin rerolls the cat, because `SpaService` clears the player's cat on leave. Each loop costs a leave and a join (about 10 s or more, plus the plot setup), which is close to the 15 s a skip costs, so the gain is small and slow. Fix if Legendary pay rises or the visit gets shorter: keep the unfinished cat per UserId on the server for `MIN_VISIT_SECONDS` after the player leaves, and hand it back on rejoin.
+
 ## Economy
 
 | Remote | Rate | What an exploiter tries | Server rule |
