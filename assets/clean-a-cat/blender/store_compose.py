@@ -290,8 +290,8 @@ def compose_spa(raw_dir, final=False):
     w, h = size
     bg = bubble_backdrop(size)
     art = soft_shadow_edges(crop_to_content(Image.open(os.path.join(raw_dir, "raw-thumb-spa.png")).convert("RGBA")))
-    art = fit(art, w * 0.58, h * 0.97)
-    bg.alpha_composite(art, (int(w * 0.985 - art.width), int(h * 0.99 - art.height)))
+    art = fit(art, w * 0.6, h * 0.97)                     # the bath as big as the frame allows (Derek: "blown up")
+    bg.alpha_composite(art, (int(w * 0.99 - art.width), int(h * 0.99 - art.height)))
     title = title_block(int(w * 0.44))
     title = fit(title, w * 0.47, h * 0.9)
     bg.alpha_composite(title, (int(w * 0.235 - title.width / 2), int(h * 0.5 - title.height / 2)))

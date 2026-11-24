@@ -29,7 +29,7 @@ import cats  # noqa: E402
 import spa_props  # noqa: E402
 import stations  # noqa: E402
 import tools  # noqa: E402
-from common import Builder  # noqa: E402
+from common import RB, Builder  # noqa: E402
 
 TUB_K = 1.5                       # the cat's ScaleTo at the tub
 stations.DETAIL = {"ball": (24, 14), "mound": (24, 10)}   # a close picture: round balls, as Roblox draws them
@@ -261,38 +261,151 @@ def icon_clean(mat, out, res):
     return render(objs, focus, out, res, az=-10, el=14, margin=1.14, lens=55)
 
 
+# ------------------------------------------------------------------ the claw-foot bath (store art only)
+# Derek's own Bathtub Sofa from his asset library (Roblox-Asset-Library, crate_decor.build_bathtub_sofa), the tub of
+# the ad picture he picked as the look (2026-11-23), filled as a bath: the same sky blue tub with a gold band,
+# painted bubbles, a rolled white rim and gold claw feet, the brass tap, the rain shower, the rubber duck and the
+# striped towel over the front. Its three cushions hang as towels on a brass rail behind and its bolster is a
+# rolled towel on the rim. Roblox axes (RB): x across, y up, -z the front.
+BATH_K = 1.3                      # the tub drawn this much bigger, so a 1.5 times cat sits in it with room
+BATH_CX, BATH_RIM, BATH_WATER = 0.9, 1.96, 1.99
+
+
+def _stadium(b, cx, y0, y1, r, sw, segments=20):
+    """A tub-shaped slab from y0 to y1: a box between two round ends centred at x = +-cx. The box keeps a hair
+    inside the ends all round, so no two faces share a plane."""
+    b.span((-cx, y0 + 0.002, -r + 0.003), (cx, y1 - 0.002, r - 0.003), sw)
+    for sx in (-1, 1):
+        b.cyl((sx * cx, (y0 + y1) / 2, 0), r, y1 - y0, sw, segments=segments)
+
+
+def _limb(b, p0, p1, r0, r1, sw, segments=8):
+    a, c = Vector(p0), Vector(p1)
+    d = c - a
+    turn = Vector((0, 1, 0)).rotation_difference(d.normalized()).to_matrix()
+    b.b.cyl(RB.p(*((a + c) / 2)), r0, d.length, sw, segments=segments, bevel=False, rot=RB._rot(turn), radius2=r1)
+
+
+def _arc(b, cx, cy, z, r, a0, a1, n, w, d, sw):
+    step = math.radians(abs(a1 - a0) / n)
+    length = 2 * r * math.sin(step / 2) * 1.06
+    for k in range(n):
+        t = math.radians(a0 + (a1 - a0) * (k + 0.5) / n)
+        b.box((cx + r * math.cos(t), cy + r * math.sin(t), z), (length, w, d), sw,
+              rot=Matrix.Rotation(t + math.pi / 2, 3, "Z"))
+
+
+def _rubber_duck(b, x, y, z, s, sw):
+    """A rubber duck sitting on y, looking toward -Z."""
+    b.ball((x, y + 0.2 * s, z + 0.03 * s), 0.27 * s, sw, scale=(1.0, 0.75, 1.2))
+    b.ball((x, y + 0.46 * s, z - 0.12 * s), 0.17 * s, sw)
+    b.box((x, y + 0.43 * s, z - 0.3 * s), (0.15 * s, 0.06 * s, 0.12 * s), "fur_orange")
+    for sx in (-1, 1):
+        b.cyl((x + sx * 0.075 * s, y + 0.51 * s, z - 0.28 * s), 0.03 * s, 0.03 * s, "fur_black", axis="Z", segments=6)
+    b.ball((x, y + 0.33 * s, z + 0.33 * s), 0.08 * s, sw, scale=(1.0, 1.3, 1.0))
+
+
+def _hung(b, x0, x1, rail_y, z, drop, sw, stripes=None):
+    """A towel folded over a rail or a rim at height rail_y and depth z: a long front fall and a short back one."""
+    b.span((x0, rail_y, z - 0.07), (x1, rail_y + 0.04, z + 0.07), sw)
+    b.span((x0, rail_y - drop, z - 0.07), (x1, rail_y, z - 0.03), sw)
+    b.span((x0, rail_y - drop * 0.45, z + 0.03), (x1, rail_y, z + 0.07), sw)
+    for k in (stripes or ()):
+        a, c = x0 + (x1 - x0) * k / 5, x0 + (x1 - x0) * (k + 1) / 5
+        b.span((a, rail_y - drop - 0.004, z - 0.078), (c, rail_y + 0.035, z - 0.03), "offwhite")
+        b.span((a, rail_y + 0.035, z - 0.078), (c, rail_y + 0.048, z + 0.078), "offwhite")
+
+
+def clawfoot_bath(mat):
+    """The bath of the ad picture, scaled by BATH_K: (objects, the water's height in studs)."""
+    b, wat, duck = RB(), RB(), RB()
+    CX = BATH_CX
+    _stadium(b, CX, 0.45, 1.0, 0.76, "pastel_sky")                                       # the tub, flaring out
+    _stadium(b, CX, 0.98, 1.84, 0.85, "pastel_sky")
+    _stadium(b, CX, 0.96, 1.04, 0.87, "gold_mid")                                         # a gold band at the flare
+    _stadium(b, CX, 1.82, BATH_RIM, 0.93, "offwhite")                                     # the rolled rim
+    for k, (x, y, r) in enumerate(((0.28, 1.48, 0.12), (0.52, 1.24, 0.07), (0.7, 1.6, 0.08), (0.42, 1.74, 0.05),
+                                   (0.8, 1.3, 0.06), (1.05, 1.52, 0.09), (-0.95, 1.36, 0.1), (-1.2, 1.62, 0.06))):
+        b.cyl((x, y, -0.86), r, 0.03, ("offwhite", "fish_belly")[k % 2], axis="Z", segments=16)   # painted bubbles
+    for sx in (-1, 1):                                                                     # claw feet
+        for sz in (-1, 1):
+            b.span((sx * 1.12 - 0.12, 0.5, sz * 0.62 - 0.1), (sx * 1.12 + 0.12, 0.72, sz * 0.62 + 0.1), "gold_mid")
+            _limb(b, (sx * 1.12, 0.55, sz * 0.62), (sx * 1.3, 0.2, sz * 0.72), 0.08, 0.06, "gold_mid")
+            b.ball((sx * 1.32, 0.13, sz * 0.74), 0.15, "gold_mid", scale=(1.15, 0.9, 1.15))
+            for k in (-1, 0, 1):                                                           # three toes
+                a = math.atan2(sz * 0.74, sx * 1.32) + 0.5 * k
+                b.cyl((sx * 1.32 + 0.15 * math.cos(a), 0.06, sz * 0.74 + 0.15 * math.sin(a)), 0.05, 0.12,
+                      "gold_dark", segments=6)
+    _stadium(wat, CX, BATH_RIM - 0.02, BATH_WATER, 0.79, "water")                         # full to the brim
+    _hung(b, -0.95, -0.05, BATH_RIM, -0.86, 0.72, "mint", stripes=(1, 3))                 # the striped towel
+    for k in range(6):                                                                    # its fringe
+        x = -0.95 + 0.08 + k * (0.9 - 0.16) / 5
+        b.span((x - 0.025, BATH_RIM - 0.84, -0.935), (x + 0.025, BATH_RIM - 0.71, -0.915), "offwhite")
+    b.cyl((-1.5, BATH_RIM + 0.2, 0.0), 0.2, 0.7, "sign_teal", axis="Z", segments=16)      # a rolled towel on the rim
+    for sz in (-1, 1):
+        b.cyl((-1.5, BATH_RIM + 0.2, sz * 0.36), 0.15, 0.02, "offwhite", axis="Z", segments=16)
+    # the brass gooseneck tap on the rim and its two handles
+    tx = 1.72
+    b.cyl((tx, 1.99, 0), 0.12, 0.06, "brass", segments=12)
+    b.cyl((tx, 2.35, 0), 0.06, 0.72, "brass", segments=10)
+    _arc(b, tx - 0.2, 2.7, 0, 0.2, 0, 180, 7, 0.1, 0.1, "brass")
+    b.cyl((tx - 0.4, 2.62, 0), 0.055, 0.16, "brass", segments=10)
+    for sz, cap in ((-1, "shirt_blue"), (1, "shirt_red")):
+        b.cyl((tx, 2.2, sz * 0.12), 0.04, 0.14, "brass", axis="Z", segments=6)
+        b.box((tx, 2.2, sz * 0.2), (0.22, 0.04, 0.04), "brass")
+        b.box((tx, 2.2, sz * 0.2), (0.04, 0.22, 0.04), "brass")
+        b.cyl((tx, 2.2, sz * 0.23), 0.04, 0.03, cap, axis="Z", segments=6)
+    # the rain shower: a brass stand behind the tap end, its rose over the bath
+    lx, lz = 1.7, 1.05
+    b.cyl((lx, 0.04, lz), 0.2, 0.08, "brass", segments=12)
+    top = 3.62                                                                            # shorter than the sofa's lamp
+    b.cyl((lx, top / 2 + 0.02, lz), 0.055, top - 0.04, "brass", segments=10)
+    b.ball((lx, top, lz), 0.08, "brass")
+    _limb(b, (lx, top, lz), (1.5, top - 0.04, 0.12), 0.055, 0.05, "brass")
+    b.cyl((1.5, top - 0.16, 0.12), 0.06, 0.2, "brass", segments=10)
+    b.cyl((1.5, top - 0.3, 0.12), 0.36, 0.1, "brass", r2=0.12, segments=20)
+    # a brass towel rail behind the tub with three towels (the ad picture's cushions)
+    ry, rz = 3.05, 1.12
+    for x in (0.3, -1.95):
+        b.cyl((x, 0.04, rz), 0.16, 0.08, "brass", segments=12)
+        b.cyl((x, ry / 2, rz), 0.05, ry, "brass", segments=10)
+        b.ball((x, ry + 0.02, rz), 0.08, "brass")
+    b.cyl((-0.825, ry, rz), 0.045, 2.25, "brass", axis="X", segments=10)
+    for x, sw in ((-0.2, "mint"), (-0.85, "pastel_butter"), (-1.5, "blush")):
+        _hung(b, x - 0.29, x + 0.29, ry + 0.045, rz, 0.95, sw)
+    _rubber_duck(duck, 0, 0, 0, 0.55, "pastel_butter")
+    objs = [b.finalize("StoreBath", mat), wat.finalize("StoreBath_Water", mat),
+            duck.finalize("StoreBath_Duck", mat, location=(1.25, BATH_WATER - 0.03, -0.3))]
+    for o in objs:
+        common.scale_mesh(o, BATH_K)
+        o.location = o.location * BATH_K
+    return _fresh(objs), BATH_WATER * BATH_K
+
+
 def thumb_spa(mat, out, res):
-    """The store thumbnail Derek picked the look of (2026-11-23): the whole tub, a clean fluffy Muffin with a bow in a
-    pile of foam, a striped towel over the rim, the sponge on the rim and bubbles rising. No mud."""
-    objs, cat, tub = tub_scene(mat, name="Muffin", state="clean", with_sponge=False, foam=False)
-    spec = cats.ROSTER["Muffin"]
-    k = cats.scale_of(spec, "sit")
-    bow = props.build_bow(list(props.BOWS)[0], mat)
-    at = Vector(cats.joints(spec, "sit")["Head"]) + Vector(cats.bow_at(spec, "sit")) * k
-    _move(bow, Vector((0, 0, stations.SEAT_Z)) + at * TUB_K, TUB_K)
-    objs += _fresh(bow)
+    """The store thumbnail (Derek 2026-11-23): the bath of his ad picture, blown up, with a clean Muffin sitting in
+    it: the claw-foot tub, the striped towel over the rim, towels on a rail, the duck, lather and soap bubbles. The
+    cat is plain (no fluff, no bow), so its ears and face read at a glance. No mud."""
+    tub, wz = clawfoot_bath(mat)
+    cx = -0.3                                             # the cat sits left of the middle, as in the ad picture
+    cat = cat_state("Muffin", mat, "sit", "plain", (cx, 0.12, wz - 0.48), TUB_K)
+    objs = tub + cat
     lo, hi = common.bounds(cat)
-    tlo, thi = common.bounds(tub)
-    top = stations.SEAT_Z + 0.9
-    # lather hugging the cat's sides and back, the water left open in front of it
-    objs += bubbles(mat, [(1.3, lo.y + 0.5, top, 0.5), (1.5, 0.55, top + 0.05, 0.45)], seed=11)
-    wz = stations.WATER_Z
-    objs += floating(mat, [(-0.7, lo.y - 0.3, wz + 0.2, 0.24), (0.1, lo.y - 0.4, wz + 0.14, 0.16),      # on the water
-                           (0.75, lo.y - 0.15, wz + 0.3, 0.26), (-1.55, -0.6, wz + 0.2, 0.2),
-                           (-2.6, lo.y - 0.9, hi.z - 1.6, 0.3), (2.1, lo.y - 0.2, hi.z - 0.3, 0.28),    # drifting up
-                           (1.5, lo.y - 0.4, hi.z + 0.7, 0.18), (-1.4, lo.y - 0.2, hi.z + 0.5, 0.22),
-                           (0.4, lo.y - 0.3, hi.z + 1.1, 0.15), (-2.4, 0.2, hi.z + 0.1, 0.16)])
-    rim = stations.RIM_Z + 0.14                           # the top of the rim's cap
-    tw = Builder()                                        # a mint towel with white stripes over the front rim
-    x, w = 1.25, 1.0
-    tw.box((x, tlo.y + 0.25, rim + 0.05), (w, 0.62, 0.08), "spa_mint", bevel=False)
-    tw.box((x, tlo.y - 0.03, rim - 0.52), (w, 0.08, 1.22), "spa_mint", bevel=False)
-    for dx in (-0.26, 0.26):
-        tw.box((x + dx, tlo.y - 0.08, rim - 0.52), (0.12, 0.04, 1.22), "offwhite", bevel=False)
-    objs += _fresh([tw.finalize("Towel", mat, bevel=0)])
-    objs += bubbles(mat, [(tlo.x + 0.4, tlo.y + 0.4, rim + 0.2, 0.4)], seed=13)
-    focus = cat + [o for o in tub if not o.name.endswith("_Bubbles")]     # the drifting bubbles may leave the frame
-    return render(objs, focus, out, res, az=-20, el=21, margin=1.1, lens=55)
+    fm = Builder()                                        # lather round the cat, the water open in front of it
+    for x, y, r in ((cx - 0.95, 0.45, 0.4), (cx + 0.95, 0.4, 0.46), (cx + 0.8, -0.4, 0.3), (cx - 0.8, -0.35, 0.28),
+                    (1.55, 0.25, 0.42), (cx + 1.5, -0.05, 0.34)):
+        stations.foam_mound(fm, x, y, wz - 0.02, r)
+    for x, y, z, r in ((cx - 0.9, 0.5, 0.2, 0.2), (cx + 1.0, 0.45, 0.22, 0.22), (cx + 0.75, -0.35, 0.14, 0.15),
+                       (1.5, 0.3, 0.2, 0.2), (cx + 1.45, 0.0, 0.16, 0.16), (cx - 0.72, -0.32, 0.14, 0.13)):
+        stations.foam_bubble(fm, x, y, wz + z, r)
+    objs += _fresh([common.shade_smooth(fm.finalize("Foam", mat, bevel=0))])
+    objs += floating(mat, [(cx - 0.3, lo.y - 0.28, wz + 0.2, 0.2), (cx + 0.35, lo.y - 0.4, wz + 0.15, 0.14),      # on the water
+                           (-1.1, -0.75, wz + 0.2, 0.17), (1.3, -0.5, wz + 0.22, 0.2),
+                           (cx + 1.55, lo.y - 0.2, hi.z - 1.1, 0.24),   # drifting up
+                           (cx + 1.15, lo.y - 0.3, hi.z + 0.1, 0.15), (2.1, -0.6, hi.z - 0.2, 0.2),
+                           (1.9, -0.7, hi.z - 1.6, 0.13)])
+    focus = [o for o in objs if "Bubbles" not in o.name]     # the drifting bubbles may leave the frame
+    return render(objs, focus, out, res, az=20, el=20, margin=1.06, lens=55)
 
 
 def thumb_scrub(mat, out, res):
