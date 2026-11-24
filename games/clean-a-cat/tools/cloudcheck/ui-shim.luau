@@ -18,6 +18,11 @@
 ]]
 
 local World, profile = ...
+-- Roblox draws text bigger when the player picks a larger text size, except TextScaled text and past a
+-- UITextSizeConstraint's MaxTextSize. Roblox does not publish the factors; these are our stand-ins, set on the high
+-- side, until a Studio measurement replaces them (#181).
+local TEXT_SCALE = { Medium = 1, Large = 1.15, Larger = 1.3, Largest = 1.5 }
+local TEXT_K = TEXT_SCALE[profile.textSize or "Medium"] or 1
 local I = World.internals
 local state, methods, InstanceMT, isA = I.state, I.methods, I.InstanceMT, I.isA
 local env = I.env
@@ -947,7 +952,7 @@ local function renderedTextSize(self, w, h, k)
 		end
 		return math.max(best, minSize)
 	end
-	local size = (rawProp(self, "TextSize") or 14) * k
+	local size = (rawProp(self, "TextSize") or 14) * k * TEXT_K
 	if constraint then
 		size = math.clamp(size, (rawProp(constraint, "MinTextSize") or 1) * k, (rawProp(constraint, "MaxTextSize") or 100) * k)
 	end
@@ -1789,6 +1794,7 @@ function methods.Fire(self, ...)
 end
 function methods.GetTextSize(_, text, size, font, frameSize)
 	local em = 0.5
+	size = (size or 14) * TEXT_K
 	local lines, widest = wrapText(text or "", size or 14, em, frameSize and frameSize.X < 1e6 and frameSize.X or nil)
 	return Vector2.new(widest, lines * (size or 14))
 end
@@ -1797,8 +1803,9 @@ function methods.GetTextBoundsAsync(_, params)
 	local family = face and string.match(face.Family or "", "families/([%w]+)%.json") or ""
 	local em = GLYPH[family] or 0.5
 	local width = params.Width
-	local lines, widest = wrapText(params.Text or "", params.Size or 14, em, if width and width > 0 then width else nil)
-	return Vector2.new(widest, lines * (params.Size or 14))
+	local lines, widest =
+		wrapText(params.Text or "", (params.Size or 14) * TEXT_K, em, if width and width > 0 then width else nil)
+	return Vector2.new(widest, lines * (params.Size or 14) * TEXT_K)
 end
 function methods.GetGuiInset()
 	return Vector2.new(0, INSET), Vector2.new(0, 0)
@@ -2027,7 +2034,8 @@ state[camera].props.ViewportSize = Vector2.new(profile.width, profile.height)
 
 local GuiService = World.service("GuiService")
 state[GuiService].props.ReducedMotionEnabled = false
-state[GuiService].props.PreferredTextSize = Enum.PreferredTextSize.Medium
+state[GuiService].props.PreferredTextSize = Enum.PreferredTextSize[profile.textSize or "Medium"]
+state[GuiService].props.PreferredTransparency = profile.transparency or 1 -- 1 is Roblox's default, 0 asks for solid
 state[GuiService].props.MenuIsOpen = false
 state[GuiService].props.TopbarInset = Rect.new(Vector2.new(184, 0), Vector2.new(profile.width - 16, INSET))
 state[GuiService].props.ViewportDisplaySize = Enum.DisplaySize.Medium

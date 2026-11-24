@@ -41,6 +41,15 @@ Check every changed screen on a phone (about 844 x 390), a small phone (about 66
 - Responses are instant: no visible wait after a press, and images are preloaded rather than loaded on open.
 - Scale for the big frame, Offset for padding, strokes and icons. Pin shapes with `UIAspectRatioConstraint` and cap them with `UISizeConstraint`, so a window does not stretch across a wide desktop.
 - A phone is not a small desktop: collapse two columns to one and scroll before you shrink text. Check a tall phone as well as a wide one.
+- **The player's Roblox settings win** (#181). Read them through `UI/Comfort.luau`, never per screen:
+  - *Text size* (`GuiService.PreferredTextSize`, up to Largest). Roblox draws fixed-size text bigger itself; leave room with `AutomaticSize` or `TextWrapped`, keep `TextScaled` off body text (it ignores the setting) and never set `MaxTextSize` below the normal size. The UI gate's `phonecomfort` run builds every screen at Largest.
+  - *See-through backgrounds* (`GuiService.PreferredTransparency`, 0 means solid). Every see-through panel goes through `Comfort.backdrop`.
+  - *Reduced motion* (`GuiService.ReducedMotionEnabled`): see section 4.
+  - *Input in use* (`UserInputService.PreferredInput`, through `Comfort.input` and `Comfort.onInputChanged`). Swap prompts and layout on it, not on `TouchEnabled`.
+  - *Safe areas*: words and buttons sit in a gui with `ScreenInsets = CoreUISafeInsets`; only edge art goes full bleed.
+  - *Controller prompts* show the button picture for the device (`InputActionLabel`, or `UserInputService:GetImageForKeyCode`), never a keyboard letter on a gamepad.
+  - *Vibration* uses `HapticEffect` (`HapticService` is retired), is short, and is skipped when Reduced Motion is on.
+- **Console from the sofa:** a player 8 to 10 feet from a TV can read every word and reach every control with the D-pad, A and B alone.
 - Nothing important depends on hover (touch has none). On a controller every button is `Selectable`, the window picks its first button when it opens, focus is easy to see, D-pad moves in a sensible order and B closes.
 
 ## 4. Look

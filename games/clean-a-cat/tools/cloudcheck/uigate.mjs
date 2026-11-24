@@ -83,7 +83,14 @@ async function runProfile(profile) {
   const world = lua.load(worldSource, { name: 'world-shim' }).call(tree, hostLoad)[0];
   const ui = lua
     .load(uiSource, { name: 'ui-shim' })
-    .call(world, { width: profile.width, height: profile.height, touch: profile.touch, inset: profile.inset })[0];
+    .call(world, {
+      width: profile.width,
+      height: profile.height,
+      touch: profile.touch,
+      inset: profile.inset,
+      textSize: profile.textSize,
+      transparency: profile.transparency,
+    })[0];
   // the scenes run with the game's globals (workspace, the virtual os.time), as a LocalScript would
   const env = world.rawGet('internals').rawGet('env');
   const scenes = lua.load(scenesSource, { name: 'uigate-scenes', environment: env }).call(ui)[0];
@@ -115,7 +122,9 @@ async function runProfile(profile) {
   const results = [];
   // --flag a,b: those live switches read true from the start, as on a server that has them on (the UI builds its
   // windows once, at setup)
-  for (const flag of (process.env.UIGATE_FLAG || '').split(',').filter((f) => /^[A-Za-z0-9]+$/.test(f))) {
+  // a profile can name its own switches too (phonecomfort turns on comfortSettings)
+  const flags = [process.env.UIGATE_FLAG || '', ...(profile.flags || [])].join(',');
+  for (const flag of flags.split(',').filter((f) => /^[A-Za-z0-9]+$/.test(f))) {
     lua.load(`game:GetService("ReplicatedStorage"):SetAttribute("LiveFlag_${flag}", true)`, { name: 'uigate-flag', environment: env }).call();
   }
   run(scenes.rawGet('setup'), 3);
@@ -302,7 +311,7 @@ function parseArgs(argv) {
     else if (arg === '--save') out.save = argv[++i]; // with --shard: write each size's scenes to this folder
     else if (arg === '--merge') out.merge = argv[++i]; // check the scenes every --save shard wrote to this folder
     else if (arg === '--help' || arg === '-h') {
-      console.log('usage: node uigate.mjs [--out dir] [--devices] [--tablets] [--profile desktop|laptop|phone|tablet|smallphone|console|ipadmini|ipad43|ipadpro|tab1610|fire7] [--scene Name] [--flag menuFamily] [--update-baseline] [--verbose]');
+      console.log('usage: node uigate.mjs [--out dir] [--devices] [--tablets] [--profile desktop|laptop|phone|phonecomfort|tablet|smallphone|console|ipadmini|ipad43|ipadpro|tab1610|fire7] [--scene Name] [--flag menuFamily] [--update-baseline] [--verbose]');
       process.exit(0);
     } else throw new Error(`unknown argument ${arg}`);
   }
