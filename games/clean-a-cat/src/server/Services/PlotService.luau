@@ -24,13 +24,13 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SPAWN_NAME = "PH_Spawn" -- the spawn in default.project.json
 local FLOOR_NAME = "PH_Floor" -- the placeholder floor in default.project.json
 local ASSET_WAIT_SECONDS = 10
--- With the switch `spawnView` (off by default): the player spawns this many studs behind the tub, facing the way
--- the tub faces (out to the street), instead of on SpotSpawn. SpotSpawn sits 8 studs inside the front window
--- facing in, so the camera (about 12.5 studs behind) starts outside the window and the first frame is a blur of
--- glass and wall (#169). Behind the tub the camera rests inside the spa against the solid back wall, with the tub,
--- the window and the door line ahead.
-local VIEW_FLAG = "spawnView"
-local SPAWN_BEHIND_TUB = 5
+-- With the switch `spawnView` (off by default): the tub turns to face into the spa (SpaLayout.tubSpot) and the
+-- player spawns this many studs in front of it, facing it and the street beyond, instead of on SpotSpawn.
+-- SpotSpawn sits 8 studs inside the front window facing in, so the camera (about 12.5 studs behind) starts outside
+-- the window and the first frame is a blur of glass and wall (#169). Here the camera rests inside the spa against
+-- the solid back wall, with the cat's face, the window and the door line ahead.
+local VIEW_FLAG = SpaLayout.VIEW_FLAG
+local SPAWN_FROM_TUB = 5
 
 local PlotService = {}
 
@@ -93,7 +93,10 @@ end
 -- Where a character in plot `slot` spawns: the base of its feet and the way it faces.
 local function spawnSpot(slot: number): CFrame
 	if LiveFlags.isOn(VIEW_FLAG) then
-		return SpaLayout.slotSpot("SpotTub", slot) * CFrame.new(0, 0, SPAWN_BEHIND_TUB)
+		-- The turned tub's front (-Z) faces into the spa: stand there, turned back to face the tub.
+		return SpaLayout.slotTubSpot(slot)
+			* CFrame.new(0, 0, -SPAWN_FROM_TUB)
+			* CFrame.Angles(0, math.pi, 0)
 	end
 	return SpaLayout.slotSpot("SpotSpawn", slot)
 end

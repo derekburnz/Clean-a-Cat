@@ -17,10 +17,14 @@
 --   SpaLayout.prop(name, player?): Model?        a fixed prop PlotService placed with the plot (PROPS), or nil
 --   SpaLayout.station(id, player?): Model?       a built station in the player's plot (STATIONS), or nil
 --   SpaLayout.slotSpot(name, slot): CFrame       a spot in plot `slot`, whoever has it (the server places with it)
+--   SpaLayout.tubSpot(player?), slotTubSpot(slot) where the wash tub stands; with `spawnView` on it is turned to
+--                                                face into the spa, where the player spawns (#169)
 --   SpaLayout.place(name, onPlot, slot?)         the pure part: (position, yaw) from the tables below; specs
 --   SpaLayout.slotPivot(slot)                    where plot `slot`'s pivot goes; specs
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LiveFlags = require(script.Parent.LiveFlags)
 
 local SpaLayout = {}
 
@@ -239,6 +243,27 @@ end
 
 function SpaLayout.spot(name: string, player: Player?): CFrame
 	return spotIn(name, SpaLayout.slotOf(player))
+end
+
+-- The switch that moves the spawn behind the tub (PlotService) and turns the tub to face it, so the first frame
+-- shows the cat's face with the window and the door line beyond (#169).
+SpaLayout.VIEW_FLAG = "spawnView"
+
+local function turnedTub(spot: CFrame): CFrame
+	if LiveFlags.isOn(SpaLayout.VIEW_FLAG) then
+		return spot * CFrame.Angles(0, math.pi, 0)
+	end
+	return spot
+end
+
+-- Where the wash tub stands in plot `slot`: SpotTub, facing the street, or with `spawnView` on facing into the spa.
+function SpaLayout.slotTubSpot(slot: number): CFrame
+	return turnedTub(spotIn("SpotTub", slot))
+end
+
+-- Where the wash tub stands for the player (the local player on the client).
+function SpaLayout.tubSpot(player: Player?): CFrame
+	return turnedTub(spotIn("SpotTub", SpaLayout.slotOf(player)))
 end
 
 -- The `index`th spot of a line. Past the last listed spot the line goes on, one step (the gap between the last

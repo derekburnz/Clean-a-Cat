@@ -42,7 +42,7 @@ local TUB_ASSET = "CleanACat_Station_Tub"
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
 local ASSET_WAIT_SECONDS = 5
 local WET_DARKEN = 0.3 -- used when the cat has no WetDarken attribute
-local SEAT_HEIGHT = 1.2 -- the tub's inner floor, used when the tub has no CatSeat attachment
+local SEAT_HEIGHT = 1.5 -- the tub's inner floor (Model-Agent #171), used when the tub has no CatSeat attachment
 local BOW_SIZE = Vector3.new(0.5, 0.25, 0.15) -- studs at scale 1; the stand-in when a bow model is missing
 local PIECE_FADE = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- mud and tangles fade, not blink
 local STROKE_TRAVEL = 2.5 -- studs of drag on the cat that make one brush stroke
@@ -166,10 +166,10 @@ local function partsOf(model: Instance): { BasePart }
 	return parts
 end
 
--- The wash tub at SpotTub, facing the spawn. Returns where the cat sits: the tub's CatSeat attachment.
+-- The wash tub at SpaLayout.tubSpot, facing the spawn. Returns where the cat sits: the tub's CatSeat attachment.
 local function buildTub(asset: Model, parent: Instance): CFrame
 	local tub = asset:Clone() :: Model
-	tub:PivotTo(SpaLayout.spot("SpotTub")) -- the pivot is the base centre on the floor
+	tub:PivotTo(SpaLayout.tubSpot()) -- the pivot is the base centre on the floor
 	for _, part in partsOf(tub) do
 		part.Anchored = true
 	end
@@ -198,7 +198,7 @@ end
 -- camera stand in the first session plan.
 -- Offsets are in the tub's frame (its front, -Z, faces the player), so the first bow is on the player's left.
 local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
-	local tub = SpaLayout.spot("SpotTub")
+	local tub = SpaLayout.tubSpot()
 	local buttons = Instance.new("Model")
 	buttons.Name = "PH_Buttons"
 	local bowButtons: { BasePart } = {}
@@ -804,7 +804,7 @@ local function onCatReady(
 		local tub = findAsset(TUB_ASSET)
 		seat = if tub
 			then buildTub(tub, v.folder)
-			else SpaLayout.spot("SpotTub") * CFrame.new(0, SEAT_HEIGHT, 0)
+			else SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
 		v.seat = seat
 	end
 	release()
@@ -1073,12 +1073,16 @@ function ScrubController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	-- The plot placed or taken away: the tub moves to its new spot the way a switch flip does, by starting the
 	-- visit again (the server resends a dirty cat as it is).
-	SpaLayout.changed(function()
+	local function restart()
 		if enabled then
 			disable()
 			refresh()
 		end
-	end)
+	end
+	SpaLayout.changed(restart)
+	-- spawnView turns the tub (SpaLayout.tubSpot): start the visit again so the tub and buttons turn with it.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SpaLayout.VIEW_FLAG)
+		:Connect(restart)
 	refresh()
 end
 
