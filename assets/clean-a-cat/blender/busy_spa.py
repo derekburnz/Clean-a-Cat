@@ -8,11 +8,12 @@
   CleanACat_Station_FrontDesk  where a customer checks in: a cream desk with a bubblegum front and the spa's paw on it,
                                a mint top, a gold bell (Attachment `Bell`), an appointment book and a standing card
                                whose face is the part `Screen`. Attachment `TipJarSpot` on the top for the tip jar.
-  CleanACat_NPC_Helper         a hired helper: the standing kitten body in a peach coat no index cat has, with a mint
-                               apron painted on its chest. Same pieces as the builder kitten, so it shares its
+  CleanACat_NPC_Helper         a hired helper: the standing kitten body in a peach coat no index cat has, in a mint
+                               smock with a cream hem and pocket, the desk's mint, which no customer's cat wears. Same pieces as the builder kitten, so it shares its
                                motion. Attachments `HatSlot` on the head and `ToolGrip` in its right paw (a sponge's
                                or a brush's Handle goes there).
-  CleanACat_Prop_HelperCap     the helper's bath cap: a puffy bubblegum cap with a cream frill and a mint paw. Its pivot
+  CleanACat_Prop_HelperCap     the helper's bath cap: a puffy bubblegum cap with a cream frill, an ear shape over each ear and a
+                               mint paw. Its pivot
                                goes on the helper's `HatSlot`, like the builder's hard hat.
   CleanACat_NPC_StarBeret      for the rare visitor: a lilac beret with a gold star pin        Attachment HatAttachment
   CleanACat_NPC_StarShades     for the rare visitor: violet shades with gold rims             Attachment FaceFrontAttachment
@@ -125,7 +126,7 @@ def front_desk_rbx_extras():
 # -- the helper ----------------------------------------------------------------------------------------------------
 HELPER = dict(rarity="Common", fur="fur_peach", second="fur_peach", eyes="eye_mint", pattern="solid",
               muzzle="fur_vanilla", socks="fur_vanilla", eye_k=1.08, scale=1.0,
-              apron=("spa_mint", ("bow_pink", "spa_cream", "bow_sky")))
+              smock=("spa_mint", "spa_cream"))
 HELPER_NAME = "CleanACat_NPC_Helper"
 
 
@@ -153,6 +154,9 @@ def build_helper_cap(mat):
     b = Builder()
     b.sphere((0, 0, 0.05), CAP_R, "spa_bubblegum", segments=10, rings=5, scale=(1, 1, 0.7))       # the puff
     b.cyl_base((0, 0, -0.03), CAP_R + 0.04, 0.09, "spa_cream", segments=10, bevel=False)          # the frill
+    for side in (1, -1):                               # the cap covers the ears, so it has an ear shape over each
+        b.pyramid((side * 0.2, 0.045, 0.17), 0.3, 0.36, "spa_bubblegum",
+                  rot=Matrix.Rotation(math.radians(side * 12), 3, "Y"))
     lean = Matrix.Rotation(math.radians(-30), 3, "X")
     at = Vector((0, -CAP_R * 0.86, 0.17))
     b.box(at, (0.17, 0.04, 0.12), "spa_mint", bevel=False, rot=lean)                              # a paw on the front

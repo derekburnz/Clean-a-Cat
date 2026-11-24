@@ -34,7 +34,7 @@ from common import Builder, scale_mesh
 # v0.13: stripes2 (stripes alternate the second and third colours), checker (two colours: a checkered band along
 # each flank, the Taxi Cat's); v0.18 (F96): blaze (a stripe of that colour up the face from the muzzle between the
 # eyes), curl (the tail tip curls over: up and forward on A, up off the floor and back on B), exclusive (no gold
-# twins); #1191 (the shop-only cats): eye_k (eyes that much bigger), apron ((cloth, sprinkle colours): an apron
+# twins); smock ((cloth, trim): a work smock over the whole standing chest, body S only); #1191 (the shop-only cats): eye_k (eyes that much bigger), apron ((cloth, sprinkle colours): an apron
 # painted on the chest with sprinkles on it, under where the Barista's apron goes), shop (sold for Robux only: the
 # model carries a BubbleAnchor), lids (half-closed eyes: a lid in the fur over the top of each eye, a calm gaze); #2584: ear_k (ears that much bigger), glyphs (rows of carved glyphs in the second colour between bands of the
 # third along the flanks) and tiles (mosaic tiles in the second and third colours and cream on the flanks, back and
@@ -964,7 +964,13 @@ def _body_s(spec, c, d):
     b.box(d["chest"][0], d["chest"][1], c["fur"])
     front, bottom = cy0 - csy / 2, cz0 - csz / 2
     pat = spec["pattern"]
-    if spec.get("tuxedo"):
+    if spec.get("smock"):                               # Clean a Cat #124: a work smock over the whole chest, so a
+        cloth, trim = spec["smock"]                     # helper reads as staff from every side, not as a loose cat
+        top = cz0 + csz / 2 - 0.07
+        b.box((cx0, cy0, (bottom - 0.015 + top) / 2), (csx + 0.05, csy + 0.05, top - bottom + 0.015), cloth)
+        b.box((cx0, cy0, bottom + 0.025), (csx + 0.08, csy + 0.08, 0.07), trim, bevel=False)         # the hem
+        b.box((0, front - 0.035, bottom + 0.2), (csx * 0.5, 0.03, 0.15), trim, bevel=False)          # the pocket
+    elif spec.get("tuxedo"):
         b.box((0, front - 0.01, cz0), (0.42, 0.06, 0.6), c["second"], bevel=False)                   # bib
         b.box((0, cy0, bottom - 0.01), (0.46, csy * 0.7, 0.04), c["second"], bevel=False)            # under the chest
     elif spec.get("apron"):
