@@ -8607,6 +8607,99 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Cushion.png"
  },
  {
+  "name": "CleanACat_Prop_DeliveryBox",
+  "category": "Prop",
+  "module": "opening",
+  "objects": [
+   "CleanACat_Prop_DeliveryBox_Body",
+   "CleanACat_Prop_DeliveryBox_FlapL",
+   "CleanACat_Prop_DeliveryBox_FlapR",
+   "CleanACat_Prop_DeliveryBox_FlapF",
+   "CleanACat_Prop_DeliveryBox_FlapB"
+  ],
+  "triangles": 180,
+  "budget": 300,
+  "parts": 15,
+  "size_studs": {
+   "x": 2.44,
+   "y": 2.43,
+   "z": 1.81
+  },
+  "size_roblox": [
+   2.44,
+   1.81,
+   2.43
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "180/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "90 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_DeliveryBox.png"
+ },
+ {
+  "name": "CleanACat_Prop_DeliveryTruck",
+  "category": "Prop",
+  "module": "opening",
+  "objects": [
+   "CleanACat_Prop_DeliveryTruck_Body",
+   "CleanACat_Prop_DeliveryTruck_Door",
+   "CleanACat_Prop_DeliveryTruck_FL_Wheel",
+   "CleanACat_Prop_DeliveryTruck_FR_Wheel",
+   "CleanACat_Prop_DeliveryTruck_BL_Wheel",
+   "CleanACat_Prop_DeliveryTruck_BR_Wheel"
+  ],
+  "triangles": 1888,
+  "budget": 2500,
+  "parts": 60,
+  "size_studs": {
+   "x": 6.24,
+   "y": 13.43,
+   "z": 7.6
+  },
+  "size_roblox": [
+   6.24,
+   7.6,
+   13.43
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 2
+   },
+   "checks": {
+    "budget": "1888/2500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1178 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.02",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_DeliveryTruck.png"
+ },
+ {
   "name": "CleanACat_Prop_Hammer",
   "category": "Prop",
   "module": "build_props",
@@ -8923,6 +9016,47 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_QueueMat.png"
+ },
+ {
+  "name": "CleanACat_Prop_SpeedBump",
+  "category": "Prop",
+  "module": "opening",
+  "objects": [
+   "CleanACat_Prop_SpeedBump"
+  ],
+  "triangles": 280,
+  "budget": 300,
+  "parts": 10,
+  "size_studs": {
+   "x": 10.0,
+   "y": 1.4,
+   "z": 0.35
+  },
+  "size_roblox": [
+   10.0,
+   0.35,
+   1.4
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "280/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "160 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_SpeedBump.png"
  },
  {
   "name": "CleanACat_Prop_Star",
