@@ -83,7 +83,14 @@ async function runProfile(profile) {
   const world = lua.load(worldSource, { name: 'world-shim' }).call(tree, hostLoad)[0];
   const ui = lua
     .load(uiSource, { name: 'ui-shim' })
-    .call(world, { width: profile.width, height: profile.height, touch: profile.touch, inset: profile.inset })[0];
+    .call(world, {
+      width: profile.width,
+      height: profile.height,
+      touch: profile.touch,
+      inset: profile.inset,
+      textSize: profile.textSize,
+      transparency: profile.transparency,
+    })[0];
   // the scenes run with the game's globals (workspace, the virtual os.time), as a LocalScript would
   const env = world.rawGet('internals').rawGet('env');
   const scenes = lua.load(scenesSource, { name: 'uigate-scenes', environment: env }).call(ui)[0];
@@ -302,7 +309,7 @@ function parseArgs(argv) {
     else if (arg === '--save') out.save = argv[++i]; // with --shard: write each size's scenes to this folder
     else if (arg === '--merge') out.merge = argv[++i]; // check the scenes every --save shard wrote to this folder
     else if (arg === '--help' || arg === '-h') {
-      console.log('usage: node uigate.mjs [--out dir] [--devices] [--tablets] [--profile desktop|laptop|phone|tablet|smallphone|console|ipadmini|ipad43|ipadpro|tab1610|fire7] [--scene Name] [--flag menuFamily] [--update-baseline] [--verbose]');
+      console.log('usage: node uigate.mjs [--out dir] [--devices] [--tablets] [--profile desktop|laptop|phone|phonecomfort|tablet|smallphone|console|ipadmini|ipad43|ipadpro|tab1610|fire7] [--scene Name] [--flag menuFamily] [--update-baseline] [--verbose]');
       process.exit(0);
     } else throw new Error(`unknown argument ${arg}`);
   }

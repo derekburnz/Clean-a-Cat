@@ -6,7 +6,12 @@
 --   UI.init()                 builds the HUD once, under the local player's PlayerGui
 --   UI.open("Example")        opens a window by name; UI.closeAll() closes every window
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
+--
+-- Every screen honours the player's Roblox comfort settings through UI/Comfort (#181): see-through backgrounds go
+-- through Comfort.backdrop, and text leaves room to grow when the player picks a larger text size.
 local Players = game:GetService("Players")
+
+local Comfort = require(script:WaitForChild("Comfort"))
 
 local UI = {}
 
@@ -104,8 +109,9 @@ function UI.init()
 	toast.AnchorPoint = Vector2.new(0.5, 0)
 	toast.Position = UDim2.new(0.5, 0, 0, 70)
 	toast.Size = UDim2.new(0.8, 0, 0, 40)
+	toast.AutomaticSize = Enum.AutomaticSize.Y -- 40 px at least, taller when larger text wraps to more lines
 	toast.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	toast.BackgroundTransparency = 0.2
+	Comfort.backdrop(toast, 0.2)
 	toast.TextColor3 = Color3.fromRGB(255, 255, 255)
 	toast.Font = FONT
 	toast.TextSize = 18
