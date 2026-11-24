@@ -39,6 +39,7 @@ local BACKDROP = Color3.fromRGB(36, 16, 56)
 local BODY_GAP = 22 -- design px between the portrait column and the rows
 local STRIP_LIFT = 28 -- design px from the bottom
 local STRIP_SHIFT = 34 -- design px right on a short screen: clear of the touch thumbstick (Review-QA on #229)
+local CHIP_GAP = 6 -- design px between the rarity and New! chips
 local TOPBAR_SHIFT = 33 -- real px: the card sits a little below the middle, clear of Roblox's top bar
 
 -- Sizes in design pixels: full, then compact for a short screen.
@@ -108,6 +109,7 @@ type Parts = {
 	tileBox: Frame,
 	name: TextLabel,
 	chipRow: Frame,
+	chipList: UIListLayout,
 	rarityChip: Frame,
 	rarityText: TextLabel,
 	newChip: Frame,
@@ -334,7 +336,13 @@ local function redraw()
 	p.name.TextSize = s.name
 	p.name.Size = UDim2.new(1, 0, 0, s.name + 8)
 	p.name.Text = recap.cat
-	p.chipRow.Size = UDim2.new(1, 0, 0, s.chip)
+	-- The short card's column is narrower than "Legendary" plus "New!" side by side (Sync-Agent on an iPhone 14), so
+	-- there the New! chip goes under the rarity chip.
+	local stacked = short and recap.isNew
+	p.chipList.FillDirection = if stacked
+		then Enum.FillDirection.Vertical
+		else Enum.FillDirection.Horizontal
+	p.chipRow.Size = UDim2.new(1, 0, 0, if stacked then 2 * s.chip + CHIP_GAP else s.chip)
 	p.rarityChip.Size = UDim2.fromOffset(0, s.chip)
 	p.rarityChip.BackgroundColor3 = Kit.RARITY[recap.rarity] or Kit.RARITY.Common
 	p.rarityText.TextSize = s.chipText
@@ -462,7 +470,7 @@ function Recap.build(root: Frame)
 	local chipRow = frame("Tags", who)
 	chipRow.LayoutOrder = 3
 	chipRow.Size = UDim2.fromScale(1, 0)
-	list(chipRow, true, 6, true)
+	local chipList = list(chipRow, true, CHIP_GAP, true)
 	-- New! sits beside the rarity tag under the name, never on the star badge (decisions.md 2026-11-24).
 	local rarityChip, rarityText = chip("Rarity", chipRow, Kit.RARITY.Common, 1)
 	local newChip, newText = chip("New", chipRow, NEW_PINK, 2)
@@ -587,6 +595,7 @@ function Recap.build(root: Frame)
 		tileBox = tileBox,
 		name = name,
 		chipRow = chipRow,
+		chipList = chipList,
 		rarityChip = rarityChip,
 		rarityText = rarityText,
 		newChip = newChip,
