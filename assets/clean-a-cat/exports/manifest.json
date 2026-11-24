@@ -7846,6 +7846,209 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Brush.png"
  },
  {
+  "name": "CleanACat_Tool_Clipper",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Clipper"
+  ],
+  "triangles": 168,
+  "budget": 200,
+  "parts": 6,
+  "size_studs": {
+   "x": 0.3,
+   "y": 1.02,
+   "z": 0.63
+  },
+  "size_roblox": [
+   0.3,
+   0.63,
+   1.02
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "168/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "96 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.10 (want 0)",
+    "centered": "footprint center x=0.00 y=0.01"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Clipper.png"
+ },
+ {
+  "name": "CleanACat_Tool_Comb",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Comb"
+  ],
+  "triangles": 156,
+  "budget": 300,
+  "parts": 9,
+  "size_studs": {
+   "x": 0.16,
+   "y": 1.41,
+   "z": 0.49
+  },
+  "size_roblox": [
+   0.16,
+   0.49,
+   1.41
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "156/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "86 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.33 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.09"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Comb.png"
+ },
+ {
+  "name": "CleanACat_Tool_Dryer",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Dryer"
+  ],
+  "triangles": 356,
+  "budget": 400,
+  "parts": 6,
+  "size_studs": {
+   "x": 0.61,
+   "y": 1.24,
+   "z": 1.16
+  },
+  "size_roblox": [
+   0.61,
+   1.16,
+   1.24
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "356/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "194 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.34 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.24"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Dryer.png"
+ },
+ {
+  "name": "CleanACat_Tool_Shampoo",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Shampoo"
+  ],
+  "triangles": 392,
+  "budget": 400,
+  "parts": 12,
+  "size_studs": {
+   "x": 0.65,
+   "y": 0.69,
+   "z": 1.09
+  },
+  "size_roblox": [
+   0.65,
+   1.09,
+   0.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "392/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "178 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.36 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.01"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Shampoo.png"
+ },
+ {
+  "name": "CleanACat_Tool_Shower",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Shower"
+  ],
+  "triangles": 364,
+  "budget": 400,
+  "parts": 12,
+  "size_studs": {
+   "x": 0.73,
+   "y": 0.64,
+   "z": 1.4
+  },
+  "size_roblox": [
+   0.73,
+   1.4,
+   0.64
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "checks": {
+    "budget": "364/400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "190 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.53 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.16"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Shower.png"
+ },
+ {
   "name": "CleanACat_Tool_Sponge",
   "category": "Tool",
   "module": "tools",
@@ -7964,5 +8167,85 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeGolden.png"
+ },
+ {
+  "name": "CleanACat_Tool_Towel",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Towel"
+  ],
+  "triangles": 156,
+  "budget": 200,
+  "parts": 5,
+  "size_studs": {
+   "x": 1.04,
+   "y": 0.74,
+   "z": 0.38
+  },
+  "size_roblox": [
+   1.04,
+   0.38,
+   0.74
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "156/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "90 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.19 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Towel.png"
+ },
+ {
+  "name": "CleanACat_Tool_Tweezers",
+  "category": "Tool",
+  "module": "tools",
+  "objects": [
+   "CleanACat_Tool_Tweezers"
+  ],
+  "triangles": 188,
+  "budget": 200,
+  "parts": 5,
+  "size_studs": {
+   "x": 0.49,
+   "y": 1.21,
+   "z": 0.26
+  },
+  "size_roblox": [
+   0.49,
+   0.26,
+   1.21
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "checks": {
+    "budget": "188/200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "114 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.13 (want 0)",
+    "centered": "footprint center x=0.00 y=0.03"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Tweezers.png"
  }
 ]

@@ -31,7 +31,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
 | `dirt.py` | the dirty cats (#12): the mud coat (#113: 20 pieces that wrap the cat's own blocks, listed once per body), tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
 | `stations.py` | the spa stations: the wash tub (#13), the brush table, its upgrade and the hood dryer with its `Nozzle` (#18), the bubble bath with its `Spout` and the pawdicure (#23), each with a `CatSeat` attachment |
-| `tools.py` | hand tools: the three sponges (#13) and the brush (#14), each with a `Handle` part |
+| `tools.py` | hand tools: the three sponges (#13), the brush (#14) and drafts for the other wash steps (#123: shower, comb, tweezers, towel, nail clipper, hand dryer, shampoo), each with a `Handle` part |
 | `plot.py` | the spa plot (#15): the real build on the graybox layout, every gameplay spot an Attachment (`SPOTS`) |
 | `street.py` | the street (#15): ground, pavements, road, houses, hedges, trees and edge barriers round six plots, with `PlotSlot1` to `PlotSlot6` |
 | `spa_props.py` | the carrier, stray box, chance board and queue mat (#16); the window cushion, tip jar and spa sign (#17); the build pad for a locked station (#18) |

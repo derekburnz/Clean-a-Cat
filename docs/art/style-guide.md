@@ -60,7 +60,7 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 | Cat (any coat) | up to 1,500 (today 670 to 1,040) | up to 50 (today 34 to 50) |
 | A dirty cat (cat plus mud, tangles, hidden fluff and claws) | up to 3,200 (today 2,578 to 2,946; raised from 3,000 for the claws, #23) | up to 150 (today 125 to 142; raised from 120 because a piece of the mud coat is up to four boxes where a blob was one, #107, #111 and #113) |
 | Station or furniture | 300 to 1,500 (the tub 1,040 without its foam); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968, bubble bath 676 without its foam, pawdicure 528). The two baths get up to 2,500 with lather and bubbles (tub 2,472, bubble bath 2,032): each ball of lather and each soap bubble is a Ball part that Roblox draws itself, so its triangles are only the preview mesh (#107, #111) | up to 75 for the two baths (the tub 71, the bubble bath 68: a soap bubble is two parts, the ball and its glint, #111), up to 60 for the rest (the upgraded table 40) |
-| Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together) | up to 20 (sponges 6 to 10) |
+| Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together; the #123 wash tools 156 to 392) | up to 20 (sponges 6 to 10; the #123 wash tools 5 to 12) |
 | Brush, bow | up to 200 (brush 108, bows 164) | up to 10 |
 | VIP Room locked or building (#21) | up to 2,000 | up to 80 |
 | One spa plot, full | under 25,000 | about 250 instances |
@@ -101,6 +101,16 @@ Pieces of one model never share a plane: neighbours are staggered by 0.012 studs
 `tools.py` builds `CleanACat_Tool_Brush`: a light wood handle and a bubblegum back with three rows of foam and cream bristles. Pivot at the middle of the handle, the head pointing forward (-Z in Roblox), bristles down; the head is `Handle`.
 
 `props.py` builds `CleanACat_Bow_Pink`, `CleanACat_Bow_Mint` and `CleanACat_Bow_Sky` (`bow_pink`, `bow_mint`, `bow_sky`): two puffed loops, a knot and two tails lying back over the crown. Pivot at the base of the knot, with an Attachment `BowSlot` there. To put one on, line the bow's `BowSlot` up with the cat Head's `BowSlot`, weld it to the Head, and `ScaleTo` it by the cat's `Scale` attribute.
+
+### Draft tools for the other wash steps (#123)
+Drafts, not wired into the game. Each follows the sponge's rules: one Model of Parts whose biggest part is `Handle`, pivot at the grip, front -Z in Roblox, nothing collides, about twice real size so it reads in a hand on a phone. Colour says what a tool is for at a glance: water tools are sky and white, drying is bubblegum, cutting and picking are metal with one pastel pad.
+- `CleanACat_Tool_Shower` (rinse): a white grip with a sky collar and a hose stub, a sky head tipped forward and 25 degrees down, a white face plate with five water holes. Attachment `Nozzle` on the face plate, its +Y along the spray.
+- `CleanACat_Tool_Comb` (pick out burrs): a mint handle and spine with seven metal teeth pointing down.
+- `CleanACat_Tool_Tweezers` (lift a burr or a leaf): two metal arms open toward the front with pink grip pads.
+- `CleanACat_Tool_Towel` (towel dry): a bubblegum towel folded in three with two cream stripes.
+- `CleanACat_Tool_Clipper` (trim a claw): two thin metal blades open at the jaws, a silver lever on a pin with a sky thumb pad.
+- `CleanACat_Tool_Dryer` (blow dry): a bubblegum barrel, a cream nozzle, a darker pink grip with a cream switch. Attachment `Air` at the nozzle's mouth, its +Y along the air.
+- `CleanACat_Tool_Shampoo` (lather): a lilac pump bottle, a cream label with a pink paw, a white pump with its spout to the front.
 
 ## 14. Spa plot and the street (#15)
 `plot.py` builds `CleanACat_Area_SpaPlot`. It began as a graybox and is now the real build on the same layout, so every spot, wall and opening is where the graybox had it. The front apron sits on the pavement; the room has an open front (an entrance with no door, and the display window with a window seat and four cushions behind 0.6 see-through glass); a back door leads to the stray box; an opening in the back wall is the VIP Room door, with the back yard behind it for the VIP Room build. No room, tub or space is made for avatars: only cats bathe.
