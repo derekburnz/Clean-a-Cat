@@ -155,7 +155,10 @@ HEADS["work"] = dict(HEADS["walk"], c=(0.0, -0.17, 0.32), arms=True)
 # A's boxes lowered by loaf_drop, so A's head, coat and joints serve as they are.
 HEADS["loaf"] = HEADS["walk"]
 LOAF_LIFT = 0.06            # the belly's height over the loaf's base: room for the mud under it and the paw tips
-LOAF_LOOK = 55.0            # degrees the loaf's head is turned to the cat's right: he looks out over his shoulder
+LOAF_LOOK = 0.0             # degrees the loaf's head is turned to the cat's right. 0 since #340: in the owner's carry
+                            # screenshots the head faces along the body, out past the carrier's left arm
+LOAF_HEAD_DROP = 0.32       # how far the loaf's head lies below A's (unscaled): the chin rests on the forelegs (#340)
+LOAF_CARRY_SCALE = 1.4      # the held loaf's size in the arms (root attribute CarryScale); 1.0 in the box, 1.5 at a station
 # Each role's held thing (HELD) rides one arm, and the role's pose turns the arms (Blender XYZ degrees about the
 # shoulders; poses.CAT_POSES work_<role>): the barista holds out a cup in the right paw, the waiter a tray with a
 # cake at its left side, the greeter waves its left paw, the entertainer holds a microphone up under its chin in the
@@ -283,7 +286,9 @@ def joints(spec, body="walk"):
         drop = loaf_drop(spec)
         out = {p: (x, y, z - drop if p != "Body" else z) for p, (x, y, z) in out.items() if p not in LEGS["walk"]}
         out["Tail"] = tuple(v * k for v in loaf_tail(spec)[0])
-        for p in HEAD_PIECES:                           # the head is turned, and what rides it turns about the neck
+        for p in ("Head",) + HEAD_PIECES:               # the head lies low, chin on the paws, and what rides it with it
+            out[p] = (out[p][0], out[p][1], out[p][2] - LOAF_HEAD_DROP * k)
+        for p in HEAD_PIECES:                           # the head's turn (LOAF_LOOK) takes its riders about the neck
             out[p] = tuple(Vector(out["Head"]) + loaf_look(Vector(out[p]) - Vector(out["Head"])))
     return out
 
