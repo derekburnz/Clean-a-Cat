@@ -198,14 +198,15 @@ def _spots(objs, base, rays, n, spacing, eyes, keep_index=False):
 # The coat's pieces, one list per body. A piece: (the cat piece it rides, its boxes). A box: (which block of that
 # piece, x0, x1, y0, y1, z0, z1) in fractions of the block along its own axes: x from the cat's right to its left,
 # y from the front to the back (along a tail segment, root to tip), z from the bottom to the top. A box that
-# reaches a face of the block (0 or 1) comes out of that face; its other sides are cut inside the block. Fractions
-# snap to the block's mud pixels. The first box is the wrap and must fit; a later box (a drip) that would touch the
+# reaches a face of the block (0 or 1) comes out of that face; its other sides are cut inside the block. A box may
+# run past the block (below 0 or over 1): a drip hanging off the jaw or the belly, past the cat's outline, which
+# is what tells mud from a coat's own pattern. Fractions snap to the block's mud pixels. The first box is the wrap and must fit; a later box (a drip) that would touch the
 # face's drawing or come too near an eye is left out on that cat.
 HEAD_COAT = [
-    ("Head", [(0, 0.0, 0.1, 0.125, 1.0, 0.0, 0.5), (0, 0.0, 0.1, 0.375, 0.75, 0.5, 0.75),       # the right cheek
-              (0, 0.1, 0.4, 0.875, 1.0, 0.0, 0.375), (0, 0.0, 0.2, 0.0, 0.125, 0.0, 0.125)]),
-    ("Head", [(0, 0.9, 1.0, 0.25, 0.875, 0.5, 0.875), (0, 0.9, 1.0, 0.5, 0.75, 0.25, 0.5),      # the left temple
-              (0, 0.9, 1.0, 0.375, 0.625, 0.875, 1.0)]),
+    ("Head", [(0, 0.0, 0.1, 0.125, 1.0, 0.0, 0.5), (0, 0.0, 0.1, 0.375, 0.75, 0.5, 0.625),       # the right cheek
+              (0, 0.1, 0.4, 0.875, 1.0, 0.0, 0.375), (0, 0.0, 0.1, 0.125, 0.25, -0.25, 0.0)]),   # a drip off the jaw
+    ("Head", [(0, 0.9, 1.0, 0.25, 0.875, 0.5, 0.875), (0, 0.9, 1.0, 0.5, 0.75, 0.25, 0.5),      # the left temple,
+              (0, 0.9, 1.0, 0.375, 0.625, 0.875, 1.0), (0, 0.9, 1.0, 0.125, 0.375, 0.0, 0.25)]),
     ("Head", [(0, 0.5, 0.8, 0.0, 0.25, 0.875, 1.0), (0, 0.6, 0.7, 0.0, 0.125, 0.75, 0.875)]),   # a splat on the brow
     ("Head", [(0, 0.4, 0.6, 0.5, 1.0, 0.875, 1.0), (0, 0.4, 0.6, 0.875, 1.0, 0.5, 0.875),       # the crown, running
               (0, 0.3, 0.4, 0.875, 1.0, 0.625, 0.875)]),                                        # down the back
@@ -232,14 +233,14 @@ COAT = {
         ("LegF2", [(0, 0.5, 1.0, 0.0, 1.0, 0.6, 0.8)]),
     ],
     "walk": HEAD_COAT + [
-        ("Body", [(0, 0.3, 0.7, 0.0, 0.1, 0.0, 0.6)]),                                               # the chest
+        ("Body", [(0, 0.3, 0.7, 0.0, 0.1, 0.0, 0.6), (0, 0.4, 0.5, 0.0, 0.1, -0.33, 0.0)]),          # the chest, dripping
         ("Body", [(0, 0.55, 1.0, 0.3, 0.7, 0.6, 1.0), (0, 0.89, 1.0, 0.36, 0.55, 0.3, 0.6)]),        # saddle, left
         ("Body", [(0, 0.1, 0.6, 0.8, 1.0, 0.5, 1.0), (0, 0.2, 0.35, 0.9, 1.0, 0.15, 0.5)]),          # the rump
         ("Body", [(0, 0.0, 0.11, 0.2, 0.75, 0.15, 0.7), (0, 0.0, 0.3, 0.1, 0.3, 0.83, 1.0)]),        # right flank
-        ("Body", [(0, 0.6, 1.0, 0.45, 0.9, 0.0, 0.33)]),                                             # belly, left
+        ("Body", [(0, 0.6, 1.0, 0.45, 0.9, 0.0, 0.33), (0, 0.89, 1.0, 0.55, 0.65, -0.33, 0.0)]),     # belly, left
         ("Body", [(0, 0.1, 0.45, 0.35, 0.6, 0.83, 1.0)]),                                            # the shoulders
         ("Body", [(0, 0.89, 1.0, 0.05, 0.3, 0.2, 0.7)]),                                             # left flank
-        ("Body", [(0, 0.0, 0.4, 0.6, 0.95, 0.0, 0.17)]),                                             # belly, right
+        ("Body", [(0, 0.0, 0.4, 0.6, 0.95, 0.0, 0.17), (0, 0.0, 0.11, 0.7, 0.8, -0.33, 0.0)]),       # belly, right
         ("LegF1", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.5), (0, 0.67, 1.0, 0.0, 0.67, 0.5, 0.75)]),
         ("LegF2", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.25), (0, 0.0, 0.33, 0.0, 0.67, 0.25, 0.5)]),
         ("LegB1", [("paw", 0, 1, 0, 1, 0, 1), (0, 0, 1, 0, 1, 0.0, 0.25), (0, 0.67, 1.0, 0.33, 1.0, 0.25, 0.5)]),
@@ -281,7 +282,7 @@ def _cells(block, frac, k):
     for a in range(3):
         i0, i1 = round(frac[2 * a] * n[a]), round(frac[2 * a + 1] * n[a])
         if i1 <= i0:
-            i1 = min(n[a], i0 + 1)
+            i1 = min(n[a], i0 + 1) if i0 >= 0 else i0 + 1
             i0 = i1 - 1
         span.append((i0, i1))
     return span, n
@@ -300,7 +301,7 @@ def _shell(ob, block, span, n, k, eyes, head):
     out = set()                                        # the sides that come out of the block: (axis, sign)
     for a in range(3):
         u, v = [i for i in range(3) if i != a]
-        for sign, edge, reaches in ((-1, lo, span[a][0] == 0), (1, hi, span[a][1] == n[a])):
+        for sign, edge, reaches in ((-1, lo, span[a][0] == 0 < span[a][1]), (1, hi, span[a][0] < n[a] == span[a][1])):
             if not reaches:
                 continue
             nrm = R.col[a] * sign

@@ -649,7 +649,7 @@
        "CFrame": {
         "position": [
          0.0,
-         1.235,
+         1.2452,
          -0.2395
         ],
         "orientation": [
@@ -673,7 +673,7 @@
       },
       "Size": [
        0.874,
-       0.722,
+       0.7015,
        0.6801
       ],
       "Color": [
@@ -692,7 +692,7 @@
        "CFrame": {
         "position": [
          0.0,
-         -0.266,
+         -0.2762,
          0.1445
         ],
         "orientation": [
@@ -727,7 +727,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.608,
+           0.5978,
            0.0115
           ],
           "orientation": [
@@ -759,7 +759,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.3515,
+           0.3413,
            -0.188
           ],
           "orientation": [
@@ -792,7 +792,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.0229,
+         -0.0,
          1.2579,
          -0.0171
         ],
@@ -816,7 +816,7 @@
        }
       },
       "Size": [
-       0.9483,
+       0.994,
        0.7962,
        0.2953
       ],
@@ -1283,7 +1283,7 @@
        "CFrame": {
         "position": [
          0.456,
-         0.9817,
+         1.007,
          -0.4362
         ],
         "orientation": [
@@ -1307,7 +1307,7 @@
       },
       "Size": [
        0.133,
-       0.3355,
+       0.285,
        0.2265
       ],
       "Color": [
@@ -1332,8 +1332,8 @@
        "CFrame": {
         "position": [
          -0.456,
-         0.9968,
-         -0.4362
+         1.037,
+         -0.4476
         ],
         "orientation": [
          [
@@ -1356,8 +1356,8 @@
       },
       "Size": [
        0.133,
-       0.3055,
-       0.2265
+       0.225,
+       0.2036
       ],
       "Color": [
        0.9294,
@@ -2380,8 +2380,8 @@
          "CFrame": {
           "position": [
            -0.1311,
-           0.0903,
-           -0.0534
+           -0.0285,
+           0.0
           ],
           "orientation": [
            [
@@ -2415,7 +2415,7 @@
          "CFrame": {
           "position": [
            0.4099,
-           1.3253,
+           1.2801,
            -0.1841
           ],
           "orientation": [
@@ -2439,7 +2439,7 @@
         },
         "Size": [
          0.1206,
-         0.1805,
+         0.0902,
          0.2636
         ],
         "Color": [
@@ -2512,9 +2512,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.4018,
-           0.8994,
-           -0.5451
+           0.4028,
+           0.7837,
+           -0.4477
           ],
           "orientation": [
            [
@@ -2536,9 +2536,9 @@
          }
         },
         "Size": [
-         0.2793,
-         0.1298,
-         0.1069
+         0.1064,
+         0.1805,
+         0.0879
         ],
         "Color": [
          0.3529,
@@ -2560,8 +2560,8 @@
        "OptionalCFrame": {
         "position": [
          0.3144,
-         1.1281,
-         -0.2245
+         1.0094,
+         -0.171
         ],
         "orientation": [
          [
@@ -2641,9 +2641,9 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
-           -0.0285,
-           0.0
+           -0.0356,
+           -0.1283,
+           -0.0439
           ],
           "orientation": [
            [
@@ -2766,15 +2766,64 @@
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth"
        }
+      },
+      {
+       "name": "CleanACat_Cat_LilacCloud_Dirty_Sit_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4456,
+           0.9548,
+           -0.4038
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1919,
+         0.1995,
+         0.1758
+        ],
+        "Color": [
+         0.3529,
+         0.2745,
+         0.1961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.4099,
-         1.3419,
-         -0.1841
+         -0.4456,
+         1.2421,
+         -0.228
         ],
         "orientation": [
          [
