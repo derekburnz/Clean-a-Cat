@@ -21,6 +21,7 @@
 -- The console says how long after the join the truck started, to measure on a phone.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -49,6 +50,11 @@ local SUDS = SudsRules.NAME
 local RECAP_FLAG = "recapCard"
 local PICK_STAND = 2.6 -- studs from the kitten where the player stops to lift him (Derek: walk up, then pick up)
 local WALK_SECONDS = 4 -- the walk up gives up after this and the lift plays where they are
+-- OpeningScene's own copy of the pothole on the road (its BUMP_NAME). Once Suds is inside it goes, so the road is
+-- back to normal (Derek 2026-11-24: "after bringing cat inside you can clear the pothole and make road go back to
+-- normal"). It was only ever on this player's screen.
+local POTHOLE_NAME = "CleanACat_OpeningPothole"
+local POTHOLE_FADE = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local TIP_PICK = { step = 1, total = 3, icon = "Paw", say = "Pick him up" }
 local TIP_WASH = { step = 2, total = 3, icon = "Sponge", say = "Wash him" }
 
@@ -114,7 +120,26 @@ local function stopLeading()
 	end
 end
 
+-- Fades the opening's pothole out of the road and removes it. Renamed first, so a scene that starts again (the
+-- owner's replay) lays a fresh one instead of finding this one on its way out.
+local function clearPothole()
+	local found = Workspace:FindFirstChild(POTHOLE_NAME)
+	if found == nil then
+		return
+	end
+	found.Name = POTHOLE_NAME .. "_Gone"
+	for _, item in found:GetDescendants() do
+		if item:IsA("BasePart") or item:IsA("Decal") then
+			TweenService:Create(item, POTHOLE_FADE, { Transparency = 1 }):Play()
+		end
+	end
+	task.delay(POTHOLE_FADE.Time, function()
+		found:Destroy()
+	end)
+end
+
 local function clearScene()
+	clearPothole()
 	local scene = handle
 	handle = nil
 	placing = false
