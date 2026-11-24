@@ -9,6 +9,10 @@
 -- only after the server accepts RequestOpenBox (it sets SudsBox to false), then the kitten peeks, shakes and hops
 -- out, and the server's kitten sits in the tub. The floor trail and the tip line (their own switches) lead the
 -- player there until the first scrub. No window or menu opens by itself.
+--
+-- It starts the instant it can (Derek: hook them instantly, no standing still): the server marks the box as the save
+-- loads, and on a plot the box's spot is known without the character, so the shot starts without waiting for it.
+-- The console says how long after the join the truck started, to measure on a phone.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -33,6 +37,7 @@ local TIP = { step = 1, total = 3, icon = "Sponge", say = "Wash him" }
 local OpeningController = {}
 
 local player = Players.LocalPlayer
+local scriptsStarted = os.clock() -- the client's scripts began (this module loads with Main)
 local handle: OpeningScene.Handle? = nil
 local tappedAt = -math.huge
 local leading = false -- the trail and tip point at the tub until the first scrub
@@ -55,12 +60,8 @@ local function leadToTub()
 	UI.setTip(TIP)
 end
 
--- The box's landing: the plot's SpotBox, else AHEAD studs in front of the player, on the ground, facing the way
--- the player faces.
+-- Off a plot, the box lands AHEAD studs in front of the player, on the ground, facing the way the player faces.
 local function landing(root: BasePart, character: Model): CFrame
-	if SpaLayout.onPlot() and SpaLayout.PLOT_SPOTS[SudsRules.BOX_SPOT] then
-		return SpaLayout.spot(SudsRules.BOX_SPOT)
-	end
 	local facing = root.CFrame.LookVector * Vector3.new(1, 0, 1)
 	facing = if facing.Magnitude > 0.01 then facing.Unit else Vector3.new(0, 0, -1)
 	local above = root.Position + facing * AHEAD
@@ -80,16 +81,42 @@ local function onTap()
 	Remotes.event("RequestOpenBox"):FireServer()
 end
 
+-- The box's spot on the player's plot, known without the character; nil off a plot.
+local function plotLanding(): CFrame?
+	if SpaLayout.onPlot() and SpaLayout.PLOT_SPOTS[SudsRules.BOX_SPOT] then
+		return SpaLayout.spot(SudsRules.BOX_SPOT)
+	end
+	return nil
+end
+
+-- How long the opening took to start, for a measure on a real phone.
+local function sayStarted()
+	local joined = player:GetAttribute(SudsRules.JOINED_ATTRIBUTE)
+	local sinceJoin = if type(joined) == "number"
+		then string.format("%.2f", Workspace:GetServerTimeNow() - joined)
+		else "?"
+	local sinceScripts = string.format("%.2f", os.clock() - scriptsStarted)
+	print(
+		`[Opening] truck moving {sinceJoin} s after the join, {sinceScripts} s after the scripts started`
+	)
+end
+
 local function play()
 	if handle ~= nil or boxState() ~= true or not LiveFlags.isOn(SudsRules.BOX_FLAG) then
 		return
 	end
-	local character = player.Character or player.CharacterAdded:Wait()
-	local root = character:WaitForChild("HumanoidRootPart", CHARACTER_WAIT)
-	if handle ~= nil or root == nil or not root:IsA("BasePart") or boxState() ~= true then
-		return
+	local spot = plotLanding()
+	if spot == nil then
+		-- Off a plot the box lands in front of the player, so this one waits for the character.
+		local character = player.Character or player.CharacterAdded:Wait()
+		local root = character:WaitForChild("HumanoidRootPart", CHARACTER_WAIT)
+		if handle ~= nil or root == nil or not root:IsA("BasePart") or boxState() ~= true then
+			return
+		end
+		spot = landing(root :: BasePart, character)
 	end
-	handle = OpeningScene.play(landing(root :: BasePart, character), { shot = true, onTap = onTap })
+	handle = OpeningScene.play(spot :: CFrame, { shot = true, onTap = onTap })
+	sayStarted()
 end
 
 -- The server took the tap (SudsBox false): the flaps pop, the kitten peeks and hops out toward the spa, then the

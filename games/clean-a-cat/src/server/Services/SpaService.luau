@@ -16,6 +16,7 @@
 -- (RequestOpenBox), which the save remembers, so the scene never plays again once he is out.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
@@ -214,6 +215,20 @@ local function sendQueue(player: Player)
 	FigureService.showQueue(player, table.clone(queueFor(player)))
 end
 
+-- A brand new save's kitten waits in the box (switch openingBox): the client plays the scene while SudsBox is true.
+-- The first time, the player stands at their entrance facing the street, where the box lands (Model-Agent). True
+-- when the kitten is held for the box.
+local function holdForBox(player: Player): boolean
+	if not LiveFlags.isOn(FLAG) or cats[player] ~= nil or not inBox(player) then
+		return false
+	end
+	if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) ~= true then
+		PlotService.standOn(player, SudsRules.OPENING_SPOT)
+	end
+	player:SetAttribute(SudsRules.BOX_ATTRIBUTE, true)
+	return true
+end
+
 local function onRequestCat(player: Player)
 	if not LiveFlags.isOn(FLAG) then
 		return
@@ -223,14 +238,8 @@ local function onRequestCat(player: Player)
 		return
 	end
 	local cat = cats[player]
-	if cat == nil and inBox(player) then
-		-- The opening: the kitten is in the box in front of the player. The client plays the scene while this is set.
-		-- The first time, the player stands at their entrance facing the street, where the box lands (Model-Agent).
-		if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) ~= true then
-			PlotService.standOn(player, SudsRules.OPENING_SPOT)
-		end
-		player:SetAttribute(SudsRules.BOX_ATTRIBUTE, true)
-		return
+	if cat == nil and holdForBox(player) then
+		return -- the opening: the kitten is in the box in front of the player
 	end
 	-- A dirty cat is resent (the client may have missed it). A done cat is replaced by a fresh dirty one. An
 	-- unfinished cat is replaced only after a whole visit's time; sooner, it goes back to dirty and is resent,
@@ -470,6 +479,16 @@ function SpaService.Start()
 		return cat ~= nil and cat.mascot == true
 	end)
 	NetService.on("RequestCat", { perSecond = 1, burst = 2 }, onRequestCat)
+	-- When the server saw the join, so the client can print how long the opening took to start (OpeningController).
+	local function stampJoin(player: Player)
+		if player:GetAttribute(SudsRules.JOINED_ATTRIBUTE) == nil then
+			player:SetAttribute(SudsRules.JOINED_ATTRIBUTE, Workspace:GetServerTimeNow())
+		end
+	end
+	Players.PlayerAdded:Connect(stampJoin)
+	for _, player in Players:GetPlayers() do
+		stampJoin(player)
+	end
 	-- The chance board lights up from the second customer: once a save has stars, a customer was served.
 	DataService.onLoaded:Connect(function(player: Player, save)
 		if save.stars > 0 then
@@ -479,6 +498,11 @@ function SpaService.Start()
 		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
 		-- How far the opening's kitten got, for the client's opening and Suds (#285).
 		player:SetAttribute(SudsRules.ATTRIBUTE, SudsRules.cleanStage(save.suds))
+		-- A new save's box is marked the moment the save loads, not when the client first asks for a cat, so the
+		-- truck can start as soon as the player's game shows the world, and the first spawn is already on the
+		-- opening spot (Derek: hook them instantly). The save starts loading as the player joins, so it is usually
+		-- ready before their game has finished loading.
+		holdForBox(player)
 		if waiting[player] then
 			waiting[player] = nil
 			onRequestCat(player)
