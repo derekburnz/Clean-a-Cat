@@ -13,6 +13,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local SpaRules = require(Shared:WaitForChild("SpaRules"))
 
 local FLAG = "customerFigures"
 local CUSTOMERS_FLAG = "customers"
@@ -65,7 +66,10 @@ local LOOKS: { Look } = {
 local templates: { [string]: Model } = {}
 local building: { [string]: boolean } = {}
 local lastKinds: { [Player]: { string } } = {}
-local served: { [Player]: number } = {} -- customers served this session, so each look moves up the line with its owner
+-- Each waiting customer's look, front first, parallel to lastKinds, so a look moves up the line with its owner and
+-- goes to the front with them when picked (#206). A look number n is LOOKS[n % #LOOKS + 1].
+local looks: { [Player]: { number } } = {}
+local nextLook: { [Player]: number } = {} -- the look number the next new customer gets
 local warned: { [string]: boolean } = {}
 
 local function warnOnce(key: string, text: string)
@@ -221,13 +225,22 @@ local function queueSpot(index: number, slot: number): CFrame
 	return cframe + (cframe.Position - SpaLayout.slotSpot(before, slot).Position) * past
 end
 
--- Builds the customers for `kinds` in plot `slot`, front first, the looks starting `firstLook` along LOOKS. Not
--- parented yet. May yield while a look's template is made.
-local function buildFolder(slot: number, kinds: { string }, firstLook: number): Folder
+-- Look numbers first, first + 1, ... for `count` customers.
+local function lookRun(first: number, count: number): { number }
+	local run = {}
+	for index = 1, count do
+		run[index] = first + index - 1
+	end
+	return run
+end
+
+-- Builds the customers for `kinds` in plot `slot`, front first, customer `index` in look number `lookNumbers[index]`.
+-- Not parented yet. May yield while a look's template is made.
+local function buildFolder(slot: number, kinds: { string }, lookNumbers: { number }): Folder
 	local folder = Instance.new("Folder")
 	folder.Name = FOLDER_NAME
 	for index = 1, math.min(#kinds, MAX_SHOWN) do
-		local look = LOOKS[(firstLook + index - 1) % #LOOKS + 1]
+		local look = LOOKS[(lookNumbers[index] or index) % #LOOKS + 1]
 		local base = template(look)
 		if base then
 			local figure = base:Clone() :: Model
@@ -268,7 +281,7 @@ local function draw(player: Player)
 	then
 		return
 	end
-	local folder = buildFolder(slot, kinds, served[player] or 0)
+	local folder = buildFolder(slot, kinds, looks[player] or lookRun(0, #kinds))
 	-- template() may have yielded: draw only if this is still the newest queue.
 	if lastKinds[player] ~= kinds or folderOf(player) ~= plot then
 		folder:Destroy()
@@ -290,6 +303,41 @@ local function movedUp(old: { string }?, new: { string }): boolean
 	return true
 end
 
+local function sameLine(old: { string }?, new: { string }): boolean
+	if old == nil or #old ~= #new then
+		return false
+	end
+	for index, kind in new do
+		if old[index] ~= kind then
+			return false
+		end
+	end
+	return true
+end
+
+-- The looks for the new line `clean`: shifted when the front customer was served, kept when the line is the same
+-- (a resend, or the resend after `picked`), and new customers take the next look numbers.
+local function looksFor(player: Player, clean: { string }): { number }
+	local old = lastKinds[player]
+	local oldLooks = looks[player]
+	local kept: { number } = {}
+	if oldLooks and movedUp(old, clean) then
+		kept = table.move(oldLooks, 2, #oldLooks, 1, {})
+	elseif oldLooks and sameLine(old, clean) then
+		kept = table.clone(oldLooks)
+	end
+	local nextNumber = nextLook[player] or 0
+	while #kept > #clean do
+		table.remove(kept)
+	end
+	while #kept < #clean do
+		table.insert(kept, nextNumber)
+		nextNumber += 1
+	end
+	nextLook[player] = nextNumber
+	return kept
+end
+
 -- Called by SpaService with the player's queue, front first.
 function FigureService.showQueue(player: Player, kinds: { string })
 	local clean: { string } = {}
@@ -298,18 +346,33 @@ function FigureService.showQueue(player: Player, kinds: { string })
 			table.insert(clean, kind)
 		end
 	end
-	if movedUp(lastKinds[player], clean) then
-		served[player] = (served[player] or 0) + 1
-	end
+	looks[player] = looksFor(player, clean)
 	lastKinds[player] = clean
 	task.spawn(draw, player)
+end
+
+-- Called by SpaService when the player picked the customer at `index` to go next (switch queuePick), before it
+-- resends the line: moves that customer's look to the front with their cat, so the figures don't swap cats.
+function FigureService.picked(player: Player, index: number)
+	local old = lastKinds[player]
+	local oldLooks = looks[player]
+	if old == nil or oldLooks == nil or #oldLooks ~= #old then
+		return
+	end
+	-- New tables, so a draw still building the old line sees it is stale.
+	local kinds = table.clone(old)
+	local numbers = table.clone(oldLooks)
+	if SpaRules.pickNext(kinds, index) and SpaRules.pickNext(numbers, index) then
+		lastKinds[player] = kinds
+		looks[player] = numbers
+	end
 end
 
 -- Draws a full door line of `kinds` in plot `slot` whatever the switches say, replacing what is there. Only for
 -- StreetLoadService's frame check on a full street; a player's own line goes through showQueue.
 function FigureService.drawSlot(slot: number, kinds: { string })
 	FigureService.clearSlot(slot)
-	local folder = buildFolder(slot, kinds, slot)
+	local folder = buildFolder(slot, kinds, lookRun(slot, #kinds))
 	-- buildFolder may have yielded: skip if a player took the slot meanwhile, so no stand-in lands in their plot.
 	local taken = false
 	for _, player in Players:GetPlayers() do
@@ -345,7 +408,8 @@ function FigureService.Start()
 	Players.PlayerRemoving:Connect(function(player: Player)
 		clear(player)
 		lastKinds[player] = nil
-		served[player] = nil
+		looks[player] = nil
+		nextLook[player] = nil
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(drawAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(drawAll)

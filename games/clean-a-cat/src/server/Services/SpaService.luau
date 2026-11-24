@@ -159,6 +159,7 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 		return
 	end
 	if SpaRules.pickNext(queueFor(player), index) then
+		FigureService.picked(player, index) -- the customer's look goes to the front with their cat (#206)
 		sendQueue(player)
 	end
 end

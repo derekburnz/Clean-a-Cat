@@ -138,5 +138,16 @@ return function()
 				expect(table.concat(queue, ",")).to.equal("Smudge,Marble,Ginger")
 			end
 		)
+
+		it(
+			"moves a parallel list of looks the same way, so a look stays with its customer",
+			function()
+				local queue = { "Smudge", "Marble", "Ginger" }
+				local looks = { 4, 5, 6 }
+				expect(SpaRules.pickNext(queue, 3) and SpaRules.pickNext(looks, 3)).to.equal(true)
+				expect(table.concat(queue, ",")).to.equal("Ginger,Smudge,Marble")
+				expect(table.concat(looks, ",")).to.equal("6,4,5")
+			end
+		)
 	end)
 end
