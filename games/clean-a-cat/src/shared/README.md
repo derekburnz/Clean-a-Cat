@@ -8,6 +8,7 @@ Visible to both server and client (it becomes `ReplicatedStorage.Shared`). Nothi
 - `TelemetryRules.luau`, `RestartNotice.luau`: the pure rules behind `Telemetry` and the restart countdown.
 - `Guard.luau`: argument checks for remotes (`Guard.id`, `Guard.int`, `Guard.oneOf`, `Guard.text`...), each returning the cleaned value or nil.
 - `Signal.luau`: a small typed signal (`DataService.onLoaded` uses it).
+- `Vendor/`: third-party single-file modules. Never edit or reformat them (StyLua and Selene skip this folder); replace the whole file to update. `Trove.luau` is [Sleitnick/RbxUtil](https://github.com/Sleitnick/RbxUtil) `modules/trove` v1.8.0 at commit 5437776 (2026-11-20), MIT, licence in `Trove.LICENSE.md` (#184). Clean up a screen or a visit with it: see `luau-conventions`.
 - Add as the game grows: `Config.luau` (tuning numbers), `Catalog.luau` (items with stable ids) and `Types.luau`. Templates are in the `luau-conventions` and `remote-security-checklist` skills.
 
 Keep game rules here (or in `server/Util/`) as pure modules with no Roblox services at load time, so `tests/specs` can cover them.
