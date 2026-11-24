@@ -19,6 +19,7 @@
 --   SpaLayout.slotSpot(name, slot): CFrame       a spot in plot `slot`, whoever has it (the server places with it)
 --   SpaLayout.tubSpot(player?), slotTubSpot(slot) where the wash tub stands; with `spawnView` on it is turned to
 --                                                face into the spa, where the player spawns (#169)
+--   SpaLayout.spawnSpot(slot): CFrame            where a character in plot `slot` spawns (feet, facing)
 --   SpaLayout.place(name, onPlot, slot?)         the pure part: (position, yaw) from the tables below; specs
 --   SpaLayout.slotPivot(slot)                    where plot `slot`'s pivot goes; specs
 local Players = game:GetService("Players")
@@ -264,6 +265,28 @@ end
 -- Where the wash tub stands for the player (the local player on the client).
 function SpaLayout.tubSpot(player: Player?): CFrame
 	return turnedTub(spotIn("SpotTub", SpaLayout.slotOf(player)))
+end
+
+-- With `spawnView` on, the player spawns SPAWN_FROM_TUB studs in front of the turned tub and SPAWN_SIDE studs to its
+-- side (toward the door line), facing the street. SpotSpawn sits 8 studs inside the front window facing in, so the
+-- camera (about 12.5 studs behind) starts outside the window and the first frame is a blur of glass and wall
+-- (#169). Here the camera rests inside the spa against the solid back wall, with the window and the door line
+-- ahead and the cat's face beside the avatar's shoulder. Facing the street (not the tub) keeps the avatar off the
+-- line from the camera to the cat.
+SpaLayout.SPAWN_FROM_TUB = 5
+SpaLayout.SPAWN_SIDE = 5 -- 4 left the avatar over exactly a quarter of the tub on an iPhone 14 (#169)
+
+-- Where a character in plot `slot` spawns: the base of its feet and the way it faces. PlotService moves characters
+-- here; the client points the camera from it (#188).
+function SpaLayout.spawnSpot(slot: number): CFrame
+	if LiveFlags.isOn(SpaLayout.VIEW_FLAG) then
+		-- The turned tub's front (-Z) faces into the spa: stand in front of it and to its right (+X, the door
+		-- line's side of the plot), turned back to face the street.
+		return SpaLayout.slotTubSpot(slot)
+			* CFrame.new(SpaLayout.SPAWN_SIDE, 0, -SpaLayout.SPAWN_FROM_TUB)
+			* CFrame.Angles(0, math.pi, 0)
+	end
+	return spotIn("SpotSpawn", slot)
 end
 
 -- The `index`th spot of a line. Past the last listed spot the line goes on, one step (the gap between the last
