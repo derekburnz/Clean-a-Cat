@@ -83,7 +83,7 @@ local Cues: { [string]: Cue } = {
 	-- Derek's Roblox-Asset-Library: CatCafe_Sfx_CarryPurr, kept as CleanACat_Sfx_CarryPurr; a contented purr in the
 	-- player's arms, looped while they carry a cat (Effects/Carry)
 	carryPurr = {
-		ids = {},
+		ids = { "rbxassetid://88268026074287" },
 		group = "Sfx",
 		volume = 0.45,
 		voices = 1,
