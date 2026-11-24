@@ -110,6 +110,33 @@ local SCENES = {
 		UI.open("CatIndex")
 		UI.showIndexDetail("LilacCloud")
 	end },
+	-- "Who's next?" (#246, switch queueWindow): three everyday customers with picks open, then a line with a new Rare
+	-- VIP and an Epic one, a Dryer not built yet (locked needs) and picks not open yet. HudWaiting: the HUD's
+	-- waiting faces.
+	{ "Queue", function()
+		flag("queueWindow", true)
+		local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+		local cards = QueueViewRules.cards({ "Muffin", "Cotton", "Patches" }, indexEntries(), { Dryer = true })
+		UI.setQueue(cards, QueueViewRules.headline(cards, 1), { [2] = true, [3] = true })
+		UI.open("Queue")
+	end },
+	{ "QueueVip", function()
+		flag("queueWindow", true)
+		local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+		local cards = QueueViewRules.cards({ "Smudge", "Toffee", "LilacCloud" }, indexEntries(), {})
+		UI.setQueue(cards, QueueViewRules.headline(cards, 2), {})
+		UI.open("Queue")
+	end },
+	{ "HudWaiting", function()
+		hud(true)
+		flag("queueWindow", true)
+		flag("settingsCard", true)
+		flag("catIndexWindow", true)
+		UI.setCoins(999999)
+		UI.setWashStage("dirty")
+		local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+		UI.setQueue(QueueViewRules.cards({ "Muffin", "Toffee", "LilacCloud" }, {}, {}), "", {})
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
@@ -139,6 +166,8 @@ function Scenes.close()
 	flag("recapCard", false)
 	flag("settingsCard", false)
 	flag("catIndexWindow", false)
+	flag("queueWindow", false)
+	UI.setQueue({}, "", {})
 	UI.showIndexDetail(nil)
 	UI.showSettings({ music = 1, sounds = 1, lessShake = false, lessSparkle = false })
 end

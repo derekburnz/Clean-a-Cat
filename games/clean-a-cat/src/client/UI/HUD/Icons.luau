@@ -26,6 +26,11 @@ Icons.IMAGES = {
 	Sparkle = "",
 	Dice = "",
 	Check = "",
+	Crown = "",
+	Lock = "",
+	Mud = "",
+	Tangles = "",
+	Wet = "",
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
@@ -53,6 +58,11 @@ local STAND_INS: { [string]: StandIn } = {
 	Sparkle = { glyph = "✨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Dice = { glyph = "🎲", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Check = { glyph = "✅", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Crown = { glyph = "👑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Lock = { glyph = "🔒", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Mud = { glyph = "🟤", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Tangles = { glyph = "🧶", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Wet = { glyph = "💧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 }
 
 -- Puts icon `name` inside `parent`, filling it, and returns it. `faded` dims it (a step already done).
