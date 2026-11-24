@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="trail,tip,dim">
+<meta name="states" content="trail,tip,dim,suds">
 <title>Tutorial pointers</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
@@ -17,6 +17,12 @@
           there is still only one line at the top centre. The same gold arrow bobs over the thing to use.
    dim    Step 3: the screen dims, one gold arrow points at one HUD button and a few words say what to do.
           The game then waits for the player's own tap.
+
+   suds   Suds' help bubble (switch sudsBubble): his face pokes over the card's top left corner, a title of two or three
+          words, one short line that says why, one button that does the step and a small X. It sits at the bottom
+          centre between the thumbstick and the jump button, at most 560 design px wide. It shows only at a step or an
+          unlock, once per save, and never points at anything sold for Robux. "Show me" moves the focus (Suds trots to
+          the thing, or the dim plus arrow for a HUD button); the player still taps the thing itself.
 
    The first-session HUD is quiet: a button appears when its step teaches it, so here only Index is on screen. Taught
    in the HUD's own order, the newest button is always the last one, and the arrow always has free room to its right. */
@@ -70,6 +76,25 @@ body.short .tipline .ic { font-size: 30px; }
 body.short .callout .pt { font-size: 60px; }
 body.short .callout .say { font-size: 36px; }
 
+/* ---------- Suds' help bubble: between the thumbstick and the jump button ---------- */
+.sbub-lane { position: absolute; bottom: 22px; left: calc(196px / var(--s)); right: calc(146px / var(--s)); display: flex; justify-content: center; pointer-events: none; z-index: 60; }
+.sbub { position: relative; pointer-events: auto; width: 100%; max-width: 560px; background: var(--cream); border: var(--stroke) solid var(--ink); border-radius: 22px;
+  box-shadow: 0 var(--lip) 0 var(--ink); display: flex; align-items: center; gap: 12px; padding: 12px 50px 12px 104px; }
+.sbub .face { position: absolute; left: -8px; bottom: 10px; width: 100px; height: 100px; border-radius: 50%; border: var(--stroke) solid var(--ink); background: var(--mint); overflow: hidden; }
+.sbub .face img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12) translateY(4px); }
+.sbub .tx { flex: 1; min-width: 0; }
+.sbub .h { font-family: var(--font-head); font-size: 26px; line-height: 1.1; }
+.sbub .l { font-size: 19px; font-weight: 800; color: var(--ink-soft); line-height: 1.2; }
+.sbub .btn { flex: none; min-width: 118px; height: 56px; font-size: 24px; padding: 0 16px; }
+.sbub .x { position: absolute; right: -24px; top: -28px; width: 60px; height: 60px; border-radius: 50%; background: var(--red); border: var(--stroke) solid var(--ink);
+  color: #fff; display: grid; place-items: center; box-shadow: 0 3px 0 var(--ink); padding: 0; }
+.sbub .x svg { width: 26px; height: 26px; }
+body.short .sbub { padding-left: 92px; padding-right: 46px; gap: 10px; }
+body.short .sbub .face { width: 86px; height: 86px; }
+body.short .sbub .h { font-size: 23px; }
+body.short .sbub .l { font-size: 17px; }
+body.short .sbub .btn { min-width: 100px; height: 50px; font-size: 21px; }
+
 @media (prefers-reduced-motion: reduce) { .bob, .ringpulse, .callout .nudge { animation: none; } }
 </style>
 </head>
@@ -84,7 +109,7 @@ body.short .callout .say { font-size: 36px; }
   </div>
 
   <!-- tip and dim: inside the spa, the first cat is in the tub -->
-  <div class="world spa" data-only="tip dim" style="background-image:url(img/world-spa.jpg)">
+  <div class="world spa" data-only="tip dim suds" style="background-image:url(img/world-spa.jpg)">
     <svg class="ground" data-only="tip" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <g transform="translate(482 212)"><g class="bob"><path d="M-12 -52h24v26h12L0 0-24 -26h12z" transform="scale(1.05)" fill="#ffd84d" stroke="#45226b" stroke-width="4" stroke-linejoin="round"/></g></g>
     </svg>
@@ -95,15 +120,24 @@ body.short .callout .say { font-size: 36px; }
   <div class="top goal tipline" data-only="dim"><i data-ic="book"></i><span class="n ol outlined">Step 3 of 3:</span><span class="w ol outlined">Open your Index</span></div>
 
   <div class="top money">
-    <div class="coins outlined"><i data-ic="coin"></i><span class="num" data-only="trail tip">0</span><span class="num" data-only="dim">58</span></div>
+    <div class="coins outlined"><i data-ic="coin"></i><span class="num" data-only="trail tip">0</span><span class="num" data-only="dim suds">58</span></div>
     <div class="lvl"><span class="lv">Lv 1</span>
       <div class="bar xpb" data-only="trail tip"><i style="width:0"></i></div>
-      <div class="bar xpb" data-only="dim"><i style="width:25%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
+      <div class="bar xpb" data-only="dim suds"><i style="width:25%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
   </div>
 
   <div class="top side" data-only="dim">
     <button class="rbtn mint focus" data-tap aria-label="Cat Index"><i data-ic="book"></i><span class="cap outlined thin">Index</span><span class="dot">1</span></button>
     <div class="callout"><span class="nudge"><i data-ic="arrow" class="pt"></i></span><span class="say ol outlined">Tap Index</span></div>
+  </div>
+
+  <div class="sbub-lane" data-only="suds">
+    <div class="sbub" role="dialog" aria-label="Suds says">
+      <span class="face"><img src="img/portrait_Suds_ink.png" alt=""></span>
+      <div class="tx"><div class="h">New soap!</div><div class="l">Bigger bubbles, faster scrubs.</div></div>
+      <button class="btn green" data-tap aria-label="Show me the new soap"><span class="lbl">Show me</span></button>
+      <button class="x" data-tap aria-label="Close"><i data-ic="x"></i></button>
+    </div>
   </div>
 
   <div class="prompt" data-only="tip"><span class="key">E</span><span class="outlined" style="font-family:var(--font-head);font-size:26px">Wash Muffin</span></div>
