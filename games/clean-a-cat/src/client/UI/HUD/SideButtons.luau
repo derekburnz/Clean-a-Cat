@@ -34,6 +34,14 @@ type Spec = {
 -- In order, left to right. Tools, Helpers and Build join when their windows exist.
 SideButtons.BUTTONS = {
 	{
+		window = "CatIndex",
+		flag = "catIndexWindow",
+		icon = "Index",
+		caption = "Index",
+		top = Color3.fromHex("C9F5E5"),
+		bottom = Color3.fromHex("A8E6CF"),
+	},
+	{
 		window = "Settings",
 		flag = "settingsCard",
 		icon = "Settings",
