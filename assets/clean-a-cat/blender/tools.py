@@ -9,10 +9,10 @@ Drafts for the other wash steps (#123): rinse, pick out burrs, towel dry, trim n
 
   CleanACat_Tool_Shower    a hand shower: a white grip, a sky blue head tipped forward and down, a hose stub.
                            Attachment `Nozzle` on the face plate, its +Y (Roblox) along the spray
-  CleanACat_Tool_Comb      a grooming comb: a mint handle and spine, seven metal teeth pointing down
-  CleanACat_Tool_Tweezers  big tweezers: two metal arms open toward the front, pink grip pads
+  CleanACat_Tool_Comb      a grooming comb: a mint handle and spine, five wide white teeth pointing down
+  CleanACat_Tool_Tweezers  big tweezers: two pink arms open wide toward the front, a round metal bead on each tip
   CleanACat_Tool_Towel     a folded bubblegum towel with two cream stripes
-  CleanACat_Tool_Clipper   a nail clipper: two metal blades and a sky blue lever
+  CleanACat_Tool_Clipper   a nail clipper: two mint blades with metal jaws, a pale mint lever with a sky thumb pad
   CleanACat_Tool_Dryer     a hand dryer: a bubblegum barrel, a cream nozzle, a darker pink grip. Attachment `Air`
                            at the nozzle's mouth, its +Y (Roblox) along the air
   CleanACat_Tool_Shampoo   a pump bottle: lilac, a cream label with a pink paw, a white pump
@@ -98,23 +98,28 @@ def shower_rbx_extras():
 
 
 def build_comb(mat):
-    """Picks burrs out of fur. Held by the handle, pivot at its middle; the teeth point down and the spine forward."""
+    """Picks burrs out of fur. Held by the handle, pivot at its middle; the teeth point down and the spine forward.
+    Five wide white teeth with gaps as wide as a tooth, so it still reads as a comb at 32 px."""
     b = Builder()
-    b.box((0, 0.3, 0), (0.16, 0.62, 0.32), "bow_mint")                         # the handle
-    b.box((0, -0.38, 0.07), (0.12, 0.84, 0.16), "bow_mint")                    # the spine, a hair lower on top
-    for i in range(7):                                                         # teeth, sunk into the spine
-        b.box((0, -0.74 + i * 0.115, -0.15), (0.09, 0.06, 0.36), "metal", bevel=False)
+    b.box((0, 0.3, 0), (0.2, 0.62, 0.34), "bow_mint")                          # the handle
+    b.box((0, -0.38, 0.07), (0.16, 0.84, 0.18), "bow_mint")                    # the spine, a hair lower on top
+    for i in range(5):                                                         # teeth, sunk into the spine
+        b.box((0, -0.73 + i * 0.17, -0.17), (0.12, 0.085, 0.4), "foam", bevel=False)
     return [b.finalize("CleanACat_Tool_Comb", mat)]
 
 
 def build_tweezers(mat):
-    """Lifts a burr or a leaf off the fur. Pivot at the middle; the arms open toward the front."""
+    """Lifts a burr or a leaf off the fur. Pivot at the middle; two pink arms open wide toward the front, each with a
+    round metal bead at its tip, the part that picks."""
     b = Builder()
-    b.box((0, 0.56, 0), (0.2, 0.16, 0.24), "metal")                            # the bend at the back
+    b.box((0, 0.56, 0), (0.24, 0.18, 0.26), "bow_pink")                        # the bend at the back
     for sx in (1, -1):
-        rot = Matrix.Rotation(math.radians(10 * sx), 3, "Z")
-        b.box((sx * 0.105, 0.0, 0), (0.09, 1.16, 0.2), "metal", rot=rot)       # an arm
-        b.box((sx * 0.14, 0.1, 0), (0.07, 0.42, 0.26), "bow_pink", rot=rot)    # its grip pad, proud of the arm
+        a = math.radians(14 * sx)
+        rot = Matrix.Rotation(a, 3, "Z")
+        b.box((sx * 0.145, 0.0, 0), (0.1, 1.16, 0.22), "bow_pink", rot=rot)    # an arm
+        b.box((sx * 0.2, 0.1, 0), (0.07, 0.4, 0.28), "spa_cream", rot=rot)     # its grip pad, proud of the arm
+        tip = Vector((sx * 0.145, 0, 0)) + rot @ Vector((0, -0.6, 0))
+        b.sphere(tip, 0.12, "metal", segments=8, rings=5)                      # the bead
     return [b.finalize("CleanACat_Tool_Tweezers", mat)]
 
 
@@ -129,19 +134,24 @@ def build_towel(mat):
 
 
 def build_clipper(mat):
-    """Trims a claw. Two thin blades joined at the back and open at the jaws, a long lever on a pin with a sky blue
-    thumb pad at its tail. Pivot at the middle, the jaws to the front."""
+    """Trims a claw. Two mint blades joined at the back and open at the front, where each ends in a metal jaw; a
+    paler mint lever on a pin with a sky blue thumb pad at its tail. Only the jaws and the pin are metal, so it
+    does not melt into a grey floor. Pivot at the middle, the jaws to the front."""
     b = Builder()
-    b.box((0, 0, -0.07), (0.3, 1.0, 0.06), "metal")                            # the lower blade
-    b.box((0, 0.02, 0.02), (0.3, 0.98, 0.06), "metal", rot=(math.radians(-6), "X"))    # the upper, open at the jaws
-    b.box((0, 0.46, -0.04), (0.26, 0.1, 0.1), "concrete", bevel=False)         # the rivet block at the back
-    b.cyl((0, -0.3, 0.06), 0.06, 0.26, "concrete", segments=8, bevel=False)    # the pin
+    open_ = math.radians(-6)
+    b.box((0, 0.08, -0.07), (0.32, 0.84, 0.07), "bow_mint")                    # the lower blade
+    b.box((0, -0.42, -0.07), (0.3, 0.2, 0.06), "metal", bevel=False)           # its jaw
+    lift = Matrix.Rotation(open_, 3, "X")
+    b.box(Vector((0, 0.02, 0.02)) + lift @ Vector((0, 0.07, 0)), (0.32, 0.84, 0.07), "bow_mint", rot=lift)   # upper
+    b.box(Vector((0, 0.02, 0.02)) + lift @ Vector((0, -0.42, 0)), (0.3, 0.2, 0.06), "metal", bevel=False, rot=lift)
+    b.box((0, 0.46, -0.04), (0.28, 0.1, 0.1), "bow_mint", bevel=False)         # the rivet block at the back
+    b.cyl((0, -0.24, 0.06), 0.06, 0.26, "metal", segments=8, bevel=False)      # the pin
     tilt = math.radians(22)
     along = Vector((0, math.cos(tilt), math.sin(tilt)))                        # from the pin back and up
     up = Vector((0, -math.sin(tilt), math.cos(tilt)))
-    pin = Vector((0, -0.3, 0.14))
-    b.box(pin + along * 0.4, (0.26, 0.96, 0.06), "fur_silver", rot=(tilt, "X"))        # the lever
-    b.box(pin + along * 0.7 + up * 0.045, (0.3, 0.36, 0.07), "bow_sky", rot=(tilt, "X"))   # its thumb pad
+    pin = Vector((0, -0.24, 0.14))
+    b.box(pin + along * 0.38, (0.28, 0.92, 0.07), "spa_mint", rot=(tilt, "X"))             # the lever
+    b.box(pin + along * 0.66 + up * 0.05, (0.32, 0.36, 0.08), "bow_sky", rot=(tilt, "X"))  # its thumb pad
     return [b.finalize("CleanACat_Tool_Clipper", mat)]
 
 
@@ -179,7 +189,7 @@ def build_shampoo(mat):
 ASSETS = {n: (lambda mat, n=n: build_sponge(n, mat), 400) for n in SPONGES}
 ASSETS["CleanACat_Tool_Brush"] = (build_brush, 200)
 ASSETS.update({"CleanACat_Tool_Shower": (build_shower, 400), "CleanACat_Tool_Comb": (build_comb, 300),
-               "CleanACat_Tool_Tweezers": (build_tweezers, 200), "CleanACat_Tool_Towel": (build_towel, 200),
+               "CleanACat_Tool_Tweezers": (build_tweezers, 400), "CleanACat_Tool_Towel": (build_towel, 200),
                "CleanACat_Tool_Clipper": (build_clipper, 200), "CleanACat_Tool_Dryer": (build_dryer, 400),
                "CleanACat_Tool_Shampoo": (build_shampoo, 400)})
 EXTRAS = {"CleanACat_Tool_Shower": shower_rbx_extras, "CleanACat_Tool_Dryer": dryer_rbx_extras}
