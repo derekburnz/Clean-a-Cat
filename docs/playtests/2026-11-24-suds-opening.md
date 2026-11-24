@@ -81,8 +81,8 @@ Clips and frames are on the owner's Studio PC (not in the repo). No account name
 ## Recheck 2 on main 6fed572 (#313), a06 and iPhone 13 (Sync-Agent, 2026-11-24)
 All five items pass. Times are seconds after the scene starts, which is when CleanACat_OpeningScene appears.
 1. **The box falls off the back.** It leaves about 6.9 studs behind the truck's centre and barely rises (0.09 studs). It then travels 7.2 studs back along the truck's path and 5.0 sideways, and lands 4.69 studs from the avatar's root, measured on the ground. Visible size: a06 41x40 px, iPhone 13 45x43 px.
-2. **The shot holds until the box settles.** The camera goes back to Custom 0.85 s after the second thud on the a06, and 0.88 s after it on iPhone 13.
-3. **Landing time.** The box lands 2.46 s after scene start (a06) and 2.45 s (iPhone 13). Correction: the earlier 3.74 s was counted from the logger's start, not the scene's. Measured from scene start, the previous build landed at 2.26 s, so there was no 1.5 s scene lag. The new beats simply land 0.2 s later.
+2. **The shot holds until the box settles.** The camera goes back to Custom 0.85 s after the second thud on the a06, and 0.88 s after it on iPhone 13. That is 3.73 s and 3.71 s after scene start, inside the 4 s limit agreed for the watched intro.
+3. **Landing time.** The box lands 2.46 s after scene start (a06) and 2.45 s (iPhone 13). Correction: in the first recheck the box was logged landing at 3.74 s, and the #313 triage read that as a 1.5 s scene start lag against the 2.25 s beat. That 3.74 s was counted from the logger's start, not the scene's. Measured from scene start, the previous build landed at 2.26 s, so there was no 1.5 s scene lag. The new beats simply land 0.2 s later.
 4. **The truck honk** plays 0.41 s after scene start on the a06 and 0.40 s on iPhone 13. The sound order is rumble, honk, the two bumps, the door, two thuds, then a rustle every 1.6 s.
 5. **No console errors.**
 
