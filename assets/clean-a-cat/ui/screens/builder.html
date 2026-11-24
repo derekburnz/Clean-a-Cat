@@ -37,7 +37,7 @@
 .now { position: relative; display: grid; grid-template-columns: 116px 1fr auto; column-gap: 14px; align-items: center; padding: 12px 14px 12px 12px; }
 .now .tile { width: 116px; height: 116px; background: linear-gradient(#fde7cb, #ffeed0); display: grid; place-items: center; }
 .now .tile svg.art { width: 92px; height: 92px; }
-.now .tile img.bath { position: absolute; left: -22%; top: -50%; width: 165%; height: 165%; max-width: none; object-fit: fill; }
+.now .tile img.bath { object-fit: contain; transform: scale(1.15); }
 .now .info { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .now .k { font-weight: 800; font-size: 18px; line-height: 1; color: var(--ink-soft); }
 .now .name { font-family: var(--font-head); font-size: 28px; line-height: 1; white-space: nowrap; }
