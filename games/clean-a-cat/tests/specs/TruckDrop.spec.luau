@@ -174,6 +174,22 @@ return function()
 				end
 			end
 		end)
+		it("lets go of the floor's edge smoothly: no one-frame drop as it tips off", function()
+			-- between 60 fps frames, the fall's speed changes by gravity's share and not much more
+			local step = 1 / 60
+			local t = B.drop
+			local prev = TruckDrop.box(t, false).y
+			local prevSpeed: number? = nil
+			while t < B.land - step do
+				t += step
+				local y = TruckDrop.box(t, false).y
+				local speed = y - prev
+				if prevSpeed then
+					expect(math.abs(speed - prevSpeed) < 0.07).to.equal(true)
+				end
+				prev, prevSpeed = y, speed
+			end
+		end)
 		it(
 			"is never touched by the back door as it swings and slams (Sync-Agent saw a 0.26 stud clip)",
 			function()
