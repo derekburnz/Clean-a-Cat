@@ -290,7 +290,7 @@ local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: 
 	name.Size = UDim2.fromOffset(whoW, s.name)
 	name.Text = card.cat
 	name.TextXAlignment = if short then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center
-	name.TextTruncate = Enum.TextTruncate.AtEnd
+	Kit.shrinkToFit(name, s.nameText)
 
 	-- What the cat needs and what it pays: stacked on a tall screen, one row on a short one.
 	local info = frame("Info", box)
@@ -324,7 +324,7 @@ local function drawCard(card: QueueViewRules.Card, row: Frame, s: Sizes, short: 
 		pay.Position = UDim2.fromScale(0.5, 1)
 		local say = words("Say", pay, 20)
 		say.LayoutOrder = 1
-		say.Font = Enum.Font.GothamBold
+		say.FontFace = Kit.BODY_FACE
 		say.TextColor3 = Kit.INK_SOFT
 		say.AutomaticSize = Enum.AutomaticSize.X
 		say.Size = UDim2.fromOffset(0, s.payH)

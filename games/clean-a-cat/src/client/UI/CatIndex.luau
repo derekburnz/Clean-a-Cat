@@ -28,7 +28,6 @@ local Window = require(script.Parent:WaitForChild("Window"))
 local CatIndex = {}
 
 local TABS = { "All", "Common", "Uncommon", "Rare", "Epic", "Legendary" }
-local BODY_FONT = Enum.Font.GothamBold
 local NEW_PINK = Color3.fromHex("FF86CF")
 local SILHOUETTE = Color3.fromHex("4A3560")
 local TRACK = Color3.fromHex("F7E9DA")
@@ -63,7 +62,7 @@ local SIZES = {
 		pad = 12,
 		tab = 60,
 		track = 100,
-		cardW = 108,
+		cardW = 120, -- room for "Uncommon" at the text floor in the real font (Sync-Agent's iPhone 14 check, #262)
 		cardH = 88,
 		cardTile = 56,
 		cardText = 19,
@@ -253,9 +252,8 @@ local function drawCard(card: IndexViewRules.Card, grid: Frame, order: number, s
 	caption.AutomaticSize = Enum.AutomaticSize.None
 	caption.AnchorPoint = Vector2.new(0.5, 1)
 	caption.Position = UDim2.new(0.5, 0, 1, -4)
-	caption.Size = UDim2.new(1, -8, 0, s.cardText + 4)
-	caption.TextSize = s.cardText
-	caption.TextTruncate = Enum.TextTruncate.AtEnd
+	caption.Size = UDim2.new(1, -4, 0, s.cardText + 4)
+	Kit.shrinkToFit(caption, s.cardText)
 	caption.Text = if card.seen then card.cat else card.rarity
 
 	if card.washed then
@@ -368,11 +366,13 @@ local function infoRow(
 	iconBox.Position = UDim2.fromScale(0, 0.5)
 	iconBox.Size = UDim2.fromOffset(26, 26)
 	Icons.draw(icon, iconBox)
-	local label = words("Say", row, BODY_FONT, Kit.INK)
+	local label = words("Say", row, Kit.FONT, Kit.INK)
+	label.FontFace = Kit.BODY_FACE
 	label.AnchorPoint = Vector2.new(0, 0.5)
 	label.Position = UDim2.new(0, 36, 0.5, 0)
 	label.Text = say
-	local value = words("Value", row, BODY_FONT, Kit.INK)
+	local value = words("Value", row, Kit.FONT, Kit.INK)
+	value.FontFace = Kit.BODY_FACE
 	value.AnchorPoint = Vector2.new(1, 0.5)
 	value.Position = UDim2.fromScale(1, 0.5)
 	value.TextXAlignment = Enum.TextXAlignment.Right

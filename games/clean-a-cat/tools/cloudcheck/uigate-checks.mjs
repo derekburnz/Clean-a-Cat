@@ -50,7 +50,7 @@ export const LIMITS = {
 };
 
 // gate: fails the run when new; warn: in the report only
-const GATED = new Set(['tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke']);
+const GATED = new Set(['tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke', 'cut']);
 
 // The HUD's buttons (a tile can sit on its neighbours, or a key badge half under one): a Components/Button is a holder with a Depth frame (the outlined shape) and a Face. What a
 // tile draws is every piece under it, each grown by its outline (UIStroke Border draws outside the box): the
@@ -252,6 +252,15 @@ export function checkScene(profile, scene) {
         add('fit', node, `text about ${px(node.tw)} px wide in a ${px(inner)} px box${label(node)}`);
       } else if (node.wrap && node.th > node.h + 4 && node.th > node.h * 1.15) {
         add('fit', node, `wrapped text about ${px(node.th)} px tall in a ${px(node.h)} px box${label(node)}`);
+      }
+    }
+    // a label that ends its words with "..." (TextTruncate) because they do not fit: "Uncom..." on an iPhone 14
+    // (#262). FredokaOne is measured letter by letter, so a miss of half a pixel counts for it; other fonts use average
+    // widths and need the same clear miss as 'fit'.
+    if (node.text !== undefined && node.trunc && !node.wrap && node.iw !== undefined) {
+      const exact = node.font === 'FredokaOne';
+      if (exact ? node.twx > node.iw + 0.5 : node.twx > node.iw + 4 && node.twx > node.iw * 1.15) {
+        add('cut', node, `text about ${px(node.twx)} px wide is cut off with "..." in a ${px(node.iw)} px box${label(node)}`);
       }
     }
     // Cut off outlines: a Border stroke draws outside

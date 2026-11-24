@@ -36,6 +36,7 @@ local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 local CatIndex = require(script:WaitForChild("CatIndex"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local HUD = require(script:WaitForChild("HUD"))
+local Kit = require(script:WaitForChild("Kit"))
 local Motion = require(script:WaitForChild("Motion"))
 local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
@@ -47,7 +48,7 @@ local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
 local UI = {}
 
 local TAP = 52 -- px: comfortable on a phone (the UI gate fails anything pressable under 44 px on touch)
-local FONT = Enum.Font.GothamMedium
+local FONT = Kit.FONT -- the game's one heading font: the gate allows Fredoka One and Nunito only (#262)
 local MENU_SIZE = Vector2.new(120, TAP)
 local MENU_TEXT = 20
 local MENU_SIZE_TV = Vector2.new(160, 68) -- a TV is read from the couch (#209)
@@ -104,7 +105,7 @@ local function window(name: string, title: string, gui: ScreenGui): Frame
 	heading.BackgroundTransparency = 1
 	heading.Position = UDim2.fromOffset(20, 12)
 	heading.Size = UDim2.new(1, -40 - TAP, 0, 40)
-	heading.Font = Enum.Font.GothamBold
+	heading.Font = Kit.FONT
 	heading.TextSize = 26
 	heading.TextXAlignment = Enum.TextXAlignment.Left
 	heading.TextColor3 = Color3.fromRGB(30, 30, 30)
@@ -219,7 +220,7 @@ function UI.init()
 	body.BackgroundTransparency = 1
 	body.Position = UDim2.fromOffset(20, 64)
 	body.Size = UDim2.new(1, -40, 1, -84)
-	body.Font = FONT
+	body.FontFace = Kit.BODY_FACE
 	body.TextSize = 18
 	body.TextWrapped = true
 	body.TextXAlignment = Enum.TextXAlignment.Left
