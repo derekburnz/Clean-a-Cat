@@ -1,4 +1,4 @@
-"""Five of the six HUD button pictures (#185), ten small screen pictures (#251) and five tiny ones (#255):
+"""Five of the six HUD button pictures (#185), thirteen small screen pictures (#251, #259) and five tiny ones (#255):
 CleanACat_Icon_Hud_<Name>, 512 px, see-through, with a thick ink outline.
 
     python hud_icons.py <out folder> [--only Index,Tools]
@@ -18,7 +18,8 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
 
 Ten small pictures in the same style follow them (#251), for names the UI otherwise draws as a system emoji: Camera,
 Paw, Heart, Gift, Music, Speaker, Shake, Sparkle, Dice and Check. They are used in rows and badges, smaller than the
-buttons, so each is one plain shape.
+buttons, so each is one plain shape. Three more joined them (#259), the last names that drew an emoji: Pointer (the
+tutorial's arrow), Star (a star earned for a wash) and Station (a bath, for the recap card's bonus row).
 
 Five tiny pictures come last (#255), for the queue window: Crown (a VIP), Lock (a need whose station is not built) and
 the three needs Mud, Tangles and Wet. A need draws at about 18 to 21 px on a phone, inside a round white chip, and the
@@ -438,6 +439,42 @@ def lock(mat):
     return _fin(b, "Lock", mat, ink=k)
 
 
+def pointer(mat):
+    """The tutorial's arrow: one fat yellow arrow pointing left, at the thing to tap. Yellow, like the warm ring the
+    tutorial draws round that thing, and bright on the dimmed screen behind it."""
+    b = Builder()
+    pts = [(-1.4, 0.0), (-0.2, -1.15), (-0.2, -0.5), (1.35, -0.5), (1.35, 0.5), (-0.2, 0.5), (-0.2, 1.15)]
+    b.prism((-0.5, 0, 0), [(x + 0.5, z) for x, z in pts], 0.6, "fur_golden", bevel=True, rot=X)
+    b.cyl((0.6, -0.31, 0.22), 0.13, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(2.6, 1, 1))   # a glint
+    return _fin(b, "Pointer", mat)
+
+
+def star(mat):
+    """A star earned for a wash: one fat yellow five-point star with a white glint."""
+    b = Builder()
+    b.star((0, 0, 0), 1.35, 0.7, 0.6, "fur_golden", points=5, rot=X)
+    b.cyl((-0.3, -0.31, 0.3), 0.15, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(1.5, 1, 1))
+    return _fin(b, "Star", mat)
+
+
+def station(mat):
+    """A station: the wash tub from the side. A blue roll-top bath with a round bottom, short gold feet, a gold tap
+    at one end and white lather over the rim at the other. The tub is the bath water's deeper blue so the white
+    lather and a white row behind it do not wash it out; round feet read as a cart's wheels, so these are blocks."""
+    b = Builder()
+    side = [(-1.35, 0.45), (-1.25, -0.1), (-1.0, -0.45), (-0.6, -0.6), (0.6, -0.6), (1.0, -0.45), (1.25, -0.1),
+            (1.35, 0.45)]
+    b.prism((0, 0, 0), side, 1.0, "water", bevel=True, rot=X)
+    b.box((0, 0, 0.5), (3.0, 1.14, 0.24), "spa_sky")                                     # the rolled rim
+    for sx in (-1, 1):                                                                   # the feet
+        b.box((sx * 0.82, 0, -0.7), (0.4, 0.6, 0.3), "fur_golden", rot=(math.radians(sx * 20), "Y"))
+    b.box((1.0, 0, 0.98), (0.2, 0.24, 0.72), "fur_golden")                               # the tap
+    b.box((0.76, 0, 1.26), (0.68, 0.24, 0.2), "fur_golden")
+    for x, z, r in ((-0.92, 0.84, 0.34), (-0.4, 0.98, 0.46), (0.14, 0.82, 0.32)):        # the lather
+        b.sphere((x, 0.0, z), r, "foam", segments=12, rings=8)
+    return _fin(b, "Station", mat)
+
+
 BUILDERS = {                                       # name -> (builder, (yaw, pitch)[, outline px])
     "Index": (index, (22.0, 12.0)),
     "Settings": (settings, (-16.0, 8.0)),
@@ -454,6 +491,9 @@ BUILDERS = {                                       # name -> (builder, (yaw, pit
     "Sparkle": (sparkle, (-14.0, 8.0)),
     "Dice": (dice, (-30.0, 26.0)),
     "Check": (check, (-14.0, 8.0)),
+    "Pointer": (pointer, (-10.0, 6.0)),
+    "Star": (star, (-14.0, 8.0)),
+    "Station": (station, (-14.0, 10.0)),
     "Crown": (crown, TINY_VIEW, TINY_OUTLINE),       # the tiny pictures (#255)
     "Lock": (lock, TINY_VIEW, TINY_OUTLINE),
     "Mud": (mud, TINY_VIEW, TINY_OUTLINE),
