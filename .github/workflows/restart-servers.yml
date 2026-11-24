@@ -10,6 +10,11 @@ name: restart-servers
 on:
   workflow_dispatch:
     inputs:
+      target:
+        description: "dev: the dev copy's servers. live: the real game's, only on the owner's word"
+        type: choice
+        options: [dev, live]
+        default: dev
       warn_players:
         description: "Warn every server first with an in-game countdown (adds its length, 10 minutes by default)"
         type: boolean
@@ -28,7 +33,7 @@ concurrency:
 
 env:
   GAME_DIR: games/clean-a-cat
-  UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
+  UNIVERSE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_UNIVERSE_ID || '10778773655') || (vars.ROBLOX_DEV_UNIVERSE_ID || '10778775478') }}
 
 jobs:
   restart:
@@ -36,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 75 # up to 60 for the countdown plus the restart
     env:
-      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
+      ROBLOX_PUBLISH_KEY: ${{ inputs.target == 'live' && (secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) || (secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) }}
     defaults:
       run:
         working-directory: ${{ env.GAME_DIR }}
@@ -46,7 +51,7 @@ jobs:
       - name: Check the key and the experience id are set
         run: |
           if [ -z "$ROBLOX_PUBLISH_KEY" ] || [ -z "$UNIVERSE_ID" ]; then
-            echo "::error::Set the secret ROBLOX_PUBLISH_KEY (or OWNER_KEY). Steps: docs/setup-guide.md step 8."
+            echo "::error::Set the secret ROBLOX_PUBLISH_KEY (or OWNER_KEY) and, for dev, ROBLOX_DEV_UNIVERSE_ID. Steps: docs/setup-guide.md step 8."
             exit 1
           fi
 

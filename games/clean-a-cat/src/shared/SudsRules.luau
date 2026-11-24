@@ -25,9 +25,12 @@ SudsRules.STARS = 3 -- his score; never added to the save
 SudsRules.NO_BOWS = "noBows" -- in the wash plan (ScrubController.plan): the step bar leaves the bows out for him
 SudsRules.ATTRIBUTE = "SudsStage" -- Player attribute: the save's stage, set by the server, for the client's opening
 SudsRules.BOX_ATTRIBUTE = "SudsBox" -- Player attribute: true while the server holds the kitten back for the box
--- Seconds from the box tap to the kitten in the tub: the flaps, the peek and the hop out (Effects/TruckDrop) come
--- first, so the tub's kitten never shows while the box's is still peeking.
-SudsRules.HOP_SECONDS = 2
+-- The carry (Derek 2026-11-24: "we should pick him up out of crate"): after the box opens, the player picks the
+-- kitten up, carries him to the tub and places him there (RequestPlaceKitten), within PLACE_REACH studs of the tub's
+-- spot. A carry that never ends (a client that lost the scene) still puts him in the tub after CARRY_SECONDS, so the
+-- game never waits on it.
+SudsRules.PLACE_REACH = 16
+SudsRules.CARRY_SECONDS = 120
 SudsRules.OPENING_SPOT = "SpotOpening" -- plot spot where the player stands for the opening, facing the street
 SudsRules.JOINED_ATTRIBUTE = "JoinedAt" -- Player attribute: the server's clock when it saw the join, for the start time
 SudsRules.BOX_SPOT = "SpotBox" -- plot spot where the box lands, in front of SpotOpening

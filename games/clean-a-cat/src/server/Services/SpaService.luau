@@ -26,6 +26,7 @@ local CatRules = require(Shared:WaitForChild("CatRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
@@ -65,6 +66,8 @@ local handedOut: { [Player]: number } = {} -- cats handed out this session, for 
 -- Asked for a cat before the save loaded while sudsWash is on: answered once it loads, so a slow load can never hand
 -- a brand new player a customer's cat in place of the kitten.
 local waiting: { [Player]: boolean } = {}
+-- The save-loaded step below has finished for this player (the owner replay is applied), so a parked ask may run.
+local loadDone: { [Player]: boolean } = {}
 local random = Random.new()
 
 local function rollCustomer(player: Player): string
@@ -124,6 +127,7 @@ end
 local isOwner: { [Player]: boolean } = {}
 
 local function checkOwner(player: Player)
+	LiveFlags.waitForRead()
 	if not LiveFlags.isOn(SudsRules.REPLAY_FLAG) then
 		return
 	end
@@ -272,6 +276,12 @@ local function holdForBox(player: Player): boolean
 end
 
 local function onRequestCat(player: Player)
+	-- A new server's first player can ask before the switches are read, when every switch still reads off; the ask
+	-- waits for the read, so the opening is never skipped for them (2026-11-24).
+	if not LiveFlags.read() then
+		waiting[player] = true
+		return
+	end
 	if not LiveFlags.isOn(FLAG) then
 		return
 	end
@@ -322,8 +332,9 @@ local function handOut(player: Player)
 	end
 end
 
--- The player tapped the box (switch openingBox): the save remembers it, and the kitten goes to the tub once the
--- box's peek and hop are over.
+-- The player tapped the box (switch openingBox): the save remembers it. The kitten peeks out, the player picks him
+-- up and carries him to the tub (RequestPlaceKitten); he goes there by himself after CARRY_SECONDS if that never
+-- comes.
 local function onOpenBox(player: Player)
 	if not LiveFlags.isOn(FLAG) or cats[player] ~= nil or not inBox(player) then
 		return
@@ -339,7 +350,33 @@ local function onOpenBox(player: Player)
 	if LiveFlags.isOn("onboardingFunnel") then
 		Telemetry.event(player, "box_opened")
 	end
-	task.delay(SudsRules.HOP_SECONDS, handOut, player)
+	task.delay(SudsRules.CARRY_SECONDS, function()
+		if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == false then
+			handOut(player)
+		end
+	end)
+end
+
+-- The player set the kitten down in the tub: he is handed out there. Only while this session's box is open and not
+-- yet handed out (SudsBox false), with no cat out, and with the player standing by their own tub.
+local function onPlaceKitten(player: Player)
+	if
+		not LiveFlags.isOn(FLAG)
+		or cats[player] ~= nil
+		or player:GetAttribute(SudsRules.BOX_ATTRIBUTE) ~= false
+	then
+		return
+	end
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
+	if root == nil or not root:IsA("BasePart") then
+		return
+	end
+	local offset = (root :: BasePart).Position - SpaLayout.tubSpot(player).Position
+	if Vector3.new(offset.X, 0, offset.Z).Magnitude > SudsRules.PLACE_REACH then
+		return
+	end
+	handOut(player)
 end
 
 -- The player picks a waiting customer to be washed next: it moves to the front of the line (#201).
@@ -539,6 +576,12 @@ function SpaService.Start()
 		end
 		-- The board shows the chances of the player's star tier, the same table their rolls use.
 		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+		-- Whether the opening plays is decided once, here, so it waits for the server's first read of the switches
+		-- (a fraction of a second; at most LiveFlags.READ_WAIT_SECONDS).
+		LiveFlags.waitForRead()
+		if player.Parent ~= Players then
+			return
+		end
 		-- The owner's opening replay (switch openingReplay): their kitten starts over. The owner check started as they
 		-- joined and is usually done; wait a moment for it if not.
 		if LiveFlags.isOn(SudsRules.REPLAY_FLAG) then
@@ -557,9 +600,24 @@ function SpaService.Start()
 		-- opening spot (Derek: hook them instantly). The save starts loading as the player joins, so it is usually
 		-- ready before their game has finished loading.
 		holdForBox(player)
+		loadDone[player] = true
 		if waiting[player] then
 			waiting[player] = nil
 			onRequestCat(player)
+		end
+	end)
+	-- Asks that came before the first read of the switches (onRequestCat), for saves that are already loaded.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.READ_ATTRIBUTE):Connect(function()
+		if not LiveFlags.read() then
+			return
+		end
+		-- Only once the save-loaded step is done: before it, the owner replay is not applied yet, and answering the ask
+		-- would hand the owner a normal cat (Review-QA on #322). That step answers its own parked ask at its end.
+		for player in table.clone(waiting) do
+			if loadDone[player] then
+				waiting[player] = nil
+				onRequestCat(player)
+			end
 		end
 	end)
 	NetService.on("ReportScrubbed", { perSecond = 2 }, onScrubbed)
@@ -568,6 +626,7 @@ function SpaService.Start()
 	NetService.on("RequestPhoto", { perSecond = 2 }, onPhoto)
 	NetService.on("RequestPickCustomer", { perSecond = 1, burst = 2 }, onPickCustomer)
 	NetService.on("RequestOpenBox", { perSecond = 1 }, onOpenBox)
+	NetService.on("RequestPlaceKitten", { perSecond = 1 }, onPlaceKitten)
 	-- The opening or the kitten switched off while a kitten waits in a box: the box goes, and the tub gets him (or,
 	-- with sudsWash off, the usual first cat).
 	for _, flag in { SudsRules.BOX_FLAG, SudsRules.FLAG } do
@@ -577,7 +636,8 @@ function SpaService.Start()
 					return
 				end
 				for _, player in Players:GetPlayers() do
-					if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true then
+					-- in the box, or opened and still being carried
+					if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) ~= nil then
 						handOut(player)
 					end
 				end
@@ -620,6 +680,7 @@ function SpaService.Start()
 		queueNeeds[player] = nil
 		handedOut[player] = nil
 		waiting[player] = nil
+		loadDone[player] = nil
 		isOwner[player] = nil
 	end)
 end

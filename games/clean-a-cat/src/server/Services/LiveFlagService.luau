@@ -20,15 +20,38 @@ local function publish(key: string, stored: unknown)
 	)
 end
 
+local function readOne(store: DataStore, key: string)
+	local ok, value = pcall(function()
+		return store:GetAsync(key)
+	end)
+	if ok then
+		publish(key, value)
+	end
+end
+
 local function refresh(store: DataStore)
 	for _, key in LiveFlags.KEYS do
-		local ok, value = pcall(function()
-			return store:GetAsync(key)
-		end)
-		if ok then
-			publish(key, value)
-		end
+		readOne(store, key)
 	end
+end
+
+-- The first read asks for every switch at once, so it takes one store round trip instead of one per switch (about
+-- 45 in a row took 6 to 7 s, and the first player in a new server missed the opening, 2026-11-24). It is marked
+-- done when every answer is in, or after READ_WAIT_SECONDS; a switch still unanswered then keeps its default until
+-- the next minute's read.
+local function firstRead(store: DataStore)
+	local left = #LiveFlags.KEYS
+	for _, key in LiveFlags.KEYS do
+		task.spawn(function()
+			readOne(store, key)
+			left -= 1
+		end)
+	end
+	local deadline = os.clock() + LiveFlags.READ_WAIT_SECONDS
+	while left > 0 and os.clock() < deadline do
+		task.wait(0.05)
+	end
+	ReplicatedStorage:SetAttribute(LiveFlags.READ_ATTRIBUTE, true)
 end
 
 function LiveFlagService.Init(_services: { [string]: any })
@@ -48,11 +71,13 @@ function LiveFlagService.Start()
 	end)
 	if not ok then
 		warn(`LiveFlagService: no DataStore ({store}); every switch stays at its default`)
+		ReplicatedStorage:SetAttribute(LiveFlags.READ_ATTRIBUTE, true)
 		return
 	end
+	firstRead(store)
 	while true do
-		refresh(store)
 		task.wait(LiveFlags.CHECK_SECONDS)
+		refresh(store)
 	end
 end
 

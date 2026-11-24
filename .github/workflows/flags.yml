@@ -9,13 +9,18 @@ name: flags
 on:
   workflow_dispatch:
     inputs:
+      target:
+        description: "dev: the dev copy's switches. live: the real game's, only on the owner's word"
+        type: choice
+        options: [dev, live]
+        default: dev
       action:
         description: "show | set | clear (clear puts the switch back at its default)"
         type: choice
         options: [show, set, clear]
         default: show
       key:
-        description: "Which switch (set and clear): a name in LiveFlags.KEYS"
+        description: "Which switch (set and clear): a name in LiveFlags.KEYS, or several split by commas"
         type: string
         default: ""
       value:
@@ -33,7 +38,8 @@ concurrency:
 
 env:
   GAME_DIR: games/clean-a-cat
-  UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
+  # Switches live in each experience's own DataStore, so dev and live are set apart.
+  UNIVERSE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_UNIVERSE_ID || '10778773655') || (vars.ROBLOX_DEV_UNIVERSE_ID || '10778775478') }}
 
 jobs:
   flags:
@@ -41,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
+      ROBLOX_PUBLISH_KEY: ${{ inputs.target == 'live' && (secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) || (secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) }}
       ACTION: ${{ inputs.action }}
       KEY: ${{ inputs.key }}
       VALUE: ${{ inputs.value }}
@@ -51,8 +57,23 @@ jobs:
       - name: Read or change the switches
         working-directory: ${{ env.GAME_DIR }}
         run: |
+          if [ -z "$UNIVERSE_ID" ]; then
+            echo "::error::No dev experience id. Set ROBLOX_DEV_UNIVERSE_ID (docs/setup-guide.md step 8)."
+            exit 1
+          fi
+          echo "Switches of the ${{ inputs.target }} experience ($UNIVERSE_ID)"
           case "$ACTION" in
           show) bash tools/opencloud/flags.sh show ;;
-          set) bash tools/opencloud/flags.sh set "$KEY" "$VALUE" ;;
-          clear) bash tools/opencloud/flags.sh clear "$KEY" ;;
+          set | clear)
+            IFS=',' read -ra keys <<< "$KEY"
+            for k in "${keys[@]}"; do
+              k=$(echo "$k" | tr -d '[:space:]')
+              [ -n "$k" ] || continue
+              if [ "$ACTION" = set ]; then
+                bash tools/opencloud/flags.sh set "$k" "$VALUE"
+              else
+                bash tools/opencloud/flags.sh clear "$k"
+              fi
+            done
+            ;;
           esac
