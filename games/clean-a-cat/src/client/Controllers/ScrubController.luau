@@ -470,7 +470,6 @@ local function spongeRadius(): number
 	return ToolRules.spongeRadius(ScrubRules.SPONGE_RADIUS, ownsTool)
 end
 
--- Rubs every mud blob within the sponge's reach of `point` by `travel` studs.
 -- Rubs every mud piece within the sponge's reach of `point`, and the piece the sponge is touching (`hit`), so a
 -- big or deep blob is never out of reach just because its middle is.
 local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number, hit: Instance?)
