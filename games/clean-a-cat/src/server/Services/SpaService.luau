@@ -8,6 +8,8 @@
 -- holding a cat rolled from CatRules. The next cat comes from the front of the queue and the queue refills at
 -- once, so it is never empty. The photo hands the cat back: the customer pays CatRules.pay (coins plus tip)
 -- and stars instead of PHOTO_COINS. The first customer of a save (no stars yet) always brings a common cat.
+-- With `queuePick` on as well, the player may pick which waiting customer is next (RequestPickCustomer, #201): it
+-- only reorders the line, so it can never reroll or skip paying for a cat.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -29,7 +31,8 @@ local WindowService = require(script.Parent:WaitForChild("WindowService"))
 local FLAG = "scrubPrototype"
 local CUSTOMERS_FLAG = "customers"
 local STRAYS_FLAG = "strays"
-local QUEUE_SIZE = 3
+local PICK_FLAG = "queuePick"
+local QUEUE_SIZE = SpaRules.QUEUE_SIZE
 local BOARD_LIT = "ChanceBoardLit" -- Player attribute: true once a customer has been served, so the board shows
 local MAX_CAT_ID = 2 ^ 31
 
@@ -109,6 +112,12 @@ local function sendCat(player: Player, cat: SpaRules.Cat)
 	NetService.fire(player, "CatReady", cat.id, kind, needs, locked, cat.stray)
 end
 
+-- Sends the door line to the client and the figures (switch customers).
+local function sendQueue(player: Player)
+	NetService.fire(player, "CustomerQueue", table.clone(queueFor(player)))
+	FigureService.showQueue(player, table.clone(queueFor(player)))
+end
+
 local function onRequestCat(player: Player)
 	if not LiveFlags.isOn(FLAG) then
 		return
@@ -128,8 +137,23 @@ local function onRequestCat(player: Player)
 	end
 	sendCat(player, cat :: SpaRules.Cat)
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
-		NetService.fire(player, "CustomerQueue", table.clone(queueFor(player)))
-		FigureService.showQueue(player, table.clone(queueFor(player)))
+		sendQueue(player)
+	end
+end
+
+-- The player picks a waiting customer to be washed next: it moves to the front of the line (#201).
+local function onPickCustomer(player: Player, rawIndex: unknown)
+	if
+		not (LiveFlags.isOn(FLAG) and LiveFlags.isOn(CUSTOMERS_FLAG) and LiveFlags.isOn(PICK_FLAG))
+	then
+		return
+	end
+	local index = Guard.int(rawIndex, 2, QUEUE_SIZE)
+	if index == nil or queues[player] == nil then
+		return
+	end
+	if SpaRules.pickNext(queueFor(player), index) then
+		sendQueue(player)
 	end
 end
 
@@ -269,6 +293,7 @@ function SpaService.Start()
 	NetService.on("ReportBrushStroke", { perSecond = 8 }, onBrushStroke)
 	NetService.on("RequestPickBow", { perSecond = 2 }, onPickBow)
 	NetService.on("RequestPhoto", { perSecond = 2 }, onPhoto)
+	NetService.on("RequestPickCustomer", { perSecond = 1, burst = 2 }, onPickCustomer)
 
 	-- Switch turned off: drop every cat, so turning it on again starts clean.
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG)
