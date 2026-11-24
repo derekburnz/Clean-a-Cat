@@ -442,8 +442,11 @@ function CatIndex.build(root: Instance): Frame
 	local barText = words("Say", barRow, Kit.FONT, Kit.INK)
 	barText.LayoutOrder = 2
 	barText.TextSize = 22
+	local barGap = frame("Gap", barRow) -- more air between the words and the bar (Review-QA on #240)
+	barGap.LayoutOrder = 3
+	barGap.Size = UDim2.fromOffset(4, 1)
 	local barTrack = frame("Track", barRow)
-	barTrack.LayoutOrder = 3
+	barTrack.LayoutOrder = 4
 	barTrack.Size = UDim2.fromOffset(180, 20)
 	barTrack.BackgroundTransparency = 0
 	barTrack.BackgroundColor3 = TRACK
@@ -454,14 +457,14 @@ function CatIndex.build(root: Instance): Frame
 	barFill.BackgroundTransparency = 0
 	barFill.BackgroundColor3 = Kit.GOLD
 	local barCount = words("Count", barRow, Kit.FONT, Kit.INK)
-	barCount.LayoutOrder = 4
+	barCount.LayoutOrder = 5
 	barCount.TextSize = 22
 	local barCoin = frame("CoinIcon", barRow)
-	barCoin.LayoutOrder = 5
+	barCoin.LayoutOrder = 6
 	barCoin.Size = UDim2.fromOffset(48, 48) -- model icons are never drawn under 48
 	Icons.draw("Coins", barCoin)
 	local barBonus = words("Bonus", barRow, Kit.FONT, Kit.GOLD_INK)
-	barBonus.LayoutOrder = 6
+	barBonus.LayoutOrder = 7
 	barBonus.TextSize = 22
 
 	-- Tabs: All and one per rarity.
@@ -487,7 +490,7 @@ function CatIndex.build(root: Instance): Frame
 		tabMin.MinSize = Vector2.new(76, 0) -- "All" stays a full touch target
 		tabMin.Parent = tab
 		local tabPad = Instance.new("UIPadding")
-		tabPad.PaddingLeft, tabPad.PaddingRight = UDim.new(0, 16), UDim.new(0, 16)
+		tabPad.PaddingLeft, tabPad.PaddingRight = UDim.new(0, 20), UDim.new(0, 20)
 		tabPad.Parent = tab
 		tab.Activated:Connect(function()
 			filter = name
