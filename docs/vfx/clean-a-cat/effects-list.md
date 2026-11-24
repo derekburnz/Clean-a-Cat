@@ -20,6 +20,8 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 | CatToWindow | Hop arc to the cushion, small dust puff on landing | window cushion | windowHop | Emit 4 | instant move | #7 | planned |
 | DryStart to DryStop | Warm air wisps blow down from the nozzle onto the cat | the dryer's Air attachment | dryerAir | Rate 6 phone, 12 PC, life 0.4 s | halved | #18 | built, switch dryEffects; waits on DryStart and DryStop from the dry step |
 | opening: truck wheels hit the bump, box lands | Small puff of road dust | the bump on the road, under the box | roadDust | Emit 5 phone, 9 PC, life 0.7 s | kept (no motion) | #281 | built, switch openingBox |
+| SudsNamed | Sparkle burst at his new collar and the happy wiggle | the Collar piece (else the top of the cat) | revealSparkle | Emit 6 phone, 8 PC | wiggle skipped, sparkle halved | #285 | built, switch sudsWash |
+| SudsTapped | A small 0.7 stud hop on his bed (local, put back exactly) and the happy wiggle | Suds on SpotMascot | - | one hop at a time per Suds | no hop, no wiggle (purr only) | #285 | built; binds once the moment lands (sudsMascot) |
 
 ## Opening scene (truck and box, #281)
 Client only, code-driven curves (Effects/TruckDrop for the numbers, Effects/OpeningScene for the props, sounds and camera); no animation clip, so nothing to upload. Beats are Design-Agent's 2026-11-24 plan, all in TruckDrop.BEATS. Props from Model-Agent (#279, #278), PH_ stand-ins until they land.

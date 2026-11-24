@@ -126,6 +126,8 @@ local Cues: { [string]: Cue } = {
 		minGap = 0.5,
 		voices = 1,
 	},
+	-- synth: CleanACat_Sfx_CollarJingle; Suds is named and his collar with its gold bell pops on (SudsNamed)
+	collarJingle = { ids = {}, group = "Sfx", volume = 0.5, minGap = 1, voices = 1 },
 	-- synth: CleanACat_Music_SpaA and CleanACat_Music_SpaB; two beds that alternate
 	spaMusicA = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
 	spaMusicB = { ids = {}, group = "Music", volume = 0.5, voices = 1 },

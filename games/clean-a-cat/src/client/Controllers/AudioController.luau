@@ -52,6 +52,21 @@ local HANDLERS: { [string]: (...any) -> () } = {
 	PhotoTaken = function()
 		Audio.play("camera")
 	end,
+	-- The opening's kitten is named and his collar pops on: the bell jingles at the collar.
+	SudsNamed = function(cat: any)
+		local collar = if typeof(cat) == "Instance"
+			then cat:FindFirstChild("CleanACat_Cat_Suds_Collar", true)
+			else nil
+		if collar and collar:IsA("Model") then
+			collar = (collar :: Model).PrimaryPart
+				or collar:FindFirstChildWhichIsA("BasePart", true)
+		end
+		Audio.play("collarJingle", { at = if collar then collar else nil })
+	end,
+	-- A player taps Suds on his bed (sudsMascot): a purr; the cue's minGap keeps fast taps from stacking.
+	SudsTapped = function(suds: any)
+		Audio.play("purr", { at = if typeof(suds) == "Instance" then suds else nil })
+	end,
 	-- DryStart and DryStop arrive with the dry step (Gameplay-Engineer's stations PR); bind skips them until then.
 	DryStart = function(_cat: any, station: any)
 		if dryer then

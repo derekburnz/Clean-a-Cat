@@ -21,6 +21,9 @@ local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
 local STINK_FLAG = "stinkEffects"
+local SUDS_FLAG = "sudsWash"
+local SUDS_HOP_HEIGHT = 0.7 -- studs
+local SUDS_HOP_SECONDS = 0.32
 local OPENING_FLAG = "openingBox"
 local OPENING_AHEAD = 6 -- studs in front of the player where the box lands
 local BOW_DROP = 0.3 -- studs below the top of the cat, about where a bow sits
@@ -195,6 +198,55 @@ function EffectsController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. OPENING_FLAG)
 		:Connect(playOpening)
 	task.delay(1, playOpening)
+
+	-- Suds (#285): a sparkle at his new collar when he is named, and a small hop when a player taps him on his bed.
+	-- SudsNamed only fires with sudsWash on; SudsTapped arrives with sudsMascot and only fires with it on.
+	Moments.SudsNamed:Connect(function(cat: Model)
+		if not LiveFlags.isOn(SUDS_FLAG) or not cat:IsDescendantOf(workspace) then
+			return
+		end
+		local collar = cat:FindFirstChild("CleanACat_Cat_Suds_Collar", true)
+		local at = if collar and collar:IsA("PVInstance")
+			then (collar :: PVInstance):GetPivot().Position
+			else topPoint(cat)
+		Effects.burst("revealSparkle", at)
+		CatMotion.wiggle(cat)
+	end)
+	if Moments.SudsTapped then
+		local hopping: { [Model]: boolean } = {}
+		Moments.SudsTapped:Connect(function(suds: Model)
+			if
+				typeof(suds) ~= "Instance"
+				or not suds:IsA("Model")
+				or hopping[suds]
+				or not suds:IsDescendantOf(workspace)
+			then
+				return
+			end
+			CatMotion.wiggle(suds)
+			if Effects.reducedMotion() then
+				return
+			end
+			-- A local hop: the server placed him and never moves him per frame, so this client may lift him
+			-- and must put him back exactly where he was.
+			hopping[suds] = true
+			local base = suds:GetPivot()
+			local started = os.clock()
+			local hop: RBXScriptConnection
+			hop = RunService.PreRender:Connect(function()
+				local u = (os.clock() - started) / SUDS_HOP_SECONDS
+				if u >= 1 or suds.Parent == nil then
+					hop:Disconnect()
+					hopping[suds] = nil
+					if suds.Parent then
+						suds:PivotTo(base)
+					end
+					return
+				end
+				suds:PivotTo(base * CFrame.new(0, SUDS_HOP_HEIGHT * 4 * u * (1 - u), 0))
+			end)
+		end)
+	end
 
 	Moments.MudPatchCleared:Connect(
 		function(cat: Model, patchPosition: Vector3, patchesLeft: number)
