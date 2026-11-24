@@ -11,12 +11,9 @@
 -- comfortSettings: see-through backgrounds go through Comfort.backdrop, and text leaves room to grow
 -- (Comfort.autoHeight) when the player picks a larger text size.
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Comfort = require(script:WaitForChild("Comfort"))
-local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 local Motion = require(script:WaitForChild("Motion"))
-local StyleTrial = require(script:WaitForChild("StyleTrial"))
 
 local UI = {}
 
@@ -142,16 +139,6 @@ function UI.init()
 	body.Text =
 		"Replace this window with the game's own. The UI gate checks every window at phone, tablet and desktop sizes."
 	body.Parent = example
-
-	-- trial (#186): a Settings card styled by a Roblox StyleSheet in its own gui, only while styleSheetUi is on.
-	-- Nothing opens it; open it from Studio's command bar to look at it.
-	if LiveFlags.isOn("styleSheetUi") then
-		local trialGui = Instance.new("ScreenGui")
-		trialGui.Name = "StyleTrial"
-		trialGui.ResetOnSpawn = false
-		trialGui.Parent = playerGui
-		windows.StyleTrial = StyleTrial.build(trialGui, true)
-	end
 
 	hud.Parent = playerGui
 end
