@@ -587,10 +587,11 @@ def _tangle(k, swatch, swatch2):
     return b
 
 
-def build_dirty(name, mat, body):
-    """The dirty model of a roster cat: (objects, nest map for rbx_export, root attributes)."""
+def build_dirty(name, mat, body, base=None):
+    """The dirty model of a roster cat: (objects, nest map for rbx_export, root attributes). `base` overrides the
+    asset name (loaf.py builds the held loaf from the walking stray)."""
     spec = cats.spec_of(name)
-    base = f"CleanACat_Cat_{name}_Dirty{cats.SUFFIX[body]}"
+    base = base or f"CleanACat_Cat_{name}_Dirty{cats.SUFFIX[body]}"
     objs = cats.build_cat(name, mat, spec={**spec, "collar": None}, base=base, body=body)   # a stray wears no collar
     bpy.context.view_layer.update()
     k = cats.scale_of(spec, body)
