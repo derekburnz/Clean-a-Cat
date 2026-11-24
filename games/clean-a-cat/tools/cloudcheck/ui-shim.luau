@@ -2038,7 +2038,7 @@ state[GuiService].props.PreferredTextSize = Enum.PreferredTextSize[profile.textS
 state[GuiService].props.PreferredTransparency = profile.transparency or 1 -- 1 is Roblox's default, 0 asks for solid
 state[GuiService].props.MenuIsOpen = false
 state[GuiService].props.TopbarInset = Rect.new(Vector2.new(184, 0), Vector2.new(profile.width - 16, INSET))
-state[GuiService].props.ViewportDisplaySize = Enum.DisplaySize.Medium
+state[GuiService].props.ViewportDisplaySize = Enum.DisplaySize[profile.displaySize or "Medium"] -- Large on a TV
 state[GuiService].props.TouchControlsEnabled = true -- false hides the phone's thumbstick and jump button
 
 local UserInputService = World.service("UserInputService")
