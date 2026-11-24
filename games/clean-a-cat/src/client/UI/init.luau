@@ -19,6 +19,11 @@ local UI = {}
 
 local TAP = 52 -- px: comfortable on a phone (the UI gate fails anything pressable under 44 px on touch)
 local FONT = Enum.Font.GothamMedium
+local MENU_SIZE = Vector2.new(120, TAP)
+local MENU_TEXT = 20
+local MENU_SIZE_TV = Vector2.new(160, 68) -- a TV is read from the couch (#209)
+local MENU_TEXT_TV = 30
+local MENU_EDGE = 16 -- px from the left edge (inside the TV inset on a console)
 
 local windows: { [string]: Frame } = {}
 local toastLabel: TextLabel? = nil
@@ -98,14 +103,32 @@ function UI.init()
 	root.Size = UDim2.fromScale(1, 1)
 	root.Parent = hud
 
-	-- Left column, centred: clear of Roblox's top bar and of the phone thumbstick (bottom left).
+	-- On a TV, everything stays Comfort.TV_INSET in from every edge (#209). The padding is on the root, so every HUD
+	-- piece placed in it gets the inset without its own code.
+	local tvPad = Instance.new("UIPadding")
+	tvPad.Name = "TvInset"
+	tvPad.Parent = root
+
+	-- Left column, centred: clear of Roblox's top bar and of the phone thumbstick (bottom left). Anchored at its
+	-- centre so Motion.press squashes it in place instead of toward the edge.
 	local menu = button("Menu", root)
-	menu.AnchorPoint = Vector2.new(0, 0.5)
-	menu.Position = UDim2.new(0, 16, 0.5, 0)
+	menu.AnchorPoint = Vector2.new(0.5, 0.5)
 	menu.Activated:Connect(function()
 		UI.open("Example")
 	end)
 	Motion.press(menu) -- trial springs, switch springUi (#183)
+
+	local function fitScreen(tv: boolean)
+		local inset = UDim.new(if tv then Comfort.TV_INSET else 0, 0)
+		tvPad.PaddingLeft, tvPad.PaddingRight, tvPad.PaddingTop, tvPad.PaddingBottom =
+			inset, inset, inset, inset
+		local size = if tv then MENU_SIZE_TV else MENU_SIZE
+		menu.Size = UDim2.fromOffset(size.X, size.Y)
+		menu.Position = UDim2.new(0, MENU_EDGE + size.X / 2, 0.5, 0)
+		menu.TextSize = if tv then MENU_TEXT_TV else MENU_TEXT
+	end
+	fitScreen(Comfort.tenFoot())
+	Comfort.onTenFootChanged(fitScreen)
 
 	local toast = Instance.new("TextLabel")
 	toast.Name = "Toast"

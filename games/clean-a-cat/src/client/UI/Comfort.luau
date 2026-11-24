@@ -9,6 +9,10 @@
 --   Comfort.input()               the input the player is using now (Touch, KeyboardAndMouse or Gamepad)
 --   Comfort.onInputChanged(fn)    calls fn(input) when that changes, for swapping button prompts
 --   Comfort.autoHeight(label)     lets a label grow taller when larger text wraps to more lines
+--   Comfort.tenFoot()             true on a TV-sized screen (GuiService.ViewportDisplaySize Large, most consoles):
+--                                 keep the HUD TV_INSET in from every edge, since TVs often crop it, and draw text and
+--                                 buttons bigger for a player 8 to 10 feet away (#209). Not behind a switch: it is a fix
+--   Comfort.onTenFootChanged(fn)  calls fn(tenFoot) when that changes
 --
 -- backdrop and autoHeight follow the live switch comfortSettings (off by default, LiveFlags). While it is off they
 -- leave the design values as they were, and they re-apply within a minute when it is flipped either way.
@@ -87,6 +91,21 @@ function Comfort.reducedMotion(): boolean
 		return GuiService.ReducedMotionEnabled
 	end)
 	return ok and value == true
+end
+
+Comfort.TV_INSET = 0.05 -- share of the screen kept clear on every edge of a TV
+
+function Comfort.tenFoot(): boolean
+	local ok, value = pcall(function()
+		return GuiService.ViewportDisplaySize
+	end)
+	return ok and value == Enum.DisplaySize.Large
+end
+
+function Comfort.onTenFootChanged(fn: (boolean) -> ()): RBXScriptConnection
+	return GuiService:GetPropertyChangedSignal("ViewportDisplaySize"):Connect(function()
+		fn(Comfort.tenFoot())
+	end)
 end
 
 function Comfort.input(): Enum.PreferredInput
