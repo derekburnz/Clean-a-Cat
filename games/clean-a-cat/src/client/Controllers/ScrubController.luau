@@ -26,6 +26,7 @@ local Workspace = game:GetService("Workspace")
 
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
 local ControlHold = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ControlHold"))
+local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LaterStepRules = require(Shared:WaitForChild("LaterStepRules"))
@@ -46,6 +47,8 @@ local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
 local TURN_FLAG = "scrubTurn" -- the cat turns to show its muddy side when too little faces the camera
 local FEEL_FLAG = "scrubFeel" -- a patch takes a few strokes, and a finger on the cat never walks the player
+local WASH_FLAG = "washView" -- every cat in the tub is washed in the close-up wash view, the avatar hidden
+local WASH_REASON = "scrub" -- this controller's hold on Spa/WashView
 local TURN_TWEEN = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 local DRY_FLAG = "stations" -- with the Blow Dryer built, a fluffed cat sits on its stool before the bows
 local DRY_SECONDS = 2.5
@@ -193,9 +196,25 @@ local function hudStage(v: Visit): string
 end
 
 -- Every step change goes through here, so the HUD hears each one.
+-- The close-up wash view (Spa/WashView) is held while a cat is being washed in the tub: from the moment it sits
+-- down dirty until its photo is taken, but not while it sits at a later step's station away from the tub. Behind
+-- the switch washView; the opening holds the same view for Suds on its own.
+local function updateWashView(v: { stage: Stage, away: boolean, cat: Cat? }?)
+	local washing = v ~= nil
+		and v.cat ~= nil
+		and not v.away
+		and v.stage ~= "waiting"
+		and v.stage ~= "done"
+		and LiveFlags.isOn(WASH_FLAG)
+	WashView.set(WASH_REASON, washing)
+end
+
 local function setStage(v: Visit, stage: Stage)
 	v.stage = stage
 	ScrubController.stageChanged:Fire(hudStage(v))
+	if visit == v then
+		updateWashView(v)
+	end
 end
 
 -- Sends one numbered spa report. If the server has not answered it after RESEND_SECONDS (its rate limit may have
@@ -737,6 +756,9 @@ local function seatAt(v: Visit, cat: Cat, id: string?)
 		cat.model:ScaleTo(scale)
 	end
 	cat.model:PivotTo(target :: CFrame)
+	if visit == v then
+		updateWashView(v) -- away at a station: the player's own camera; back in the tub: the wash view again
+	end
 end
 
 -- The later steps this cat takes, from its needs, the stations built and the switches; long claws show for the
@@ -1635,6 +1657,7 @@ local function disable()
 	enabled = false
 	release()
 	visit = nil
+	WashView.set(WASH_REASON, false)
 	trove:Clean()
 	ScrubController.stageChanged:Fire(nil)
 end
@@ -1686,6 +1709,11 @@ function ScrubController.Start()
 		end
 	end
 	SpaLayout.changed(restart)
+	-- The wash view's switch takes effect at once, on or off, for the cat in the tub now.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WASH_FLAG)
+		:Connect(function()
+			updateWashView(visit)
+		end)
 	-- spawnView turns the tub (SpaLayout.tubSpot): start the visit again so the tub and buttons turn with it.
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SpaLayout.VIEW_FLAG)
 		:Connect(restart)
