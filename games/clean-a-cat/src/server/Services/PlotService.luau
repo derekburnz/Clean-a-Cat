@@ -24,16 +24,7 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SPAWN_NAME = "PH_Spawn" -- the spawn in default.project.json
 local FLOOR_NAME = "PH_Floor" -- the placeholder floor in default.project.json
 local ASSET_WAIT_SECONDS = 10
--- With the switch `spawnView` (off by default): the tub turns to face into the spa (SpaLayout.tubSpot) and the
--- player spawns SPAWN_FROM_TUB studs in front of it and SPAWN_SIDE studs to the side (toward the door line),
--- facing the street, instead of on SpotSpawn. SpotSpawn sits 8 studs inside the front window facing in, so the
--- camera (about 12.5 studs behind) starts outside the window and the first frame is a blur of glass and wall
--- (#169). Here the camera rests inside the spa against the solid back wall, with the window and the door line
--- ahead and the cat's face beside the avatar's shoulder. Straight behind the tub, the avatar hid all of the cat
--- and most of the tub; facing the street (not the tub) keeps the avatar off the line from the camera to the cat.
-local VIEW_FLAG = SpaLayout.VIEW_FLAG
-local SPAWN_FROM_TUB = 5
-local SPAWN_SIDE = 5 -- 4 left the avatar over exactly a quarter of the tub on an iPhone 14 (#169)
+local VIEW_FLAG = SpaLayout.VIEW_FLAG -- moves the spawn beside the turned tub (SpaLayout.spawnSpot, #169)
 
 local PlotService = {}
 
@@ -93,17 +84,7 @@ local function placePlot(asset: Model, assets: Instance, slot: number, folder: F
 	props.Parent = plot
 end
 
--- Where a character in plot `slot` spawns: the base of its feet and the way it faces.
-local function spawnSpot(slot: number): CFrame
-	if LiveFlags.isOn(VIEW_FLAG) then
-		-- The turned tub's front (-Z) faces into the spa: stand in front of it and to its right (+X, the door
-		-- line's side of the plot), turned back to face the street.
-		return SpaLayout.slotTubSpot(slot)
-			* CFrame.new(SPAWN_SIDE, 0, -SPAWN_FROM_TUB)
-			* CFrame.Angles(0, math.pi, 0)
-	end
-	return SpaLayout.slotSpot("SpotSpawn", slot)
-end
+local spawnSpot = SpaLayout.spawnSpot
 
 -- The spawn's top sits on the floor at slot 1's spawn spot, facing the same way, so the camera's first angle
 -- already matches; characters then move to their own plot. Every plot faces the same way.
