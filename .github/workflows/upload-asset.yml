@@ -46,8 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      ROBLOX_UPLOAD_KEY: ${{ secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY }}
-      ROBLOX_CREATOR_GROUP_ID: ${{ vars.ROBLOX_GROUP_ID }}
+      ROBLOX_UPLOAD_KEY: ${{ secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
+      ROBLOX_CREATOR_GROUP_ID: ${{ vars.ROBLOX_GROUP_ID || '107520049' }}
       ROBLOX_CREATOR_USER_ID: ${{ vars.ROBLOX_OWNER_USER_ID }}
       ASSET_TYPE: ${{ inputs.type }}
       ASSET_PATH: ${{ inputs.path }}

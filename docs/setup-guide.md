@@ -65,6 +65,7 @@ Add more only when a workflow needs them:
    - **Variables** tab: `ROBLOX_UNIVERSE_ID` and `ROBLOX_PLACE_ID` (the ids from step 4).
    - **Variables** tab, for uploads: `ROBLOX_GROUP_ID` when a group owns the game (uploads are then owned by the group, and `ROBLOX_GROUP_KEY` must be a key created under the group), otherwise `ROBLOX_OWNER_USER_ID`, the owner's Roblox user id. An upload owned by a person does not load in a group-owned game until `asset-permissions` shares it.
    - **Variables** tab: `AUTO_PUBLISH` = `true` once you want every merge to main to publish itself. Leave `AUTO_RESTART` unset: set to `true` it restarts servers after every automatic publish, which disconnects players.
+   - **This repo:** the publish key is saved under the name `OWNER_KEY`, which the workflows accept in place of `ROBLOX_PUBLISH_KEY`. The universe id, start place id and group id are public and are built into the workflows as defaults, so the three id variables are optional here; a variable of the same name overrides its default.
 7. Try it: Actions > **publish** > Run workflow with `Saved`. A green run adds a version to the place history without going live.
 
 A 401 or 403 in a workflow means the key lacks a permission or its IP list blocks GitHub. Fix the key in Creator Hub; never paste a key into a workflow file.
