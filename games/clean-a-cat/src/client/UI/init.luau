@@ -145,7 +145,8 @@ local function syncControls()
 			break
 		end
 	end
-	local hide = anyOpen and LiveFlags.isOn(CONTROLS_FLAG)
+	-- The recap card at the side (switch recapSide) hides them too: its Next cat sits low on the left.
+	local hide = (anyOpen and LiveFlags.isOn(CONTROLS_FLAG)) or Recap.sideShown()
 	if hide == controlsHidden then
 		return
 	end
@@ -268,6 +269,7 @@ function UI.init()
 	end
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CONTROLS_FLAG)
 		:Connect(syncControls)
+	Recap.onShownChanged(syncControls)
 
 	hud.Parent = playerGui
 end

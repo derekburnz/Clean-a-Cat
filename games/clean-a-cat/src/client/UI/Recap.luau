@@ -9,11 +9,21 @@
 --   Recap.setHidden(on)          hides the card or strip while a window is open over it, without closing it: opening
 --                                the Cat Index or Settings is not "Next cat" (Review-QA); UI shows it again once
 --                                that window closes
+--   Recap.sideShown()            true while the full card shows in its side place (switch recapSide)
+--   Recap.onShownChanged(fn)     fn runs each time the card or strip shows, hides or moves
 --
 -- The full card: the cat's portrait, name, rarity chip and a New! chip beside it (never on the star badge), the spa
 -- stars it earned, one row per coin source (rows worth 0 are left out) and the total, then Next cat. The strip is the
 -- same news in one line at the bottom centre. Only Next cat or the X closes it: no countdown, nothing closes by
 -- itself, so it is a natural place to stop. Both are laid out in design pixels and scaled like the HUD (Kit).
+--
+-- With the switch recapSide on (off by default, Design-Agent's recap.html "side"), the full card is a narrow column
+-- at the left, vertically centred under Roblox's top bar, with no dim, so the clean cat stays in view in the middle:
+-- the portrait with the name, stars and chips beside it, then the rows, the total and a full-width Next cat. On a
+-- short screen it is narrower, with the total and Next cat side by side, and it waits for the close-up wash camera's
+-- slide (Recap.sideOnPhones) before a phone uses it. It stays on the left on every screen, away
+-- from the bottom right corner where Roblox's badge note shows, and UI hides the phone's thumbstick and jump button
+-- while it shows, so its button is never under them. The strip is unchanged.
 -- UI never fires remotes: the caller's onClose does (RecapController asks for the next cat).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -30,6 +40,10 @@ local Portraits = require(script.Parent:WaitForChild("Portraits"))
 local Recap = {}
 
 Recap.FLAG = "recapCard"
+Recap.SIDE_FLAG = "recapSide"
+-- True once the close-up wash camera slides the cat clear of the side card on a phone (Design-Agent); the UI gate
+-- sets it to check the phone layout.
+Recap.sideOnPhones = false
 
 local MAX_STARS_SHOWN = 5
 local ROW_ICONS = { wash = "Paw", tip = "Heart", bonus = "Station" } :: { [string]: string }
@@ -47,6 +61,10 @@ local NEXT_CAT = "Next cat"
 local WELCOME = "He's your spa cat now!" -- the naming card only (#285)
 local OPEN_SPA = "Open the spa!" -- the naming card's button: the first customer comes next
 local TOPBAR_SHIFT = 33 -- real px: the card sits a little below the middle, clear of Roblox's top bar
+local SIDE_LEFT = { side = 22, sideShort = 14 } -- design px from the left edge
+-- design px under Roblox's top bar and above the bottom edge (recap.html): the side card is centred between them.
+-- The HUD's root already starts under the top bar.
+local SIDE_TOP_GAP, SIDE_BOTTOM_GAP = 12, 18
 
 -- Sizes in design pixels: full, then compact for a short screen.
 local SIZES = {
@@ -94,8 +112,54 @@ local SIZES = {
 		buttonText = 26,
 		pad = 14,
 	},
+	-- The side column (switch recapSide): the who row is the portrait (tile) with the name, stars and chips beside it.
+	side = {
+		width = 430,
+		band = 62,
+		title = 32,
+		badge = 0,
+		who = 14, -- the gap between the portrait and the words beside it
+		tile = 112,
+		name = 30,
+		chip = 28,
+		chipText = 17,
+		star = 30,
+		starText = 22,
+		row = 36,
+		rowText = 18,
+		rowIcon = 24,
+		rowValue = 20,
+		total = 30,
+		totalIcon = 48,
+		button = 60,
+		buttonText = 28,
+		pad = 16,
+	},
+	sideShort = {
+		width = 330, -- a phone held sideways (recap.html): it fits under the top bar on the smallest one
+		band = 46,
+		title = 27,
+		badge = 0,
+		who = 10,
+		tile = 76,
+		name = 24,
+		chip = 22,
+		chipText = 15,
+		star = 22,
+		starText = 17,
+		row = 28,
+		rowText = 15,
+		rowIcon = 22,
+		rowValue = 19,
+		total = 24,
+		totalIcon = 48,
+		button = 60, -- 45 real px on a phone: the tap minimum is 44
+		buttonText = 22,
+		pad = 10,
+	},
 }
 type Sizes = typeof(SIZES.full)
+local SIDE_GAP = { side = 8, sideShort = 6 } -- design px between the side card's parts
 
 local STRIP =
 	{ tile = 64, star = 30, starText = 22, got = 28, gotIcon = 48, button = 60, buttonText = 24 }
@@ -103,6 +167,7 @@ local STRIP =
 type Parts = {
 	layer: Frame,
 	backdrop: Frame,
+	cardHolder: Frame,
 	cardScale: UIScale,
 	card: Frame,
 	band: Frame,
@@ -111,7 +176,10 @@ type Parts = {
 	close: TextButton,
 	body: Frame,
 	bodyPad: UIPadding,
+	bodyList: UIListLayout,
 	who: Frame,
+	whoList: UIListLayout,
+	info: Frame,
 	tileBox: Frame,
 	name: TextLabel,
 	chipRow: Frame,
@@ -122,9 +190,12 @@ type Parts = {
 	newText: TextLabel,
 	right: Frame,
 	stars: Frame,
+	starsList: UIListLayout,
 	welcome: TextLabel,
 	rows: Frame,
+	rowsList: UIListLayout,
 	foot: Frame,
+	footList: UIListLayout,
 	total: Frame,
 	totalIcon: Frame,
 	totalText: TextLabel,
@@ -142,6 +213,8 @@ local parts: Parts? = nil
 local shown: RecapRules.Recap? = nil
 local onClosed: (() -> ())? = nil
 local hidden = false -- a window is open over it (Recap.setHidden)
+local wasShown: string? = nil -- what onShownChanged last told: nil, "card", "side" or "strip"
+local shownListeners: { () -> () } = {}
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -308,6 +381,115 @@ local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes)
 	end
 end
 
+-- What shows now: nil, the full card in the middle ("card"), at the side ("side"), or the strip.
+local function shownAs(): string?
+	local recap = shown
+	if recap == nil or hidden or not LiveFlags.isOn(Recap.FLAG) then
+		return nil
+	end
+	if not recap.full then
+		return "strip"
+	end
+	-- On a phone the 330 px column would cover the cat until the close-up wash camera slides him right (Design-Agent):
+	-- until that is wired, a phone keeps the card in the middle even with the switch on.
+	local _, short = Kit.screenScale()
+	return if LiveFlags.isOn(Recap.SIDE_FLAG) and (Recap.sideOnPhones or not short)
+		then "side"
+		else "card"
+end
+
+local function tellShown()
+	local now = shownAs()
+	if now ~= wasShown then
+		wasShown = now
+		for _, fn in shownListeners do
+			task.spawn(fn)
+		end
+	end
+end
+
+-- The card's place and the order of its parts: in the middle with the portrait column beside the rows, or the side
+-- column with the portrait, name, stars and chips in one row above the rows (switch recapSide). Returns the width of
+-- the side card's words beside the portrait.
+local function arrange(p: Parts, side: boolean, short: boolean, s: Sizes): number
+	local gap = if short then SIDE_GAP.sideShort else SIDE_GAP.side
+	if side then
+		p.cardHolder.AnchorPoint = Vector2.new(0, 0.5)
+		p.cardHolder.Position = UDim2.fromScale(0, 0.5)
+		p.card.AnchorPoint = Vector2.new(0, 0.5)
+		-- centred in the space from under the top bar down to the bottom gap
+		local shift = (SIDE_TOP_GAP - SIDE_BOTTOM_GAP) / 2
+		p.card.Position =
+			UDim2.new(0, if short then SIDE_LEFT.sideShort else SIDE_LEFT.side, 0.5, shift)
+	else
+		p.cardHolder.AnchorPoint = Vector2.new(0.5, 0.5)
+		p.cardHolder.Position = UDim2.fromScale(0.5, 0.5)
+		p.card.AnchorPoint = Vector2.new(0.5, 0.5)
+		p.card.Position = UDim2.new(0.5, 0, 0.5, TOPBAR_SHIFT)
+	end
+	p.badge.Visible = not side
+	p.title.Position = UDim2.new(0, if side then 20 else s.badge + 4, 0.5, 0)
+
+	p.bodyList.FillDirection = if side
+		then Enum.FillDirection.Vertical
+		else Enum.FillDirection.Horizontal
+	p.bodyList.Padding = UDim.new(0, if side then gap else BODY_GAP)
+	p.whoList.FillDirection = if side
+		then Enum.FillDirection.Horizontal
+		else Enum.FillDirection.Vertical
+	p.whoList.HorizontalAlignment = if side
+		then Enum.HorizontalAlignment.Left
+		else Enum.HorizontalAlignment.Center
+	p.whoList.VerticalAlignment = if side
+		then Enum.VerticalAlignment.Center
+		else Enum.VerticalAlignment.Top
+	p.whoList.Padding = UDim.new(0, if side then s.who else 8)
+	p.rowsList.Padding = UDim.new(0, if side and short then 4 else 6)
+	p.starsList.Padding = UDim.new(0, if side then 4 else 8) -- five stars and "+5 stars" fit beside the portrait
+	p.name.TextXAlignment = if side then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center
+	p.chipList.HorizontalAlignment = if side
+		then Enum.HorizontalAlignment.Left
+		else Enum.HorizontalAlignment.Center
+	local inner = s.width - 2 * s.pad
+	local beside = inner - s.tile - s.who
+	if side then
+		p.who.Size = UDim2.fromOffset(inner, 0)
+		p.info.Parent = p.who
+		p.name.Parent, p.name.LayoutOrder = p.info, 1
+		p.stars.Parent, p.stars.LayoutOrder = p.info, 2
+		p.chipRow.Parent, p.chipRow.LayoutOrder = p.info, 3
+		p.name.Size = UDim2.fromOffset(beside, s.name + 6)
+		p.stars.Size = UDim2.fromOffset(beside, s.star)
+		p.right.Size = UDim2.fromOffset(inner, 0)
+	else
+		p.who.Size = UDim2.fromOffset(s.who, 0)
+		p.info.Parent = nil
+		p.name.Parent, p.name.LayoutOrder = p.who, 2
+		p.chipRow.Parent, p.chipRow.LayoutOrder = p.who, 3
+		p.stars.Parent, p.stars.LayoutOrder = p.right, 1
+		p.name.Size = UDim2.new(1, 0, 0, s.name + 8)
+		p.stars.Size = UDim2.new(1, 0, 0, s.star)
+		p.right.Size = UDim2.fromOffset(inner - s.who - BODY_GAP, 0)
+	end
+
+	-- The side card's foot: the total above a full-width Next cat, or side by side on a short screen.
+	local stackedFoot = side and not short
+	p.footList.FillDirection = if stackedFoot
+		then Enum.FillDirection.Vertical
+		else Enum.FillDirection.Horizontal
+	p.footList.Padding = UDim.new(0, if side then gap else 12)
+	local footHeight = if stackedFoot then 2 * s.button + gap + 6 else s.button + 6 -- room for the outline
+	p.foot.Size = UDim2.new(1, 0, 0, footHeight)
+	if stackedFoot then
+		p.next.AutomaticSize = Enum.AutomaticSize.None
+		p.next.Size = UDim2.new(1, 0, 0, s.button)
+	else
+		p.next.AutomaticSize = Enum.AutomaticSize.X
+		p.next.Size = UDim2.fromOffset(0, s.button)
+	end
+	return beside
+end
+
 -- Sizes, scale and contents for the recap on show.
 local function redraw()
 	local p = parts
@@ -315,15 +497,17 @@ local function redraw()
 	if p == nil then
 		return
 	end
-	local open = recap ~= nil and LiveFlags.isOn(Recap.FLAG) and not hidden
-	p.layer.Visible = open
-	if recap == nil or not open then
+	local as = shownAs()
+	p.layer.Visible = as ~= nil
+	if recap == nil or as == nil then
+		tellShown()
 		return
 	end
 	local scale, short = Kit.screenScale()
 	p.cardScale.Scale = scale
 	p.stripScale.Scale = scale
-	p.backdrop.Visible = recap.full
+	local side = as == "side"
+	p.backdrop.Visible = as == "card" -- no dim at the side: the clean cat stays in view
 	p.card.Visible = recap.full
 	p.strip.Visible = not recap.full
 
@@ -334,10 +518,14 @@ local function redraw()
 		Portraits.draw(recap.cat, recap.rarity, p.stripTile)
 		drawStars(p.stripStars, recap.stars, STRIP.star, STRIP.starText)
 		p.stripGot.Text = total
+		tellShown()
 		return
 	end
 
-	local s: Sizes = if short then SIZES.short else SIZES.full
+	local s: Sizes = if side
+		then (if short then SIZES.sideShort else SIZES.side)
+		else (if short then SIZES.short else SIZES.full)
+	local beside = arrange(p, side, short, s)
 	p.card.Size = UDim2.fromOffset(s.width, 0)
 	p.band.Size = UDim2.new(1, 0, 0, s.band)
 	p.title.TextSize = s.title
@@ -347,24 +535,24 @@ local function redraw()
 	p.welcome.Parent = if recap.mascot then p.right else nil
 	p.welcome.TextSize = s.starText
 	p.next.Text = if recap.mascot then OPEN_SPA else NEXT_CAT
-	p.title.Position = UDim2.new(0, s.badge + 4, 0.5, 0)
 	p.badge.Size = UDim2.fromOffset(s.badge, s.badge)
 	local bodyPad = p.bodyPad
 	bodyPad.PaddingLeft, bodyPad.PaddingRight = UDim.new(0, s.pad), UDim.new(0, s.pad)
 	bodyPad.PaddingTop, bodyPad.PaddingBottom = UDim.new(0, s.pad - 4), UDim.new(0, s.pad)
-	p.who.Size = UDim2.fromOffset(s.who, 0)
 	p.tileBox.Size = UDim2.fromOffset(s.tile, s.tile)
 	Portraits.draw(recap.cat, recap.rarity, p.tileBox)
-	p.name.Size = UDim2.new(1, 0, 0, s.name + 8)
 	Kit.shrinkToFit(p.name, s.name)
 	p.name.Text = recap.cat
 	-- The short card's column is narrower than "Legendary" plus "New!" side by side (Sync-Agent on an iPhone 14), so
-	-- there the New! chip goes under the rarity chip.
-	local stacked = short and recap.isNew
+	-- there the New! chip goes under the rarity chip. The side card's words beside the portrait fit both in a row.
+	local stacked = short and recap.isNew and not side
 	p.chipList.FillDirection = if stacked
 		then Enum.FillDirection.Vertical
 		else Enum.FillDirection.Horizontal
-	p.chipRow.Size = UDim2.new(1, 0, 0, if stacked then 2 * s.chip + CHIP_GAP else s.chip)
+	local chipHeight = if stacked then 2 * s.chip + CHIP_GAP else s.chip
+	p.chipRow.Size = if side
+		then UDim2.fromOffset(beside, chipHeight)
+		else UDim2.new(1, 0, 0, chipHeight)
 	p.rarityChip.Size = UDim2.fromOffset(0, s.chip)
 	p.rarityChip.BackgroundColor3 = Kit.RARITY[recap.rarity] or Kit.RARITY.Common
 	p.rarityText.TextSize = s.chipText
@@ -374,18 +562,15 @@ local function redraw()
 	p.chipRow.Visible = not recap.mascot
 	p.newChip.Size = UDim2.fromOffset(0, s.chip)
 	p.newText.TextSize = s.chipText
-	p.right.Size = UDim2.fromOffset(s.width - 2 * s.pad - s.who - BODY_GAP, 0)
-	p.stars.Size = UDim2.new(1, 0, 0, s.star)
 	drawStars(p.stars, recap.stars, s.star, s.starText, recap.mascot)
 	drawRows(p.rows, recap, s)
-	p.foot.Size = UDim2.new(1, 0, 0, s.button + 6) -- room for the button's outline
 	p.total.Size = UDim2.fromOffset(0, s.button)
 	p.totalIcon.Size = UDim2.fromOffset(s.totalIcon, s.totalIcon)
 	p.totalText.TextSize = s.total
 	p.totalText.Text = total
 	p.total.Visible = not recap.mascot
-	p.next.Size = UDim2.fromOffset(0, s.button)
 	p.next.TextSize = s.buttonText
+	tellShown()
 end
 
 function Recap.setHidden(on: boolean)
@@ -397,6 +582,14 @@ end
 
 function Recap.isOpen(): boolean
 	return shown ~= nil
+end
+
+function Recap.sideShown(): boolean
+	return shownAs() == "side"
+end
+
+function Recap.onShownChanged(fn: () -> ())
+	table.insert(shownListeners, fn)
 end
 
 function Recap.close()
@@ -486,6 +679,7 @@ function Recap.build(root: Frame)
 	body.AutomaticSize = Enum.AutomaticSize.Y
 	local bodyPad = padding(body, 22, 18)
 	local bodyList = list(body, true, BODY_GAP)
+	bodyList.HorizontalAlignment = Enum.HorizontalAlignment.Left
 	bodyList.VerticalAlignment = Enum.VerticalAlignment.Top
 
 	local who = frame("Who", body)
@@ -495,6 +689,15 @@ function Recap.build(root: Frame)
 	whoList.VerticalAlignment = Enum.VerticalAlignment.Top
 	local tileBox = frame("TileBox", who)
 	tileBox.LayoutOrder = 1
+	-- The side card's words beside the portrait (switch recapSide): the name, stars and chips move in here.
+	local info = Instance.new("Frame")
+	info.Name = "Info"
+	info.BackgroundTransparency = 1
+	info.BorderSizePixel = 0
+	info.LayoutOrder = 2
+	info.AutomaticSize = Enum.AutomaticSize.XY
+	local infoList = list(info, false, 4)
+	infoList.VerticalAlignment = Enum.VerticalAlignment.Top
 	local name = words("Name", who, Kit.FONT, Kit.INK)
 	name.LayoutOrder = 2
 	name.AutomaticSize = Enum.AutomaticSize.None -- one line: names are at most 11 letters (Design-Agent)
@@ -515,7 +718,7 @@ function Recap.build(root: Frame)
 	local stars = frame("Stars", right)
 	stars.LayoutOrder = 1
 	stars.Size = UDim2.fromScale(1, 0)
-	list(stars, true, 8)
+	local starsList = list(stars, true, 8)
 	-- The naming card's line under the stars (the opening's kitten, #285); hidden on a customer's card.
 	local welcome = words("Welcome", right, Kit.FONT, Kit.INK)
 	welcome.LayoutOrder = 2
@@ -525,11 +728,11 @@ function Recap.build(root: Frame)
 	rows.LayoutOrder = 3
 	rows.Size = UDim2.fromScale(1, 0)
 	rows.AutomaticSize = Enum.AutomaticSize.Y
-	list(rows, false, 6)
+	local rowsList = list(rows, false, 6)
 	local foot = frame("Foot", right)
 	foot.LayoutOrder = 4
 	foot.Size = UDim2.fromScale(1, 0)
-	list(foot, true, 12)
+	local footList = list(foot, true, 12)
 	local total = frame("Total", foot)
 	total.LayoutOrder = 1
 	total.AutomaticSize = Enum.AutomaticSize.X
@@ -619,6 +822,7 @@ function Recap.build(root: Frame)
 	parts = {
 		layer = layer,
 		backdrop = backdrop,
+		cardHolder = cardHolder,
 		cardScale = cardScale,
 		card = card,
 		band = band,
@@ -627,7 +831,10 @@ function Recap.build(root: Frame)
 		close = close,
 		body = body,
 		bodyPad = bodyPad,
+		bodyList = bodyList,
 		who = who,
+		whoList = whoList,
+		info = info,
 		tileBox = tileBox,
 		name = name,
 		chipRow = chipRow,
@@ -638,9 +845,12 @@ function Recap.build(root: Frame)
 		newText = newText,
 		right = right,
 		stars = stars,
+		starsList = starsList,
 		welcome = welcome,
 		rows = rows,
+		rowsList = rowsList,
 		foot = foot,
+		footList = footList,
 		total = total,
 		totalIcon = totalIcon,
 		totalText = totalText,
@@ -664,6 +874,9 @@ function Recap.build(root: Frame)
 				Recap.close()
 			end
 		end)
+	-- The side switch moves an open card.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. Recap.SIDE_FLAG)
+		:Connect(redraw)
 	local camera = Workspace.CurrentCamera
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)
