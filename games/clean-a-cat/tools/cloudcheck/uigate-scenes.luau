@@ -104,6 +104,13 @@ local SCENES = {
 		UI.setIndex(indexEntries(), { Muffin = true, LilacCloud = true }, 2)
 		UI.open("CatIndex")
 	end },
+	-- The same with the switch windowsHideControls on: the phone's thumbstick and jump button hide while it is open.
+	{ "CatIndexNoControls", function()
+		flag("catIndexWindow", true)
+		flag("windowsHideControls", true)
+		UI.setIndex(indexEntries(), { Muffin = true, LilacCloud = true }, 2)
+		UI.open("CatIndex")
+	end },
 	{ "CatIndexDetail", function()
 		flag("catIndexWindow", true)
 		UI.setIndex(indexEntries(), { LilacCloud = true }, 2)
@@ -186,6 +193,7 @@ function Scenes.close()
 	flag("queueWindow", false)
 	flag("tutorialDim", false)
 	flag("tutorialTip", false)
+	flag("windowsHideControls", false)
 	UI.setTip(nil)
 	UI.clearPointer()
 	UI.setQueue({}, "", {})
