@@ -235,18 +235,29 @@ def tip_jar_rbx_extras():
 SIGN_W, SIGN_H = 6.0, 2.4
 
 
+SIGN_EDGE = 0.45      # the dark frame showing round the face on every side
+
+
 def build_window_sign(mat):
-    """The spa's name sign on the front wall (#17): a bubblegum board with a mint frame, two brackets, and a cream
-    face named `Screen` (front, -Z in Roblox) for a SurfaceGui with the player's spa name. Pivot at the middle of its
-    back, which goes flat on the wall at the plot's SpotSign."""
+    """The spa's name sign on the front wall (#17): a framed board with two brackets and a cream face named `Screen`
+    (front, -Z in Roblox) for a SurfaceGui with the player's spa name. Pivot at the middle of its back, which goes
+    flat on the wall at the plot's SpotSign.
+
+    The frame is navy with a thin mint lip inside it (#360). It was mint, and on the bubblegum wall the whole sign
+    was pastel on pastel: a Studio check measured the cream face at 1.6 to 1 against the wall, sky on or off. No pale
+    colour can reach 3 to 1 against that pink (white itself is 1.7 to 1), so the face stays cream for dark name text
+    and the frame carries the contrast: navy is over 6 to 1 against the wall and over 9 to 1 against the face. The
+    face is the size it was, so a SurfaceGui laid out for it still fits."""
     name = "CleanACat_Prop_WindowSign"
+    fw, fh = SIGN_W - 0.5, SIGN_H - 0.5                                             # the face
     b = Builder()
-    b.box((0, -0.18, 0), (SIGN_W, 0.3, SIGN_H), "spa_mint")                        # the frame
+    b.box((0, -0.18, 0), (fw + 2 * SIGN_EDGE, 0.3, fh + 2 * SIGN_EDGE), "pants_navy")   # the frame
+    b.box((0, -0.31, 0), (fw + 0.24, 0.06, fh + 0.24), "spa_mint", bevel=False)     # the lip round the face
     for sx in (1, -1):                                                              # brackets into the wall
         b.box((sx * (SIGN_W / 2 - 0.6), -0.02, 0), (0.3, 0.06, SIGN_H - 0.6), "metal", bevel=False)
     main = b.finalize(name, mat)
     s = Builder()
-    s.box((0, -0.35, 0), (SIGN_W - 0.5, 0.06, SIGN_H - 0.5), "spa_cream", bevel=False)
+    s.box((0, -0.35, 0), (fw, 0.06, fh), "spa_cream", bevel=False)
     screen = s.finalize(name + "_Screen", mat, bevel=0)
     return [main, screen]
 
