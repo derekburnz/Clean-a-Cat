@@ -22,7 +22,9 @@ Remotes.ClientToServer = {
 	"RequestPickCustomer", -- (index: int 2..SpaRules.QUEUE_SIZE)  1 a second; switches scrubPrototype, customers and
 	-- queuePick on; moves that customer to the front of the door line and nothing else (SpaRules.pickNext)
 	"RequestOpenBox", -- ()  1 a second; switches scrubPrototype, sudsWash and openingBox on, save loaded, and the server
-	-- holding the kitten back for the box (SudsRules.waitsForBox): marks the box opened and hands him to the tub
+	-- holding the kitten back for the box (SudsRules.waitsForBox): marks the box opened; the player then carries him
+	"RequestPlaceKitten", -- ()  1 a second; the box opened this session and not yet handed out (SudsBox false), no cat
+	-- out, and the player's character within SudsRules.PLACE_REACH studs of their tub: hands the kitten to the tub
 	-- Tools board (ToolService, behind toolsBoard).
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
 	-- Builds (BuildService, behind builds).

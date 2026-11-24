@@ -26,6 +26,7 @@ local CatRules = require(Shared:WaitForChild("CatRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
@@ -322,8 +323,9 @@ local function handOut(player: Player)
 	end
 end
 
--- The player tapped the box (switch openingBox): the save remembers it, and the kitten goes to the tub once the
--- box's peek and hop are over.
+-- The player tapped the box (switch openingBox): the save remembers it. The kitten peeks out, the player picks him
+-- up and carries him to the tub (RequestPlaceKitten); he goes there by himself after CARRY_SECONDS if that never
+-- comes.
 local function onOpenBox(player: Player)
 	if not LiveFlags.isOn(FLAG) or cats[player] ~= nil or not inBox(player) then
 		return
@@ -339,7 +341,33 @@ local function onOpenBox(player: Player)
 	if LiveFlags.isOn("onboardingFunnel") then
 		Telemetry.event(player, "box_opened")
 	end
-	task.delay(SudsRules.HOP_SECONDS, handOut, player)
+	task.delay(SudsRules.CARRY_SECONDS, function()
+		if player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == false then
+			handOut(player)
+		end
+	end)
+end
+
+-- The player set the kitten down in the tub: he is handed out there. Only while this session's box is open and not
+-- yet handed out (SudsBox false), with no cat out, and with the player standing by their own tub.
+local function onPlaceKitten(player: Player)
+	if
+		not LiveFlags.isOn(FLAG)
+		or cats[player] ~= nil
+		or player:GetAttribute(SudsRules.BOX_ATTRIBUTE) ~= false
+	then
+		return
+	end
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
+	if root == nil or not root:IsA("BasePart") then
+		return
+	end
+	local offset = (root :: BasePart).Position - SpaLayout.tubSpot(player).Position
+	if Vector3.new(offset.X, 0, offset.Z).Magnitude > SudsRules.PLACE_REACH then
+		return
+	end
+	handOut(player)
 end
 
 -- The player picks a waiting customer to be washed next: it moves to the front of the line (#201).
@@ -568,6 +596,7 @@ function SpaService.Start()
 	NetService.on("RequestPhoto", { perSecond = 2 }, onPhoto)
 	NetService.on("RequestPickCustomer", { perSecond = 1, burst = 2 }, onPickCustomer)
 	NetService.on("RequestOpenBox", { perSecond = 1 }, onOpenBox)
+	NetService.on("RequestPlaceKitten", { perSecond = 1 }, onPlaceKitten)
 	-- The opening or the kitten switched off while a kitten waits in a box: the box goes, and the tub gets him (or,
 	-- with sudsWash off, the usual first cat).
 	for _, flag in { SudsRules.BOX_FLAG, SudsRules.FLAG } do

@@ -1595,6 +1595,14 @@ function ScrubController.stage(): string?
 	return if v then hudStage(v) else nil
 end
 
+-- Where a cat sits in the tub: the tub's CatSeat once a cat has come, else its usual height over the tub's spot
+-- (the opening's carried kitten is set down here, OpeningController).
+function ScrubController.seatSpot(): CFrame
+	local v = visit
+	local seat = if v then v.seat else nil
+	return seat or SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
+end
+
 function ScrubController.Init(_controllers: { [string]: any }) end
 
 function ScrubController.Start()
