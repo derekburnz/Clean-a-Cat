@@ -37,7 +37,8 @@ def table():
     return {"Version": 1, "Order": order,
             "RarityColors": {r: hexes[RARITY_SWATCH[r]] for r in RARITIES},
             "MudColors": {"Mud": hexes["mud"], "MudWet": hexes["mud_wet"], "MudDust": hexes["mud_dust"],
-                          "MudDustWet": hexes["mud_dust_wet"]},
+                          "MudDustWet": hexes["mud_dust_wet"], "MudDrab": hexes["mud_drab"],
+                          "MudDrabWet": hexes["mud_drab_wet"]},
             "Coats": coats}
 
 

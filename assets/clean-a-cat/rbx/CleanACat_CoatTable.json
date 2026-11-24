@@ -23,7 +23,9 @@
   "Mud": "#5A4632",
   "MudWet": "#735A43",
   "MudDust": "#A39683",
-  "MudDustWet": "#877B6A"
+  "MudDustWet": "#877B6A",
+  "MudDrab": "#6B6252",
+  "MudDrabWet": "#7E735F"
  },
  "Coats": {
   "Muffin": {
