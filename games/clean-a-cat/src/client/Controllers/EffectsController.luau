@@ -68,6 +68,9 @@ function EffectsController.Start()
 		return LiveFlags.isOn(SCRUB_FLAG)
 	end
 
+	Moments.ScrubStart:Connect(function(cat: Model)
+		Stink.focus(cat)
+	end)
 	Moments.ScrubMove:Connect(
 		function(_cat: Model, hitPoint: Vector3, _normal: Vector3, dragSpeed: number)
 			if scrubOn() then
@@ -150,6 +153,7 @@ function EffectsController.Start()
 
 	Moments.MudPatchCleared:Connect(
 		function(cat: Model, patchPosition: Vector3, patchesLeft: number)
+			Stink.focus(cat)
 			Stink.setLeft(cat, patchesLeft)
 			if scrubOn() then
 				Effects.burst("mudChunks", patchPosition)
