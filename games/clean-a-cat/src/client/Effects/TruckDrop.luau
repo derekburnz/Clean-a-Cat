@@ -67,7 +67,7 @@ TruckDrop.BOX = { width = 2.38, height = 1.7 }
 TruckDrop.GRAVITY = 35 -- studs a second squared: about real gravity at 0.28 m a stud, so it falls with weight
 -- The slide out of the door: the box's middle goes from `inside` box widths in from the door's edge to `out`
 -- beyond it (where it tips over), riding with the truck as it goes.
-TruckDrop.SLIDE = { inside = 0.6, out = 0.25 }
+TruckDrop.SLIDE = { inside = 0.6, out = 0.55 } -- out past half a width: it leaves the floor whole before it falls
 -- The fall tips it forward to `tilt` radians, so its leading bottom edge meets the road first; then it rolls from
 -- there to a whole turn (flaps up again) over BEATS.land to the roll's end, slowing as it goes (`ease` 2 is a
 -- quadratic ease out: it lands at about the speed it fell with and stops gently).
@@ -330,25 +330,6 @@ function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 		if not reduced then
 			box.roll = TruckDrop.ROLL.tilt * s / fall
 		end
-		-- the part of it still over the floor rests on the floor's edge: it tips off, never drops through it
-		-- (Sync-Agent saw the box 0.11 into the floor as it left)
-		local state = TruckDrop.truck(t, reduced, bumpX)
-		local truckX = TruckDrop.truckX(t, bumpX)
-		local rear = truckX - TruckDrop.TAILGATE.back
-		local w, r = TruckDrop.BOX.width, box.roll
-		local lift = 0
-		for _, dx in { -w / 2, w / 2 } do
-			local x = cx + dx * math.cos(r) - half * math.sin(r)
-			local y = cy - dx * math.sin(r) - half * math.cos(r)
-			if x > rear then
-				local behind = truckX - x
-				local floor = state.lift
-					+ TruckDrop.TAILGATE.up * math.cos(state.pitch)
-					- behind * math.sin(state.pitch)
-				lift = math.max(lift, floor - y)
-			end
-		end
-		box.y += lift
 		return box
 	end
 	local rollEnd = TruckDrop.rollEnd()

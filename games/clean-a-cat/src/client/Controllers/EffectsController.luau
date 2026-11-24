@@ -8,8 +8,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("BrushShine"))
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
-local CatPose = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatPose"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
 local Stink = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Stink"))
@@ -36,17 +36,6 @@ end
 local function topPoint(cat: Model): Vector3
 	local box, size = cat:GetBoundingBox()
 	return box.Position + Vector3.new(0, size.Y / 2 - BOW_DROP, 0)
-end
-
--- The coat colour for fur puffs: the cat's Body part when it has one ("Body" on placeholders, "<asset>_Body" on
--- the generated cats).
-local function coatColor(cat: Model): Color3?
-	for _, child in cat:GetChildren() do
-		if child:IsA("BasePart") and CatPose.jointKey(child.Name) == "Body" then
-			return child.Color
-		end
-	end
-	return nil
 end
 
 local EffectsController = {}
@@ -100,14 +89,17 @@ function EffectsController.Start()
 		Effects.burst("revealSparkle", center)
 		Effects.burst("shakeDroplets", center)
 	end)
+	-- Each brush stroke sends a shine down the coat, and the last one ends in a sparkle (Derek's dev test: no fur
+	-- puffs, "just have it shine top to bottom then sparkle when done"). The coat's colour change is BrushShine's too.
 	Moments.BrushSwipe:Connect(function(cat: Model, _stroke: number)
 		if LiveFlags.isOn(FLUFF_FLAG) and cat:IsDescendantOf(workspace) then
-			Effects.burst("furPuff", coatPoint(cat), coatColor(cat))
+			BrushShine.sweep(cat)
 		end
 	end)
 	Moments.CatFluffed:Connect(function(cat: Model)
 		CatMotion.wiggle(cat)
 		if LiveFlags.isOn(FLUFF_FLAG) then
+			BrushShine.done(cat)
 			Effects.glow(cat, GLOW_SECONDS)
 		end
 	end)

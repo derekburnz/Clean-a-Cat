@@ -82,6 +82,8 @@ type PartRest = { part: BasePart, offset: CFrame, size: Vector3 }
 
 local OpeningScene = {}
 
+OpeningScene.BUMP_NAME = BUMP_NAME -- Gameplay clears it once Suds is inside
+
 local function keyOf(name: string, keys: { string }): string?
 	for _, key in keys do
 		if name == key or string.sub(name, -(#key + 1)) == "_" .. key then
@@ -471,7 +473,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		return CFrame.new(at(state.x, state.y, state.z))
 			* boxFacing
 			* half
-			* CFrame.Angles(state.tumble, 0, state.roll)
+			-- TruckDrop's roll turns the top toward +X (the way it travels); the box faces across the road, so its own
+			-- X is the scene's +X and a turn about its Z by -roll does that (by +roll it spun backwards, Derek's dev
+			-- test: "bounces backwards when it should tumble forwards")
+			* CFrame.Angles(state.tumble, 0, -state.roll)
 			* half:Inverse()
 	end
 
