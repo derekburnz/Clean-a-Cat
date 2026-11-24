@@ -39,7 +39,7 @@ concurrency:
 env:
   GAME_DIR: games/clean-a-cat
   # Switches live in each experience's own DataStore, so dev and live are set apart.
-  UNIVERSE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_UNIVERSE_ID || '10778773655') || (vars.ROBLOX_DEV_UNIVERSE_ID || '') }}
+  UNIVERSE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_UNIVERSE_ID || '10778773655') || (vars.ROBLOX_DEV_UNIVERSE_ID || '10778775478') }}
 
 jobs:
   flags:
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
+      ROBLOX_PUBLISH_KEY: ${{ inputs.target == 'live' && (secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) || (secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY) }}
       ACTION: ${{ inputs.action }}
       KEY: ${{ inputs.key }}
       VALUE: ${{ inputs.value }}

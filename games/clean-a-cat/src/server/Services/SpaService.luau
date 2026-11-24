@@ -66,6 +66,8 @@ local handedOut: { [Player]: number } = {} -- cats handed out this session, for 
 -- Asked for a cat before the save loaded while sudsWash is on: answered once it loads, so a slow load can never hand
 -- a brand new player a customer's cat in place of the kitten.
 local waiting: { [Player]: boolean } = {}
+-- The save-loaded step below has finished for this player (the owner replay is applied), so a parked ask may run.
+local loadDone: { [Player]: boolean } = {}
 local random = Random.new()
 
 local function rollCustomer(player: Player): string
@@ -598,6 +600,7 @@ function SpaService.Start()
 		-- opening spot (Derek: hook them instantly). The save starts loading as the player joins, so it is usually
 		-- ready before their game has finished loading.
 		holdForBox(player)
+		loadDone[player] = true
 		if waiting[player] then
 			waiting[player] = nil
 			onRequestCat(player)
@@ -608,8 +611,10 @@ function SpaService.Start()
 		if not LiveFlags.read() then
 			return
 		end
+		-- Only once the save-loaded step is done: before it, the owner replay is not applied yet, and answering the ask
+		-- would hand the owner a normal cat (Review-QA on #322). That step answers its own parked ask at its end.
 		for player in table.clone(waiting) do
-			if DataService.get(player) ~= nil then
+			if loadDone[player] then
 				waiting[player] = nil
 				onRequestCat(player)
 			end
@@ -675,6 +680,7 @@ function SpaService.Start()
 		queueNeeds[player] = nil
 		handedOut[player] = nil
 		waiting[player] = nil
+		loadDone[player] = nil
 		isOwner[player] = nil
 	end)
 end
