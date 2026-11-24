@@ -30,6 +30,7 @@ sys.path.insert(0, HERE)
 import bpy  # noqa: E402,F401  (bpy first: it makes bmesh and mathutils importable)
 from mathutils import Matrix, Vector  # noqa: E402
 
+import backdrop  # noqa: E402
 import build_props  # noqa: E402
 import burrs  # noqa: E402
 import busy_spa  # noqa: E402
@@ -65,7 +66,7 @@ def all_assets():
     for name, (fn, budget) in dirt.ASSETS.items():
         out[name] = (fn, budget, "dirt")
     for module in (stations, tools, props, plot, spa_props, customers, build_props, vip, street, rewards,
-                   burrs, busy_spa, opening, loaf):
+                   burrs, busy_spa, opening, loaf, backdrop):
         for name, (fn, budget) in module.ASSETS.items():
             out[name] = (fn, budget, module.__name__)
     return out
@@ -122,7 +123,7 @@ def main():
             extra = stations.EXTRAS[name]()
         if name in props.EXTRAS:
             extra = props.EXTRAS[name]()
-        for maker in (tools, plot, spa_props, customers, build_props, street, busy_spa, opening):
+        for maker in (tools, plot, spa_props, customers, build_props, street, busy_spa, opening, backdrop):
             if name in maker.EXTRAS:
                 extra = maker.EXTRAS[name]()
         if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)

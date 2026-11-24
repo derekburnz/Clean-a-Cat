@@ -143,11 +143,13 @@ Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `
 `street.py` builds `CleanACat_Area_Street`, which holds everything round the six plots:
 - Grass ground and a pavement in front of the plots, level with their floor (0.5).
 - Cream curbs and a two lane road with white dashes.
-- A far pavement, with pastel town houses across the road as a backdrop.
-- A hedge and round trees behind the plots, and hedges at both ends.
+- A far pavement, with pastel town houses across the road. Since #349 (the owner: "draft the world/background and sky to help set the atmosphere") three kinds take turns: a cottage with its ridge along the street and a chimney, a shop with a flat roof, a big window and a striped awning, and a tall house with its gable to the street. Each has a door with a step and a little awning, framed windows with flower boxes and a cream band at its foot. No writing anywhere. Between the houses stand a hedge and a round tree, and on the pavement (piece `_Pavement`) street lamps, benches, post boxes and hydrants.
+- A hedge and round trees behind the plots, and a hedge beside each outer plot. The road and its pavements run to the street's ends with no hedge across them (#349), so they carry on into the backdrop.
 - An invisible solid `_Barrier` round the edge, with CanQuery off.
 
-Its pivot is slot 1's plot pivot, so it goes at `SpaLayout.PIVOT_POSITION`. Attachments `PlotSlot1` to `PlotSlot6` mark each plot's pivot in `SpaLayout.slotPivot` order, 44 studs apart. The root attributes are `PlotSpacing` 44 and `PlotCount` 6. The game places the plots; they are not built into the street. The street is 2,624 triangles and 105 parts.
+Its pivot is slot 1's plot pivot, so it goes at `SpaLayout.PIVOT_POSITION`. Attachments `PlotSlot1` to `PlotSlot6` mark each plot's pivot in `SpaLayout.slotPivot` order, 44 studs apart. The root attributes are `PlotSpacing` 44 and `PlotCount` 6. The game places the plots; they are not built into the street. The street is 7,844 triangles and 379 parts (2,624 and 105 before #349).
+
+`backdrop.py` builds `CleanACat_Area_Backdrop` (#349), a first draft of the world past the street's invisible walls. It goes once, with no turn, at the street's pivot. Its pieces: the root (the road carried on 170 studs past each end with its pavements and curbs, cottages and trees along it, a second row of roofs and trees behind the houses across the road with a clock tower in it, bushes, and trees on the hills), `_Ground` (one flat grass plate, its top a hair under the street's own ground so there is no seam and no flicker), `_Dashes`, `_Hills` (the near ring of rolling hills; one sits on the road's line at either end, so the road runs up and over out of sight) and `_HillsFar` (a bigger, paler ring, so the horizon reads as layers). Nothing in it collides, casts a shadow or takes a raycast (`rbx_export.BACKDROP`: "_Backdrop" in the asset's name), and nothing in the opening waits on it. 15,228 triangles and 505 parts. The hills, round trees and cottages are the backdrop generator of the owner's asset library restyled to Bubble Pastel. The sky, the clouds and the lighting are Motion-FX's.
 
 ## 15. Customers and spa props (#16)
 `spa_props.py` builds:
