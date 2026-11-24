@@ -3,6 +3,8 @@
 # replaced and should leave the group's inventory, such as an old icon. An archived asset stops loading in games and
 # can be restored later (Creator Dashboard, or POST .../assets/{id}:restore). Run by
 # .github/workflows/archive-asset.yml; also works from Git Bash on a PC with the same variable set.
+# Open Cloud does not archive every type: an Image is refused with HTTP 400 "is not an archivable asset type"
+# (2026-11-24, #275); archive those by hand in the Creator Dashboard.
 #
 #   ROBLOX_UPLOAD_KEY  Open Cloud API key with asset:read and asset:write, created by the asset's owner (the same key
 #                      upload-asset uses; docs/setup-guide.md step 8)

@@ -1,6 +1,8 @@
 # Archive Roblox assets by id: an upload that was replaced (an old icon) leaves the group's inventory. Start it from
 # the Actions tab (archive-asset > Run workflow) or from a thread, with the ids to archive. An archived asset stops
 # loading in games and can be restored from the Creator Dashboard, so it is a cleanup, not a delete.
+# Roblox refuses some types: an Image (what upload-asset makes for pictures) answers HTTP 400 "is not an archivable
+# asset type" (2026-11-24, #275), so a picture is archived by hand in the Creator Dashboard instead.
 #
 # Safety: the ids are typed in, never found by a search; an empty list is refused; an id the repo still mentions
 # anywhere is refused, so nothing the game uses is archived; each id is read and logged (name, type, owner) before it
