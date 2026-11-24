@@ -37,6 +37,7 @@ local NEW_PINK = Color3.fromHex("FF86CF")
 local VIP_TOP = Color3.fromHex("E3F0FF")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SIDE_BY_SIDE_NEEDS = 3 -- most needs that fit beside the pay on a short card
+local STACKED_SHIFT = 4 -- design px below the middle for the taller short window (Window's default is 33)
 local NEED_ICON: { [string]: string } =
 	{ mud = "Mud", tangles = "Tangles", wet = "Wet", smell = "Smell", claws = "Claws" }
 
@@ -406,7 +407,20 @@ local function redraw()
 		count * s.cardW + (count - 1) * s.gap + 2 * s.pad,
 		screenWidth(scale) - SCREEN_MARGIN
 	)
-	Window.fit(p.window, width, s.band, s.title, s.badge)
+	local most = 0
+	for _, card in cards do
+		most = math.max(most, #card.needs)
+	end
+	local stacked = not short or most > SIDE_BY_SIDE_NEEDS
+	-- a short screen with the needs stacked over the pay: the card sits higher, so its bottom stays on screen
+	Window.fit(
+		p.window,
+		width,
+		s.band,
+		s.title,
+		s.badge,
+		if short and stacked then STACKED_SHIFT else nil
+	)
 	p.pad.PaddingLeft, p.pad.PaddingRight = UDim.new(0, s.pad), UDim.new(0, s.pad)
 	p.pad.PaddingTop, p.pad.PaddingBottom = UDim.new(0, s.pad - 8), UDim.new(0, s.pad - 2)
 
@@ -423,11 +437,6 @@ local function redraw()
 
 	p.rowList.Padding = UDim.new(0, s.gap)
 	clearRow(p.row)
-	local most = 0
-	for _, card in cards do
-		most = math.max(most, #card.needs)
-	end
-	local stacked = not short or most > SIDE_BY_SIDE_NEEDS
 	local tallest = 0
 	for _, card in cards do
 		tallest = math.max(tallest, drawCard(card, p.row, s, short, stacked))

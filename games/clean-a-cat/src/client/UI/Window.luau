@@ -165,11 +165,20 @@ function Window.new(name: string, title: string, badgeIcon: string, root: Instan
 	}
 end
 
--- Sizes in design pixels for the current screen.
-function Window.fit(w: Window, width: number, band: number, title: number, badge: number)
+-- Sizes in design pixels for the current screen. `shift` moves the card below the middle (TOPBAR_SHIFT by default);
+-- a window that is tall for a short screen passes less, so its bottom stays on screen.
+function Window.fit(
+	w: Window,
+	width: number,
+	band: number,
+	title: number,
+	badge: number,
+	shift: number?
+)
 	local scale = Kit.screenScale()
 	w.scale.Scale = scale
 	w.card.Size = UDim2.fromOffset(width, 0)
+	w.card.Position = UDim2.new(0.5, 0, 0.5, shift or TOPBAR_SHIFT)
 	w.band.Size = UDim2.new(1, 0, 0, band)
 	w.title.TextSize = title
 	w.title.Position = UDim2.new(0, badge + 4, 0.5, 0)
