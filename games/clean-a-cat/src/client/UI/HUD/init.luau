@@ -10,8 +10,6 @@
 --   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar;
 --                        SudsRules.NO_BOWS in it leaves the bows out (the opening's kitten, #285)
 --   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil
---   HUD.hideTray(on)     hides the tool tray while Suds's help bubble (UI/SudsBubble) has the bottom centre; the
---                        bubble never shows once the wash has started, so the tray is only a preview then
 --
 -- The look follows the screens' README: numbers and status are white words with an ink outline and no box, Fredoka
 -- One only, and every piece is laid out in design pixels on a 1280 x 720 canvas and scaled like Scale.luau:
@@ -92,7 +90,6 @@ type Pieces = {
 }
 
 local pieces: Pieces? = nil
-local trayHidden = false
 local coins = 0
 local stage: string? = nil
 local plan: { string } = {} -- the later steps this wash takes
@@ -195,7 +192,7 @@ local function redraw()
 	local current = stepIndex(stage, shown)
 	local washing = on() and current ~= nil
 	p.steps.Visible = washing and not TipLine.isShown() -- one line at the top centre: a tutorial tip wins
-	p.tray.Visible = washing and not trayHidden -- Suds's help bubble has the bottom centre
+	p.tray.Visible = washing
 	if current == nil then
 		return
 	end
@@ -379,13 +376,6 @@ function HUD.setPlan(later: { string })
 	end
 	plan = table.clone(later)
 	redraw()
-end
-
-function HUD.hideTray(on: boolean)
-	if trayHidden ~= on then
-		trayHidden = on
-		redraw()
-	end
 end
 
 function HUD.setStage(value: string?)

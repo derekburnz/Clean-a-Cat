@@ -1,12 +1,16 @@
 --!strict
 -- BubbleController: when Suds's help bubble (BubbleRules, UI/SudsBubble, switch sudsBubble, off by default) shows,
--- and what its "Show me" does. Once a second it looks at what the player's device already knows (the coins, the
--- owned tools, the builds, the cats handed out, the opening's stage) and shows the first bubble that is due and that
--- this save has not shown, one at a time. It waits while a window, the recap card or the dim step is up, while the
--- opening's box waits for its tap, and for a moment after the screen frees up, so a bubble never lands on the frame a
--- card closes. Nothing talks over a wash (Design-Agent): from the player's first scrub on a cat until the next cat
--- comes, a due bubble waits, so it shows once the recap card has closed. A bubble still up when the player starts
--- scrubbing goes away.
+-- and what its "Show me" does. It looks at what the player's device already knows (the coins, the owned tools, the
+-- builds, the customers at the door, the opening's stage) and shows the first bubble that is due and that this save
+-- has not shown, one at a time.
+--
+-- Nothing talks over a wash (Design-Agent): a bubble only shows while the tub is empty, and one still up when a cat
+-- lands in the tub goes. The natural moment is as a recap card closes: RecapController hands us the next cat request
+-- (afterRecap), so the due bubbles show one after another with the tub still empty, and the next cat is asked for
+-- once the last one goes (by its button, its X, a window opening or the switch going off), never before. That is
+-- where "Let's open the spa!" and "First customer!" land, after Suds's naming card, before the customer's cat comes.
+-- Between washes it also checks once a second, waiting while a window, the recap card or the dim step is up, while
+-- the opening runs, and for a moment after the screen frees up.
 --
 -- "Show me" only points the way: the floor trail (switch tutorialTrail) to the tub, the Tools board or the builder
 -- board, and Moments.SudsPoint so Suds can trot there from his bed. It never opens a window, buys, builds or moves
@@ -33,7 +37,8 @@ local FloorTrail = require(Client:WaitForChild("Spa"):WaitForChild("FloorTrail")
 local UI = require(Client:WaitForChild("UI"))
 
 local CHECK_SECONDS = 1
-local SETTLE_SECONDS = 1.5 -- the screen stays free this long before a bubble shows
+local SETTLE_SECONDS = 1.5 -- the screen stays free this long before a bubble shows between washes
+local CHAIN = 3 -- at most this many bubbles one after another as a recap card closes
 local ARRIVE = 8 -- studs from the spot where the trail is done
 local TRAIL_SECONDS = 30
 local SOAP = "BubbleSoap"
@@ -46,12 +51,12 @@ local BubbleController = {}
 
 local player = Players.LocalPlayer
 local happened = { firstCustomer = false, wetCat = false, stationReady = false } -- this session's sightings
+local scrub: any = nil
 local told: { [string]: boolean } = {} -- shown here, before the server's list catches up
 local haveBuilds = false
 local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
 local freeSince = -math.huge
-local washing = false -- from the first scrub on this cat until the next cat or the tub empties
 local trailUntil: number? = nil -- os.clock() when our trail goes; nil while it is not ours
 local trailTo: Vector3? = nil
 
@@ -140,6 +145,72 @@ local function checkTrail()
 	end
 end
 
+-- True while a cat is in the tub (from landing to the photo): no bubble then.
+local function catInTub(): boolean
+	local stage = if scrub then scrub.stage() else nil
+	return stage ~= nil and stage ~= "waiting" and stage ~= "done"
+end
+
+-- The bubble due now, or nil: the switch on, the save's list loaded, and nothing else on screen or in the tub.
+local function due(): BubbleRules.Bubble?
+	if
+		not LiveFlags.isOn(BubbleRules.FLAG)
+		or UI.busy()
+		or catInTub()
+		or player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true
+		or SudsRules.cleanStage(player:GetAttribute(SudsRules.ATTRIBUTE)) == SudsRules.BOX -- the kitten hops to the tub
+	then
+		return nil
+	end
+	local seen = BubbleRules.unpack(player:GetAttribute(BubbleRules.ATTRIBUTE))
+	if seen == nil then
+		return nil -- the save has not loaded yet
+	end
+	for id in told do
+		seen[id] = true
+	end
+	return BubbleRules.pick(facts(), seen)
+end
+
+local function show(bubble: BubbleRules.Bubble, onGone: (() -> ())?)
+	told[bubble.id] = true
+	Remotes.event("ReportBubbleSeen"):FireServer(bubble.id)
+	local spot = if bubble.showMe then target(bubble.id) else nil
+	UI.showBubble(
+		bubble,
+		if spot
+			then function()
+				pointTo(spot)
+			end
+			else nil,
+		onGone
+	)
+end
+
+-- RecapController calls this as a recap card closes, with the request for the next cat. The tub is still empty, so
+-- the due bubbles show one after another, and the next cat is asked for once the last goes. With nothing due (or the
+-- switch off) it asks at once, so the tub is never left empty by us.
+function BubbleController.afterRecap(nextCat: () -> ())
+	local left = CHAIN
+	local function step()
+		local bubble = if left > 0 then due() else nil
+		if bubble == nil then
+			nextCat()
+			return
+		end
+		left -= 1
+		show(bubble, step)
+	end
+	local failure = ""
+	local ok = xpcall(step, function(err: unknown)
+		failure = tostring(err)
+	end)
+	if not ok then
+		warn(`BubbleController: a bubble failed, next cat now: {failure}`)
+		nextCat()
+	end
+end
+
 local function check()
 	checkTrail()
 	if not LiveFlags.isOn(BubbleRules.FLAG) then
@@ -150,55 +221,32 @@ local function check()
 		return
 	end
 	local now = os.clock()
-	if
-		washing
-		or UI.busy()
-		or player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true
-		or FloorTrail.isShown()
-	then
+	if UI.busy() or catInTub() or FloorTrail.isShown() then
 		freeSince = now
 		return
 	end
 	if now - freeSince < SETTLE_SECONDS then
 		return
 	end
-	local seen = BubbleRules.unpack(player:GetAttribute(BubbleRules.ATTRIBUTE))
-	if seen == nil then
-		return -- the save has not loaded yet
+	local bubble = due()
+	if bubble then
+		show(bubble, nil)
 	end
-	for id in told do
-		seen[id] = true
-	end
-	local bubble = BubbleRules.pick(facts(), seen)
-	if bubble == nil then
-		return
-	end
-	told[bubble.id] = true
-	Remotes.event("ReportBubbleSeen"):FireServer(bubble.id)
-	local spot = if bubble.showMe then target(bubble.id) else nil
-	UI.showBubble(
-		bubble,
-		if spot
-			then function()
-				pointTo(spot)
-			end
-			else nil
-	)
 end
 
-local function onCatReady(
-	_catId: unknown,
-	kind: unknown,
-	_needs: unknown,
-	locked: unknown,
-	stray: unknown
-)
-	washing = false -- a new cat: nothing has been scrubbed yet
-	if type(kind) == "string" and kind ~= SudsRules.NAME and stray ~= true then
-		happened.firstCustomer = true
-	end
+-- A cat landed in the tub: any bubble still up goes, and the first that needs a dryer not built makes "Wet cat!" due
+-- for after its wash.
+local function onCatReady(_catId: unknown, _kind: unknown, _needs: unknown, locked: unknown)
+	UI.hideBubble()
 	if type(locked) == "table" and table.find(locked :: { unknown }, "wet") then
 		happened.wetCat = true
+	end
+end
+
+-- The customers at the door: the first one makes "First customer!" due.
+local function onQueue(kinds: unknown)
+	if type(kinds) == "table" and #(kinds :: { unknown }) > 0 then
+		happened.firstCustomer = true
 	end
 end
 
@@ -215,14 +263,13 @@ local function onBuilds(rawBuilds: unknown, rawBuilt: unknown)
 	haveBuilds = true
 end
 
-local scrub: any = nil
-
 function BubbleController.Init(controllers: { [string]: any })
 	scrub = controllers.ScrubController
 end
 
 function BubbleController.Start()
 	Remotes.event("CatReady").OnClientEvent:Connect(onCatReady)
+	Remotes.event("CustomerQueue").OnClientEvent:Connect(onQueue)
 	Remotes.event("Builds").OnClientEvent:Connect(onBuilds)
 	Remotes.event("BuildFinished").OnClientEvent:Connect(function(rawId: unknown)
 		if type(rawId) == "string" and BuildRules.ITEMS[rawId] then
@@ -230,17 +277,8 @@ function BubbleController.Start()
 		end
 	end)
 	Moments.ScrubStart:Connect(function()
-		washing = true
 		stopTrail()
-		UI.hideBubble()
 	end)
-	if scrub then
-		scrub.stageChanged:Connect(function(stage: string?)
-			if stage == nil or stage == "waiting" or stage == "done" then
-				washing = false -- the wash is over (the recap card, if any, holds the bubble until it closes)
-			end
-		end)
-	end
 	task.spawn(function()
 		while true do
 			task.wait(CHECK_SECONDS)

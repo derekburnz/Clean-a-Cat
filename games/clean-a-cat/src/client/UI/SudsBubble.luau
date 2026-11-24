@@ -3,9 +3,10 @@
 -- at the bottom of the screen, Suds's round face poking up over its top edge so it reads as him talking, a title,
 -- one short line that says why, one chunky mint button and a small X. Design-Agent's look (2026-11-24).
 --
---   SudsBubble.build(root, onShown)     makes it once; onShown(true or false) as the card comes and goes (the HUD
---                                       hides its tool tray meanwhile, so nothing stacks at the bottom centre)
---   SudsBubble.show(bubble, onPress)    shows one bubble; onPress() runs when the player presses its button
+--   SudsBubble.build(root)              makes it once
+--   SudsBubble.show(bubble, onPress, onGone)  shows one bubble; onPress() runs when the player presses its button,
+--                                       then onGone() once the card goes for any reason (button, X, hide, or another
+--                                       bubble taking its place)
 --   SudsBubble.hide()
 --   SudsBubble.isShown()
 --
@@ -83,8 +84,7 @@ type Parts = {
 local parts: Parts? = nil
 local shown: BubbleRules.Bubble? = nil
 local pressed: (() -> ())? = nil
-local onShown: (boolean) -> () = function(_on: boolean) end
-local wasOn = false
+local gone: (() -> ())? = nil
 
 function SudsBubble.isShown(): boolean
 	return shown ~= nil and LiveFlags.isOn(SudsBubble.FLAG)
@@ -117,10 +117,6 @@ local function redraw()
 	local current = shown
 	local on = current ~= nil and LiveFlags.isOn(SudsBubble.FLAG)
 	p.card.Visible = on
-	if on ~= wasOn then
-		wasOn = on
-		onShown(on)
-	end
 	if not on or current == nil then
 		return
 	end
@@ -155,18 +151,27 @@ local function redraw()
 	p.button.TextSize = if short then 24 else 26
 end
 
-function SudsBubble.hide()
-	if shown == nil then
-		return
-	end
-	shown = nil
-	pressed = nil
+-- Takes the card away and runs the gone callback of the bubble that was up, once.
+local function takeAway()
+	local after = gone
+	shown, pressed, gone = nil, nil, nil
 	redraw()
+	if after then
+		after()
+	end
 end
 
-function SudsBubble.show(bubble: BubbleRules.Bubble, onPress: (() -> ())?)
+function SudsBubble.hide()
+	if shown ~= nil then
+		takeAway()
+	end
+end
+
+function SudsBubble.show(bubble: BubbleRules.Bubble, onPress: (() -> ())?, onGone: (() -> ())?)
+	SudsBubble.hide()
 	shown = bubble
 	pressed = onPress
+	gone = onGone
 	redraw()
 	local p = parts
 	if p and SudsBubble.isShown() then
@@ -196,10 +201,7 @@ local function chunky(name: string, parent: Instance): TextButton
 	return b
 end
 
-function SudsBubble.build(root: Frame, shownChanged: ((boolean) -> ())?)
-	if shownChanged then
-		onShown = shownChanged
-	end
+function SudsBubble.build(root: Frame)
 	local card = Instance.new("Frame")
 	card.Name = "SudsBubble"
 	card.AnchorPoint = Vector2.new(0.5, 1)
@@ -244,10 +246,11 @@ function SudsBubble.build(root: Frame, shownChanged: ((boolean) -> ())?)
 	local button = chunky("Go", card)
 	button.Activated:Connect(function()
 		local fn = pressed
-		SudsBubble.hide()
+		pressed = nil
 		if fn then
-			fn()
+			fn() -- the press first (it points the way), then whatever waits for the card to go
 		end
+		SudsBubble.hide()
 	end)
 
 	-- The small X: a 40 px ink-edged circle centred on the card's top right corner, in a 60 px press area.

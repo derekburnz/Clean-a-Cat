@@ -18,8 +18,8 @@
 --                             tutorialTip)
 --   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
 --                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
---   UI.showBubble(bubble, fn)  Suds's help bubble at the bottom (UI/SudsBubble, switch sudsBubble); fn runs when the
---                             player presses its button. UI.hideBubble() takes it away; UI.busy() is true while a
+--   UI.showBubble(bubble, fn, gone)  Suds's help bubble at the bottom (UI/SudsBubble, switch sudsBubble); fn runs
+--                             when the player presses its button, gone once the card goes for any reason. UI.hideBubble() takes it away; UI.busy() is true while a
 --                             window, the recap or the dim step is up, when no bubble should start
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
@@ -232,7 +232,7 @@ function UI.init()
 	toastLabel = toast
 
 	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
-	SudsBubble.build(root, HUD.hideTray) -- Suds's help bubble (switch sudsBubble); the tool tray steps aside for it
+	SudsBubble.build(root) -- Suds's help bubble (switch sudsBubble), at the bottom while the tub is empty
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
@@ -341,8 +341,8 @@ function UI.showSettings(settings: SettingsRules.Settings)
 	SettingsCard.show(settings)
 end
 
-function UI.showBubble(bubble: BubbleRules.Bubble, onPress: (() -> ())?)
-	SudsBubble.show(bubble, onPress)
+function UI.showBubble(bubble: BubbleRules.Bubble, onPress: (() -> ())?, onGone: (() -> ())?)
+	SudsBubble.show(bubble, onPress, onGone)
 end
 
 function UI.hideBubble()

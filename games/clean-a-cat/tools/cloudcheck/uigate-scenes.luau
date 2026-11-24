@@ -215,12 +215,15 @@ local SCENES = {
 		local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
 		UI.showBubble(BubbleRules.get("longBuild"))
 	end },
-	-- A customer's cat in the tub before the first scrub: the tool tray steps aside while the card shows.
-	{ "SudsBubbleWash", function()
+	-- After Suds's naming card, the tub still empty: customers wait at the door (the HUD's waiting faces).
+	{ "SudsBubbleQueue", function()
 		hud(true)
 		flag("sudsBubble", true)
+		flag("queueWindow", true)
 		UI.setCoins(0)
-		UI.setWashStage("dirty")
+		UI.setWashStage(nil)
+		local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+		UI.setQueue(QueueViewRules.cards({ "Muffin", "Toffee", "LilacCloud" }, {}, {}), "", {})
 		local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
 		UI.showBubble(BubbleRules.get("firstCustomer"))
 	end },
