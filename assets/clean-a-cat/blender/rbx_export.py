@@ -10,7 +10,8 @@ code change. Every Builder primitive becomes one or a few Parts:
   ring -> blocks around the circle, flat star or badge outline -> two WedgeParts per triangle.
 
 Bevels are dropped, which suits the blocky style. Colours are the palette swatches. Glass is SmoothPlastic at 0.6
-transparency (Roblox's Glass material bends the view through a window) and water is Glass at 0.3, a gate barrier
+transparency (Roblox's Glass material bends the view through a window), a bath's water (_Water) is solid
+SmoothPlastic and running water (_Stream) SmoothPlastic at 0.3 (#176: no Glass material anywhere), a gate barrier
 (_Bars) is ForceField, the gold coat tones (palette.METAL_SWATCHES) are Metal. Hanging lamp bulbs (lit all day) are
 Neon; other
 _Bulb, _Bulbs, _Pane and _Tube parts keep their day look and WorldController lights them at night. _Glow parts are
@@ -238,8 +239,11 @@ def _material(obname, swatch):
     if swatch == "glass" or obname.endswith("_Glass"):   # SmoothPlastic, not Glass: Roblox's Glass bends what is
         return "SmoothPlastic", 0.6                       # behind it, so a room seen through a window looked broken
                                                           # (Derek 2026-10-30, "windows have distortion problems")
-    if swatch == "puddle" or obname.endswith(("_Water", "_Stream")):
-        return "Glass", 0.3
+    if obname.endswith("_Water"):                   # a bath's water is solid (#176): three see-through pieces that
+        return "SmoothPlastic", 0.0                 # fill a pill showed a seam and a darker wedge from above, tops a
+                                                    # hair apart may flicker on a phone, and see-through costs overdraw
+    if swatch == "puddle" or obname.endswith("_Stream"):   # running water: see-through, but never Glass, which
+        return "SmoothPlastic", 0.3                        # changes its look between quality levels
     if swatch in palette.CLEAR_SWATCHES:            # a soap bubble: SmoothPlastic, since Glass hides the water behind
         return "SmoothPlastic", palette.CLEAR_SWATCHES[swatch]
     if obname.endswith("_Bars"):
@@ -262,8 +266,8 @@ def _material(obname, swatch):
 def _props(p, asset, uid):
     material, transparency = _material(p["name"], p["swatch"])
     material = SWATCH_MATERIALS.get(asset, {}).get(p["swatch"], material)
-    see_through = (material == "Glass" or p["swatch"] == "glass" or p["name"].endswith("_Glass")
-                   or p["swatch"] in palette.CLEAR_SWATCHES)
+    see_through = (material == "Glass" or p["swatch"] == "glass" or p["name"].endswith(("_Glass", "_Stream"))
+                   or p["swatch"] == "puddle" or p["swatch"] in palette.CLEAR_SWATCHES)
     climb = p["name"].endswith(CLIMB_OBJECTS)
     thin_ok = (asset.startswith(OUTDOOR_PREFIXES) and not any(k in asset for k in THIN_SKIP)
                and min(p["size"]) >= THIN_COLLIDE - 1e-3
