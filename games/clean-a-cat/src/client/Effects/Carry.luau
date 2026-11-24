@@ -33,7 +33,8 @@ local Carry = {}
 -- POSE is Derek's hold (his clip, 2026-11-24: "here is how the carrying should look"): upper arms down at the sides,
 -- elbows bent to a right angle so both forearms point straight ahead at belly height, a little in toward each
 -- other, head up, and the cat sitting on the forearms in front of the belly. On R6 both straight arms reach forward
--- level-ish and in. Behind the switch `carryHold` (dev first; Studio always uses it) until Derek confirms it.
+-- level-ish and in. Behind the switch `carryHold`: on in the dev experience, off in live until Derek confirms it. A Studio playtest
+-- also uses it, since Studio does not read the dev switches.
 Carry.POSE = table.freeze({
 	arms = table.freeze({
 		shL = 12,
@@ -288,7 +289,7 @@ local function ownPart(cat: Model): Instance?
 	return cat.PrimaryPart or cat:FindFirstChildWhichIsA("BasePart", true)
 end
 
--- Derek's hold when its switch is on, and always in Studio (the dev copy); else the first, crossed hold. A missing
+-- Derek's hold when its switch is on (the dev experience sets it), and in a Studio playtest; else the first, crossed hold. A missing
 -- switch module keeps the crossed one.
 function Carry.chooseHold(switchOn: boolean, studio: boolean): Hold
 	return if switchOn or studio then Carry.POSE else Carry.CROSSED

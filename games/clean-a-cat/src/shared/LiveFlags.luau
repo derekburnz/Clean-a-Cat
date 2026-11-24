@@ -70,7 +70,7 @@ LiveFlags.KEYS = {
 	"recapSide", -- the full recap card as a narrow column at the left with no dim, so the clean cat stays in view; the touch controls hide while it shows (UI/Recap); off by default
 	"washChecklist", -- a tick list of this cat's wash steps at the left in the step pips' place; the HUD button row steps aside during the wash (UI/HUD/StepList); off by default
 	"openingReplay", -- testing only: the game's owner gets the opening again on every join, nobody else (SpaService); off by default
-	"carryHold", -- Derek's carry hold from his clip (forearms out at belly height, Effects/Carry) instead of the crossed arms; Studio always uses it; off by default
+	"carryHold", -- Derek's carry hold from his clip (forearms out at belly height, Effects/Carry) instead of the crossed arms; on in dev, Studio playtests always use it; off by default
 	"openingBox", -- the opening scene: the truck, the bump and the box landing in front of the player (Effects/OpeningScene); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
