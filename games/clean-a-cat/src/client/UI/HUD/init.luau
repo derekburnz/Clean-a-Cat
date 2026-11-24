@@ -21,18 +21,15 @@ local Wallet = require(Shared:WaitForChild("Wallet"))
 
 local Comfort = require(script.Parent:WaitForChild("Comfort"))
 local Icons = require(script:WaitForChild("Icons"))
+local Kit = require(script.Parent:WaitForChild("Kit"))
 
 local HUD = {}
 
 HUD.FLAG = "gameHud"
 
-local FONT = Enum.Font.FredokaOne
-local INK = Color3.fromHex("45226B")
-local WHITE = Color3.new(1, 1, 1)
-local GOLD_TEXT = Color3.fromHex("FFE98F")
-local DESIGN = Vector2.new(1280, 720)
-local SCALE_MIN, SCALE_MAX = 0.75, 1.3
-local SHORT_BELOW = 560 -- design pixels of height
+local FONT = Kit.FONT
+local WHITE = Kit.WHITE
+local GOLD_TEXT = Kit.GOLD_TEXT
 local EDGE = 22 -- design pixels from the root's edge (the screens' right margin)
 
 -- One wash step per stage the player acts in, in order (ScrubController and SpaRules).
@@ -96,37 +93,9 @@ local function stepIndex(name: string?): number?
 	return nil
 end
 
-local function corner(parent: Instance, radius: UDim)
-	local c = Instance.new("UICorner")
-	c.CornerRadius = radius
-	c.Parent = parent
-end
-
-local function stroke(parent: Instance, thickness: number): UIStroke
-	local s = Instance.new("UIStroke")
-	s.Color = INK
-	s.Thickness = thickness
-	s.Parent = parent
-	return s
-end
-
--- White words with an ink outline and no box (the screens' `.outlined`).
-local function outlined(name: string, parent: Instance): TextLabel
-	local label = Instance.new("TextLabel")
-	label.Name = name
-	label.BackgroundTransparency = 1
-	label.Font = FONT
-	label.TextColor3 = WHITE
-	label.AutomaticSize = Enum.AutomaticSize.XY
-	label.Size = UDim2.fromOffset(0, 0)
-	stroke(label, 3)
-	local floor = Instance.new("UITextSizeConstraint")
-	floor.MinTextSize = 19 -- 14 real px at the smallest scale (0.75), the screens' floor
-	floor.MaxTextSize = 100
-	floor.Parent = label
-	label.Parent = parent
-	return label
-end
+local corner = Kit.corner
+local stroke = Kit.stroke
+local outlined = Kit.outlined
 
 local function holder(
 	name: string,
@@ -162,12 +131,7 @@ local function list(parent: Instance, horizontal: boolean, gap: number): UIListL
 	return layout
 end
 
-local function screenScale(): (number, boolean)
-	local camera = Workspace.CurrentCamera
-	local size = if camera then camera.ViewportSize else DESIGN
-	local scale = math.clamp(math.min(size.X / DESIGN.X, size.Y / DESIGN.Y), SCALE_MIN, SCALE_MAX)
-	return scale, size.Y / scale < SHORT_BELOW
-end
+local screenScale = Kit.screenScale
 
 local function on(): boolean
 	return LiveFlags.isOn(HUD.FLAG)

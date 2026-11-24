@@ -42,19 +42,20 @@ function IndexService.send(player: Player)
 end
 
 -- Stamps `cat` for the player. A new stamp is saved and sent; a full set of Washed stamps pays the bonus once.
-function IndexService.stamp(player: Player, cat: string, stamp: IndexRules.Stamp)
+-- Returns true when the stamp is new (the recap card's New! chip).
+function IndexService.stamp(player: Player, cat: string, stamp: IndexRules.Stamp): boolean
 	if not LiveFlags.isOn(FLAG) or not isCat(cat) then
-		return
+		return false
 	end
 	local save = DataService.get(player)
 	if save == nil then
-		return
+		return false
 	end
 	-- Rewrite the index from its checked entries, so a broken entry never stays in the save.
 	local index = IndexRules.clean(save.index, isCat)
 	save.index = index
 	if not IndexRules.stamp(index, cat, stamp) then
-		return
+		return false
 	end
 	IndexService.send(player)
 	local cats = allCats()
@@ -79,6 +80,7 @@ function IndexService.stamp(player: Player, cat: string, stamp: IndexRules.Stamp
 			"index_bonus"
 		)
 	end
+	return true
 end
 
 function IndexService.Init(_services: { [string]: any }) end

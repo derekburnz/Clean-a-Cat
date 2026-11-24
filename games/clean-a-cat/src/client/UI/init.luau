@@ -8,15 +8,21 @@
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
+--   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
+--                             when the player closes it
 --
 -- Every screen honours the player's Roblox comfort settings through UI/Comfort (#181), behind the live switch
 -- comfortSettings: see-through backgrounds go through Comfort.backdrop, and text leaves room to grow
 -- (Comfort.autoHeight) when the player picks a larger text size.
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local RecapRules = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("RecapRules"))
 
 local Comfort = require(script:WaitForChild("Comfort"))
 local HUD = require(script:WaitForChild("HUD"))
 local Motion = require(script:WaitForChild("Motion"))
+local Recap = require(script:WaitForChild("Recap"))
 
 local UI = {}
 
@@ -161,6 +167,8 @@ function UI.init()
 	toast.Parent = root
 	toastLabel = toast
 
+	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
+
 	local example = window("Example", "Example window", hud)
 	local body = Instance.new("TextLabel")
 	body.Name = "Body"
@@ -188,6 +196,10 @@ function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
 end
 
+function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)
+	Recap.show(recap, onClose)
+end
+
 function UI.open(name: string)
 	UI.closeAll()
 	local frame: Frame? = windows[name]
@@ -200,6 +212,7 @@ function UI.closeAll()
 	for _, frame in windows do
 		frame.Visible = false
 	end
+	Recap.close()
 end
 
 function UI.windowNames(): { string }

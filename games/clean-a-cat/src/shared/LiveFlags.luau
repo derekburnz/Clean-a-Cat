@@ -47,6 +47,7 @@ LiveFlags.KEYS = {
 	"springUi", -- trial (#183): windows pop in and buttons squash with spr springs (UI/Motion); off by default
 	"queuePick", -- the player picks which waiting customer is washed next (SpaService, QueuePickController); off by default
 	"gameHud", -- the game HUD: coin counter, wash step bar and tool tray (UI/HUD, HudController); off by default
+	"recapCard", -- the recap card after each customer's cat, and the next cat waits for Next cat (UI/Recap, RecapController); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
 }
 
@@ -78,6 +79,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	spawnView = true,
 	queuePick = true,
 	gameHud = true,
+	recapCard = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
