@@ -81,7 +81,7 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotOpening = at(-5, 0.5, -27, 0),
 	SpotBox = at(-5, 0.5, -30.6, 0),
 	SpotBump = at(-1, 0.22, -37.6, math.pi / 2), -- a quarter turn: the bump lies across the lane
-	SpotMascot = at(-10.25, 0.5, -14.3, math.rad(230)), -- Suds's bed right of the door, looking at the tub (#285, Model-Agent)
+	SpotMascot = at(0.2, 0.5, -13.4, math.rad(135)), -- Suds's bed on its low stand beside the door (#285, Model-Agent)
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
 	Tools = at(-1, 0.5, -2, 0),
 }) :: { [string]: Spot }
