@@ -172,7 +172,7 @@ Its pivot is slot 1's plot pivot, so it goes at `SpaLayout.PIVOT_POSITION`. Atta
 `spa_props.py` builds the window set (four cushions, the jar and the sign: 1,236 triangles, under the 1,500 budget):
 - `CleanACat_Prop_Cushion`: a round bubblegum cushion with a puffed top, a cream button and four tassels. Pivot on its base at each `SpotWindow`; `CatSeat` on top. Window cats sit at `ScaleTo(CatScale)` (root attribute, 1.3) so they read from the street and the next plot.
 - `CleanACat_Prop_TipJar`: a square glass jar (`..._Glass`, 0.6 see-through, one box since #235: a rim under the lid used to overlap it) on a mint base with a lid, a gold coin `Fill` part and a cream `Screen` label at the front for the count. To fill it, keep Fill's bottom at the root attribute `FillBottom` and set its height from 0 to `FillHeight` (hide it when empty). At `SpotTipJar`.
-- `CleanACat_Prop_WindowSign`: a mint-framed sign with a cream `Screen` face for the spa's name, flat on the front wall at `SpotSign`, facing the street.
+- `CleanACat_Prop_WindowSign`: a sign with a cream `Screen` face for the spa's name in a navy frame with a thin mint lip, flat on the front wall at `SpotSign`, facing the street. The frame was mint until #360: on the bubblegum wall the sign was pastel on pastel, and a Studio check measured the face at 1.6 to 1 against the wall. No pale colour reaches 3 to 1 against that pink (white is 1.7 to 1), so the face stays cream for dark name text and the navy frame carries the contrast (6.4 to 1 against the wall, 10 to 1 against the face). 6.4 by 2.8; the face is 5.5 by 1.9 as before.
 
 The plot draws a mint frame round the window and the entrance (`_Trim`, no collision).
 
