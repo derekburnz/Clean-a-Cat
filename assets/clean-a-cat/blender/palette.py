@@ -92,7 +92,8 @@ SWATCHES = [
     # row 20 (#22): dusty dried mud for dark fur, where the brown mud would vanish; the Uncommon badge colour; free
     ("mud_dust", "#A39683"), ("mud_dust_wet", "#877B6A"), ("rarity_uncommon", "#5FC98B"), ("water", "#3FAEF2"),
     # #155: on pale fur the brown mud read as a patched coat, so pale fur gets a duller, greyer mud no coat uses
-    ("bubble", "#BFE6FF"), ("mud_drab", "#6B6252"), ("mud_drab_wet", "#7E735F"), ("free_20_8", "#000000"),
+    # ... and #214: the spa floor's second tile, a paler sky than spa_sky so the sky-blue tub still stands out on it
+    ("bubble", "#BFE6FF"), ("mud_drab", "#6B6252"), ("mud_drab_wet", "#7E735F"), ("tile_sky", "#C2E3F4"),
 ]
 assert len(SWATCHES) % GRID == 0 and len(SWATCHES) <= GRID * ROWS
 
