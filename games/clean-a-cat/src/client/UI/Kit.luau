@@ -16,6 +16,9 @@ local Workspace = game:GetService("Workspace")
 local Kit = {}
 
 Kit.FONT = Enum.Font.FredokaOne
+-- The body font of Design-Agent's drafts (--font-body): Nunito, bold. Headings, names and numbers use Kit.FONT. Set
+-- it as a label's FontFace (Nunito's bold weight has no Enum.Font of its own).
+Kit.BODY_FACE = Font.new("rbxasset://fonts/families/Nunito.json", Enum.FontWeight.Bold)
 Kit.INK = Color3.fromHex("45226B")
 Kit.INK_SOFT = Color3.fromHex("6C4F86")
 Kit.WHITE = Color3.new(1, 1, 1)
@@ -64,6 +67,23 @@ function Kit.minText(label: TextLabel | TextButton)
 	floor.MinTextSize = MIN_TEXT
 	floor.MaxTextSize = 100
 	floor.Parent = label
+end
+
+-- A one-line name in a box of fixed width: it draws at `size` when it fits, shrinks as far as the text floor when it
+-- does not, and only past that ends with "..." (#262). Safe to call on every redraw. TextScaled text keeps to its box
+-- when the player picks a larger text size, so a long name never spills its card.
+function Kit.shrinkToFit(label: TextLabel, size: number)
+	local found = label:FindFirstChildOfClass("UITextSizeConstraint")
+	local limit: UITextSizeConstraint = if found
+		then found :: UITextSizeConstraint
+		else Instance.new("UITextSizeConstraint")
+	limit.Parent = label
+	limit.MinTextSize = MIN_TEXT
+	limit.MaxTextSize = math.max(size, MIN_TEXT)
+	label.TextSize = size
+	label.TextScaled = true
+	label.TextWrapped = false
+	label.TextTruncate = Enum.TextTruncate.AtEnd
 end
 
 function Kit.outlined(name: string, parent: Instance): TextLabel

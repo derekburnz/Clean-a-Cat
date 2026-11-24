@@ -61,7 +61,6 @@ local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F
 local OFF_TOP, OFF_BOTTOM = Color3.fromHex("E4DBD2"), Color3.fromHex("CFC2B4")
 local TRACK = Color3.fromHex("F7E9DA")
 local FILL_TOP, FILL_BOTTOM = Color3.fromHex("BFE9FF"), Color3.fromHex("4FB4F0")
-local BODY_FONT = Enum.Font.GothamBold
 local THUMB = 48 -- design px: the slider's bubble
 local SLIDER_TOUCH = 60 -- design px tall: the slider's touch area, 45 real px at the smallest scale (44 needed)
 local TRACK_HEIGHT = 18
@@ -271,7 +270,8 @@ local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
 	say.Text = spec.say
 	local detail: TextLabel? = nil
 	if spec.detail then
-		local d = words("Detail", block, BODY_FONT, Kit.INK_SOFT)
+		local d = words("Detail", block, Kit.FONT, Kit.INK_SOFT)
+		d.FontFace = Kit.BODY_FACE
 		d.LayoutOrder = 2
 		d.Text = spec.detail
 		detail = d
