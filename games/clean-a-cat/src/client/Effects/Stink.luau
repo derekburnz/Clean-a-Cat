@@ -17,6 +17,10 @@ local Tier = require(script.Parent:WaitForChild("Tier"))
 local PRESET = "stinkWisps"
 local LIFT = 0.35 -- studs above the Carry attachment, so the wisps start just over the head
 local RANGE = 60 -- studs: no wisps past it
+-- The tub visit's folder (Controllers/ScrubController). A dirty cat that appears in it is the one being washed, so
+-- it holds the first wisp slot from the moment it arrives, before the first scrub (Sync-Agent's re-shoot: by camera
+-- distance alone it lost to a door cat by 0.1 stud).
+local VISIT_FOLDER = "PH_SpaPrototype"
 local MAX_CATS = { low = 2, high = 4 } -- steady emitters are shared with foam and dryer air (animation-vfx section 7)
 
 type Entry = {
@@ -47,6 +51,9 @@ local function findCarry(cat: Model): Attachment?
 end
 
 local function remove(cat: Model)
+	if focus == cat then
+		focus = nil
+	end
 	local entry = entries[cat]
 	if entry then
 		entries[cat] = nil
@@ -82,6 +89,10 @@ local function attach(cat: Model)
 		total = total,
 		left = total,
 	}
+	local visit = Workspace:FindFirstChild(VISIT_FOLDER)
+	if visit and cat:IsDescendantOf(visit) then
+		focus = cat
+	end
 end
 
 local function consider(instance: Instance)
