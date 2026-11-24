@@ -16,7 +16,7 @@
 --       options.onTap: called when the player taps the box or uses its prompt, once it has landed.
 --       options.bump: the speed bump's world position. Left out, the scene uses the plot's SpotBump when the player
 --       is on a plot, else TruckDrop.BUMP_X. The truck's jolt is timed to it, so it hits the bump the player sees,
---       and a speed bump (CleanACat_Prop_SpeedBump) is laid there if the road has none.
+--       and a pothole (CleanACat_Prop_Pothole) is laid there if the road has none.
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
 --   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point; onDone when he lands. The
 --                                   camera turn toward the tub is gone (Sync-Agent: Roblox's camera undid it, and with
@@ -51,8 +51,8 @@ local BOX_ASSET = "CleanACat_Prop_DeliveryBox"
 local KITTEN_ASSETS = { "CleanACat_Cat_Suds_Dirty_Sit", "CleanACat_Cat_Suds_Dirty" }
 local LOAF_ASSET = "CleanACat_Cat_Suds_Dirty_Loaf" -- the held body: legs tucked, carried across the arms
 local FOLDER_NAME = "CleanACat_OpeningScene"
-local BUMP_ASSET = "CleanACat_Prop_SpeedBump" -- Model-Agent's bump; its long side is its X
-local BUMP_NAME = "CleanACat_OpeningBump" -- the copy this client lays on the road, kept after the scene
+local BUMP_ASSET = "CleanACat_Prop_Pothole" -- Model-Agent's pothole (Derek: "speed bump should be changed to pothole"); long side its X
+local BUMP_NAME = "CleanACat_OpeningPothole" -- the copy this client lays on the road, kept after the scene
 
 -- Signs for the hinge turns, so a prop built the other way round is a one-character fix.
 local DOOR_SIGN = -1 -- the rear door is hinged on its top edge and swings out behind the truck
@@ -312,10 +312,10 @@ local function bumpOffset(origin: CFrame, bump: Vector3?): number?
 	return (world - origin.Position):Dot(origin.RightVector)
 end
 
--- Lays the speed bump on the road where the truck jolts (Derek's dev test: "no bump in road was there"). Nothing in
--- the world places one yet, so this client puts its own copy there once and keeps it after the scene; a bump
--- already on the road (a later plot build, or the last play's copy) is used as it is. `cframe` is the bump's place:
--- on the road top, its X across the lane.
+-- Lays the pothole on the road where the truck jolts (Derek's dev tests: "no bump in road was there", then "speed
+-- bump should be changed to pothole"). Nothing in the world places one yet, so this client puts its own copy there
+-- once and keeps it after the scene; one already on the road (the last play's copy) is moved, not doubled. `cframe`
+-- is its place: on the road top, its X across the lane.
 local function layBump(cframe: CFrame)
 	local existing = Workspace:FindFirstChild(BUMP_NAME)
 	if existing and existing:IsA("Model") then
@@ -328,14 +328,14 @@ local function layBump(cframe: CFrame)
 		bump = asset:Clone() :: Model
 	else
 		bump = Instance.new("Model")
-		local stripe = part(
+		local hole = part(
 			bump,
-			"PH_SpeedBump",
-			Vector3.new(10, 0.35, 1.4),
-			CFrame.new(0, 0.175, 0),
-			Color3.fromRGB(255, 205, 60)
+			"PH_Pothole",
+			Vector3.new(3.2, 0.04, 2.2),
+			CFrame.new(0, 0.02, 0),
+			Color3.fromRGB(46, 42, 48)
 		)
-		bump.PrimaryPart = stripe
+		bump.PrimaryPart = hole
 		bump.WorldPivot = CFrame.identity
 	end
 	makeClientOnly(bump)
@@ -485,7 +485,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		end
 	end
 
-	local function event(name: string)
+	local function event(name: string, t: number)
 		if name == "honk" then
 			Audio.play("truckHonk", { at = truckBody })
 		elseif name == "frontHit" or name == "backHit" then
@@ -495,14 +495,19 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				{ at = truckBody, variant = if name == "frontHit" then 1 else 2 }
 			)
 			Effects.burst("roadDust", at(x, 0.3, TruckDrop.ROAD_Z))
-			if name == "backHit" then
-				Audio.play("truckDoor", { at = truckBody })
+			if name == "frontHit" then
+				Audio.play("truckDoor", { at = truckBody }) -- the jolt kicks the back door open
 			end
-		elseif name == "land" then
-			Audio.play("boxThud", { at = boxBody })
-			Effects.burst("roadDust", at(0, 0.2, 0))
-		elseif name == "settle" then
-			Audio.play("boxThud", { at = boxBody, pitch = 1.25 })
+		elseif name == "doorSlam" then
+			Audio.play("truckDoor", { at = truckBody, pitch = 0.8 })
+		elseif name == "land" or name == "tumble" or name == "settle" then
+			-- a thud and a puff where it comes down: hard on the first hit, lighter as it rolls, a slap as it stops
+			local state = TruckDrop.box(t, reduced, bumpX)
+			local pitch = if name == "land" then 1 elseif name == "tumble" then 1.1 else 1.25
+			Audio.play("boxThud", { at = boxBody, pitch = pitch })
+			if name ~= "tumble" then
+				Effects.burst("roadDust", at(state.x, 0.2, state.z))
+			end
 		end
 	end
 
@@ -564,7 +569,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local function frame()
 		local t = os.clock() - started
 		for _, name in TruckDrop.eventsBetween(last, t) do
-			event(name)
+			event(name, t)
 		end
 		last = t
 		if t <= TruckDrop.BEATS.done + 0.5 then
