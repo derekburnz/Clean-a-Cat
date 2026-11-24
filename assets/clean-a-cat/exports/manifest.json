@@ -17,9 +17,9 @@
    "CleanACat_Area_SpaPlot_Glow",
    "CleanACat_Area_SpaPlot_Flowers"
   ],
-  "triangles": 3540,
+  "triangles": 4564,
   "budget": 25000,
-  "parts": 161,
+  "parts": 220,
   "size_studs": {
    "x": 44.0,
    "y": 48.0,
@@ -38,13 +38,13 @@
    "warnings": [],
    "qa_accepted": {
     "shared corners": 1,
-    "back to back": 5
+    "back to back": 6
    },
    "checks": {
-    "budget": "3540/25000 tris",
+    "budget": "4564/25000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2138 faces on swatch centers",
+    "uv": "2722 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00",
@@ -8593,13 +8593,13 @@
   "parts": 41,
   "size_studs": {
    "x": 3.46,
-   "y": 2.65,
+   "y": 2.67,
    "z": 4.35
   },
   "size_roblox": [
    3.46,
    4.35,
-   2.65
+   2.67
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8619,7 +8619,7 @@
     "uv": "564 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.30",
+    "centered": "footprint center x=0.00 y=0.31",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }

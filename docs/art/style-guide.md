@@ -21,7 +21,7 @@ All colours live in `assets/clean-a-cat/blender/palette.py` (the source of truth
 | spa_sky | #8FD3FE | water, tub insides, the dryer hood |
 | mud | #5A4632 | mud blobs on a dirty cat, and nothing else |
 
-Also in row 16: `mud_wet` #735A43 (the lighter wet mud; on pale fur the mud is `mud_drab` #6B6252 with `mud_drab_wet` #7E735F, see the mud rule), `foam` #FDFEFF, `spa_tile` #EEF4F6. In row 20: `water` #3FAEF2 (bath water: deeper than `spa_sky`, so it shows against the mint and cream of a bath) and `bubble` #BFE6FF (a soap bubble, drawn see-through at Transparency 0.4) (#111).
+Also in row 16: `mud_wet` #735A43 (the lighter wet mud; on pale fur the mud is `mud_drab` #6B6252 with `mud_drab_wet` #7E735F, see the mud rule), `foam` #FDFEFF, `spa_tile` #EEF4F6. In row 20: `water` #3FAEF2 (bath water: deeper than `spa_sky`, so it shows against the mint and cream of a bath) and `bubble` #BFE6FF (a soap bubble, drawn see-through at Transparency 0.4) (#111). Also in row 20: `tile_sky` #C2E3F4, the spa floor's second tile (#214), in the cell that was free.
 
 ### Coats (rows 17 and 18) and details (row 19)
 Each Cat Index cat has its own coat swatches (`coat_*`) so no coat repeats a Cat Cafe coat. Eyes (`eye_mint`, `eye_sky`, `eye_gold`), nose (`nose_bubblegum`), bows (`bow_pink`, `bow_mint`, `bow_sky`) and `wood_light` are in row 19. Rarity colours for frames and badges are the studio's row 2 (`rarity_common`, `rarity_rare`, `rarity_epic`, `rarity_legend`) plus `rarity_uncommon` #5FC98B in row 20.
@@ -131,14 +131,14 @@ Every tier changes shape or size as well as colour (Review-QA, #142): a player w
 
 Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, `SpotQueue1` to `SpotQueue3`, `SpotStray`, `SpotWindow1` to `SpotWindow4` (each cushion's base), `SpotTipJar`, `SpotSign`, `SpotBuilder`, `SpotStation2`, `SpotStation3`, `SpotVipDoor` and `SpotBoard`. Each faces the way the player, customer, cat or station there faces. Root attribute `FloorHeight` (0.5, the top of the floor slab). The real build has these parts:
 - A bubblegum shop front under a mint and white striped awning. The side and back walls are cream, with a bubblegum band outside and a mint band inside.
-- A checked offwhite tile floor, with a round bubblegum rug under the tub.
+- A checked tile floor you can see from the play camera (#214): 4 by 4.33 stud tiles in `tile_sky` (#C2E3F4, paler than the tub's sky blue so the tub still stands out) on the white shop floor, a bubblegum border round the room, and a round bubblegum rug under the tub. The tiles stand 0.02 over the floor, and the border and rug 0.02 over the tiles.
 - A mint roof with a cream parapet.
-- Inside: three pendant lamps with warm bulbs (`_Glow`, Neon), a towel shelf, a clock, a paw poster and two plants.
+- Inside: three pendant lamps with warm bulbs (`_Glow`, Neon), a towel shelf, a paw poster and two plants. Since #214 the mint band has a white cap rail, and the walls carry a gold round mirror with a shelf (back wall, right of the tub; its glass is a solid pale blue, never see-through), a tool board with a brush, a comb and a sponge under the clock (back wall, right of the VIP Room door), three framed cats over the stray box (left wall) and a rail of three towels (right wall). Wall decor stays off the floor and out from behind the cat in the tub as the play camera sees it, so the cat keeps a calm background.
 - Over the back door: a cardboard strays sign.
 - Outside: a flower box under the window, two potted plants at the entrance and two lamp posts on the apron.
 - A grassy back yard with a low white fence, set 0.5 studs inside the plot edge so neighbours never overlap.
 
-Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `_Flowers`, `_Trim`, `_Bands`, `_Tiles`) does not. The plot is 3,540 triangles and 161 parts.
+Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `_Flowers`, `_Trim`, `_Bands`, `_Tiles`) does not. The plot is 4,564 triangles and 220 parts (161 before #214; it is built six times on the street, so the target is under 240).
 
 `street.py` builds `CleanACat_Area_Street`, which holds everything round the six plots:
 - Grass ground and a pavement in front of the plots, level with their floor (0.5).
