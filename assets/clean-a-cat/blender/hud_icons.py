@@ -10,8 +10,8 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
 
   Index     the Cat Index: a purple book with a cream cat's face on the cover and a pink bookmark
   Settings  a blue grey gear with a cream middle
-  Tools     a pink toolbox with a cream handle, a gold latch and a white paw (the owner asked for a toolbox in
-            place of the scrub brush, whose soap bubbles "makes no sense")
+  Tools     a pink toolbox with its lid up, a scrub brush and a soap bottle inside (the owner asked for a toolbox in
+            place of the scrub brush, whose soap bubbles "makes no sense"; shut, it could pass for a lunchbox)
   Helper    a member of the human staff: head and shoulders in the spa uniform, the first look in staff.py
   Build     a blue hammer with a wooden handle and a white paw on its head
 
@@ -130,18 +130,31 @@ def settings(mat):
 
 
 def tools(mat):
-    """The wash tools: a fat pink toolbox with a deeper lid, a cream handle and a gold latch. (The first draft was a
-    scrub brush with soap bubbles; the owner: "the bubbles on the back of brush makes no sense ... a toolbox would be
-    better".)"""
+    """The wash tools: a fat pink toolbox with its lid up, a scrub brush and a soap bottle showing inside, a cream
+    handle and a gold latch. (The first draft was a scrub brush with soap bubbles; the owner: "the bubbles on the back
+    of brush makes no sense ... a toolbox would be better". The first toolbox was shut and could pass for a lunchbox
+    at 48 px (Review-QA, #234), so the lid is open and two tools show, #242.)"""
     b = Builder()
     w, d = 2.4, 1.4
     b.box((0, 0, 0.62), (w, d, 1.24), "spa_bubblegum")                                   # the box
-    b.box((0, 0, 1.5), (w + 0.14, d + 0.14, 0.56), "nose_bubblegum")                     # the lid
-    for sx in (-1, 1):                                                                   # the handle
-        b.box((sx * 0.62, 0, 1.96), (0.24, 0.3, 0.44), "spa_cream")
-    b.box((0, 0, 2.24), (1.7, 0.36, 0.26), "spa_cream")
-    b.box((0, -d / 2 - 0.1, 1.2), (0.5, 0.14, 0.5), "gold_mid")                          # the latch
-    _paw(b, 0, -d / 2 - 0.02, 0.56, 0.2, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
+    up = Matrix.Rotation(math.radians(-32), 3, "X")                                      # the lid, hinged at the back
+    hinge = Vector((0, d / 2 + 0.07, 1.26))
+
+    def lid(c, size, swatch):
+        b.box(tuple(hinge + up @ (Vector(c) - hinge)), size, swatch, rot=up)
+
+    lid((0, 0, 1.54), (w + 0.14, d + 0.14, 0.56), "nose_bubblegum")
+    for sx in (-1, 1):                                                                   # the handle, on the lid
+        lid((sx * 0.62, 0, 2.0), (0.24, 0.3, 0.44), "spa_cream")
+    lid((0, 0, 2.28), (1.7, 0.36, 0.26), "spa_cream")
+    b.box((0, -d / 2 - 0.1, 0.9), (0.5, 0.14, 0.5), "gold_mid")                          # the latch
+    _paw(b, 0, -d / 2 - 0.02, 0.36, 0.17, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
+    turn = Matrix.Rotation(math.radians(14), 3, "Z")                                     # a scrub brush over the rim:
+    b.box((-0.58, -0.62, 1.6), (0.78, 1.0, 0.28), "spa_sky", rot=turn)                   # sky back, white bristles
+    b.box((-0.58, -0.62, 1.38), (0.66, 0.88, 0.22), "foam", rot=turn)
+    b.cyl((0.66, -0.36, 1.66), 0.32, 0.9, "spa_mint", segments=14)                       # a soap bottle and its pump
+    b.cyl((0.66, -0.36, 2.2), 0.13, 0.24, "spa_cream", segments=12)
+    b.box((0.58, -0.44, 2.36), (0.42, 0.2, 0.14), "spa_cream")
     return _fin(b, "Tools", mat)
 
 
