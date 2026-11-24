@@ -56,3 +56,24 @@ Shots: A1/A2 box waiting at join and after respawn; A3 trail through the door an
 ## Corrections (Sync-Agent, re-measured on main bf28006)
 - Item 6 timing: taps at 6.63, 7.03, 7.43 and 8.65 s; hops at 6.75, 7.57 and 8.77 s (about 0.13 s after a counted tap). The tap 0.40 s after the first did nothing. Gaps between counted taps were 0.80 and 1.22 s, so he never hopped twice within the 0.6 s cooldown. Still a pass.
 - Item 1 distance: 4.2 studs was from the respawned character's root (-10.19, 3.50, -37.01) to the box's bounding box centre (-10.00, 1.39, -40.60). Most of that is the 2.1 stud height difference. On the ground it is 3.59 studs, matching SpotOpening (-10, 0.5, -37) and SpotBox (-10, 0.5, -40.6). The box is 2.50 x 1.78 x 2.51 studs, centred on SpotBox, so its near face is about 2.3 studs from the character.
+
+## Recheck on main e227336 (Sync-Agent, 2026-11-24)
+
+Setup as the Suds playtest (fresh unsaved place, scratch LiveFlags/SaveSchema edits, switches back off, repo untouched). Plus a scratch-only LocalScript logging truck/box positions, camera type changes and every Sound.Played (name, SoundId, time). Audio cannot be heard from the PC; the log only shows a sound was told to play. Sizes: a06 706x339, iPhone 13 844x390.
+
+1) PASS box beside the avatar. SpotBox world (-13, -40.6); root at (-10, -37); 4.69 studs centre to centre on the ground. Visible box pixels (ray per pixel): a06 1260 px (41x41), iPhone 13 1475 px (45x44). Avatar still covers a little of the right edge.
+2) Jolt PASS, arc arguable. Bump sound at 2.67 s; truck pitches up as front wheels cross x -19.2 to -13.8, down as back wheels cross -11.7 to -5.3; bump at x -16, so jolt is on the bump. Box leaves at 3.04 s from (-15.3, 3.5, -47.6), ~6.8 studs behind the truck centre, rises to y 5.4 at 3.31 s, lands at 3.74 s, small bounce (y 1.0 at 3.97 s), second thud 4.11 s. It moves 7 studs sideways but only 2.3 along the truck path, and rises 1.9 first: reads as a toss off the side more than a fall off the back. Camera handed back ~3.5 s.
+3) FAIL camera turn. a06: tap at 0.46 s, camera turned only to -6 degrees between 1.61 and 1.80 s, back to 0 by 2.16 s (facing the tub is about -158). iPhone 13: tap at 0.51 s, camera never moved more than 2 degrees; frames 7 and 8 show it still facing the street 1.3 s and 3 s after the hop. Drag mid-turn could not be tested (no turn). No Studio tool forcing the camera back was found in the clip.
+4) PASS portrait: uploaded picture rbxassetid://92665897768427 (88x88), black cat with blue eyes, mint collar, gold bell. Not the orange cat plus dark square.
+5) Bed PASS, timing borderline. Suds lowest point y 2.190, bed surface 2.190: gap 0.000. Bed 2.37 x 1.84 x 2.58; Suds at (-15.06, -24.45) facing the tub. After "Open the spa!" bed and Suds appear 0.93 s later and the customer's cat (Muffin) lands 0.94 s later, so Suds shows ~10 ms before the cat, not after.
+6) Sounds PASS on desktop. Collar jingle (132945251317866) played once at the photo. Purr (112652819529138) played on the first desktop click on Suds with a hop; a second click 1.5 s later hopped but did not purr; the purr also plays at the end of brushing. On the a06 touch taps on Suds produced no hop or purr, but the input logger there saw no input at all, so it may be the tool.
+7) PASS no game errors (no-DataStore notes, asset warning x3; some errors were the tester's own scripts).
+
+Tickets: MAJOR camera turn to the tub after the tap does not happen (nudges a few degrees and returns). MINOR box arc reads as a sideways toss. MINOR Suds appears 10 ms before the next cat lands. TO CHECK touch taps on Suds in the device simulator did nothing.
+Clips and frames are on the owner's Studio PC (not in the repo). No account names.
+
+### Review-QA triage of the recheck
+- **FAIL, camera turn (Motion-FX).** The delta added after Roblox's camera each frame does not stick: the PlayerModule's camera puts its own yaw back. Fix: ease it as a short Scriptable shot, hand back Custom, then check that the player camera keeps the new heading. Or drop the turn if the carry flow (#311) makes the player walk to the tub anyway.
+- **MINOR, box arc (Motion-FX).** It reads as a toss off the side (7 studs across, 2.3 along). Cut the sideways travel or add tailgate drift so it falls off the back.
+- **OK, Suds on the bed.** He appears 10 ms before the next cat lands, which looks simultaneous.
+- **To check on a real phone:** touch taps on Suds (the a06 simulator logged no input at all), and that the purr is heard.
