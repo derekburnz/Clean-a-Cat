@@ -103,12 +103,12 @@ Pieces of one model never share a plane: neighbours are staggered by 0.012 studs
 `props.py` builds `CleanACat_Bow_Pink`, `CleanACat_Bow_Mint` and `CleanACat_Bow_Sky` (`bow_pink`, `bow_mint`, `bow_sky`): two puffed loops, a knot and two tails lying back over the crown. Pivot at the base of the knot, with an Attachment `BowSlot` there. To put one on, line the bow's `BowSlot` up with the cat Head's `BowSlot`, weld it to the Head, and `ScaleTo` it by the cat's `Scale` attribute.
 
 ### Draft tools for the other wash steps (#123)
-Drafts, not wired into the game. Each follows the sponge's rules: one Model of Parts whose biggest part is `Handle`, pivot at the grip, front -Z in Roblox, nothing collides, about twice real size so it reads in a hand on a phone. Colour says what a tool is for at a glance: water tools are sky and white, drying is bubblegum, cutting and picking are metal with one pastel pad.
+Drafts, not wired into the game. Each follows the sponge's rules: one Model of Parts whose biggest part is `Handle`, pivot at the grip, front -Z in Roblox, nothing collides, about twice real size so it reads in a hand on a phone. Colour says what a tool is for at a glance: water tools are sky and white, drying is bubblegum, combing and clipping are mint, picking is pink. **No tool body is mostly grey (#132):** grey is only for metal tips (a jaw, a pin, a bead), because the spa floor and the grey coats eat it and a grey tool is a grey smudge at 32 px.
 - `CleanACat_Tool_Shower` (rinse): a white grip with a sky collar and a hose stub, a sky head tipped forward and 25 degrees down, a white face plate with five water holes. Attachment `Nozzle` on the face plate, its +Y along the spray.
-- `CleanACat_Tool_Comb` (pick out burrs): a mint handle and spine with seven metal teeth pointing down.
-- `CleanACat_Tool_Tweezers` (lift a burr or a leaf): two metal arms open toward the front with pink grip pads.
+- `CleanACat_Tool_Comb` (pick out burrs): a mint handle and spine with five wide white teeth pointing down, the gaps as wide as a tooth.
+- `CleanACat_Tool_Tweezers` (lift a burr or a leaf): two pink arms open wide toward the front with cream grip pads and a round metal bead on each tip, the part that picks.
 - `CleanACat_Tool_Towel` (towel dry): a bubblegum towel folded in three with two cream stripes.
-- `CleanACat_Tool_Clipper` (trim a claw): two thin metal blades open at the jaws, a silver lever on a pin with a sky thumb pad.
+- `CleanACat_Tool_Clipper` (trim a claw): two mint blades open at the front, each ending in a metal jaw, a pale mint lever on a pin with a sky thumb pad.
 - `CleanACat_Tool_Dryer` (blow dry): a bubblegum barrel, a cream nozzle, a darker pink grip with a cream switch. Attachment `Air` at the nozzle's mouth, its +Y along the air.
 - `CleanACat_Tool_Shampoo` (lather): a lilac pump bottle, a cream label with a pink paw, a white pump with its spout to the front.
 

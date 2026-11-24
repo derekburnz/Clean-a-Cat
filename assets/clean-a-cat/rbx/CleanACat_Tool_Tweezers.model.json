@@ -12,15 +12,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.105,
+       -0.145,
        0.0,
        0.0
       ],
       "orientation": [
        [
-        0.9848,
+        0.9703,
         0.0,
-        0.1736
+        0.2419
        ],
        [
         0.0,
@@ -28,22 +28,22 @@
         0.0
        ],
        [
-        -0.1736,
+        -0.2419,
         0.0,
-        0.9848
+        0.9703
        ]
       ]
      }
     },
     "Size": [
-     0.09,
-     0.2,
+     0.1,
+     0.22,
      1.16
     ],
     "Color": [
-     0.6627,
-     0.6863,
-     0.7216
+     1.0,
+     0.5255,
+     0.6745
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -55,15 +55,15 @@
     "PivotOffset": {
      "CFrame": {
       "position": [
-       0.1034,
+       0.1407,
        0.0,
-       0.0182
+       0.0351
       ],
       "orientation": [
        [
-        0.9848,
+        0.9703,
         0.0,
-        -0.1736
+        -0.2419
        ],
        [
         0.0,
@@ -71,9 +71,9 @@
         0.0
        ],
        [
-        0.1736,
+        0.2419,
         0.0,
-        0.9848
+        0.9703
        ]
       ]
      }
@@ -114,58 +114,9 @@
      }
     },
     "Size": [
-     0.2,
      0.24,
-     0.16
-    ],
-    "Color": [
-     0.6627,
-     0.6863,
-     0.7216
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Tool_Tweezers",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -0.14,
-       0.0,
-       0.1
-      ],
-      "orientation": [
-       [
-        0.9848,
-        0.0,
-        0.1736
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        -0.1736,
-        0.0,
-        0.9848
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.07,
      0.26,
-     0.42
+     0.18
     ],
     "Color": [
      1.0,
@@ -188,15 +139,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.105,
+       -0.2,
        0.0,
-       0.0
+       0.1
       ],
       "orientation": [
        [
-        0.9848,
+        0.9703,
         0.0,
-        -0.1736
+        0.2419
        ],
        [
         0.0,
@@ -204,22 +155,121 @@
         0.0
        ],
        [
-        0.1736,
+        -0.2419,
         0.0,
-        0.9848
+        0.9703
        ]
       ]
      }
     },
     "Size": [
-     0.09,
-     0.2,
-     1.16
+     0.07,
+     0.28,
+     0.4
+    ],
+    "Color": [
+     1.0,
+     0.9647,
+     0.9255
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Tool_Tweezers",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.2902,
+       0.0,
+       -0.5822
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.24,
+     0.24,
+     0.24
     ],
     "Color": [
      0.6627,
      0.6863,
      0.7216
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Ball"
+   }
+  },
+  {
+   "name": "CleanACat_Tool_Tweezers",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.145,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        0.9703,
+        0.0,
+        -0.2419
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.2419,
+        0.0,
+        0.9703
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.1,
+     0.22,
+     1.16
+    ],
+    "Color": [
+     1.0,
+     0.5255,
+     0.6745
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -237,15 +287,15 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.14,
+       0.2,
        0.0,
        0.1
       ],
       "orientation": [
        [
-        0.9848,
+        0.9703,
         0.0,
-        -0.1736
+        -0.2419
        ],
        [
         0.0,
@@ -253,22 +303,22 @@
         0.0
        ],
        [
-        0.1736,
+        0.2419,
         0.0,
-        0.9848
+        0.9703
        ]
       ]
      }
     },
     "Size": [
      0.07,
-     0.26,
-     0.42
+     0.28,
+     0.4
     ],
     "Color": [
      1.0,
-     0.5255,
-     0.6745
+     0.9647,
+     0.9255
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -277,6 +327,56 @@
     "CastShadow": false,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Tool_Tweezers",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.2902,
+       0.0,
+       -0.5822
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.24,
+     0.24,
+     0.24
+    ],
+    "Color": [
+     0.6627,
+     0.6863,
+     0.7216
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "Shape": "Ball"
    }
   }
  ],
