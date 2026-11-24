@@ -149,24 +149,28 @@ return function()
 				end
 			end
 		end)
-		it("rides the cargo floor without sinking into it while it slides out", function()
+		it("rides the cargo floor and tips off its edge without sinking into it", function()
 			for _, reduced in { false, true } do
 				local t = B.slide
-				while t < B.drop do
+				while t < B.land do
 					local box = TruckDrop.box(t, reduced)
 					local state = TruckDrop.truck(t, reduced)
-					local behind = TruckDrop.truckX(t) - box.x
-					-- the floor's height under each of the box's bottom edges
-					for _, e in { -W / 2, W / 2 } do
-						local z = behind - e
-						local floor = state.lift
-							+ TruckDrop.TAILGATE.up * math.cos(state.pitch)
-							- z * math.sin(state.pitch)
-						if z <= TruckDrop.TAILGATE.back then
-							expect(box.y >= floor - 1e-6).to.equal(true)
+					local truckX = TruckDrop.truckX(t)
+					local rear = truckX - TruckDrop.TAILGATE.back
+					local r = box.roll
+					local cx, cy = box.x, box.y + H / 2
+					-- each bottom corner that is still over the floor is on or above it
+					for _, dx in { -W / 2, W / 2 } do
+						local x = cx + dx * math.cos(r) - H / 2 * math.sin(r)
+						local y = cy - dx * math.sin(r) - H / 2 * math.cos(r)
+						if x > rear then
+							local floor = state.lift
+								+ TruckDrop.TAILGATE.up * math.cos(state.pitch)
+								- (truckX - x) * math.sin(state.pitch)
+							expect(y >= floor - 1e-6).to.equal(true)
 						end
 					end
-					t += 0.01
+					t += 0.005
 				end
 			end
 		end)

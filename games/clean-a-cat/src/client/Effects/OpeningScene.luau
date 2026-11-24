@@ -63,6 +63,7 @@ local FLAP_SIGN = 1 -- each flap turns outward about its hinge edge
 local SHOT_FROM = Vector3.new(0, 6, -11)
 local SHOT_LOOK_Y = 1.5
 local MAX_STEP = 0.1 -- the most the scene's clock moves on in one frame
+local STALL = 0.25 -- a frame longer than this is a stall (nothing drawn): the clock does not move on at all
 local CHEST = 0.55 -- how far up a sitting cat its chest is, as a share of its height
 
 export type Options = { shot: boolean?, onTap: (() -> ())?, bump: Vector3? }
@@ -587,7 +588,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			end
 			lastFrame = now
 		end
-		clock += math.min(now - lastFrame, MAX_STEP)
+		local dt = now - lastFrame
+		if dt <= STALL then
+			clock += math.min(dt, MAX_STEP)
+		end
 		lastFrame = now
 		local t = clock
 		for _, name in TruckDrop.eventsBetween(last, t) do

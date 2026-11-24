@@ -37,8 +37,8 @@ TruckDrop.BUMP_X = -7.5
 TruckDrop.BUMP_RANGE = 20 -- a pothole further than this along the road from the box is ignored, and BUMP_X is used
 TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.4 s apart the truck drives at 20 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
-TruckDrop.TAILGATE = { back = 6.5, up = 1.95, side = 0.9 } -- where the box leaves (the Tailgate attachment), from the
--- truck's pivot; `up` is the cargo floor's top; `side` studs from the lane's middle toward the curb, toward the door's
+TruckDrop.TAILGATE = { back = 6.5, up = 2, side = 0.9 } -- where the box leaves (the Tailgate attachment), from the
+-- truck's pivot; `up` is the cargo floor's top (1.95, plus its 0.03 lining and a hair); `side` studs from the lane's middle toward the curb, toward the door's
 -- near corner but with the whole box inside the 5.5 stud opening, clear of the side wall, the corner posts and the
 -- rear lamps (their inner edge 2.32 from the middle; Sync-Agent's overlap check) (on the road under the middle of the
 -- 13 stud truck, Model-Agent's CleanACat_Prop_DeliveryTruck; posts and trim added in #352)
@@ -330,6 +330,25 @@ function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 		if not reduced then
 			box.roll = TruckDrop.ROLL.tilt * s / fall
 		end
+		-- the part of it still over the floor rests on the floor's edge: it tips off, never drops through it
+		-- (Sync-Agent saw the box 0.11 into the floor as it left)
+		local state = TruckDrop.truck(t, reduced, bumpX)
+		local truckX = TruckDrop.truckX(t, bumpX)
+		local rear = truckX - TruckDrop.TAILGATE.back
+		local w, r = TruckDrop.BOX.width, box.roll
+		local lift = 0
+		for _, dx in { -w / 2, w / 2 } do
+			local x = cx + dx * math.cos(r) - half * math.sin(r)
+			local y = cy - dx * math.sin(r) - half * math.cos(r)
+			if x > rear then
+				local behind = truckX - x
+				local floor = state.lift
+					+ TruckDrop.TAILGATE.up * math.cos(state.pitch)
+					- behind * math.sin(state.pitch)
+				lift = math.max(lift, floor - y)
+			end
+		end
+		box.y += lift
 		return box
 	end
 	local rollEnd = TruckDrop.rollEnd()
