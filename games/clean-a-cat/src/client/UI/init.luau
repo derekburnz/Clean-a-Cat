@@ -18,6 +18,10 @@
 --                             tutorialTip)
 --   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
 --                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
+--   UI.showBubble(bubble, fn, gone)  Suds's help bubble at the bottom (UI/SudsBubble, switch sudsBubble); fn runs
+--                             when the player presses its button, gone(closed) once the card goes for any reason
+--                             (closed: the player's X). UI.hideBubble() takes it away; UI.busy() is true while a
+--                             window, the recap or the dim step is up, when no bubble should start
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
@@ -29,6 +33,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
@@ -44,6 +49,7 @@ local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
 local Spotlight = require(script:WaitForChild("Spotlight"))
+local SudsBubble = require(script:WaitForChild("SudsBubble"))
 local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
 
 local UI = {}
@@ -227,6 +233,7 @@ function UI.init()
 	toastLabel = toast
 
 	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
+	SudsBubble.build(root) -- Suds's help bubble (switch sudsBubble), at the bottom while the tub is empty
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
@@ -335,6 +342,37 @@ function UI.showSettings(settings: SettingsRules.Settings)
 	SettingsCard.show(settings)
 end
 
+function UI.showBubble(
+	bubble: BubbleRules.Bubble,
+	onPress: (() -> ())?,
+	onGone: ((closed: boolean) -> ())?
+)
+	SudsBubble.show(bubble, onPress, onGone)
+end
+
+function UI.hideBubble()
+	SudsBubble.hide()
+end
+
+function UI.bubbleShown(): boolean
+	return SudsBubble.isShown()
+end
+
+-- The bubble on screen now, or nil.
+function UI.shownBubble(): BubbleRules.Bubble?
+	return if SudsBubble.isShown() then SudsBubble.current() else nil
+end
+
+-- True while something the player is reading or choosing is up: a window, the recap card or strip, or the dim step.
+function UI.busy(): boolean
+	for _, frame in windows do
+		if frame.Visible then
+			return true
+		end
+	end
+	return Recap.isOpen() or Spotlight.isOn()
+end
+
 function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)
 	Recap.show(recap, onClose)
 end
@@ -354,6 +392,9 @@ function UI.open(name: string)
 	assert(frame ~= nil, `UI.open: no window {name}`)
 	Recap.setHidden(true)
 	frame.Visible = true
+	-- A window the player opened wins over a tip. Hidden after the window shows, so a bubble waiting behind this one
+	-- sees the window and never shows (and counts as seen) under it (Review-QA on #300).
+	SudsBubble.hide()
 	local opened: Frame = frame
 	revealRecap = opened:GetPropertyChangedSignal("Visible"):Connect(function()
 		if not opened.Visible then

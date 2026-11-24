@@ -31,6 +31,9 @@ Remotes.ClientToServer = {
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS)  1 a second; logged once per save, nothing else changes
 	-- Build notification (NotifyService, behind longBuildOffer).
 	"ReportOptIn", -- (result: one of NotifyRules.RESULTS)  1 a second; logged as notify_opt_in, nothing else changes
+	-- Suds's help bubble (BubbleService, behind sudsBubble).
+	"ReportBubbleSeen", -- (id: one of BubbleRules.IDS)  2 a second; switch on, save loaded; marks that bubble shown in the
+	-- save so it never shows again, nothing else changes
 }
 
 -- Server -> client.
