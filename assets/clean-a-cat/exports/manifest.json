@@ -9258,6 +9258,49 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Leaf.png"
  },
  {
+  "name": "CleanACat_Prop_Pothole",
+  "category": "Prop",
+  "module": "opening",
+  "objects": [
+   "CleanACat_Prop_Pothole"
+  ],
+  "triangles": 252,
+  "budget": 300,
+  "parts": 21,
+  "size_studs": {
+   "x": 3.73,
+   "y": 2.5,
+   "z": 0.15
+  },
+  "size_roblox": [
+   3.73,
+   0.15,
+   2.5
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "252/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "126 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.01 y=0.05",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Pothole.png"
+ },
+ {
   "name": "CleanACat_Prop_QueueMat",
   "category": "Prop",
   "module": "spa_props",

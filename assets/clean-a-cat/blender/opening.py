@@ -23,6 +23,13 @@ the mascot once he is washed. "should be a random brown box".
                                 chest rises to when it looks out.
   CleanACat_Prop_SpeedBump      a striped hump one lane wide (10 by 1.4, 0.35 high) for the road, pivot at the base
                                 centre: the bump the truck jolts over.
+  CleanACat_Prop_Pothole        the owner, after his dev test: "speed bump should be changed to pothole". A broken
+                                patch of road about 3.3 by 2.5: a dark hole floor with a muddy puddle, a rim of
+                                cracked road chunks standing up to 0.12 over the road, cracks running out and a few
+                                crumbs. It lies on the road top (the road is one block, so nothing is cut out of
+                                it); the raised rim round the dark middle is what reads as depth. Pivot at the base
+                                centre. It takes the speed bump's place in the opening; the bump stays until no code
+                                clones it.
 
 Nothing here collides except the truck's body and the speed bump. The truck and the box stream in whole
 (rbx_export.MODEL_PROPS), because the scene turns their pieces.
@@ -30,12 +37,13 @@ Nothing here collides except the truck's body and the speed bump. The truck and 
 
 import math
 
-from mathutils import Matrix
+from mathutils import Matrix, Vector
 
 from common import Builder
 from stations import _tris
 
 TRUCK, BOX, BUMP = "CleanACat_Prop_DeliveryTruck", "CleanACat_Prop_DeliveryBox", "CleanACat_Prop_SpeedBump"
+POTHOLE = "CleanACat_Prop_Pothole"
 
 # -- the truck -------------------------------------------------------------------------------------------------------
 T_W, T_L, T_H = 6.0, 13.0, 7.6
@@ -211,5 +219,46 @@ def build_bump(mat):
     return [b.finalize(BUMP, mat)]
 
 
-ASSETS = {TRUCK: (build_truck, 2500), BOX: (build_box, 300), BUMP: (build_bump, 300)}
+# -- the pothole ------------------------------------------------------------------------------------------------------
+# Floor entries: (x, y, base), (wide, deep, high), turn in degrees, swatch. The pieces overlap and are turned, so no
+# two of them share a bottom or a top height (each base is a few thousandths over the last): no face of one lies in
+# the plane of another's.
+POTHOLE_FLOOR = (((0.0, 0.0, 0.0), (2.5, 1.7, 0.02), 8, "fur_black"), ((-0.55, 0.25, 0.004), (1.6, 1.55, 0.03), -20, "fur_black"),
+                 ((0.6, -0.2, 0.008), (1.7, 1.35, 0.04), 25, "fur_black"),
+                 ((0.1, 0.05, 0.012), (1.5, 0.9, 0.05), 12, "mud"), ((-0.15, 0.12, 0.016), (0.7, 0.4, 0.062), -15, "mud_wet"))
+POTHOLE_RIM = ((0, 0.74, 0.34, 0.10), (38, 0.62, 0.3, 0.07), (75, 0.7, 0.36, 0.12), (118, 0.6, 0.3, 0.08),
+               (160, 0.72, 0.34, 0.11), (200, 0.58, 0.3, 0.07), (238, 0.7, 0.36, 0.12), (282, 0.64, 0.3, 0.09),
+               (322, 0.68, 0.34, 0.06))               # round the hole: at this angle, a chunk this long, deep and high
+POTHOLE_R = (1.42, 1.02)                               # the rim's middle line: half the hole's width and depth
+POTHOLE_CRACKS = ((20, 0.9), (95, 0.5), (158, 0.9), (262, 0.5))    # out from the rim: at this angle, this long
+POTHOLE_CRUMBS = ((75, 0.2, 0.13), (200, 0.17, 0.10), (322, 0.22, 0.15))   # on the outside of the rim chunk at this angle
+
+
+def build_pothole(mat):
+    b = Builder()
+    for (x, y, base), size, turn, sw in POTHOLE_FLOOR:
+        b.box_base((x, y, base), size, sw, bevel=False, rot=(math.radians(turn), "Z"))
+    rx, ry = POTHOLE_R
+
+    def out(angle, more=0.0):
+        a = math.radians(angle)
+        p = Vector((rx * math.cos(a), ry * math.sin(a), 0.0))
+        return p + p.normalized() * more
+
+    for i, (angle, length, deep, high) in enumerate(POTHOLE_RIM):      # each chunk lies along the hole's edge
+        p = out(angle)
+        along = math.atan2(ry * math.cos(math.radians(angle)), -rx * math.sin(math.radians(angle)))
+        b.box_base((p.x, p.y, (0.0058, 0.0100, 0.0138)[i % 3]), (length, deep, high), "concrete", bevel=False, rot=(along, "Z"))
+    for i, (angle, length) in enumerate(POTHOLE_CRACKS):               # a crack starts under the rim and runs out
+        p = out(angle, length / 2 - 0.35)
+        b.box_base((p.x, p.y, (0.0012, 0.0019, 0.0026, 0.0015)[i]), (length, 0.07, 0.0138), "fur_black", bevel=False,
+                   rot=(math.atan2(p.y, p.x), "Z"))
+    for i, (angle, size, high) in enumerate(POTHOLE_CRUMBS):           # a crumb leans on its chunk's outside
+        p = out(angle, 0.2)
+        b.box_base((p.x, p.y, 0.0007 + 0.0009 * i), (size, size * 0.85, high), "fur_soot", bevel=False,
+                   rot=(math.radians(angle * 1.7), "Z"))
+    return [b.finalize(POTHOLE, mat)]
+
+
+ASSETS = {TRUCK: (build_truck, 2500), BOX: (build_box, 300), BUMP: (build_bump, 300), POTHOLE: (build_pothole, 300)}
 EXTRAS = {TRUCK: truck_rbx_extras, BOX: box_rbx_extras}

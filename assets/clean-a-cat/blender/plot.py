@@ -31,12 +31,16 @@ faces there (the Attachment's LookVector), all at floor height:
   SpotOpening          where the player stands for the opening scene (#279): on the pavement in front of the
                        entrance, facing the street. The near pavement, not the far one: the houses stand 2 studs
                        behind the far pavement, so a follow camera there would sit inside a house
-  SpotBox              where the box that falls off the truck comes to rest: 3.6 studs out from SpotOpening and 3
-                       to the side (Roblox -X), its far side just short of the curb. To the side because straight
-                       ahead the player's own avatar hides the box from the follow camera on a phone
-  SpotBump             the speed bump (CleanACat_Prop_SpeedBump) across the near lane, on the road top; the truck
-                       drives toward Roblox +X, the player's right. It lies 3 studs before SpotBox on the truck's way,
-                       so the box tumbles on forward from the jolt
+  SpotBox              where the box that falls off the truck comes to rest: 3.6 studs out from SpotOpening and 5
+                       to the player's right (Roblox +X), its far side just short of the curb. To the side because
+                       straight ahead the player's own avatar hides the box from the follow camera on a phone, and 5
+                       because at 3 an arm half hid the kitten. It was on the player's left until the owner asked
+                       for the pothole "closer to being right infront of you": the box rolls past in front of the
+                       player and stops here (#343, Motion-FX's numbers)
+  SpotBump             the pothole (CleanACat_Prop_Pothole; the speed bump until #343) in the near lane, on the road
+                       top; the truck drives toward Roblox +X, the player's right. It lies 2.5 studs before the
+                       player on the truck's way and 7.5 before SpotBox: the box keeps the truck's speed, lands on
+                       its edge and rolls one whole turn, about 8 studs
 
 Every gap a player or the camera goes through is 6 studs or wider, but for one: the way round the tub's left to the
 back of the room is about 5.5 studs at its narrowest, between the tub and the Bubble Bath once that is built. It is
@@ -93,8 +97,8 @@ SPOTS = {
     "SpotVipDoor": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
     "SpotMascot": (10.25, -14.3, 0.0, 230.0),
     "SpotOpening": (5.0, -27.0, 0.0, 0.0),
-    "SpotBox": (8.0, -30.6, 0.0, 0.0),
-    "SpotBump": (11.0, -37.6, -0.28, 90.0),
+    "SpotBox": (0.0, -30.6, 0.0, 0.0),
+    "SpotBump": (7.5, -37.6, -0.28, 90.0),
     "SpotBoard": (13.5, ROOM_Y[0] + 1.4, 0.0, 180.0),
 }
 # Floor pads that show each spot in the graybox: (spot, size x, size y, swatch)
