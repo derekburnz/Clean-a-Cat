@@ -196,13 +196,17 @@ function UI.init()
 			0
 		)
 		menu.TextSize = if tv then MENU_TEXT_TV else MENU_TEXT
-		-- the HUD's button row (#232) replaces the starter Menu while any of its buttons shows
-		menu.Visible = not SideButtons.any()
+		-- the HUD's button row (#232) replaces the starter Menu while any of its buttons shows; both step aside for
+		-- the wash's tick list (switch washChecklist), which takes their place at the left
+		local listShown = HUD.listShown()
+		SideButtons.setAside(listShown)
+		menu.Visible = not SideButtons.any() and not listShown
 	end
 	fitScreen()
 	Comfort.onTenFootChanged(fitScreen)
 	HUD.onActiveChanged(fitScreen)
 	SideButtons.onChanged(fitScreen)
+	HUD.onListChanged(fitScreen)
 
 	HUD.build(root) -- coin counter, wash step bar and tool tray (switch gameHud, off by default)
 	SideButtons.build(root, function(name: string)
@@ -322,7 +326,7 @@ end
 -- The tutorial's dim step on the HUD button that opens `window`; false when that button is not on screen.
 function UI.pointAt(window: string, say: string, done: (() -> ())?): boolean
 	local button = SideButtons.find(window)
-	if button == nil or not button.Visible then
+	if button == nil or not button.Visible or SideButtons.isAside() then
 		return false
 	end
 	Spotlight.point(button, say, done)
