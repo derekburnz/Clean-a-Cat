@@ -10,4 +10,8 @@ This is a web preview. `frames.cjs` computes spr's damped spring formula and the
 
     node frames.cjs <path to ../screens/recap.html> <frames folder>
 
-then join the frames, for example with Pillow or ffmpeg.
+then put the two sizes side by side and join the frames with ffmpeg straight from the PNGs. Use one palette for the
+whole clip (`palettegen=stats_mode=full`, then `paletteuse=dither=none`). Never build a GIF frame by frame with a
+fresh palette each time: the first version of this clip did, and still things such as the New! tag, the X and the
+cat flickered as their colours moved between palettes. That flicker was in the video file only. The game draws
+the real screen, and the UI gate's `jitter` check fails anything that keeps changing once a screen is settled.
