@@ -21,7 +21,7 @@ All colours live in `assets/clean-a-cat/blender/palette.py` (the source of truth
 | spa_sky | #8FD3FE | water, tub insides, the dryer hood |
 | mud | #5A4632 | mud blobs on a dirty cat, and nothing else |
 
-Also in row 16: `mud_wet` #735A43 (the lighter wet mud; on pale fur the mud is `mud_drab` #6B6252 with `mud_drab_wet` #7E735F, see the mud rule), `foam` #FDFEFF, `spa_tile` #EEF4F6. In row 20: `water` #3FAEF2 (bath water: deeper than `spa_sky`, so it shows against the mint and cream of a bath) and `bubble` #BFE6FF (a soap bubble, drawn see-through at Transparency 0.4) (#111).
+Also in row 16: `mud_wet` #735A43 (the lighter wet mud; on pale fur the mud is `mud_drab` #6B6252 with `mud_drab_wet` #7E735F, see the mud rule), `foam` #FDFEFF, `spa_tile` #EEF4F6. In row 20: `water` #3FAEF2 (bath water: deeper than `spa_sky`, so it shows against the mint and cream of a bath) and `bubble` #BFE6FF (a soap bubble, drawn see-through at Transparency 0.4) (#111). Also in row 20: `tile_sky` #C2E3F4, the spa floor's second tile (#214), in the cell that was free.
 
 ### Coats (rows 17 and 18) and details (row 19)
 Each Cat Index cat has its own coat swatches (`coat_*`) so no coat repeats a Cat Cafe coat. Eyes (`eye_mint`, `eye_sky`, `eye_gold`), nose (`nose_bubblegum`), bows (`bow_pink`, `bow_mint`, `bow_sky`) and `wood_light` are in row 19. Rarity colours for frames and badges are the studio's row 2 (`rarity_common`, `rarity_rare`, `rarity_epic`, `rarity_legend`) plus `rarity_uncommon` #5FC98B in row 20.
@@ -131,14 +131,14 @@ Every tier changes shape or size as well as colour (Review-QA, #142): a player w
 
 Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, `SpotQueue1` to `SpotQueue3`, `SpotStray`, `SpotWindow1` to `SpotWindow4` (each cushion's base), `SpotTipJar`, `SpotSign`, `SpotBuilder`, `SpotStation2`, `SpotStation3`, `SpotVipDoor` and `SpotBoard`. Each faces the way the player, customer, cat or station there faces. Root attribute `FloorHeight` (0.5, the top of the floor slab). The real build has these parts:
 - A bubblegum shop front under a mint and white striped awning. The side and back walls are cream, with a bubblegum band outside and a mint band inside.
-- A checked offwhite tile floor, with a round bubblegum rug under the tub.
+- A checked tile floor you can see from the play camera (#214): 4 by 4.33 stud tiles in `tile_sky` (#C2E3F4, paler than the tub's sky blue so the tub still stands out) on the white shop floor, a bubblegum border round the room, and a round bubblegum rug under the tub. The tiles stand 0.02 over the floor, and the border and rug 0.02 over the tiles.
 - A mint roof with a cream parapet.
-- Inside: three pendant lamps with warm bulbs (`_Glow`, Neon), a towel shelf, a clock, a paw poster and two plants.
+- Inside: three pendant lamps with warm bulbs (`_Glow`, Neon), a towel shelf, a paw poster and two plants. Since #214 the mint band has a white cap rail, and the walls carry a gold round mirror with a shelf (back wall, right of the tub; its glass is a solid pale blue, never see-through), a tool board with a brush, a comb and a sponge under the clock (back wall, right of the VIP Room door), three framed cats over the stray box (left wall) and a rail of three towels (right wall). Wall decor stays off the floor and out from behind the cat in the tub as the play camera sees it, so the cat keeps a calm background.
 - Over the back door: a cardboard strays sign.
 - Outside: a flower box under the window, two potted plants at the entrance and two lamp posts on the apron.
 - A grassy back yard with a low white fence, set 0.5 studs inside the plot edge so neighbours never overlap.
 
-Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `_Flowers`, `_Trim`, `_Bands`, `_Tiles`) does not. The plot is 3,540 triangles and 161 parts.
+Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `_Flowers`, `_Trim`, `_Bands`, `_Tiles`) does not. The plot is 4,564 triangles and 220 parts (161 before #214; it is built six times on the street, so the target is under 240).
 
 `street.py` builds `CleanACat_Area_Street`, which holds everything round the six plots:
 - Grass ground and a pavement in front of the plots, level with their floor (0.5).
@@ -258,7 +258,7 @@ Portraits and icons are rendered from the real models, never drawn apart from th
 Six pictures for the HUD's buttons, drawn apart from the game models because a button names an idea (settings, build mode), not a thing in the world. The owner compared two blends on 2026-11-24 and picked this one "for now": our look mixed with his library's HUD icons.
 - `hud_icons.py <out folder> [--only Index,Tools]` (Blender's Python) writes five of them as `CleanACat_Icon_Hud_<Name>.png`: 512 px, see-through, with a 13 px outline in `#45226B`, the ink the ui-designer asked for on these (the `_ink` model icons above use `#3B2D45`; one of the two has to win before any upload). The camera, the two lights and the outline pass are ported from the library's `icons.py`; the colours are ours.
 - One bold object per picture that can be named at 48 px, built fat with rounded edges, tilted a little and filling the square about as much as the gear does. No small parts.
-- `Coins` is not rendered. The owner chose his library's own coin picture as it is (`CatCafe_Icon_Coins.png`: a gold stack with a $ and a brown outline) over the paw coin first drafted here, so `CleanACat_Icon_Hud_Coins.png` is a copy of that file and the generator has no coin.
+- `Coins` is not rendered. The owner chose his library's own coin picture (`CatCafe_Icon_Coins.png`: a gold stack with a $) over the paw coin first drafted here, whose paw was done badly, then asked for it to be re-outlined to match the set. `hud_coin.py <library coin png> <out png>` (plain Python with Pillow and numpy) does only that: the library's brown 10 px outline becomes the `#45226B` ink at 13 px and the coin inside it is not touched. The generator has no coin, so a rebuild cannot bring the paw coin back.
 - `Settings`: a gear with eight teeth in soft blue grey. `Index`: a purple book with a cream cat's face on the cover and a pink bookmark. `Tools`: the game's pink scrub brush made fat, with soap bubbles (Review-QA: the bubbles get busy at 48 px, the first thing to thin if it is reworked). `Helper`: the first helper kitten's real head in its bath cap. `Build`: a blue hammer with a wooden handle and a white paw.
 - `Helper` is the one picture made from a game model, and its cap is one step deeper pink (`nose_bubblegum`) than the model's so cap and face part at 48 px. The model's cap is unchanged.
 - Nothing is uploaded by this script. The ui-designer keeps the six in `assets/clean-a-cat/ui/` and uploads are group owned.
