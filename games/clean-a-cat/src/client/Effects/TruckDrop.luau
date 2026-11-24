@@ -45,7 +45,6 @@ TruckDrop.OPEN = {
 }
 -- The kitten hops out of the box toward the spa (Gameplay-Engineer's ask): a small arc, then onDone.
 TruckDrop.HOP = { distance = 2.5, height = 1.4, seconds = 0.42, squash = 0.15 }
--- As the kitten hops out, the player's camera turns to face where he is going (the tub), over this many seconds.
 
 -- Sound and effect beats, in the order they happen. OpeningScene plays each once as the clock passes it.
 TruckDrop.EVENTS = {
