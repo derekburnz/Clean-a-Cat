@@ -561,15 +561,9 @@ def opening_board(mat, out_dir, only=""):
                         T(x, y, z) @ R(turn, "Z")))
 
     def loaf():
-        """The stray held: the walking body with its legs tucked away (a stand-in: there is no loaf body yet), two
-        paw tips showing at the front, its belly at z 0."""
-        low = ["_LegF", "_LegB", "_Claw", "_Mud11", "_Mud14", "_Mud15", "_Mud16", "_Mud17", "_Mud18"]
-        objs = _drop(stray("walk"), low)
-        pb = Builder()
-        for sx in (1, -1):
-            pb.box((sx * 0.2, -0.36, 0.4), (0.24, 0.2, 0.16), "fur_white", bevel=False)
-        objs.append(pb.finalize("Paws", mat, bevel=0))
-        return xf(objs, T(0, 0, -0.33))
+        """The stray held: the loaf body (loaf.py, #318), its belly on the base."""
+        import loaf as loaf_body
+        return loaf_body.build_loaf("Suds", mat, True)[0]
 
     def stray(body="sit", keep_mud=True):
         objs = dirt.build_dirty("Suds", mat, body)[0]

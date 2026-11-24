@@ -275,7 +275,7 @@ The owner on 2026-11-24: Suds "shouldn't stand". The game opens with a box that 
 - Root attributes as on every cat (`Cat` is Suds, `Scale`, `Rarity` Common so the wash has a value to read) plus `Mascot` true. He is not in the coat table or the Cat Index and never arrives as a customer's cat.
 - He must not be mistaken for the two black Cat Index cats: Inky has mint eyes, a dark nose and no white; Tux has gold eyes, a white chest and a white tail tip. Suds has sky eyes, a pink nose, white paws, a tail that is ink to the tip, and the collar. The check sheet shows the three side by side.
 - Portraits for the screens: `portrait_Suds` (clean, in his collar) and `portrait_Suds_Dirty` (the stray), made by `ui_renders.py` like every cat's.
-- The standing `CleanACat_NPC_Helper2` stays until the game stops using it. There is no lying or curled body yet: the generator draws walking and sitting cats only.
+- The standing `CleanACat_NPC_Helper2` stays until the game stops using it. There is no curled body yet. A loaf came later (section 21j).
 
 ## 21h. The opening scene's props (#279)
 
@@ -295,6 +295,15 @@ After the wash Suds "stays with you as your spa mascot" (the owner, 2026-11-24),
 - `CleanACat_Prop_SudsBed`: a small round bed on a stand, 2.3 wide and 1.9 high: a mint foot, a cream post and tray, a mint rim, a bubblegum pad and a gold bell on the front of the rim like the one on his collar. No writing. Attachment `CatSeat` on the pad and attribute `CatScale` (1.2: he sits a little bigger than life so he reads from the tub).
 - Plot Attachment `SpotMascot`: just inside the entrance, between the door and the chance board, turned to look across the room at the tub. That stretch of wall is 2.5 studs, which is why the bed is 2.3. The other side of the door was tried first and does not fit: the window seat ends 2 studs from the door.
 - The eight storyboard frames `2026-11-24-opening-*.png` in `docs/concepts/clean-a-cat/` are made by `python scenes.py opening <folder>` from the real models on the real street. The poses are stand-ins made by turning pieces of the sit and walk models: there is still no curled or lying body. Nothing in frames a1 to d shows a collar or a name, because he is a nameless stray until the wash ends.
+
+## 21j. The held loaf (#318)
+
+The owner on 2026-11-24: "we should pick him up out of crate". The player lifts the muddy kitten out of the box and carries him to the tub across their folded arms, and a carried cat lies as a loaf.
+
+- `CleanACat_Cat_Suds_Dirty_Loaf` (the muddy stray, no collar) and `CleanACat_Cat_Suds_Loaf` (clean, in his collar). Made by `loaf.py` from the walking body: the legs are taken away, everything is lowered until the belly lies just over the base, and two paw tips show at the front (piece `_Paws`). The other pieces keep the walking cat's names, and the head, coat and mud are the walking cat's own, so swapping the two bodies does not change his look.
+- Pivot at the bottom middle, front at -Z. Root attribute `Loaf`, with `Cat`, `Rarity`, `Scale` and `Mascot` as on every Suds model.
+- The muddy loaf is for carrying only. It keeps the walking stray's mud and tangles less what was on the legs and the drips under the belly, renumbered with no gaps, and has no `MudCount`, no fluff and no claws. He is washed on `_Dirty_Sit`.
+- Only Suds has a loaf. `loaf.NAMES` takes more cats when the game carries them.
 
 ## 22. Rules
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.

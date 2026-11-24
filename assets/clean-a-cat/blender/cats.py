@@ -116,7 +116,7 @@ def look(spec):
 
 # -------------------------------------------------------------------------------------------- skeleton --
 BODIES = ("walk", "sit", "work")
-SUFFIX = {"walk": "", "sit": "_Sit", "work": "_Work"}
+SUFFIX = {"walk": "", "sit": "_Sit", "work": "_Work", "loaf": "_Loaf"}
 SIT_SCALE = 0.95            # B is drawn a touch smaller, so a sitting cat is no taller than a walking one
 HEAD_PIECES = ("Eye1", "Eye2", "EarL", "EarR")
 LEGS = {"walk": ("LegF1", "LegF2", "LegB1", "LegB2"), "sit": ("LegF1", "LegF2"), "work": ("LegF1", "LegF2", "LegB1", "LegB2")}
@@ -151,6 +151,10 @@ S_SHOULDER = (0.475, -0.06, 0.82)             # LegF1's, the cat's left; LegF2 m
 S_PAW_Z = -0.36                               # the paw's centre below the shoulder, the arm hanging straight down
 S_TAIL = (0.0, B_CHEST_C[1] + B_CHEST_S[1] / 2 - 0.015, 0.5)
 HEADS["work"] = dict(HEADS["walk"], c=(0.0, -0.17, 0.32), arms=True)
+# The loaf (loaf.py, #318): body A with its legs tucked away, lying on its belly: a cat held across folded arms. It is
+# A's boxes lowered by loaf_drop, so A's head, coat and joints serve as they are.
+HEADS["loaf"] = HEADS["walk"]
+LOAF_LIFT = 0.06            # the belly's height over the loaf's base: room for the mud under it and the paw tips
 # Each role's held thing (HELD) rides one arm, and the role's pose turns the arms (Blender XYZ degrees about the
 # shoulders; poses.CAT_POSES work_<role>): the barista holds out a cup in the right paw, the waiter a tray with a
 # cake at its left side, the greeter waves its left paw, the entertainer holds a microphone up under its chin in the
@@ -171,6 +175,12 @@ HELD = {"barista": "LegF2", "waiter": "LegF1", "entertainer": "LegF2"}      # ro
 def scale_of(spec, body="walk"):
     """How much the built model is scaled: the cat's own scale, times SIT_SCALE for B."""
     return spec.get("scale", 1.0) * (SIT_SCALE if body in ("sit", "work") else 1.0)
+
+
+def loaf_drop(spec):
+    """How far the loaf's pieces sit below body A's, in the built model's space (scale included)."""
+    low = -SHORT_LEGS if spec.get("short_legs") else 0.0
+    return (A_BELLY_Z + low - LOAF_LIFT) * scale_of(spec, "loaf")
 
 
 def _body_scale(spec):
@@ -205,10 +215,10 @@ def dims(spec, body="walk"):
     """Every box and joint of one cat's body, unscaled (scale_of applies after)."""
     bs = _body_scale(spec)
     d = {"head": _head_dims(spec, body),
-         "leg_w": 0.2 if spec.get("sphynx") else 0.24 if body in ("walk", "work") else 0.2}
+         "leg_w": 0.2 if spec.get("sphynx") else 0.24 if body in ("walk", "work", "loaf") else 0.2}
     tt = spec.get("tail_thick", 0.2) / 0.2
     tail_k = 0.7 if spec.get("sphynx") else 1 + (tt - 1) * 0.6
-    if body == "walk":
+    if body in ("walk", "loaf"):                       # the loaf is A's layout; joints() lowers it
         low = -SHORT_LEGS if spec.get("short_legs") else 0.0
         size = (A_BODY_S[0] * bs[0], A_BODY_S[1] * bs[1], A_BODY_S[2] * bs[2])
         d["body"] = ((A_BODY_C[0], A_BODY_C[1], A_BELLY_Z + low + size[2] / 2), size)
@@ -257,7 +267,11 @@ def dims(spec, body="walk"):
 def joints(spec, body="walk"):
     """Each piece's pivot in the built model's space (scale included): where the Roblox Model of that piece pivots."""
     k = scale_of(spec, body)
-    return {p: tuple(v * k for v in at) for p, at in dims(spec, body)["pivots"].items()}
+    out = {p: tuple(v * k for v in at) for p, at in dims(spec, body)["pivots"].items()}
+    if body == "loaf":                                  # no legs, and everything loaf_drop lower
+        drop = loaf_drop(spec)
+        out = {p: (x, y, z - drop if p != "Body" else z) for p, (x, y, z) in out.items() if p not in LEGS["walk"]}
+    return out
 
 
 def carry_at(spec, body="walk"):
@@ -1152,10 +1166,10 @@ def build_cat(name, mat, spec=None, base=None, body="walk", held=True):
 
 
 def parse(asset):
-    """CleanACat_Cat_<Name>[_Dirty][_Sit|_Work] -> (name, gold, body). A dirty model (dirt.py) parses as its cat."""
+    """CleanACat_Cat_<Name>[_Dirty][_Sit|_Work|_Loaf] -> (name, gold, body). A dirty model (dirt.py) parses as its cat."""
     rest = asset[len("CleanACat_Cat_"):]
-    body = "sit" if rest.endswith("_Sit") else "work" if rest.endswith("_Work") else "walk"
-    rest = rest.removesuffix("_Sit").removesuffix("_Work").removesuffix("_Dirty")
+    body = "sit" if rest.endswith("_Sit") else "work" if rest.endswith("_Work") else "loaf" if rest.endswith("_Loaf") else "walk"
+    rest = rest.removesuffix("_Sit").removesuffix("_Work").removesuffix("_Loaf").removesuffix("_Dirty")
     gold = rest.endswith("_Gold")
     return rest.removesuffix("_Gold"), gold, body
 
