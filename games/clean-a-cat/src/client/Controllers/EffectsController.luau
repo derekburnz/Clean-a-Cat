@@ -11,6 +11,7 @@ local RunService = game:GetService("RunService")
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
 local CatPose = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatPose"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
+local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
 local Stink = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Stink"))
 
 local SCRUB_FLAG = "scrubEffects"
@@ -60,6 +61,9 @@ function EffectsController.Start()
 	local shared = ReplicatedStorage:WaitForChild("Shared")
 	local LiveFlags = require(shared:WaitForChild("LiveFlags")) :: any
 	local Moments = require(shared:WaitForChild("Moments")) :: any
+
+	-- the draft sky and light, while its switch is on (instant rollback when it goes off)
+	Sky.watch(LiveFlags.ATTRIBUTE_PREFIX .. "skyDraft")
 
 	CatMotion.start(Effects.tier(), function(): boolean
 		return LiveFlags.isOn(MOTION_FLAG)

@@ -3,50 +3,69 @@
 -- its back door swings open and a box falls out and lands in front of the player. No Roblox services and no
 -- Instances, so every curve has specs; Effects/OpeningScene turns the numbers into pivots, sounds and the camera.
 --
--- Scene space, in studs: the origin is the box's landing spot on the pavement. +Z points from there across the road
+-- Scene space, in studs: the origin is where the box comes to rest on the pavement. +Z points from there across the road
 -- (the way the player faces), +X is the way the truck drives (left to right for the player), +Y is up.
 --
 -- Every beat is in BEATS, so a change of mind is a one-line edit. Derek's lean is not locked (2026-11-24 ET).
 local TruckDrop = {}
 
--- Derek's dev test (2026-11-24 3:10 PM ET): "the truck comes a little too fast so start it further back and slower",
--- "make the falling out animation better", "no bump in road was there". So the truck now starts about 55 studs up
--- the road and drives at 20 studs a second (was 45 and 32), and the box no longer slides off later on its own: the
--- back wheels' hit kicks it out of the door, so the fall is plainly the bump's doing. It flips once in the air, lands
--- on its back edge, slams flat and bounces twice.
+-- Derek's dev tests (2026-11-24): 3:10 PM ET "the truck comes a little too fast so start it further back and slower",
+-- then 3:34 PM ET "speed bump should be changed to pothole and closer to being right infront of you and the back
+-- should swing open and kind of tumble infront of you not float to you and the back of truck should only briefly
+-- swing open then back close". So the truck starts about 55 studs up the road at 20 studs a second; its front
+-- wheels drop into a pothole 2.5 studs up the road from the player, which kicks the back door open; the box slides
+-- out and falls under gravity, carrying on along the road with the truck's speed, lands on its leading edge and
+-- rolls end over end once (four sides, about 8 studs) to a stop flaps up, in front of the player; the door slams
+-- shut behind it. The truck's speed, the box's fall and its roll are one motion, so the numbers below are derived
+-- from each other (see the specs), not tuned apart.
 TruckDrop.BEATS = {
 	honk = 0.8, -- one soft honk so the player looks up
-	frontHit = 2.4, -- front wheels hit the bump: nose jolts up, thunk, dust puff
-	backHit = 2.8, -- back wheels hit it: the back kicks up, the door bursts open
-	drop = 2.92, -- the kick throws the box up out of the door; it drifts on along the road, slower than the truck
-	land = 3.6, -- the box hits the pavement on its back edge and slams flat: squash, two bounces
-	settle = 4.14, -- the box is at rest
-	done = 5, -- the truck is gone and the camera is the player's again
+	frontHit = 2.4, -- front wheels drop into the pothole: the nose dips, clunk, dust; the jolt kicks the door open
+	backHit = 2.8, -- back wheels drop in: the tail dips and the nose comes up
+	slide = 2.5, -- the box starts sliding out of the open door
+	drop = 2.75, -- it tips off the edge and falls
+	land = 3.05, -- it hits the road on its leading edge and starts to roll
+	settle = 4.45, -- rolled over once, flaps up, squashed flat and still
+	done = 5.1, -- the truck is gone and the camera is the player's again
 }
 
 TruckDrop.ROAD_Z = 8 -- the middle of the truck's lane, across the road from the landing spot
-TruckDrop.BUMP_X = -3 -- where the bump is along the road when the scene has no bump to time to (off the plot)
-TruckDrop.BUMP_RANGE = 20 -- a bump further than this along the road from the box is ignored, and BUMP_X is used
+-- Where the pothole is along the road when the scene has none to time to (off the plot): 7.5 studs up the road
+-- from where the box comes to rest, so it lands short of the player and rolls past in front of them (the plot's
+-- SpotBump and SpotBox are set to match).
+TruckDrop.BUMP_X = -7.5
+TruckDrop.BUMP_RANGE = 20 -- a pothole further than this along the road from the box is ignored, and BUMP_X is used
 TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.4 s apart the truck drives at 20 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
 TruckDrop.TAILGATE = { back = 6.5, up = 1.9, side = 2 } -- where the box leaves (the Tailgate attachment), from the
 -- truck's pivot; `side` studs from the lane's middle toward the curb, the door's near corner
 -- (on the road under the middle of the 13 stud truck, Model-Agent's CleanACat_Prop_DeliveryTruck)
 
-TruckDrop.JOLT = { lift = 0.45, frontPitch = math.rad(5), backPitch = math.rad(-6), seconds = 0.24 }
+-- The pothole jolt: each axle dips `dip` studs and bounces back over `seconds`; the front's dip tips the nose down
+-- by `frontPitch`, the back's tips it up by `backPitch`.
+TruckDrop.JOLT = { dip = 0.4, frontPitch = math.rad(4), backPitch = math.rad(5), seconds = 0.3 }
 TruckDrop.RATTLE = { pitch = math.rad(1.2), seconds = 0.7 } -- the little rattle after each hit
-TruckDrop.DOOR = { open = math.rad(100), seconds = 0.12, swing = math.rad(10) } -- hinged along its top edge, bursts up
--- One whole flip in the air (so it lands flaps up), short of flat by `flop`: it lands on its back edge and slams
--- flat over LANDING.squashSeconds.
-TruckDrop.ARC = { height = 1.4, spin = 2 * math.pi, flop = math.rad(22) }
-TruckDrop.LANDING = {
-	squash = 0.25,
-	squashSeconds = 0.1,
-	bounce = 0.5,
-	bounceSeconds = 0.28,
-	bounce2 = 0.14, -- a second, small bounce
-	bounce2Seconds = 0.16,
+-- The back door (hinged along its top edge): kicked open by the front wheels' drop over `seconds`, held open until
+-- `hold` after the box drops, then slammed shut over `closeSeconds` with a small rebound.
+TruckDrop.DOOR = {
+	open = math.rad(100),
+	seconds = 0.1,
+	swing = math.rad(10),
+	hold = 0.12,
+	closeSeconds = 0.22,
+	rebound = math.rad(6),
 }
+-- The box (Model-Agent's CleanACat_Prop_DeliveryBox): its footprint along the road and its height.
+TruckDrop.BOX = { width = 2.38, height = 1.7 }
+TruckDrop.GRAVITY = 35 -- studs a second squared: about real gravity at 0.28 m a stud, so it falls with weight
+-- The slide out of the door: the box's middle goes from `inside` box widths in from the door's edge to `out`
+-- beyond it (where it tips over), riding with the truck as it goes.
+TruckDrop.SLIDE = { inside = 0.6, out = 0.25 }
+-- The fall tips it forward to `tilt` radians, so its leading bottom edge meets the road first; then it rolls from
+-- there to a whole turn (flaps up again) over BEATS.land to the roll's end, slowing as it goes (`ease` 2 is a
+-- quadratic ease out: it lands at about the speed it fell with and stops gently).
+TruckDrop.ROLL = { tilt = 0.3, ease = 2 }
+TruckDrop.LANDING = { squash = 0.2, squashSeconds = 0.14 } -- the last face slapping down flat
 TruckDrop.WIGGLE = { start = 0.4, every = 1.6, seconds = 0.45, angle = math.rad(7), meowEvery = 2 }
 TruckDrop.OPEN = {
 	flap = math.rad(215),
@@ -60,19 +79,75 @@ TruckDrop.OPEN = {
 -- The kitten hops out of the box toward the spa (Gameplay-Engineer's ask): a small arc, then onDone.
 TruckDrop.HOP = { distance = 2.5, height = 1.4, seconds = 0.42, squash = 0.15 }
 
+-- When the roll ends and the last face slaps down.
+function TruckDrop.rollEnd(): number
+	return TruckDrop.BEATS.settle - TruckDrop.LANDING.squashSeconds
+end
+
+-- The roll's angle `e` seconds after landing: from ROLL.tilt to a whole turn, easing out. With `reduced` it does not
+-- turn (it slides to a stop).
+function TruckDrop.rollAngle(e: number, reduced: boolean): number
+	if reduced then
+		return 0
+	end
+	local r = TruckDrop.ROLL
+	local u = math.clamp(e / (TruckDrop.rollEnd() - TruckDrop.BEATS.land), 0, 1)
+	return r.tilt + (2 * math.pi - r.tilt) * (1 - (1 - u) ^ r.ease)
+end
+
+-- Seconds after landing until the roll reaches `angle` (the inverse of rollAngle), for the thud of each face.
+function TruckDrop.rollTime(angle: number): number
+	local r = TruckDrop.ROLL
+	local k = math.clamp((angle - r.tilt) / (2 * math.pi - r.tilt), 0, 1)
+	local u = 1 - (1 - k) ^ (1 / r.ease)
+	return u * (TruckDrop.rollEnd() - TruckDrop.BEATS.land)
+end
+
+-- Where the middle of a box rolling toward +X sits (x along the road, y up) when it has turned `angle` radians
+-- (0 to a whole turn) about its bottom edges, ending flat with its middle over x = 0. It pivots on one edge per
+-- quarter turn: lying on its width, then its height, then its width, then its height.
+function TruckDrop.rollCenter(angle: number): (number, number)
+	local w, h = TruckDrop.BOX.width, TruckDrop.BOX.height
+	local quarter = math.pi / 2
+	local q = math.clamp(math.floor(angle / quarter), 0, 3)
+	local theta = angle - q * quarter
+	-- each quarter's pivot edge: the first is a whole roll (2 widths and 2 heights) short of the resting box's
+	-- leading edge, w / 2
+	local pivot = w / 2 - 2 * (w + h)
+	local foot = { h, w, h, w } -- what it lies on after each quarter
+	for i = 1, q do
+		pivot += foot[i]
+	end
+	-- before quarter q it stands on `along` (the side on the road) with `up` (the other side) upright
+	local along = if q % 2 == 0 then w else h
+	local up = if q % 2 == 0 then h else w
+	local a, b = along / 2, up / 2
+	return pivot - a * math.cos(theta) + b * math.sin(theta),
+		a * math.sin(theta) + b * math.cos(theta)
+end
+
 -- Sound and effect beats, in the order they happen. OpeningScene plays each once as the clock passes it.
-TruckDrop.EVENTS = {
-	{ at = TruckDrop.BEATS.honk, name = "honk" },
-	{ at = TruckDrop.BEATS.frontHit, name = "frontHit" },
-	{ at = TruckDrop.BEATS.backHit, name = "backHit" },
-	{ at = TruckDrop.BEATS.land, name = "land" },
-	{
-		at = TruckDrop.BEATS.land
-			+ TruckDrop.LANDING.squashSeconds
-			+ TruckDrop.LANDING.bounceSeconds,
-		name = "settle",
-	},
-}
+type Event = { at: number, name: string }
+local function events(): { Event }
+	local b = TruckDrop.BEATS
+	local list: { Event } = {
+		{ at = b.honk, name = "honk" },
+		{ at = b.frontHit, name = "frontHit" },
+		{ at = b.backHit, name = "backHit" },
+		{ at = b.land, name = "land" },
+		{ at = b.drop + TruckDrop.DOOR.hold + TruckDrop.DOOR.closeSeconds, name = "doorSlam" },
+	}
+	-- a thud as each of the first three faces comes down; the fourth is the settle
+	for k = 1, 3 do
+		table.insert(list, { at = b.land + TruckDrop.rollTime(k * math.pi / 2), name = "tumble" })
+	end
+	table.insert(list, { at = TruckDrop.rollEnd(), name = "settle" })
+	table.sort(list, function(x: Event, y: Event): boolean
+		return x.at < y.at
+	end)
+	return list
+end
+TruckDrop.EVENTS = events()
 
 export type Truck = { x: number, lift: number, pitch: number, door: number }
 export type Box = {
@@ -135,6 +210,30 @@ function TruckDrop.truckX(t: number, bumpX: number?): number
 		+ TruckDrop.speed() * (t - TruckDrop.BEATS.frontHit)
 end
 
+-- The door's angle `opened` seconds after the front wheels' drop: kicked open, held, slammed shut with a rebound.
+function TruckDrop.door(opened: number, reduced: boolean): number
+	local d = TruckDrop.DOOR
+	if opened <= 0 then
+		return 0
+	end
+	local closeAt = TruckDrop.BEATS.drop + d.hold - TruckDrop.BEATS.frontHit
+	if opened < closeAt then
+		if reduced then
+			return d.open
+		end
+		return d.open * TruckDrop.backOut(opened / d.seconds, 1.4)
+			+ d.swing * math.sin(opened * 12) * math.exp(-opened * 4)
+	end
+	local u = (opened - closeAt) / d.closeSeconds
+	if u < 1 then
+		return d.open * (1 - u * u) -- falls shut, faster as it goes
+	end
+	if reduced then
+		return 0
+	end
+	return d.rebound * TruckDrop.hump(opened - closeAt - d.closeSeconds, 0.16)
+end
+
 -- The truck at time t. `reduced` (Reduced Motion or Less shake) drops the jolt, the rattle and the door's swing.
 function TruckDrop.truck(t: number, reduced: boolean, bumpX: number?): Truck
 	local b = TruckDrop.BEATS
@@ -143,67 +242,94 @@ function TruckDrop.truck(t: number, reduced: boolean, bumpX: number?): Truck
 	if not reduced then
 		local front = t - b.frontHit
 		local back = t - b.backHit
-		lift = jolt.lift
-			* (TruckDrop.hump(front, jolt.seconds) + TruckDrop.hump(back, jolt.seconds))
-		pitch = jolt.frontPitch * TruckDrop.hump(front, jolt.seconds)
-			+ jolt.backPitch * TruckDrop.hump(back, jolt.seconds)
+		-- into the pothole first (down), then a small bounce back up
+		local fw = TruckDrop.wobble(front, jolt.seconds, 0.75)
+		local bw = TruckDrop.wobble(back, jolt.seconds, 0.75)
+		lift = -jolt.dip * (fw + bw)
+		pitch = -jolt.frontPitch * fw
+			+ jolt.backPitch * bw
 			+ TruckDrop.RATTLE.pitch
 				* TruckDrop.wobble(back - jolt.seconds, TruckDrop.RATTLE.seconds, 4)
 	end
-	local door = 0
-	local opened = t - b.backHit
-	if opened > 0 then
-		local d = TruckDrop.DOOR
-		if reduced then
-			door = d.open
-		else
-			door = d.open * TruckDrop.backOut(opened / d.seconds, 1.4)
-				+ d.swing * math.sin(opened * 9) * math.exp(-opened * 1.5)
-		end
-	end
-	return { x = TruckDrop.truckX(t, bumpX), lift = lift, pitch = pitch, door = door }
+	return {
+		x = TruckDrop.truckX(t, bumpX),
+		lift = lift,
+		pitch = pitch,
+		door = TruckDrop.door(t - b.frontHit, reduced),
+	}
 end
 
--- Where the box leaves the truck, in scene space.
+-- The box's middle as it tips off the door's edge (BEATS.drop), in scene space: x along the road, y, z across.
 function TruckDrop.launch(bumpX: number?): (number, number, number)
-	return TruckDrop.truckX(TruckDrop.BEATS.drop, bumpX) - TruckDrop.TAILGATE.back,
-		TruckDrop.TAILGATE.up,
+	local w = TruckDrop.BOX.width
+	return TruckDrop.truckX(TruckDrop.BEATS.drop, bumpX)
+		- TruckDrop.TAILGATE.back
+		- TruckDrop.SLIDE.out * w,
+		TruckDrop.TAILGATE.up + TruckDrop.BOX.height / 2,
 		TruckDrop.ROAD_Z - TruckDrop.TAILGATE.side
 end
 
--- The box at time t (scene clock), before it is opened. After settle it rests at the origin, wiggling.
+-- The box at time t (scene clock), before it is opened: x, y and z are its base's middle (y = 0 on the road) as if
+-- it were upright, and `roll` turns it about its middle toward +X (so a rolled box's middle is where
+-- rollCenter says). After settle it rests at the origin, wiggling.
 function TruckDrop.box(t: number, reduced: boolean, bumpX: number?): Box
 	local b = TruckDrop.BEATS
+	local half = TruckDrop.BOX.height / 2
 	local box: Box =
-		{ x = 0, y = 0, z = 0, tumble = 0, roll = 0, squash = 1, visible = t >= b.drop }
-	if t < b.drop then
+		{ x = 0, y = 0, z = 0, tumble = 0, roll = 0, squash = 1, visible = t >= b.slide }
+	if t < b.slide then
 		return box
 	end
+	local lx, ly, lz = TruckDrop.launch(bumpX)
+	-- across the road: from the door's corner to the pavement, over the fall and the roll, slowing as it rolls
+	local across = math.clamp((t - b.drop) / (TruckDrop.rollEnd() - b.drop), 0, 1)
+	box.z = lz * (1 - across) ^ 2
+	if t < b.drop then
+		-- sliding out of the door, riding with the truck
+		local u = (t - b.slide) / (b.drop - b.slide)
+		local w = TruckDrop.BOX.width
+		local rel = TruckDrop.SLIDE.inside * w * (1 - u) - TruckDrop.SLIDE.out * w * u
+		box.x = TruckDrop.truckX(t, bumpX) - TruckDrop.TAILGATE.back + rel
+		box.y = ly - half
+		return box
+	end
+	local cx0, cy0 = TruckDrop.rollCenter(TruckDrop.rollAngle(0, reduced))
+	if reduced then
+		cy0 = half
+	end
 	if t < b.land then
-		local u = (t - b.drop) / (b.land - b.drop)
-		local lx, ly, lz = TruckDrop.launch(bumpX)
-		box.x = lx * (1 - u)
-		box.z = lz * (1 - u)
-		-- through the launch height at u = 0 and the ground at u = 1, peaking ARC.height above the straight line
-		box.y = ly * (1 - u) + TruckDrop.ARC.height * 4 * u * (1 - u)
+		-- falling under gravity, straight on along the road, tipping forward onto its leading edge
+		local fall = b.land - b.drop
+		local s = t - b.drop
+		local g = TruckDrop.GRAVITY
+		local vy = (cy0 - ly + g / 2 * fall * fall) / fall
+		local cx = lx + (cx0 - lx) * s / fall
+		local cy = ly + vy * s - g / 2 * s * s
+		box.x = cx
+		box.y = cy - half
 		if not reduced then
-			box.tumble = -(TruckDrop.ARC.spin - TruckDrop.ARC.flop) * u
+			box.roll = TruckDrop.ROLL.tilt * s / fall
 		end
 		return box
 	end
-	local l = TruckDrop.LANDING
-	local after = t - b.land
-	if not reduced and after < l.squashSeconds then
-		-- on its back edge, slamming flat (a whole turn is flat again)
-		local k = after / l.squashSeconds
-		box.tumble = -(TruckDrop.ARC.spin - TruckDrop.ARC.flop * (1 - k * k))
+	local rollEnd = TruckDrop.rollEnd()
+	if t < rollEnd then
+		local angle = TruckDrop.rollAngle(t - b.land, reduced)
+		if reduced then
+			-- no turning: it slides to a stop where the roll would end
+			local k = 1 - (1 - (t - b.land) / (rollEnd - b.land)) ^ 2
+			box.x = cx0 + (0 - cx0) * k
+			return box
+		end
+		local cx, cy = TruckDrop.rollCenter(angle)
+		box.x = cx
+		box.y = cy - half
+		box.roll = angle
+		return box
 	end
-	box.squash = 1 - l.squash * TruckDrop.hump(after, l.squashSeconds)
-	local bounce = after - l.squashSeconds
-	box.y = l.bounce * TruckDrop.hump(bounce, l.bounceSeconds)
-	local second = bounce - l.bounceSeconds
-	box.squash -= l.squash * 0.5 * TruckDrop.hump(second, l.squashSeconds)
-	box.y += l.bounce2 * TruckDrop.hump(second, l.bounce2Seconds)
+	box.squash = 1
+		- TruckDrop.LANDING.squash
+			* TruckDrop.hump(t - rollEnd, TruckDrop.LANDING.squashSeconds)
 	if not reduced then
 		box.roll = TruckDrop.wiggle(t)
 	end
@@ -286,17 +412,13 @@ function TruckDrop.eventsBetween(from: number, to: number): { string }
 	return list
 end
 
--- Where the shot camera looks at t, as an X along the road: it follows the truck in, holds on the box from the
--- drop and stays there, so the landing is always framed.
+-- Where the shot camera looks at t, as an X along the road: it follows the truck in, then the box from the
+-- moment it slides out until it stops at the origin, so the tumble is always framed.
 function TruckDrop.lookX(t: number, bumpX: number?): number
-	local b = TruckDrop.BEATS
-	local follow = math.clamp(TruckDrop.truckX(t, bumpX) - TruckDrop.TAILGATE.back, -8, 0)
-	if t >= b.drop then
-		local u = math.clamp((t - b.drop) / (b.land - b.drop), 0, 1)
-		local lx = TruckDrop.launch(bumpX)
-		return lx * (1 - u)
+	if t >= TruckDrop.BEATS.slide then
+		return math.clamp(TruckDrop.box(t, true, bumpX).x, -12, 0)
 	end
-	return follow
+	return math.clamp(TruckDrop.truckX(t, bumpX) - TruckDrop.TAILGATE.back, -12, 0)
 end
 
 return TruckDrop
