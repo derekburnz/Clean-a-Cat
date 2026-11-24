@@ -13,6 +13,8 @@
 --   UI.setIndex(entries, newCats, tier)  the Cat Index window (UI/CatIndex, switch catIndexWindow, #238)
 --   UI.setQueue(cards, headline, pickable)  the "Who's next?" window and the HUD's waiting faces (UI/QueueWindow,
 --                             HUD/Waiting, switch queueWindow, #246); UI.onQueuePick(fn) gets fn(place) on Wash next
+--   UI.setTip(tip)            the tutorial's tip line, { step, total, icon, say } or nil (UI/HUD/TipLine, switch
+--                             tutorialTip)
 --   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
 --                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
@@ -236,6 +238,10 @@ end
 
 function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
+end
+
+function UI.setTip(tip: { step: number, total: number, icon: string, say: string }?)
+	HUD.setTip(tip)
 end
 
 -- The Cat Index window's stamps, New! marks and star tier (IndexWindowController).

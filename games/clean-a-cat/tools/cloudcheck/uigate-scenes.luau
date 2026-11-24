@@ -146,6 +146,14 @@ local SCENES = {
 		UI.setWashStage(nil)
 		UI.pointAt("CatIndex", "Tap Index")
 	end },
+	-- The tutorial's tip line (switch tutorialTip) in the step bar's place, while the first cat is washed.
+	{ "TutorialTip", function()
+		hud(true)
+		flag("tutorialTip", true)
+		UI.setCoins(0)
+		UI.setWashStage("dirty")
+		UI.setTip({ step = 2, total = 3, icon = "Sponge", say = "Scrub the mud" })
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
@@ -177,6 +185,8 @@ function Scenes.close()
 	flag("catIndexWindow", false)
 	flag("queueWindow", false)
 	flag("tutorialDim", false)
+	flag("tutorialTip", false)
+	UI.setTip(nil)
 	UI.clearPointer()
 	UI.setQueue({}, "", {})
 	UI.showIndexDetail(nil)

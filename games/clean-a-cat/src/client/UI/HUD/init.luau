@@ -7,6 +7,7 @@
 --   HUD.setCoins(n)      the coin counter, top right: the save's coins as the server mirrored them
 --   HUD.setStage(stage)  the wash step bar (top centre) and tool tray (bottom centre) for a ScrubController stage;
 --                        nil, "waiting" or "done" hides them
+--   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil
 --
 -- The look follows the screens' README: numbers and status are white words with an ink outline and no box, Fredoka
 -- One only, and every piece is laid out in design pixels on a 1280 x 720 canvas and scaled like Scale.luau:
@@ -22,6 +23,7 @@ local Wallet = require(Shared:WaitForChild("Wallet"))
 local Comfort = require(script.Parent:WaitForChild("Comfort"))
 local Icons = require(script:WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
+local TipLine = require(script:WaitForChild("TipLine"))
 
 local HUD = {}
 
@@ -164,7 +166,7 @@ local function redraw()
 
 	local current = stepIndex(stage)
 	local washing = on() and current ~= nil
-	p.steps.Visible = washing
+	p.steps.Visible = washing and not TipLine.isShown() -- one line at the top centre: a tutorial tip wins
 	p.tray.Visible = washing
 	if current == nil then
 		return
@@ -296,6 +298,9 @@ function HUD.build(root: Frame)
 		iconBoxes[index] = iconBox
 	end
 
+	TipLine.build(root)
+	TipLine.onChanged(redraw)
+
 	pieces = {
 		coins = coinsFrame,
 		coinIcon = coinIcon,
@@ -324,6 +329,10 @@ end
 function HUD.setCoins(value: unknown)
 	coins = if type(value) == "number" then value else 0
 	redraw()
+end
+
+function HUD.setTip(tip: TipLine.Tip?)
+	TipLine.set(tip)
 end
 
 function HUD.setStage(value: string?)
