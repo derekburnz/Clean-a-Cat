@@ -54,14 +54,17 @@ return function()
 
 	describe("IndexViewRules.newlyWashed", function()
 		it("finds cats washed since the last look", function()
-			local fresh = IndexViewRules.newlyWashed({
-				Muffin = { washed = true, resident = false },
-				Tux = { washed = false, resident = true },
-			}, {
-				Muffin = { washed = true, resident = false },
-				Tux = { washed = true, resident = true },
-				Inky = { washed = true, resident = false },
-			})
+			local fresh = IndexViewRules.newlyWashed(
+				{
+					Muffin = { washed = true, resident = false },
+					Tux = { washed = false, resident = true },
+				},
+				{
+					Muffin = { washed = true, resident = false },
+					Tux = { washed = true, resident = true },
+					Inky = { washed = true, resident = false },
+				}
+			)
 			expect(table.concat(fresh, ",")).to.equal("Inky,Tux")
 		end)
 	end)
