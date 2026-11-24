@@ -91,7 +91,8 @@ SWATCHES = [
     ("bow_pink", "#FF86AC"), ("bow_mint", "#5FD2A8"), ("bow_sky", "#64B2FF"), ("wood_light", "#E3C49C"),
     # row 20 (#22): dusty dried mud for dark fur, where the brown mud would vanish; the Uncommon badge colour; free
     ("mud_dust", "#A39683"), ("mud_dust_wet", "#877B6A"), ("rarity_uncommon", "#5FC98B"), ("water", "#3FAEF2"),
-    ("bubble", "#BFE6FF"), ("free_20_6", "#000000"), ("free_20_7", "#000000"), ("free_20_8", "#000000"),
+    # #155: on pale fur the brown mud read as a patched coat, so pale fur gets a duller, greyer mud no coat uses
+    ("bubble", "#BFE6FF"), ("mud_drab", "#6B6252"), ("mud_drab_wet", "#7E735F"), ("free_20_8", "#000000"),
 ]
 assert len(SWATCHES) % GRID == 0 and len(SWATCHES) <= GRID * ROWS
 

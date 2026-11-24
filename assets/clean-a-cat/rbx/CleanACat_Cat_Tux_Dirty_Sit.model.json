@@ -2325,6 +2325,153 @@
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth"
        }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4028,
+           1.1899,
+           -0.3598
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1064,
+         0.0902,
+         0.0879
+        ],
+        "Color": [
+         0.6392,
+         0.5882,
+         0.5137
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4028,
+           1.0094,
+           -0.1841
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1064,
+         0.0902,
+         0.0879
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud02",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4028,
+           1.5604,
+           -0.0962
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1064,
+         0.1093,
+         0.0879
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
@@ -2413,9 +2560,9 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
+           -0.0095,
            -0.0451,
-           0.0
+           0.0879
           ],
           "orientation": [
            [
@@ -2489,15 +2636,162 @@
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth"
        }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud03",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0874,
+           1.5604,
+           -0.4477
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1748,
+         0.1093,
+         0.0879
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud03",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3591,
+           1.5604,
+           -0.4477
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1938,
+         0.1093,
+         0.0879
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud03",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.0437,
+           1.5604,
+           -0.3159
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0874,
+         0.1093,
+         0.1758
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.1311,
+         -0.1406,
          1.5152,
-         -0.5011
+         -0.4133
         ],
         "orientation": [
          [
@@ -2577,9 +2871,9 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0437,
-           -0.1354,
-           0.0
+           -0.0437,
+           -0.2708,
+           -0.0879
           ],
           "orientation": [
            [
@@ -2702,15 +2996,162 @@
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth"
        }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud04",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0437,
+           1.0996,
+           0.0891
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0874,
+         0.2707,
+         0.1069
+        ],
+        "Color": [
+         0.6392,
+         0.5882,
+         0.5137
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud04",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1748,
+           1.5604,
+           0.0891
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1748,
+         0.1093,
+         0.1069
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud04",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0437,
+           1.5604,
+           -0.3159
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0874,
+         0.1093,
+         0.1758
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.0437,
-         1.425,
-         -0.0427
+         -0.0437,
+         1.2896,
+         -0.1306
         ],
         "orientation": [
          [
@@ -2954,8 +3395,8 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
-           -0.0451,
+           -0.0874,
+           -0.0903,
            0.0439
           ],
           "orientation": [
@@ -3030,14 +3471,161 @@
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth"
        }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud06",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4028,
+           1.3253,
+           -0.4477
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1064,
+         0.1805,
+         0.0879
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud06",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1748,
+           1.5604,
+           -0.5451
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1748,
+         0.1093,
+         0.1069
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud06",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2622,
+           1.5604,
+           -0.3598
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1748,
+         0.1093,
+         0.0879
+        ],
+        "Color": [
+         0.5294,
+         0.4824,
+         0.4157
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
       }
      ],
      "properties": {
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.3591,
-         1.4701,
+         0.2717,
+         1.425,
          -0.4572
         ],
         "orientation": [
@@ -4864,9 +5452,9 @@
          0.2966
         ],
         "Color": [
-         0.3529,
-         0.2745,
-         0.1961
+         0.4196,
+         0.3843,
+         0.3216
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -4942,9 +5530,9 @@
          0.3099
         ],
         "Color": [
-         0.3529,
-         0.2745,
-         0.1961
+         0.4196,
+         0.3843,
+         0.3216
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -4991,9 +5579,9 @@
          0.114
         ],
         "Color": [
-         0.3529,
-         0.2745,
-         0.1961
+         0.4196,
+         0.3843,
+         0.3216
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -5824,9 +6412,9 @@
          0.3038
         ],
         "Color": [
+         0.4941,
          0.451,
-         0.3529,
-         0.2627
+         0.3725
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -5902,9 +6490,9 @@
          0.3099
         ],
         "Color": [
+         0.4941,
          0.451,
-         0.3529,
-         0.2627
+         0.3725
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -5951,9 +6539,9 @@
          0.114
         ],
         "Color": [
+         0.4941,
          0.451,
-         0.3529,
-         0.2627
+         0.3725
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -6651,9 +7239,9 @@
        0.1441
       ],
       "Color": [
-       0.3529,
-       0.2745,
-       0.1961
+       0.4196,
+       0.3843,
+       0.3216
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -6666,7 +7254,7 @@
        "CFrame": {
         "position": [
          0.0,
-         -0.0428,
+         -0.095,
          0.0
         ],
         "orientation": [
@@ -6729,9 +7317,9 @@
        0.0589
       ],
       "Color": [
-       0.3529,
-       0.2745,
-       0.1961
+       0.4196,
+       0.3843,
+       0.3216
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -6778,9 +7366,107 @@
        0.1441
       ],
       "Color": [
-       0.3529,
-       0.2745,
-       0.1961
+       0.4196,
+       0.3843,
+       0.3216
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud07",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0416,
+         0.5748,
+         -0.3032
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0831,
+       0.0855,
+       0.1441
+      ],
+      "Color": [
+       0.4196,
+       0.3843,
+       0.3216
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud07",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0416,
+         0.3942,
+         -0.3032
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0831,
+       0.1045,
+       0.1441
+      ],
+      "Color": [
+       0.6392,
+       0.5882,
+       0.5137
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -6797,7 +7483,7 @@
      "OptionalCFrame": {
       "position": [
        0.0,
-       0.6603,
+       0.608,
        -0.3032
       ],
       "orientation": [
@@ -6940,6 +7626,55 @@
        0.1021,
        0.0855,
        0.1742
+      ],
+      "Color": [
+       0.6392,
+       0.5882,
+       0.5137
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud08",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3004,
+         0.4893,
+         -0.2842
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1021,
+       0.0855,
+       0.1061
       ],
       "Color": [
        0.6392,
@@ -7167,6 +7902,104 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud09",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3004,
+         0.5748,
+         0.1702
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1021,
+       0.2565,
+       0.1061
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud09",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1247,
+         0.532,
+         0.1702
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0831,
+       0.171,
+       0.1061
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
@@ -7331,6 +8164,55 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud10",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3004,
+         0.4893,
+         -0.0135
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1021,
+       0.0855,
+       0.0871
+      ],
+      "Color": [
+       0.6392,
+       0.5882,
+       0.5137
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
@@ -7420,7 +8302,7 @@
        "CFrame": {
         "position": [
          0.0,
-         0.0,
+         -0.0855,
          0.0
         ],
         "orientation": [
@@ -7446,6 +8328,104 @@
      "attributes": {
       "Rojo_Id": "CleanACat_Cat_Tux_Dirty_Sit/19"
      }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud11",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3004,
+         0.703,
+         0.1702
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1021,
+       0.171,
+       0.1061
+      ],
+      "Color": [
+       0.6392,
+       0.5882,
+       0.5137
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud11",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3004,
+         0.7458,
+         -0.0135
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1021,
+       0.0855,
+       0.0871
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
@@ -7453,7 +8433,7 @@
      "OptionalCFrame": {
       "position": [
        0.3004,
-       0.874,
+       0.7885,
        0.0831
       ],
       "orientation": [
@@ -7534,7 +8514,7 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.0226,
+         0.0186,
          0.0532,
          0.0
         ],
@@ -7610,13 +8590,111 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud12",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.2058,
+         0.4028,
+         0.2104
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1647,
+       0.1064,
+       0.0869
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud12",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3388,
+         0.4028,
+         0.3501
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1013,
+       0.1064,
+       0.1927
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.2998,
+       -0.2586,
        0.228,
        0.2199
       ],
@@ -7698,7 +8776,7 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         0.0,
+         -0.0823,
          -0.0874,
          0.0
         ],
@@ -7774,13 +8852,160 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud13",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1647,
+         0.1748,
+         0.3936
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0823,
+       0.1748,
+       0.1059
+      ],
+      "Color": [
+       0.6392,
+       0.5882,
+       0.5137
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud13",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0823,
+         0.1748,
+         0.3936
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0823,
+       0.1748,
+       0.1059
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud13",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.2058,
+         0.4028,
+         0.2972
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1647,
+       0.1064,
+       0.0869
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.0412,
+       -0.0412,
        0.2717,
        0.3501
       ],
@@ -7862,7 +9087,7 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.0412,
+         -0.0225,
          -0.0437,
          0.0964
         ],
@@ -7938,13 +9163,111 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud14",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3859,
+         0.0437,
+         0.0291
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1956,
+       0.0874,
+       0.0718
+      ],
+      "Color": [
+       0.6392,
+       0.5882,
+       0.5137
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Dirty_Sit_Mud14",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3388,
+         0.0437,
+         0.2104
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1013,
+       0.0874,
+       0.0869
+      ],
+      "Color": [
+       0.5294,
+       0.4824,
+       0.4157
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
     }
    ],
    "properties": {
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.2977,
+       0.3164,
        0.1748,
        0.1764
       ],
@@ -8012,9 +9335,9 @@
        0.2634
       ],
       "Color": [
+       0.4941,
        0.451,
-       0.3529,
-       0.2627
+       0.3725
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -8090,9 +9413,9 @@
        0.418
       ],
       "Color": [
+       0.4941,
        0.451,
-       0.3529,
-       0.2627
+       0.3725
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -8176,9 +9499,9 @@
        0.418
       ],
       "Color": [
-       0.3529,
-       0.2745,
-       0.1961
+       0.4196,
+       0.3843,
+       0.3216
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -8254,9 +9577,9 @@
        0.1766
       ],
       "Color": [
-       0.3529,
-       0.2745,
-       0.1961
+       0.4196,
+       0.3843,
+       0.3216
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,

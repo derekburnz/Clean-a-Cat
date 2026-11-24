@@ -6,7 +6,8 @@
 A dirty model is the clean cat (same pieces, same pivots, same names after the asset name) plus:
 
   _Mud01 .. _Mud20      one piece of the mud coat each (one to four boxes: a wrap round an edge or a corner of one
-                        of the cat's blocks and the drips running from it), its own child Model pivoted at its
+                        of the cat's blocks and the drips running from it, plus up to three thin boxes of ragged
+                        edge, #155), its own child Model pivoted at its
                         middle. The scrub removes a piece by its name (find the child Model whose name ends in
                         _MudNN and Destroy it). Pieces on the head, the tail or a leg are nested in that piece's
                         Model, so they move with it; the rest sit on the Body.
@@ -140,14 +141,24 @@ def _contrast(a, b):
     return (la + 0.05) / (lb + 0.05)
 
 
+PALE = 0.5                # fur brighter than this (white, cream, pale grey, lilac, gold) gets the drab mud
+# The shade of a piece's ragged edge, by the shade of the piece: a step toward the fur, so the edge reads soft.
+FRINGE_TONE = {"mud": "mud_wet", "mud_wet": "mud_wet", "mud_dust": "mud_dust_wet", "mud_dust_wet": "mud_dust_wet",
+               "mud_drab": "mud_dust", "mud_drab_wet": "mud_dust"}
+
+
 def _mud_for(fur, wet=False):
     """#22: brown mud on light fur, dusty dried mud on dark fur (Inky, Tux, the black and grey patches), whichever
-    stands out more from the fur under the blob, so the scrub's reveal reads on every coat."""
+    stands out more from the fur under the blob, so the scrub's reveal reads on every coat. #155: on pale fur the
+    brown read as a brown patched coat (a dirty Cotton looked like Patches), so pale fur gets a duller, greyer mud
+    that no coat uses."""
     pairs = (("mud", "mud_wet"), ("mud_dust", "mud_dust_wet"))
     if fur is None:
         return pairs[0][wet]
     hexes = dict(palette.SWATCHES)
     best = max(pairs, key=lambda pr: _contrast(hexes[pr[0]], hexes[fur]))
+    if best[0] == "mud" and _lum(hexes[fur]) > PALE:
+        best = ("mud_drab", "mud_drab_wet")
     return best[1] if wet else best[0]
 
 
@@ -334,35 +345,112 @@ def _shell(ob, block, span, n, k, eyes, head):
     return c + R @ mid, R, Vector([out_hi[a] - out_lo[a] for a in range(3)]), out
 
 
+# The ragged edge (#155). A coat's own patches are clean blocks, so clean blocks of mud read as a coat. Every piece
+# gets up to FRINGE_MAX more boxes, one mud pixel wide: drips of uneven length running down from its lower edge on a
+# side of the cat, and uneven teeth round it on a top. The longest is the piece's own shade and the others a softer
+# one, a step toward the fur. They lie flush like the piece itself.
+FRINGE_MAX = 3
+DRIPS = (2, 0, 3, 1, 0, 2, 1, 0)   # lengths in mud pixels, column after column along an edge
+TEETH = (1, 0, 2, 0, 1, 1, 0, 2)
+
+
+def _fringe(i, got):
+    """Candidate ragged-edge boxes for piece i, longest first: (block key, block, span, n)."""
+    cands = []
+    for key, block, span, n, shell in got:
+        if block[1].col[2].z < 0.95:
+            continue                                   # a tail segment lying over: down is not along the block
+        for a, sign in sorted(shell[3]):
+            if a == 2 and sign > 0:                    # a top: teeth out of each edge of the box
+                top = n[2] - 1
+                for u, v in ((0, 1), (1, 0)):
+                    for s in (-1, 1):
+                        for t, w in enumerate(range(*span[v])):
+                            ln = TEETH[(i * 3 + t + (2 * u + (s > 0)) * 3) % len(TEETH)]
+                            lo, hi = (span[u][0] - ln, span[u][0]) if s < 0 else (span[u][1], span[u][1] + ln)
+                            lo, hi = max(lo, 0), min(hi, n[u])
+                            if hi > lo:
+                                sp = [None, None, (top, top + 1)]
+                                sp[u], sp[v] = (lo, hi), (w, w + 1)
+                                cands.append((hi - lo, len(cands), key, block, sp, n))
+            elif a != 2:                               # a side: drips down from the lower edge
+                ca, u, z0 = (n[a] - 1 if sign > 0 else 0), 1 - a, span[2][0]
+                for t, w in enumerate(range(*span[u])):
+                    ln = min(DRIPS[(i * 3 + t + a) % len(DRIPS)], z0)
+                    if ln > 0:
+                        sp = [None, None, (z0 - ln, z0)]
+                        sp[a], sp[u] = (ca, ca + 1), (w, w + 1)
+                        cands.append((ln, len(cands), key, block, sp, n))
+    return [c[2:] for c in sorted(cands, key=lambda c: (-c[0], c[1]))]
+
+
+def _seen(objs, base, piece, shell, k):
+    """True when the box's outer faces can be seen: nothing else of the cat stands in front of them."""
+    c, R, s, sides = shell
+    for a, sign in sides:
+        nrm = R.col[a] * sign
+        p = c + nrm * s[a] / 2
+        hit = _ray(objs, base, p + nrm * 3.0, -nrm)
+        if hit is None or hit[2] != piece or (hit[0] - p).dot(nrm) > (RELIEF_MAX + MUD_PROUD) * k + 0.01:
+            return False
+    return True
+
+
+def _reach(shells):
+    corners = [c + R @ Vector((sx * s.x, sy * s.y, sz * s.z)) / 2 for c, R, s, _o in shells
+               for sx in (1, -1) for sy in (1, -1) for sz in (1, -1)]
+    lo = Vector([min(p[a] for p in corners) for a in range(3)])
+    hi = Vector([max(p[a] for p in corners) for a in range(3)])
+    return lo, hi
+
+
 def _coat(objs, base, body, k, eyes, mat):
     """The MUD pieces of the coat for a built cat: [(object, the cat piece it rides)]."""
     pieces = {_piece(o, base): o for o in objs}
     taken = {}                                         # (piece, block): the mud pixels already used
-    out = []
-    for i, (piece, boxes) in enumerate(COAT[body]):
-        ob = pieces[piece]
-        shells, probe = [], []
+    placed = []
+    for i, (piece, boxes) in enumerate(COAT[body]):    # first every piece's own boxes, so a ragged edge never
+        ob = pieces[piece]                             # takes the pixels a later piece is listed with
+        got = []
         for j, (which, *frac) in enumerate(boxes):
             block = _block(ob, which, k)
             span, n = _cells(block, frac, k)
             cells = {(x, y, z) for x in range(*span[0]) for y in range(*span[1]) for z in range(*span[2])}
-            used = taken.setdefault((piece, which if which != -1 else len(_boxes(ob)) - 1), set())
+            key = (piece, which if which != -1 else len(_boxes(ob)) - 1)
+            used = taken.setdefault(key, set())
             shell = None if cells & used else _shell(ob, block, span, n, k, eyes, piece == "Head")
             if shell is None:
                 if j == 0:
                     raise RuntimeError(f"{base}: mud piece {i + 1} does not fit (its first box)")
                 continue
             used |= cells
-            shells.append(shell)
-        corners = [c + R @ Vector((sx * s.x, sy * s.y, sz * s.z)) / 2 for c, R, s, _o in shells
-                   for sx in (1, -1) for sy in (1, -1) for sz in (1, -1)]
-        lo = Vector([min(p[a] for p in corners) for a in range(3)])
-        hi = Vector([max(p[a] for p in corners) for a in range(3)])
+            got.append((key, block, span, n, shell))
+        placed.append((ob, piece, got))
+    out = []
+    for i, (ob, piece, got) in enumerate(placed):
+        shells = [g[4] for g in got]
+        fringe = []
+        for key, block, span, n in _fringe(i, got):
+            if len(fringe) == FRINGE_MAX:
+                break
+            cells = {(x, y, z) for x in range(*span[0]) for y in range(*span[1]) for z in range(*span[2])}
+            if cells & taken[key]:
+                continue
+            shell = _shell(ob, block, span, n, k, eyes, piece == "Head")
+            if shell is None or not _seen(objs, base, piece, shell, k):
+                continue
+            lo, hi = _reach(shells + fringe + [shell])
+            if (hi - lo).length / 2 > SCRUB_REACH:
+                continue
+            taken[key] |= cells
+            fringe.append(shell)
+        lo, hi = _reach(shells + fringe)
         if (hi - lo).length / 2 > SCRUB_REACH:
             raise RuntimeError(f"{base}: mud piece {i + 1} is too big to scrub ({(hi - lo).length / 2:.2f})")
         if body == "sit" and hi.z < TUB_WATER + WATER_CLEAR * k:
             raise RuntimeError(f"{base}: mud piece {i + 1} would sit under the tub's water")
         at = (lo + hi) / 2
+        probe = []
         c0, R0, s0, _o = shells[0]                     # the fur under the wrap picks the mud's shade
         for a in range(3):
             for sign in (1, -1):
@@ -371,8 +459,9 @@ def _coat(objs, base, body, k, eyes, mat):
         fur = max(dict.fromkeys(furs), key=furs.count) if furs else None    # on a tie the fur probed first wins
         tone = _mud_for(fur, wet=i % 3 == 2)           # every third piece the wet shade
         b = Builder()
-        for c, R, s, sides in shells:
-            verts = b.box(tuple(c - at), tuple(s), tone, bevel=False, rot=R)
+        for j, (c, R, s, sides) in enumerate(shells + fringe):
+            sw = tone if j <= len(shells) else FRINGE_TONE[tone]     # the longest drip is the piece's own shade
+            verts = b.box(tuple(c - at), tuple(s), sw, bevel=False, rot=R)
             for e in {e for v in verts for e in v.link_edges}:      # soften the edges that wrap an edge of the block,
                 p = R.transposed() @ ((e.verts[0].co + e.verts[1].co) / 2 - (c - at))   # as the block's own are
                 on = [(a, 1 if p[a] > 0 else -1) for a in range(3) if abs(p[a]) > s[a] / 4]
@@ -483,4 +572,4 @@ ASSETS = {}
 for _n in cats.ROSTER:
     for _body in cats.BUILT_BODIES:   # 3,200: the long claws (#23) put the fluffiest coat a little over 3,000
         ASSETS[f"CleanACat_Cat_{_n}_Dirty{cats.SUFFIX[_body]}"] = (
-            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3200)
+            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3400)
