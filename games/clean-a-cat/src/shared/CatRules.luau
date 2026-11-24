@@ -164,6 +164,19 @@ function CatRules.rollNeeds(
 	return out
 end
 
+-- `needs` without the later needs whose switch is off: a cat rolled with a smell keeps it only while bubbleBath is
+-- on, so switching a step off takes it out of the cats already waiting too.
+function CatRules.liveNeeds(needs: { Need }, isOn: (flag: string) -> boolean): { Need }
+	local out: { Need } = {}
+	for _, need in needs do
+		local flag = WashDraft.NEED_FLAG[need]
+		if flag == nil or isOn(flag) then
+			table.insert(out, need)
+		end
+	end
+	return out
+end
+
 -- The needs whose station is not in `stations` (built stations plus the starting ones).
 function CatRules.lockedNeeds(needs: { Need }, stations: { [string]: boolean }): { Need }
 	local locked: { Need } = {}

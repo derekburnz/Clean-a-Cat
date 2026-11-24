@@ -134,6 +134,20 @@ local SCENES = {
 		UI.setQueue(cards, QueueViewRules.headline(cards, 2), {})
 		UI.open("Queue")
 	end },
+	-- A line where cats bring the later needs (#267, switches bubbleBath and pawdicure): five needs on the Legendary
+	-- one, so the needs stack over the pay even on a short card and shrink to share the card's width.
+	{ "QueueLater", function()
+		flag("queueWindow", true)
+		local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+		local rolled = {
+			[1] = { "mud", "tangles", "wet", "smell" },
+			[2] = { "mud", "tangles" },
+			[3] = { "mud", "tangles", "wet", "smell", "claws" },
+		}
+		local cards = QueueViewRules.cards({ "Toffee", "Muffin", "Starcoat" }, indexEntries(), { Dryer = true }, rolled)
+		UI.setQueue(cards, QueueViewRules.headline(cards, 2), { [2] = true, [3] = true })
+		UI.open("Queue")
+	end },
 	{ "HudWaiting", function()
 		hud(true)
 		flag("queueWindow", true)

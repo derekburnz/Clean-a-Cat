@@ -183,6 +183,20 @@ return function()
 			end
 		end)
 
+		it("liveNeeds drops a later need once its switch is off", function()
+			local rolled = { "mud", "tangles", "wet", "smell", "claws" }
+			expect(table.concat(CatRules.liveNeeds(rolled, on), ",")).to.equal(
+				"mud,tangles,wet,smell,claws"
+			)
+			expect(table.concat(CatRules.liveNeeds(rolled, off), ",")).to.equal("mud,tangles,wet")
+			local function bathOnly(flag: string): boolean
+				return flag == "bubbleBath"
+			end
+			expect(table.concat(CatRules.liveNeeds(rolled, bathOnly), ",")).to.equal(
+				"mud,tangles,wet,smell"
+			)
+		end)
+
 		it("never gives a common cat a smell or claws", function()
 			expect(table.concat(CatRules.rollNeeds("Smudge", sequence({ 0, 0 }), on), ",")).to.equal(
 				"mud,tangles"

@@ -183,11 +183,15 @@ function BuildRules.offered(isOn: (flag: string) -> boolean): { string }
 	return out
 end
 
--- Extra coins a customer's cat pays for the stations built.
-function BuildRules.payBonus(stations: { [string]: boolean }): number
+-- Extra coins a customer's cat pays for the stations built. A station whose switch is off pays nothing, so the off
+-- switch takes its bonus away too (Review-QA on #269).
+function BuildRules.payBonus(
+	stations: { [string]: boolean },
+	isOn: (flag: string) -> boolean
+): number
 	local bonus = 0
 	for id, item in BuildRules.ITEMS do
-		if stations[id] then
+		if stations[id] and (item.flag == nil or isOn(item.flag)) then
 			bonus += item.payBonus
 		end
 	end

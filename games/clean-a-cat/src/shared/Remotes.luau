@@ -37,7 +37,7 @@ Remotes.ServerToClient = {
 	"CatReady", -- (catId: number, kind: string?, needs: { CatRules.Need }?, locked: { CatRules.Need }?, stray: boolean?, brushStrokes: number)
 	-- a dirty cat is in the tub; kind and needs come with a customer's cat or a stray, locked lists needs whose station
 	-- is not built, stray is true for a stray (switch strays) that moves into the window once clean
-	"CustomerQueue", -- (kinds: { string })  the cats waiting at the door, front first (switch customers)
+	"CustomerQueue", -- (kinds: { string }, needs: { { string } })  the cats waiting at the door, front first, and what each needs (switch customers)
 	"Residents", -- (list: { { cat: string, bow: string? } })  the display window's cats, in order (switch strays)
 	"WindowTips", -- (coins: number, total: number)  window cats tipped; total is the save's coins (switch strays)
 	"CatIndex", -- (index: { [cat]: { washed: boolean, resident: boolean } })  the stamped cats (switch catIndex)
