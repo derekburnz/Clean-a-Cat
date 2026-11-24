@@ -10,8 +10,9 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
 
   Index     the Cat Index: a purple book with a cream cat's face on the cover and a pink bookmark
   Settings  a blue grey gear with a cream middle
-  Tools     the game's pink scrub brush with soap bubbles
-  Helper    the first helper kitten's head in its bath cap
+  Tools     a pink toolbox with a cream handle, a gold latch and a white paw (the owner asked for a toolbox in
+            place of the scrub brush, whose soap bubbles "makes no sense")
+  Helper    a member of the human staff: head and shoulders in the spa uniform, the first look in staff.py
   Build     a blue hammer with a wooden handle and a white paw on its head
 
 There is no coin here on purpose. The owner picked his library's own coin picture for the HUD (2026-11-24: "use
@@ -35,6 +36,7 @@ from mathutils import Matrix, Vector  # noqa: E402
 
 import common  # noqa: E402
 import palette  # noqa: E402
+import staff  # noqa: E402
 from common import Builder  # noqa: E402
 
 SIZE, PAD = 512, 0.07
@@ -128,16 +130,19 @@ def settings(mat):
 
 
 def tools(mat):
-    """The wash tools: the game's pink scrub brush made fat, with soap bubbles coming off it."""
+    """The wash tools: a fat pink toolbox with a deeper lid, a cream handle and a gold latch. (The first draft was a
+    scrub brush with soap bubbles; the owner: "the bubbles on the back of brush makes no sense ... a toolbox would be
+    better".)"""
     b = Builder()
-    b.box((0, 0, 1.3), (2.1, 1.3, 0.62), "spa_bubblegum")                                # the back
-    for i in (-1, 0, 1):                                                                 # three tufts of bristles
-        b.box((i * 0.66, 0, 0.47), (0.56, 1.06, 0.96), "foam")
-    b.cyl((1.5, 0, 1.3), 0.36, 0.95, "caramel_wood", segments=14, rot=(math.radians(90), "Y"))   # the handle
-    for x, z, r in ((-1.15, 2.3, 0.46), (-0.3, 2.62, 0.28), (0.3, 2.2, 0.18)):           # the bubbles
-        b.sphere((x, -0.2, z), r, "spa_sky", segments=14, rings=8)
-        b.sphere((x - r * 0.38, -0.2 - r * 0.8, z + r * 0.38), r * 0.26, "foam", segments=8, rings=5)
-    return _fin(b, "Tools", mat, tilt=-14)
+    w, d = 2.4, 1.4
+    b.box((0, 0, 0.62), (w, d, 1.24), "spa_bubblegum")                                   # the box
+    b.box((0, 0, 1.5), (w + 0.14, d + 0.14, 0.56), "nose_bubblegum")                     # the lid
+    for sx in (-1, 1):                                                                   # the handle
+        b.box((sx * 0.62, 0, 1.96), (0.24, 0.3, 0.44), "spa_cream")
+    b.box((0, 0, 2.24), (1.7, 0.36, 0.26), "spa_cream")
+    b.box((0, -d / 2 - 0.1, 1.2), (0.5, 0.14, 0.5), "gold_mid")                          # the latch
+    _paw(b, 0, -d / 2 - 0.02, 0.56, 0.2, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
+    return _fin(b, "Tools", mat)
 
 
 def build(mat):
@@ -153,38 +158,42 @@ def build(mat):
     return _fin(b, "Build", mat, tilt=22)
 
 
-CAP_ICON = "nose_bubblegum"      # one step deeper than the model's cap cloth, so cap and face part at 48 px (#185)
-
-
 def helper(mat):
-    """The helper: the first helper kitten's own head in its bath cap, so the button shows who you hire."""
-    import busy_spa
-    look = busy_spa.HELPERS[0]
-    objs = busy_spa.ASSETS[look[0]][0](mat)
-    busy_spa.HELPERS[0] = look[:3] + (CAP_ICON,) + look[4:]
-    try:
-        cap = busy_spa._cap(0)(mat)
-    finally:
-        busy_spa.HELPERS[0] = look
-    top = busy_spa.helper_rbx_extras(0)["attachments"][0][2].translation
-    for o in cap:
-        o.location = o.location + top
-    bpy.context.view_layer.update()
-    lo, _ = common.bounds([o for o in objs if o.name.endswith("_Head")])
-    keep = []
-    for o in objs:
-        if common.bounds([o])[0].z >= lo.z - 0.02:
-            keep.append(o)
-        else:
-            bpy.data.objects.remove(o, do_unlink=True)
-    return keep + cap
+    """The helper: a person on the spa's staff. The owner, 2026-11-24: "helpers are likely going to be staff like
+    humans", then a split: human staff do the washing and the kitten stays as the mascot. A chunky head and shoulders
+    of the first staff look in staff.py, in the same uniform as the staff portraits (mint smock, cream collar, paw
+    name badge, no hat). The kitten head this button had before is in git history (#211)."""
+    _, skin, hair, _, blush = staff.LOOKS[0]
+    b, k = Builder(), Builder()
+    b.box((0, 0, 0.5), (2.2, 1.2, 0.68), staff.SMOCK)                                    # the smock's shoulders
+    b.box((0, 0, 0.86), (1.8, 1.3, 0.12), staff.TRIM)                                    # its collar and two points
+    for sx in (-1, 1):
+        b.prism((sx * 0.3, -0.62, 0.6), [(-0.28, 0.2), (0.0, -0.22), (0.28, 0.2)], 0.08, staff.TRIM, rot=X)
+    b.box((0.76, -0.61, 0.47), (0.48, 0.06, 0.36), staff.TRIM)                           # the name badge
+    _paw(b, 0.76, -0.65, 0.46, 0.11, staff.BADGE_PAW, rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.04)
+    b.box((0, 0, 1.62), (1.5, 1.4, 1.5), skin)                                           # the head
+    b.box((0, 0, 2.36), (1.7, 1.6, 0.42), hair)                                          # hair: top, swept fringe,
+    b.prism((0, -0.79, 2.12), [(-0.9, 0.22), (-0.9, -0.3), (0.9, -0.02), (0.9, 0.22)], 0.14, hair, rot=X)
+    for sx in (-1, 1):                                                                   # a lock each side, sides,
+        b.box((sx * 0.72, -0.7, 1.5), (0.3, 0.24, 1.1), hair)
+        b.box((sx * 0.8, 0.08, 1.58), (0.14, 1.46, 1.26), hair)
+    b.box((0, 0.78, 1.6), (1.7, 0.14, 1.3), hair)                                        # back
+    b.sphere((0, 0.4, 2.62), 0.44, hair, segments=10, rings=6)                           # and a bun
+    fy = -0.72
+    for sx in (-1, 1):
+        k.box((sx * 0.3, fy, 1.6), (0.19, 0.04, 0.34), "coat_inky", bevel=False)         # the eyes
+        b.box((sx * 0.3 + 0.04, fy - 0.03, 1.7), (0.07, 0.04, 0.09), "foam", bevel=False)
+        b.box((sx * 0.44, fy, 1.27), (0.2, 0.04, 0.11), blush, bevel=False)              # the cheeks
+        k.box((sx * 0.21, fy, 1.24), (0.09, 0.04, 0.09), "coat_inky", bevel=False)       # the smile's corners
+    k.box((0, fy, 1.15), (0.42, 0.04, 0.09), "coat_inky", bevel=False)                   # the smile
+    return _fin(b, "Helper", mat, ink=k)
 
 
 BUILDERS = {                                       # name -> (builder, (yaw, pitch))
     "Index": (index, (22.0, 12.0)),
     "Settings": (settings, (-16.0, 8.0)),
-    "Tools": (tools, (-24.0, 18.0)),
-    "Helper": (helper, (-18.0, 8.0)),
+    "Tools": (tools, (-24.0, 20.0)),
+    "Helper": (helper, (-18.0, 10.0)),
     "Build": (build, (-14.0, 8.0)),
 }
 
