@@ -471,13 +471,18 @@ local function spongeRadius(): number
 end
 
 -- Rubs every mud blob within the sponge's reach of `point` by `travel` studs.
-local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number)
+-- Rubs every mud piece within the sponge's reach of `point`, and the piece the sponge is touching (`hit`), so a
+-- big or deep blob is never out of reach just because its middle is.
+local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number, hit: Instance?)
 	if turningCat == cat.model then
 		return
 	end
 	local radius = spongeRadius()
 	for index, piece in cat.mud do
-		if not v.scrub.cleared[index] and (piece.position - point).Magnitude <= radius then
+		local touched = hit ~= nil and hit:IsDescendantOf(piece.model)
+		if
+			not v.scrub.cleared[index] and (touched or (piece.position - point).Magnitude <= radius)
+		then
 			if not reportedScrub then
 				-- The funnel's first_scrub: only the client sees the first rub. Once a session; the server keeps it
 				-- once per save.
@@ -596,7 +601,7 @@ local function onPointer(input: InputObject)
 		local dt = math.max(now - lastMoveTime, 1 / 240)
 		lastMoveTime = now
 		Moments.ScrubMove:Fire(cat.model, point, result.Normal, travel / dt)
-		rubAt(v, cat, point, travel)
+		rubAt(v, cat, point, travel, result.Instance)
 	else
 		brushAt(v, cat, travel)
 	end
