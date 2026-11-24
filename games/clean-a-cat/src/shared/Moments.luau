@@ -48,6 +48,8 @@ local bowChosen: Signal<Model, string> = Signal.new()
 local photoTaken: Signal<Model> = Signal.new()
 -- (cat): the opening's kitten is named Suds and his collar pops on (#285, switch sudsWash): a jingle and a sparkle.
 local sudsNamed: Signal<Model> = Signal.new()
+-- (suds): the player taps Suds on his bed (#285, switch sudsMascot): a purr and a hop. Suds is the mascot model.
+local sudsTapped: Signal<Model> = Signal.new()
 -- (cat): a stray hops onto a window cushion.
 local catToWindow: Signal<Model> = Signal.new()
 -- (cat): a customer's cat goes home.
@@ -73,6 +75,7 @@ local Moments = {
 	BowChosen = bowChosen,
 	PhotoTaken = photoTaken,
 	SudsNamed = sudsNamed,
+	SudsTapped = sudsTapped,
 	CatToWindow = catToWindow,
 	CatReturned = catReturned,
 
@@ -97,6 +100,7 @@ local Moments = {
 		"BowChosen",
 		"PhotoTaken",
 		"SudsNamed",
+		"SudsTapped",
 		"CatToWindow",
 		"CatReturned",
 	}),
