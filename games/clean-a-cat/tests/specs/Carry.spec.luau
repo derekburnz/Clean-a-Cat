@@ -105,5 +105,18 @@ return function()
 			end
 			expect(WashCamera.ease(2)).to.equal(1)
 		end)
+		it("moves on to another shot from where the camera is, but never while leaving", function()
+			-- stand-ins for camera CFrames: retarget only passes them through (the test runner has no CFrame)
+			local tub, station, current, home = {} :: any, {} :: any, {} :: any, {} :: any
+			local entering = { from = home, to = tub, start = 0, leaving = false }
+			local moved = WashCamera.retarget(entering, current, station, 3)
+			expect(moved ~= nil).to.equal(true)
+			expect(moved.from).to.equal(current)
+			expect(moved.to).to.equal(station)
+			expect(moved.start).to.equal(3)
+			expect(moved.leaving).to.equal(false)
+			local leaving = { from = tub, to = home, start = 0, leaving = true }
+			expect(WashCamera.retarget(leaving, current, station, 3)).to.equal(nil)
+		end)
 	end)
 end

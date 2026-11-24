@@ -208,9 +208,9 @@ local function hudStage(v: Visit): string
 end
 
 -- Every step change goes through here, so the HUD hears each one.
--- The close-up wash view (Spa/WashView) is held while a cat is being washed in the tub: from the moment it sits
--- down dirty until its photo is taken, but not while it sits at a later step's station away from the tub. Behind
--- the switch washView; the opening holds the same view for Suds on its own.
+-- The close-up wash view (Spa/WashView) is held while a cat is being washed: from the moment it sits down dirty
+-- until its photo is taken, framed on the tub or on the later step's station it sits at (seatAt). Behind the switch
+-- washView; the opening holds the same view for Suds on its own.
 -- With the player stepped out (the Walk button), the cat waits in the tub and the view is let go until they come
 -- back (a tap on the cat, or the tub's "Wash" prompt). The Walk button shows only while this controller's hold is
 -- what keeps the view up: never for Suds, whose opening holds it on its own.
@@ -224,7 +224,6 @@ local function updateWashView(v: {
 }?)
 	local washing = v ~= nil
 		and v.cat ~= nil
-		and not v.away
 		and v.stage ~= "waiting"
 		and v.stage ~= "done"
 		and LiveFlags.isOn(WASH_FLAG)
@@ -350,21 +349,30 @@ local function buildTub(asset: Model, parent: Instance): CFrame
 	return tub:GetPivot() * CFrame.new(0, SEAT_HEIGHT, 0)
 end
 
--- Three bow buttons in a row above the tub and a camera button beside it: placeholders for the bottom bar and the
--- camera stand in the first session plan.
--- Offsets are in the tub's frame (its front, -Z, faces the player), so the first bow is on the player's left.
+-- Where bow button `index` sits, in the tub's frame (its front, -Z, faces the player, so +X is the player's left).
+-- Above the tub in a row, or with the close-up wash view on (washView) in a column at the screen's left, beside the
+-- cat and inside the shot: the row was off the top of the close-up (Sync-Agent's run on f01718c). The photo camera
+-- stands on the other side.
+local function bowSpot(index: number): CFrame
+	if LiveFlags.isOn(WASH_FLAG) then
+		return CFrame.new(3.6, 4.1 - (index - 1) * 1.35, -1.5)
+	end
+	return CFrame.new((2 - index) * 2.2, 7, -1)
+end
+
+-- Three bow buttons (bowSpot) and a camera button beside the tub: placeholders for the bottom bar and the camera
+-- stand in the first session plan.
 local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
 	local tub = SpaLayout.tubSpot()
 	local buttons = Instance.new("Model")
 	buttons.Name = "PH_Buttons"
 	local bowButtons: { BasePart } = {}
 	for index, bowId in SpaRules.BOWS do
-		local x = (2 - index) * 2.2
 		local button = makePart(
 			bowId,
 			Vector3.new(1.6, 1.6, 0.4),
 			BOW_COLORS[bowId] or BUTTON_COLOR,
-			tub * CFrame.new(x, 7, -1)
+			tub * bowSpot(index)
 		)
 		button:SetAttribute("BowId", bowId)
 		show(button, false)
@@ -791,7 +799,13 @@ local function seatAt(v: Visit, cat: Cat, id: string?)
 	end
 	cat.model:PivotTo(target :: CFrame)
 	if visit == v then
-		updateWashView(v) -- away at a station: the player's own camera; back in the tub: the wash view again
+		-- the close-up follows the cat: framed on the station's seat, dropped to about the floor (the tub's shot is
+		-- framed from its floor spot) and turned like the tub, so the camera stays on the player's side; or back on
+		-- the tub
+		local tub = SpaLayout.tubSpot()
+		local seat = (target :: CFrame).Position - Vector3.new(0, SEAT_HEIGHT, 0)
+		WashView.frame(if v.away then CFrame.new(seat) * tub.Rotation else nil)
+		updateWashView(v)
 	end
 end
 
@@ -849,7 +863,9 @@ local function showBows(v: Visit, cat: Cat)
 			showCamera(v, true)
 			return
 		end
-		for _, button in v.bowButtons do
+		local tub = SpaLayout.tubSpot()
+		for index, button in v.bowButtons do
+			button.CFrame = tub * bowSpot(index) -- the switch is read as they show
 			show(button, true)
 		end
 	end
@@ -1225,6 +1241,7 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	local cat = buildCat(asset, v.folder, seat)
 	v.cat = cat
 	v.away = false -- a new cat sits in the tub
+	WashView.frame(nil)
 	v.steppedOut = false
 	local marker = v.marker
 	v.marker = nil
@@ -1552,7 +1569,11 @@ end
 
 -- The paw marker bobbing over the waiting cat and the tub's "Wash" prompt, on one invisible part over the seat.
 local function buildMarker(v: Visit): BasePart
-	local seat = v.seat or SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
+	-- over the cat where it sits: in the tub, or at a later step's station
+	local cat = v.cat
+	local seat = if cat
+		then cat.model:GetPivot()
+		else v.seat or SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
 	local anchor =
 		makePart("WashMarker", Vector3.new(1, 1, 1), BUTTON_COLOR, CFrame.new(seat.Position))
 	anchor.Transparency = 1
@@ -1783,6 +1804,7 @@ local function disable()
 	end
 	visit = nil
 	WashView.set(WASH_REASON, false)
+	WashView.frame(nil)
 	updateWashView(nil)
 	trove:Clean()
 	ScrubController.stageChanged:Fire(nil)

@@ -25,6 +25,7 @@ local WashView = {}
 local player = Players.LocalPlayer
 local held: { [string]: boolean } = {}
 local wash: WashCamera.Handle? = nil
+local spot: CFrame? = nil -- what the shot frames (WashView.frame): nil is the tub
 local hiddenParts: { BasePart } = {}
 local hiddenDecals: { Decal } = {}
 local hideConnection: RBXScriptConnection? = nil
@@ -80,7 +81,7 @@ local function apply()
 	end
 	if want then
 		ControlHold.set(HOLD_REASON, true)
-		wash = WashCamera.enter(WashCamera.shot(SpaLayout.tubSpot()))
+		wash = WashCamera.enter(WashCamera.shot(spot or SpaLayout.tubSpot()))
 		hideCharacter(true)
 	else
 		local view = wash
@@ -101,6 +102,17 @@ function WashView.set(reason: string, on: boolean)
 		held[reason] = nil
 	end
 	apply()
+end
+
+-- Frames the view on `where` (a spot on the floor that faces the player, like SpaLayout.tubSpot), or back on the
+-- tub with nil: a cat at a later step's station is washed there in the same close-up (Sync-Agent's run on
+-- f01718c: with the view dropped, the Pawdicure's paws were 10 px behind the avatar). An open view eases over.
+function WashView.frame(where: CFrame?)
+	spot = where
+	local view = wash
+	if view then
+		view.moveTo(WashCamera.shot(where or SpaLayout.tubSpot()))
+	end
 end
 
 -- Is the view held for `reason`?
