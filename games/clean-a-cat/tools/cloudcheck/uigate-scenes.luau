@@ -13,26 +13,15 @@ local UIShim = ...
 local Scenes = {}
 
 local UI
-local plainTrial -- the StyleTrial card built the plain way (#186); the styled way needs StyleSheet, which the shim lacks
 
 function Scenes.setup()
 	UI = UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI")
 	UI.init()
-	local StyleTrial = UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI.StyleTrial")
-	local gui = Instance.new("ScreenGui")
-	gui.Name = "StyleTrialPlain"
-	gui.Parent = UIShim.playerGui
-	plainTrial = StyleTrial.build(gui, false)
 end
 
 local SCENES = {
 	{ "Example", function()
 		UI.open("Example")
-	end },
-	{ "StyleTrialPlain", function()
-		-- alone on screen: the starter HUD's placeholder font would count as a third font next to the card's two
-		UIShim.playerGui.HUD.Enabled = false
-		plainTrial.Visible = true
 	end },
 	{ "Toast", function()
 		UI.toast("This server updates in 10 minutes. Your progress is saved.", "info")
@@ -56,8 +45,6 @@ end
 
 function Scenes.close()
 	UI.closeAll()
-	plainTrial.Visible = false
-	UIShim.playerGui.HUD.Enabled = true
 end
 
 return Scenes
