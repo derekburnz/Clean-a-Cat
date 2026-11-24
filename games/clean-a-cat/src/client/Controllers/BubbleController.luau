@@ -59,6 +59,7 @@ local haveBuilds = false
 local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
 local freeSince = -math.huge
+local chaining = false -- a recap card closed and the next cat waits for the bubbles in a row (afterRecap)
 local trailUntil: number? = nil -- os.clock() when our trail goes; nil while it is not ours
 local trailTo: Vector3? = nil
 
@@ -174,7 +175,7 @@ local function due(): BubbleRules.Bubble?
 	return BubbleRules.pick(facts(), seen)
 end
 
-local function show(bubble: BubbleRules.Bubble, onGone: (() -> ())?)
+local function show(bubble: BubbleRules.Bubble, onGone: ((closed: boolean) -> ())?)
 	told[bubble.id] = true
 	Remotes.event("ReportBubbleSeen"):FireServer(bubble.id)
 	local spot = if bubble.showMe then target(bubble.id) else nil
@@ -194,14 +195,41 @@ end
 -- switch off) it asks at once, so the tub is never left empty by us.
 function BubbleController.afterRecap(nextCat: () -> ())
 	local left = CHAIN
-	local function step()
-		local bubble = if left > 0 then due() else nil
-		if bubble == nil then
+	local finished = false
+	chaining = true
+	local function finish()
+		if not finished then
+			finished = true
+			chaining = false
+			freeSince = os.clock() -- the once-a-second check waits again before a bubble of its own
 			nextCat()
+		end
+	end
+	local step: () -> ()
+	-- Every step runs guarded: an error anywhere in the row still brings the next cat.
+	local function guarded()
+		local failure = ""
+		local ok = xpcall(step, function(err: unknown)
+			failure = tostring(err)
+		end)
+		if not ok then
+			warn(`BubbleController: a bubble failed, next cat now: {failure}`)
+			finish()
+		end
+	end
+	step = function()
+		local bubble = if left > 0 and not finished then due() else nil
+		if bubble == nil then
+			finish()
 			return
 		end
 		left -= 1
-		show(bubble, step)
+		show(bubble, function(closed: boolean)
+			if closed then
+				left = 0 -- the player's X ends the row (Review-QA on #300)
+			end
+			guarded()
+		end)
 		task.delay(WAIT_SECONDS, function()
 			if UI.shownBubble() == bubble then
 				left = 0 -- no more in this row: the next cat comes as this one goes
@@ -209,14 +237,7 @@ function BubbleController.afterRecap(nextCat: () -> ())
 			end
 		end)
 	end
-	local failure = ""
-	local ok = xpcall(step, function(err: unknown)
-		failure = tostring(err)
-	end)
-	if not ok then
-		warn(`BubbleController: a bubble failed, next cat now: {failure}`)
-		nextCat()
-	end
+	guarded()
 end
 
 local function check()
@@ -225,10 +246,11 @@ local function check()
 		UI.hideBubble()
 		return
 	end
-	if UI.bubbleShown() then
+	local now = os.clock()
+	if chaining or UI.bubbleShown() then
+		freeSince = now -- a bubble just going is no free screen (Review-QA on #300)
 		return
 	end
-	local now = os.clock()
 	if UI.busy() or catInTub() or FloorTrail.isShown() then
 		freeSince = now
 		return

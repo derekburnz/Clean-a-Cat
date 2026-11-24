@@ -5,8 +5,8 @@
 --
 --   SudsBubble.build(root)              makes it once
 --   SudsBubble.show(bubble, onPress, onGone)  shows one bubble; onPress() runs when the player presses its button,
---                                       then onGone() once the card goes for any reason (button, X, hide, or another
---                                       bubble taking its place)
+--                                       then onGone(closed) once the card goes for any reason (button, X, hide, or
+--                                       another bubble taking its place); closed is true only for the player's X
 --   SudsBubble.hide()
 --   SudsBubble.isShown(), SudsBubble.current()   whether a bubble shows, and which
 --
@@ -84,7 +84,7 @@ type Parts = {
 local parts: Parts? = nil
 local shown: BubbleRules.Bubble? = nil
 local pressed: (() -> ())? = nil
-local gone: (() -> ())? = nil
+local gone: ((closed: boolean) -> ())? = nil
 
 function SudsBubble.isShown(): boolean
 	return shown ~= nil and LiveFlags.isOn(SudsBubble.FLAG)
@@ -156,22 +156,26 @@ local function redraw()
 end
 
 -- Takes the card away and runs the gone callback of the bubble that was up, once.
-local function takeAway()
+local function takeAway(closed: boolean)
 	local after = gone
 	shown, pressed, gone = nil, nil, nil
 	redraw()
 	if after then
-		after()
+		after(closed)
 	end
 end
 
 function SudsBubble.hide()
 	if shown ~= nil then
-		takeAway()
+		takeAway(false)
 	end
 end
 
-function SudsBubble.show(bubble: BubbleRules.Bubble, onPress: (() -> ())?, onGone: (() -> ())?)
+function SudsBubble.show(
+	bubble: BubbleRules.Bubble,
+	onPress: (() -> ())?,
+	onGone: ((closed: boolean) -> ())?
+)
 	SudsBubble.hide()
 	shown = bubble
 	pressed = onPress
@@ -280,7 +284,11 @@ function SudsBubble.build(root: Frame)
 	local ring = Kit.stroke(dot, 3)
 	ring.ApplyStrokeMode = Enum.ApplyStrokeMode.Border -- the ring round the dot, not round the X
 	dot.Parent = close
-	close.Activated:Connect(SudsBubble.hide)
+	close.Activated:Connect(function()
+		if shown ~= nil then
+			takeAway(true)
+		end
+	end)
 
 	parts = {
 		card = card,

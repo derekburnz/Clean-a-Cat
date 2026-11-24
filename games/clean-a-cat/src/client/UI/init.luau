@@ -19,7 +19,8 @@
 --   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
 --                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
 --   UI.showBubble(bubble, fn, gone)  Suds's help bubble at the bottom (UI/SudsBubble, switch sudsBubble); fn runs
---                             when the player presses its button, gone once the card goes for any reason. UI.hideBubble() takes it away; UI.busy() is true while a
+--                             when the player presses its button, gone(closed) once the card goes for any reason
+--                             (closed: the player's X). UI.hideBubble() takes it away; UI.busy() is true while a
 --                             window, the recap or the dim step is up, when no bubble should start
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
@@ -341,7 +342,11 @@ function UI.showSettings(settings: SettingsRules.Settings)
 	SettingsCard.show(settings)
 end
 
-function UI.showBubble(bubble: BubbleRules.Bubble, onPress: (() -> ())?, onGone: (() -> ())?)
+function UI.showBubble(
+	bubble: BubbleRules.Bubble,
+	onPress: (() -> ())?,
+	onGone: ((closed: boolean) -> ())?
+)
 	SudsBubble.show(bubble, onPress, onGone)
 end
 
@@ -386,8 +391,10 @@ function UI.open(name: string)
 	local frame: Frame? = windows[name]
 	assert(frame ~= nil, `UI.open: no window {name}`)
 	Recap.setHidden(true)
-	SudsBubble.hide() -- a window the player opened wins over a tip
 	frame.Visible = true
+	-- A window the player opened wins over a tip. Hidden after the window shows, so a bubble waiting behind this one
+	-- sees the window and never shows (and counts as seen) under it (Review-QA on #300).
+	SudsBubble.hide()
 	local opened: Frame = frame
 	revealRecap = opened:GetPropertyChangedSignal("Visible"):Connect(function()
 		if not opened.Visible then
