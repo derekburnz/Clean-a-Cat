@@ -1021,6 +1021,9 @@ local function enable()
 			end
 		end)
 	)
+	-- When the app loses focus mid-scrub (a call, a swipe home), Roblox can skip that touch's InputEnded. Let go
+	-- here so the camera and the controls are never left held and the next press can scrub.
+	table.insert(connections, UserInputService.WindowFocusReleased:Connect(release))
 	-- A held trigger has no pointer movement: the middle of the screen moves as the camera turns.
 	table.insert(
 		connections,
