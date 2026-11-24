@@ -38,7 +38,7 @@ WashDraft.PRO_BRUSH = table.freeze({
 	flag = "proBrush",
 	name = "Pro Brush",
 	price = 120,
-	brushStrokes = 1,
+	brushStrokes = 2, -- each stroke clears half the tangles (Design-Agent: one stroke would be a tap)
 })
 
 -- Percent chance, per rarity, that a customer's cat brings each later need. Rolled by the server when the
