@@ -196,6 +196,12 @@ local function askToPlace()
 			end
 			Remotes.event("RequestPlaceKitten"):FireServer()
 		end
+		task.wait(RESEND_SECONDS)
+		if placing and boxState() == false then
+			-- The server never took it (it should not happen): the player gets their camera and walking back, and
+			-- the server's own CARRY_SECONDS still puts him in the tub, so nobody is left frozen in the close view.
+			OpeningController.leaveWash()
+		end
 	end)
 end
 
