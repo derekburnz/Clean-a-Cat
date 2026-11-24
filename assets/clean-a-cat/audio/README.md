@@ -29,4 +29,4 @@ One row per file or Creator Store id, added the moment it is picked. The asset i
 | sfx/CleanACat_Sfx_TruckDoor.ogg | synth/make_sfx.py (ours) | Original | No | 106598333989684 (Creampuff Games) | 2026-11-24 |
 | sfx/CleanACat_Sfx_BoxThud.ogg | synth/make_sfx.py (ours) | Original | No | 113317721257314 (Creampuff Games) | 2026-11-24 |
 | sfx/CleanACat_Sfx_BoxRustle.ogg | synth/make_sfx.py (ours) | Original | No | 112949884290830 (Creampuff Games) | 2026-11-24 |
-| sfx/CleanACat_Sfx_CollarJingle.ogg | synth/make_sfx.py (ours) | Original | No | not uploaded | 2026-11-24 |
+| sfx/CleanACat_Sfx_CollarJingle.ogg | synth/make_sfx.py (ours) | Original | No | 132945251317866 (Creampuff Games) | 2026-11-24 |
