@@ -5,7 +5,7 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 ## Effects
 | Moment | Effect | Where it plays | Preset | Phone budget | Reduce Motion | Issue | Status |
 |---|---|---|---|---|---|---|---|
-| (dirty cat in view) | 2 or 3 soft green stink wisps drift up from over the head, thinning as mud clears, gone when clean | the head's Carry attachment | stinkWisps | Rate 3 phone, 5 PC, life 1.4 s, 2 cats phone, 4 PC, within 60 studs | halved | #122 | built, switch stinkEffects |
+| (dirty cat in view) | 2 or 3 soft green stink wisps drift up from over the head, thinning as mud clears, gone when clean | the head's Carry attachment | stinkWisps | Rate 4 phone (bigger, more solid puffs), 5 PC, life 1.4 s, 2 cats phone, 4 PC, within 60 studs | halved | #122 | built, switch stinkEffects |
 | ScrubMove | Foam bubbles at the sponge point, drift up and pop; rate follows drag speed | hit point on the cat | foamTrail | Rate 8, life 0.8 s | kept, halved | #4 | built, switch scrubEffects |
 | ScrubMove (Bubble Soap) | Wider ring of bubbles | hit point | foamTrailWide | Rate 8, life 0.8 s | kept, halved | #4 | planned |
 | ScrubMove (Golden Sponge pass) | Gold-tinted bubbles, same count | hit point | foamTrailGold | Rate 8, life 0.8 s | kept, halved | #4 | planned |
