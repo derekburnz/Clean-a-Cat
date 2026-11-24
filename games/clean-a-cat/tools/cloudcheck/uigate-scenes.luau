@@ -14,9 +14,29 @@ local Scenes = {}
 
 local UI
 
--- The HUD's switch, as the flags workflow would set it.
+-- A switch, as the flags workflow would set it.
+local function flag(name, on)
+	game:GetService("ReplicatedStorage"):SetAttribute("LiveFlag_" .. name, on)
+end
 local function hud(on)
-	game:GetService("ReplicatedStorage"):SetAttribute("LiveFlag_gameHud", on)
+	flag("gameHud", on)
+end
+
+-- The recap card (#224, switch recapCard) at its widest: the longest name, every row, five stars and New!.
+local function recap(full)
+	flag("recapCard", true)
+	hud(true)
+	UI.setCoins(999999)
+	UI.showRecap({
+		cat = "Marshmallow",
+		rarity = if full then "Legendary" else "Uncommon",
+		coins = 80,
+		tip = 15,
+		bonus = 12,
+		stars = if full then 5 else 1,
+		isNew = true,
+		full = full,
+	})
 end
 
 function Scenes.setup()
@@ -42,6 +62,12 @@ local SCENES = {
 		hud(true)
 		UI.setCoins(12345678)
 		UI.setWashStage("dirty")
+	end },
+	{ "RecapFull", function()
+		recap(true)
+	end },
+	{ "RecapStrip", function()
+		recap(false)
 	end },
 	{ "HudWalking", function()
 		hud(true)
@@ -69,6 +95,7 @@ function Scenes.close()
 	UI.closeAll()
 	UI.setWashStage(nil)
 	hud(false)
+	flag("recapCard", false)
 end
 
 return Scenes

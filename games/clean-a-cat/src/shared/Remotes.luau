@@ -43,7 +43,7 @@ Remotes.ServerToClient = {
 	"CatIndex", -- (index: { [cat]: { washed: boolean, resident: boolean } })  the stamped cats (switch catIndex)
 	"Builds", -- (builds: { [slot]: { item, endsAt } }, built: { string }, serverNow: number)  for the board and countdowns
 	"BuildFinished", -- (id: string)  a build just finished, or finished while the player was away: celebrate (switch builds)
-	"PhotoPaid", -- (catId: number, coins: number, total: number)  the photo paid; total is the save's coins
+	"PhotoPaid", -- (catId: number, coins: number, total: number, recap: RecapRules.Recap?)  the photo paid; total is the save's coins; recap for a customer while recapCard is on
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view
 	-- after every spa report, so a client whose step was refused falls back to it instead of getting stuck
 }

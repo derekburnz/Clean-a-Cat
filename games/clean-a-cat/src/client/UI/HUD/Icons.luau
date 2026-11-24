@@ -12,18 +12,27 @@ Icons.IMAGES = {
 	Brush = "",
 	Bow = "",
 	Camera = "",
+	Star = "",
+	Paw = "",
+	Heart = "",
+	Station = "",
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
 
 -- The stand-in for an icon with no image yet.
-type StandIn = { glyph: string, fill: Color3, round: boolean }
+-- `bare` draws the glyph alone, with no tile (a star or a row's small icon).
+type StandIn = { glyph: string, fill: Color3, round: boolean, bare: boolean? }
 local STAND_INS: { [string]: StandIn } = {
 	Coins = { glyph = "", fill = Color3.fromHex("FFC94D"), round = true }, -- a plain gold coin
 	Sponge = { glyph = "🧽", fill = Color3.fromHex("FFE98F"), round = false },
 	Brush = { glyph = "🖌", fill = Color3.fromHex("FFB3C7"), round = false },
 	Bow = { glyph = "🎀", fill = Color3.fromHex("FFD6E7"), round = false },
 	Camera = { glyph = "📷", fill = Color3.fromHex("8FD3FE"), round = false },
+	Star = { glyph = "⭐", fill = Color3.fromHex("FFC94D"), round = true, bare = true },
+	Paw = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Heart = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Station = { glyph = "🛁", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 }
 
 -- Puts icon `name` inside `parent`, filling it, and returns it. `faded` dims it (a step already done).
@@ -45,7 +54,19 @@ function Icons.draw(name: string, parent: GuiObject, faded: boolean?): GuiObject
 		label.Parent = parent
 		return label
 	end
-	local standIn = STAND_INS[name] or { glyph = "?", fill = Color3.new(1, 1, 1), round = true }
+	local standIn: StandIn = STAND_INS[name]
+		or { glyph = "?", fill = Color3.new(1, 1, 1), round = true, bare = false }
+	if standIn.bare then
+		local glyph = Instance.new("TextLabel")
+		glyph.Name = "Icon"
+		glyph.BackgroundTransparency = 1
+		glyph.Size = UDim2.fromScale(1, 1)
+		glyph.Text = standIn.glyph
+		glyph.TextScaled = true -- an emoji stand-in, not words: it fills its box
+		glyph.TextTransparency = fade
+		glyph.Parent = parent
+		return glyph
+	end
 	local tile = Instance.new("Frame")
 	tile.Name = "Icon"
 	tile.Size = UDim2.fromScale(1, 1)

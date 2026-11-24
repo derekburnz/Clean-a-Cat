@@ -24,6 +24,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
+local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local ScrubRules = require(Shared:WaitForChild("ScrubRules"))
 local Signal = require(Shared:WaitForChild("Signal"))
@@ -103,6 +104,17 @@ local ScrubController = {}
 -- Fires (stage) each time the visit moves to another step, and (nil) when the visit ends. The HUD's step bar and
 -- tool tray listen (HudController, #210). Read-only for listeners, like Moments.
 ScrubController.stageChanged = Signal.new() :: Signal.Signal<string?>
+
+-- The recap card (#224, switch recapCard): RecapController sets a handler that shows the card after a customer's cat
+-- goes home and calls `nextCat` once when the player closes it. With no handler, or the switch off, the next cat
+-- comes by itself as before.
+export type RecapHandler = (recap: RecapRules.Recap, nextCat: () -> ()) -> ()
+local RECAP_FLAG = "recapCard"
+local recapHandler: RecapHandler? = nil
+
+function ScrubController.setRecapHandler(handler: RecapHandler?)
+	recapHandler = handler
+end
 
 local visit: Visit? = nil
 local enabled = false
@@ -904,12 +916,13 @@ local function onCatStage(
 	)
 end
 
-local function onPhotoPaid(rawId: unknown)
+local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, rawRecap: unknown)
 	local v = visit
 	local cat = if v then v.cat else nil
 	if not v or not cat or rawId ~= v.catId or v.stage ~= "styled" then
 		return
 	end
+	local recap = RecapRules.clean(rawRecap)
 	setStage(v, "done")
 	show(v.camera, false)
 	Moments.PhotoTaken:Fire(cat.model)
@@ -925,8 +938,19 @@ local function onPhotoPaid(rawId: unknown)
 		end
 		task.wait(NEXT_CAT_SECONDS - LEAVE_SECONDS)
 		nextCatThread = nil
-		if visit == v then
-			Remotes.event("RequestCat"):FireServer()
+		local asked = false
+		local function nextCat()
+			if not asked and visit == v then
+				asked = true
+				Remotes.event("RequestCat"):FireServer()
+			end
+		end
+		local handler = recapHandler
+		if recap ~= nil and handler ~= nil and LiveFlags.isOn(RECAP_FLAG) then
+			-- The tub stays empty until the player closes the card: a natural place to stop, with no countdown.
+			handler(recap, nextCat)
+		else
+			nextCat()
 		end
 	end)
 end

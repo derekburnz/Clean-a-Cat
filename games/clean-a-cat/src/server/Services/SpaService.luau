@@ -18,6 +18,7 @@ local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 
@@ -33,6 +34,7 @@ local FLAG = "scrubPrototype"
 local CUSTOMERS_FLAG = "customers"
 local STRAYS_FLAG = "strays"
 local PICK_FLAG = "queuePick"
+local RECAP_FLAG = "recapCard"
 local QUEUE_SIZE = SpaRules.QUEUE_SIZE
 local BOARD_LIT = "ChanceBoardLit" -- Player attribute: true once a customer has been served, so the board shows
 local MAX_CAT_ID = 2 ^ 31
@@ -211,8 +213,9 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	end
 	Telemetry.onboarding(player, "first_photo")
 	local kind = cat.kind
+	local isNew = false
 	if kind ~= nil then
-		IndexService.stamp(player, kind, "washed")
+		isNew = IndexService.stamp(player, kind, "washed")
 	end
 	if kind ~= nil and cat.stray then
 		-- A stray has nobody to pay: the photo coins, and it moves into the window when there is room.
@@ -240,14 +243,21 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	coins = pay.coins + pay.tip + bonus
 	save.coins += coins
 	WalletService.show(player)
+	local starsBefore = save.stars
 	save.stars += pay.stars
 	player:SetAttribute(BOARD_LIT, true)
 	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
-	NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
-	NetService.notice(
-		player,
-		`+{coins} coins, +{pay.stars} {if pay.stars == 1 then "star" else "stars"}`
-	)
+	if LiveFlags.isOn(RECAP_FLAG) then
+		-- The recap card shows the payment line by line (#224), so it replaces the toast.
+		local recap = RecapRules.make(kind, pay, bonus, starsBefore, isNew)
+		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins, recap)
+	else
+		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
+		NetService.notice(
+			player,
+			`+{coins} coins, +{pay.stars} {if pay.stars == 1 then "star" else "stars"}`
+		)
+	end
 	Telemetry.onboarding(player, "first_return")
 end
 
