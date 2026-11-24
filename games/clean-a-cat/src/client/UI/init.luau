@@ -8,6 +8,8 @@
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
+--   UI.onSettingsChanged(fn)  fn(settings) on every change on the Settings card (UI/Settings, switch settingsCard,
+--                             #230); with the switch on, the Menu opens that card
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
@@ -17,12 +19,16 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local RecapRules = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("RecapRules"))
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local RecapRules = require(Shared:WaitForChild("RecapRules"))
+local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 
 local Comfort = require(script:WaitForChild("Comfort"))
 local HUD = require(script:WaitForChild("HUD"))
 local Motion = require(script:WaitForChild("Motion"))
 local Recap = require(script:WaitForChild("Recap"))
+local SettingsCard = require(script:WaitForChild("Settings"))
 
 local UI = {}
 
@@ -36,7 +42,10 @@ local MENU_EDGE = 16 -- px from the left edge (inside the TV inset on a console)
 local MENU_HEIGHT = 0.5 -- share of the root's height at the Menu's centre
 local MENU_HEIGHT_HUD = 0.36 -- with the game HUD on: clear of the touch thumbstick on a small phone (#222)
 
+local SETTINGS_FLAG = "settingsCard"
+
 local windows: { [string]: Frame } = {}
+local settingsListeners: { (SettingsRules.Settings) -> () } = {}
 local toastLabel: TextLabel? = nil
 local toastToken = 0
 
@@ -125,7 +134,7 @@ function UI.init()
 	local menu = button("Menu", root)
 	menu.AnchorPoint = Vector2.new(0.5, 0.5)
 	menu.Activated:Connect(function()
-		UI.open("Example")
+		UI.open(if LiveFlags.isOn(SETTINGS_FLAG) then "Settings" else "Example")
 	end)
 	Motion.press(menu) -- trial springs, switch springUi (#183)
 
@@ -168,6 +177,11 @@ function UI.init()
 	toastLabel = toast
 
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
+	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
+		for _, listener in settingsListeners do
+			listener(settings)
+		end
+	end)
 
 	local example = window("Example", "Example window", hud)
 	local body = Instance.new("TextLabel")
@@ -194,6 +208,15 @@ end
 
 function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
+end
+
+function UI.onSettingsChanged(fn: (SettingsRules.Settings) -> ())
+	table.insert(settingsListeners, fn)
+end
+
+-- Draws these values on the Settings card (when the controller resets them).
+function UI.showSettings(settings: SettingsRules.Settings)
+	SettingsCard.show(settings)
 end
 
 function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)

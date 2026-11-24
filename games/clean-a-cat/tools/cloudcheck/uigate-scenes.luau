@@ -69,6 +69,16 @@ local SCENES = {
 	{ "RecapStrip", function()
 		recap(false)
 	end },
+	-- The Settings card (#230, switch settingsCard): as it opens, then with a slider low and a switch on.
+	{ "Settings", function()
+		flag("settingsCard", true)
+		UI.open("Settings")
+	end },
+	{ "SettingsChanged", function()
+		flag("settingsCard", true)
+		UI.showSettings({ music = 0.2, sounds = 0.85, lessShake = true, lessSparkle = false })
+		UI.open("Settings")
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
@@ -96,6 +106,8 @@ function Scenes.close()
 	UI.setWashStage(nil)
 	hud(false)
 	flag("recapCard", false)
+	flag("settingsCard", false)
+	UI.showSettings({ music = 1, sounds = 1, lessShake = false, lessSparkle = false })
 end
 
 return Scenes
