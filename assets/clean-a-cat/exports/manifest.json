@@ -1,5 +1,57 @@
 [
  {
+  "name": "CleanACat_Area_Backdrop",
+  "category": "Area",
+  "module": "backdrop",
+  "objects": [
+   "CleanACat_Area_Backdrop",
+   "CleanACat_Area_Backdrop_Ground",
+   "CleanACat_Area_Backdrop_Dashes",
+   "CleanACat_Area_Backdrop_Hills",
+   "CleanACat_Area_Backdrop_HillsFar"
+  ],
+  "triangles": 15228,
+  "budget": 40000,
+  "parts": 505,
+  "size_studs": {
+   "x": 1180.0,
+   "y": 749.67,
+   "z": 326.53
+  },
+  "size_roblox": [
+   1180.0,
+   326.53,
+   749.67
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 2,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "15228/40000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "9996 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-243.68 (want 0)",
+    "centered": "footprint center x=-22.00 y=-18.55",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_Backdrop.png"
+ },
+ {
   "name": "CleanACat_Area_SpaPlot",
   "category": "Area",
   "module": "plot",
@@ -63,11 +115,12 @@
    "CleanACat_Area_Street_Dashes",
    "CleanACat_Area_Street_Houses",
    "CleanACat_Area_Street_Greenery",
+   "CleanACat_Area_Street_Pavement",
    "CleanACat_Area_Street_Barrier"
   ],
-  "triangles": 2624,
+  "triangles": 7844,
   "budget": 20000,
-  "parts": 105,
+  "parts": 379,
   "size_studs": {
    "x": 320.0,
    "y": 153.2,
@@ -88,15 +141,15 @@
     "centered"
    ],
    "qa_accepted": {
-    "shared corners": 2,
-    "back to back": 5,
+    "shared corners": 3,
+    "back to back": 7,
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2624/20000 tris",
+    "budget": "7844/20000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1488 faces on swatch centers",
+    "uv": "4677 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-1.03 (want 0)",
     "centered": "footprint center x=-22.00 y=-20.00",
