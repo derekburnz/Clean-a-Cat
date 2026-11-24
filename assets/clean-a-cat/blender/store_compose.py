@@ -4,7 +4,8 @@ makes the draft sheet with each option shown at its real size and at the small s
     python3 assets/clean-a-cat/blender/store_compose.py <raw folder> <out folder> [sheet.png] [--final]
 
 Plain Python with Pillow (not Blender). Fonts: Inter Black from the system (`fc-list | grep "Inter Black"`); swap
-FONT for the game's UI font once the ui-designer picks one. Words: the game's name CLEAN A CAT or none, huge, high contrast, never "free".
+FONT for the game's UI font once the ui-designer picks one. Words: the game's name CLEAN A CAT or none, huge, high
+contrast, never "free".
 """
 
 import os
@@ -179,7 +180,7 @@ def sheet(made, out):
         sh.alpha_composite(sm, (x, y + 410))
         label(d, (x + 164, y + 440), "150 px wide", 18, (90, 86, 120))
     notes = ["Rules kept: the first minute's action (a muddy cat, a sponge, foam), Common cats only (Smudge, Muffin,",
-             "Cotton, Inky), no cat cropped, words only the name CLEAN A CAT, never free. Rendered from the real models.",
+             "Cotton, Inky), no cat cropped, words only the name CLEAN A CAT, never free. Made from the real models.",
              "After the pick: a final 512 x 512 icon and 1920 x 1080 thumbnails. Nothing is uploaded until Derek says."]
     for j, n in enumerate(notes):
         label(d, (48, 1240 + 34 * j), n, 24, (90, 86, 120))
