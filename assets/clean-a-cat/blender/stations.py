@@ -10,6 +10,12 @@
                           Attachment `CatSeat` 1.5 studs up, facing the player (-Z in Roblox): put the sitting
                           cat's pivot there. The body collides; the rim, water and foam do not.
 
+  CleanACat_Station_BubbleBath    the wash tub's upgrade (#23, reworked by #172 to look the better bath of the two):
+                                  a round bubblegum slipper bath on a cream and gold plinth, its back sweeping up
+                                  behind the cat, lather heaped high and spilling over the front, and a gold bubble
+                                  fountain whose mint mouth is the part `Spout` (Attachment `Bubbles`). `CatSeat`
+                                  1.5 up, as at the tub.
+
   CleanACat_Station_BrushTable    the grooming table: a wooden table on four legs with a mint rubber mat, a towel on
                                   the shelf underneath. `CatSeat` on the mat.
   CleanACat_Station_BrushTableUp  its upgrade, same footprint, pivot and CatSeat: painted cream with round legs and
@@ -90,9 +96,12 @@ def _tub_shell(b):
     _ring(b, FLOOR_Z - 0.03, RIM_Z - FLOOR_Z + 0.03, END_R, RIM_W, "offwhite")     # the rolled rim
     face = Matrix.Rotation(math.pi / 2, 3, "Y")
     for k, (sx, deg, z, r) in enumerate(((0, -0.3, 1.2, 0.2), (0, 0.25, 0.98, 0.12), (1, -62, 1.26, 0.15),
-                                         (1, -38, 1.02, 0.1))):                  # painted bubbles: white discs
-        if sx == 0:                                    # on the straight front: deg is x here
-            x, y, t = deg, -BODY_R + 0.015, -math.pi / 2
+                                         (1, -38, 1.02, 0.1),                    # painted bubbles: white discs
+                                         (2, 0.45, 1.18, 0.19), (2, -0.1, 0.98, 0.11))):   # and two on the back,
+        if sx == 0:                                    # on the straight front: deg is x here   # seen first from
+            x, y, t = deg, -BODY_R + 0.015, -math.pi / 2                                        # the spawn (#172)
+        elif sx == 2:                                  # on the straight back
+            x, y, t = deg, BODY_R - 0.015, math.pi / 2
         else:
             x, y, t = _on_end(sx, deg, BODY_R - 0.006)
         b.cyl((x, y, z), r, 0.04 + 0.004 * k, "offwhite" if k % 2 == 0 else "fish_belly", segments=8, bevel=False,
@@ -424,73 +433,177 @@ def dryer_rbx_extras():
 
 
 # -- #23 later stations ------------------------------------------------------------------------------------------
-BATH_R = 1.95                     # the bubble bath's outer radius: 3.9 across, inside the 5 stud pad
-BATH_SEAT = 1.3                   # its inner floor, where the cat sits in the water
-BATH_RIM = 1.7
-BATH_WATER = 1.58                 # the water's surface, just under the rim (#111)
+# The bubble bath is the wash tub's upgrade, so it has to look like the better bath beside the claw-foot tub (#172):
+# rounder and deeper than the tub (4.6 across on its plinth), a slipper back that sweeps up behind the cat, a gold
+# band and plinth step, lather heaped high and spilling over the front, and a gold bubble fountain over the top.
+BATH_R = 2.2                      # the bath's outer radius at the rim: 4.4 across, inside the 5 stud pad
+BATH_PLINTH = 2.3                 # the cream plinth it stands on: 4.6 across
+BATH_SEAT = SEAT_Z                # the CatSeat, as high as the wash tub's: one camera and one reach for both baths
+BATH_WATER = BATH_SEAT + 0.27     # the water's surface, as far up the cat as in the tub
+BATH_RIM = BATH_WATER + 0.06      # top of the rim at the front: the water stands just under it (Derek, #157)
+BATH_FLOOR = BATH_RIM - 0.21      # top of the solid body, as in the tub
+BATH_WALL = 0.42                  # the wall's width
+BATH_BACK = 1.3                   # how far the slipper back rises over the front rim
+BATH_N = 16                       # blocks in the wall's ring
+BATH_BODY = BATH_R - 0.05         # the body under the wall
+SPOUT_Z = BATH_SEAT + 3.1         # the fountain's mouth: over the top of a 1.5 scale cat's ears (4.27)
+FOUNT_DEG = 56.25                 # the fountain stands on the back wall right of the cat, not behind its head,
+#                                   so from the front it does not look like it grows out of the cat
+FOUNT_REACH = 0.78                # how far its neck arches in towards the cat
+
+
+def _bath_at(deg, r):
+    """A point round the bath at `deg` (0 right, 90 the back, -90 the front where the player stands) and radius r:
+    (x, y, the turn that faces a box's local +X outwards)."""
+    t = math.radians(deg)
+    return math.cos(t) * r, math.sin(t) * r, t
+
+
+def _bath_rise(deg):
+    """How far the wall stands over the front rim at `deg`: nothing round the front, sweeping up to the back."""
+    u = max(0.0, (math.sin(math.radians(deg)) + 0.2) / 1.2)
+    return BATH_BACK * u ** 1.6
+
+
+def _fountain_at(reach=0.0):
+    """Where the fountain stands on the wall (x, y), or with `reach` a point that far in towards the middle."""
+    x, y, _t = _bath_at(FOUNT_DEG, BATH_R - 0.03 - BATH_WALL / 2 - reach)
+    return x, y
+
+
+SPOUT_X, SPOUT_Y = _fountain_at(FOUNT_REACH)       # the fountain's mouth, behind the cat's left ear
+
+
+def _bath_shell(b):
+    """Plinth, foot, body, gold band, then the wall: a ring of blocks with a cream rolled rim that climbs to the
+    slipper back. Neighbours differ a hair in height so their crossing corners share no plane."""
+    b.cyl_base((0, 0, -0.02), BATH_PLINTH, 0.22, "spa_cream", segments=16, bevel=False)          # the plinth
+    b.cyl_base((0, 0, 0.14), BATH_PLINTH - 0.24, 0.16, "gold_mid", segments=16, bevel=False)     # its gold step
+    flare = 0.82
+    b.cyl_base((0, 0, 0.24), BATH_BODY - 0.36, flare - 0.2, "spa_bubblegum", segments=16, bevel=False)   # the foot
+    b.cyl_base((0, 0, flare), BATH_BODY, BATH_FLOOR - flare, "spa_bubblegum", segments=16, bevel=False)  # the body
+    b.cyl_base((0, 0, flare - 0.04), BATH_BODY + 0.04, 0.13, "gold_mid", segments=16, bevel=False)       # gold band
+    r = BATH_R - 0.03 - BATH_WALL / 2
+    w = 2 * (BATH_R - 0.03) * math.tan(math.pi / BATH_N) + 0.03
+    cap = 0.17
+    for i in range(BATH_N):
+        deg = 360.0 * (i + 0.5) / BATH_N - 90.0
+        x, y, t = _bath_at(deg, r)
+        rot = Matrix.Rotation(t, 3, "Z")
+        top = BATH_RIM + _bath_rise(deg) + 0.004 * (i % 2)
+        z0 = BATH_FLOOR - 0.03 - 0.003 * (i % 2)
+        b.box_base((x, y, z0), (BATH_WALL, w, top - cap + 0.02 - z0), "spa_bubblegum", bevel=False, rot=rot)
+        b.box_base((x, y, top - cap), (BATH_WALL + 0.09, w + 0.02, cap), "spa_cream", rot=rot)   # the rolled rim
+    # a paw print painted on the front and one on the back: a white pad and three toes
+    face = Matrix.Rotation(math.pi / 2, 3, "Y")
+    for side in (-90, 90):
+        for k, (deg, z, rad) in enumerate(((0, 1.13, 0.23), (-7.4, 1.4, 0.105), (0, 1.5, 0.11), (7.4, 1.4, 0.105))):
+            x, y, t = _bath_at(side + deg, BATH_BODY - 0.006)
+            b.cyl((x, y, z), rad, 0.04 + 0.004 * k, "offwhite", segments=8, bevel=False,
+                  rot=Matrix.Rotation(t, 3, "Z") @ face)
+
+
+def _bath_duck(b):
+    """A rubber duck on the rim at the front right."""
+    x, y, _t = _bath_at(-38, BATH_R - 0.03 - BATH_WALL / 2)
+    z = BATH_RIM + _bath_rise(-38)
+    b.sphere((x, y, z + 0.14), 0.21, "pastel_butter", segments=8, rings=4, scale=(1.2, 1, 0.8))
+    b.sphere((x - 0.08, y - 0.12, z + 0.34), 0.14, "pastel_butter", segments=8, rings=4)
+    b.box((x - 0.12, y - 0.28, z + 0.32), (0.1, 0.12, 0.05), "spa_bubblegum", bevel=False)
+
+
+def _bath_fountain(b):
+    """A gold bubble fountain: it stands on the slipper back and arches in over the cat. Its mouth is the mint
+    `_Spout` part, built apart."""
+    x, y = _fountain_at()
+    foot = BATH_RIM + _bath_rise(FOUNT_DEG)
+    top = SPOUT_Z + 0.26
+    turn = Matrix.Rotation(math.radians(FOUNT_DEG) - math.pi / 2, 3, "Z")       # the neck points at the middle
+    b.cyl_base((x, y, foot - 0.02), 0.22, 0.1, "gold_mid", segments=10, bevel=False)             # the flange
+    b.cyl_base((x, y, foot + 0.04), 0.12, top - foot - 0.04, "gold_mid", segments=8, bevel=False)   # the riser
+    b.sphere((x, y, foot + 0.5), 0.2, "gold_light", segments=8, rings=4)                         # a bead on it
+    for d, dz, deg in ((0.13, 0.115, 45), (0.39, 0.23, 90), (0.65, 0.115, 135)):                 # the neck
+        nx, ny = _fountain_at(d)
+        b.cyl((nx, ny, top + dz), 0.12, 0.44, "gold_mid", segments=8, bevel=False,
+              rot=turn @ Matrix.Rotation(math.radians(deg), 3, "X"))
+    b.cyl((SPOUT_X, SPOUT_Y, SPOUT_Z + 0.17), 0.19, 0.16, "gold_mid", segments=8, bevel=False)    # the collar
+
+
+# The bath's lather. Mounds lie on the water round the cat, (degrees, distance out, radius); white balls sit on them;
+# two tidy piles stand high against the slipper back; and at the front left the lather spills over the rim and down
+# the side to a puddle on the plinth. The front middle stays open water.
+BATH_MOUNDS = [(128, 1.22, 0.5), (52, 1.22, 0.5), (178, 1.3, 0.42), (2, 1.3, 0.42), (226, 1.28, 0.44),
+               (-52, 1.3, 0.36), (90, 1.3, 0.46)]
+BATH_BALLS = [(186, 1.4, 0.17), (-6, 1.4, 0.17), (236, 1.36, 0.19), (-44, 1.38, 0.15), (214, 1.3, 0.16)]
+BATH_PILES = [(146, 1.34, 0.34), (34, 1.34, 0.32)]
+BATH_SPILL = [(-128, -0.2, 0.0, 0.3), (-112, -0.22, -0.02, 0.2), (-143, -0.2, -0.03, 0.22),    # on the rim
+              (-129, 0.02, -0.34, 0.26), (-123, 0.05, -0.74, 0.19), (-133, 0.07, -1.08, 0.14)]  # down the side
+#               (degrees, distance out from the rim's edge, height from the rim's top, radius)
+
+
+def _bath_foam():
+    f = Builder()
+    for deg, d, r in BATH_MOUNDS:
+        x, y, _t = _bath_at(deg, d)
+        foam_mound(f, x, y, BATH_WATER, r)
+    for deg, d, r in BATH_BALLS:
+        x, y, _t = _bath_at(deg, d)
+        foam_bubble(f, x, y, BATH_WATER + 0.08, r)
+    for k, (deg, d, r) in enumerate(BATH_PILES):
+        x, y, _t = _bath_at(deg, d)
+        foam_pile(f, x, y, BATH_WATER + 0.1, r, ring=3, turn=0.5 + 2.2 * k, segments=DETAIL["ball"][0],
+                  rings=DETAIL["ball"][1])
+    for deg, d, dz, r in BATH_SPILL:
+        x, y, _t = _bath_at(deg, BATH_R + d)
+        foam_bubble(f, x, y, BATH_RIM + dz - 0.45 * r, r)
+    x, y, _t = _bath_at(-130, BATH_R + 0.02)                                       # the puddle on the plinth
+    foam_mound(f, x, y, 0.2, 0.3)
+    return f
+
+
+def _bath_bubbles():
+    spots = []
+    for deg, d, lift, r in ((128, 1.18, 0.55, 0.27), (52, 1.18, 0.52, 0.23), (226, 1.22, 0.5, 0.24),
+                            (2, 1.26, 0.44, 0.19), (-52, 1.26, 0.4, 0.16)):         # on the lather
+        x, y, _t = _bath_at(deg, d)
+        spots.append((x, y, BATH_WATER + lift, r))
+    x, y, _t = _bath_at(-12, BATH_R - 0.24)
+    spots.append((x, y, BATH_RIM + _bath_rise(-12) + 0.17, 0.19))                   # one on the rim
+    spots += [(SPOUT_X + 0.42, SPOUT_Y - 0.2, SPOUT_Z - 0.42, 0.15), (SPOUT_X + 0.1, SPOUT_Y - 0.5, SPOUT_Z + 0.3, 0.12),
+              (-2.15, -0.5, 3.0, 0.24), (2.2, -0.7, 3.45, 0.19), (-1.75, -1.2, 3.85, 0.14)]   # from the fountain, adrift
+    return _bubbles(spots)
 
 
 def build_bubble_bath(mat):
-    """A round bubblegum bath on a cream foot, a ring of rim blocks, sky water heaped with foam, a rubber duck and a
-    bubble spout arching over from the back."""
+    """The bubble bath: a round bubblegum slipper bath on a cream and gold plinth (see the notes above). Deep blue
+    water (_Water) stands just under the front rim, heaped with lather (_Foam) and soap bubbles (_Bubbles); the
+    fountain's mint mouth is `_Spout`."""
     name = "CleanACat_Station_BubbleBath"
     b = Builder()
-    b.cyl_base((0, 0, -0.02), BATH_R - 0.3, 0.2, "spa_cream", segments=12, bevel=False)        # the foot
-    b.cyl_base((0, 0, 0.15), BATH_R, BATH_SEAT - 0.17, "spa_bubblegum", segments=14, bevel=False)   # the body
-    n = 12
-    for i in range(n):                                                             # the wall, a ring of blocks
-        t = 2 * math.pi * (i + 0.5) / n
-        r = BATH_R - 0.17
-        w = 2 * BATH_R * math.sin(math.pi / n) + 0.04
-        b.box_base((math.cos(t) * r, math.sin(t) * r, BATH_SEAT - 0.05 + 0.003 * (i % 2)), (0.36, w, BATH_RIM - BATH_SEAT),
-                   "spa_bubblegum", bevel=False, rot=Matrix.Rotation(t, 3, "Z"))
-        b.box_base((math.cos(t) * r, math.sin(t) * r, BATH_RIM - 0.06 + 0.004 * (i % 2)), (0.46, w + 0.02, 0.14),
-                   "spa_cream", bevel=False, rot=Matrix.Rotation(t, 3, "Z"))      # the cream rim cap
-    b.cyl_base((0, 0, BATH_SEAT - 0.03), BATH_R - 0.3, 0.03, "spa_tile", segments=14, bevel=False)   # inner floor
-    # a rubber duck on the rim
-    dx, dy = math.cos(math.radians(-40)) * (BATH_R - 0.17), math.sin(math.radians(-40)) * (BATH_R - 0.17)
-    b.sphere((dx, dy, BATH_RIM + 0.26), 0.2, "pastel_butter", segments=8, rings=4, scale=(1.2, 1, 0.8))
-    b.sphere((dx - 0.08, dy - 0.12, BATH_RIM + 0.45), 0.13, "pastel_butter", segments=8, rings=4)
-    b.box((dx - 0.12, dy - 0.27, BATH_RIM + 0.43), (0.1, 0.12, 0.05), "spa_bubblegum", bevel=False)
-    # the spout's pipe: up from behind the bath and over the rim
-    py = BATH_R + 0.18
-    b.cyl_base((0, py, -0.02), 0.13, SPOUT_Z + 0.2, "metal", segments=8, bevel=False)
-    b.box((0, (py + SPOUT_Y) / 2, SPOUT_Z + 0.12), (0.18, py - SPOUT_Y + 0.12, 0.18), "metal", bevel=False)
+    _bath_shell(b)
+    _bath_duck(b)
+    _bath_fountain(b)
     main = _tris(b.finalize(name, mat))
     w_ = Builder()
-    w_.cyl_base((0, 0, BATH_SEAT), BATH_R - 0.32, BATH_WATER - BATH_SEAT, "water", segments=14, bevel=False)
-    water_shine(w_, BATH_WATER, [(0.55, -1.25, 0.6, 0), (1.05, -1.05, 0.3, 0), (-0.2, -1.38, 0.3, 0)])
+    z = BATH_FLOOR + 0.004
+    w_.cyl_base((0, 0, z), BATH_R - BATH_WALL - 0.01, BATH_WATER - z, "water", segments=16, bevel=False)
+    water_shine(w_, BATH_WATER, [(0.25, -1.4, 0.7, 0), (0.85, -1.2, 0.3, 0), (-0.45, -1.52, 0.34, 0),
+                                 (-1.0, -0.95, 0.3, 0)])
     water = _tris(w_.finalize(name + "_Water", mat, bevel=0))
-    f = Builder()
-    ring = BATH_R - 0.78
-    for i, (deg, r) in enumerate(((125, 0.46), (55, 0.4), (180, 0.36), (228, 0.44), (-12, 0.36))):   # lather round
-        t = math.radians(deg)                                                                       # the cat
-        foam_mound(f, math.cos(t) * ring, math.sin(t) * ring, BATH_WATER, r)
-        foam_bubble(f, math.cos(t + 0.22) * (ring + 0.08), math.sin(t + 0.22) * (ring + 0.08), BATH_WATER + 0.06,
-                    0.2 - 0.02 * (i % 3))
-    foam = common.shade_smooth(f.finalize(name + "_Foam", mat))
-    spots = []
-    for deg, lift, r in ((120, 0.5, 0.26), (60, 0.44, 0.2), (225, 0.48, 0.24), (-10, 0.4, 0.18)):   # on the lather
-        t = math.radians(deg)
-        spots.append((math.cos(t) * (ring - 0.05), math.sin(t) * (ring - 0.05), BATH_WATER + lift, r))
-    spots += [(-1.55, -1.0, BATH_RIM + 0.26, 0.19), (1.35, 1.3, BATH_RIM + 0.22, 0.16),   # spilled on the rim
-              (-1.9, 0.35, 2.9, 0.23), (1.95, -0.3, 3.4, 0.18), (-1.6, -0.9, 3.75, 0.13), (1.6, 0.8, 2.6, 0.14)]
-    bubbles = common.shade_smooth(_bubbles(spots).finalize(name + "_Bubbles", mat, bevel=0))
-    s_ = Builder()                                                                # the spout's mouth
-    s_.cyl((0, 0, 0), 0.17, 0.2, "spa_mint", segments=8, bevel=False)
-    spout = _tris(s_.finalize(name + "_Spout", mat, bevel=0, location=(0, SPOUT_Y, SPOUT_Z)))
-    barrier = _barrier(name, mat, (2.4, 2.4, BATH_SEAT - 0.25), (0, 0, 0.04))
+    foam = common.shade_smooth(_bath_foam().finalize(name + "_Foam", mat))
+    bubbles = common.shade_smooth(_bath_bubbles().finalize(name + "_Bubbles", mat, bevel=0))
+    s_ = Builder()                                                                # the fountain's mouth, a bell
+    s_.cyl((0, 0, 0), 0.25, 0.2, "spa_mint", segments=10, bevel=False)
+    spout = _tris(s_.finalize(name + "_Spout", mat, bevel=0, location=(SPOUT_X, SPOUT_Y, SPOUT_Z)))
+    barrier = _barrier(name, mat, (2.9, 2.9, BATH_FLOOR - 0.3), (0, 0, 0.04))
     return [main, water, foam, bubbles, spout, barrier]
 
 
-SPOUT_Y, SPOUT_Z = 1.2, 4.7       # the spout's mouth, over the back of the bath above a 1.5 scale cat's ears
-
-
 def bubble_bath_rbx_extras():
-    return {"attachments": [("CleanACat_Station_BubbleBath", "CatSeat", Matrix.Translation((0.0, 0.0, BATH_SEAT + 0.02))),
+    return {"attachments": [("CleanACat_Station_BubbleBath", "CatSeat", Matrix.Translation((0.0, 0.0, BATH_SEAT))),
                             ("CleanACat_Station_BubbleBath_Spout", "Bubbles",
-                             Matrix.Translation((0.0, SPOUT_Y, SPOUT_Z - 0.1)))],
-            "attributes": {"SeatHeight": {"Float64": BATH_SEAT + 0.02}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
+                             Matrix.Translation((SPOUT_X, SPOUT_Y, SPOUT_Z - 0.1)))],
+            "attributes": {"SeatHeight": {"Float64": BATH_SEAT}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
 
 
 PAW_Z = 1.6                       # the pawdicure table's cushion top, the CatSeat
@@ -528,14 +641,15 @@ def pawdicure_rbx_extras():
             "attributes": {"SeatHeight": {"Float64": PAW_Z}, "CatScale": {"Float64": STATION_CAT_SCALE}}}
 
 
-# The two baths carry round foam bubbles (#107). Each bubble is a Ball part in Roblox, which the engine draws itself,
-# so its triangles here are only the preview mesh: 64 a bubble, 1,344 on the tub and 1,792 on the bubble bath.
-# Without the foam the tub is 1,040 triangles and the bubble bath 676, inside the 1,500 and 1,200 the others keep.
+# The two baths carry round foam and soap bubbles (#107, #111). Each is a Ball part in Roblox, which the engine draws
+# itself, so its triangles here are only the preview mesh: 64 a ball and 12 more for a soap bubble's glint. That is
+# 1,376 of the tub's 3,384 triangles and 2,564 of the bubble bath's 4,472. The game loads the Parts, never this
+# mesh, so the baths' budgets follow what they need (#157, #172); the other stations keep 1,200.
 ASSETS = {"CleanACat_Station_Tub": (build_tub, 3400),   # 2500 until #157: the game loads its Parts, not this mesh
           "CleanACat_Station_BrushTable": (build_brush_table, 1200),
           "CleanACat_Station_BrushTableUp": (build_brush_table_up, 1200),
           "CleanACat_Station_Dryer": (build_dryer, 1200),
-          "CleanACat_Station_BubbleBath": (build_bubble_bath, 2500),
+          "CleanACat_Station_BubbleBath": (build_bubble_bath, 4600),   # 2500 until #172, as the tub
           "CleanACat_Station_Pawdicure": (build_pawdicure, 1200)}
 EXTRAS = {"CleanACat_Station_Tub": tub_rbx_extras,
           "CleanACat_Station_BrushTable": brush_table_rbx_extras("CleanACat_Station_BrushTable"),
