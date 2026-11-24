@@ -6247,17 +6247,17 @@
    "CleanACat_Cat_Suds_Dirty_Loaf_Tail",
    "CleanACat_Cat_Suds_Dirty_Loaf_Mud15"
   ],
-  "triangles": 1290,
+  "triangles": 1246,
   "budget": 2600,
-  "parts": 84,
+  "parts": 83,
   "size_studs": {
    "x": 1.39,
    "y": 2.07,
-   "z": 1.25
+   "z": 1.28
   },
   "size_roblox": [
    1.39,
-   1.25,
+   1.28,
    2.07
   ],
   "pivot": "base center (floor contact)",
@@ -6321,7 +6321,7 @@
     -0.3
    ],
    "Tail": [
-    -0.12,
+    0.38,
     0.52,
     0.69
    ],
@@ -6357,10 +6357,10 @@
     "back to back": 17
    },
    "checks": {
-    "budget": "1290/2600 tris",
+    "budget": "1246/2600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "738 faces on swatch centers",
+    "uv": "712 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.23",
@@ -6596,17 +6596,17 @@
    "CleanACat_Cat_Suds_Loaf_Paws",
    "CleanACat_Cat_Suds_Loaf_Tail"
   ],
-  "triangles": 712,
+  "triangles": 668,
   "budget": 1500,
-  "parts": 36,
+  "parts": 35,
   "size_studs": {
    "x": 1.21,
    "y": 2.02,
-   "z": 1.19
+   "z": 1.2
   },
   "size_roblox": [
    1.21,
-   1.19,
+   1.2,
    2.02
   ],
   "pivot": "base center (floor contact)",
@@ -6659,7 +6659,7 @@
     -0.3
    ],
    "Tail": [
-    -0.12,
+    0.38,
     0.52,
     0.69
    ],
@@ -6692,10 +6692,10 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "712/1500 tris",
+    "budget": "668/1500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "404 faces on swatch centers",
+    "uv": "378 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.10 y=-0.21",

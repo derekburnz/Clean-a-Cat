@@ -190,22 +190,25 @@ def loaf_drop(spec):
     return (A_BELLY_Z + low - LOAF_LIFT) * scale_of(spec, "loaf")
 
 
-LOAF_TAIL = (0, 50, 95, 140)  # the loaf's tail, each segment's angle up from level: across the rump, up, the tip hooked in
-LOAF_TAIL_UP = 0.4            # the tail root's underside over the base. It was 0.14 and a Studio check on the R6 hold
-                              # found the tail's base 0.27 studs inside the right forearm, which passes under the rump
-                              # (#361); from the top of the rump it clears, and shorter segments keep the tip where it was
+LOAF_TAIL = (60, 100, 140)    # the loaf's tail, each segment's angle up from level: up beside the hip, the tip hooked in
+LOAF_TAIL_UP = 0.4            # the tail root's underside over the base: near the top of the rump (#361)
+LOAF_TAIL_X = -0.38           # the tail root's place across the rump: at his right hip. Lying across the arms his
+                              # left side is against the carrier's chest and the R6 right arm comes up under that
+                              # half of his rear, so a tail that starts at the spine sits in the arm (0.17 studs
+                              # standing, 0.24 walking, measured in Studio after #361). The whole tail stays on the
+                              # outer half (#378)
 
 
 def loaf_tail(spec):
     """The loaf's tail: (its root, unscaled, in the loaf's own space; its chain for _tail). Since #353 it is curled up
-    at the back as in the owner's picture: out of the rump low down, across to the cat's right, up beside the hip and
-    the tip hooked back in over the back. The chain is built in _tail's plane X (rising from +Y) and loaf.py turns it
-    a quarter turn about the root so it rises from -X, flat against the rump. When the cat lies across the carrier's
-    arms with its head to the carrier's left, its right side faces out, so the curl shows from the front."""
+    at the back as in the owner's picture: out of the rump at his right hip, up beside it and the tip hooked back in
+    over the back. The chain is built in _tail's plane X (rising from +Y) and loaf.py turns it a quarter turn about
+    the root so it rises from -X, flat against the rump. When the cat lies across the carrier's arms with its head to
+    the carrier's left, its right side faces out, so the curl shows from the front and stays clear of the arms."""
     d = dims(spec, "walk")["tail_chain"]
     (cx, cy, _cz), (_sx, sy, _sz) = dims(spec, "loaf")["body"]
     chain = dict(d, angles=LOAF_TAIL, seg=0.25, curl=False)
-    return (cx + 0.12, cy + sy / 2 + d["thick"] / 2 - 0.03, d["thick"] / 2 + LOAF_TAIL_UP), chain
+    return (cx + LOAF_TAIL_X, cy + sy / 2 + d["thick"] / 2 - 0.03, d["thick"] / 2 + LOAF_TAIL_UP), chain
 
 
 def _body_scale(spec):
