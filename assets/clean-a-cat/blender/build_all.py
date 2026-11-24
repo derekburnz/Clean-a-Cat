@@ -79,8 +79,9 @@ def cat_rbx_extras(name):
     spec = cats.spec_of(cat)
     k = cats.scale_of(spec, body)
     joints = cats.joints(spec, body)
-    carry = Vector(joints["Head"]) + Vector(cats.carry_at(spec, body)) * k
-    bow = Vector(joints["Head"]) + Vector(cats.bow_at(spec, body)) * k
+    look = cats.loaf_look if body == "loaf" else Vector       # a loaf's head is turned, and its spots turn with it
+    carry = Vector(joints["Head"]) + look(cats.carry_at(spec, body)) * k
+    bow = Vector(joints["Head"]) + look(cats.bow_at(spec, body)) * k
     attributes = {"Scale": {"Float64": float(spec.get("scale", 1.0))}, "Rarity": spec["rarity"], "Cat": cat}
     if spec.get("mascot"):                            # not a Cat Index cat (cats.EXTRA_CATS): the game must not list it
         attributes["Mascot"] = True
