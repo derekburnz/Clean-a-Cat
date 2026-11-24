@@ -69,7 +69,12 @@ Then ask:
 - **SurfaceGui axes are not the part's axes.** On the Top face of a default-oriented part, the canvas top left is the part's (-X, +Z) corner, canvas +X runs along part -Z and canvas +Y along part +X. Probe a face in Studio before drawing on it.
 - **SurfaceGuis that hold sliding pieces** need `ClipsDescendants = true`, or the pieces draw past the part.
 
-## 7. Before you open the pull request
+## 7. Device check in Studio (a must before a screen is signed off)
+Roblox ships its own Studio skills, and the Studio MCP serves them through `list_roblox_skills` and `get_roblox_skill` (Studio 0.748; the old `skill` tool is gone). Sync-Agent runs them on the Studio PC (#178).
+- **Device check, every screen:** `rbx-device-simulator-lua` captures the screen at four presets: iPhone 14 (the same 844 x 390 screen as the owner's iPhone 12), iPad 10th gen, Xbox One and an average Windows PC. A screen is not signed off until Review-QA has seen all four captures from a build of the change, not only the HTML mockup. The captures go in the playtest report (see `playtest-report`).
+- The emulator sets the screen size and the graphics level only, not a phone's speed. Treat its frame rate as the PC's.
+
+## 8. Before you open the pull request
 - The gate passes (`./check.sh`).
 - A visible change has a before and after picture or an HTML mockup saved in the repo or the shared folder, and the pull request says what to look at in Studio.
 - The pull request quotes the owner's words for the ask it answers.
