@@ -118,10 +118,10 @@ Upgrades follow the sponge's pattern: tier 2 is a step up in shape and colour th
 | Tool | Tier 1 | Tier 2 | Tier 3 |
 |---|---|---|---|
 | Sponge | `CleanACat_Tool_Sponge` | `CleanACat_Tool_SpongeBubble` | `CleanACat_Tool_SpongeGolden` |
-| Brush | `CleanACat_Tool_Brush`: pink back, wood handle, three rows | `CleanACat_Tool_BrushFluffy`: a quarter bigger, lilac back, mint handle, four rows in white and pink | `CleanACat_Tool_BrushGolden`: the fluffy brush in gold with a star on its back |
-| Shower | `CleanACat_Tool_Shower`: sky head, five holes | `CleanACat_Tool_ShowerRain`: a wide rain head with a broad mint rim, seven holes | `CleanACat_Tool_ShowerGolden`: the rain head in gold with a pale gold plate |
+| Brush | `CleanACat_Tool_Brush`: pink back, wood handle, three rows | `CleanACat_Tool_BrushFluffy`: a quarter bigger, lilac back, mint handle, six tall round tufts in white and pink that show past the edge of the back | `CleanACat_Tool_BrushGolden`: the fluffy brush in gold with a star on its back |
+| Shower | `CleanACat_Tool_Shower`: sky head, five holes | `CleanACat_Tool_ShowerRain`: a wide rain head with a broad lilac rim, seven holes | `CleanACat_Tool_ShowerGolden`: the rain head in gold with a pale gold plate |
 
-The colour is what tells the tiers apart at phone size, so no two tiers of one tool share a body colour. Gold is kept for tier 3 of each tool and the reward props.
+Every tier changes shape or size as well as colour (Review-QA, #142): a player who does not see the colour change must still see a different tool. No two tiers of one tool share a body colour, tier 2 is lilac and gold is kept for tier 3 of each tool and the reward props. The rain head was pale mint at first and nearly vanished on the mint HUD panel at 64 and 32 px, so look at a new tool's icon on mint before it ships.
 
 ## 14. Spa plot and the street (#15)
 `plot.py` builds `CleanACat_Area_SpaPlot`. It began as a graybox and is now the real build on the same layout, so every spot, wall and opening is where the graybox had it. The front apron sits on the pavement; the room has an open front (an entrance with no door, and the display window with a window seat and four cushions behind 0.6 see-through glass); a back door leads to the stray box; an opening in the back wall is the VIP Room door, with the back yard behind it for the VIP Room build. No room, tub or space is made for avatars: only cats bathe.

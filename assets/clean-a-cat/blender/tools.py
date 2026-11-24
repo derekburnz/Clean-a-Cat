@@ -58,29 +58,37 @@ def build_sponge(name, mat):
 
 
 BRUSHES = {
-    # name: (handle, head, bristle rows as swatches, scale, a star on the back or None)
-    "CleanACat_Tool_Brush": ("wood_light", "spa_bubblegum", ("foam", "spa_cream", "foam"), 1.0, None),
-    "CleanACat_Tool_BrushFluffy": ("spa_mint", "pastel_lilac", ("foam", "spa_bubblegum", "foam", "spa_bubblegum"), 1.25,
-                                   None),
-    "CleanACat_Tool_BrushGolden": ("gold_mid", "gold_light", ("foam", "sparkle", "foam", "sparkle"), 1.25, "gold_dark"),
+    # name: (handle, head, bristle swatches, scale, a star on the back or None, tufts)
+    # tufts False: the swatches are flat rows of bristles. True: round tufts in a 3 by 2 check of the two swatches.
+    "CleanACat_Tool_Brush": ("wood_light", "spa_bubblegum", ("foam", "spa_cream", "foam"), 1.0, None, False),
+    "CleanACat_Tool_BrushFluffy": ("spa_mint", "pastel_lilac", ("foam", "spa_bubblegum"), 1.25, None, True),
+    "CleanACat_Tool_BrushGolden": ("gold_mid", "gold_light", ("foam", "sparkle"), 1.25, "gold_dark", True),
 }
+TUFT = (0.15, 0.18, 0.22)                        # a tuft's half sizes: across, front to back, tall
 
 
 def build_brush(mat, name="CleanACat_Tool_Brush"):
     """The brush, held by its handle: the pivot is the middle of the handle and the head points forward (-Y), the
     bristles down, so a stroke reads from the player's camera. The head is the biggest part, so it is `Handle`.
-    #142: two upgrades in the sponge's pattern. The fluffy brush is a quarter bigger with a fourth row of bristles in
-    two colours, and the golden one is that brush in gold with a star on its back. The grip stays where it is."""
-    handle, head, rows, k, star = BRUSHES[name]
+    #142: two upgrades in the sponge's pattern. The fluffy brush is a quarter bigger and its bristles are six tall
+    round tufts in two colours, so it differs from the first brush in shape and not only in colour. The golden one
+    is that brush in gold with a star on its back. The grip stays where it is."""
+    handle, head, rows, k, star, tufts = BRUSHES[name]
     b = Builder()
     b.box((0, 0, 0), (0.16 * k, 0.6, 0.12 * k), handle)                        # handle, the grip
-    n = len(rows)
+    n = 4 if tufts else len(rows)
     depth = 0.44 + 0.16 * (n - 3)                                              # the head grows back to front
     y0 = -0.5 - 0.08 * (n - 3)
     b.box((0, y0, 0.02 * k), (0.56 * k, depth, 0.14 * k), head)                # the back of the head
-    for i, sw in enumerate(rows):                                              # rows of bristles
-        y = y0 - 0.16 * ((n - 1) / 2 - i)
-        b.box((0, y, -0.1 * k), (0.48 * k, 0.09, 0.14 * k), sw, bevel=False)
+    if tufts:
+        for ix in range(3):
+            for iy in range(2):                     # tops sunk in the head, sides a little past its edge
+                b.sphere(((ix - 1) * 0.24, y0 + (iy - 0.5) * 0.32, -0.14), 1.0, rows[(ix + iy) % 2],
+                         segments=8, rings=4, scale=TUFT)
+    else:
+        for i, sw in enumerate(rows):                                          # rows of bristles
+            y = y0 - 0.16 * ((n - 1) / 2 - i)
+            b.box((0, y, -0.1 * k), (0.48 * k, 0.09, 0.14 * k), sw, bevel=False)
     if star:
         b.star((0, y0, 0.1 * k), 0.17, 0.08, 0.03, star)                       # lying flat on the back
     return [b.finalize(name, mat)]
@@ -102,7 +110,7 @@ SHOWERS = {
     # name: (grip, trim, face plate, head radius at the back and at the front, rim width round the plate, hole spots)
     "CleanACat_Tool_Shower": ("spa_tile", "bow_sky", "spa_tile", 0.3, 0.4, 0.07,
                               ((0, 0), (0.17, 0.0), (-0.17, 0.0), (0.0, 0.17), (0.0, -0.17))),
-    "CleanACat_Tool_ShowerRain": ("spa_tile", "spa_mint", "foam", 0.34, 0.56, 0.15,
+    "CleanACat_Tool_ShowerRain": ("spa_tile", "pastel_lilac", "foam", 0.34, 0.56, 0.15,
                                   ((0, 0),) + tuple((0.3 * math.cos(math.radians(a)), 0.3 * math.sin(math.radians(a)))
                                                     for a in range(0, 360, 60))),
     "CleanACat_Tool_ShowerGolden": ("gold_light", "gold_mid", "sparkle", 0.34, 0.56, 0.15,
@@ -113,7 +121,8 @@ SHOWERS = {
 
 def build_shower(mat, name="CleanACat_Tool_Shower"):
     """The rinse step. Held by the grip, pivot at its middle; the head sprays forward and down. #142: two upgrades in
-    the sponge's pattern, a wide rain head in mint with seven holes, then the same in gold. Same grip and `Nozzle`."""
+    the sponge's pattern, a wide rain head in lilac with seven holes (lilac, not mint: mint vanished on the mint
+    HUD panel), then the same in gold. Same grip and `Nozzle`."""
     grip, trim, plate, r1, r2, rim, holes = SHOWERS[name]
     b = Builder()
     b.cyl((0, 0, 0), 0.13, 0.76, grip, segments=8)                             # the grip
@@ -225,7 +234,7 @@ def build_shampoo(mat):
 
 ASSETS = {n: (lambda mat, n=n: build_sponge(n, mat), 400) for n in SPONGES}
 for _n in BRUSHES:
-    ASSETS[_n] = (lambda mat, n=_n: build_brush(mat, n), 200 if BRUSHES[_n][4] is None else 250)
+    ASSETS[_n] = (lambda mat, n=_n: build_brush(mat, n), 450 if BRUSHES[_n][5] else 200)
 for _n in SHOWERS:
     ASSETS[_n] = (lambda mat, n=_n: build_shower(mat, n), 400)
 ASSETS.update({"CleanACat_Tool_Comb": (build_comb, 300),

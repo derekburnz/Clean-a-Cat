@@ -8565,18 +8565,18 @@
   "objects": [
    "CleanACat_Tool_BrushFluffy"
   ],
-  "triangles": 136,
-  "budget": 200,
-  "parts": 6,
+  "triangles": 376,
+  "budget": 450,
+  "parts": 8,
   "size_studs": {
-   "x": 0.7,
-   "y": 1.18,
-   "z": 0.32
+   "x": 0.78,
+   "y": 1.22,
+   "z": 0.47
   },
   "size_roblox": [
-   0.7,
-   0.32,
-   1.18
+   0.78,
+   0.47,
+   1.22
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8588,13 +8588,13 @@
     "centered"
    ],
    "checks": {
-    "budget": "136/200 tris",
+    "budget": "376/450 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "76 faces on swatch centers",
+    "uv": "244 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.21 (want 0)",
-    "centered": "footprint center x=0.00 y=-0.29"
+    "pivot": "floor at z=-0.36 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.31"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushFluffy.png"
@@ -8606,18 +8606,18 @@
   "objects": [
    "CleanACat_Tool_BrushGolden"
   ],
-  "triangles": 176,
-  "budget": 250,
-  "parts": 16,
+  "triangles": 416,
+  "budget": 450,
+  "parts": 18,
   "size_studs": {
-   "x": 0.7,
-   "y": 1.18,
-   "z": 0.35
+   "x": 0.78,
+   "y": 1.22,
+   "z": 0.5
   },
   "size_roblox": [
-   0.7,
-   0.35,
-   1.18
+   0.78,
+   0.5,
+   1.22
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8629,13 +8629,13 @@
     "centered"
    ],
    "checks": {
-    "budget": "176/250 tris",
+    "budget": "416/450 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "106 faces on swatch centers",
+    "uv": "274 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.21 (want 0)",
-    "centered": "footprint center x=0.00 y=-0.29"
+    "pivot": "floor at z=-0.36 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.31"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushGolden.png"
