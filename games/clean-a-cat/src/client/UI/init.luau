@@ -8,27 +8,43 @@
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
+--   UI.setWashPlan(later)     the later steps ("bath", "claws") this wash takes, which join the step bar (#267)
 --   UI.onSettingsChanged(fn)  fn(settings) on every change on the Settings card (UI/Settings, switch settingsCard,
 --                             #230); with the switch on, the Menu opens that card
+--   UI.setIndex(entries, newCats, tier)  the Cat Index window (UI/CatIndex, switch catIndexWindow, #238)
+--   UI.setQueue(cards, headline, pickable)  the "Who's next?" window and the HUD's waiting faces (UI/QueueWindow,
+--                             HUD/Waiting, switch queueWindow, #246); UI.onQueuePick(fn) gets fn(place) on Wash next
+--   UI.setTip(tip)            the tutorial's tip line, { step, total, icon, say } or nil (UI/HUD/TipLine, switch
+--                             tutorialTip)
+--   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
+--                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
 -- Every screen honours the player's Roblox comfort settings through UI/Comfort (#181), behind the live switch
 -- comfortSettings: see-through backgrounds go through Comfort.backdrop, and text leaves room to grow
 -- (Comfort.autoHeight) when the player picks a larger text size.
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 
+local CatIndex = require(script:WaitForChild("CatIndex"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local HUD = require(script:WaitForChild("HUD"))
 local Motion = require(script:WaitForChild("Motion"))
+local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
+local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
+local Spotlight = require(script:WaitForChild("Spotlight"))
+local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
 
 local UI = {}
 
@@ -43,11 +59,14 @@ local MENU_HEIGHT = 0.5 -- share of the root's height at the Menu's centre
 local MENU_HEIGHT_HUD = 0.36 -- with the game HUD on: clear of the touch thumbstick on a small phone (#222)
 
 local SETTINGS_FLAG = "settingsCard"
+local CONTROLS_FLAG = "windowsHideControls"
 
 local windows: { [string]: Frame } = {}
 local settingsListeners: { (SettingsRules.Settings) -> () } = {}
 local toastLabel: TextLabel? = nil
+local revealRecap: RBXScriptConnection? = nil -- shows the recap again when the window over it closes
 local toastToken = 0
+local controlsHidden = false -- true while this module has Roblox's touch controls hidden
 
 local function corner(parent: Instance, radius: number)
 	local c = Instance.new("UICorner")
@@ -109,6 +128,25 @@ local function window(name: string, title: string, gui: ScreenGui): Frame
 	return frame
 end
 
+-- Roblox's thumbstick and jump button sit over a window's lower corners on a phone held sideways (Sync-Agent's
+-- iPhone 14 check of the Cat Index). With the switch windowsHideControls on, they hide while any window is open and
+-- come back when the last one closes. Off by default. A window is for tapping, not walking, so nothing is lost.
+local function syncControls()
+	local anyOpen = false
+	for _, frame in windows do
+		if frame.Visible then
+			anyOpen = true
+			break
+		end
+	end
+	local hide = anyOpen and LiveFlags.isOn(CONTROLS_FLAG)
+	if hide == controlsHidden then
+		return
+	end
+	controlsHidden = hide
+	GuiService.TouchControlsEnabled = not hide
+end
+
 function UI.init()
 	local player = Players.LocalPlayer
 	local playerGui = player:WaitForChild("PlayerGui")
@@ -152,12 +190,24 @@ function UI.init()
 			0
 		)
 		menu.TextSize = if tv then MENU_TEXT_TV else MENU_TEXT
+		-- the HUD's button row (#232) replaces the starter Menu while any of its buttons shows
+		menu.Visible = not SideButtons.any()
 	end
 	fitScreen()
 	Comfort.onTenFootChanged(fitScreen)
 	HUD.onActiveChanged(fitScreen)
+	SideButtons.onChanged(fitScreen)
 
 	HUD.build(root) -- coin counter, wash step bar and tool tray (switch gameHud, off by default)
+	SideButtons.build(root, function(name: string)
+		UI.open(name)
+	end)
+	Waiting.build(
+		root,
+		function() -- the waiting faces open "Who's next?" (switch queueWindow, #246)
+			UI.open("Queue")
+		end
+	)
 
 	local toast = Instance.new("TextLabel")
 	toast.Name = "Toast"
@@ -176,7 +226,10 @@ function UI.init()
 	toast.Parent = root
 	toastLabel = toast
 
+	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
+	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
+	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -199,6 +252,12 @@ function UI.init()
 		"Replace this window with the game's own. The UI gate checks every window at phone, tablet and desktop sizes."
 	body.Parent = example
 
+	for _, frame in windows do
+		frame:GetPropertyChangedSignal("Visible"):Connect(syncControls)
+	end
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CONTROLS_FLAG)
+		:Connect(syncControls)
+
 	hud.Parent = playerGui
 end
 
@@ -208,6 +267,63 @@ end
 
 function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
+end
+
+-- The later steps ("bath", "claws") this cat's wash takes, for the step bar (#267).
+function UI.setWashPlan(later: { string })
+	HUD.setPlan(later)
+end
+
+function UI.setTip(tip: { step: number, total: number, icon: string, say: string }?)
+	HUD.setTip(tip)
+end
+
+-- The Cat Index window's stamps, New! marks and star tier (IndexWindowController).
+function UI.setIndex(
+	entries: { [string]: IndexRules.Entry },
+	newCats: { [string]: boolean },
+	tier: number
+)
+	CatIndex.set(entries, newCats, tier)
+end
+
+-- fn() each time the Cat Index window closes.
+function UI.onIndexClosed(fn: () -> ())
+	CatIndex.onClosed(fn)
+end
+
+-- For the UI gate: the Cat Index detail for `cat`, or the grid for nil.
+function UI.showIndexDetail(cat: string?)
+	CatIndex.showDetail(cat)
+end
+
+-- The customers at the door for "Who's next?" and the waiting faces (QueueWindowController).
+function UI.setQueue(
+	cards: { QueueViewRules.Card },
+	headline: string,
+	pickable: { [number]: boolean }
+)
+	QueueWindow.set(cards, headline, pickable)
+	Waiting.set(cards)
+end
+
+-- fn(place) when the player presses Wash next on "Who's next?".
+function UI.onQueuePick(fn: (place: number) -> ())
+	QueueWindow.onPick(fn)
+end
+
+-- The tutorial's dim step on the HUD button that opens `window`; false when that button is not on screen.
+function UI.pointAt(window: string, say: string, done: (() -> ())?): boolean
+	local button = SideButtons.find(window)
+	if button == nil or not button.Visible then
+		return false
+	end
+	Spotlight.point(button, say, done)
+	return Spotlight.isOn()
+end
+
+function UI.clearPointer()
+	Spotlight.clear()
 end
 
 function UI.onSettingsChanged(fn: (SettingsRules.Settings) -> ())
@@ -223,18 +339,46 @@ function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)
 	Recap.show(recap, onClose)
 end
 
+-- Opens one window and closes the others. A recap card or strip showing is hidden, not closed, so opening a window
+-- never counts as Next cat; it shows again once this window closes.
 function UI.open(name: string)
-	UI.closeAll()
+	local connection = revealRecap
+	if connection then
+		connection:Disconnect()
+		revealRecap = nil
+	end
+	for _, other in windows do
+		other.Visible = false
+	end
 	local frame: Frame? = windows[name]
 	assert(frame ~= nil, `UI.open: no window {name}`)
+	Recap.setHidden(true)
 	frame.Visible = true
+	local opened: Frame = frame
+	revealRecap = opened:GetPropertyChangedSignal("Visible"):Connect(function()
+		if not opened.Visible then
+			local own = revealRecap
+			if own then
+				own:Disconnect()
+				revealRecap = nil
+			end
+			Recap.setHidden(false)
+		end
+	end)
 	Motion.popIn(frame) -- trial springs, switch springUi (#183)
 end
 
+-- Closes every window and the recap card or strip (calling its onClose).
 function UI.closeAll()
+	local connection = revealRecap
+	if connection then
+		connection:Disconnect()
+		revealRecap = nil
+	end
 	for _, frame in windows do
 		frame.Visible = false
 	end
+	Recap.setHidden(false)
 	Recap.close()
 end
 

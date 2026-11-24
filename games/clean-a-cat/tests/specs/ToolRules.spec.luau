@@ -45,4 +45,32 @@ return function()
 			expect(wide > base).to.equal(true)
 		end)
 	end)
+
+	describe("ToolRules Pro Brush (#267)", function()
+		local function on(_flag: string): boolean
+			return true
+		end
+		local function off(_flag: string): boolean
+			return false
+		end
+		local function ownsAll(_id: string): boolean
+			return true
+		end
+		local function ownsNone(_id: string): boolean
+			return false
+		end
+
+		it("is offered only with its switch on", function()
+			expect(table.concat(ToolRules.offered(off), ",")).to.equal("BubbleSoap")
+			expect(table.concat(ToolRules.offered(on), ",")).to.equal("BubbleSoap,ProBrush")
+		end)
+
+		it("cuts the strokes only when owned and switched on", function()
+			expect(ToolRules.brushStrokes(3, ownsNone, on)).to.equal(3)
+			expect(ToolRules.brushStrokes(3, ownsAll, off)).to.equal(3)
+			expect(ToolRules.brushStrokes(3, ownsAll, on)).to.equal(
+				ToolRules.TOOLS.ProBrush.brushStrokes
+			)
+		end)
+	end)
 end

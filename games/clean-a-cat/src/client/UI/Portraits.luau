@@ -13,7 +13,8 @@ Portraits.IMAGES = {} :: { [string]: string }
 local TILE_TINT = 0.55 -- how far the stand-in tile's rarity colour is lightened toward white
 
 -- Puts `cat`'s portrait inside `parent` on a tile framed in the rarity's colour, filling it, and returns the tile.
-function Portraits.draw(cat: string, rarity: string, parent: GuiObject): Frame
+-- `round` draws a round face with no frame of its own (the HUD's waiting faces, whose button has the outline).
+function Portraits.draw(cat: string, rarity: string, parent: GuiObject, round: boolean?): Frame
 	local old = parent:FindFirstChild("Portrait")
 	if old then
 		old:Destroy()
@@ -23,9 +24,11 @@ function Portraits.draw(cat: string, rarity: string, parent: GuiObject): Frame
 	tile.Name = "Portrait"
 	tile.Size = UDim2.fromScale(1, 1)
 	tile.BackgroundColor3 = colour:Lerp(Kit.WHITE, TILE_TINT)
-	Kit.corner(tile, UDim.new(0.14, 0))
-	local frame = Kit.stroke(tile, 4)
-	frame.Color = Kit.INK
+	Kit.corner(tile, UDim.new(if round then 0.5 else 0.14, 0))
+	if not round then
+		local frame = Kit.stroke(tile, 4)
+		frame.Color = Kit.INK
+	end
 	local image = Portraits.IMAGES[cat] or ""
 	if image ~= "" then
 		local label = Instance.new("ImageLabel")

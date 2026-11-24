@@ -833,10 +833,29 @@ local function applyConstraints(self, w, h, k)
 	return w, h
 end
 
--- Text: average glyph widths in ems per font family, emoji wider
+-- Text: average glyph widths in ems per font family, emoji wider. FredokaOne, the game's own font, uses its real
+-- advance widths for printable ASCII instead (read from the Fredoka One font file, Google Fonts v15): an average
+-- under-measured "Uncommon" by a fifth and the gate passed a label that read "Uncom..." on an iPhone 14 (#262).
+local FREDOKA_ONE = { -- ems, character codes 32 (space) to 126 (~)
+	0.253, 0.267, 0.429, 0.749, 0.475, 0.838, 0.748, 0.208, 0.384, 0.384, 0.503, 0.527, 0.238, 0.433, 0.237, 0.526,
+	0.608, 0.407, 0.609, 0.608, 0.592, 0.53, 0.56, 0.561, 0.582, 0.56, 0.238, 0.237, 0.627, 0.478, 0.627, 0.512,
+	0.908, 0.765, 0.646, 0.679, 0.704, 0.638, 0.637, 0.714, 0.699, 0.257, 0.549, 0.639, 0.587, 0.87, 0.72, 0.775,
+	0.632, 0.83, 0.631, 0.583, 0.731, 0.726, 0.783, 0.999, 0.741, 0.686, 0.643, 0.348, 0.528, 0.348, 0.526, 0.826,
+	0.482, 0.596, 0.592, 0.517, 0.598, 0.573, 0.45, 0.585, 0.605, 0.255, 0.252, 0.536, 0.327, 0.851, 0.606, 0.6,
+	0.582, 0.582, 0.457, 0.489, 0.449, 0.606, 0.638, 0.793, 0.567, 0.604, 0.586, 0.381, 0.217, 0.381, 0.651,
+}
+local NUNITO_BOLD = { -- ems, character codes 32 to 126: Nunito Bold, Google Fonts (the body font, UI/Kit.BODY_FACE)
+	0.271, 0.248, 0.448, 0.6, 0.6, 0.945, 0.726, 0.243, 0.358, 0.358, 0.453, 0.6, 0.248, 0.434, 0.248, 0.313,
+	0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.248, 0.248, 0.6, 0.6, 0.6, 0.459,
+	0.95, 0.744, 0.688, 0.68, 0.762, 0.597, 0.562, 0.736, 0.773, 0.282, 0.354, 0.665, 0.562, 0.868, 0.748, 0.785,
+	0.652, 0.785, 0.686, 0.631, 0.621, 0.738, 0.713, 1.113, 0.672, 0.618, 0.605, 0.354, 0.313, 0.354, 0.6, 0.5,
+	0.377, 0.547, 0.6, 0.472, 0.6, 0.542, 0.364, 0.604, 0.585, 0.255, 0.259, 0.536, 0.319, 0.877, 0.585, 0.576,
+	0.6, 0.6, 0.392, 0.488, 0.384, 0.579, 0.527, 0.853, 0.546, 0.526, 0.474, 0.391, 0.288, 0.391, 0.6,
+}
+-- a family's entry is its average width in ems, or { avg, ascii } with real widths for codes 32 to 126
 local GLYPH = {
-	FredokaOne = 0.56,
-	Nunito = 0.52,
+	FredokaOne = { avg = 0.62, ascii = FREDOKA_ONE },
+	Nunito = { avg = 0.6, ascii = NUNITO_BOLD },
 	SourceSansPro = 0.48,
 	GothamSSm = 0.58,
 	Montserrat = 0.58,
@@ -865,10 +884,15 @@ local function plainText(self)
 end
 UIShim.plainText = plainText
 
-local function lineWidth(line, size, em)
+-- `font`: a GLYPH entry, an average width in ems or { avg, ascii }
+local function lineWidth(line, size, font)
+	local em = if type(font) == "table" then font.avg else font
+	local advance = if type(font) == "table" then font.ascii else nil
 	local width = 0
 	for _, code in utf8.codes(line) do
-		if code >= 0x1F000 then
+		if advance and code >= 32 and code <= 126 then
+			width += advance[code - 31]
+		elseif code >= 0x1F000 then
 			width += 1.15 -- emoji
 		elseif (code >= 0x2600 and code <= 0x27BF) or (code >= 0x2B00 and code <= 0x2BFF) then
 			width += 0.95 -- symbols such as a star or a heart
@@ -928,11 +952,14 @@ local function renderedTextSize(self, w, h, k)
 	local em = GLYPH[familyName(self)] or 0.5
 	local constraint = textConstraint(self)
 	if rawProp(self, "TextScaled") then
-		local maxSize = 100 * k
+		-- TextScaled sizes the text to the box as drawn on screen, and a UITextSizeConstraint's sizes are screen
+		-- pixels too: a UIScale over the label does not scale them. A MinTextSize of 19 under a 0.75 scale draws
+		-- 19 px text, not 14.25 (an iPhone 14 showed "Uncomm..." in an 87 px box, #262)
+		local maxSize = 100
 		local minSize = 1
 		if constraint then
-			maxSize = math.min(maxSize, (rawProp(constraint, "MaxTextSize") or 100) * k)
-			minSize = (rawProp(constraint, "MinTextSize") or 1) * k
+			maxSize = math.min(maxSize, rawProp(constraint, "MaxTextSize") or 100)
+			minSize = rawProp(constraint, "MinTextSize") or 1
 		end
 		if text == "" then
 			return maxSize
@@ -959,7 +986,9 @@ local function renderedTextSize(self, w, h, k)
 	-- text draws at whole pixel sizes, so under a UIScale a row's width does not shrink smoothly with the scale. Code
 	-- that resizes from its own width can then flip between two sizes every frame (rows that shake)
 	-- and the jitter check catches that only if the shim snaps too.
-	return math.max(1, math.floor(size + 0.5))
+	-- The second value is the size before that snap: a high-density phone draws 19 * 0.75 = 14.25 px text at
+	-- 14.25, so a label 0.25 px from fitting is cut off there (#262).
+	return math.max(1, math.floor(size + 0.5)), size
 end
 
 local function textExtent(self, size, maxWidth)
@@ -1583,6 +1612,11 @@ InstanceMT.__newindex = function(self, key, value)
 		old = s.props[key]
 	end
 	worldNewIndex(self, key, value)
+	if key == "Font" and value ~= nil then
+		-- Roblox keeps Font and FontFace as one setting: writing Font sets FontFace. Before #262 the shim kept them
+		-- apart, so every label set through Font measured as the default SourceSansPro, a sixth narrower than Fredoka.
+		s.props.FontFace = Font.fromEnum(value)
+	end
 	if recording and old ~= value then
 		local perInstance = recording[self]
 		if perInstance == nil then
@@ -2374,7 +2408,7 @@ function UIShim.snapshot()
 					if text ~= "" and textAlpha > 0.05 then
 						local pl, pr, pt, pb = padding(child, box.w, box.h, box.k)
 						local iw, ih = math.max(0, box.w - pl - pr), math.max(0, box.h - pt - pb)
-						local size = renderedTextSize(child, iw, ih, box.k)
+						local size, exact = renderedTextSize(child, iw, ih, box.k)
 						local tw, th, rows = textExtent(child, size, if rawProp(child, "TextWrapped") then iw else nil)
 						table.insert(fields, '"text":' .. jsonString(string.sub(text, 1, 120)))
 						table.insert(fields, '"ts":' .. num(size))
@@ -2409,6 +2443,9 @@ function UIShim.snapshot()
 						local truncate = enumName(rawProp(child, "TextTruncate"))
 						if truncate ~= nil and truncate ~= "None" then
 							table.insert(fields, '"trunc":true') -- Roblox ends it with "..." rather than spill
+							-- for the cut check: the room inside its padding, and its width at the unsnapped size
+							table.insert(fields, '"iw":' .. num(iw))
+							table.insert(fields, '"twx":' .. num(tw * (exact or size) / size))
 						end
 					end
 				end

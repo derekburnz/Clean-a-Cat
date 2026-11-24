@@ -5,7 +5,8 @@
 --   Settings.build(root, onChange)   makes the window once and returns its layer (UI registers it as "Settings")
 --   Settings.show(settings)          draws these values (a SettingsRules.Settings)
 --
--- Rows: the Music and Sounds sliders (the whole slider is the touch area; a gamepad press steps it a quarter), then
+-- Rows: the Music and Sounds sliders (the whole slider is the touch area; a gamepad press steps it a quarter down
+-- to 0 and back up), then
 -- Less screen shake and Less sparkle as switches that say On or Off in words, then "Odds on boards", an info line
 -- with no switch because the game never hides odds. A wide screen has one column; a phone held sideways has two, so
 -- nothing scrolls. Nothing here is destructive. UI never fires remotes: onChange(settings) runs on every change and
@@ -60,7 +61,6 @@ local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F
 local OFF_TOP, OFF_BOTTOM = Color3.fromHex("E4DBD2"), Color3.fromHex("CFC2B4")
 local TRACK = Color3.fromHex("F7E9DA")
 local FILL_TOP, FILL_BOTTOM = Color3.fromHex("BFE9FF"), Color3.fromHex("4FB4F0")
-local BODY_FONT = Enum.Font.GothamBold
 local THUMB = 48 -- design px: the slider's bubble
 local SLIDER_TOUCH = 60 -- design px tall: the slider's touch area, 45 real px at the smallest scale (44 needed)
 local TRACK_HEIGHT = 18
@@ -184,9 +184,10 @@ end
 local redraw: () -> ()
 
 -- The whole slider takes the press: a touch or click jumps the bubble there and dragging moves it; a gamepad
--- press steps it up a quarter, wrapping back to 0.
+-- press steps it a quarter, down to 0 and back up (SettingsRules.step).
 local function wireSlider(row: Row, slider: TextButton, thumb: Frame)
 	local dragging: InputObject? = nil
+	local direction = -1 -- a gamepad press first turns a full slider down
 	local function moveTo(x: number)
 		local value = SettingsRules.fromPointer(
 			x,
@@ -224,7 +225,9 @@ local function wireSlider(row: Row, slider: TextButton, thumb: Frame)
 	end)
 	slider.Activated:Connect(function()
 		if usingGamepad() then
-			setValue(row.spec.key, SettingsRules.step(level(row.spec.key)))
+			local nextLevel, nextDirection = SettingsRules.step(level(row.spec.key), direction)
+			direction = nextDirection
+			setValue(row.spec.key, nextLevel)
 			redraw()
 		end
 	end)
@@ -267,7 +270,8 @@ local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
 	say.Text = spec.say
 	local detail: TextLabel? = nil
 	if spec.detail then
-		local d = words("Detail", block, BODY_FONT, Kit.INK_SOFT)
+		local d = words("Detail", block, Kit.FONT, Kit.INK_SOFT)
+		d.FontFace = Kit.BODY_FACE
 		d.LayoutOrder = 2
 		d.Text = spec.detail
 		detail = d

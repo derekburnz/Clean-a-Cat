@@ -9,6 +9,7 @@ avatar (a blocky R15 shape, 5 studs tall) for scale. Not assets: nothing here is
     python3 assets/clean-a-cat/blender/scenes.py index docs/concepts/clean-a-cat/2026-11-23-cat-index-sheet.png
     python3 assets/clean-a-cat/blender/scenes.py later docs/concepts/clean-a-cat/2026-11-23-later-stations.png
     python3 assets/clean-a-cat/blender/scenes.py plot docs/concepts/clean-a-cat
+    python3 assets/clean-a-cat/blender/scenes.py plot-built docs/concepts/clean-a-cat
     python3 assets/clean-a-cat/blender/scenes.py street docs/concepts/clean-a-cat
 """
 
@@ -365,8 +366,10 @@ def shot(objs, path, eye, target, lens=24, res=(960, 600), samples=24, hide=()):
     del math
 
 
-def plot_views(mat, out_dir, stem="plot-real"):
-    """The plot (#15; the graybox until the real build) dressed with the tub, a cat in it, the player at the spawn, three customers in the queue
+def plot_views(mat, out_dir, stem="plot-real", date="2026-11-23", built=False):
+    """`built` adds every station on its spot (the Brush Table, the Blow Dryer, the Bubble Bath and the Pawdicure),
+    a stand-in for the Tools board the game puts right of the tub, and two more views. Without it:
+    The plot (#15; the graybox until the real build) dressed with the tub, a cat in it, the player at the spawn, three customers in the queue
     with cats, a stray in its box and cats on the window cushions: from the entrance, the player's spot, outside
     on the street and top-down."""
     import math
@@ -418,6 +421,22 @@ def plot_views(mat, out_dir, stem="plot-real"):
                             k=spa_props.WINDOW_CAT_SCALE))
     allo += fresh(place(spa_props.build_tip_jar(mat), "SpotTipJar"))
     allo += fresh(place(spa_props.build_window_sign(mat), "SpotSign"))
+    if built:
+        for spot, build in (("SpotStation2", stations.build_brush_table), ("SpotStation3", stations.build_dryer),
+                            ("SpotStation4", stations.build_bubble_bath), ("SpotStation5", stations.build_pawdicure)):
+            allo += fresh(place(build(mat), spot))
+        for spot, lift, who in (("SpotStation4", stations.BATH_SEAT, "Toffee"), ("SpotStation5", stations.PAW_Z, "Muffin")):
+            c = cats.build_cat(who, mat, body="sit")
+            if spot == "SpotStation5":
+                for o in c:
+                    o.location += Vector((0.0, 0.35 / 1.5, 0.0))       # the pawdicure's CatSeat is 0.35 back
+            allo += fresh(place(c, spot, lift=lift, k=stations.STATION_CAT_SCALE))
+        tb = Builder()                                                 # the game's placeholder Tools board
+        tb.box_base((1.0, -2.0, F), (3.0, 0.5, 4.0), "wood_light", bevel=False)
+        allo += fresh([tb.finalize("ToolsBoardStandIn", mat, bevel=0)])
+        back = avatar(mat, skin="skin_deep", shirt="spa_sky", pants="pants_navy")   # the spawnView spawn, facing the street
+        back.location = Vector((0.0, 3.0, F))
+        allo += fresh([back])
     walker = avatar(mat, skin="skin_light", shirt="spa_bubblegum", pants="pants_navy")
     walker.location = Vector((-9.0, -27.0, 0.0))        # a passer-by on the street, looking in at the window
     allo += fresh([walker])
@@ -429,10 +448,14 @@ def plot_views(mat, out_dir, stem="plot-real"):
         "top": dict(eye=(0.0, -6.0, 80.0), target=(0.0, -0.5, 0.0), lens=30),
         "window": dict(eye=(-34.0, -40.0, F + 7.0), target=(-8.0, -15.0, F + 3.0), lens=35),
     }
+    if built:
+        views = {"top": views["top"], "player": views["player"],
+                 "left": dict(eye=(4.0, -11.0, F + 10.0), target=(-13.0, -3.0, F + 1.5), lens=20),
+                 "back": dict(eye=(0.0, 9.3, F + 8.0), target=(-4.0, -6.0, F + 1.5), lens=18)}
     made = []
     for key, v in views.items():
-        path = os.path.join(out_dir, f"2026-11-23-{stem}-{key}.png")
-        hide = ("_Roof",) if key in ("top", "player", "entrance") else ("_Glass",)   # Roblox draws the glass 0.6 clear
+        path = os.path.join(out_dir, f"{date}-{stem}-{key}.png")
+        hide = ("_Roof",) if key in ("top", "player", "entrance", "left", "back") else ("_Glass",)   # Roblox draws the glass 0.6 clear
         shot(allo, path, v["eye"], v["target"], v["lens"], hide=hide)
         made.append(path)
     del math
@@ -444,7 +467,8 @@ if __name__ == "__main__":
     common.reset_scene()
     png = os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png")
     mat = common.palette_material(png)
-    {"tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
+    {"plot-built": lambda m, o: plot_views(m, o, stem="plot-built", date="2026-11-24", built=True),
+     "tub": tub, "groom": groom, "groom-close": lambda m, o: groom(m, o, close=True), "plot": plot_views,
      "customers": customers_sheet, "stations": stations_sheet,
      "builder": builder_sheet, "vip": vip_views, "index": index_sheet, "street": street_views, "mud": mud_close,
      "foam": foam_close, "later": later_stations_sheet,

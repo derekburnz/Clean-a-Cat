@@ -6,6 +6,9 @@
 --   Recap.show(recap, onClose)   shows a RecapRules.Recap: the full card or the slim strip, as recap.full says
 --   Recap.close()                hides it and calls that show's onClose once
 --   Recap.isOpen()
+--   Recap.setHidden(on)          hides the card or strip while a window is open over it, without closing it: opening
+--                                the Cat Index or Settings is not "Next cat" (Review-QA); UI shows it again once
+--                                that window closes
 --
 -- The full card: the cat's portrait, name, rarity chip and a New! chip beside it (never on the star badge), the spa
 -- stars it earned, one row per coin source (rows worth 0 are left out) and the total, then Next cat. The strip is the
@@ -28,7 +31,6 @@ local Recap = {}
 
 Recap.FLAG = "recapCard"
 
-local BODY_FONT = Enum.Font.GothamBold
 local MAX_STARS_SHOWN = 5
 local ROW_ICONS = { wash = "Paw", tip = "Heart", bonus = "Station" } :: { [string]: string }
 local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
@@ -39,6 +41,7 @@ local BACKDROP = Color3.fromRGB(36, 16, 56)
 local BODY_GAP = 22 -- design px between the portrait column and the rows
 local STRIP_LIFT = 28 -- design px from the bottom
 local STRIP_SHIFT = 34 -- design px right on a short screen: clear of the touch thumbstick (Review-QA on #229)
+local CHIP_GAP = 6 -- design px between the rarity and New! chips
 local TOPBAR_SHIFT = 33 -- real px: the card sits a little below the middle, clear of Roblox's top bar
 
 -- Sizes in design pixels: full, then compact for a short screen.
@@ -108,6 +111,7 @@ type Parts = {
 	tileBox: Frame,
 	name: TextLabel,
 	chipRow: Frame,
+	chipList: UIListLayout,
 	rarityChip: Frame,
 	rarityText: TextLabel,
 	newChip: Frame,
@@ -132,6 +136,7 @@ type Parts = {
 local parts: Parts? = nil
 local shown: RecapRules.Recap? = nil
 local onClosed: (() -> ())? = nil
+local hidden = false -- a window is open over it (Recap.setHidden)
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -207,7 +212,7 @@ local function chunky(
 	b.Text = text
 	b.TextColor3 = Kit.WHITE
 	b.TextStrokeColor3 = Kit.INK
-	b.TextStrokeTransparency = 0.4
+	b.TextStrokeTransparency = 0 -- a solid ink edge: white on bright green or red needs it to read on a phone
 	Kit.minText(b)
 	gradient(b, top, bottom)
 	Kit.corner(b, UDim.new(0, 16))
@@ -277,7 +282,8 @@ local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes)
 		icon.Position = UDim2.fromScale(0, 0.5)
 		icon.Size = UDim2.fromOffset(s.rowIcon, s.rowIcon)
 		Icons.draw(ROW_ICONS[row.key] or "Paw", icon)
-		local say = words("Say", line, BODY_FONT, Kit.INK)
+		local say = words("Say", line, Kit.FONT, Kit.INK)
+		say.FontFace = Kit.BODY_FACE
 		say.AnchorPoint = Vector2.new(0, 0.5)
 		say.Position = UDim2.new(0, s.rowIcon + 10, 0.5, 0)
 		say.TextSize = s.rowText
@@ -297,7 +303,7 @@ local function redraw()
 	if p == nil then
 		return
 	end
-	local open = recap ~= nil and LiveFlags.isOn(Recap.FLAG)
+	local open = recap ~= nil and LiveFlags.isOn(Recap.FLAG) and not hidden
 	p.layer.Visible = open
 	if recap == nil or not open then
 		return
@@ -331,10 +337,16 @@ local function redraw()
 	p.who.Size = UDim2.fromOffset(s.who, 0)
 	p.tileBox.Size = UDim2.fromOffset(s.tile, s.tile)
 	Portraits.draw(recap.cat, recap.rarity, p.tileBox)
-	p.name.TextSize = s.name
 	p.name.Size = UDim2.new(1, 0, 0, s.name + 8)
+	Kit.shrinkToFit(p.name, s.name)
 	p.name.Text = recap.cat
-	p.chipRow.Size = UDim2.new(1, 0, 0, s.chip)
+	-- The short card's column is narrower than "Legendary" plus "New!" side by side (Sync-Agent on an iPhone 14), so
+	-- there the New! chip goes under the rarity chip.
+	local stacked = short and recap.isNew
+	p.chipList.FillDirection = if stacked
+		then Enum.FillDirection.Vertical
+		else Enum.FillDirection.Horizontal
+	p.chipRow.Size = UDim2.new(1, 0, 0, if stacked then 2 * s.chip + CHIP_GAP else s.chip)
 	p.rarityChip.Size = UDim2.fromOffset(0, s.chip)
 	p.rarityChip.BackgroundColor3 = Kit.RARITY[recap.rarity] or Kit.RARITY.Common
 	p.rarityText.TextSize = s.chipText
@@ -353,6 +365,13 @@ local function redraw()
 	p.totalText.Text = total
 	p.next.Size = UDim2.fromOffset(0, s.button)
 	p.next.TextSize = s.buttonText
+end
+
+function Recap.setHidden(on: boolean)
+	if hidden ~= on then
+		hidden = on
+		redraw()
+	end
 end
 
 function Recap.isOpen(): boolean
@@ -458,11 +477,10 @@ function Recap.build(root: Frame)
 	local name = words("Name", who, Kit.FONT, Kit.INK)
 	name.LayoutOrder = 2
 	name.AutomaticSize = Enum.AutomaticSize.None -- one line: names are at most 11 letters (Design-Agent)
-	name.TextTruncate = Enum.TextTruncate.AtEnd
 	local chipRow = frame("Tags", who)
 	chipRow.LayoutOrder = 3
 	chipRow.Size = UDim2.fromScale(1, 0)
-	list(chipRow, true, 6, true)
+	local chipList = list(chipRow, true, CHIP_GAP, true)
 	-- New! sits beside the rarity tag under the name, never on the star badge (decisions.md 2026-11-24).
 	local rarityChip, rarityText = chip("Rarity", chipRow, Kit.RARITY.Common, 1)
 	local newChip, newText = chip("New", chipRow, NEW_PINK, 2)
@@ -587,6 +605,7 @@ function Recap.build(root: Frame)
 		tileBox = tileBox,
 		name = name,
 		chipRow = chipRow,
+		chipList = chipList,
 		rarityChip = rarityChip,
 		rarityText = rarityText,
 		newChip = newChip,

@@ -1,5 +1,5 @@
-"""Five of the six HUD button pictures (#185): CleanACat_Icon_Hud_<Name>, 512 px, see-through, with a thick ink
-outline.
+"""Five of the six HUD button pictures (#185), thirteen small screen pictures (#251, #259) and five tiny ones (#255):
+CleanACat_Icon_Hud_<Name>, 512 px, see-through, with a thick ink outline.
 
     python hud_icons.py <out folder> [--only Index,Tools]
 
@@ -10,10 +10,23 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
 
   Index     the Cat Index: a purple book with a cream cat's face on the cover and a pink bookmark
   Settings  a blue grey gear with a cream middle
-  Tools     a pink toolbox with a cream handle, a gold latch and a white paw (the owner asked for a toolbox in
-            place of the scrub brush, whose soap bubbles "makes no sense")
+  Tools     a pink toolbox thrown open, a scrub brush standing in it and a soap bottle beside it (the owner asked
+            for a toolbox in place of the scrub brush, whose soap bubbles "makes no sense"; shut, it could pass for a
+            lunchbox)
   Helper    a member of the human staff: head and shoulders in the spa uniform, the first look in staff.py
-  Build     a blue hammer with a wooden handle and a white paw on its head
+  Build     a blue hammer with a wooden handle (no paw on it: the owner, 2026-11-24, "the toolbox and hammer paw is
+            not needed")
+
+Ten small pictures in the same style follow them (#251), for names the UI otherwise draws as a system emoji: Camera,
+Paw, Heart, Gift, Music, Speaker, Shake, Sparkle, Dice and Check. They are used in rows and badges, smaller than the
+buttons, so each is one plain shape. Three more joined them (#259), the last names that drew an emoji: Pointer (the
+tutorial's arrow), Star (a star earned for a wash) and Station (a bath, for the recap card's bonus row).
+
+Five tiny pictures come last (#255), for the queue window: Crown (a VIP), Lock (a need whose station is not built) and
+the three needs Mud, Tangles and Wet. A need draws at about 18 to 21 px on a phone, inside a round white chip, and the
+lock badge at about 13 to 16 px. So each is one flat shape seen almost straight on (TINY_VIEW), in one colour that
+stands off white, with at most one mark on it, and its outline is nearly twice as thick (TINY_OUTLINE), which leaves
+about one pixel of ink at 20 px. Check them at 18 px in the chip, not on a big tile.
 
 There is no coin here on purpose. The owner picked his library's own coin picture for the HUD (2026-11-24: "use
 library coin ... the other new coin doesn't look as good", the paw on it was done badly), then asked for it to be
@@ -130,31 +143,52 @@ def settings(mat):
 
 
 def tools(mat):
-    """The wash tools: a fat pink toolbox with a deeper lid, a cream handle and a gold latch. (The first draft was a
-    scrub brush with soap bubbles; the owner: "the bubbles on the back of brush makes no sense ... a toolbox would be
-    better".)"""
+    """The wash tools: a fat pink toolbox with its lid thrown open, a scrub brush standing in it with its white
+    bristles to the front and a soap bottle with a pump beside it, and a gold latch. No paw on the front: the owner
+    asked for it to go (2026-11-24, "the toolbox and hammer paw is not needed"). (The first draft was
+    a scrub brush with soap bubbles; the owner: "the bubbles on the back of brush makes no sense ... a toolbox would
+    be better". Shut, the toolbox could pass for a lunchbox at 48 px (Review-QA, #234), so #242 opened it. On a phone
+    the button is about 36 pt, where a brush lying inside the box blurred into it, so #247 stood the brush up to
+    break the outline, and made the carry handle tall so it still shows above the lid: that handle is what says
+    "toolbox".) Nothing may poke through the lid: it opens 44 degrees, and the tools stand in front of its edge."""
     b = Builder()
     w, d = 2.4, 1.4
     b.box((0, 0, 0.62), (w, d, 1.24), "spa_bubblegum")                                   # the box
-    b.box((0, 0, 1.5), (w + 0.14, d + 0.14, 0.56), "nose_bubblegum")                     # the lid
-    for sx in (-1, 1):                                                                   # the handle
-        b.box((sx * 0.62, 0, 1.96), (0.24, 0.3, 0.44), "spa_cream")
-    b.box((0, 0, 2.24), (1.7, 0.36, 0.26), "spa_cream")
-    b.box((0, -d / 2 - 0.1, 1.2), (0.5, 0.14, 0.5), "gold_mid")                          # the latch
-    _paw(b, 0, -d / 2 - 0.02, 0.56, 0.2, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
+    up = Matrix.Rotation(math.radians(-44), 3, "X")                                      # the lid, hinged at the back
+    hinge = Vector((0, d / 2 + 0.07, 1.26))
+
+    def lid(c, size, swatch):
+        b.box(tuple(hinge + up @ (Vector(c) - hinge)), size, swatch, rot=up)
+
+    lid((0, 0, 1.54), (w + 0.14, d + 0.14, 0.56), "nose_bubblegum")
+    for sx in (-1, 1):                                                                   # the carry handle: tall
+        lid((sx * 0.66, -0.3, 2.1), (0.26, 0.32, 0.64), "spa_cream")                     # and near the lid's front, so
+    lid((0, -0.3, 2.5), (1.8, 0.38, 0.28), "spa_cream")                                  # it shows above the open lid
+    b.box((0, -d / 2 - 0.1, 0.9), (0.5, 0.14, 0.5), "gold_mid")                          # the latch
+    lean = Matrix.Rotation(math.radians(-20), 3, "Y") @ Matrix.Rotation(math.radians(12), 3, "X")
+    foot = Vector((-0.72, -0.45, 0.9))                                                    # a scrub brush standing at
+
+    def brush(c, size, swatch):                                                          # the left end, leaning out
+        b.box(tuple(foot + lean @ Vector(c)), size, swatch, rot=lean)
+
+    brush((0, 0, 0.7), (0.3, 0.26, 1.4), "spa_sky")                                      # its handle,
+    brush((0, 0, 1.8), (0.86, 0.34, 1.0), "spa_sky")                                     # its back
+    brush((0, -0.22, 1.8), (0.72, 0.2, 0.84), "foam")                                    # and its bristles
+    b.cyl((0.6, -0.42, 1.65), 0.28, 0.9, "spa_mint", segments=14)                        # a soap bottle and its pump
+    b.cyl((0.6, -0.52, 2.22), 0.12, 0.26, "spa_cream", segments=12)
+    b.box((0.52, -0.6, 2.4), (0.42, 0.2, 0.14), "spa_cream")
     return _fin(b, "Tools", mat)
 
 
 def build(mat):
-    """Build mode: a fat hammer with a wooden handle, a flat face one side, a claw the other and a white paw on
-    it."""
+    """Build mode: a fat hammer with a wooden handle, a flat face one side and a claw the other. Plain: the owner
+    asked for the white paw on its head to go (2026-11-24)."""
     b = Builder()
     b.box((0, 0, 0.8), (0.6, 0.6, 1.6), "caramel_wood")                                  # the handle
     b.box((0, 0, 2.1), (1.5, 0.9, 1.0), "bow_sky")                                       # the head
     b.box((-0.95, 0, 2.1), (0.38, 1.06, 1.2), "bow_sky")                                 # its flat face
     b.prism((1.05, 0, 2.1), [(-0.3, 0.5), (-0.3, -0.5), (0.42, -0.42), (0.42, -0.1)], 0.84, "bow_sky",
             rot=X)                                                                       # the claw
-    _paw(b, 0.05, -0.47, 2.06, 0.21, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
     return _fin(b, "Build", mat, tilt=22)
 
 
@@ -189,12 +223,282 @@ def helper(mat):
     return _fin(b, "Helper", mat, ink=k)
 
 
-BUILDERS = {                                       # name -> (builder, (yaw, pitch))
+# --- the small pictures (#251): row and badge icons, used smaller than the buttons, so each is one plain shape ---
+
+def camera(mat):
+    """Photo: a sky blue camera, a cream lens ring round a dark lens, a pink shutter button."""
+    b, k = Builder(), Builder()
+    b.box((0, 0, 0.75), (2.4, 1.0, 1.5), "spa_sky")                                      # the body
+    b.box((-0.5, 0, 1.64), (0.9, 0.8, 0.32), "spa_sky")                                  # the viewfinder hump
+    b.box((0.72, 0, 1.6), (0.46, 0.5, 0.24), "nose_bubblegum")                           # the shutter button
+    b.cyl((0.12, -0.56, 0.72), 0.64, 0.3, "spa_cream", segments=24, rot=X)               # the lens ring
+    k.cyl((0.12, -0.72, 0.72), 0.42, 0.04, "coat_inky", segments=24, bevel=False, rot=X)  # the lens
+    b.cyl((0.28, -0.75, 0.88), 0.13, 0.04, "foam", segments=12, bevel=False, rot=X)      # its glint
+    b.box((-0.82, -0.52, 1.14), (0.42, 0.08, 0.26), "gold_light")                        # the flash
+    return _fin(b, "Camera", mat, ink=k)
+
+
+def paw(mat):
+    """A cat's paw print: a wide pad and four toes in an arc, each apart from the pad so the outline runs between
+    them (toes that touch the pad make one blob with round ears), in the spa's deep pink."""
+    b = Builder()
+    b.cyl((0, 0, -0.5), 0.72, 0.5, "nose_bubblegum", segments=24, rot=X, scale=(1.3, 1, 0.82))
+    for dx, dz in ((-1.02, 0.12), (-0.38, 0.74), (0.38, 0.74), (1.02, 0.12)):
+        b.cyl((dx, 0, dz), 0.31, 0.5, "nose_bubblegum", segments=20, rot=X, scale=(0.9, 1, 1.15))
+    return _fin(b, "Paw", mat)
+
+
+def heart(mat):
+    """A fat pink heart with one white glint."""
+    b = Builder()
+    pts = []
+    for i in range(28):                              # the usual heart curve, anticlockwise from the top notch
+        t = -2 * math.pi * i / 28
+        pts.append((16 * math.sin(t) ** 3 / 15.0,
+                    (13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t)) / 15.0))
+    b.prism((0, 0, 0), pts, 0.6, "nose_bubblegum", bevel=True, rot=X)
+    b.cyl((-0.52, -0.31, 0.42), 0.17, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(1.5, 1, 1))
+    return _fin(b, "Heart", mat)
+
+
+def gift(mat):
+    """A reward: a mint box with a lid, a pink ribbon both ways and a bow on top."""
+    b = Builder()
+    b.box((0, 0, 0.72), (1.9, 1.9, 1.44), "spa_mint")                                    # the box
+    b.box((0, 0, 1.6), (2.1, 2.1, 0.4), "spa_mint")                                      # the lid
+    b.box((0, 0, 0.92), (0.46, 2.14, 1.84), "nose_bubblegum")                            # the ribbon, front to back
+    b.box((0, 0, 0.92), (2.14, 0.46, 1.86), "nose_bubblegum")                            # and side to side
+    for sx in (-1, 1):                                                                   # the bow
+        b.sphere((sx * 0.46, 0, 2.12), 0.44, "nose_bubblegum", segments=12, rings=8, scale=(1, 0.7, 0.72),
+                 rot=(math.radians(sx * -18), "Y"))
+    b.box((0, 0, 2.06), (0.34, 0.5, 0.36), "nose_bubblegum")
+    return _fin(b, "Gift", mat)
+
+
+def music(mat):
+    """Music: two joined notes in purple."""
+    b = Builder()
+    for x, z in ((-0.7, 0.4), (0.7, 0.75)):
+        b.sphere((x, 0, z), 0.46, "velvet_lilac", segments=14, rings=8, scale=(1.15, 0.7, 0.85),
+                 rot=(math.radians(-20), "Y"))                                           # a note's head
+        b.box((x + 0.36, 0, z + 0.98), (0.22, 0.3, 1.96), "velvet_lilac")                # and its stem
+    b.prism((0.36, 0, 2.5), [(-0.82, -0.42), (0.82, -0.07), (0.82, 0.42), (-0.82, 0.07)], 0.3, "velvet_lilac",
+            bevel=True, rot=X)                                                           # the beam
+    return _fin(b, "Music", mat)
+
+
+def speaker(mat):
+    """Sound effects: a speaker and two sound waves, each wave three straight pieces. In the bath water's blue: the
+    pale sky blue of the camera faded on mint and on the world's green at 36 px, and so did thinner waves (#253)."""
+    b = Builder()
+    b.prism((-0.75, 0, 0), [(-0.9, -0.36), (-0.35, -0.36), (0.4, -1.0), (0.4, 1.0), (-0.35, 0.36), (-0.9, 0.36)],
+            0.6, "water", bevel=True, rot=X)
+    for radius, span, long in ((0.74, 34, 0.52), (1.36, 30, 0.8)):
+        for a in (-span, 0, span):
+            t = math.radians(a)
+            b.box((-0.35 + radius * math.cos(t), 0, radius * math.sin(t)), (0.34, 0.34, long), "water",
+                  rot=(-t, "Y"))
+    return _fin(b, "Speaker", mat)
+
+
+def shake(mat):
+    """Screen shake: a purple phone leaning over, with two motion marks each side."""
+    b = Builder()
+    b.box((0, 0, 1.1), (1.25, 0.34, 2.2), "velvet_lilac")                                # the phone
+    b.box((0, -0.16, 1.2), (0.98, 0.08, 1.56), "spa_cream")                              # its screen
+    b.cyl((0, -0.18, 0.2), 0.11, 0.06, "spa_cream", segments=12, bevel=False, rot=X)     # its button
+    for sx in (-1, 1):
+        b.box((sx * 1.0, 0, 1.1), (0.2, 0.3, 1.0), "pastel_lilac", rot=(math.radians(sx * -10), "Y"))
+        b.box((sx * 1.38, 0, 1.1), (0.2, 0.3, 0.56), "pastel_lilac", rot=(math.radians(sx * -10), "Y"))
+    return _fin(b, "Shake", mat, tilt=14)
+
+
+def sparkle(mat):
+    """Effects: one big gold four-point star and two small ones."""
+    b = Builder()
+    b.star((-0.1, 0, 0), 1.3, 0.44, 0.5, "fur_golden", points=4, rot=X)
+    b.star((1.02, 0, 0.98), 0.56, 0.2, 0.4, "fur_golden", points=4, rot=X)
+    b.star((-1.0, 0, -0.95), 0.4, 0.15, 0.4, "fur_golden", points=4, rot=X)
+    return _fin(b, "Sparkle", mat)
+
+
+def dice(mat):
+    """Chance: a cream die showing one, two and three, the pips flat in the outline's ink."""
+    b, k = Builder(), Builder()
+    s = 1.8
+    b.box((0, 0, s / 2), (s, s, s), "spa_cream")
+    flat = Matrix.Identity(3)
+    side = Matrix.Rotation(math.radians(90), 3, "Y")
+    k.cyl((0, 0, s + 0.02), 0.26, 0.04, "coat_inky", segments=16, bevel=False, rot=flat)            # one, on top
+    for d in (-1, 0, 1):                                                                             # three, front
+        k.cyl((d * 0.48, -s / 2 - 0.02, s / 2 + d * 0.48), 0.2, 0.04, "coat_inky", segments=16, bevel=False, rot=X)
+    for d in (-1, 1):                                                                                # two, the side
+        k.cyl((-s / 2 - 0.02, d * 0.42, s / 2 + d * 0.42), 0.2, 0.04, "coat_inky", segments=16, bevel=False,
+              rot=side)
+    return _fin(b, "Dice", mat, ink=k)
+
+
+def check(mat):
+    """Done: a green badge with a white tick."""
+    b = Builder()
+    b.cyl((0, 0, 0), 1.15, 0.5, "rarity_uncommon", segments=28, rot=X)
+    b.box((-0.44, -0.3, -0.2), (0.34, 0.16, 0.86), "foam", rot=(math.radians(-45), "Y"))
+    b.box((0.2, -0.32, 0.06), (0.34, 0.16, 1.42), "foam", rot=(math.radians(40), "Y"))    # a hair in front of the
+    # short arm, so the two fronts never share a plane where they cross
+    return _fin(b, "Check", mat)
+
+
+# --- the tiny pictures (#255): need chips and badges drawn at about 20 px, so one flat-on shape and a thicker outline ---
+
+TINY_OUTLINE = 24                              # px at 512: about one pixel at 20 px, where the usual 13 is half of one
+TINY_VIEW = (-8.0, 5.0)                        # almost flat on: a three-quarter tilt costs width these cannot spare
+
+
+def wet(mat):
+    """The Wet need: one fat water drop with a glint."""
+    b = Builder()
+    r, cz = 0.92, -0.32
+    pts = [(0.0, 1.42)]
+    for i in range(21):                              # the round bottom, anticlockwise from the upper left
+        t = math.radians(148 + (392 - 148) * i / 20)
+        pts.append((r * math.cos(t), cz + r * math.sin(t)))
+    b.prism((0, 0, 0), pts, 0.5, "water", bevel=True, rot=X)
+    b.cyl((-0.36, -0.26, -0.5), 0.2, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(1, 1, 1.7))
+    return _fin(b, "Wet", mat)
+
+
+def mud(mat):
+    """The Mud need: a brown splat with five uneven lobes and a wet highlight."""
+    b = Builder()
+    pts = []
+    for i in range(40):
+        t = 2 * math.pi * i / 40
+        r = 0.98 + 0.22 * math.cos(5 * t + 0.5) + 0.07 * math.cos(3 * t)
+        pts.append((r * math.cos(t), r * math.sin(t) * 0.92))
+    b.prism((0, 0, 0), pts, 0.5, "mud", bevel=True, rot=X)
+    b.cyl((-0.3, -0.26, 0.3), 0.26, 0.04, "mud_dust", segments=12, bevel=False, rot=X, scale=(1.5, 1, 0.8))
+    return _fin(b, "Mud", mat)
+
+
+def tangles(mat):
+    """The Tangles need: a round ball of matted fur. Strands cross it in the outline's ink, three bowed one way and
+    two the other, like a ball of wool, and one loose strand trails out low on the left, where the lock badge (low
+    on the right) cannot cover it. Round on purpose: a spiky clump read as a star or a sun, too near Sparkle."""
+    b, k = Builder(), Builder()
+    b.cyl((0, 0, 0), 1.0, 0.5, "fur_orange", segments=28, rot=X)
+    for si, (deg, bulge, offsets) in enumerate(((35, 0.3, (-0.72, -0.3, 0.12)), (120, 0.3, (-0.55, -0.08)))):
+        ux, uz = math.cos(math.radians(deg)), math.sin(math.radians(deg))               # along the strand
+        for off in offsets:
+            n, pts = 18, []
+            for i in range(n + 1):
+                t = -1 + 2 * i / n
+                w = off + bulge * (1 - t * t)                                            # bowed sideways
+                pts.append((t * ux - w * uz, t * uz + w * ux))
+            for (x0, z0), (x1, z1) in zip(pts, pts[1:]):
+                mx, mz = (x0 + x1) / 2, (z0 + z1) / 2
+                if math.hypot(mx, mz) > 0.85:                                            # cut off at the ball's edge
+                    continue
+                k.box((mx, -0.27 - 0.006 * si, mz), (0.17, 0.04, math.hypot(x1 - x0, z1 - z0) + 0.08), "coat_inky",
+                      bevel=False, rot=(math.atan2(x1 - x0, z1 - z0), "Y"))
+    cx, cz, mid, parts = -0.98, -0.6, 0.36, 6                                            # the loose strand: a hook
+    for p in range(parts):                                                               # in short simple pieces
+        f0, f1 = p / parts, (p + 1) / parts
+        am = math.radians(15 - 215 * (f0 + f1) / 2)
+        ox, oz = cx + mid * math.cos(am), cz + mid * math.sin(am)
+        outer, inner = [], []
+        for j in range(4):
+            f = f0 + (f1 - f0) * j / 3
+            t, w = math.radians(15 - 215 * f), 0.17 - 0.1 * f                            # it tapers
+            outer.append((cx + (mid + w) * math.cos(t) - ox, cz + (mid + w) * math.sin(t) - oz))
+            inner.append((cx + (mid - w) * math.cos(t) - ox, cz + (mid - w) * math.sin(t) - oz))
+        b.prism((ox, 0.002 * (p % 2), oz), inner + outer[::-1], 0.4, "fur_orange", rot=X)
+    end = math.radians(15 - 215)
+    b.cyl((cx + mid * math.cos(end), 0.004, cz + mid * math.sin(end)), 0.07, 0.4, "fur_orange", segments=10, rot=X)
+    return _fin(b, "Tangles", mat, ink=k)
+
+
+def crown(mat):
+    """A VIP: a yellow crown, three points and one pink gem."""
+    b = Builder()
+    b.box((0, 0, -0.45), (2.3, 0.5, 0.7), "fur_golden")                                  # the band
+    for x, lean, tall in ((-0.82, -0.16, 0.9), (0.0, 0.0, 1.15), (0.82, 0.16, 0.9)):     # the points
+        b.prism((x, 0, -0.12), [(-0.36, 0.0), (0.36, 0.0), (lean * 2.2, tall)], 0.5, "fur_golden", rot=X)
+    b.cyl((0, -0.27, -0.45), 0.24, 0.06, "nose_bubblegum", segments=14, bevel=False, rot=X)   # the gem
+    return _fin(b, "Crown", mat)
+
+
+def lock(mat):
+    """Not built yet: a blue grey padlock, a darker shackle, a keyhole in the outline's ink."""
+    b, k = Builder(), Builder()
+    b.box((0, 0, -0.4), (1.8, 0.6, 1.4), "fur_blue")                                     # the body
+    for sx in (-1, 1):                                                                   # the shackle
+        b.box((sx * 0.56, 0, 0.7), (0.28, 0.36, 0.9), "fur_slate")
+    b.box((0, 0, 1.22), (1.4, 0.36, 0.3), "fur_slate")
+    k.cyl((0, -0.32, -0.26), 0.2, 0.04, "coat_inky", segments=14, bevel=False, rot=X)    # the keyhole
+    k.box((0, -0.32, -0.58), (0.16, 0.04, 0.44), "coat_inky", bevel=False)
+    return _fin(b, "Lock", mat, ink=k)
+
+
+def pointer(mat):
+    """The tutorial's arrow: one fat yellow arrow pointing left, at the thing to tap. Yellow, like the warm ring the
+    tutorial draws round that thing, and bright on the dimmed screen behind it."""
+    b = Builder()
+    pts = [(-1.4, 0.0), (-0.2, -1.15), (-0.2, -0.5), (1.35, -0.5), (1.35, 0.5), (-0.2, 0.5), (-0.2, 1.15)]
+    b.prism((-0.5, 0, 0), [(x + 0.5, z) for x, z in pts], 0.6, "fur_golden", bevel=True, rot=X)
+    b.cyl((0.6, -0.31, 0.22), 0.13, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(2.6, 1, 1))   # a glint
+    return _fin(b, "Pointer", mat)
+
+
+def star(mat):
+    """A star earned for a wash: one fat yellow five-point star with a white glint."""
+    b = Builder()
+    b.star((0, 0, 0), 1.35, 0.7, 0.6, "fur_golden", points=5, rot=X)
+    b.cyl((-0.3, -0.31, 0.3), 0.15, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(1.5, 1, 1))
+    return _fin(b, "Star", mat)
+
+
+def station(mat):
+    """A station: the wash tub from the side. A blue roll-top bath with a round bottom, short gold feet, a gold tap
+    at one end and white lather over the rim at the other. The tub is the bath water's deeper blue so the white
+    lather and a white row behind it do not wash it out; round feet read as a cart's wheels, so these are blocks."""
+    b = Builder()
+    side = [(-1.35, 0.45), (-1.25, -0.1), (-1.0, -0.45), (-0.6, -0.6), (0.6, -0.6), (1.0, -0.45), (1.25, -0.1),
+            (1.35, 0.45)]
+    b.prism((0, 0, 0), side, 1.0, "water", bevel=True, rot=X)
+    b.box((0, 0, 0.5), (3.0, 1.14, 0.24), "spa_sky")                                     # the rolled rim
+    for sx in (-1, 1):                                                                   # the feet
+        b.box((sx * 0.82, 0, -0.7), (0.4, 0.6, 0.3), "fur_golden", rot=(math.radians(sx * 20), "Y"))
+    b.box((1.0, 0, 0.98), (0.2, 0.24, 0.72), "fur_golden")                               # the tap
+    b.box((0.76, 0, 1.26), (0.68, 0.24, 0.2), "fur_golden")
+    for x, z, r in ((-0.92, 0.84, 0.34), (-0.4, 0.98, 0.46), (0.14, 0.82, 0.32)):        # the lather
+        b.sphere((x, 0.0, z), r, "foam", segments=12, rings=8)
+    return _fin(b, "Station", mat)
+
+
+BUILDERS = {                                       # name -> (builder, (yaw, pitch)[, outline px])
     "Index": (index, (22.0, 12.0)),
     "Settings": (settings, (-16.0, 8.0)),
     "Tools": (tools, (-24.0, 20.0)),
     "Helper": (helper, (-18.0, 10.0)),
     "Build": (build, (-14.0, 8.0)),
+    "Camera": (camera, (-18.0, 12.0)),               # the small pictures (#251)
+    "Paw": (paw, (-14.0, 8.0)),
+    "Heart": (heart, (-14.0, 8.0)),
+    "Gift": (gift, (-28.0, 22.0)),
+    "Music": (music, (-14.0, 8.0)),
+    "Speaker": (speaker, (-14.0, 8.0)),
+    "Shake": (shake, (-14.0, 8.0)),
+    "Sparkle": (sparkle, (-14.0, 8.0)),
+    "Dice": (dice, (-30.0, 26.0)),
+    "Check": (check, (-14.0, 8.0)),
+    "Pointer": (pointer, (-10.0, 6.0)),
+    "Star": (star, (-14.0, 8.0)),
+    "Station": (station, (-14.0, 10.0)),
+    "Crown": (crown, TINY_VIEW, TINY_OUTLINE),       # the tiny pictures (#255)
+    "Lock": (lock, TINY_VIEW, TINY_OUTLINE),
+    "Mud": (mud, TINY_VIEW, TINY_OUTLINE),
+    "Tangles": (tangles, TINY_VIEW, TINY_OUTLINE),
+    "Wet": (wet, TINY_VIEW, TINY_OUTLINE),
 }
 
 
@@ -269,7 +573,8 @@ def _outline(path, colour, width):
 
 
 def render_icon(name, mat, out, samples=64):
-    build, view = BUILDERS[name]
+    build, view, *rest = BUILDERS[name]
+    outline = rest[0] if rest else OUTLINE
     common.hide_all_meshes()
     objs = build(mat)
     common.show(objs)
@@ -293,7 +598,7 @@ def render_icon(name, mat, out, samples=64):
     path = os.path.join(out, "CleanACat_Icon_Hud_" + name + ".png")
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
-    _outline(path, INK, OUTLINE)
+    _outline(path, INK, outline)
     for ob in objs:
         bpy.data.objects.remove(ob, do_unlink=True)
     return path

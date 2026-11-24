@@ -12,6 +12,11 @@
 -- camera picks it. Gamepad: hold the right trigger with the cat in the middle of the screen and turn the camera
 -- with the right stick; the right trigger also picks the bow or camera in the middle of the screen.
 -- The client only reports what the player did. The server checks every step and alone decides the coins.
+--
+-- Later steps (#267, drafts in Shared.WashDraft): after the fluff (and the dryer) and before the bows, a cat that
+-- needs them takes the Bubble Bath (swirl on the cat until the suds are gone, switch bubbleBath) and the Pawdicure
+-- (hold on each front paw until its long claws clip, switch pawdicure), each only once its station is built. Like the
+-- dryer they are only a look: the server pays the stations' bonus from the save.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -22,6 +27,7 @@ local Workspace = game:GetService("Workspace")
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
+local LaterStepRules = require(Shared:WaitForChild("LaterStepRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
@@ -32,6 +38,7 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local Trove = require(Shared:WaitForChild("Vendor"):WaitForChild("Trove"))
+local WashDraft = require(Shared:WaitForChild("WashDraft"))
 
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
@@ -55,6 +62,12 @@ local RESEND_SECONDS = 2 -- the newest report is sent again when the server has 
 local RESEND_TRIES = 3
 local GAMEPAD_BUTTON = Enum.KeyCode.ButtonR2 -- not ButtonA, which jumps
 local BUTTON_COLOR = Color3.fromRGB(205, 205, 210)
+local SUDS_COLOR = Color3.fromRGB(250, 252, 255)
+local SUDS_POP = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- a puff shrinks as it fades
+local SNIP = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- a claw shortens as it fades
+local RING_COLOR = Color3.fromHex("FFC94D") -- the outline on the paw to press next
+-- The HUD's name for each later step (stageChanged): a step bar entry for each comes with the HUD's part of #267.
+local LATER_STAGE: { [string]: string } = { smell = "bath", claws = "claws" }
 local BOW_COLORS: { [string]: Color3 } = {
 	BowPink = Color3.fromRGB(255, 150, 190),
 	BowMint = Color3.fromRGB(150, 225, 190),
@@ -70,12 +83,21 @@ type Piece = {
 	position: Vector3,
 }
 
+-- A front paw and its long claws (#267): the leg Model the claws ride on. Its claws clip together.
+type Paw = {
+	leg: Model,
+	claws: { Piece },
+	sizes: { [BasePart]: Vector3 }, -- each claw part's long size at tub scale, to put it back after a roll back
+	clipped: boolean,
+}
+
 -- The cat in the tub, cloned fresh for every visit.
 type Cat = {
 	model: Model,
 	mud: { Piece }, -- in name order; patch index i is mud[i]
 	tangles: { Piece }, -- in name order; brushed out from the first
 	fluff: { Piece }, -- fur puffs, hidden until the cat is fluffed; never caught by a ray
+	paws: { Paw }, -- the front paws' long claws, hidden unless this cat takes the Pawdicure
 	coat: { [BasePart]: Color3 }, -- dry colours of the coat, to undo the wet look
 	wetDarken: number,
 	bow: BasePart, -- the stand-in bow, shown only when the picked bow's model cannot be worn
@@ -93,8 +115,20 @@ type Visit = {
 	catId: number?,
 	stage: Stage,
 	strokes: number,
+	brushStrokes: number, -- strokes this cat's brushing takes, as the server said (fewer with the Pro Brush)
 	strokeTravel: number,
 	lastStrokeAt: number,
+	needs: { string }, -- this cat's needs and the ones still locked, as the server said (CatReady)
+	locked: { string },
+	later: { string }, -- later steps still to come (LaterStepRules.steps), front first
+	plan: { string }, -- all of this cat's later steps, as the HUD names them
+	step: string?, -- the later step under way: "smell" (the Bubble Bath) or "claws" (the Pawdicure)
+	suds: { BasePart }, -- the bath's puffs (PH_Suds), cleared in order
+	swirl: number, -- studs swirled on the cat in this bath
+	away: boolean, -- the cat sits at a later step's station, not in the tub
+	hold: Paw?, -- the paw under the press in the Pawdicure, held since holdSince
+	holdSince: number,
+	ring: Highlight?, -- the outline on the paw to press next
 }
 
 type Args = { n: number, [number]: any }
@@ -104,6 +138,8 @@ local ScrubController = {}
 -- Fires (stage) each time the visit moves to another step, and (nil) when the visit ends. The HUD's step bar and
 -- tool tray listen (HudController, #210). Read-only for listeners, like Moments.
 ScrubController.stageChanged = Signal.new() :: Signal.Signal<string?>
+-- Fires (later) when the cat's later steps are known: their HUD names in order ("bath", "claws"), maybe none.
+ScrubController.planChanged = Signal.new() :: Signal.Signal<{ string }>
 
 -- The recap card (#224, switch recapCard): RecapController sets a handler that shows the card after a customer's cat
 -- goes home and calls `nextCat` once when the player closes it. With no handler, or the switch off, the next cat
@@ -134,9 +170,21 @@ local answeredSeq = 0 -- the newest report the server has answered
 local warnedMissing: { [string]: boolean } = {}
 
 -- Every step change goes through here, so the HUD hears each one.
+-- The step the HUD shows: a later step under way, or the next one while the cat dries before it (so the bar never
+-- says "Pick a bow" before the bath), else the stage.
+local function hudStage(v: Visit): string
+	if v.step then
+		return LATER_STAGE[v.step]
+	end
+	if v.stage == "fluffed" and #v.later > 0 then
+		return LATER_STAGE[v.later[1]]
+	end
+	return v.stage
+end
+
 local function setStage(v: Visit, stage: Stage)
 	v.stage = stage
-	ScrubController.stageChanged:Fire(stage)
+	ScrubController.stageChanged:Fire(hudStage(v))
 end
 
 -- Sends one numbered spa report. If the server has not answered it after RESEND_SECONDS (its rate limit may have
@@ -346,6 +394,30 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 		end
 	end
 
+	-- The long claws ship hidden; they are grouped by the front paw (leg Model) they ride on.
+	local paws: { Paw } = {}
+	local pawOf: { [Model]: Paw } = {}
+	for _, claw in collectPieces(model, "Claw") do
+		local leg = claw.model.Parent
+		if leg and leg:IsA("Model") then
+			local paw = pawOf[leg :: Model]
+			if paw == nil then
+				paw = {
+					leg = leg :: Model,
+					claws = {},
+					sizes = {},
+					clipped = false,
+				}
+				pawOf[leg :: Model] = paw
+				table.insert(paws, paw)
+			end
+			table.insert(paw.claws, claw)
+			for _, part in claw.parts do
+				paw.sizes[part] = part.Size
+			end
+		end
+	end
+
 	local pieceParts: { [BasePart]: boolean } = {}
 	for _, list in { mud, tangles, fluff } do
 		for _, piece in list do
@@ -381,6 +453,7 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 		mud = mud,
 		tangles = tangles,
 		fluff = fluff,
+		paws = paws,
 		coat = coat,
 		wetDarken = wetDarken,
 		bow = bow,
@@ -563,9 +636,240 @@ local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number, hit: In
 	end
 end
 
+-- The later step under way, or none; the HUD hears it as a stage of its own.
+local function setStep(v: Visit, step: string?)
+	v.step = step
+	ScrubController.stageChanged:Fire(hudStage(v))
+end
+
+local function nextPaw(cat: Cat): Paw?
+	for _, paw in cat.paws do
+		if not paw.clipped then
+			return paw
+		end
+	end
+	return nil
+end
+
+-- Outlines the paw to press next (Design-Agent), or nothing.
+local function ringPaw(v: Visit, paw: Paw?)
+	local ring = v.ring
+	if paw == nil then
+		if ring then
+			ring.Enabled = false
+		end
+		return
+	end
+	if ring == nil then
+		local made = Instance.new("Highlight")
+		made.Name = "PH_PawRing"
+		made.FillTransparency = 1
+		made.OutlineColor = RING_COLOR
+		made.DepthMode = Enum.HighlightDepthMode.Occluded
+		made.Parent = v.folder
+		v.ring = made
+		ring = made
+	end
+	local r = ring :: Highlight
+	r.Adornee = paw.leg
+	r.Enabled = true
+end
+
+-- Long claws show on a cat that will take the Pawdicure; clipped or not needed, they stay hidden. Never in the way
+-- of a ray: the paw itself is what the player holds.
+local function showClaws(cat: Cat, long: boolean)
+	for _, paw in cat.paws do
+		paw.clipped = not long
+		for _, claw in paw.claws do
+			for _, part in claw.parts do
+				part.Size = paw.sizes[part] or part.Size
+				part.CanQuery = false
+				part.Transparency = if long then 0 else 1
+			end
+		end
+	end
+end
+
+-- Sits the cat on the CatSeat of station `id` in the player's plot (at the station's CatScale), or back in the tub
+-- when `id` is nil or that station is not standing: a later step then happens in the tub. A cat that never left the
+-- tub is not moved, so with the later steps off nothing changes (a cat turned to show its mud stays turned).
+local function seatAt(v: Visit, cat: Cat, id: string?)
+	local station = if id then SpaLayout.station(id) else nil
+	local point = if station then station:FindFirstChild("CatSeat", true) else nil
+	local target = v.seat
+	local scale = CAT_SCALE
+	if station and point and point:IsA("Attachment") then
+		local raw = station:GetAttribute("CatScale")
+		scale = if type(raw) == "number" and raw > 0 then raw else CAT_SCALE
+		target = (point :: Attachment).WorldCFrame
+		v.away = true
+	elseif not v.away then
+		return
+	else
+		v.away = false
+	end
+	if target == nil then
+		return
+	end
+	if cat.model:GetScale() ~= scale then
+		cat.model:ScaleTo(scale)
+	end
+	cat.model:PivotTo(target :: CFrame)
+end
+
+-- The later steps this cat takes, from its needs, the stations built and the switches; long claws show for the
+-- Pawdicure. Called when the cat arrives and when the server puts it back before the fluff.
+local function armLater(v: Visit, cat: Cat)
+	for _, puff in v.suds do
+		puff:Destroy()
+	end
+	v.suds = {}
+	v.swirl = 0
+	v.hold = nil
+	v.step = nil
+	ringPaw(v, nil)
+	seatAt(v, cat, nil)
+	v.later = LaterStepRules.steps(v.needs, v.locked, LiveFlags.isOn)
+	showClaws(cat, table.find(v.later, "claws") ~= nil)
+	local plan: { string } = {}
+	for _, need in v.later do
+		table.insert(plan, LATER_STAGE[need])
+	end
+	v.plan = plan
+	ScrubController.planChanged:Fire(table.clone(plan))
+end
+
+-- The Bubble Bath's puffs: WashDraft.SUDS placeholder balls round the cat, never in the way of a ray.
+local function makeSuds(v: Visit, cat: Cat)
+	local size = cat.model:GetExtentsSize()
+	local pivot = cat.model:GetPivot()
+	local reach = math.max(size.X, size.Z)
+	for index = 1, WashDraft.SUDS do
+		local angle = (index - 1) / WashDraft.SUDS * 2 * math.pi
+		local high = size.Y * (if index % 2 == 0 then 0.55 else 0.35)
+		local at = pivot * CFrame.Angles(0, angle, 0) * CFrame.new(0, high, -reach * 0.42)
+		local puff = makePart(`PH_Suds{index}`, Vector3.one * reach * 0.32, SUDS_COLOR, at)
+		puff.Shape = Enum.PartType.Ball
+		puff.Material = Enum.Material.SmoothPlastic
+		puff.Transparency = 0.1
+		puff.CanQuery = false
+		puff.CanTouch = false
+		puff.Parent = cat.model
+		table.insert(v.suds, puff)
+	end
+end
+
+-- Shows the bows once the later steps are done.
+local function showBows(v: Visit, cat: Cat)
+	if visit == v and v.cat == cat and v.stage == "fluffed" then
+		for _, button in v.bowButtons do
+			show(button, true)
+		end
+	end
+end
+
+-- Starts the next later step, or shows the bows when none is left.
+local function nextLater(v: Visit, cat: Cat)
+	if visit ~= v or v.cat ~= cat or v.stage ~= "fluffed" then
+		return
+	end
+	endStroke()
+	v.hold = nil
+	local step = table.remove(v.later, 1)
+	-- each step at its own station when it stands in the plot (Model-Agent's CatSeat), else in the tub
+	seatAt(v, cat, if step then CatRules.NEED_STATION[step] else nil)
+	if step == "smell" then
+		v.swirl = 0
+		makeSuds(v, cat)
+		setStep(v, "smell")
+		Moments.BathStart:Fire(cat.model)
+	elseif step == "claws" and nextPaw(cat) ~= nil then
+		setStep(v, "claws")
+		ringPaw(v, nextPaw(cat))
+		Moments.ClawsStart:Fire(cat.model)
+	elseif step ~= nil then
+		nextLater(v, cat) -- a cat model with no claws: nothing to clip
+	else
+		if v.step ~= nil then
+			setStep(v, nil)
+		end
+		ringPaw(v, nil)
+		showBows(v, cat)
+	end
+end
+
+-- Swirl travel on the cat in the Bubble Bath: the puffs pop in order, the last one ends the bath.
+local function swirlAt(v: Visit, cat: Cat, travel: number)
+	local count = #v.suds
+	local before = LaterStepRules.sudsGone(v.swirl, count)
+	v.swirl += travel
+	local gone = LaterStepRules.sudsGone(v.swirl, count)
+	for index = before + 1, gone do
+		local puff = v.suds[index]
+		TweenService:Create(puff, SUDS_POP, { Transparency = 1, Size = puff.Size * 0.3 }):Play()
+		Moments.SudsPopped:Fire(cat.model, puff.Position, count - index)
+	end
+	if gone >= count then
+		Moments.BathDone:Fire(cat.model)
+		nextLater(v, cat)
+	end
+end
+
+-- The front paw under the pointer, while it still has long claws.
+local function pawAt(cat: Cat, hit: Instance): Paw?
+	for _, paw in cat.paws do
+		if not paw.clipped and hit:IsDescendantOf(paw.leg) then
+			return paw
+		end
+	end
+	return nil
+end
+
+-- A held paw clips: its claws shorten and fade one after another, SNIP_GAP apart, so one hold reads as four trims.
+local function clipPaw(v: Visit, cat: Cat, paw: Paw)
+	paw.clipped = true
+	v.hold = nil
+	local left = 0
+	for _, other in cat.paws do
+		if not other.clipped then
+			left += 1
+		end
+	end
+	ringPaw(v, nextPaw(cat))
+	Moments.PawClipped:Fire(cat.model, paw.leg:GetPivot().Position, left)
+	task.spawn(function()
+		for index, claw in paw.claws do
+			if index > 1 then
+				task.wait(WashDraft.SNIP_GAP)
+			end
+			if visit ~= v or v.cat ~= cat or not paw.clipped then
+				return
+			end
+			for _, part in claw.parts do
+				local size = part.Size -- the claw's long side shrinks to a third
+				local short = if size.X >= size.Y and size.X >= size.Z
+					then Vector3.new(size.X * 0.35, size.Y, size.Z)
+					elseif size.Y >= size.Z then Vector3.new(size.X, size.Y * 0.35, size.Z)
+					else Vector3.new(size.X, size.Y, size.Z * 0.35)
+				TweenService:Create(part, SNIP, { Size = short, Transparency = 1 }):Play()
+			end
+			local first = claw.parts[1]
+			Moments.ClawSnipped:Fire(
+				cat.model,
+				if first then first.Position else paw.leg:GetPivot().Position
+			)
+		end
+	end)
+	if left == 0 then
+		Moments.ClawsDone:Fire(cat.model)
+		nextLater(v, cat)
+	end
+end
+
 -- After the fluff: with the Blow Dryer built (StationService places it in this player's plot), the cat sits on
 -- the dryer's stool for DRY_SECONDS (DryStart and DryStop, for the air and hum), then goes back to the tub. Then
--- the bows show. Only a look: the server pays the dryer's bonus from the save, not from this.
+-- the later steps (the Bubble Bath, the Pawdicure) and the bows. Only a look: the server pays the dryer's bonus
+-- from the save, not from this.
 local function dryThenBows(v: Visit, cat: Cat)
 	local dryer = if LiveFlags.isOn(DRY_FLAG) then SpaLayout.station("Dryer") else nil
 	local stool = if dryer then dryer:FindFirstChild("CatSeat", true) else nil
@@ -589,11 +893,7 @@ local function dryThenBows(v: Visit, cat: Cat)
 		end
 		cat.model:PivotTo(seat :: CFrame)
 	end
-	if visit == v and v.cat == cat and v.stage == "fluffed" then
-		for _, button in v.bowButtons do
-			show(button, true)
-		end
-	end
+	nextLater(v, cat)
 end
 
 -- Brush travel on the clean cat; every STROKE_TRAVEL studs is one stroke, which brushes out a share of the
@@ -606,14 +906,14 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 	end
 	v.strokeTravel = 0
 	v.lastStrokeAt = now
-	local before = SpaRules.tanglesGone(v.strokes, #cat.tangles)
+	local before = SpaRules.tanglesGone(v.strokes, #cat.tangles, v.brushStrokes)
 	v.strokes += 1
-	for index = before + 1, SpaRules.tanglesGone(v.strokes, #cat.tangles) do
+	for index = before + 1, SpaRules.tanglesGone(v.strokes, #cat.tangles, v.brushStrokes) do
 		hidePiece(cat.tangles[index])
 	end
 	Moments.BrushSwipe:Fire(cat.model, v.strokes)
 	report("ReportBrushStroke", v)
-	if v.strokes >= SpaRules.BRUSH_STROKES then
+	if v.strokes >= v.brushStrokes then
 		setStage(v, "fluffed")
 		setWet(cat, false)
 		showFluff(cat, true)
@@ -626,11 +926,20 @@ end
 local function onPointer(input: InputObject)
 	local v = visit
 	local cat = if v then v.cat else nil
-	if not v or not cat or (v.stage ~= "dirty" and v.stage ~= "clean") then
+	if not v or not cat or (v.stage ~= "dirty" and v.stage ~= "clean" and v.step == nil) then
 		return
 	end
 	local ray = pointerRay(input)
 	local result = if ray then cast(ray, v.catParams) else nil
+	if v.step == "claws" then
+		-- the Pawdicure: a press resting on a paw with long claws starts its hold; sliding to another paw restarts
+		local paw = if result then pawAt(cat, result.Instance) else nil
+		if paw ~= v.hold then
+			v.hold = paw
+			v.holdSince = os.clock()
+		end
+		return
+	end
 	if not result then
 		-- The pointer slid off the cat: the stroke ends, and a new one starts if it slides back on. The camera
 		-- stays held until the finger lifts, so it does not jump mid-drag.
@@ -661,7 +970,9 @@ local function onPointer(input: InputObject)
 		lastMoveTime = now
 		Moments.ScrubMove:Fire(cat.model, point, result.Normal, travel / dt)
 		rubAt(v, cat, point, travel, result.Instance)
-	else
+	elseif v.step == "smell" then
+		swirlAt(v, cat, travel)
+	elseif v.stage == "clean" then
 		brushAt(v, cat, travel)
 	end
 end
@@ -706,6 +1017,10 @@ end
 
 local function release()
 	activeInput = nil
+	local v = visit
+	if v then
+		v.hold = nil
+	end
 	endStroke()
 	holdCamera(false)
 	holdControls(false)
@@ -777,6 +1092,7 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	end
 	local cat = buildCat(asset, v.folder, seat)
 	v.cat = cat
+	v.away = false -- a new cat sits in the tub
 	v.catParams.FilterDescendantsInstances = { cat.model }
 	v.catId = catId
 	setStage(v, "dirty")
@@ -784,6 +1100,8 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	v.strokes = 0
 	v.strokeTravel = 0
 	v.lastStrokeAt = -math.huge
+	v.needs, v.locked = {}, {}
+	armLater(v, cat)
 	for _, button in v.bowButtons do
 		show(button, false)
 	end
@@ -793,17 +1111,26 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	end
 end
 
--- Needs as one comma separated attribute ("mud,tangles,wet") for need icons to read; only known needs pass.
-local function needList(raw: unknown): string
+-- The known needs in a list from the server, in order.
+local function needArray(raw: unknown): { string }
 	local out: { string } = {}
 	if type(raw) == "table" then
 		for _, need in raw :: { unknown } do
-			if type(need) == "string" and CatRules.NEED_STATION[need] then
+			if
+				type(need) == "string"
+				and CatRules.NEED_STATION[need]
+				and not table.find(out, need)
+			then
 				table.insert(out, need)
 			end
 		end
 	end
-	return table.concat(out, ",")
+	return out
+end
+
+-- Needs as one comma separated attribute ("mud,tangles,wet") for need icons to read; only known needs pass.
+local function needList(raw: unknown): string
+	return table.concat(needArray(raw), ",")
 end
 
 local function onCatReady(
@@ -811,7 +1138,8 @@ local function onCatReady(
 	rawKind: unknown,
 	rawNeeds: unknown,
 	rawLocked: unknown,
-	rawStray: unknown
+	rawStray: unknown,
+	rawStrokes: unknown
 )
 	local v = visit
 	if not v or type(rawId) ~= "number" then
@@ -833,7 +1161,18 @@ local function onCatReady(
 	end
 	release()
 	startCat(v, asset, seat :: CFrame, rawId)
+	-- the server's count; anything odd falls back to the hand brush's
+	v.brushStrokes = if type(rawStrokes) == "number"
+			and rawStrokes == math.floor(rawStrokes)
+			and rawStrokes >= 1
+			and rawStrokes <= SpaRules.BRUSH_STROKES
+		then rawStrokes
+		else SpaRules.BRUSH_STROKES
 	local cat = v.cat
+	if cat then
+		v.needs, v.locked = needArray(rawNeeds), needArray(rawLocked)
+		armLater(v, cat)
+	end
 	if cat and kind then
 		-- For the need icons (UI): which cat, what it needs and which needs wait on a station not built yet.
 		cat.model:SetAttribute("Customer", rawStray ~= true)
@@ -848,9 +1187,9 @@ end
 local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: number)
 	release()
 	setStage(v, stage)
-	v.strokes = math.clamp(strokes, 0, SpaRules.BRUSH_STROKES)
+	v.strokes = math.clamp(strokes, 0, v.brushStrokes)
 	v.strokeTravel = 0
-	local gone = SpaRules.tanglesGone(v.strokes, #cat.tangles)
+	local gone = SpaRules.tanglesGone(v.strokes, #cat.tangles, v.brushStrokes)
 	for index, piece in cat.tangles do
 		if index > gone then
 			showPiece(piece, true)
@@ -858,6 +1197,9 @@ local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: numb
 	end
 	setWet(cat, stage == "clean")
 	showFluff(cat, stage ~= "clean")
+	if stage ~= "fluffed" then
+		armLater(v, cat) -- back before the fluff: the bath and the claws come again after it
+	end
 	BowFit.remove(cat.model)
 	show(cat.bow, false)
 	cat.bow.CanQuery = false
@@ -949,8 +1291,13 @@ local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, raw
 		if recap ~= nil and handler ~= nil and LiveFlags.isOn(RECAP_FLAG) then
 			-- The tub stays empty until the player closes the card: a natural place to stop, with no countdown.
 			-- If the card fails to show, the next cat comes anyway so the tub is never left empty for good.
-			local ok = pcall(handler, recap, nextCat)
+			local failure = ""
+			local ok = xpcall(handler, function(err: unknown)
+				failure = tostring(err)
+			end, recap, nextCat)
 			if not ok then
+				-- Leave a trace: a card that vanishes and a cat that comes early should never be silent (Review-QA).
+				warn(`ScrubController: the recap card failed to show, next cat now: {failure}`)
 				nextCat()
 			end
 		else
@@ -983,8 +1330,20 @@ local function buildVisit(folder: Folder): Visit
 		catId = nil,
 		stage = "waiting",
 		strokes = 0,
+		brushStrokes = SpaRules.BRUSH_STROKES,
 		strokeTravel = 0,
 		lastStrokeAt = -math.huge,
+		needs = {},
+		locked = {},
+		later = {},
+		plan = {},
+		step = nil,
+		suds = {},
+		swirl = 0,
+		away = false,
+		hold = nil,
+		holdSince = 0,
+		ring = nil,
 	}
 end
 
@@ -1012,7 +1371,11 @@ local function enable()
 		end
 		-- Only a press that lands on the cat scrubs or brushes; a press anywhere else stays a camera drag.
 		local ray = pointerRay(input)
-		if (v.stage ~= "dirty" and v.stage ~= "clean") or not ray or not cast(ray, v.catParams) then
+		if
+			(v.stage ~= "dirty" and v.stage ~= "clean" and v.step == nil)
+			or not ray
+			or not cast(ray, v.catParams)
+		then
 			return
 		end
 		activeInput = input
@@ -1057,6 +1420,20 @@ local function enable()
 		if active and active.KeyCode == GAMEPAD_BUTTON then
 			onPointer(active)
 		end
+		-- the Pawdicure: a press held on a paw for CLAW_HOLD clips it
+		local v = visit
+		local cat = if v then v.cat else nil
+		local paw = if v then v.hold else nil
+		if
+			v
+			and cat
+			and paw
+			and active
+			and v.step == "claws"
+			and LaterStepRules.held(v.holdSince, os.clock())
+		then
+			clipPaw(v, cat, paw)
+		end
 	end)
 
 	trove:Add(function()
@@ -1088,10 +1465,16 @@ local function refresh()
 	end
 end
 
--- The current visit's step, or nil with no visit (the switch is off).
+-- The HUD names of this cat's later steps, in order (none with no visit).
+function ScrubController.plan(): { string }
+	local v = visit
+	return if v then table.clone(v.plan) else {}
+end
+
+-- The current visit's step (a later step's HUD name while one is under way), or nil with no visit (the switch is off).
 function ScrubController.stage(): string?
 	local v = visit
-	return if v then v.stage else nil
+	return if v then hudStage(v) else nil
 end
 
 function ScrubController.Init(_controllers: { [string]: any }) end

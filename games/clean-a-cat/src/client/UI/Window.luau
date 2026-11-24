@@ -19,7 +19,8 @@ local Window = {}
 
 local BACKDROP = Color3.fromRGB(36, 16, 56)
 local RED_TOP, RED_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")
-local TOPBAR_SHIFT = 33 -- real px: the window sits a little below the middle, clear of Roblox's top bar
+-- Design px (the holder's UIScale scales it): the window sits a little below the middle, clear of Roblox's top bar.
+local TOPBAR_SHIFT = 33
 local CLOSE = 64 -- design px
 
 export type Window = {
@@ -65,7 +66,7 @@ function Window.button(
 	b.Text = text
 	b.TextColor3 = Kit.WHITE
 	b.TextStrokeColor3 = Kit.INK
-	b.TextStrokeTransparency = 0.4
+	b.TextStrokeTransparency = 0 -- a solid ink edge: white on bright green or red needs it to read on a phone
 	Kit.minText(b)
 	gradient(b, top, bottom)
 	Kit.corner(b, UDim.new(0, 16))
@@ -165,11 +166,20 @@ function Window.new(name: string, title: string, badgeIcon: string, root: Instan
 	}
 end
 
--- Sizes in design pixels for the current screen.
-function Window.fit(w: Window, width: number, band: number, title: number, badge: number)
+-- Sizes in design pixels for the current screen. `shift` moves the card below the middle (TOPBAR_SHIFT by default);
+-- a window that is tall for a short screen passes less, so its bottom stays on screen.
+function Window.fit(
+	w: Window,
+	width: number,
+	band: number,
+	title: number,
+	badge: number,
+	shift: number?
+)
 	local scale = Kit.screenScale()
 	w.scale.Scale = scale
 	w.card.Size = UDim2.fromOffset(width, 0)
+	w.card.Position = UDim2.new(0.5, 0, 0.5, shift or TOPBAR_SHIFT)
 	w.band.Size = UDim2.new(1, 0, 0, band)
 	w.title.TextSize = title
 	w.title.Position = UDim2.new(0, badge + 4, 0.5, 0)

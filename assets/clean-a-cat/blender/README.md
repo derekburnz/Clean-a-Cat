@@ -25,7 +25,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `palette.py` | every swatch (style guide section 2), the palette texture writer and `CLEAR_SWATCHES`, the swatches drawn see-through (a soap bubble, #111) |
 | `common.py` | `Builder` primitives tagged with a swatch, FBX export, previews (library port); `render_still` draws objects of soap bubbles see-through in pictures only |
 | `rbx_export.py` | Part-built `.model.json` from the Builder's log; Clean a Cat's collision, tag and naming tables at the top |
-| `rbx_zfight.py` | finds and fixes faces that would flicker in the Part models; `python3 rbx_zfight.py` reports |
+| `rbx_zfight.py` | finds and fixes faces that would flicker in the Part models, and finds see-through parts that overlap (the export stops the build on one); `python3 rbx_zfight.py` reports both, as `zfight N` and `glass N` |
 | `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming, and the `blender-asset-qa` skill's `qa_check.py` (roblox profile) |
 | `contact_sheet.py` | tiles previews into sheets |
 | `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
@@ -40,7 +40,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `burrs.py` | things stuck in the fur (#126): the burr, the leaf and the forked twig, pivoted at the underside with up out of the fur |
 | `busy_spa.py` | a busy spa (#124): the waiting bench with `Spot1..3` and `Tag1..3`, the front desk with `Bell`, `TipJarSpot` and a `Screen` card, three helper kittens in smocks with `HatSlot` and `ToolGrip`, their bath caps, the rare visitor's beret and shades, and the framed star photo the visitor leaves (#142) |
 | `ui_renders.py`, `ui_compose.py` | pictures of the models for the screens (#127): see-through cat portraits and model icons rendered from the real models, then trimmed, outlined in the UI's ink and laid out on a check sheet at 128, 64 and 32 px |
-| `hud_icons.py` | five of the HUD's six button pictures (#185): settings, Cat Index, tools, helper and build, 512 px with a thick ink outline, in a blend of our look and the library's HUD icons. The coin is the library's own picture, re-outlined by `hud_coin.py`. Render only, not in `build_all.py` |
+| `hud_icons.py` | five of the HUD's six button pictures (#185): settings, Cat Index, tools, helper and build, 512 px with a thick ink outline, in a blend of our look and the library's HUD icons. Also thirteen small pictures in the same style for rows and badges (#251): camera, paw, heart, gift, music, speaker, shake, sparkle, dice and check, then pointer, star and station (#259). And five tiny ones for the queue window (#255), flat on with a thicker outline: crown, lock, mud, tangles and wet. The coin is the library's own picture, re-outlined by `hud_coin.py`. Render only, not in `build_all.py` |
 | `staff.py` | the human spa staff, a draft for pictures only (#185): the uniform and two looks (Jo and Sam) on the stand-in figure. `ui_renders.py` renders their portraits and `hud_icons.py` builds the Helper button from the same colours. Not a game model, not in `build_all.py` |
 | `hud_coin.py` | the HUD coin (#185): redraws the outline of the owner's library coin picture in the HUD ink and leaves the coin as it is. Plain Python with Pillow and numpy |
 | `vip.py` | the VIP Room before it is built (#21): the locked look (door, sign `Screen`, tarp over scaffold) and the building look (frame half up) at `SpotVipDoor` |
@@ -49,9 +49,9 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `store_compose.py` | store art (#24), plain Python with Pillow: backdrops, the game's name as the only words, the 512 icon and 1280 or 1920 thumbnails, and the draft sheet with 150 and 48 px checks; `compose_spa` makes the picked look (stacked title, bubble backdrop; title font Lilita One, OFL, via `TITLE_FONT`) |
 | `customers.py` | the customers' accessories for the R15 rig and the four looks (`LOOKS`, #16) |
 | `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
-| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, `street <folder>`, or `customers`, `later` for the #23 stations, `mud <out.png>` and `foam <out.png>` for the #107 close-ups); exports nothing |
+| `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, `plot-built <folder>` for the room with every station on its spot, `street <folder>`, or `customers`, `later` for the #23 stations, `mud <out.png>` and `foam <out.png>` for the #107 close-ups); exports nothing |
 
 ## Adding a model
 1. Add a module with an `ASSETS` dict (name to `(builder(mat) -> objects, triangle budget)`), and add it to `all_assets()` in `build_all.py`.
 2. Use only palette swatches. New colours go at the end of `palette.py` and in the style guide.
-3. Rebuild, check `exports/gates.md` (it now holds the QA skill's result too: a `qa` FAIL names the two objects whose faces share a plane), run `python3 rbx_zfight.py`, look at the preview, and post the sheet in the PR.
+3. Rebuild, check `exports/gates.md` (it now holds the QA skill's result too: a `qa` FAIL names the two objects whose faces share a plane), run `python3 rbx_zfight.py` (every line must end `zfight 0 area 0.000 glass 0`), look at the preview, and post the sheet in the PR.

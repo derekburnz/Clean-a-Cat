@@ -467,6 +467,12 @@ def write_model(objs, asset, out_dir, attachments=(), attributes=None, nest=None
     if tree is None:
         return None, 0
     rbx_zfight.unfight(tree)              # faces that would flicker in one plane in game (Derek 2026-10-30)
+    parts = []
+    rbx_zfight._walk(tree, parts)
+    clash = rbx_zfight.see_through(parts)  # two see-through layers look darker in game (#176, #235): stop the build
+    if clash:
+        raise RuntimeError(f"{asset}: see-through parts overlap: " + "; ".join(
+            f"{a['name'].split('/')[-1]} {a['size']} / {b['name'].split('/')[-1]} {b['size']}" for _, a, b in clash))
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, asset + ".model.json")
     with open(path, "w") as f:

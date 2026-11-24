@@ -48,6 +48,15 @@ LiveFlags.KEYS = {
 	"queuePick", -- the player picks which waiting customer is washed next (SpaService, QueuePickController); off by default
 	"gameHud", -- the game HUD: coin counter, wash step bar and tool tray (UI/HUD, HudController); off by default
 	"recapCard", -- the recap card after each customer's cat, and the next cat waits for Next cat (UI/Recap, RecapController); off by default
+	"catIndexWindow", -- the Cat Index window and its HUD button (UI/CatIndex, IndexWindowController); off by default
+	"queueWindow", -- the "Who's next?" window and the HUD's waiting faces (UI/QueueWindow, QueueWindowController); off by default
+	"tutorialTrail", -- the tutorial's floor trail: green arrows on the floor to a spot, a ring and a gold arrow over it (Spa/FloorTrail); off by default
+	"tutorialTip", -- the tutorial's tip line "Step 2 of 3: Scrub the mud" in the step bar's place (UI/HUD/TipLine); off by default
+	"tutorialDim", -- the tutorial's dim step: the screen dims round one HUD button and an arrow says tap it (UI/Spotlight); off by default
+	"windowsHideControls", -- the phone's thumbstick and jump button hide while a window is open (UI/init); off by default
+	"bubbleBath", -- the Bubble Bath station and the smell need it washes (WashDraft, #267); off by default
+	"pawdicure", -- the Pawdicure station and the long claws need it trims (WashDraft, #267); off by default
+	"proBrush", -- the Pro Brush on the Tools board: the tangles brush out in fewer strokes (WashDraft, #267); off by default
 	"settingsCard", -- the Settings card: sound sliders, less shake and less sparkle; the Menu opens it (UI/Settings, SettingsController); off by default
 	"openingBox", -- the opening scene: the truck, the bump and the box landing in front of the player (Effects/OpeningScene); off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
@@ -83,6 +92,15 @@ LiveFlags.OFF_BY_DEFAULT = {
 	gameHud = true,
 	recapCard = true,
 	settingsCard = true,
+	catIndexWindow = true,
+	queueWindow = true,
+	tutorialDim = true,
+	tutorialTip = true,
+	tutorialTrail = true,
+	windowsHideControls = true,
+	bubbleBath = true,
+	pawdicure = true,
+	proBrush = true,
 	openingBox = true,
 } :: { [string]: boolean }
 

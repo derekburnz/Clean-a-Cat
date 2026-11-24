@@ -41,7 +41,7 @@ local function onBuy(player: Player, rawId: unknown)
 	if not LiveFlags.isOn(FLAG) then
 		return
 	end
-	local id = Guard.oneOf(rawId, ToolRules.IDS)
+	local id = Guard.oneOf(rawId, ToolRules.offered(LiveFlags.isOn)) -- a tool whose switch is off is refused
 	local save = DataService.get(player)
 	if id == nil or save == nil or not nearBoard(player) then
 		return

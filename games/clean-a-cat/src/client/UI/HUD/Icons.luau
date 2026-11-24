@@ -1,28 +1,43 @@
 --!strict
 -- HUD icons: the ONE place an icon image is set (#210). Derek picked Model-Agent's 3D renders "for now"
--- (CleanACat_Icon_Hud_*, 512 px), so a later swap must touch only IMAGES. Until the group uploads exist an id stays ""
--- and the icon draws its stand-in: a glyph on a coloured tile. Model icons are drawn at 48 real px or larger and are
--- never scaled by TextSize.
+-- (CleanACat_Icon_Hud_*, 512 px), so a later swap must touch only IMAGES. The ids are group-owned uploads (Creampuff
+-- Games, 2026-11-24, Model-Agent); one without an upload yet stays "" and draws its stand-in: a glyph on a coloured
+-- tile. A picture still in moderation draws blank until Roblox approves it. Model icons are drawn at 48 real px or
+-- larger and are never scaled by TextSize.
 local Icons = {}
 
 -- name -> "rbxassetid://<id>" once uploaded under the group (rule 18); "" draws the stand-in.
 Icons.IMAGES = {
-	Coins = "",
+	Coins = "rbxassetid://116447888023490",
+	Index = "rbxassetid://121227338658862",
+	Settings = "rbxassetid://118282050361608",
 	Sponge = "",
 	Brush = "",
 	Bow = "",
-	Camera = "",
-	Star = "",
-	Paw = "",
-	Heart = "",
-	Station = "",
-	Gear = "",
-	Music = "",
-	Speaker = "",
-	Shake = "",
-	Sparkle = "",
-	Dice = "",
-	Check = "",
+	Camera = "rbxassetid://81858835488207",
+	Star = "rbxassetid://79608175953496",
+	Paw = "rbxassetid://107223055953057",
+	Heart = "rbxassetid://76458853696811",
+	Station = "rbxassetid://123888181775346",
+	Gear = "rbxassetid://118282050361608", -- the Settings render
+	Gift = "rbxassetid://111988171087116",
+	Music = "rbxassetid://121194068527540",
+	Speaker = "rbxassetid://86682357409787",
+	Shake = "rbxassetid://85720072168320",
+	Sparkle = "rbxassetid://109429421000897",
+	Dice = "rbxassetid://129990093520857",
+	Check = "rbxassetid://74659087291165",
+	Crown = "rbxassetid://104854723012308",
+	Lock = "rbxassetid://113173528545537",
+	Mud = "rbxassetid://137792046843119",
+	Tangles = "rbxassetid://115237769890322",
+	Wet = "rbxassetid://94261429421876",
+	Smell = "", -- the Bubble Bath's need (#267)
+	Claws = "", -- the Pawdicure's need (#267)
+	Pointer = "rbxassetid://86511050552339",
+	Helper = "rbxassetid://112634017426563", -- placeholder staff head
+	Tools = "rbxassetid://100929090324662",
+	Build = "rbxassetid://84861881998122",
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
@@ -40,6 +55,9 @@ local STAND_INS: { [string]: StandIn } = {
 	Paw = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Heart = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Station = { glyph = "🛁", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Index = { glyph = "📖", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Settings = { glyph = "⚙️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Gift = { glyph = "🎁", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Gear = { glyph = "⚙️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Music = { glyph = "🎵", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Speaker = { glyph = "🔊", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
@@ -47,6 +65,14 @@ local STAND_INS: { [string]: StandIn } = {
 	Sparkle = { glyph = "✨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Dice = { glyph = "🎲", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Check = { glyph = "✅", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Crown = { glyph = "👑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Lock = { glyph = "🔒", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Mud = { glyph = "🟤", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Tangles = { glyph = "🧶", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Wet = { glyph = "💧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Smell = { glyph = "🫧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Claws = { glyph = "💅", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
 }
 
 -- Puts icon `name` inside `parent`, filling it, and returns it. `faded` dims it (a step already done).

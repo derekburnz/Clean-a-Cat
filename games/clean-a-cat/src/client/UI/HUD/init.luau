@@ -7,6 +7,8 @@
 --   HUD.setCoins(n)      the coin counter, top right: the save's coins as the server mirrored them
 --   HUD.setStage(stage)  the wash step bar (top centre) and tool tray (bottom centre) for a ScrubController stage;
 --                        nil, "waiting" or "done" hides them
+--   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar
+--   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil
 --
 -- The look follows the screens' README: numbers and status are white words with an ink outline and no box, Fredoka
 -- One only, and every piece is laid out in design pixels on a 1280 x 720 canvas and scaled like Scale.luau:
@@ -18,10 +20,12 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Wallet = require(Shared:WaitForChild("Wallet"))
+local WashDraft = require(Shared:WaitForChild("WashDraft"))
 
 local Comfort = require(script.Parent:WaitForChild("Comfort"))
 local Icons = require(script:WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
+local TipLine = require(script:WaitForChild("TipLine"))
 
 local HUD = {}
 
@@ -32,11 +36,14 @@ local WHITE = Kit.WHITE
 local GOLD_TEXT = Kit.GOLD_TEXT
 local EDGE = 22 -- design pixels from the root's edge (the screens' right margin)
 
--- One wash step per stage the player acts in, in order (ScrubController and SpaRules).
-type Step = { stage: string, icon: string, say: string }
+-- One wash step per stage the player acts in, in order (ScrubController and SpaRules). A `later` step (#267) shows
+-- only for a cat whose wash takes it (setPlan).
+type Step = { stage: string, icon: string, say: string, later: boolean? }
 HUD.STEPS = {
 	{ stage = "dirty", icon = "Sponge", say = "Scrub the mud" },
 	{ stage = "clean", icon = "Brush", say = "Brush the fur" },
+	{ stage = "bath", icon = "Smell", say = WashDraft.SAY.bath, later = true },
+	{ stage = "claws", icon = "Claws", say = WashDraft.SAY.claws, later = true },
 	{ stage = "fluffed", icon = "Bow", say = "Pick a bow" },
 	{ stage = "styled", icon = "Camera", say = "Take the photo" },
 } :: { Step }
@@ -83,11 +90,24 @@ type Pieces = {
 local pieces: Pieces? = nil
 local coins = 0
 local stage: string? = nil
+local plan: { string } = {} -- the later steps this wash takes
 
-local function stepIndex(name: string?): number?
+-- The steps this wash shows, as indexes into HUD.STEPS, in order.
+local function shownSteps(): { number }
+	local out: { number } = {}
 	for index, step in HUD.STEPS do
-		if step.stage == name then
-			return index
+		if not step.later or table.find(plan, step.stage) ~= nil then
+			table.insert(out, index)
+		end
+	end
+	return out
+end
+
+-- Where `name` falls among the shown steps (1 = first shown), or nil.
+local function stepIndex(name: string?, shown: { number }): number?
+	for place, index in shown do
+		if HUD.STEPS[index].stage == name then
+			return place
 		end
 	end
 	return nil
@@ -162,37 +182,48 @@ local function redraw()
 	p.coinText.TextSize = s.coinText
 	p.coinText.Text = Wallet.format(coins)
 
-	local current = stepIndex(stage)
+	local shown = shownSteps()
+	local current = stepIndex(stage, shown)
 	local washing = on() and current ~= nil
-	p.steps.Visible = washing
+	p.steps.Visible = washing and not TipLine.isShown() -- one line at the top centre: a tutorial tip wins
 	p.tray.Visible = washing
 	if current == nil then
 		return
 	end
-	local step = HUD.STEPS[current]
+	local step = HUD.STEPS[shown[current]]
 	p.stepText.TextSize = s.stepText
-	p.stepText.Text = `Step {current} of {#HUD.STEPS} · {step.say}`
+	p.stepText.Text = `Step {current} of {#shown} · {step.say}`
+	-- each step's place among the shown ones; a later step this wash skips is hidden
+	local placeOf: { [number]: number } = {}
+	for place, index in shown do
+		placeOf[index] = place
+	end
 	for index, pip in p.pips do
-		local size = if index == current then s.pip + 8 else s.pip
+		local place = placeOf[index]
+		pip.Visible = place ~= nil
+		p.slots[index].Visible = place ~= nil
+		local at = place or 0
+		local size = if at == current then s.pip + 8 else s.pip
 		pip.Size = UDim2.fromOffset(size, size)
-		pip.BackgroundColor3 = if index < current
+		pip.BackgroundColor3 = if at < current
 			then Color3.fromHex("C9F5E5")
-			elseif index == current then GOLD_TEXT
+			elseif at == current then GOLD_TEXT
 			else WHITE
-		p.ticks[index].Visible = index < current
+		p.ticks[index].Visible = at < current
 	end
 	for index, slot in p.slots do
+		local at = placeOf[index] or 0
 		slot.Size = UDim2.fromOffset(s.slot, s.slot + s.lift)
 		local face = p.faces[index]
 		face.Size = UDim2.fromOffset(s.slot, s.slot)
-		face.Position = UDim2.fromOffset(0, if index == current then 0 else s.lift)
-		face.BackgroundColor3 = if index == current
+		face.Position = UDim2.fromOffset(0, if at == current then 0 else s.lift)
+		face.BackgroundColor3 = if at == current
 			then Color3.fromHex("FFC94D")
-			elseif index < current then Color3.fromHex("E7F6EF")
+			elseif at < current then Color3.fromHex("E7F6EF")
 			else WHITE
 		local iconBox = p.iconBoxes[index]
 		iconBox.Size = UDim2.fromOffset(s.slotIcon, s.slotIcon) -- model icons never under 48 (Design-Agent)
-		local fade = index < current
+		local fade = at < current
 		if p.faded[index] ~= fade then
 			p.faded[index] = fade
 			Icons.draw(HUD.STEPS[index].icon, iconBox, fade)
@@ -296,6 +327,9 @@ function HUD.build(root: Frame)
 		iconBoxes[index] = iconBox
 	end
 
+	TipLine.build(root)
+	TipLine.onChanged(redraw)
+
 	pieces = {
 		coins = coinsFrame,
 		coinIcon = coinIcon,
@@ -323,6 +357,18 @@ end
 
 function HUD.setCoins(value: unknown)
 	coins = if type(value) == "number" then value else 0
+	redraw()
+end
+
+function HUD.setTip(tip: TipLine.Tip?)
+	TipLine.set(tip)
+end
+
+function HUD.setPlan(later: { string })
+	if table.concat(later, ",") == table.concat(plan, ",") then
+		return
+	end
+	plan = table.clone(later)
 	redraw()
 end
 
