@@ -420,7 +420,7 @@ redraw = function()
 				else ColorSequence.new(OFF_TOP, OFF_BOTTOM)
 			word.Text = if on then "On" else "Off"
 			word.TextSize = 19
-			word.Position = UDim2.new(if on then 0.32 else 0.68, 0, 0.5, 0)
+			word.Position = UDim2.fromScale(if on then 0.32 else 0.68, 0.5)
 			knob.Size = UDim2.fromOffset(s.knob, s.knob)
 			knob.Position = if on
 				then UDim2.new(1, -s.knob - 3, 0.5, 0)
