@@ -20,3 +20,10 @@ colours on the chunky 3D look of his asset library's coin. 512 px, see-through.
 - In Luau the asset ids live in one lookup table, so swapping the set later is a one-place change ("for now").
 - The flat two-tone set Derek didn't pick (A) and the comparison sheet are in the project's shared folder,
   `Design-Agent/icon-blends-2026-11-24/`. The comparison is also at `docs/concepts/clean-a-cat/2026-11-24-icon-blends.png`.
+
+## Small pictures
+
+Eighteen smaller pictures in the same style for spots that would otherwise show an emoji: `CleanACat_Icon_Hud_`
+Camera, Paw, Heart, Gift, Music, Speaker, Shake, Sparkle, Dice, Check, Crown, Lock, Mud, Tangles, Wet, Pointer, Star and
+Station (`.png`, 512 px). Model-Agent drew them and Review-QA passed them down to 28 px (#253, #257, #261), so unlike
+the six button pictures above they may show from 28 px up. They are uploaded under the group like the rest.
