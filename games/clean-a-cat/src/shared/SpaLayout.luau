@@ -72,6 +72,8 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotBuilder = at(-13, 0.5, 6, 0),
 	SpotStation2 = at(-7, 0.5, -1, 0),
 	SpotStation3 = at(-13.5, 0.5, -1, 0),
+	SpotStation4 = at(15.2, 0.5, 1, 0), -- the Bubble Bath, against the wall on the tub's side (#267, #276)
+	SpotStation5 = at(15.2, 0.5, -6.6, 0), -- the Pawdicure, in front of it
 	SpotVipDoor = at(-7, 0.5, 10.5, 0),
 	SpotBoard = at(-13.5, 0.5, -14.6, TURNED),
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
@@ -103,6 +105,9 @@ SpaLayout.PAD_ASSET = "CleanACat_Prop_BuildPad"
 SpaLayout.STATIONS = table.freeze({
 	{ id = "BrushTable", asset = "CleanACat_Station_BrushTable", spot = "SpotStation2" },
 	{ id = "Dryer", asset = "CleanACat_Station_Dryer", spot = "SpotStation3" },
+	-- #267: drawn only while their BuildRules switch (bubbleBath, pawdicure) is on
+	{ id = "BubbleBath", asset = "CleanACat_Station_BubbleBath", spot = "SpotStation4" },
+	{ id = "Pawdicure", asset = "CleanACat_Station_Pawdicure", spot = "SpotStation5" },
 }) :: { Station }
 -- The VIP Room's door at SpotVipDoor until the room is built: VIP_LOCKED_ASSET before its build starts,
 -- VIP_BUILDING_ASSET while it runs, nothing once it is done (StationService).

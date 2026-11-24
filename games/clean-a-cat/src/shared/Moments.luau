@@ -28,6 +28,20 @@ local catFluffed: Signal<Model> = Signal.new()
 local dryStart: Signal<Model, Model> = Signal.new()
 -- (cat): the dry is done; the cat goes back to the tub.
 local dryStop: Signal<Model> = Signal.new()
+-- (cat): the Bubble Bath step starts (#267, switch bubbleBath): suds puff up round the cat.
+local bathStart: Signal<Model> = Signal.new()
+-- (cat, sudsPosition, sudsLeft): one suds puff pops as the player swirls.
+local sudsPopped: Signal<Model, Vector3, number> = Signal.new()
+-- (cat): the last suds puff is gone; the smell is washed out.
+local bathDone: Signal<Model> = Signal.new()
+-- (cat): the Pawdicure step starts (#267, switch pawdicure): the long claws wait to be clipped.
+local clawsStart: Signal<Model> = Signal.new()
+-- (cat, clawPosition): one claw is snipped; a paw's four come WashDraft.SNIP_GAP apart (a snip sound each).
+local clawSnipped: Signal<Model, Vector3> = Signal.new()
+-- (cat, pawPosition, pawsLeft): one front paw's claws are all clipped.
+local pawClipped: Signal<Model, Vector3, number> = Signal.new()
+-- (cat): both front paws are clipped.
+local clawsDone: Signal<Model> = Signal.new()
 -- (cat, bowId): the player picks a bow.
 local bowChosen: Signal<Model, string> = Signal.new()
 -- (cat): the before and after photo card shows.
@@ -47,6 +61,13 @@ local Moments = {
 	CatFluffed = catFluffed,
 	DryStart = dryStart,
 	DryStop = dryStop,
+	BathStart = bathStart,
+	SudsPopped = sudsPopped,
+	BathDone = bathDone,
+	ClawsStart = clawsStart,
+	ClawSnipped = clawSnipped,
+	PawClipped = pawClipped,
+	ClawsDone = clawsDone,
 	BowChosen = bowChosen,
 	PhotoTaken = photoTaken,
 	CatToWindow = catToWindow,
@@ -63,6 +84,13 @@ local Moments = {
 		"CatFluffed",
 		"DryStart",
 		"DryStop",
+		"BathStart",
+		"SudsPopped",
+		"BathDone",
+		"ClawsStart",
+		"ClawSnipped",
+		"PawClipped",
+		"ClawsDone",
 		"BowChosen",
 		"PhotoTaken",
 		"CatToWindow",

@@ -175,6 +175,13 @@ local SCENES = {
 		UI.setWashStage("dirty")
 		UI.setTip({ step = 2, total = 3, icon = "Sponge", say = "Scrub the mud" })
 	end },
+	-- The step bar with both later steps (#267): six steps, on the bath.
+	{ "HudLater", function()
+		hud(true)
+		UI.setCoins(999999)
+		UI.setWashPlan({ "bath", "claws" })
+		UI.setWashStage("bath")
+	end },
 	{ "HudWalking", function()
 		hud(true)
 		UI.setCoins(1240)
@@ -200,6 +207,7 @@ end
 function Scenes.close()
 	UI.closeAll()
 	UI.setWashStage(nil)
+	UI.setWashPlan({})
 	hud(false)
 	flag("recapCard", false)
 	flag("settingsCard", false)

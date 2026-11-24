@@ -138,11 +138,18 @@ local function drawInto(
 	plot: Model,
 	slot: number,
 	assets: Instance,
-	save: { stations: any, builds: any }
+	save: { stations: any, builds: any },
+	isOn: (flag: string) -> boolean
 )
 	local folder = Instance.new("Folder")
 	folder.Name = SpaLayout.STATIONS_FOLDER
 	for _, entry in SpaLayout.STATIONS do
+		-- a station with its own switch (the Bubble Bath, the Pawdicure; #267) stands, or waits as a pad, only
+		-- while that switch is on
+		local flag = BuildRules.ITEMS[entry.id].flag
+		if flag ~= nil and not isOn(flag) then
+			continue
+		end
 		local built = save.stations[entry.id] == true
 		local assetName = if built then entry.asset else SpaLayout.PAD_ASSET
 		local asset = (assets :: Instance):FindFirstChild(assetName)
@@ -211,7 +218,7 @@ function StationService.refresh(player: Player)
 	if not LiveFlags.isOn(FLAG) or save == nil or assets == nil then
 		return
 	end
-	drawInto(plot, slot, assets :: Instance, save)
+	drawInto(plot, slot, assets :: Instance, save, LiveFlags.isOn)
 end
 
 -- Draws plot `slot` as if its owner had these stations and builds, whatever the switches say, replacing what is
@@ -227,7 +234,9 @@ function StationService.drawSlot(
 		return
 	end
 	clear(plot)
-	drawInto(plot, slot, assets :: Instance, { stations = stations, builds = builds })
+	drawInto(plot, slot, assets :: Instance, { stations = stations, builds = builds }, function()
+		return true
+	end)
 end
 
 function StationService.clearSlot(slot: number)
@@ -264,6 +273,14 @@ function StationService.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(refreshAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG)
 		:Connect(refreshAll)
+	-- a station's own switch (#267) shows or hides it and its pad
+	for _, id in BuildRules.IDS do
+		local flag = BuildRules.ITEMS[id].flag
+		if flag ~= nil then
+			ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+				:Connect(refreshAll)
+		end
+	end
 	refreshAll()
 end
 

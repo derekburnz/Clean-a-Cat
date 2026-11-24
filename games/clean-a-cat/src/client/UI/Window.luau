@@ -19,7 +19,8 @@ local Window = {}
 
 local BACKDROP = Color3.fromRGB(36, 16, 56)
 local RED_TOP, RED_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")
-local TOPBAR_SHIFT = 33 -- real px: the window sits a little below the middle, clear of Roblox's top bar
+-- Design px (the holder's UIScale scales it): the window sits a little below the middle, clear of Roblox's top bar.
+local TOPBAR_SHIFT = 33
 local CLOSE = 64 -- design px
 
 export type Window = {

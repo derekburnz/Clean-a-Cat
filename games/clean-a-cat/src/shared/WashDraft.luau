@@ -52,13 +52,15 @@ WashDraft.NEED_CHANCES = table.freeze({
 WashDraft.NEED_FLAG =
 	table.freeze({ smell = "bubbleBath", claws = "pawdicure" }) :: { [string]: string }
 
--- How the two steps feel (client): about 3 seconds of swirling empties the smell meter, and a hold of
--- CLAW_HOLD seconds on each of the front-paw claws clips it.
-WashDraft.SWIRL_TRAVEL = 12 -- studs of swirl on the suds
-WashDraft.CLAW_HOLD = 0.35 -- seconds
-WashDraft.CLAWS = 4 -- _Claw01 to _Claw04, the front paws
+-- How the two steps feel (client): about 3 seconds of swirling on the cat clears the suds, and a hold of
+-- CLAW_HOLD seconds on each front paw clips that paw's claws. The models carry four claws on each front paw, each
+-- too small to press on a phone, so a paw's four clip together, one snip after another (Design-Agent).
+WashDraft.SWIRL_TRAVEL = 12 -- studs of swirl on the cat
+WashDraft.SUDS = 6 -- suds puffs round the cat (placeholders until the models carry their own)
+WashDraft.CLAW_HOLD = 0.5 -- seconds on a paw (Design-Agent: 0.35 went by too fast to feel like trimming)
+WashDraft.SNIP_GAP = 0.05 -- seconds between one paw's claw snips, so one hold reads as four trims
 WashDraft.SAY = table.freeze({
-	bath = "Bubble bath · Swirl the suds",
+	bath = "Swirl the suds", -- the step bar puts "Step 3 of 6 ·" before it
 	bathHint = "Swirl to scrub",
 	claws = "Trim the claws",
 	clawsHint = "Hold on each claw",
