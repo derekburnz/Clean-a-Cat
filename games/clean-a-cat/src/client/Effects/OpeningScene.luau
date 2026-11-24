@@ -413,6 +413,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	-- (Sync-Agent measured up to 0.86 s on a phone-like run) pauses the scene instead of skipping its beats.
 	local clock = 0
 	local lastFrame = os.clock()
+	-- It also holds at 0 until the game has finished loading: Sync-Agent saw short frames with nothing drawn for up to
+	-- 1.46 s after the start, the truck model already there, so the first frame seen had it 12 studs into its drive.
+	local loaded = game:IsLoaded()
+	local heldFor = 0
 	local holdingShot = useShot and Workspace.CurrentCamera ~= nil
 	local function shotCamera(): Camera?
 		local cam = Workspace.CurrentCamera -- re-read: a respawn can replace it
@@ -574,6 +578,15 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 
 	local function frame()
 		local now = os.clock()
+		if not loaded then
+			loaded = game:IsLoaded()
+			if loaded then
+				print(`[Opening] held {string.format("%.2f", heldFor)} s while the game loaded`)
+			else
+				heldFor += now - lastFrame
+			end
+			lastFrame = now
+		end
 		clock += math.min(now - lastFrame, MAX_STEP)
 		lastFrame = now
 		local t = clock
