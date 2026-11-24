@@ -101,6 +101,18 @@ function inPage(limits, touch) {
     if (!el.closest('.allow-topbar') && inter(r, bar) && area(r, bar) > 6) add('topbar', el, `under Roblox's menu buttons (${limits.topbarLeft} x ${limits.inset})`);
   }
 
+  // words that are not part of a button keep 4 px clear of every button
+  const gap = (a, b) => Math.max(b.left - a.right, a.left - b.right, b.top - a.bottom, a.top - b.bottom);
+  for (const el of all) {
+    if (el.closest('[data-tap]') || el.closest('.scroll')) continue;
+    if (![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
+    const r = el.getBoundingClientRect();
+    for (const t of taps) {
+      if (t.contains(el) || el.contains(t) || t.closest('.scroll')) continue;
+      if (gap(r, t.getBoundingClientRect()) < 4) { add('crowd', el, `words within 4 px of ${describe(t)}`); break; }
+    }
+  }
+
   // thumbstick and jump button on touch: HUD buttons must stay clear
   if (touch && !document.body.classList.contains('no-move')) {
     for (const c of document.querySelectorAll('.rbx-stick,.rbx-jump')) {

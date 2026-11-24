@@ -38,5 +38,5 @@ node check.mjs [--screen name] [--profile smallphone] [--out dir]
 Opens every screen and state at small phone, phone, Galaxy A06, tablet, 4:3 iPad, desktop and console sizes, saves a
 picture of each and fails on: taps under 44 px on touch (36 with a mouse), words under 9 px, anything off screen or
 under Roblox's menu buttons, buttons under the thumbstick or jump button, buttons on top of each other, words cut off,
-a third font. Words under 14 px are listed as notes. Default output: `shots/` (not committed). Phone and desktop
+a third font, words within 4 px of a button they are not part of. Words under 14 px are listed as notes. Default output: `shots/` (not committed). Phone and desktop
 pictures of the 2026-11-24 drafts are in `docs/concepts/clean-a-cat/ui-2026-11-24/`.
