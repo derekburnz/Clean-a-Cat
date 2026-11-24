@@ -12,11 +12,11 @@
 --   CatMotion.shake(cat)            the shake-off (CatClean)
 --   CatMotion.wiggle(cat)           the happy wiggle (CatFluffed)
 -- Cats are found by the `Cat` attribute the generator sets on each cat Model, once it is inside Workspace.
-local GuiService = game:GetService("GuiService")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local CatPose = require(script.Parent:WaitForChild("CatPose"))
+local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
 
 type EyePart = { part: BasePart, offset: CFrame, size: Vector3 }
 
@@ -47,11 +47,9 @@ local tier: "low" | "high" = "high"
 local enabled = false
 local seedCount = 0
 
+-- Roblox's Reduced Motion or the Settings card's Less screen shake or Less sparkle (UI/Comfort).
 local function reducedMotion(): boolean
-	local ok, value = pcall(function()
-		return GuiService.ReducedMotionEnabled
-	end)
-	return ok and value == true
+	return Comfort.reducedMotion()
 end
 
 local function findJoint(parent: Instance, key: string): PVInstance?

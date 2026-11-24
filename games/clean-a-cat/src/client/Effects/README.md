@@ -14,3 +14,5 @@ Client-only, cosmetic effects. Owner: Motion-FX-Agent (vfx-animator). What each 
 `Controllers/EffectsController.luau` binds Moments. Live switches: `scrubEffects`, `revealEffects`, `fluffEffects`, `catMotion`, `dryEffects` and `stinkEffects`, all off by default.
 
 Cat motion finds cats by the `Cat` attribute on the cat Model, so the placeholder `PH_Cat` never moves. Phones move at most 4 cats at 30 updates a second, PC 10 at 60; past 30 studs half that, past 60 studs none.
+
+Comfort: every effect asks `UI/Comfort` rather than `GuiService`. Particle counts (foam, bursts, dryer air, stink) halve with `Comfort.lessSparkle()` (Roblox's Reduced Motion or the Settings card's Less sparkle). The bow pop, the glow fade and all cat motion except the blink stop with `Comfort.reducedMotion()` (Reduced Motion, Less screen shake or Less sparkle).
