@@ -15,6 +15,7 @@
 - [Rojo Integration](#rojo-integration)
 - [Studio Script Sync](#studio-script-sync)
 - [Input Action System (IAS)](#input-action-system-ias)
+- [Values You Tune Live (ConfigService)](#values-you-tune-live-configservice)
 - [LEGACY Patterns](#legacy-patterns)
 
 ---
@@ -581,6 +582,12 @@ input events everywhere.
 > are deprecated. An earlier version of this file said IAS "replaces the legacy per-input-event
 > model", which overstates it — IAS is the recommended cross-platform approach for new input work,
 > and the older services remain valid.
+>
+> **Update 2026-10-22:** the `ContextActionService` page now says `BindAction()` and the related
+> binding methods "aren't recommended for new work and are planned for deprecation", pointing to
+> IAS. In the 0.745 dump `BindAction` still has no `Deprecated` tag. So: existing CAS bindings keep
+> working and are not a bug to fix, but **write new input bindings with IAS**, and expect a
+> deprecation tag on CAS later. `UserInputService` is not mentioned.
 
 ### Enabling IAS
 
@@ -680,13 +687,31 @@ binding.KeyCode = Enum.KeyCode.LeftShift      -- set KeyCode directly; there is 
 binding.Parent = action
 ```
 
+### Where an `InputContext` registers
+
+Measured 2026-11-07 (Studio 0.746.0.7461269) with one context per location, a Bool action in each, and
+real key presses through MCP `user_keyboard_input`:
+
+| The context is in | `Pressed` fired? |
+|---|---|
+| `ReplicatedStorage` | **Yes.** Author here: the same instance exists at edit time and at runtime |
+| `Workspace` | Yes |
+| `LocalPlayer.PlayerScripts`, copied from `StarterPlayerScripts` | Yes, on the copy |
+| `LocalPlayer.PlayerGui`, copied from `StarterGui` | Yes, on the copy |
+| The template left in `StarterPlayerScripts` or `StarterGui` | **No.** A script that connects to the template never hears anything |
+
+`InputContext.Priority` defaults to `1000`; only the order between contexts matters. A mouse button is
+`Enum.KeyCode.MouseLeftButton`, not `Enum.KeyCode.MouseButton1`, which errors (`MouseButton1 is not a
+valid member of "Enum.KeyCode"`). To migrate existing input code, read `get_roblox_skill("rbx-input-action-system")`.
+
 ### Foundation for Future Features
 
 IAS underpins two newer systems:
 
 - **Character Controller Library:** A modular, customizable character movement
   system built on IAS action definitions. Still a Studio beta (latest update:
-  "[Studio Beta] Expanding the Character Controller Library", 2026-09-10).
+  "[Studio Beta] Expanding the Character Controller Library", 2026-09-10; the guide pages say so
+  too since 2026-11-04: enable it under Beta Features, then in Avatar Settings).
 - **Server Authority:** Moves character state validation to the server; fully released
   2026-07-09, and its official setup requires `PlayerScriptsUseInputActionSystem` to be enabled
   (see `security-hardening.md`).
@@ -696,6 +721,49 @@ IAS underpins two newer systems:
 > `ContextActionService:BindAction()` or `UserInputService.InputBegan` continue
 > to work — IAS does not remove these APIs, but new code should prefer IAS
 > for forward compatibility.
+
+---
+
+## Values You Tune Live (ConfigService)
+
+A price, drop rate or feature flag you may change while servers run belongs in an **Experience Config**,
+not in a constant or a DataStore. `get_roblox_skill("rbx-configs-experimentation")` covers setup and A/B
+experiments. Player progress still belongs in a DataStore, and secrets in neither.
+
+<!-- skilltest: expect config-service -->
+```luau
+--!strict
+-- A Script: ConfigService is server-only.
+local ConfigService = game:GetService("ConfigService")
+
+local DEFAULT_BOSS_HEALTH = 500
+
+local loaded, snapshot = pcall(function()
+	return ConfigService:GetConfigAsync()
+end)
+
+local function bossHealth(): number
+	if not loaded then
+		return DEFAULT_BOSS_HEALTH
+	end
+	local value = snapshot:GetValue("bossHealth")
+	return if typeof(value) == "number" then value else DEFAULT_BOSS_HEALTH
+end
+
+if loaded then
+	snapshot.UpdateAvailable:Connect(function()
+		snapshot:Refresh() -- a snapshot does not change until you refresh it
+	end)
+end
+```
+
+*Tested* from a Script in Studio 0.746.0.7461269: a key that was never published returns `nil`, so
+always keep a default. `SetTestingValue(key, value)` overrides a key for a new snapshot during a
+playtest, and after `ClearTestingValue(key)` and `Refresh()` it returns `nil` again.
+`GetConfigForPlayerAsync(player)` returns a player snapshot, which is the one experiments need; per
+Roblox's skill, the first `GetValue` on it enrolls that player, so call it where they reach the feature.
+A `LocalScript`, and `execute_luau` in `Edit`, both get `ConfigService is only available in the game
+server.`
 
 ---
 

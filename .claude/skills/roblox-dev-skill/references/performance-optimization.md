@@ -19,7 +19,9 @@
 9. [Content Streaming](#9-content-streaming-streamingenabled)
 10. [MicroProfiler Usage](#10-microprofiler-usage)
 11. [Device Testing](#11-device-testing)
-12. [LEGACY Section](#12-legacy-section)
+12. [Collections: Live Groups of Instances](#12-collections-live-groups-of-instances)
+13. [Measuring Memory and Scene Cost](#13-measuring-memory-and-scene-cost)
+14. [LEGACY Section](#14-legacy-section)
 
 ---
 
@@ -273,10 +275,10 @@ end)
   around two times lower."* That is the whole claim — halved overhead on the call itself, not free.
   `pcall` around a DataStore call or an HTTP request is still dominated by the call, and wrapping a
   hot inner loop in `pcall` still costs something. Measure before treating it as free.
-- **Native CodeGen (`--!native`)**: **server-side only.** Per the official docs, "server-side scripts
-  in your game can be compiled directly into the machine code instructions that CPUs execute"; the
-  page describes it for server-side scripts only, so do not expect a gain from `--!native` in a
-  `LocalScript`. Roblox publishes **no speedup multiplier**, and an earlier
+- **Native CodeGen (`--!native`)**: **server scripts and Android clients only.** Per the official
+  docs (2026-11-03), it is "only supported for server-side scripts and client-side scripts on Android
+  devices", so do not expect a gain from `--!native` in a `LocalScript` on Windows, Mac or iOS.
+  Roblox publishes **no speedup multiplier**, and an earlier
   version of this file invented "2-5x"; the docs instead say to *"measure the time a script or a
   function takes with and without native compilation"* using the Script Profiler. It has real costs
   the docs name: compilation increases server startup time, native code occupies extra memory, and
@@ -297,6 +299,42 @@ end)
 
   Roblox publishes no multiplier for any of these. Do not quote one — measure with the Script
   Profiler if it matters.
+
+### Thick Casts: `RaycastParams.Margin` (Engine 0.746)
+
+A ray that must be forgiving (aim assist, melee, thin targets) no longer needs a separate `Spherecast`:
+a non-zero `Margin` makes `Raycast` behave as a sphere cast of that radius, and it also grows
+`Spherecast`, `Blockcast` and `Shapecast` (*docs*). `SizeGradient` scales the cast's own size along
+its length (`0.5` ends 50% larger, `-1` shrinks to nothing), so it does nothing on a plain ray.
+
+<!-- skilltest: defs-behind; expect raycast-margin; defines-only -->
+```lua
+--!strict
+-- A ray that also hits anything within `margin` studs of its line.
+local Workspace = game:GetService("Workspace")
+
+local function forgivingRaycast(origin: Vector3, direction: Vector3, margin: number, ignore: { Instance }): RaycastResult?
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = ignore
+	params.Margin = margin -- throws below 0; a ray over 256 fails at the cast
+	return Workspace:Raycast(origin, direction, params)
+end
+```
+
+Tested in Studio 0.746 against a part whose surface is 2 studs from the ray: `Margin = 1.9` missed
+and `2.1` hit. **The result describes a sphere, not a ray:** `Position` is on the part's surface,
+`Normal` points back at the sphere's centre rather than along the face, and `Distance` is how far
+the sphere travelled (`48.36` where `Position` was `49.04` away). Do not use `Normal` for decal
+placement or `Distance` for range checks without allowing for that. A cast-size limit still applies
+to the expanded shape: a ray with `Margin = 1000` fails `The maximum radius is 256.000000`, and a
+block with `Margin = 1000` fails `The maximum side length is 512.000000`.
+
+`luau-lsp` may report `Property Margin of type 'RaycastParams' is read-only` (1.70.1) or `Key 'Margin' not
+found` (1.69): those are gaps in its definitions, and the write works in Studio 0.746.
+
+`SizeGradient` on a 100-stud cast, same part at the halfway point (*Studio*): a plain ray missed at
+every value; a 1-stud `Spherecast` missed at `1` and hit at `2`; a 2×2×2 `Blockcast` hit at `2`.
 
 ### Avoid Expensive Operations on RunService Events
 
@@ -355,7 +393,7 @@ end)
 
 ### Server Memory Pressure Monitoring (`ServerLowMemoryWarning`)
 
-Roblox Studio v736+ introduces `game.ServerLowMemoryWarning` allowing server scripts to react proactively when the server instance approaches memory limits:
+`game.ServerLowMemoryWarning` lets a server script react when Roblox detects memory pressure (documented since 2026-11-03). It can fire more than once while the pressure lasts, so keep the handler idempotent and cheap; it guarantees neither a shutdown nor that one can be avoided (*docs*). The signal exists in Studio 0.746, but it cannot be fired on demand, so this handler has not been seen to run:
 
 ```luau
 --!strict
@@ -378,6 +416,15 @@ Scripts under different Actors can run on multiple CPU cores simultaneously.
 - Scripts under the **same Actor** always execute sequentially with respect to each other
 - Scripts under **different Actors** can run in true parallel
 - Actors should be placed in appropriate containers or replace top-level entities (NPCs)
+
+### Fixed-step parallel callbacks
+
+`RunService:BindToSimulationParallel(fn, frequency?, priority?)` and `BindToAnimationParallel` run a
+callback in parallel without you calling `task.desynchronize()`. They refused until 0.746.0.7461264
+and work since (*tested* 2026-11-07, Studio 0.746.0.7461269). The calling script must be under an
+`Actor`: from a plain Script they fail `The calling script must be rooted under an Actor.` Inside the
+callback, reading `part.Position` works and writing fails `Property BasePart.Transparency is not safe
+to write in parallel`, like any other parallel code.
 
 ### task.desynchronize() / task.synchronize()
 
@@ -579,8 +626,9 @@ Studio 0.742 (and again in 0.744.0.7441077) a game Script writing it fails with 
 write security changed from `PluginSecurity` to `None` in 0.742, but the capability keeps it
 plugin-only). A Script may read it.
 
-**Key properties** (Properties window only: all three are `NotScriptable`, and a Script indexing
-`StreamingIntegrityMode` gets "is not a valid member of Workspace" in Studio 0.742):
+**Key properties** (Properties window or a plugin: since 0.746 all three are `PluginOrOpenCloud`
+instead of `NotScriptable`, and a Script reading or writing them fails `lacking capability
+PluginOrOpenCloud` in Studio 0.746; `execute_luau` reads them):
 - `StreamingMinRadius` — minimum distance (studs) that content always streams in
 - `StreamingTargetRadius` — target distance the engine tries to maintain
 - `StreamingIntegrityMode` — behavior when required content isn't loaded yet
@@ -592,7 +640,14 @@ plugin-only). A Script may read it.
 - `PersistentPerPlayer` — always loaded for specific players
 
 **Script considerations**: With streaming enabled, instances may not exist when scripts
-run. Use `WaitForChild()` or `ModelStreamingMode.Atomic` for critical models.
+run. Use `WaitForChild()` or `ModelStreamingMode.Atomic` for critical models. In a `LocalScript`,
+`workspace.Town.Door` errors when `Town` has not streamed in, and `GetChildren()` lists only what is
+streamed in now, so a search over it can silently miss an instance. To find something that may be
+far away, ask the server.
+
+To convert a place, read `get_roblox_skill("rbx-convert-to-streaming")`. `Workspace:ApplyRecommendedStreamingSettings()`
+sets the recommended properties in one call, and it is plugin-only: a game Script fails `lacking
+capability Plugin` (*tested*; the call itself was not run on the test place, because it changes it).
 
 ### Load (join) times
 
@@ -672,10 +727,87 @@ Always test on target devices, especially mobile and low-end hardware:
   - `PlaceScriptMemory` — per-script memory breakdown
 - Enable **Render Stats** (`Shift+F2`) to see draw calls and frame timing in-client
 - Test with lower graphics quality settings to match low-end device experience
+- From an MCP client, `get_roblox_skill("rbx-device-simulator-lua")` switches devices and orientation through
+  `StudioDeviceSimulatorService` (plugin-only; `GetDeviceListAsync()` returned 43 devices), and
+  `get_roblox_skill("rbx-network-simulator")` adds latency and packet loss to a playtest
 
 ---
 
-## 12. LEGACY Section
+## 12. Collections: Live Groups of Instances
+
+`CollectionService:CreateCollection(query, root?)` tracks every descendant of `root` (default
+`Workspace`) that matches a CSS-like query, and attaches your callbacks to each one as it joins and
+detaches them as it leaves. It was a Studio beta and is now a **full release**, and it helps with
+streaming because you never hold a list that goes stale. `Security: None`, `Basic` capability.
+
+<!-- skilltest: expect collection-lifecycle -->
+```luau
+--!strict
+-- A Script. Every BasePart tagged KillBrick under Workspace, including ones added later.
+local CollectionService = game:GetService("CollectionService")
+
+local killBricks = CollectionService:CreateCollection("BasePart.KillBrick")
+
+function killBricks.OnAdded(brick: BasePart)
+	brick.Material = Enum.Material.Neon
+end
+
+function killBricks.OnTouched(_brick: BasePart, other: BasePart)
+	local character = other.Parent
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid.Health = 0
+	end
+end
+```
+
+*Tested* from a Script in Studio 0.746.0.7461269:
+
+- **`OnAdded` runs for existing members too.** A part tagged before the assignment got it, then one
+  tagged later did. **`OnRemoved`** ran on removing the tag, on `Enabled = false`, and on `Destroy()`.
+- **Each callback can be assigned once:** a second `OnAdded` fails `Callback OnAdded already assigned`.
+  A name that is no callback fails too: `OnNotAnEvent cannot be assigned to`.
+- **`OnHeartbeat` and the other `RunService` callbacks cannot yield**, and neither can `ForEach`.
+  A `task.wait()` in `OnHeartbeat` logged `thread is not yieldable` and the rest of the callback never
+  ran; `pcall` around `ForEach` did not catch it. **`OnAdded` can yield.**
+- **The default root is `Workspace`.** A part under `ReplicatedStorage` gave a count of `0` until the
+  folder was passed as `root`.
+- `GetCount()`, `ForEach(fn)`, `Query`, `Root`, `Enabled` and `Destroy()` behave as documented, and a
+  destroyed collection errors on `GetCount()`. A bad query fails at creation: `Part[[[` gave `Expected
+  identifier for a property name`.
+- **`typeof` says `CollectionHandle`**, although the docs call the type `Collection`.
+- `CollectionService:GetCollections(instance)` returned `1` for a member of an active collection. It
+  lists collections, not tags: an instance with tags and no matching collection gets `{}`.
+
+Queries also work in `Instance:QueryDescendants()`. Numeric comparisons do: `Part[$Level >= 3]` found
+the part with `5` and not the one with `1`. So does **`:in-radius(studs, selector)`**:
+`Part.Fire:in-radius(10, #Anchor)` found the tagged part 6 studs away and not the one 100 studs away
+(*tested*), and a collection with that query gained a member when the part moved within range. Per its
+engineer on the release thread, `:in-radius` is evaluated in the post-simulation step rather than
+immediately. The Collections Debugger widget in Studio shows every active collection.
+
+---
+
+## 13. Measuring Memory and Scene Cost
+
+`SceneAnalysisService` works from a game Script (*tested* 2026-11-23, Studio `0.748.0.7481526`), and
+`get_roblox_skill("rbx-scene-analysis")` builds a full audit on it. `GetInstanceCompositionAsync`,
+`GetScriptMemoryAsync`, `GetUnparentedInstancesAsync`, `GetAnimationMemoryAsync`,
+`GetAudioMemoryAsync`, `GetTriangleCompositionAsync`, and **`GetCollisionGeometryMemoryAsync`**
+(flipped in 0.748 with `FFlagSceneAnalysisCollisionGeometryMemoryEnabled = True`) each return a table of nested
+`{ Name, Children, Size }` nodes (both in Play `Server`/`Client`/`Actor` and in `Edit` mode, measured 5.14 ms in Play Server). `GetTriangleCompositionAsync` depends on what the camera sees, and
+each of its entries holds `Sizes.Triangles` and `Sizes.Drawcalls`.
+
+`HeapProfilerService` takes a full Luau heap snapshot, and it is plugin-only: a game Script fails
+`lacking capability Plugin`. Through `execute_luau` in the `Server` datamodel during a playtest,
+`ServerRequestDataAsync()` returned a JSON string of 1.6 MB with the keys `Report` and `Refs` in 0.24–0.4 s,
+so summarize it rather than returning it to the agent. **In `Edit` it never returns:** the call hangs
+until `Request timeout`. For leaks, take a snapshot before and after the action and compare them; see
+`get_roblox_skill("rbx-luau-heap-profiling")`.
+
+---
+
+## 14. LEGACY Section
 
 These patterns are outdated but may appear in older codebases. Migrate to modern
 alternatives.
