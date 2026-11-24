@@ -7,8 +7,16 @@ local Kit = require(script.Parent:WaitForChild("Kit"))
 
 local Portraits = {}
 
--- cat name -> "rbxassetid://<id>" once uploaded under the group; a missing or "" entry draws the stand-in.
-Portraits.IMAGES = {} :: { [string]: string }
+-- cat name -> "rbxassetid://<id>" once uploaded under the group; a missing or "" entry draws the stand-in. Suds, the
+-- mascot (#285), has his own key here though he is not in the Cat Index.
+Portraits.IMAGES = {
+	Suds = "", -- Model-Agent's portrait_Suds_ink.png, once uploaded
+} :: { [string]: string }
+
+-- The stand-in glyph for a cat with no image yet; the cat glyph when not listed. Suds is a black cat.
+Portraits.GLYPHS = {
+	Suds = "🐈‍⬛",
+} :: { [string]: string }
 
 local TILE_TINT = 0.55 -- how far the stand-in tile's rarity colour is lightened toward white
 
@@ -47,7 +55,7 @@ function Portraits.draw(cat: string, rarity: string, parent: GuiObject, round: b
 		glyph.AnchorPoint = Vector2.new(0.5, 0.5)
 		glyph.Position = UDim2.fromScale(0.5, 0.5)
 		glyph.Size = UDim2.fromScale(0.7, 0.7)
-		glyph.Text = "🐱"
+		glyph.Text = Portraits.GLYPHS[cat] or "🐱"
 		glyph.TextScaled = true -- an emoji stand-in, not words: it fills its tile
 		glyph.Parent = tile
 	end

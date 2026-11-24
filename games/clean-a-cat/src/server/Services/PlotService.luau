@@ -132,28 +132,46 @@ local function placeSpawnLocation()
 	end
 end
 
--- Puts a character on its owner's spawn spot, standing, facing the way the spot faces.
+-- Stands a character on `spot` (the base of its feet), facing the way the spot faces. Nothing when it already
+-- stands there, so the camera is left alone. False for a character with no humanoid or root yet.
+local function standAt(character: Model, spot: CFrame): boolean
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if humanoid == nil or root == nil or not root:IsA("BasePart") then
+		return false
+	end
+	local rootPart = root :: BasePart
+	local height = (humanoid :: Humanoid).HipHeight + rootPart.Size.Y / 2
+	local target = spot * CFrame.new(0, height, 0)
+	local offset = rootPart.Position - target.Position
+	if Vector3.new(offset.X, 0, offset.Z).Magnitude < 1 then
+		return true
+	end
+	character:PivotTo(target)
+	-- Drop any speed from the first spawn, so the move never carries a fall into the new spot.
+	rootPart.AssemblyLinearVelocity = Vector3.zero
+	return true
+end
+
+-- Puts a character on its owner's spawn spot, standing, facing the way the spot faces. A fallback, for a character
+-- that spawned before its plot's spawn existed; one already there is left alone.
 local function moveToPlot(player: Player, character: Model)
 	local slot = SpaLayout.slotOf(player)
 	if slot == nil or street == nil then
 		return
 	end
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	local root = character:FindFirstChild("HumanoidRootPart")
-	if humanoid == nil or root == nil or not root:IsA("BasePart") then
-		return
+	standAt(character, spawnSpot(slot))
+end
+
+-- Stands the player on plot spot `name` of their own plot (the opening's SpotOpening, #285). False when the street,
+-- the plot, the spot or the character is missing: the player then stays where they are.
+function PlotService.standOn(player: Player, name: string): boolean
+	local slot = SpaLayout.slotOf(player)
+	local character = player.Character
+	if slot == nil or street == nil or character == nil or SpaLayout.PLOT_SPOTS[name] == nil then
+		return false
 	end
-	local rootPart = root :: BasePart
-	local height = (humanoid :: Humanoid).HipHeight + rootPart.Size.Y / 2
-	local target = spawnSpot(slot) * CFrame.new(0, height, 0)
-	local offset = rootPart.Position - target.Position
-	if Vector3.new(offset.X, 0, offset.Z).Magnitude < 1 then
-		return -- it spawned on its own plot's spawn: leave it, and the camera, alone
-	end
-	-- A fallback, for a character that spawned before its plot's spawn existed.
-	character:PivotTo(target)
-	-- Drop any speed from the first spawn, so the move never carries a fall into the new plot.
-	rootPart.AssemblyLinearVelocity = Vector3.zero
+	return standAt(character, SpaLayout.slotSpot(name, slot))
 end
 
 local function place()
