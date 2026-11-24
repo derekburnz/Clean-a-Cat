@@ -51,6 +51,15 @@ local DRY_FLAG = "stations" -- with the Blow Dryer built, a fluffed cat sits on 
 local DRY_SECONDS = 2.5
 local CAT_ASSET = "CleanACat_Cat_Smudge_Dirty_Sit" -- the prototype's cat; a customer's cat uses its own kind
 local TUB_ASSET = "CleanACat_Station_Tub"
+local PHOTO_FLAG = "photoCamera" -- Model-Agent's photo camera on its stand instead of the pink placeholder block
+local PHOTO_ASSET = "CleanACat_Prop_PhotoCamera" -- pivot at the base centre, lens on its front (-Z)
+-- The photo camera stands here in the tub's frame (its front, -Z, faces the player): beside the tub, on the floor.
+local PHOTO_SPOT = CFrame.new(-4.5, 0, -1)
+-- The tap target over the camera model: its body is only about 1.4 by 0.9 studs, so an invisible box over the
+-- whole camera and stand takes the tap, wide enough for a thumb on a phone (Review-QA on #359).
+local PHOTO_HIT_SIZE = Vector3.new(2.2, 3.4, 2.2)
+local PLACEHOLDER_SIZE = Vector3.new(1.4, 1, 1)
+local PLACEHOLDER_SPOT = CFrame.new(-4.5, 2.5, -1)
 local CAT_SCALE = 1.5 -- Model-Agent's size for a cat sitting in the tub
 local ASSET_WAIT_SECONDS = 5
 local WET_DARKEN = 0.3 -- used when the cat has no WetDarken attribute
@@ -110,7 +119,8 @@ type Visit = {
 	seat: CFrame?, -- where the cat sits, once the tub is in
 	cat: Cat?,
 	bowButtons: { BasePart },
-	camera: BasePart,
+	camera: BasePart, -- the photo tap target: the placeholder block, or the invisible box over the camera model
+	cameraModel: Model?, -- Model-Agent's photo camera (switch photoCamera), shown with the tap target
 	scrub: ScrubRules.State,
 	catParams: RaycastParams,
 	buttonParams: RaycastParams,
@@ -239,6 +249,29 @@ local function partsOf(model: Instance): { BasePart }
 	return parts
 end
 
+-- Shows or hides the photo camera. With the switch photoCamera on and the model in, the model stands beside the
+-- tub and an invisible box over it takes the tap; otherwise the pink placeholder block shows, as before. The switch
+-- is read at each show, so turning it off goes back to the block at the next photo.
+local function showCamera(v: { camera: BasePart, cameraModel: Model? }, visible: boolean)
+	local target = v.camera
+	local model = v.cameraModel
+	local useModel = model ~= nil and LiveFlags.isOn(PHOTO_FLAG)
+	local tub = SpaLayout.tubSpot()
+	if useModel then
+		target.Size = PHOTO_HIT_SIZE
+		target.CFrame = tub * PHOTO_SPOT * CFrame.new(0, PHOTO_HIT_SIZE.Y / 2, 0)
+		target.Transparency = 1
+		target.CanQuery = visible
+	else
+		target.Size = PLACEHOLDER_SIZE
+		target.CFrame = tub * PLACEHOLDER_SPOT
+		show(target, visible)
+	end
+	if model then
+		model.Parent = if useModel and visible then target.Parent else nil
+	end
+end
+
 -- The wash tub at SpaLayout.tubSpot, facing the spawn. Returns where the cat sits: the tub's CatSeat attachment.
 local function buildTub(asset: Model, parent: Instance): CFrame
 	local tub = asset:Clone() :: Model
@@ -290,10 +323,10 @@ local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
 	end
 	local camera = makePart(
 		"Camera",
-		Vector3.new(1.4, 1, 1),
-		-- pastel, not a black block (Derek's dev test), until Model-Agent's photo camera model replaces it
+		PLACEHOLDER_SIZE,
+		-- pastel, not a black block (Derek's dev test); with the switch photoCamera on, the camera model shows instead
 		Color3.fromRGB(255, 205, 222),
-		tub * CFrame.new(-4.5, 2.5, -1)
+		tub * PLACEHOLDER_SPOT
 	)
 	show(camera, false)
 	camera.Parent = buttons
@@ -757,7 +790,7 @@ local function showBows(v: Visit, cat: Cat)
 	if visit == v and v.cat == cat and v.stage == "fluffed" then
 		if v.mascot then
 			setStage(v, "styled")
-			show(v.camera, true)
+			showCamera(v, true)
 			return
 		end
 		for _, button in v.bowButtons do
@@ -1039,13 +1072,13 @@ local function tapButton(v: Visit, input: InputObject): boolean
 		for _, button in v.bowButtons do
 			show(button, false)
 		end
-		show(v.camera, true)
+		showCamera(v, true)
 		Moments.BowChosen:Fire(cat.model, bowId)
 		report("RequestPickBow", v, bowId)
 	elseif v.stage == "styled" and part == v.camera then
 		-- The camera hides while the photo develops; the server pays once the visit is long enough, or hands the
 		-- camera back (CatStage) when it could not pay.
-		show(v.camera, false)
+		showCamera(v, false)
 		report("RequestPhoto", v)
 	end
 	return true
@@ -1148,7 +1181,7 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	for _, button in v.bowButtons do
 		show(button, false)
 	end
-	show(v.camera, false)
+	showCamera(v, false)
 	if #cat.mud == 0 then
 		reveal(v, cat) -- a cat with no mud goes straight to the brush
 	end
@@ -1176,6 +1209,29 @@ local function needList(raw: unknown): string
 	return table.concat(needArray(raw), ",")
 end
 
+-- A fresh copy of Model-Agent's photo camera, standing beside the tub with its lens on the tub's middle, not yet
+-- shown (showCamera parents it). Nil when the model is missing: the placeholder block stays.
+local function buildPhotoCamera(): Model?
+	local asset = ReplicatedStorage:FindFirstChild("Assets")
+	local found = if asset then asset:FindFirstChild(PHOTO_ASSET) else nil
+	if found == nil or not found:IsA("Model") then
+		return nil
+	end
+	local model = (found :: Model):Clone() :: Model
+	model.Name = "PhotoCamera"
+	local tub = SpaLayout.tubSpot()
+	local base = (tub * PHOTO_SPOT).Position
+	local middle = Vector3.new(tub.Position.X, base.Y, tub.Position.Z)
+	model:PivotTo(CFrame.lookAt(base, middle))
+	for _, part in partsOf(model) do
+		part.Anchored = true
+		part.CanCollide = false
+		part.CanTouch = false
+		part.CanQuery = false -- only the tap box over it takes the tap
+	end
+	return model
+end
+
 -- The tub, built once per visit: as the spa opens, so the opening's trail leads to a tub and not an empty rug
 -- (Sync-Agent's playtest of Derek's dev notes), or with the first cat. Returns where a cat sits in it.
 local function ensureTub(v: Visit): CFrame
@@ -1195,6 +1251,7 @@ local function ensureTub(v: Visit): CFrame
 		then buildTub(tub, v.folder)
 		else SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
 	v.seat = seat
+	v.cameraModel = buildPhotoCamera()
 	return seat
 end
 
@@ -1275,7 +1332,7 @@ local function rollBack(v: Visit, cat: Cat, stage: SpaRules.Stage, strokes: numb
 	BowFit.remove(cat.model)
 	show(cat.bow, false)
 	cat.bow.CanQuery = false
-	show(v.camera, false)
+	showCamera(v, false)
 	for _, button in v.bowButtons do
 		show(button, stage == "fluffed")
 	end
@@ -1311,7 +1368,7 @@ local function onCatStage(
 		return
 	end
 	if rawStage == "styled" and v.stage == "styled" and rawWaiting == false then
-		show(v.camera, true) -- the server could not pay yet; tap again
+		showCamera(v, true) -- the server could not pay yet; tap again
 		return
 	end
 	if serverRank >= clientRank then
@@ -1369,7 +1426,7 @@ local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, raw
 	end
 	local recap = RecapRules.clean(rawRecap)
 	setStage(v, "done")
-	show(v.camera, false)
+	showCamera(v, false)
 	Moments.PhotoTaken:Fire(cat.model)
 	if v.mascot then
 		wearCollar(cat)
@@ -1431,6 +1488,7 @@ local function buildVisit(folder: Folder): Visit
 		cat = nil,
 		bowButtons = bowButtons,
 		camera = camera,
+		cameraModel = nil,
 		scrub = ScrubRules.newState(1),
 		catParams = catParams,
 		buttonParams = buttonParams,
