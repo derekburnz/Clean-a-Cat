@@ -80,6 +80,15 @@ local Cues: { [string]: Cue } = {
 		minGap = 1,
 		voices = 1,
 	},
+	-- Derek's Roblox-Asset-Library: CatCafe_Sfx_CarryPurr, kept as CleanACat_Sfx_CarryPurr; a contented purr in the
+	-- player's arms, looped while they carry a cat (Effects/Carry)
+	carryPurr = {
+		ids = { "rbxassetid://88268026074287" },
+		group = "Sfx",
+		volume = 0.45,
+		voices = 1,
+		looped = true,
+	},
 	-- synth: CleanACat_Sfx_BowPop
 	bowPop = {
 		ids = { "rbxassetid://136883364011549" },
