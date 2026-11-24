@@ -10,8 +10,9 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
 
   Index     the Cat Index: a purple book with a cream cat's face on the cover and a pink bookmark
   Settings  a blue grey gear with a cream middle
-  Tools     a pink toolbox with its lid up, a scrub brush and a soap bottle inside (the owner asked for a toolbox in
-            place of the scrub brush, whose soap bubbles "makes no sense"; shut, it could pass for a lunchbox)
+  Tools     a pink toolbox thrown open, a scrub brush standing in it and a soap bottle beside it (the owner asked
+            for a toolbox in place of the scrub brush, whose soap bubbles "makes no sense"; shut, it could pass for a
+            lunchbox)
   Helper    a member of the human staff: head and shoulders in the spa uniform, the first look in staff.py
   Build     a blue hammer with a wooden handle and a white paw on its head
 
@@ -130,31 +131,40 @@ def settings(mat):
 
 
 def tools(mat):
-    """The wash tools: a fat pink toolbox with its lid up, a scrub brush and a soap bottle showing inside, a cream
-    handle and a gold latch. (The first draft was a scrub brush with soap bubbles; the owner: "the bubbles on the back
-    of brush makes no sense ... a toolbox would be better". The first toolbox was shut and could pass for a lunchbox
-    at 48 px (Review-QA, #234), so the lid is open and two tools show, #242.)"""
+    """The wash tools: a fat pink toolbox with its lid thrown open, a scrub brush standing in it with its white
+    bristles to the front and a soap bottle with a pump beside it, a gold latch and a white paw. (The first draft was
+    a scrub brush with soap bubbles; the owner: "the bubbles on the back of brush makes no sense ... a toolbox would
+    be better". Shut, the toolbox could pass for a lunchbox at 48 px (Review-QA, #234), so #242 opened it. On a phone
+    the button is about 36 pt, where a brush lying inside the box blurred into it, so #247 stood the brush up to
+    break the outline, and made the carry handle tall so it still shows above the lid: that handle is what says
+    "toolbox".) Nothing may poke through the lid: it opens 44 degrees, and the tools stand in front of its edge."""
     b = Builder()
     w, d = 2.4, 1.4
     b.box((0, 0, 0.62), (w, d, 1.24), "spa_bubblegum")                                   # the box
-    up = Matrix.Rotation(math.radians(-32), 3, "X")                                      # the lid, hinged at the back
+    up = Matrix.Rotation(math.radians(-44), 3, "X")                                      # the lid, hinged at the back
     hinge = Vector((0, d / 2 + 0.07, 1.26))
 
     def lid(c, size, swatch):
         b.box(tuple(hinge + up @ (Vector(c) - hinge)), size, swatch, rot=up)
 
     lid((0, 0, 1.54), (w + 0.14, d + 0.14, 0.56), "nose_bubblegum")
-    for sx in (-1, 1):                                                                   # the handle, on the lid
-        lid((sx * 0.62, 0, 2.0), (0.24, 0.3, 0.44), "spa_cream")
-    lid((0, 0, 2.28), (1.7, 0.36, 0.26), "spa_cream")
+    for sx in (-1, 1):                                                                   # the carry handle: tall
+        lid((sx * 0.66, -0.3, 2.1), (0.26, 0.32, 0.64), "spa_cream")                     # and near the lid's front, so
+    lid((0, -0.3, 2.5), (1.8, 0.38, 0.28), "spa_cream")                                  # it shows above the open lid
     b.box((0, -d / 2 - 0.1, 0.9), (0.5, 0.14, 0.5), "gold_mid")                          # the latch
     _paw(b, 0, -d / 2 - 0.02, 0.36, 0.17, "foam", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
-    turn = Matrix.Rotation(math.radians(14), 3, "Z")                                     # a scrub brush over the rim:
-    b.box((-0.58, -0.62, 1.6), (0.78, 1.0, 0.28), "spa_sky", rot=turn)                   # sky back, white bristles
-    b.box((-0.58, -0.62, 1.38), (0.66, 0.88, 0.22), "foam", rot=turn)
-    b.cyl((0.66, -0.36, 1.66), 0.32, 0.9, "spa_mint", segments=14)                       # a soap bottle and its pump
-    b.cyl((0.66, -0.36, 2.2), 0.13, 0.24, "spa_cream", segments=12)
-    b.box((0.58, -0.44, 2.36), (0.42, 0.2, 0.14), "spa_cream")
+    lean = Matrix.Rotation(math.radians(-20), 3, "Y") @ Matrix.Rotation(math.radians(12), 3, "X")
+    foot = Vector((-0.72, -0.45, 0.9))                                                    # a scrub brush standing at
+
+    def brush(c, size, swatch):                                                          # the left end, leaning out
+        b.box(tuple(foot + lean @ Vector(c)), size, swatch, rot=lean)
+
+    brush((0, 0, 0.7), (0.3, 0.26, 1.4), "spa_sky")                                      # its handle,
+    brush((0, 0, 1.8), (0.86, 0.34, 1.0), "spa_sky")                                     # its back
+    brush((0, -0.22, 1.8), (0.72, 0.2, 0.84), "foam")                                    # and its bristles
+    b.cyl((0.6, -0.42, 1.65), 0.28, 0.9, "spa_mint", segments=14)                        # a soap bottle and its pump
+    b.cyl((0.6, -0.52, 2.22), 0.12, 0.26, "spa_cream", segments=12)
+    b.box((0.52, -0.6, 2.4), (0.42, 0.2, 0.14), "spa_cream")
     return _fin(b, "Tools", mat)
 
 
