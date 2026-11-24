@@ -17,8 +17,9 @@
 --       options.bump: the speed bump's world position. Left out, the scene uses the plot's SpotBump when the player
 --       is on a plot, else TruckDrop.BUMP_X. The truck's jolt is timed to it, so it hits the bump the player sees.
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
---   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point, and the player's camera turns
---                                   to face it; onDone when he lands
+--   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point; onDone when he lands. The
+--                                   camera turn toward the tub is gone (Sync-Agent: Roblox's camera undid it, and with
+--                                   the carry the player walks to the tub themselves)
 --   handle.pickUp(character, onDone?)  the player lifts the kitten out of the box into folded arms (Effects/Carry),
 --                                   with a purr; he stays in their arms as they walk. onDone once he is in them
 --   handle.placeIn(target, onDone?) the arms open and the carried kitten hops in, his base on `target` (the tub's
@@ -43,7 +44,6 @@ local TruckDrop = require(script.Parent:WaitForChild("TruckDrop"))
 local TRUCK_ASSET = "CleanACat_Prop_DeliveryTruck"
 local BOX_ASSET = "CleanACat_Prop_DeliveryBox"
 local KITTEN_ASSETS = { "CleanACat_Cat_Suds_Dirty_Sit", "CleanACat_Cat_Suds_Dirty" }
-local ASSET_WAIT_SECONDS = 3
 local FOLDER_NAME = "CleanACat_OpeningScene"
 
 -- Signs for the hinge turns, so a prop built the other way round is a one-character fix.
@@ -81,8 +81,10 @@ local function keyOf(name: string, keys: { string }): string?
 	return nil
 end
 
+-- Never waits: the scene starts the moment the save loads, so a prop not replicated yet is a PH_ stand-in at once
+-- (the props are plain Parts, so they are normally there with the place).
 local function findAsset(names: { string }): Model?
-	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	if assets == nil then
 		return nil
 	end
@@ -274,10 +276,6 @@ local function squashBox(rests: { PartRest }, boxCF: CFrame, squash: number)
 	end
 end
 
--- Turns the player's own camera (Custom) about its focus to face `target`, eased over `seconds`, or at once with
--- Reduced Motion. It runs just after Roblox's camera each frame and only adds the turn, so the player can still look
--- around while it plays.
-local turnCount = 0
 -- The plot's SpotBump in world space while the player is on a plot, else nil. Read lazily and guarded, so the scene
 -- still plays (with BUMP_X) if the layout module is missing.
 local function plotBump(): Vector3?
@@ -305,43 +303,9 @@ local function bumpOffset(origin: CFrame, bump: Vector3?): number?
 	return (world - origin.Position):Dot(origin.RightVector)
 end
 
-local function turnCameraToward(target: Vector3, seconds: number, reduced: boolean)
-	local camera = Workspace.CurrentCamera
-	if camera == nil or camera.CameraType ~= Enum.CameraType.Custom then
-		return
-	end
-	local focus = camera.Focus.Position
-	local look = camera.CFrame.LookVector * Vector3.new(1, 0, 1)
-	local want = (target - focus) * Vector3.new(1, 0, 1)
-	if look.Magnitude < 0.01 or want.Magnitude < 0.01 then
-		return
-	end
-	local angle = math.atan2(look:Cross(want).Y, look:Dot(want))
-	local function turnBy(delta: number)
-		local f = camera.Focus.Position
-		camera.CFrame = CFrame.new(f) * CFrame.Angles(0, delta, 0) * CFrame.new(-f) * camera.CFrame
-	end
-	if reduced or seconds <= 0 then
-		turnBy(angle)
-		return
-	end
-	turnCount += 1
-	local name = `CleanACat_OpeningTurn_{turnCount}`
-	local started = os.clock()
-	local applied = 0
-	RunService:BindToRenderStep(name, Enum.RenderPriority.Camera.Value + 1, function()
-		local u = math.clamp((os.clock() - started) / seconds, 0, 1)
-		local eased = u * u * (3 - 2 * u)
-		turnBy(angle * eased - applied)
-		applied = angle * eased
-		if u >= 1 or camera.CameraType ~= Enum.CameraType.Custom then
-			RunService:UnbindFromRenderStep(name)
-		end
-	end)
-end
-
 function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local opts: Options = options or {}
+	Audio.start() -- safe to call twice; the truck's sounds play even before AudioController has started
 	local reduced = Effects.reducedMotion()
 	local useShot = opts.shot == true and not reduced
 
@@ -648,7 +612,6 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				to = ground + dir * TruckDrop.HOP.distance,
 				onDone = onDone,
 			}
-			turnCameraToward(toward, TruckDrop.CAMERA_TURN_SECONDS, reduced)
 		end,
 		pickUp = function(character: Model, onDone: (() -> ())?)
 			local cat = kitten

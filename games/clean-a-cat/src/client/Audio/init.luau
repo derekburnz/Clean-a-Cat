@@ -6,7 +6,10 @@
 --   Audio.start()                         builds the SoundGroups and preloads the few `preload` cues
 --   Audio.applySettings({ music, sound, musicLevel?, soundLevel? })
 --                                         mutes groups and sets their levels (0..1, default 1, from the Settings card's
---                                         sliders); music starts only after the first call
+--                                         sliders); music starts only after the first call. Sounds play
+--                                         before it at the default levels (on), so the opening's truck is
+--                                         heard from the first frame; a saved "sound off" mutes the groups
+--                                         the moment it is applied
 --   Audio.play(cueId, options?)           one shot, 2D or at a BasePart / Attachment (options.at)
 --   Audio.loop(cueId, at?)                a looping cue; returns a handle with stop() and setSpeed()
 local ContentProvider = game:GetService("ContentProvider")
@@ -35,7 +38,6 @@ local lastPlayed: { [string]: number } = {}
 local warned: { [string]: boolean } = {}
 local rng = Random.new()
 
-local settingsRead = false
 local current: Settings = { music = true, sound = true }
 local musicSound: Sound? = nil
 local musicTrack: string? = nil
@@ -197,7 +199,6 @@ function Audio.applySettings(settings: Settings)
 		Audio.start()
 	end
 	current = { music = settings.music, sound = settings.sound }
-	settingsRead = true
 	local soundOn = if settings.sound then level(settings.soundLevel) else 0
 	local musicOn = if settings.music then level(settings.musicLevel) else 0
 	groups.Sfx.Volume = (CueRules.GROUP_VOLUME["Sfx"] or 0) * soundOn
@@ -214,7 +215,7 @@ function Audio.applySettings(settings: Settings)
 end
 
 function Audio.play(cueId: string, options: PlayOptions?)
-	if not started or not current.sound or not settingsRead then
+	if not started or not current.sound then
 		return
 	end
 	local cue = Cues[cueId]
@@ -252,7 +253,7 @@ local NO_LOOP: LoopHandle = {
 }
 
 function Audio.loop(cueId: string, at: Instance?): LoopHandle
-	if not started or not settingsRead then
+	if not started or not current.sound then
 		return NO_LOOP
 	end
 	local cue = Cues[cueId]
