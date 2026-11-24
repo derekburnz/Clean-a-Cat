@@ -48,12 +48,26 @@ return function()
 	end)
 
 	describe("SettingsRules.step", function()
-		it("moves up a quarter and wraps from full to 0", function()
-			expect(SettingsRules.step(0)).to.equal(0.25)
-			expect(SettingsRules.step(0.25)).to.equal(0.5)
-			expect(SettingsRules.step(0.6)).to.equal(0.75)
-			expect(SettingsRules.step(0.75)).to.equal(1)
-			expect(SettingsRules.step(1)).to.equal(0)
+		it(
+			"walks down from full to 0 a quarter at a time, then back up, never jumping to silence",
+			function()
+				local level, dir = 1, 1
+				local seen = {}
+				for _ = 1, 6 do
+					level, dir = SettingsRules.step(level, dir)
+					table.insert(seen, level)
+				end
+				expect(table.concat(seen, ",")).to.equal("0.75,0.5,0.25,0,0.25,0.5")
+			end
+		)
+
+		it("goes up from a level between steps to the next step", function()
+			local level, dir = SettingsRules.step(0.6, 1)
+			expect(level).to.equal(0.75)
+			expect(dir).to.equal(1)
+			level, dir = SettingsRules.step(0.6, -1)
+			expect(level).to.equal(0.5)
+			expect(dir).to.equal(-1)
 		end)
 	end)
 end
