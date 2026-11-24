@@ -160,22 +160,24 @@ STREAM = (TAP_X, _tap_at()[1] - 0.68)              # where the tap's water lands
 
 
 def water_shine(b, z, marks):
-    """White shine marks on a water surface at height z: (x, y, length, turn in degrees) each, a hair proud."""
+    """White shine marks on a water surface at height z: (x, y, length, turn in degrees) each, a hair proud and
+    deep enough to stand in a water piece that lies a little lower (the tub's round ends)."""
     for x, y, length, turn in marks:
-        b.box((x, y, z + 0.006), (length, 0.07, 0.04), "foam", bevel=False,
+        b.box((x, y, z - 0.019), (length, 0.07, 0.09), "foam", bevel=False,
               rot=Matrix.Rotation(math.radians(turn), 3, "Z"))
 
 
 def _water():
-    """The water: deep blue to just under the rim, with shine marks where no foam lies. Three pieces fill the pill,
-    their tops a hair apart; in the game they are Glass, and Roblox draws no see-through part behind Glass, so
-    where they cross only the top one shows."""
+    """The water: deep blue to just under the rim, with shine marks where no foam lies. Three pieces fill the pill:
+    the middle block's top is the surface and the two round ends lie 0.02 and 0.04 under it, far enough apart
+    that nothing flickers. They are solid in the game (#176): see-through, the places where they cross showed from
+    above as a seam and a darker wedge (Sync-Agent's Studio check of #171)."""
     b = Builder()
     r = END_R - RIM_W - 0.01
     z = FLOOR_Z + 0.004
     b.box_base((0, 0, z), (2 * HALF, 2 * r - 0.03, WATER_Z - z), "water", bevel=False)
-    b.cyl_base((HALF, 0, z + 0.003), r, WATER_Z - z - 0.006, "water", segments=16, bevel=False)
-    b.cyl_base((-HALF, 0, z + 0.006), r, WATER_Z - z - 0.012, "water", segments=16, bevel=False)
+    b.cyl_base((HALF, 0, z + 0.003), r, WATER_Z - z - 0.023, "water", segments=16, bevel=False)
+    b.cyl_base((-HALF, 0, z + 0.006), r, WATER_Z - z - 0.046, "water", segments=16, bevel=False)
     water_shine(b, WATER_Z, [(-0.55, -1.05, 0.7, 0), (-1.2, -0.8, 0.34, 0), (0.15, -1.1, 0.3, 0),
                              (-1.6, 0.3, 0.36, 90), (0.45, 1.08, 0.5, 0)])
     return b
