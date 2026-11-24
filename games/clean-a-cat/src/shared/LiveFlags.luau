@@ -69,6 +69,7 @@ LiveFlags.KEYS = {
 	"sudsBubble", -- Suds's help bubble at the bottom of the screen: his face, why, one button that points the way, once each per save (UI/SudsBubble, BubbleController); off by default
 	"recapSide", -- the full recap card as a narrow column at the left with no dim, so the clean cat stays in view; the touch controls hide while it shows (UI/Recap); off by default
 	"washChecklist", -- a tick list of this cat's wash steps at the left in the step pips' place; the HUD button row steps aside during the wash (UI/HUD/StepList); off by default
+	"spaSign", -- each spa's name on the face of its window sign, "<display name>'s Spa" (Controllers/SpaSignController, #379); off by default
 	"openingReplay", -- testing only: the game's owner gets the opening again on every join, nobody else (SpaService); off by default
 	"carryHold", -- Derek's carry hold from his clip (forearms out at belly height, Effects/Carry) instead of the crossed arms; on in dev, Studio playtests always use it; off by default
 	"openingBox", -- the opening scene: the truck, the bump and the box landing in front of the player (Effects/OpeningScene); off by default
@@ -132,6 +133,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	sudsBubble = true,
 	recapSide = true,
 	washChecklist = true,
+	spaSign = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
