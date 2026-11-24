@@ -51,8 +51,11 @@ Carry.POSE = table.freeze({
 	arms6 = table.freeze(
 		{ shL = 45, shR = 45, spL = -28, spR = -28, neck = 0 } :: { [string]: number }
 	),
-	gap = -0.1, -- the cat's base this far above the higher forearm's top
-	forward = -0.2, -- and this far ahead of the forearms' middles (-Z is ahead): held close to the body
+	-- Measured from the hands (the far end of each arm), not the arm's highest point: with arms angled down, the
+	-- highest point is up by the shoulder and would put the cat over the face (Review-QA on #330).
+	fromHands = true,
+	gap = 0.25, -- the cat's base this far above the higher hand end
+	forward = 0.3, -- and this far back from the hands toward the chest (+Z is back), so he rests on the arms
 	sitTurn = 0, -- facing straight out
 	sitSide = 0,
 })
@@ -81,6 +84,7 @@ Carry.CROSSED = table.freeze({
 	forward = -0.6, -- and this far ahead of the forearms (a sit; -Z is ahead)
 	sitTurn = 15, -- degrees the sitting cat turns to the character's left, so its face shows past the chest
 	sitSide = -0.55, -- studs to the character's left
+	fromHands = false,
 })
 
 Carry.FOLD_SECONDS = 0.3 -- the arms fold and the cat rises onto them (Derek's ask, about 0.3 s)
@@ -266,8 +270,14 @@ local function cradle(rig: Rig): CFrame?
 				* 0.5
 				* (math.abs(r10) * s.X + math.abs(r11) * s.Y + math.abs(r12) * s.Z)
 	end
-	local a, b = top(left :: BasePart), top(right :: BasePart)
 	local c = rig.hold
+	local function hand(arm: BasePart): Vector3
+		local frame: CFrame = torso:Inverse() * arm.CFrame * CFrame.new(0, -arm.Size.Y / 2, 0)
+		return frame.Position
+	end
+	local useHands = c.fromHands == true
+	local a: Vector3 = if useHands then hand(left :: BasePart) else top(left :: BasePart)
+	local b: Vector3 = if useHands then hand(right :: BasePart) else top(right :: BasePart)
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + c.sitSide,
 		math.max(a.Y, b.Y) + c.gap,
