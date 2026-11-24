@@ -1,5 +1,5 @@
-"""Five of the six HUD button pictures (#185) and ten small screen pictures (#251): CleanACat_Icon_Hud_<Name>, 512 px,
-see-through, with a thick ink outline.
+"""Five of the six HUD button pictures (#185), ten small screen pictures (#251) and five tiny ones (#255):
+CleanACat_Icon_Hud_<Name>, 512 px, see-through, with a thick ink outline.
 
     python hud_icons.py <out folder> [--only Index,Tools]
 
@@ -19,6 +19,12 @@ ported from its icons.py), in Bubble Pastel colours with the UI's ink outline.
 Ten small pictures in the same style follow them (#251), for names the UI otherwise draws as a system emoji: Camera,
 Paw, Heart, Gift, Music, Speaker, Shake, Sparkle, Dice and Check. They are used in rows and badges, smaller than the
 buttons, so each is one plain shape.
+
+Five tiny pictures come last (#255), for the queue window: Crown (a VIP), Lock (a need whose station is not built) and
+the three needs Mud, Tangles and Wet. A need draws at about 18 to 21 px on a phone, inside a round white chip, and the
+lock badge at about 13 to 16 px. So each is one flat shape seen almost straight on (TINY_VIEW), in one colour that
+stands off white, with at most one mark on it, and its outline is nearly twice as thick (TINY_OUTLINE), which leaves
+about one pixel of ink at 20 px. Check them at 18 px in the chip, not on a big tile.
 
 There is no coin here on purpose. The owner picked his library's own coin picture for the HUD (2026-11-24: "use
 library coin ... the other new coin doesn't look as good", the paw on it was done badly), then asked for it to be
@@ -341,7 +347,85 @@ def check(mat):
     return _fin(b, "Check", mat)
 
 
-BUILDERS = {                                       # name -> (builder, (yaw, pitch))
+# --- the tiny pictures (#255): need chips and badges drawn at about 20 px, so one flat-on shape and a thicker outline ---
+
+TINY_OUTLINE = 24                              # px at 512: about one pixel at 20 px, where the usual 13 is half of one
+TINY_VIEW = (-8.0, 5.0)                        # almost flat on: a three-quarter tilt costs width these cannot spare
+
+
+def wet(mat):
+    """The Wet need: one fat water drop with a glint."""
+    b = Builder()
+    r, cz = 0.92, -0.32
+    pts = [(0.0, 1.42)]
+    for i in range(21):                              # the round bottom, anticlockwise from the upper left
+        t = math.radians(148 + (392 - 148) * i / 20)
+        pts.append((r * math.cos(t), cz + r * math.sin(t)))
+    b.prism((0, 0, 0), pts, 0.5, "water", bevel=True, rot=X)
+    b.cyl((-0.36, -0.26, -0.5), 0.2, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(1, 1, 1.7))
+    return _fin(b, "Wet", mat)
+
+
+def mud(mat):
+    """The Mud need: a brown splat with five uneven lobes and a wet highlight."""
+    b = Builder()
+    pts = []
+    for i in range(40):
+        t = 2 * math.pi * i / 40
+        r = 0.98 + 0.22 * math.cos(5 * t + 0.5) + 0.07 * math.cos(3 * t)
+        pts.append((r * math.cos(t), r * math.sin(t) * 0.92))
+    b.prism((0, 0, 0), pts, 0.5, "mud", bevel=True, rot=X)
+    b.cyl((-0.3, -0.26, 0.3), 0.26, 0.04, "mud_dust", segments=12, bevel=False, rot=X, scale=(1.5, 1, 0.8))
+    return _fin(b, "Mud", mat)
+
+
+def tangles(mat):
+    """The Tangles need: one of the cat's own tangles (dirt.py: a spiky clump of fur). Seven tufts of uneven length
+    and spacing, all swept the same way, so it is matted fur and not a sun or a cog, and a thick swirl sits on it
+    in the outline's ink."""
+    b, k = Builder(), Builder()
+    tufts = ((8, 1.3), (52, 1.52), (104, 1.24), (150, 1.5), (212, 1.3), (262, 1.56), (318, 1.34))   # degrees, tip
+    pts = []
+    for i, (deg, tip) in enumerate(tufts):
+        before = (deg + tufts[i - 1][0] - (360 if i == 0 else 0)) / 2                    # the dip before this tuft
+        pts.append((0.9 * math.cos(math.radians(before)), 0.9 * math.sin(math.radians(before))))
+        pts.append((tip * math.cos(math.radians(deg + 13)), tip * math.sin(math.radians(deg + 13))))
+    b.prism((0, 0, 0), pts, 0.5, "fur_orange", rot=X)
+    n = 22                                                                               # the swirl: one and a
+    for i in range(n):                                                                   # quarter turns, short pieces
+        t0 = 0.9 + 2.5 * math.pi * i / n
+        t1 = 0.9 + 2.5 * math.pi * (i + 1) / n
+        r0, r1 = 0.1 + 0.52 * i / n, 0.1 + 0.52 * (i + 1) / n
+        x0, z0, x1, z1 = r0 * math.cos(t0), r0 * math.sin(t0), r1 * math.cos(t1), r1 * math.sin(t1)
+        ang = math.atan2(x1 - x0, z1 - z0)
+        k.box(((x0 + x1) / 2, -0.27, (z0 + z1) / 2), (0.24, 0.04, math.hypot(x1 - x0, z1 - z0) + 0.12), "coat_inky",
+              bevel=False, rot=(ang, "Y"))
+    return _fin(b, "Tangles", mat, ink=k)
+
+
+def crown(mat):
+    """A VIP: a yellow crown, three points and one pink gem."""
+    b = Builder()
+    b.box((0, 0, -0.45), (2.3, 0.5, 0.7), "fur_golden")                                  # the band
+    for x, lean, tall in ((-0.82, -0.16, 0.9), (0.0, 0.0, 1.15), (0.82, 0.16, 0.9)):     # the points
+        b.prism((x, 0, -0.12), [(-0.36, 0.0), (0.36, 0.0), (lean * 2.2, tall)], 0.5, "fur_golden", rot=X)
+    b.cyl((0, -0.27, -0.45), 0.24, 0.06, "nose_bubblegum", segments=14, bevel=False, rot=X)   # the gem
+    return _fin(b, "Crown", mat)
+
+
+def lock(mat):
+    """Not built yet: a blue grey padlock, a darker shackle, a keyhole in the outline's ink."""
+    b, k = Builder(), Builder()
+    b.box((0, 0, -0.4), (1.8, 0.6, 1.4), "fur_blue")                                     # the body
+    for sx in (-1, 1):                                                                   # the shackle
+        b.box((sx * 0.56, 0, 0.7), (0.28, 0.36, 0.9), "fur_slate")
+    b.box((0, 0, 1.22), (1.4, 0.36, 0.3), "fur_slate")
+    k.cyl((0, -0.32, -0.26), 0.2, 0.04, "coat_inky", segments=14, bevel=False, rot=X)    # the keyhole
+    k.box((0, -0.32, -0.58), (0.16, 0.04, 0.44), "coat_inky", bevel=False)
+    return _fin(b, "Lock", mat, ink=k)
+
+
+BUILDERS = {                                       # name -> (builder, (yaw, pitch)[, outline px])
     "Index": (index, (22.0, 12.0)),
     "Settings": (settings, (-16.0, 8.0)),
     "Tools": (tools, (-24.0, 20.0)),
@@ -357,6 +441,11 @@ BUILDERS = {                                       # name -> (builder, (yaw, pit
     "Sparkle": (sparkle, (-14.0, 8.0)),
     "Dice": (dice, (-30.0, 26.0)),
     "Check": (check, (-14.0, 8.0)),
+    "Crown": (crown, TINY_VIEW, TINY_OUTLINE),       # the tiny pictures (#255)
+    "Lock": (lock, TINY_VIEW, TINY_OUTLINE),
+    "Mud": (mud, TINY_VIEW, TINY_OUTLINE),
+    "Tangles": (tangles, TINY_VIEW, TINY_OUTLINE),
+    "Wet": (wet, TINY_VIEW, TINY_OUTLINE),
 }
 
 
@@ -431,7 +520,8 @@ def _outline(path, colour, width):
 
 
 def render_icon(name, mat, out, samples=64):
-    build, view = BUILDERS[name]
+    build, view, *rest = BUILDERS[name]
+    outline = rest[0] if rest else OUTLINE
     common.hide_all_meshes()
     objs = build(mat)
     common.show(objs)
@@ -455,7 +545,7 @@ def render_icon(name, mat, out, samples=64):
     path = os.path.join(out, "CleanACat_Icon_Hud_" + name + ".png")
     sc.render.filepath = path
     bpy.ops.render.render(write_still=True)
-    _outline(path, INK, OUTLINE)
+    _outline(path, INK, outline)
     for ob in objs:
         bpy.data.objects.remove(ob, do_unlink=True)
     return path
