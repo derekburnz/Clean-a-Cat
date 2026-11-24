@@ -78,18 +78,48 @@ local Cues: { [string]: Cue } = {
 	meow = { ids = {}, group = "Sfx", volume = 0.45, pitch = { 0.9, 1.15 }, minGap = 4, voices = 2 },
 	-- Opening scene (#281, Effects/OpeningScene), all 3D at the truck or the box.
 	-- synth: CleanACat_Sfx_TruckRumble (seamless 2 s loop); follows the truck
-	truckRumble = { ids = {}, group = "Sfx", volume = 0.4, voices = 1, looped = true },
+	truckRumble = {
+		ids = { "rbxassetid://128974104818127" },
+		group = "Sfx",
+		volume = 0.4,
+		voices = 1,
+		looped = true,
+	},
 	-- synth: CleanACat_Sfx_TruckHonk; one soft two-note toot
-	truckHonk = { ids = {}, group = "Sfx", volume = 0.4, minGap = 2, voices = 1 },
+	truckHonk = {
+		ids = { "rbxassetid://76728960044070" },
+		group = "Sfx",
+		volume = 0.4,
+		minGap = 2,
+		voices = 1,
+	},
 	-- synth: CleanACat_Sfx_TruckBump_1..2; variant 1 front wheels, 2 back wheels with a cargo rattle
-	truckBump = { ids = {}, group = "Sfx", volume = 0.5, minGap = 0.1, voices = 2 },
+	truckBump = {
+		ids = { "rbxassetid://83549622802247", "rbxassetid://131991798209030" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 0.1,
+		voices = 2,
+	},
 	-- synth: CleanACat_Sfx_TruckDoor; the rear door clacks open
-	truckDoor = { ids = {}, group = "Sfx", volume = 0.4, minGap = 0.5, voices = 1 },
+	truckDoor = {
+		ids = { "rbxassetid://106598333989684" },
+		group = "Sfx",
+		volume = 0.4,
+		minGap = 0.5,
+		voices = 1,
+	},
 	-- synth: CleanACat_Sfx_BoxThud; cardboard on pavement (pitched up for the small bounce)
-	boxThud = { ids = {}, group = "Sfx", volume = 0.5, minGap = 0.1, voices = 2 },
+	boxThud = {
+		ids = { "rbxassetid://113317721257314" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 0.1,
+		voices = 2,
+	},
 	-- synth: CleanACat_Sfx_BoxRustle; the box wiggles with something inside
 	boxRustle = {
-		ids = {},
+		ids = { "rbxassetid://112949884290830" },
 		group = "Sfx",
 		volume = 0.4,
 		pitch = { 0.95, 1.05 },
