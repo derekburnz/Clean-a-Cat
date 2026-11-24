@@ -21,6 +21,7 @@
 -- The console says how long after the join the truck started, to measure on a phone.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -31,6 +32,7 @@ local SudsRules = require(Shared:WaitForChild("SudsRules"))
 
 local Client = script.Parent.Parent
 local Carry = require(Client:WaitForChild("Effects"):WaitForChild("Carry"))
+local ControlHold = require(Client:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local FloorTrail = require(Client:WaitForChild("Spa"):WaitForChild("FloorTrail"))
 local OpeningScene = require(Client:WaitForChild("Effects"):WaitForChild("OpeningScene"))
 local UI = require(Client:WaitForChild("UI"))
@@ -46,6 +48,9 @@ local PLACE_REACH = 10 -- studs: the tub's prompt, well inside the server's Suds
 local CLICK_REACH = { pick = 40, place = 12 } -- studs: a click or tap on the kitten or the tub
 local SUDS = SudsRules.NAME
 local RECAP_FLAG = "recapCard"
+local PICK_STAND = 2.6 -- studs from the kitten where the player stops to lift him (Derek: walk up, then pick up)
+local WALK_SECONDS = 4 -- the walk up gives up after this and the lift plays where they are
+local HIDE_BIND = "CleanACat_WashHide"
 local TIP_PICK = { step = 1, total = 3, icon = "Paw", say = "Pick him up" }
 local TIP_WASH = { step = 2, total = 3, icon = "Sponge", say = "Wash him" }
 
@@ -60,40 +65,62 @@ local picker: Instance? = nil -- the prompt and click on the kitten in the box
 local placer: BasePart? = nil -- the tub's prompt while he is carried
 local placing = false -- he is being set down: his hop plays while the server hands him out
 local wash: WashCamera.Handle? = nil
-local controlsHeld = false
 local scrub: any = nil
+local walking = false -- the player is walking up to the box to lift him
+local hiddenParts: { BasePart } = {}
+local hiddenDecals: { Decal } = {}
+local hideConnection: RBXScriptConnection? = nil
 
 local function boxState(): unknown
 	return player:GetAttribute(SudsRules.BOX_ATTRIBUTE)
 end
 
--- The character's walking controls (Roblox's PlayerModule), or nil.
-local function controls(): any
-	local scripts = player:FindFirstChild("PlayerScripts")
-	local module = if scripts then scripts:FindFirstChild("PlayerModule") else nil
-	if module == nil or not module:IsA("ModuleScript") then
-		return nil
-	end
-	local ok, found = pcall(function(): any
-		return (require(module :: ModuleScript) :: any):GetControls()
-	end)
-	return if ok then found else nil
+local function holdControls(hold: boolean)
+	ControlHold.set("opening", hold)
 end
 
-local function holdControls(hold: boolean)
-	if hold == controlsHeld then
+-- The player's own avatar is hidden on their screen while the close-up wash view is up (Derek: "your character gets
+-- in way"): it stands by the tub, so it would sit between the camera and the cat. Only on this device; everyone else
+-- still sees it. Set every frame after the camera, because Roblox's camera scripts set the same fade themselves.
+local function hideCharacter(hide: boolean)
+	if hideConnection then
+		hideConnection:Disconnect()
+		hideConnection = nil
+	end
+	pcall(function()
+		RunService:UnbindFromRenderStep(HIDE_BIND)
+	end)
+	for _, part in hiddenParts do
+		part.LocalTransparencyModifier = 0
+	end
+	for _, decal in hiddenDecals do
+		decal.LocalTransparencyModifier = 0
+	end
+	table.clear(hiddenParts)
+	table.clear(hiddenDecals)
+	local character = player.Character
+	if not hide or character == nil then
 		return
 	end
-	local walk = controls()
-	if walk == nil then
-		return
+	local function add(item: Instance)
+		if item:IsA("BasePart") then
+			table.insert(hiddenParts, item :: BasePart)
+		elseif item:IsA("Decal") then
+			table.insert(hiddenDecals, item :: Decal)
+		end
 	end
-	controlsHeld = hold
-	if hold then
-		walk:Disable()
-	else
-		walk:Enable()
+	for _, item in character:GetDescendants() do
+		add(item)
 	end
+	hideConnection = character.DescendantAdded:Connect(add)
+	RunService:BindToRenderStep(HIDE_BIND, Enum.RenderPriority.Camera.Value + 2, function()
+		for _, part in hiddenParts do
+			part.LocalTransparencyModifier = 1
+		end
+		for _, decal in hiddenDecals do
+			decal.LocalTransparencyModifier = 1
+		end
+	end)
 end
 
 -- The close-up wash view goes back to the player's camera, and they can walk again.
@@ -103,6 +130,7 @@ function OpeningController.leaveWash()
 	if view then
 		view.exit()
 	end
+	hideCharacter(false)
 	holdControls(false)
 end
 
@@ -112,6 +140,7 @@ local function enterWash()
 	end
 	holdControls(true)
 	wash = WashCamera.enter(WashCamera.shot(SpaLayout.tubSpot()))
+	hideCharacter(true)
 end
 
 local function clearPicker()
@@ -238,22 +267,87 @@ local function leadToTub()
 	placer = spot
 end
 
--- The kitten peeked out of the open box: "Pick him up", and a tap on him lifts him into the player's arms.
-local function offerPickUp(scene: OpeningScene.Handle)
+-- The player walks up to `target` (stopping PICK_STAND short of it) and turns to face it, then `onArrive`. Their
+-- own walking is held on the way, so a stray thumb on the stick does not fight it. Gives up after WALK_SECONDS.
+local function walkUpTo(character: Model, target: Vector3, onArrive: () -> (), onLost: () -> ())
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if humanoid == nil or root == nil or not root:IsA("BasePart") then
+		onArrive()
+		return
+	end
+	local body = root :: BasePart
+	local flat = Vector3.new(target.X, body.Position.Y, target.Z)
+	local away = body.Position - flat
+	local function face()
+		if (flat - body.Position).Magnitude > 0.1 then
+			body.CFrame = CFrame.lookAt(body.Position, flat)
+		end
+	end
+	if away.Magnitude <= PICK_STAND + 0.5 then
+		face()
+		onArrive()
+		return
+	end
+	walking = true
+	holdControls(true)
+	local arrived = false
+	local connection: RBXScriptConnection? = nil
+	local function finish()
+		if arrived then
+			return
+		end
+		arrived = true
+		walking = false
+		if connection then
+			connection:Disconnect()
+		end
+		holdControls(false)
+		if player.Character ~= character then
+			onLost() -- a reset on the way: the new character starts over, nothing is lifted to where it spawned
+			return
+		end
+		face()
+		onArrive()
+	end
+	connection = humanoid.MoveToFinished:Connect(finish)
+	humanoid:MoveTo(flat + away.Unit * PICK_STAND)
+	task.delay(WALK_SECONDS, finish)
+end
+
+-- The kitten peeked out of the open box: "Pick him up", and a tap on him walks the player up to the box, then lifts
+-- him into their arms (Derek: no teleport into the arms).
+local offerPickUp: (scene: OpeningScene.Handle) -> ()
+function offerPickUp(scene: OpeningScene.Handle)
 	if handle ~= scene or boxState() ~= false then
 		return
 	end
-	local function pickUp()
+	local function lift()
 		local character = player.Character
-		if handle ~= scene or character == nil or picker == nil then
+		if handle ~= scene or character == nil or boxState() ~= false then
 			return
 		end
-		clearPicker()
-		UI.setTip(nil)
 		scene.pickUp(character, function()
 			if handle == scene and boxState() == false then
 				leadToTub()
 			end
+		end)
+	end
+	local function pickUp()
+		local character = player.Character
+		if handle ~= scene or character == nil or picker == nil or walking then
+			return
+		end
+		local kitten = scene.kitten
+		local at = if kitten then kitten:GetPivot().Position else nil
+		clearPicker()
+		UI.setTip(nil)
+		if at == nil then
+			lift()
+			return
+		end
+		walkUpTo(character, at :: Vector3, lift, function()
+			offerPickUp(scene)
 		end)
 	end
 	local kitten = scene.kitten
@@ -398,6 +492,7 @@ function OpeningController.Start()
 	-- a new character (a reset) is the player's own again
 	-- (Roblox's controls keep their enabled state across a respawn, so leaveWash's Enable is what frees them.)
 	player.CharacterAdded:Connect(function()
+		walking = false
 		OpeningController.leaveWash()
 	end)
 	onBoxChanged()

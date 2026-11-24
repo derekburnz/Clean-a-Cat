@@ -5,6 +5,7 @@
 #
 #   ROBLOX_PUBLISH_KEY   Open Cloud key with universe-datastores.objects:read, :create and :update
 #   UNIVERSE_ID          the experience id (not secret)
+#   STORE_SUFFIX         optional: "_dev" for the switches Studio playtests read
 #
 # Usage:  flags.sh show | set <switch> true|false | clear <switch>
 #   clear deletes the entry, which puts the switch back at its default.
@@ -17,6 +18,8 @@ LIVEFLAGS=${LIVEFLAGS:-$(dirname "$0")/../../src/shared/LiveFlags.luau}
 [ -f "$LIVEFLAGS" ] || { echo "LiveFlags.luau not found at $LIVEFLAGS" >&2; exit 1; }
 STORE=$(grep -oE '^LiveFlags\.STORE = "[A-Za-z0-9_]+"' "$LIVEFLAGS" | grep -oE '"[A-Za-z0-9_]+"' | tr -d '"')
 [ -n "$STORE" ] || { echo "LiveFlags.STORE not found in $LIVEFLAGS" >&2; exit 1; }
+# Studio playtests read the store with "_dev" after its name (LiveFlagService), so STORE_SUFFIX=_dev sets those.
+STORE=$STORE${STORE_SUFFIX:-}
 mapfile -t KEYS < <(awk '/^LiveFlags.KEYS = \{/{on=1;next} on&&/^\}/{exit} on' "$LIVEFLAGS" | grep -o '^[[:space:]]*"[A-Za-z0-9]*"' | tr -d ' \t"')
 mapfile -t OFF_KEYS < <(awk '/^LiveFlags.OFF_BY_DEFAULT = \{/{on=1;next} on&&/^\}/{exit} on' "$LIVEFLAGS" | grep -o '^[[:space:]]*[A-Za-z0-9]* = true' | awk '{print $1}')
 [ "${#KEYS[@]}" -gt 0 ] || { echo "no switches read from $LIVEFLAGS" >&2; exit 1; }

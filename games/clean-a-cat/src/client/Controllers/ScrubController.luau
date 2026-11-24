@@ -25,6 +25,7 @@ local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
+local ControlHold = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LaterStepRules = require(Shared:WaitForChild("LaterStepRules"))
@@ -161,8 +162,6 @@ local stroking = false -- the active press is on the cat right now
 local lastHit: Vector3? = nil
 local lastMoveTime = 0
 local savedCameraType: Enum.CameraType? = nil
-local controls: any = nil -- the default PlayerModule's controls, found on the first touch scrub
-local heldControls = false -- walking is paused while a finger scrubs
 local trove = Trove.new() -- everything a visit makes; one Clean ends it
 local nextCatThread: thread? = nil
 local reportedScrub = false -- the funnel's first_scrub was sent this session
@@ -292,7 +291,8 @@ local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
 	local camera = makePart(
 		"Camera",
 		Vector3.new(1.4, 1, 1),
-		Color3.fromRGB(40, 40, 48),
+		-- pastel, not a black block (Derek's dev test), until Model-Agent's photo camera model replaces it
+		Color3.fromRGB(255, 205, 222),
 		tub * CFrame.new(-4.5, 2.5, -1)
 	)
 	show(camera, false)
@@ -545,29 +545,11 @@ end
 -- are paused; they come back when it lifts. Needs the scrubFeel switch, and does nothing when the game has no
 -- default PlayerModule.
 local function holdControls(hold: boolean)
-	if hold == heldControls or (hold and not LiveFlags.isOn(FEEL_FLAG)) then
+	-- ControlHold owns the state, so a reset (which clears every reason) leaves nothing stale here
+	if hold == ControlHold.holds("scrub") or (hold and not LiveFlags.isOn(FEEL_FLAG)) then
 		return
 	end
-	if controls == nil then
-		local playerScripts = Players.LocalPlayer:FindFirstChild("PlayerScripts")
-		local module = if playerScripts then playerScripts:FindFirstChild("PlayerModule") else nil
-		if not module or not module:IsA("ModuleScript") then
-			return
-		end
-		local ok, found = pcall(function()
-			return (require :: any)(module):GetControls()
-		end)
-		if not ok or found == nil then
-			return
-		end
-		controls = found
-	end
-	if hold then
-		controls:Disable()
-	else
-		controls:Enable()
-	end
-	heldControls = hold
+	ControlHold.set("scrub", hold)
 end
 
 -- The press left the cat or lifted: a scrub stroke ends (ScrubStop) and brush travel starts over.
@@ -1194,6 +1176,28 @@ local function needList(raw: unknown): string
 	return table.concat(needArray(raw), ",")
 end
 
+-- The tub, built once per visit: as the spa opens, so the opening's trail leads to a tub and not an empty rug
+-- (Sync-Agent's playtest of Derek's dev notes), or with the first cat. Returns where a cat sits in it.
+local function ensureTub(v: Visit): CFrame
+	local built = v.seat
+	if built then
+		return built
+	end
+	local tub = findAsset(TUB_ASSET) -- may wait for the asset
+	local already = v.seat
+	if already then
+		return already -- the other caller built it while this one waited
+	end
+	if visit ~= v then
+		return SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0) -- the visit ended while waiting: build nothing
+	end
+	local seat = if tub
+		then buildTub(tub, v.folder)
+		else SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
+	v.seat = seat
+	return seat
+end
+
 local function onCatReady(
 	rawId: unknown,
 	rawKind: unknown,
@@ -1221,16 +1225,12 @@ local function onCatReady(
 	if not asset or visit ~= v then
 		return
 	end
-	local seat = v.seat
-	if seat == nil then
-		local tub = findAsset(TUB_ASSET)
-		seat = if tub
-			then buildTub(tub, v.folder)
-			else SpaLayout.tubSpot() * CFrame.new(0, SEAT_HEIGHT, 0)
-		v.seat = seat
+	local seat = ensureTub(v)
+	if visit ~= v then
+		return
 	end
 	release()
-	startCat(v, asset, seat :: CFrame, rawId)
+	startCat(v, asset, seat, rawId)
 	-- the server's count; anything odd falls back to the hand brush's
 	v.brushStrokes = if type(rawStrokes) == "number"
 			and rawStrokes == math.floor(rawStrokes)
@@ -1462,8 +1462,14 @@ local function enable()
 	enabled = true
 	local folder: Folder = trove:Add(Instance.new("Folder"))
 	folder.Name = "PH_SpaPrototype"
-	visit = buildVisit(folder)
+	local v = buildVisit(folder)
+	visit = v
 	folder.Parent = Workspace
+	task.spawn(function()
+		if visit == v then
+			ensureTub(v)
+		end
+	end)
 
 	trove:Connect(Remotes.event("CatReady").OnClientEvent, onCatReady)
 	trove:Connect(Remotes.event("PhotoPaid").OnClientEvent, onPhotoPaid)
