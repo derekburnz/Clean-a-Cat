@@ -12,8 +12,9 @@
 --   Carry.hold(character, cat, held?) -> Handle    held: "sit" (default) or "loaf" (lying across the arms)
 --       folds the arms over FOLD_SECONDS and lifts `cat` from where it is onto them, with a purr that loops while
 --       it is held. The cat follows the arms every frame until placeIn.
---   handle.placeIn(target, onDone?)   the arms open and the cat hops off them, landing with its base on `target`
---                                     (a world point, e.g. the tub's seat); onDone once it lands
+--   handle.placeIn(target, onDone?, endScale?)  the arms open and the cat hops off them, landing with its base on
+--                                     `target` (a world point, e.g. the tub's seat); onDone once it lands. He eases to
+--                                     `endScale` over the hop (the size of the body that takes over; default his own)
 --   handle.destroy()                  lets go at once: the arms go back to the character's own, the purr stops
 --   onDone fires exactly once, deferred, also when placeIn is called twice or the handle is destroyed first.
 --   Reduced Motion (or Less screen shake): no arc on the lift or the hop, so nothing bounces; the arms still fold.
@@ -65,7 +66,8 @@ Carry.POSE = table.freeze({
 	hug = true,
 	loafForward = 0,
 	loafTurn = 90,
-	loafSide = -0.2, -- a touch left, so his head pokes out past the left arm (Model-Agent)
+	loafSide = -0.5, -- left, so his head pokes out past the left arm (Model-Agent) and his tail's base clears the right
+	-- forearm (Sync-Agent measured it 0.27 studs in at -0.2)
 	-- Derek's ten-angle hold picture (#353): the loaf's head now tips 45 degrees nose down onto his paws and stands
 	-- 1.23 high at its top corner, so he sits 0.2 lower on the arms with the head end rolled up 5 degrees, not 8, and
 	-- that corner stays under the carrier's chin (Model-Agent's numbers from his stand-in).
@@ -149,7 +151,7 @@ local FIELDS = { "shL", "shR", "spL", "spR", "twL", "twR", "elL", "elR", "neck",
 
 export type Pose = { [string]: number }
 export type Handle = {
-	placeIn: (target: Vector3, onDone: (() -> ())?) -> (),
+	placeIn: (target: Vector3, onDone: (() -> ())?, endScale: number?) -> (),
 	destroy: () -> (),
 }
 
@@ -410,7 +412,8 @@ function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?):
 	local written: { [Joint]: CFrame } = {}
 	local destroyed = false
 	local purr = Audio.loop("carryPurr", ownPart(cat))
-	local hop: { start: number, from: CFrame, to: Vector3, onDone: (() -> ())? }? = nil
+	local hop: { start: number, from: CFrame, to: Vector3, onDone: (() -> ())?, scale: number }? =
+		nil
 	local connection: RBXScriptConnection? = nil
 
 	local function writeArms(dt: number)
@@ -475,7 +478,7 @@ function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?):
 			local flat = (h.to - h.from.Position) * Vector3.new(1, 0, 1)
 			local facing = if flat.Magnitude > 0.01 then flat.Unit else h.from.LookVector
 			local pos = h.from.Position:Lerp(h.to, along) + Vector3.yAxis * arc
-			local scale = Carry.hopScale(heldScale, ownScale, along)
+			local scale = Carry.hopScale(heldScale, h.scale, along)
 			if scale ~= cat:GetScale() then
 				cat:ScaleTo(scale)
 			end
@@ -505,7 +508,7 @@ function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?):
 	connection = RunService.PreSimulation:Connect(step)
 
 	return {
-		placeIn = function(target: Vector3, onDone: (() -> ())?)
+		placeIn = function(target: Vector3, onDone: (() -> ())?, endScale: number?)
 			if destroyed or hop then
 				if onDone then
 					task.defer(onDone)
@@ -519,6 +522,12 @@ function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?):
 				from = cat:GetPivot() * offset:Inverse(),
 				to = target,
 				onDone = onDone,
+				-- he lands at the size of what takes him over (the tub's sitting body is drawn at 1.5), so nothing pops
+				scale = if type(endScale) == "number"
+						and endScale > 0
+						and endScale <= 3
+					then endScale
+					else ownScale,
 			}
 		end,
 		destroy = function()

@@ -107,7 +107,8 @@ return function()
 				expect(TruckDrop.truck(B.slide, false).door > math.rad(60)).to.equal(true)
 				expect(TruckDrop.truck(B.drop, true).door).to.equal(TruckDrop.DOOR.open)
 				local shut = B.drop + TruckDrop.DOOR.hold + TruckDrop.DOOR.closeSeconds
-				expect(shut - B.frontHit <= 0.8).to.equal(true)
+				-- open for under a second: long enough for the box to fall clear before the door slams down
+				expect(shut - B.frontHit <= 0.95).to.equal(true)
 				expect(TruckDrop.truck(shut + 0.5, false).door).to.equal(0)
 				expect(TruckDrop.truck(shut + 0.01, true).door).to.equal(0)
 			end
@@ -148,6 +149,112 @@ return function()
 				end
 			end
 		end)
+		it("rides the cargo floor without sinking into it while it slides out", function()
+			for _, reduced in { false, true } do
+				local t = B.slide
+				while t < B.drop do
+					local box = TruckDrop.box(t, reduced)
+					local state = TruckDrop.truck(t, reduced)
+					local behind = TruckDrop.truckX(t) - box.x
+					-- the floor's height under each of the box's bottom edges
+					for _, e in { -W / 2, W / 2 } do
+						local z = behind - e
+						local floor = state.lift
+							+ TruckDrop.TAILGATE.up * math.cos(state.pitch)
+							- z * math.sin(state.pitch)
+						if z <= TruckDrop.TAILGATE.back then
+							expect(box.y >= floor - 1e-6).to.equal(true)
+						end
+					end
+					t += 0.01
+				end
+			end
+		end)
+		it(
+			"is never touched by the back door as it swings and slams (Sync-Agent saw a 0.26 stud clip)",
+			function()
+				local door = TruckDrop.DOOR.model
+				local function segDist(
+					px: number,
+					py: number,
+					ax: number,
+					ay: number,
+					bx: number,
+					by: number
+				): number
+					local dx, dy = bx - ax, by - ay
+					local u =
+						math.clamp(((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy), 0, 1)
+					return math.sqrt((ax + dx * u - px) ^ 2 + (ay + dy * u - py) ^ 2)
+				end
+				local function cross(
+					ax: number,
+					ay: number,
+					bx: number,
+					by: number,
+					cx: number,
+					cy: number
+				): number
+					return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+				end
+				for _, reduced in { false, true } do
+					local t = B.drop
+					while t < B.settle do
+						local box = TruckDrop.box(t, reduced)
+						local state = TruckDrop.truck(t, reduced)
+						local a = TruckDrop.door(t - B.frontHit, reduced)
+							* door.openDegrees
+							/ math.deg(TruckDrop.DOOR.open)
+						-- the door in the truck's own frame: z back from the pivot, y up
+						local hz, hy = door.back, door.hinge
+						local bz, by =
+							hz + door.length * math.sin(a), hy - door.length * math.cos(a)
+						-- the box's corners in that frame
+						local c, sn = math.cos(state.pitch), math.sin(state.pitch)
+						local cx, cy = box.x, box.y + H / 2
+						local corners = {}
+						for _, k in
+							{
+								{ -W / 2, -H / 2 },
+								{ W / 2, -H / 2 },
+								{ W / 2, H / 2 },
+								{ -W / 2, H / 2 },
+							}
+						do
+							local x = cx + k[1] * math.cos(box.roll) + k[2] * math.sin(box.roll)
+							local y = cy - k[1] * math.sin(box.roll) + k[2] * math.cos(box.roll)
+							local dz, dy = TruckDrop.truckX(t) - x, y - state.lift
+							table.insert(corners, { dz * c - dy * sn, dz * sn + dy * c })
+						end
+						local nearest = math.huge
+						local inside = true
+						for i = 1, 4 do
+							local p, q = corners[i], corners[i % 4 + 1]
+							nearest = math.min(nearest, segDist(p[1], p[2], hz, hy, bz, by))
+							nearest = math.min(nearest, segDist(bz, by, p[1], p[2], q[1], q[2]))
+							if
+								cross(p[1], p[2], q[1], q[2], bz, by)
+									* cross(
+										corners[1][1],
+										corners[1][2],
+										corners[2][1],
+										corners[2][2],
+										corners[3][1],
+										corners[3][2]
+									)
+								< 0
+							then
+								inside = false
+							end
+						end
+						-- with room to spare: the real box is a little bigger than its footprint (its flaps), and Sync-Agent's
+						-- run found a clip where this model of it still had 0.2 studs
+						expect(not inside and nearest > door.thick + 0.45).to.equal(true)
+						t += 0.005
+					end
+				end
+			end
+		)
 		it("falls with the truck's way and weight: no float toward the player", function()
 			local lx = TruckDrop.launch()
 			local cx0 = TruckDrop.rollCenter(TruckDrop.ROLL.tilt)
