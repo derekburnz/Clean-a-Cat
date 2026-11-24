@@ -60,8 +60,9 @@ def backdrop(size, inner, outer):
     return Image.alpha_composite(bg, rings)
 
 
-def crop_to_content(im, pad=0.02):
-    box = im.getchannel("A").point(lambda a: 255 if a > 60 else 0).getbbox()   # past the faint shadow edge
+def crop_to_content(im, pad=0.02, cut=60):
+    """Crop to what is drawn; `cut` is the alpha below which the faint shadow edge counts as empty."""
+    box = im.getchannel("A").point(lambda a: 255 if a > cut else 0).getbbox()
     if not box:
         return im
     p = int(pad * max(im.size))
@@ -185,6 +186,126 @@ def sheet(made, out):
     sh.convert("RGB").save(out)
 
 
+# The look Derek picked for now (2026-11-23): a chunky stacked title, each line its own gradient with a thick purple
+# outline and a drop shadow, on a teal bubble backdrop, the clean cat in its tub on the right. The title font is a
+# rounded display face: Lilita One (SIL Open Font License, Google Fonts) when TITLE_FONT points at it, else Inter Black.
+TITLE_FONT = os.environ.get("TITLE_FONT", "/tmp/claude-0/fonts/LilitaOne-Regular.ttf")
+TITLE_LINES = (("CLEAN", (255, 255, 255), (196, 160, 240)),      # (words, top colour, bottom colour)
+               ("A CAT", (255, 236, 246), (255, 112, 168)))
+OUTLINE = (76, 38, 112)
+
+
+def bubble_backdrop(size, seed=4):
+    import random
+    w, h = size
+    bg = backdrop(size, (186, 240, 246), (88, 196, 214))
+    layer = Image.new("RGBA", size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    rnd = random.Random(seed)
+    s = min(w, h)
+    for _ in range(46):
+        r = s * rnd.uniform(0.02, 0.09)
+        cx, cy = rnd.uniform(0, w), rnd.uniform(0, h)
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 255, 255, rnd.randint(40, 90)))
+        d.ellipse((cx - r * 0.55, cy - r * 0.6, cx - r * 0.2, cy - r * 0.25), fill=(255, 255, 255, 120))
+    layer = layer.filter(ImageFilter.GaussianBlur(s * 0.003))
+    return Image.alpha_composite(bg, layer)
+
+
+def title_block(width):
+    """The stacked title on its own transparent layer, about `width` wide, tilted a little."""
+    path = TITLE_FONT if os.path.exists(TITLE_FONT) else FONT
+    lines = []
+    for text, top, bottom in TITLE_LINES:
+        size = int(width * 0.4)
+        while True:
+            font = ImageFont.truetype(path, size)
+            stroke = max(4, size // 8)
+            l, t, r, b = font.getbbox(text, stroke_width=stroke)
+            if r - l <= width or size < 20:
+                break
+            size = int(size * 0.95)
+        lines.append((text, top, bottom, font, stroke, (l, t, r, b)))
+    sizes = [bb[2] - bb[0] for *_, bb in lines]
+    heights = [bb[3] - bb[1] for *_, bb in lines]
+    gap = int(heights[0] * -0.08)
+    W = max(sizes) + 40
+    H = sum(heights) + gap * (len(lines) - 1) + int(heights[0] * 0.2) + 40
+    out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    y = 20
+    for (text, top, bottom, font, stroke, (l, t, r, b)), hgt in zip(lines, heights):
+        x = (W - (r - l)) // 2 - l
+        yy = y - t
+        drop = int(hgt * 0.09)
+        sh = Image.new("RGBA", out.size, (0, 0, 0, 0))                      # drop shadow
+        ImageDraw.Draw(sh).text((x, yy + drop), text, font=font, fill=OUTLINE + (230,), stroke_width=stroke,
+                                stroke_fill=OUTLINE + (230,))
+        out.alpha_composite(sh)
+        ImageDraw.Draw(out).text((x, yy), text, font=font, fill=OUTLINE, stroke_width=stroke, stroke_fill=OUTLINE)
+        mask = Image.new("L", out.size, 0)                                     # the gradient fill, letters only
+        ImageDraw.Draw(mask).text((x, yy), text, font=font, fill=255)
+        grad = Image.new("RGBA", out.size)
+        g0, g1 = y, y + hgt
+        gp = grad.load()
+        for row in range(out.height):
+            f = min(1.0, max(0.0, (row - g0) / max(1, g1 - g0)))
+            c = tuple(int(top[i] + (bottom[i] - top[i]) * f) for i in range(3)) + (255,)
+            for col in range(out.width):
+                gp[col, row] = c
+        out.paste(grad, (0, 0), mask)
+        shine = Image.new("RGBA", out.size, (0, 0, 0, 0))                     # a soft shine on the top third
+        sm = mask.point(lambda a: int(a * 0.35))
+        band = Image.new("L", out.size, 0)
+        ImageDraw.Draw(band).rectangle((0, g0, out.width, g0 + int(hgt * 0.32)), fill=255)
+        from PIL import ImageChops
+        shine.paste((255, 255, 255, 255), (0, 0), ImageChops.multiply(sm, band))
+        out.alpha_composite(shine)
+        y += hgt + gap
+    return out.rotate(5, resample=Image.BICUBIC, expand=True)
+
+
+def soft_shadow_edges(im, frac=0.3):
+    """Fade the see-through shadow (alpha under 250; the models are solid) towards the left and top edges of a
+    cropped render, so a shadow cut by the crop never shows a hard line."""
+    a = im.getchannel("A")
+    w, h = im.size
+    ramp = Image.new("L", im.size, 255)
+    rp = ramp.load()
+    fw, fh = max(1, int(w * frac)), max(1, int(h * frac))
+    for y in range(h):
+        fy = min(1.0, y / fh)
+        for x in range(w):
+            rp[x, y] = int(255 * min(1.0, x / fw) * fy)
+    from PIL import ImageChops
+    solid = a.point(lambda v: 255 if v >= 250 else 0)
+    faded = ImageChops.multiply(a, ramp)
+    out = im.copy()
+    out.putalpha(ImageChops.lighter(faded, ImageChops.multiply(a, solid)))
+    return out
+
+
+def compose_spa(raw_dir, final=False):
+    size = (1920, 1080) if final else (1280, 720)
+    w, h = size
+    bg = bubble_backdrop(size)
+    art = soft_shadow_edges(crop_to_content(Image.open(os.path.join(raw_dir, "raw-thumb-spa.png")).convert("RGBA")))
+    art = fit(art, w * 0.58, h * 0.97)
+    bg.alpha_composite(art, (int(w * 0.985 - art.width), int(h * 0.99 - art.height)))
+    title = title_block(int(w * 0.44))
+    title = fit(title, w * 0.47, h * 0.9)
+    bg.alpha_composite(title, (int(w * 0.235 - title.width / 2), int(h * 0.5 - title.height / 2)))
+    return bg
+
+
+def icon_spa(raw_dir):
+    """The matching 512 icon: the same tub shot filling the square, the bubble backdrop, no words."""
+    bg = bubble_backdrop((512, 512), seed=9)
+    raw = Image.open(os.path.join(raw_dir, "raw-thumb-spa.png")).convert("RGBA")
+    art = fit(soft_shadow_edges(crop_to_content(raw)), 500, 500)
+    bg.alpha_composite(art, ((512 - art.width) // 2, 512 - art.height - 6))
+    return bg
+
+
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if a != "--final"]
     final = "--final" in sys.argv
@@ -195,5 +316,8 @@ if __name__ == "__main__":
         if os.path.exists(os.path.join(raw_dir, f"raw-{key}.png")):
             made[key] = compose(key, raw_dir, final)
             made[key].convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
+    if os.path.exists(os.path.join(raw_dir, "raw-thumb-spa.png")):
+        compose_spa(raw_dir, final).convert("RGB").save(os.path.join(out_dir, "thumb-spa.png"))
+        icon_spa(raw_dir).convert("RGB").save(os.path.join(out_dir, "icon-spa.png"))
     if len(args) > 2:
         sheet(made, args[2])

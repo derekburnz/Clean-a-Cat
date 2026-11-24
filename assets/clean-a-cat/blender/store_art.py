@@ -263,6 +263,37 @@ def icon_clean(mat, out, res):
     return render(objs, focus, out, res, az=-10, el=14, margin=1.14, lens=55)
 
 
+def thumb_spa(mat, out, res):
+    """The store thumbnail Derek picked the look of (2026-11-23): the whole tub, a clean fluffy Muffin with a bow in a
+    pile of foam, a striped towel over the rim, the sponge on the rim and bubbles rising. No mud."""
+    objs, cat, tub = tub_scene(mat, name="Muffin", state="clean", with_sponge=False, foam=False)
+    spec = cats.ROSTER["Muffin"]
+    k = cats.scale_of(spec, "sit")
+    bow = props.build_bow(list(props.BOWS)[0], mat)
+    at = Vector(cats.joints(spec, "sit")["Head"]) + Vector(cats.bow_at(spec, "sit")) * k
+    _move(bow, Vector((0, 0, stations.SEAT_Z)) + at * TUB_K, TUB_K)
+    objs += _fresh(bow)
+    lo, hi = common.bounds(cat)
+    tlo, thi = common.bounds(tub)
+    top = stations.SEAT_Z + 0.9
+    objs += bubbles(mat, [(-0.9, lo.y + 0.2, top, 0.5), (0.9, lo.y + 0.2, top, 0.5),
+                          (0.0, lo.y - 0.05, top - 0.1, 0.45), (-1.4, 0.3, top + 0.05, 0.5),
+                          (1.4, 0.3, top + 0.05, 0.5), (-1.7, tlo.y + 0.5, thi.z + 0.1, 0.4)], seed=11)
+    objs += floating(mat, [(-1.6, lo.y - 0.3, hi.z - 0.3, 0.26), (1.7, lo.y - 0.2, hi.z + 0.1, 0.2),
+                           (1.3, lo.y - 0.4, hi.z + 0.8, 0.14), (-1.2, lo.y - 0.2, hi.z + 0.7, 0.16),
+                           (0.3, lo.y - 0.3, hi.z + 1.2, 0.12)])
+    tw = Builder()                                        # a mint towel with white stripes over the front rim
+    x, w = 1.25, 1.0
+    tw.box((x, tlo.y + 0.25, thi.z - 0.17), (w, 0.62, 0.08), "spa_mint", bevel=False)
+    tw.box((x, tlo.y - 0.03, thi.z - 0.78), (w, 0.08, 1.22), "spa_mint", bevel=False)
+    for dx in (-0.26, 0.26):
+        tw.box((x + dx, tlo.y - 0.08, thi.z - 0.78), (0.12, 0.04, 1.22), "offwhite", bevel=False)
+    objs += _fresh([tw.finalize("Towel", mat, bevel=0)])
+    objs += bubbles(mat, [(tlo.x + 0.4, tlo.y + 0.4, thi.z + 0.15, 0.45), (thi.x - 0.4, thi.y - 0.5, thi.z + 0.15, 0.4),
+                          (tlo.x + 0.5, thi.y - 0.5, thi.z + 0.1, 0.35)], seed=13)
+    return render(objs, objs, out, res, az=-20, el=13, margin=1.04, lens=55)
+
+
 def thumb_scrub(mat, out, res):
     """Thumbnail 1: an avatar at the tub scrubbing a half muddy cat with the sponge, foam and bubbles."""
     objs, cat, tub = tub_scene(mat, with_sponge=False)
@@ -318,6 +349,7 @@ SHOTS = {
     "thumb-1": (thumb_scrub, (960, 540), (1920, 1080)),
     "thumb-2": (thumb_before_after, (960, 540), (1920, 1080)),
     "thumb-3": (thumb_queue, (960, 540), (1920, 1080)),
+    "thumb-spa": (thumb_spa, (900, 900), (1600, 1600)),
 }
 
 
