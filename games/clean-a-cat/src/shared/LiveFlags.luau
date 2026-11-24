@@ -74,6 +74,7 @@ LiveFlags.KEYS = {
 	"openingBox", -- the opening scene: the truck, the bump and the box landing in front of the player (Effects/OpeningScene); off by default
 	"photoCamera", -- Model-Agent's photo camera on a stand (CleanACat_Prop_PhotoCamera) for the photo tap in the tub, instead of the pink block (Controllers/ScrubController); off by default
 	"washView", -- every cat in the tub is washed in the close-up wash view with the avatar hidden, not only Suds in the opening (Spa/WashView, Controllers/ScrubController); off by default
+	"smallPrompts", -- every tap prompt (pick him up, open the box, the boards) drawn as a small pill beside its thing instead of Roblox's big black button (Controllers/PromptController); off by default
 	"worldBackdrop", -- the draft world behind the street: hills, houses and trees the road runs into (Model-Agent's CleanACat_Area_Backdrop, BackdropController), this player's own copy; off by default
 	"skyDraft", -- the draft sky and light: pastel haze, soft clouds, warm tint and gentle bloom (Effects/Sky), this player's own; off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
@@ -126,6 +127,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	worldBackdrop = true,
 	photoCamera = true,
 	washView = true,
+	smallPrompts = true,
 	openingReplay = true,
 	sudsBubble = true,
 	recapSide = true,
