@@ -6,8 +6,8 @@
 A dirty model is the clean cat (same pieces, same pivots, same names after the asset name) plus:
 
   _Mud01 .. _Mud20      one piece of the mud coat each (one to four boxes: a wrap round an edge or a corner of one
-                        of the cat's blocks and the drips running from it, plus up to three thin boxes of ragged
-                        edge, #155), its own child Model pivoted at its
+                        of the cat's blocks and the drips running from it, plus one thin box of ragged edge,
+                        #155), its own child Model pivoted at its
                         middle. The scrub removes a piece by its name (find the child Model whose name ends in
                         _MudNN and Destroy it). Pieces on the head, the tail or a leg are nested in that piece's
                         Model, so they move with it; the rest sit on the Body.
@@ -142,9 +142,6 @@ def _contrast(a, b):
 
 
 PALE = 0.5                # fur brighter than this (white, cream, pale grey, lilac, gold) gets the drab mud
-# The shade of a piece's ragged edge, by the shade of the piece: a step toward the fur, so the edge reads soft.
-FRINGE_TONE = {"mud": "mud_wet", "mud_wet": "mud_wet", "mud_dust": "mud_dust_wet", "mud_dust_wet": "mud_dust_wet",
-               "mud_drab": "mud_dust", "mud_drab_wet": "mud_dust"}
 
 
 def _mud_for(fur, wet=False):
@@ -346,10 +343,11 @@ def _shell(ob, block, span, n, k, eyes, head):
 
 
 # The ragged edge (#155). A coat's own patches are clean blocks, so clean blocks of mud read as a coat. Every piece
-# gets up to FRINGE_MAX more boxes, one mud pixel wide: drips of uneven length running down from its lower edge on a
-# side of the cat, and uneven teeth round it on a top. The longest is the piece's own shade and the others a softer
-# one, a step toward the fur. They lie flush like the piece itself.
-FRINGE_MAX = 3
+# gets FRINGE_MAX more box, one mud pixel wide and in the piece's own shade: the longest drip running down from its
+# lower edge on a side of the cat, or the longest tooth out of it on a top. It lies flush like the piece itself.
+# One and not more (Review-QA, #155): the edge reads from about twice phone size, and every box is a part on a
+# phone.
+FRINGE_MAX = 1
 DRIPS = (2, 0, 3, 1, 0, 2, 1, 0)   # lengths in mud pixels, column after column along an edge
 TEETH = (1, 0, 2, 0, 1, 1, 0, 2)
 
@@ -459,9 +457,8 @@ def _coat(objs, base, body, k, eyes, mat):
         fur = max(dict.fromkeys(furs), key=furs.count) if furs else None    # on a tie the fur probed first wins
         tone = _mud_for(fur, wet=i % 3 == 2)           # every third piece the wet shade
         b = Builder()
-        for j, (c, R, s, sides) in enumerate(shells + fringe):
-            sw = tone if j <= len(shells) else FRINGE_TONE[tone]     # the longest drip is the piece's own shade
-            verts = b.box(tuple(c - at), tuple(s), sw, bevel=False, rot=R)
+        for c, R, s, sides in shells + fringe:
+            verts = b.box(tuple(c - at), tuple(s), tone, bevel=False, rot=R)
             for e in {e for v in verts for e in v.link_edges}:      # soften the edges that wrap an edge of the block,
                 p = R.transposed() @ ((e.verts[0].co + e.verts[1].co) / 2 - (c - at))   # as the block's own are
                 on = [(a, 1 if p[a] > 0 else -1) for a in range(3) if abs(p[a]) > s[a] / 4]
@@ -572,4 +569,4 @@ ASSETS = {}
 for _n in cats.ROSTER:
     for _body in cats.BUILT_BODIES:   # 3,200: the long claws (#23) put the fluffiest coat a little over 3,000
         ASSETS[f"CleanACat_Cat_{_n}_Dirty{cats.SUFFIX[_body]}"] = (
-            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3400)
+            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3200)
