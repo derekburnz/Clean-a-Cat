@@ -81,6 +81,29 @@ local SCENES = {
 	{ "RecapStrip", function()
 		recap(false)
 	end },
+	-- The same card at the side with no dim (switch recapSide), so the clean cat stays in view; the touch controls hide.
+	{ "RecapSide", function()
+		flag("recapSide", true)
+		recap(true)
+	end },
+	-- The naming card at the side (switches recapSide and sudsWash).
+	{ "RecapSideSuds", function()
+		flag("recapSide", true)
+		flag("recapCard", true)
+		hud(true)
+		UI.setCoins(0)
+		UI.showRecap({
+			cat = "Suds",
+			rarity = "Common",
+			coins = 0,
+			tip = 0,
+			bonus = 0,
+			stars = 3,
+			isNew = false,
+			full = true,
+			mascot = true,
+		})
+	end },
 	-- The opening's kitten's card at his naming (#285, switch sudsWash): his name and three stars, nothing paid.
 	{ "RecapSuds", function()
 		flag("recapCard", true)
@@ -273,6 +296,7 @@ function Scenes.close()
 	UI.hideBubble()
 	flag("sudsBubble", false)
 	flag("washChecklist", false)
+	flag("recapSide", false)
 	flag("tutorialTip", false)
 	flag("windowsHideControls", false)
 	UI.setTip(nil)
