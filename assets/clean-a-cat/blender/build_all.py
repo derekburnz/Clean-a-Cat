@@ -74,14 +74,16 @@ def cat_rbx_extras(name):
     thing or a name tag rests, above the ears) and a BowSlot Attachment there (where a bow goes, #14), so the game
     needs no manifest at runtime."""
     cat, _gold, body = cats.parse(name)
-    spec = cats.ROSTER[cat]
+    spec = cats.spec_of(cat)
     k = cats.scale_of(spec, body)
     joints = cats.joints(spec, body)
     carry = Vector(joints["Head"]) + Vector(cats.carry_at(spec, body)) * k
     bow = Vector(joints["Head"]) + Vector(cats.bow_at(spec, body)) * k
+    attributes = {"Scale": {"Float64": float(spec.get("scale", 1.0))}, "Rarity": spec["rarity"], "Cat": cat}
+    if spec.get("mascot"):                            # not a Cat Index cat (cats.EXTRA_CATS): the game must not list it
+        attributes["Mascot"] = True
     return {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", Matrix.Translation(bow))],
-            "attributes": {"Scale": {"Float64": float(spec.get("scale", 1.0))}, "Rarity": spec["rarity"],
-                           "Cat": cat}}
+            "attributes": attributes}
 
 
 def parse_args():
@@ -138,7 +140,7 @@ def main():
         }
         if name.startswith("CleanACat_Cat_"):
             cat, _g, body = cats.parse(name)
-            spec = cats.ROSTER[cat]
+            spec = cats.spec_of(cat)
             entry.update(rarity=spec["rarity"], body=body, pattern=spec["pattern"], dirty="_Dirty" in name)
             if dnest or dattrs:
                 entry["dirt"] = {"attributes": {k: (v["Float64"] if isinstance(v, dict) else v) for k, v in dattrs.items()},
