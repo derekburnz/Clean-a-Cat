@@ -6,6 +6,9 @@
 --   Recap.show(recap, onClose)   shows a RecapRules.Recap: the full card or the slim strip, as recap.full says
 --   Recap.close()                hides it and calls that show's onClose once
 --   Recap.isOpen()
+--   Recap.setHidden(on)          hides the card or strip while a window is open over it, without closing it: opening
+--                                the Cat Index or Settings is not "Next cat" (Review-QA); UI shows it again once
+--                                that window closes
 --
 -- The full card: the cat's portrait, name, rarity chip and a New! chip beside it (never on the star badge), the spa
 -- stars it earned, one row per coin source (rows worth 0 are left out) and the total, then Next cat. The strip is the
@@ -134,6 +137,7 @@ type Parts = {
 local parts: Parts? = nil
 local shown: RecapRules.Recap? = nil
 local onClosed: (() -> ())? = nil
+local hidden = false -- a window is open over it (Recap.setHidden)
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -299,7 +303,7 @@ local function redraw()
 	if p == nil then
 		return
 	end
-	local open = recap ~= nil and LiveFlags.isOn(Recap.FLAG)
+	local open = recap ~= nil and LiveFlags.isOn(Recap.FLAG) and not hidden
 	p.layer.Visible = open
 	if recap == nil or not open then
 		return
@@ -361,6 +365,13 @@ local function redraw()
 	p.totalText.Text = total
 	p.next.Size = UDim2.fromOffset(0, s.button)
 	p.next.TextSize = s.buttonText
+end
+
+function Recap.setHidden(on: boolean)
+	if hidden ~= on then
+		hidden = on
+		redraw()
+	end
 end
 
 function Recap.isOpen(): boolean

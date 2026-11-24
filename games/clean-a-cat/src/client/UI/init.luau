@@ -59,6 +59,7 @@ local SETTINGS_FLAG = "settingsCard"
 local windows: { [string]: Frame } = {}
 local settingsListeners: { (SettingsRules.Settings) -> () } = {}
 local toastLabel: TextLabel? = nil
+local revealRecap: RBXScriptConnection? = nil -- shows the recap again when the window over it closes
 local toastToken = 0
 
 local function corner(parent: Instance, radius: number)
@@ -298,18 +299,46 @@ function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)
 	Recap.show(recap, onClose)
 end
 
+-- Opens one window and closes the others. A recap card or strip showing is hidden, not closed, so opening a window
+-- never counts as Next cat; it shows again once this window closes.
 function UI.open(name: string)
-	UI.closeAll()
+	local connection = revealRecap
+	if connection then
+		connection:Disconnect()
+		revealRecap = nil
+	end
+	for _, other in windows do
+		other.Visible = false
+	end
 	local frame: Frame? = windows[name]
 	assert(frame ~= nil, `UI.open: no window {name}`)
+	Recap.setHidden(true)
 	frame.Visible = true
+	local opened: Frame = frame
+	revealRecap = opened:GetPropertyChangedSignal("Visible"):Connect(function()
+		if not opened.Visible then
+			local own = revealRecap
+			if own then
+				own:Disconnect()
+				revealRecap = nil
+			end
+			Recap.setHidden(false)
+		end
+	end)
 	Motion.popIn(frame) -- trial springs, switch springUi (#183)
 end
 
+-- Closes every window and the recap card or strip (calling its onClose).
 function UI.closeAll()
+	local connection = revealRecap
+	if connection then
+		connection:Disconnect()
+		revealRecap = nil
+	end
 	for _, frame in windows do
 		frame.Visible = false
 	end
+	Recap.setHidden(false)
 	Recap.close()
 end
 
