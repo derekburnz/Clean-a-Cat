@@ -368,7 +368,7 @@ def _coat(objs, base, body, k, eyes, mat):
             for sign in (1, -1):
                 probe.append(_swatch_at(ob, c0 + R0.col[a] * sign * s0[a] / 2))
         furs = [f for f in probe if f]
-        fur = max(set(furs), key=furs.count) if furs else None
+        fur = max(dict.fromkeys(furs), key=furs.count) if furs else None    # on a tie the fur probed first wins
         tone = _mud_for(fur, wet=i % 3 == 2)           # every third piece the wet shade
         b = Builder()
         for c, R, s, sides in shells:
