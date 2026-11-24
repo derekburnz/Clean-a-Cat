@@ -2,19 +2,22 @@
 -- EffectsController: plays effects on the game's moments (Shared.Moments). It only listens.
 -- Scrub effects sit behind the LiveFlags switch `scrubEffects`, reveal effects behind `revealEffects` and brush and bow
 -- effects behind `fluffEffects`, and the cats' procedural motion (Effects/CatMotion) behind `catMotion`, all off by
--- default, because they change the first session. Dryer air is behind `dryEffects`.
+-- default, because they change the first session. Dryer air is behind `dryEffects`, stink wisps
+-- over dirty cats behind `stinkEffects`.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
 local CatPose = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatPose"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
+local Stink = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Stink"))
 
 local SCRUB_FLAG = "scrubEffects"
 local REVEAL_FLAG = "revealEffects"
 local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
+local STINK_FLAG = "stinkEffects"
 local BOW_DROP = 0.3 -- studs below the top of the cat, about where a bow sits
 local GLOW_SECONDS = 0.6
 local BOW_POP_SECONDS = 0.25
@@ -57,6 +60,9 @@ function EffectsController.Start()
 	CatMotion.start(Effects.tier(), function(): boolean
 		return LiveFlags.isOn(MOTION_FLAG)
 	end)
+	Stink.start(function(): boolean
+		return LiveFlags.isOn(STINK_FLAG)
+	end)
 
 	local function scrubOn(): boolean
 		return LiveFlags.isOn(SCRUB_FLAG)
@@ -74,6 +80,7 @@ function EffectsController.Start()
 	end)
 	Moments.CatClean:Connect(function(cat: Model)
 		CatMotion.shake(cat)
+		Stink.setLeft(cat, 0)
 		if not LiveFlags.isOn(REVEAL_FLAG) or not cat:IsDescendantOf(workspace) then
 			return
 		end
@@ -142,7 +149,8 @@ function EffectsController.Start()
 	end
 
 	Moments.MudPatchCleared:Connect(
-		function(_cat: Model, patchPosition: Vector3, _patchesLeft: number)
+		function(cat: Model, patchPosition: Vector3, patchesLeft: number)
+			Stink.setLeft(cat, patchesLeft)
 			if scrubOn() then
 				Effects.burst("mudChunks", patchPosition)
 			end
