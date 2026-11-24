@@ -27,6 +27,8 @@ local MENU_TEXT = 20
 local MENU_SIZE_TV = Vector2.new(160, 68) -- a TV is read from the couch (#209)
 local MENU_TEXT_TV = 30
 local MENU_EDGE = 16 -- px from the left edge (inside the TV inset on a console)
+local MENU_HEIGHT = 0.5 -- share of the root's height at the Menu's centre
+local MENU_HEIGHT_HUD = 0.36 -- with the game HUD on: clear of the touch thumbstick on a small phone (#222)
 
 local windows: { [string]: Frame } = {}
 local toastLabel: TextLabel? = nil
@@ -121,17 +123,24 @@ function UI.init()
 	end)
 	Motion.press(menu) -- trial springs, switch springUi (#183)
 
-	local function fitScreen(tv: boolean)
+	local function fitScreen()
+		local tv = Comfort.tenFoot()
 		local inset = UDim.new(if tv then Comfort.TV_INSET else 0, 0)
 		tvPad.PaddingLeft, tvPad.PaddingRight, tvPad.PaddingTop, tvPad.PaddingBottom =
 			inset, inset, inset, inset
 		local size = if tv then MENU_SIZE_TV else MENU_SIZE
 		menu.Size = UDim2.fromOffset(size.X, size.Y)
-		menu.Position = UDim2.new(0, MENU_EDGE + size.X / 2, 0.5, 0)
+		menu.Position = UDim2.new(
+			0,
+			MENU_EDGE + size.X / 2,
+			if HUD.active() then MENU_HEIGHT_HUD else MENU_HEIGHT,
+			0
+		)
 		menu.TextSize = if tv then MENU_TEXT_TV else MENU_TEXT
 	end
-	fitScreen(Comfort.tenFoot())
+	fitScreen()
 	Comfort.onTenFootChanged(fitScreen)
+	HUD.onActiveChanged(fitScreen)
 
 	HUD.build(root) -- coin counter, wash step bar and tool tray (switch gameHud, off by default)
 

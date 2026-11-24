@@ -173,6 +173,14 @@ local function on(): boolean
 	return LiveFlags.isOn(HUD.FLAG)
 end
 
+-- True while the game HUD is switched on; other starter pieces (the Menu) lay out around it.
+HUD.active = on
+
+-- Calls fn() when the HUD's switch flips.
+function HUD.onActiveChanged(fn: () -> ())
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HUD.FLAG):Connect(fn)
+end
+
 -- Sizes, scale and what shows, from the current coins, stage and screen.
 local function redraw()
 	local p = pieces
