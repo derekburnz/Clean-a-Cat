@@ -20,7 +20,7 @@ TruckDrop.BEATS = {
 }
 
 TruckDrop.ROAD_Z = 8 -- the middle of the truck's lane, across the road from the landing spot
-TruckDrop.BUMP_X = -3 -- where the bump is along the road
+TruckDrop.BUMP_X = -3 -- where the bump is along the road; the plot's SpotBump sits here, BUMP_X studs from SpotBox
 TruckDrop.WHEELBASE = 8 -- front to back axle; with the two hits 0.25 s apart the truck drives at 32 studs a second
 TruckDrop.WHEEL_RADIUS = 1.1
 TruckDrop.TAILGATE = { back = 6.5, up = 1.9 } -- where the box leaves (the Tailgate attachment), from the truck's pivot
@@ -43,6 +43,8 @@ TruckDrop.OPEN = {
 }
 -- The kitten hops out of the box toward the spa (Gameplay-Engineer's ask): a small arc, then onDone.
 TruckDrop.HOP = { distance = 2.5, height = 1.4, seconds = 0.42, squash = 0.15 }
+-- As the kitten hops out, the player's camera turns to face where he is going (the tub), over this many seconds.
+TruckDrop.CAMERA_TURN_SECONDS = 0.6
 
 -- Sound and effect beats, in the order they happen. OpeningScene plays each once as the clock passes it.
 TruckDrop.EVENTS = {

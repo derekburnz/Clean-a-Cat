@@ -9,12 +9,14 @@
 --
 -- API
 --   OpeningScene.play(origin, options?) -> Handle
---       origin: the box's landing spot on the pavement, LookVector across the road (the way the player faces).
+--       origin: the box's landing spot on the pavement (the plot's SpotBox, set to one side of the player so their
+--       avatar does not hide it), LookVector across the road (the way the player faces). The box lands exactly there.
 --       options.shot: true takes the camera for a framed shot until BEATS.done (Derek's lean, option A); false
 --       leaves the camera the player's (option B). Reduced Motion or Less shake always leaves it the player's.
 --       options.onTap: called when the player taps the box or uses its prompt, once it has landed.
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
---   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point; onDone when he lands
+--   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point, and the player's camera turns
+--                                   to face it; onDone when he lands
 --   Both onDone callbacks fire exactly once, deferred, even when the call does nothing (not landed yet, already
 --   opened or hopping, no kitten, destroyed) or the scene is destroyed part way.
 --   handle.destroy()   removes everything this scene made and gives the camera back
@@ -32,7 +34,6 @@ local TruckDrop = require(script.Parent:WaitForChild("TruckDrop"))
 
 local TRUCK_ASSET = "CleanACat_Prop_DeliveryTruck"
 local BOX_ASSET = "CleanACat_Prop_DeliveryBox"
-local BUMP_ASSET = "CleanACat_Prop_SpeedBump"
 local KITTEN_ASSETS = { "CleanACat_Cat_Suds_Dirty_Sit", "CleanACat_Cat_Suds_Dirty" }
 local ASSET_WAIT_SECONDS = 3
 local FOLDER_NAME = "CleanACat_OpeningScene"
@@ -263,6 +264,45 @@ local function squashBox(rests: { PartRest }, boxCF: CFrame, squash: number)
 	end
 end
 
+-- Turns the player's own camera (Custom) about its focus to face `target`, eased over `seconds`, or at once with
+-- Reduced Motion. It runs just after Roblox's camera each frame and only adds the turn, so the player can still look
+-- around while it plays.
+local turnCount = 0
+local function turnCameraToward(target: Vector3, seconds: number, reduced: boolean)
+	local camera = Workspace.CurrentCamera
+	if camera == nil or camera.CameraType ~= Enum.CameraType.Custom then
+		return
+	end
+	local focus = camera.Focus.Position
+	local look = camera.CFrame.LookVector * Vector3.new(1, 0, 1)
+	local want = (target - focus) * Vector3.new(1, 0, 1)
+	if look.Magnitude < 0.01 or want.Magnitude < 0.01 then
+		return
+	end
+	local angle = math.atan2(look:Cross(want).Y, look:Dot(want))
+	local function turnBy(delta: number)
+		local f = camera.Focus.Position
+		camera.CFrame = CFrame.new(f) * CFrame.Angles(0, delta, 0) * CFrame.new(-f) * camera.CFrame
+	end
+	if reduced or seconds <= 0 then
+		turnBy(angle)
+		return
+	end
+	turnCount += 1
+	local name = `CleanACat_OpeningTurn_{turnCount}`
+	local started = os.clock()
+	local applied = 0
+	RunService:BindToRenderStep(name, Enum.RenderPriority.Camera.Value + 1, function()
+		local u = math.clamp((os.clock() - started) / seconds, 0, 1)
+		local eased = u * u * (3 - 2 * u)
+		turnBy(angle * eased - applied)
+		applied = angle * eased
+		if u >= 1 or camera.CameraType ~= Enum.CameraType.Custom then
+			RunService:UnbindFromRenderStep(name)
+		end
+	end)
+end
+
 function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local opts: Options = options or {}
 	local reduced = Effects.reducedMotion()
@@ -289,14 +329,6 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local wheelRadius = attributeNumber(truck, "WheelRadius", TruckDrop.WHEEL_RADIUS)
 	truck.Parent = folder
 	local truckBody: Instance? = truck.PrimaryPart
-
-	local bumpAsset = findAsset({ BUMP_ASSET })
-	if bumpAsset then
-		local bump = bumpAsset:Clone() :: Model
-		makeClientOnly(bump)
-		bump:PivotTo(CFrame.new(at(TruckDrop.BUMP_X, 0, TruckDrop.ROAD_Z)) * truckFacing)
-		bump.Parent = folder
-	end
 
 	local box = clone({ BOX_ASSET }, placeholderBox)
 	makeClientOnly(box)
@@ -576,6 +608,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 				to = ground + dir * TruckDrop.HOP.distance,
 				onDone = onDone,
 			}
+			turnCameraToward(toward, TruckDrop.CAMERA_TURN_SECONDS, reduced)
 		end,
 		destroy = function()
 			if destroyed then
