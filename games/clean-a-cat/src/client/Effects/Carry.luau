@@ -66,8 +66,7 @@ Carry.POSE = table.freeze({
 	hug = true,
 	loafForward = 0,
 	loafTurn = 90,
-	loafSide = -0.5, -- left, so his head pokes out past the left arm (Model-Agent) and his tail's base clears the right
-	-- forearm (Sync-Agent measured it 0.27 studs in at -0.2)
+	loafSide = -0.2, -- a touch left, so his head pokes out past the left arm (Model-Agent)
 	-- Derek's ten-angle hold picture (#353): the loaf's head now tips 45 degrees nose down onto his paws and stands
 	-- 1.23 high at its top corner, so he sits 0.2 lower on the arms with the head end rolled up 5 degrees, not 8, and
 	-- that corner stays under the carrier's chin (Model-Agent's numbers from his stand-in).
