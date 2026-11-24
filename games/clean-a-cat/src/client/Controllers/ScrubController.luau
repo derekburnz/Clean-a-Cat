@@ -170,9 +170,21 @@ local answeredSeq = 0 -- the newest report the server has answered
 local warnedMissing: { [string]: boolean } = {}
 
 -- Every step change goes through here, so the HUD hears each one.
+-- The step the HUD shows: a later step under way, or the next one while the cat dries before it (so the bar never
+-- says "Pick a bow" before the bath), else the stage.
+local function hudStage(v: Visit): string
+	if v.step then
+		return LATER_STAGE[v.step]
+	end
+	if v.stage == "fluffed" and #v.later > 0 then
+		return LATER_STAGE[v.later[1]]
+	end
+	return v.stage
+end
+
 local function setStage(v: Visit, stage: Stage)
 	v.stage = stage
-	ScrubController.stageChanged:Fire(stage)
+	ScrubController.stageChanged:Fire(hudStage(v))
 end
 
 -- Sends one numbered spa report. If the server has not answered it after RESEND_SECONDS (its rate limit may have
@@ -627,7 +639,7 @@ end
 -- The later step under way, or none; the HUD hears it as a stage of its own.
 local function setStep(v: Visit, step: string?)
 	v.step = step
-	ScrubController.stageChanged:Fire(if step then LATER_STAGE[step] else v.stage)
+	ScrubController.stageChanged:Fire(hudStage(v))
 end
 
 local function nextPaw(cat: Cat): Paw?
@@ -1462,10 +1474,7 @@ end
 -- The current visit's step (a later step's HUD name while one is under way), or nil with no visit (the switch is off).
 function ScrubController.stage(): string?
 	local v = visit
-	if v and v.step then
-		return LATER_STAGE[v.step]
-	end
-	return if v then v.stage else nil
+	return if v then hudStage(v) else nil
 end
 
 function ScrubController.Init(_controllers: { [string]: any }) end

@@ -63,7 +63,7 @@ WashDraft.SAY = table.freeze({
 	bath = "Swirl the suds", -- the step bar puts "Step 3 of 6 ·" before it
 	bathHint = "Swirl to scrub",
 	claws = "Trim the claws",
-	clawsHint = "Hold on each claw",
+	clawsHint = "Hold on each paw",
 })
 
 return table.freeze(WashDraft)
