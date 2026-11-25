@@ -63,4 +63,20 @@ function LineLooks.picked(line: Line?, index: number): Line?
 	return { kinds = kinds, looks = looks, nextLook = line.nextLook }
 end
 
+-- Where each customer of `looks` stood in the line as last drawn (`shown`, look numbers front first): their old place,
+-- or 0 for a customer who was not there and walks in from the street. Nil `shown` (nothing drawn yet): all 0.
+function LineLooks.cameFrom(shown: { number }?, looks: { number }): { number }
+	local was: { [number]: number } = {}
+	if shown then
+		for index, look in shown do
+			was[look] = index
+		end
+	end
+	local from: { number } = {}
+	for index, look in looks do
+		from[index] = was[look] or 0
+	end
+	return from
+end
+
 return LineLooks
