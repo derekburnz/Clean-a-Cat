@@ -12,6 +12,8 @@ local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForC
 local CarryShared =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CarryShared"))
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
+local CustomerMotion =
+	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerMotion"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
 
@@ -21,6 +23,7 @@ local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
 local SHARED_CARRY_FLAG = "carryShared"
+local CUSTOMER_WALK_FLAG = "customerWalk"
 local SUDS_FLAG = "sudsWash"
 local SUDS_HOP_HEIGHT = 0.7 -- studs
 local SUDS_HOP_SECONDS = 0.32
@@ -63,6 +66,11 @@ function EffectsController.Start()
 	CarryShared.start(function(): boolean
 		return LiveFlags.OFF_BY_DEFAULT[SHARED_CARRY_FLAG] == true
 			and LiveFlags.isOn(SHARED_CARRY_FLAG)
+	end)
+	-- the customers' walk in and idle (Model-Agent's townsfolk), the same off-by-default guard
+	CustomerMotion.start(function(): boolean
+		return LiveFlags.OFF_BY_DEFAULT[CUSTOMER_WALK_FLAG] == true
+			and LiveFlags.isOn(CUSTOMER_WALK_FLAG)
 	end)
 
 	local function scrubOn(): boolean
