@@ -1310,7 +1310,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.68,
+           1.2978,
            0.0
           ],
           "orientation": [
@@ -1341,19 +1341,19 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0,
-           0.41,
-           -0.24
+           -0.47,
+           0.39,
+           -0.27
           ],
           "orientation": [
            [
-            1.0,
-            0.0,
+            0.5,
+            -0.866,
             0.0
            ],
            [
-            0.0,
-            1.0,
+            0.866,
+            0.5,
             0.0
            ],
            [
@@ -3312,8 +3312,8 @@
          "CFrame": {
           "position": [
            0.0,
-           1.677,
-           -0.3678
+           1.6661,
+           -0.52
           ],
           "orientation": [
            [
@@ -3335,29 +3335,28 @@
          }
         },
         "Size": [
-         0.4565,
-         0.4565,
-         0.4565
+         0.8913,
+         0.5526,
+         0.8913
         ],
         "Color": [
-         0.9922,
-         0.9961,
-         1.0
+         1.0,
+         0.702,
+         0.7804
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
-        "CastShadow": false,
+        "CastShadow": true,
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth",
-        "Shape": "Ball",
         "PivotOffset": {
          "CFrame": {
           "position": [
            0.0,
-           -0.827,
-           0.0678
+           -0.8161,
+           0.22
           ],
           "orientation": [
            [
@@ -3382,7 +3381,16 @@
        "attributes": {
         "Rojo_Id": "CleanACat_Cat_Bathtile/11",
         "Follows": "Head"
-       }
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
       },
       {
        "name": "CleanACat_Cat_Bathtile_Prop",
@@ -3391,19 +3399,19 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.2174,
-           1.6661,
-           -0.6287
+           0.0,
+           1.6226,
+           -0.52
           ],
           "orientation": [
            [
-            1.0,
             0.0,
+            -1.0,
             0.0
            ],
            [
-            0.0,
             1.0,
+            0.0,
             0.0
            ],
            [
@@ -3415,23 +3423,23 @@
          }
         },
         "Size": [
-         0.4348,
-         0.4348,
-         0.4348
+         0.1087,
+         0.9348,
+         0.9348
         ],
         "Color": [
-         0.9922,
-         0.9961,
-         1.0
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
-        "CastShadow": false,
+        "CastShadow": true,
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth",
-        "Shape": "Ball"
+        "Shape": "Cylinder"
        },
        "attributes": {
         "Follows": "Head"
@@ -3444,9 +3452,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.2283,
-           1.6715,
-           -0.6396
+           0.2967,
+           1.8334,
+           -0.6913
           ],
           "orientation": [
            [
@@ -3468,14 +3476,14 @@
          }
         },
         "Size": [
-         0.3978,
-         0.3978,
-         0.3978
+         0.1304,
+         0.0913,
+         0.1304
         ],
         "Color": [
-         0.9922,
-         0.9961,
-         1.0
+         0.9647,
+         0.8745,
+         0.6275
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -3483,9 +3491,17 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Ball"
+        "BottomSurface": "Smooth"
        },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
        "attributes": {
         "Follows": "Head"
        }
@@ -3498,8 +3514,8 @@
          "CFrame": {
           "position": [
            0.0,
-           1.6987,
-           -0.7374
+           1.802,
+           -0.8965
           ],
           "orientation": [
            [
@@ -3521,14 +3537,14 @@
          }
         },
         "Size": [
-         0.3696,
-         0.3696,
-         0.3696
+         0.1304,
+         0.0913,
+         0.1304
         ],
         "Color": [
-         0.9922,
-         0.9961,
-         1.0
+         0.9647,
+         0.8745,
+         0.6275
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -3536,9 +3552,17 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Ball"
+        "BottomSurface": "Smooth"
        },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
        "attributes": {
         "Follows": "Head"
        }
@@ -3550,9 +3574,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.0217,
-           1.7965,
-           -0.5526
+           -0.2941,
+           1.8408,
+           -0.6764
           ],
           "orientation": [
            [
@@ -3574,14 +3598,14 @@
          }
         },
         "Size": [
-         0.4348,
-         0.4348,
-         0.4348
+         0.1304,
+         0.0913,
+         0.1304
         ],
         "Color": [
-         0.9922,
-         0.9961,
-         1.0
+         0.9647,
+         0.8745,
+         0.6275
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -3589,9 +3613,200 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Ball"
+        "BottomSurface": "Smooth"
        },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Bathtile_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2953,
+           1.818,
+           -0.3133
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.0913,
+         0.1304
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Bathtile_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2695,
+           1.8258,
+           -0.2939
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.0913,
+         0.1304
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Bathtile_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.8743,
+           -0.2405
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.0913,
+         0.1304
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
        "attributes": {
         "Follows": "Head"
        }
@@ -3605,7 +3820,7 @@
           "position": [
            0.0,
            2.0248,
-           -0.5743
+           -0.5417
           ],
           "orientation": [
            [
@@ -3666,7 +3881,7 @@
           "position": [
            0.0,
            2.2096,
-           -0.7157
+           -0.683
           ],
           "orientation": [
            [
@@ -3719,7 +3934,7 @@
           "position": [
            0.0,
            2.1878,
-           -0.8678
+           -0.8352
           ],
           "orientation": [
            [
@@ -3771,7 +3986,7 @@
           "position": [
            0.0,
            2.1117,
-           -0.3461
+           -0.3135
           ],
           "orientation": [
            [
@@ -3823,7 +4038,7 @@
           "position": [
            0.0924,
            2.253,
-           -0.7917
+           -0.7591
           ],
           "orientation": [
            [
@@ -3875,7 +4090,7 @@
           "position": [
            -0.0924,
            2.253,
-           -0.7917
+           -0.7591
           ],
           "orientation": [
            [
@@ -3933,7 +4148,7 @@
             "position": [
              0.0,
              2.3835,
-             -0.7157
+             -0.683
             ],
             "orientation": [
              [
@@ -3977,7 +4192,7 @@
             "position": [
              0.0,
              -0.3587,
-             0.1522
+             0.1196
             ],
             "orientation": [
              [
@@ -4079,9 +4294,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.3913,
-           1.8074,
-           -0.7374
+           0.3587,
+           1.8291,
+           -0.3896
           ],
           "orientation": [
            [
@@ -4103,9 +4318,9 @@
          }
         },
         "Size": [
-         0.2826,
-         0.2826,
-         0.2826
+         0.2609,
+         0.2609,
+         0.2609
         ],
         "Color": [
          0.749,
@@ -4124,9 +4339,9 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.3913,
-           -0.9574,
-           0.4374
+           -0.3587,
+           -0.9791,
+           0.0896
           ],
           "orientation": [
            [
@@ -4160,62 +4375,8 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.413,
-           1.8509,
-           -0.5417
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.2391,
-         0.2391,
-         0.2391
-        ],
-        "Color": [
-         0.749,
-         0.902,
-         1.0
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Transparency": 0.6,
-        "Shape": "Ball"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Cat_Bathtile_Prop_Glass",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.1957,
-           1.8509,
+           -0.3261,
+           1.8291,
            -0.3026
           ],
           "orientation": [
@@ -4238,9 +4399,9 @@
          }
         },
         "Size": [
-         0.2391,
-         0.2391,
-         0.2391
+         0.2174,
+         0.2174,
+         0.2174
         ],
         "Color": [
          0.749,
@@ -5156,15 +5317,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.16,
+         0.0,
          0.97,
          0.211
         ],
         "orientation": [
          [
-          1.0,
+          0.9903,
           0.0,
-          0.0
+          -0.1392
          ],
          [
           0.0,
@@ -5172,22 +5333,22 @@
           0.0
          ],
          [
+          0.1392,
           0.0,
-          0.0,
-          1.0
+          0.9903
          ]
         ]
        }
       },
       "Size": [
-       0.34,
-       0.34,
+       0.44,
+       0.17,
        0.34
       ],
       "Color": [
-       0.9922,
-       0.9961,
-       1.0
+       0.6588,
+       0.902,
+       0.8118
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -5196,19 +5357,18 @@
       "CastShadow": false,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "Shape": "Ball",
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.16,
+         -0.0294,
          -0.97,
-         -0.211
+         -0.2089
         ],
         "orientation": [
          [
-          1.0,
+          0.9903,
           0.0,
-          0.0
+          0.1392
          ],
          [
           0.0,
@@ -5216,9 +5376,9 @@
           0.0
          ],
          [
+          -0.1392,
           0.0,
-          0.0,
-          1.0
+          0.9903
          ]
         ]
        }
@@ -5226,165 +5386,6 @@
      },
      "attributes": {
       "Rojo_Id": "CleanACat_Cat_Bathtile/14",
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_Bathtile_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.16,
-         0.97,
-         0.231
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.32,
-       0.32,
-       0.32
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_Bathtile_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.97,
-         0.331
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.34,
-       0.34,
-       0.34
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_Bathtile_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.97,
-         0.091
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.3,
-       0.3,
-       0.3
-      ],
-      "Color": [
-       0.9922,
-       0.9961,
-       1.0
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
       "Follows": "Body"
      }
     },
@@ -5528,9 +5529,9 @@
        0.2752
       ],
       "Color": [
-       0.9922,
-       0.9961,
-       1.0
+       0.6588,
+       0.8471,
+       0.9412
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,

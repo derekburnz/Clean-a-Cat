@@ -93,9 +93,15 @@ def cat_rbx_extras(name):
         attributes["Mascot"] = True
     if spec["rarity"] == "Special":                   # a special customer's cat (cats.SPECIAL_CATS): not in the Index
         attributes["Special"] = True
-    extras = {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", Matrix.Translation(bow))],
-              "attributes": attributes}
+    bow = Matrix.Translation(bow)
     slot = props.slot(cat)
+    if slot in ("Head", "Face") and body in cats.BUILT_BODIES:   # a head piece takes the crown (#486): Carry goes
+        top = props.head_top(cat, spec, body, cats.dims(spec, body))   # above it, the bow on the head's front corner
+        carry.z = max(carry.z, joints["Head"][2] + (top + 0.03) * k)
+        at, turn = props.bow_corner(spec, body)
+        bow = Matrix.Translation(Vector(joints["Head"]) + Vector(at) * k) @ turn.to_4x4()
+    extras = {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", bow)],
+              "attributes": attributes}
     if slot:                                          # built-in pieces (props.py): their slots, what each part follows
         rides = props.follows(slot)
         attributes["PropSlot"] = slot

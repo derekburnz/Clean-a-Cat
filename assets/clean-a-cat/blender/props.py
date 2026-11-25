@@ -198,6 +198,14 @@ GOLD, GOLD_LT, LIT = "gold_mid", "gold_light", "sparkle"
 BODY_SIT = "sit"
 
 
+def _off_floor(ctx, c, reach):
+    """Point c (Tail space) lifted so a tail piece reaching `reach` below it stays above the floor: a sitting cat's
+    tail lies on the ground, and its tip piece must not dip under it (#486)."""
+    c = Vector(c)
+    low = ctx.d["pivots"]["Tail"][2] + c.z - reach
+    return c + Vector((0.0, 0.0, max(0.0, 0.015 - low)))
+
+
 def _heart(P, c, r, sw, lean=None, depth=0.05):
     """A flat heart facing the front, r its half width: two discs and a square on its corner, each a different
     depth so no two faces share a plane."""
@@ -242,7 +250,7 @@ def comet_back(ctx):
         G.box(tuple(b), (0.15, 0.08, 0.15), LIT, rot=_rx(45))
     tip, d, th, _a, _b = _tail_axes(ctx)
     T = ctx.piece("Tail_Star_Glow", "tail", tuple(tip))
-    T.star(tuple(tip + d * 0.1), 0.2, 0.09, 0.08, LIT, rot=_rx(90))
+    T.star(tuple(_off_floor(ctx, tip + d * 0.1, 0.2)), 0.2, 0.09, 0.08, LIT, rot=_rx(90))
 
 
 # Sherbet ----------------------------------------------------------------------------------------------------
@@ -289,41 +297,50 @@ def _rose(P, c, r, sw, heart):
 
 
 def rose_crown(ctx):
-    """Rosette: a gold crown wound with three roses and leaves, three tall points behind them and a lit gem on the
-    middle one. Grew from the library's flower_crown and queen_crown."""
+    """Rosette: one bold gold crown with a berry velvet cap, a lit gem on each of its five points and a single rose
+    on the front of the band. It stands back from the brow, so the face and its diamond stay in the clear (#486,
+    Review-QA: three roses and leaves were clutter at 64 px). Grew from the library's queen_crown and flower_crown."""
     P = ctx.pen("head")
-    G = ctx.piece("Gem_Glow", "head", (0, 0.1, 0.4))
-    P.ring((0, 0, 0.04), 0.33, 0.06, 0.1, GOLD, segments=12)
-    for dx, y, ht in ((-0.22, 0.2, 0.26), (0.0, 0.29, 0.4), (0.22, 0.2, 0.26)):           # points round the back
-        P.pyramid((dx, y, 0.08 + ht / 2), 0.16, ht, GOLD)
-        G.ico((dx, y, 0.1 + ht), 0.075 if dx == 0 else 0.055, "eye_mint" if dx == 0 else LIT)
-    _rose(P, (0, -0.3, 0.13), 0.2, "fur_rose", "royal_berry")
-    for sx in (-1, 1):
-        _rose(P, (sx * 0.3, -0.16, 0.11), 0.14, "royal_berry", "fur_rose")
-        P.box((sx * 0.17, -0.38, 0.06), (0.15, 0.1, 0.05), "leaf_green", rot=_rz(-sx * 35) @ _ry(sx * 12))
-        P.box((sx * 0.43, -0.03, 0.07), (0.15, 0.09, 0.05), "leaf_green", rot=_rz(sx * 70) @ _ry(sx * 14))
+    G = ctx.piece("Gem_Glow", "head", (0, 0.02, 0.4))
+    y0, r = 0.03, 0.3
+    P.ring((0, y0, 0.07), r, 0.07, 0.15, GOLD, segments=10)
+    P.sphere((0, y0, 0.12), r - 0.03, "royal_berry", scale=(1, 1, 0.75), segments=10, rings=5)   # the velvet cap
+    for k in range(5):                                                   # one point to the front, four round
+        a = math.radians(-90 + 72 * k)
+        ht = 0.3 if k == 0 else 0.24
+        x, y = r * math.cos(a), y0 + r * math.sin(a)
+        P.pyramid((x, y, 0.13 + ht / 2), 0.17, ht, GOLD, rot=_rz(-90 + 72 * k))
+        G.ico((x, y, 0.15 + ht), 0.07 if k == 0 else 0.055, "eye_mint" if k == 0 else LIT)
+    _rose(P, (0, y0 - r - 0.03, 0.09), 0.12, "fur_rose", "royal_berry")
 
 
 def rose_fan(ctx):
-    """Rosette's back piece: a fan of seven petals standing behind the shoulders, berry at the root through rose to
-    lit cream tips. Grew from the library's fire_wings (feathers fanned from one root)."""
+    """Rosette's back piece: one scalloped rose fan standing behind the shoulders on a berry root, berry ribs to its
+    five scallops and a lit pearl on each. Grew from the library's fire_wings (a fan from one root)."""
     U = ctx.pen("up")
     G = ctx.piece("Fan_Glow", "up", (0, 0.2, 0.3))
     y0 = 0.3 if ctx.body == "walk" else 0.12
     lean = _rx(-12)
-    U.box((0, y0, 0.04), (0.32, 0.14, 0.12), "royal_berry")
-    root = Vector((0, y0, 0.08))
-    for k in range(7):
-        ang = math.radians(18 + 24 * k)
-        L = 0.62 + 0.1 * math.sin(k / 6 * math.pi)
-        dirv = lean @ Vector((math.cos(ang), 0, math.sin(ang)))
-        t = 0.045 + 0.004 * k                              # each petal its own depth
-        U.bar(tuple(root), tuple(root + dirv * L * 0.55), 0.15, t, "royal_berry", up=(0, 1, 0))
-        U.bar(tuple(root + dirv * L * 0.4), tuple(root + dirv * L * 0.92), 0.19, t + 0.012, "fur_rose", up=(0, 1, 0))
-        G.box(tuple(root + dirv * L), (0.13, 0.05, 0.13), "coat_cotton", rot=lean @ _ry(45))
+    root = Vector((0, y0, 0.06))
+    U.cyl(tuple(root), 0.2, 0.11, "royal_berry", rot=lean @ _rx(90), segments=10)
+    n, L, dip = 5, 0.7, 0.57
+    span = (20.0, 160.0)
+    step = (span[1] - span[0]) / n
+    chain = []
+    for k in range(n + 1):
+        a = math.radians(span[0] + step * k)
+        chain.append((math.cos(a) * dip, math.sin(a) * dip))
+        if 0 < k < n:                                                    # a berry rib to each dip
+            U.bar(tuple(root), tuple(root + lean @ Vector((math.cos(a), 0, math.sin(a))) * (dip - 0.02)), 0.05, 0.075,
+                  "royal_berry", up=(0, 1, 0))
+        if k < n:
+            am = math.radians(span[0] + step * (k + 0.5))
+            chain.append((math.cos(am) * L, math.sin(am) * L))
+            G.ico(tuple(root + lean @ Vector((math.cos(am), 0, math.sin(am))) * (L + 0.01)), 0.06, LIT)
+    U.fan(tuple(root), (0.0, 0.0), chain, 0.05, "fur_rose", rot=lean @ _rx(90))
     tip, d, th, _a, _b = _tail_axes(ctx)
     T = ctx.piece("Tail_Rose", "tail", tuple(tip))
-    T.sphere(tuple(tip + d * 0.02), th * 0.95, "fur_rose", scale=(1, 1, 0.8), segments=8, rings=4)
+    T.sphere(tuple(_off_floor(ctx, tip + d * 0.02, th * 0.76)), th * 0.95, "fur_rose", scale=(1, 1, 0.8), segments=8, rings=4)
 
 
 # Prism ------------------------------------------------------------------------------------------------------
@@ -422,19 +439,23 @@ def dragon_back(ctx):
         U.fan(tuple(root), (0.0, 0.0), chain, 0.035, "spa_mint", rot=lean @ _rx(90))
     tip, d, th, _a, _b = _tail_axes(ctx)
     T = ctx.piece("Tail_Pearl_Glow", "tail", tuple(tip))
-    T.ico(tuple(tip + d * 0.06), th * 0.8, GOLD_LT)
+    T.ico(tuple(_off_floor(ctx, tip + d * 0.06, th * 0.8)), th * 0.8, GOLD_LT)
 
 
 # Bathtile ---------------------------------------------------------------------------------------------------
-def foam_crown(ctx):
-    """Bathtile: a pile of bath foam on its head with a rubber duck riding it and soap bubbles in the foam. Grew
-    from the library's rubber_duck."""
+def shower_cap(ctx):
+    """Bathtile: a pink shower cap with a mint frill and butter dots, a rubber duck riding it and soap bubbles on
+    it. No white foam on the head: white foam is what the wash leaves to rinse, so it read as a cat not yet clean
+    (#486, Review-QA). Grew from the library's rubber_duck."""
     P, C = ctx.pen("head"), ctx.gpen("head")
     G = ctx.piece("Duck_Glow", "head", (0, -0.04, 0.4))
-    for x, y, z, r in ((-0.2, -0.1, 0.07, 0.2), (0.21, -0.11, 0.075, 0.183), (0.0, 0.14, 0.08, 0.21),
-                       (0.0, -0.2, 0.1, 0.17), (0.02, -0.03, 0.19, 0.2)):
-        P.ico((x, y, z), r, "foam")
-    d0 = Vector((0.0, -0.05, 0.4))
+    P.cyl((0, 0, 0.03), 0.43, 0.1, "spa_mint", segments=12)                               # the frill
+    P.sphere((0, 0, 0.07), 0.41, "spa_bubblegum", scale=(1, 1, 0.62), segments=12, rings=6)  # the cap
+    for az, el in ((-60, 38), (0, 30), (62, 40), (125, 34), (-130, 36), (180, 50)):
+        a, e = math.radians(az), math.radians(el)
+        P.ico((0.4 * math.cos(e) * math.sin(a), -0.4 * math.cos(e) * math.cos(a), 0.07 + 0.25 * math.sin(e)), 0.06,
+              "pastel_butter", scale=(1, 1, 0.7))
+    d0 = Vector((0.0, -0.02, 0.4))
     P.sphere(tuple(d0), 0.17, "pastel_butter", scale=(1, 1.25, 0.8), segments=8, rings=5)
     P.sphere(tuple(d0 + Vector((0, -0.13, 0.17))), 0.125, "pastel_butter", segments=8, rings=5)
     P.box(tuple(d0 + Vector((0, -0.27, 0.15))), (0.12, 0.1, 0.045), "fur_marmalade")
@@ -442,26 +463,25 @@ def foam_crown(ctx):
     for sx in (-1, 1):
         P.box(tuple(d0 + Vector((sx * 0.085, -0.2, 0.21))), (0.035, 0.035, 0.045), "fur_black")
     G.ico(tuple(d0 + Vector((0, -0.13, 0.33))), 0.05, LIT)                                   # a glint on its head
-    for x, y, z, r in ((0.36, -0.2, 0.2, 0.13), (-0.38, -0.02, 0.24, 0.11), (0.18, 0.2, 0.24, 0.11)):
+    for x, y, z, r in ((-0.33, 0.12, 0.22, 0.12), (0.3, 0.2, 0.22, 0.1)):
         C.sphere((x, y, z), r, "bubble", segments=8, rings=5)
 
 
 def bubble_trail(ctx):
-    """Bathtile's back piece: a bar of pink soap in a puff of foam with a stack of bubbles rising off it, the top
+    """Bathtile's back piece: a bar of pink soap on a mint sponge with a stack of bubbles rising off it, the top
     ones lit. Grew from the library's wave_back (bubbles drifting over the back)."""
     U, C = ctx.pen("up"), ctx.gpen("up")
     G = ctx.piece("Bubbles_Glow", "up", (0, 0.3, 0.4))
     y0 = 0.3 if ctx.body == "walk" else 0.14
-    for x, y, r in ((-0.16, 0.0, 0.17), (0.16, 0.02, 0.16), (0.0, 0.12, 0.17), (0.0, -0.12, 0.15)):
-        U.ico((x, y0 + y, 0.06), r, "foam")
+    U.box((0.0, y0, 0.06), (0.44, 0.34, 0.17), "spa_mint", rot=_rz(-8), bevel=True)          # the sponge
     U.box((0.0, y0, 0.2), (0.3, 0.2, 0.12), "spa_bubblegum", rot=_rz(18), bevel=True)
     U.box((0.0, y0, 0.265), (0.16, 0.09, 0.02), "fur_rose", rot=_rz(18))
     at, r = Vector((0.05, y0 + 0.02, 0.36)), 0.16
     for k, (dx, dy) in enumerate(((0.12, 0.05), (-0.13, 0.08), (0.1, 0.1))):
         if k != 1:                                       # see-through bubbles never touch each other (#176):
             C.sphere(tuple(at), r, "bubble", segments=8, rings=5)
-        else:                                            # a solid pearly one sits between every two
-            U.ico(tuple(at), r, "foam")
+        else:                                            # a solid sky blue one sits between every two
+            U.ico(tuple(at), r, "pastel_sky")
         nxt = at + Vector((dx, dy, 0.0))
         r2 = r * 0.86
         nxt.z = at.z + math.sqrt(max(0.0, ((r + r2) * 0.78) ** 2 - dx * dx - dy * dy))
@@ -471,7 +491,7 @@ def bubble_trail(ctx):
 
 
 PROPS = {"Stardust": ("Head", star_tiara), "Sherbet": ("Head", sundae_top), "Rosette": ("Head", rose_crown),
-         "Prism": ("Head", crystal_horn), "Jade": ("Head", lotus_horns), "Bathtile": ("Head", foam_crown)}
+         "Prism": ("Head", crystal_horn), "Jade": ("Head", lotus_horns), "Bathtile": ("Head", shower_cap)}
 PROPS2 = {"Stardust": ("Back", comet_back), "Sherbet": ("Back", heart_wings), "Rosette": ("Back", rose_fan),
           "Prism": ("Back", rainbow_arc), "Jade": ("Back", dragon_back), "Bathtile": ("Back", bubble_trail)}
 # Extra objects a piece draws (Ctx.piece): cat -> {suffix: the object it hangs from, or "Tail"}.
@@ -507,6 +527,30 @@ def build(name, spec, body, d):
             assert PIECES.get(name, {}).get(suffix) in (key, "Tail"), f"{name}: list {suffix} in PIECES"
             out[suffix] = (b, tuple(at))
     return out
+
+
+def head_top(name, spec, body, d):
+    """How high a cat's head piece stands, relative to the neck and unscaled, or None with no head piece. The Carry
+    Attachment goes just above it, so a carried thing or a name tag never lands inside the piece (#486)."""
+    if slot(name) not in ("Head", "Face"):
+        return None
+    top = None
+    for suffix, (b, at) in build(name, spec, body, d).items():
+        if piece_follows(name, suffix) == "Head":
+            for v in b.bm.verts:
+                top = max(top, v.co.z + at[2]) if top is not None else v.co.z + at[2]
+    return top
+
+
+BOW_TIP = 60.0      # degrees a bow leans out on a cat with a head piece
+
+
+def bow_corner(spec, body):
+    """Where a bow sits on a cat whose crown is taken by a head piece (#486): on the front corner of the head at the
+    cat's left, tipped BOW_TIP degrees out over the edge, beside the ear. Relative to the neck and unscaled, with the
+    turn the Attachment carries. Every special cat's head piece keeps this corner clear."""
+    h = cats.dims(spec, body)["head"]
+    return (round(h["s"][0] / 2 - 0.03, 4), round(h["fy"] + 0.13, 4), round(h["top"] - 0.03, 4)), _ry(BOW_TIP)
 
 
 def slot(name):
