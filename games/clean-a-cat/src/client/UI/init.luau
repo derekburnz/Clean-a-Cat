@@ -5,6 +5,7 @@
 --
 --   UI.init()                 builds the HUD once, under the local player's PlayerGui
 --   UI.open("Example")        opens a window by name; UI.closeAll() closes every window
+--   UI.onOpened(fn)           fn(name) each time UI.open shows a window (the funnel's window_opened, FunnelController)
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
@@ -74,6 +75,7 @@ local settingsListeners: { (SettingsRules.Settings) -> () } = {}
 local walkListeners: { () -> () } = {}
 local toastLabel: TextLabel? = nil
 local revealRecap: RBXScriptConnection? = nil -- shows the recap again when the window over it closes
+local openedListeners: { (name: string) -> () } = {}
 local toastToken = 0
 local controlsHidden = false -- true while this module has Roblox's touch controls hidden
 
@@ -410,6 +412,10 @@ function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)
 	Recap.show(recap, onClose)
 end
 
+function UI.onOpened(fn: (name: string) -> ())
+	table.insert(openedListeners, fn)
+end
+
 -- Opens one window and closes the others. A recap card or strip showing is hidden, not closed, so opening a window
 -- never counts as Next cat; it shows again once this window closes.
 function UI.open(name: string)
@@ -425,6 +431,9 @@ function UI.open(name: string)
 	assert(frame ~= nil, `UI.open: no window {name}`)
 	Recap.setHidden(true)
 	frame.Visible = true
+	for _, listener in openedListeners do
+		task.spawn(listener, name)
+	end
 	-- A window the player opened wins over a tip. Hidden after the window shows, so a bubble waiting behind this one
 	-- sees the window and never shows (and counts as seen) under it (Review-QA on #300).
 	SudsBubble.hide()

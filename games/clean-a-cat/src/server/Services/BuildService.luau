@@ -67,9 +67,6 @@ local function finishFor(player: Player)
 	for _, id in done do
 		NetService.fire(player, "BuildFinished", id)
 		NetService.notice(player, `{BuildRules.ITEMS[id].name} is ready!`)
-		if id == "Dryer" then
-			Telemetry.onboarding(player, "dryer_built")
-		end
 	end
 	StationService.refresh(player)
 	send(player)
@@ -100,8 +97,11 @@ local function onBuild(player: Player, rawId: unknown)
 	send(player)
 	NetService.notice(player, `Building the {item.name}`)
 	Telemetry.economy(player, "coins", "sink", spent, state.coins, "Shop", id)
-	Telemetry.onboarding(player, "first_build")
+	-- a station build is an upgrade too: a player who builds before buying a tool reaches first_upgrade here
+	Telemetry.onboarding(player, "first_upgrade")
+	Telemetry.onboarding(player, "first_build_started")
 	if item.seconds >= BuildRules.LONG_SECONDS then
+		Telemetry.onboarding(player, "first_long_build_started")
 		Telemetry.event(player, "long_build_started", item.seconds / 3600, { id })
 	end
 end
