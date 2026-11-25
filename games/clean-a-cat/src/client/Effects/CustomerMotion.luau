@@ -44,6 +44,7 @@ type Rig = {
 	amount: number,
 	phase: number,
 	updatedAt: number,
+	appliedAt: CFrame, -- the body's CFrame when the pose was last written
 	moved: boolean,
 }
 
@@ -106,6 +107,7 @@ local function attach(model: Model)
 		amount = 0,
 		phase = 0,
 		updatedAt = os.clock(),
+		appliedAt = body.CFrame,
 		moved = false,
 	}
 end
@@ -119,6 +121,7 @@ end
 
 local function apply(rig: Rig, pose: CustomerPose.Pose)
 	local bodyCF = rig.body.CFrame
+	rig.appliedAt = bodyCF
 	turn(rig, "LegL", bodyCF, CFrame.Angles(pose.legL, 0, 0))
 	turn(rig, "LegR", bodyCF, CFrame.Angles(pose.legR, 0, 0))
 	turn(rig, "ArmL", bodyCF, CFrame.Angles(pose.armL, 0, 0))
@@ -199,6 +202,10 @@ local function step()
 			else CustomerMotion.STEP
 		if now - rig.updatedAt >= interval then
 			update(rig, now)
+		elseif rig.moved and rig.body.CFrame ~= rig.appliedAt then
+			-- the body moved since the last write (a replicated server move also puts every joint back at rest), so
+			-- the same pose is written again this frame: no stutter between 30 Hz updates (Review-QA on #462)
+			apply(rig, rig.pose)
 		end
 	end
 end
@@ -237,7 +244,9 @@ function CustomerMotion.start(isOn: () -> boolean)
 	end
 	Workspace.DescendantAdded:Connect(consider)
 	local checkAt = 0
-	RunService.PreSimulation:Connect(function()
+	-- PreRender: after this frame's replicated moves land and before the frame draws, so a server move never shows
+	-- a customer at rest for a frame
+	RunService.PreRender:Connect(function()
 		local now = os.clock()
 		if now >= checkAt then
 			checkAt = now + 1
