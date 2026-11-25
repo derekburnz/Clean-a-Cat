@@ -14,6 +14,8 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 
 local LiveFlagService = {}
 
+local FIRST_RETRY_SECONDS = 1 -- between tries of a failed first read, inside LiveFlags.READ_WAIT_SECONDS
+
 local function publish(key: string, stored: unknown)
 	ReplicatedStorage:SetAttribute(
 		LiveFlags.ATTRIBUTE_PREFIX .. key,
@@ -64,6 +66,12 @@ end
 local function firstRead(store: DataStore)
 	local deadline = os.clock() + LiveFlags.READ_WAIT_SECONDS
 	local all = readAll(store)
+	-- one failed read would leave every switch at its default for a minute (and the first player without the
+	-- opening), so a blip is tried again while there is time (Review-QA's nit on #427)
+	while all == "failed" and os.clock() + FIRST_RETRY_SECONDS < deadline do
+		task.wait(FIRST_RETRY_SECONDS)
+		all = readAll(store)
+	end
 	if all == "missing" then
 		local left = #LiveFlags.KEYS
 		for _, key in LiveFlags.KEYS do
