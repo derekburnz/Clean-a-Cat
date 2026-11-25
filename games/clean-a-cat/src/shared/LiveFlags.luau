@@ -78,6 +78,8 @@ LiveFlags.KEYS = {
 	"autoTool", -- the wash picks each step's tool by itself with no tool tray at the bottom; the top line and the tick list say what to do (UI/HUD); off by default
 	"toolCursor", -- the wash step's tool (sponge, brush, ...) drawn under the finger while it works on the cat, kept off the cat's face (UI/HUD/HeldTool); off by default
 	"toolOnCat", -- the wash step's real 3D tool (sponge, brush, clipper) on the cat's fur where the player rubs, following the finger (Spa/ToolOnCat); off by default
+	"customerCarry", -- the player takes a customer's cat from them at the door and carries it to the tub; the wash starts once it is in (SpaService, CarryController, CarryRules); off by default
+	"washScene", -- the wash's close-up as its own scene: a tighter shot, a narrower view and the room softly blurred (Effects/WashCamera, Motion-FX #407); off by default
 	"smallPrompts", -- every tap prompt (pick him up, open the box, the boards) drawn as a small pill beside its thing instead of Roblox's big black button (Controllers/PromptController); off by default
 	"worldBackdrop", -- the draft world behind the street: hills, houses and trees the road runs into (Model-Agent's CleanACat_Area_Backdrop, BackdropController), this player's own copy; off by default
 	"skyDraft", -- the draft sky and light: pastel haze, soft clouds, warm tint and gentle bloom (Effects/Sky), this player's own; off by default
@@ -135,6 +137,8 @@ LiveFlags.OFF_BY_DEFAULT = {
 	autoTool = true,
 	toolCursor = true,
 	toolOnCat = true,
+	customerCarry = true,
+	washScene = true,
 	openingReplay = true,
 	sudsBubble = true,
 	recapSide = true,
