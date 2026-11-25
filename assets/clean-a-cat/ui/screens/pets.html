@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="pets,crate">
+<meta name="states" content="pets,crate,goodcrate">
 <title>Pets And Crates</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
@@ -16,7 +16,10 @@
    crate: the crate window. Every pet in it with its chance as a percentage and its boost, before anything is
           opened or bought. Open uses a crate you earned. The Robux buttons show only where PolicyService allows paid
           random items; where it does not, that row is not drawn at all and earned crates still open. Nothing here is
-          timed and nothing says "hurry". */
+          timed and nothing says "hurry".
+   goodcrate: the day 2 check in crate (tuning.md crate.good: Common 30, Uncommon 30, Rare 24, Epic 12, Legendary 4),
+          opened from the check in card's eye. Its own title and its own chances, so it is never confused with the
+          normal crate, and no Robux buttons at all: it is earned only, never sold. */
 .win.pets { width: 1100px; }
 .pets .body { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; }
 .col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
@@ -61,7 +64,8 @@
 .row .bo { font-weight: 800; font-size: 15px; color: var(--ink-soft); }
 .row .pc { font-family: var(--font-head); font-size: 26px; }
 .sum { margin-top: 8px; font-weight: 800; font-size: 16px; color: var(--ink-soft); }
-body[data-state="crate"] .win.pets, body:not([data-state="crate"]) .win.crate { display: none !important; }
+body[data-state="crate"] .win.pets, body[data-state="goodcrate"] .win.pets, body:not([data-state="crate"]):not([data-state="goodcrate"]) .win.crate { display: none !important; }
+body[data-state="goodcrate"] .policy-ok { display: none !important; }
 
 body.short .win.pets { width: 900px; }
 body.short .pets .body { gap: 12px; }
@@ -142,7 +146,7 @@ body.short .sum { display: none; }
   <div class="win crate">
     <div class="band">
       <div class="badge"><i data-ic="gift"></i></div>
-      <span class="title outlined">Crate</span>
+      <span class="title outlined ctitle">Crate</span>
     </div>
     <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
     <div class="body">
@@ -173,6 +177,13 @@ body.short .sum { display: none; }
 </div></div>
 <svg width="0" height="0" style="position:absolute"><symbol id="rbx" viewBox="0 0 64 64"><path d="M32 4l24 14v28L32 60 8 46V18z" fill="#5fc98b" stroke="#45226b" stroke-width="6" stroke-linejoin="round"/><path d="M32 20l11 6v12l-11 6-11-6V26z" fill="#fff" stroke="#45226b" stroke-width="4" stroke-linejoin="round"/></symbol></svg>
 <script>
+// the good crate: its own name and chances (tuning.md crate.good), earned only
+if (new URLSearchParams(location.search).get('state') === 'goodcrate') {
+  document.querySelector('.ctitle').textContent = 'Good crate';
+  document.querySelector('.box .have').textContent = 'Your day 2 gift';
+  const good = ['15%', '15%', '15%', '15%', '12%', '12%', '12%', '4%'];
+  document.querySelectorAll('.row .pc').forEach((e, i) => { e.textContent = good[i]; });
+}
 // the chances shown must add to 100
 const total = [...document.querySelectorAll('.row .pc')].reduce((n, e) => n + parseFloat(e.textContent), 0);
 if (Math.abs(total - 100) > 0.001) console.error('crate chances add to ' + total);
