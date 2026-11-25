@@ -40,6 +40,10 @@ function HudController.Start()
 		UI.onWalk(function()
 			scrub.stepOut()
 		end)
+		-- the step's tool under the finger (switch toolCursor)
+		scrub.pointerMoved:Connect(function(at: Vector2?, centre: Vector2?, head: Vector2?)
+			UI.setToolPoint(at, centre, head)
+		end)
 	end
 end
 

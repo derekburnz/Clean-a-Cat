@@ -443,6 +443,22 @@ function HUD.setPlan(later: { string })
 	redraw()
 end
 
+-- Which step's tool goes under the finger now (UI/HUD/HeldTool): the icon name of a drag step (scrub, brush, the
+-- Bubble Bath, the Pawdicure), or nil for a tap step (a bow, the photo) or no wash.
+local DRAG_STAGES = { dirty = true, clean = true, bath = true, claws = true }
+function HUD.toolIcon(): string?
+	local now = stage
+	if now == nil or not DRAG_STAGES[now] then
+		return nil
+	end
+	for _, step in HUD.STEPS do
+		if step.stage == now then
+			return step.icon
+		end
+	end
+	return nil
+end
+
 function HUD.setStage(value: string?)
 	if value == stage then
 		return

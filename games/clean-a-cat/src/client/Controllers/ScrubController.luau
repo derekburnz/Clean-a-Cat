@@ -122,6 +122,7 @@ type Cat = {
 	coat: { [BasePart]: Color3 }, -- dry colours of the coat, to undo the wet look
 	wetDarken: number,
 	bow: BasePart, -- the stand-in bow, shown only when the picked bow's model cannot be worn
+	head: BasePart?, -- the head's main part, so the tool under the finger can keep off the face
 }
 
 type Visit = {
@@ -168,6 +169,10 @@ ScrubController.planChanged = Signal.new() :: Signal.Signal<{ string }>
 -- Fires (shown) when the Walk button (UI/HUD/WalkButton) should show or hide: while a customer's cat is washed in
 -- the close-up wash view (switch washView), never during Suds's opening. Pressing it calls ScrubController.stepOut.
 ScrubController.walkChanged = Signal.new() :: Signal.Signal<boolean>
+-- Fires (at, centre, head) while a finger or the mouse works on the cat: where it is, where the cat's middle and head
+-- are on the screen (GUI space, as InputObject.Position; nil when off screen), and (nil, nil, nil) when it lifts. The
+-- HUD draws the step's tool there (UI/HUD/HeldTool, switch toolCursor). Not for a gamepad, whose point is the middle.
+ScrubController.pointerMoved = Signal.new() :: Signal.Signal<Vector2?, Vector2?, Vector2?>
 
 -- The recap card (#224, switch recapCard): RecapController sets a handler that shows the card after a customer's cat
 -- goes home and calls `nextCat` once when the player closes it. With no handler, or the switch off, the next cat
@@ -564,6 +569,7 @@ local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
 		coat = coat,
 		wetDarken = wetDarken,
 		bow = bow,
+		head = head,
 	}
 end
 
@@ -1074,12 +1080,40 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 	end
 end
 
+-- Where a world point is on the screen, in GUI space (the top bar left out, as InputObject.Position), or nil.
+local function onScreen(point: Vector3): Vector2?
+	local camera = Workspace.CurrentCamera
+	if camera == nil then
+		return nil
+	end
+	local at, visible = camera:WorldToScreenPoint(point)
+	return if visible then Vector2.new(at.X, at.Y) else nil
+end
+
+local function pointerAt(input: InputObject, cat: Cat)
+	local kind = input.UserInputType
+	if
+		kind ~= Enum.UserInputType.Touch
+		and kind ~= Enum.UserInputType.MouseButton1
+		and kind ~= Enum.UserInputType.MouseMovement
+	then
+		return
+	end
+	local head = cat.head
+	ScrubController.pointerMoved:Fire(
+		Vector2.new(input.Position.X, input.Position.Y),
+		onScreen(cat.model:GetPivot().Position),
+		if head then onScreen(head.Position) else nil
+	)
+end
+
 local function onPointer(input: InputObject)
 	local v = visit
 	local cat = if v then v.cat else nil
 	if not v or not cat or (v.stage ~= "dirty" and v.stage ~= "clean" and v.step == nil) then
 		return
 	end
+	pointerAt(input, cat)
 	local ray = pointerRay(input)
 	local result = if ray then cast(ray, v.catParams) else nil
 	if v.step == "claws" then
@@ -1169,6 +1203,9 @@ local function isPress(input: InputObject): boolean
 end
 
 local function release()
+	if activeInput ~= nil then
+		ScrubController.pointerMoved:Fire(nil, nil, nil)
+	end
 	activeInput = nil
 	local v = visit
 	if v then
