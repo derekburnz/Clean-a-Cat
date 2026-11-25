@@ -4,12 +4,12 @@
 --
 --   glow      a soft warm gold outline fades in over GLOW_IN, holds, and fades out by GLOW_SECONDS
 --   sparkles  three small gold bursts at the visitor's feet, one on each SPARKLE_BEATS
---   star      a small gold four-point star floats over the visitor's head for as long as they are in the spa,
+--   star      the HUD's Star icon floats over the visitor's head for as long as they are in the spa,
 --             bobbing STAR_BOB studs and turning a little, so the player can find them in the line at a glance
 --   comfort   Reduced Motion: the glow just appears and fades, the star sits still. Less sparkle: one burst.
 --
 -- Client only and cosmetic. Phone budget: one Highlight (inside Effects' Highlight budget; none when it is full),
--- one BillboardGui with four Frames, a few burst particles. The star's loop steps only while it is within
+-- one BillboardGui with the HUD Star image (already uploaded to the group), a few burst particles. The star's loop steps only while it is within
 -- STAR_FAR studs of the camera and lets go when the visitor leaves.
 --
 -- API
@@ -21,6 +21,8 @@ local TweenService = game:GetService("TweenService")
 local Workspace = game:GetService("Workspace")
 
 local Effects = require(script.Parent)
+local Icons =
+	require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("HUD"):WaitForChild("Icons"))
 
 local VisitorArrival = {}
 
@@ -68,7 +70,7 @@ end
 local playing: { [Model]: boolean } = {}
 local seedCount = 0
 
-local function makeStar(adornee: BasePart, over: number): (BillboardGui, Frame)
+local function makeStar(adornee: BasePart, over: number): (BillboardGui, ImageLabel)
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "CleanACat_Fx_VisitorStar"
 	gui.Size = UDim2.fromScale(VisitorArrival.STAR_SIZE, VisitorArrival.STAR_SIZE)
@@ -78,39 +80,18 @@ local function makeStar(adornee: BasePart, over: number): (BillboardGui, Frame)
 	gui.AlwaysOnTop = false
 	gui.ResetOnSpawn = false
 	gui.Adornee = adornee
-	local holder = Instance.new("Frame")
-	holder.Name = "Star"
-	holder.BackgroundTransparency = 1
-	holder.AnchorPoint = Vector2.new(0.5, 0.5)
-	holder.Position = UDim2.fromScale(0.5, 0.5)
-	holder.Size = UDim2.fromScale(1, 1)
-	holder.Parent = gui
-	-- a four-point twinkle from two crossed rounded bars, a soft light one under the gold one
-	type Layer = { color: Color3, thick: number, seen: number }
-	local layers: { Layer } = {
-		{ color = GOLD_LIGHT, thick = 0.3, seen = 0.35 },
-		{ color = GOLD, thick = 0.2, seen = 0 },
-	}
-	for i, layer in layers do
-		for b = 1, 2 do
-			local bar = Instance.new("Frame")
-			bar.Name = "Bar"
-			bar.BorderSizePixel = 0
-			bar.BackgroundColor3 = layer.color
-			bar.BackgroundTransparency = layer.seen
-			bar.AnchorPoint = Vector2.new(0.5, 0.5)
-			bar.Position = UDim2.fromScale(0.5, 0.5)
-			local thick = layer.thick
-			bar.Size = if b == 1 then UDim2.fromScale(thick, 1) else UDim2.fromScale(1, thick)
-			bar.ZIndex = i
-			local corner = Instance.new("UICorner")
-			corner.CornerRadius = UDim.new(1, 0)
-			corner.Parent = bar
-			bar.Parent = holder
-		end
-	end
+	-- the HUD's own Star icon (Review-QA on #547: crossed bars read as a plus sign)
+	local star = Instance.new("ImageLabel")
+	star.Name = "Star"
+	star.BackgroundTransparency = 1
+	star.AnchorPoint = Vector2.new(0.5, 0.5)
+	star.Position = UDim2.fromScale(0.5, 0.5)
+	star.Size = UDim2.fromScale(1, 1)
+	star.ScaleType = Enum.ScaleType.Fit
+	star.Image = Icons.IMAGES.Star
+	star.Parent = gui
 	gui.Parent = adornee
-	return gui, holder
+	return gui, star
 end
 
 local function glow(visitor: Model)
