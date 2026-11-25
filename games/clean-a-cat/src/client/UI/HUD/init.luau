@@ -11,6 +11,8 @@
 --                        SudsRules.NO_BOWS in it leaves the bows out (the opening's kitten, #285)
 --   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil;
 --                        HUD.tipShown() is it while it shows, HUD.onTipChanged(fn) when it shows, hides or resizes
+--   HUD.setMeter(f, step) the bar that fills while the player works an area step (HUD/WashMeter; ScrubController's
+--                        meter, switch washMeter): f from 0 to 1, nil hides it; it sits under the step line or tip pill
 --   HUD.listShown()      true while the tick list of this cat's steps shows (HUD/StepList, switch washChecklist), in
 --                        the pips' place; HUD.onListChanged(fn) when that flips (the button row steps aside for it)
 --
@@ -32,6 +34,7 @@ local Icons = require(script:WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local StepList = require(script:WaitForChild("StepList"))
 local TipLine = require(script:WaitForChild("TipLine"))
+local WashMeter = require(script:WaitForChild("WashMeter"))
 
 local HUD = {}
 
@@ -105,6 +108,9 @@ local coins = 0
 local stage: string? = nil
 local plan: { string } = {} -- the later steps this wash takes
 local listWas = false
+local meterFraction: number? = nil
+local meterStep: string? = nil
+local root: Frame? = nil
 local listListeners: { () -> () } = {}
 
 -- The steps this wash shows, as indexes into HUD.STEPS, in order.
@@ -184,6 +190,22 @@ function HUD.onActiveChanged(fn: () -> ())
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HUD.FLAG):Connect(fn)
 end
 
+-- The wash meter starts under whichever line shows at the top centre: the tutorial's pill, else the step line.
+local function placeMeter()
+	local p, r = pieces, root
+	if p == nil or r == nil then
+		return
+	end
+	local above: GuiObject? = TipLine.shown()
+	if above == nil and p.steps.Visible then
+		above = p.steps
+	end
+	local top = if above
+		then above.AbsolutePosition.Y + above.AbsoluteSize.Y - r.AbsolutePosition.Y
+		else 6
+	WashMeter.place(top)
+end
+
 -- Sizes, scale and what shows, from the current coins, stage and screen.
 local function redraw()
 	local p = pieces
@@ -227,6 +249,8 @@ local function redraw()
 		end
 	end
 	p.tray.Visible = washing and not noTray
+	WashMeter.set(if on() then meterFraction else nil, meterStep)
+	placeMeter()
 	if current == nil then
 		return
 	end
@@ -272,12 +296,13 @@ local function redraw()
 	end
 end
 
-function HUD.build(root: Frame)
+function HUD.build(rootFrame: Frame)
+	root = rootFrame
 	local scales: { UIScale } = {}
 
 	-- Coin counter, top right: icon then number, no box.
 	local coinsFrame, coinsScale =
-		holder("Coins", root, Vector2.new(1, 0), UDim2.new(1, -EDGE, 0, 8))
+		holder("Coins", rootFrame, Vector2.new(1, 0), UDim2.new(1, -EDGE, 0, 8))
 	table.insert(scales, coinsScale)
 	list(coinsFrame, true, 12)
 	local coinIcon = Instance.new("Frame")
@@ -291,7 +316,7 @@ function HUD.build(root: Frame)
 
 	-- Step bar, top centre: "Step 1 of 4 · Scrub the mud" over one pip per step.
 	local steps, stepsScale =
-		holder("WashSteps", root, Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 6))
+		holder("WashSteps", rootFrame, Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 6))
 	table.insert(scales, stepsScale)
 	list(steps, false, 6)
 	local stepText = outlined("Step", steps)
@@ -328,7 +353,7 @@ function HUD.build(root: Frame)
 
 	-- Tool tray, bottom centre: one slot per step's tool, the current one raised. Not pressable yet.
 	local tray, trayScale =
-		holder("ToolTray", root, Vector2.new(0.5, 1), UDim2.new(0.5, 0, 1, -EDGE))
+		holder("ToolTray", rootFrame, Vector2.new(0.5, 1), UDim2.new(0.5, 0, 1, -EDGE))
 	table.insert(scales, trayScale)
 	tray.BackgroundTransparency = 0
 	tray.BackgroundColor3 = Color3.fromHex("FFF6EC")
@@ -385,9 +410,12 @@ function HUD.build(root: Frame)
 		iconBoxes[index] = iconBox
 	end
 
-	TipLine.build(root)
+	TipLine.build(rootFrame)
 	TipLine.onChanged(redraw)
-	StepList.build(root)
+	WashMeter.build(rootFrame)
+	steps:GetPropertyChangedSignal("AbsoluteSize"):Connect(placeMeter)
+	steps:GetPropertyChangedSignal("AbsolutePosition"):Connect(placeMeter)
+	StepList.build(rootFrame)
 	StepList.onFlagsChanged(redraw)
 
 	pieces = {
@@ -435,6 +463,16 @@ end
 
 function HUD.onTipChanged(fn: () -> ())
 	TipLine.onChanged(fn)
+end
+
+function HUD.setMeter(fraction: number?, step: string?)
+	meterFraction, meterStep = fraction, step
+	if on() then
+		WashMeter.set(fraction, step)
+		placeMeter()
+	else
+		WashMeter.set(nil, nil)
+	end
 end
 
 function HUD.listShown(): boolean
