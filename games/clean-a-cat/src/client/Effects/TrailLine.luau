@@ -46,7 +46,8 @@ TrailLine.LOOK = table.freeze({
 	dashGap = 7, -- studs between dashes; at `dashSpeed` a dash passes any point about once a second
 	dashSpeed = 7, -- studs a second, toward the spot
 	thick = 0.04, -- every part is this thin
-	lift = 0.03, -- the glow's height over the floor; the fill, edges and dash sit a hair above it
+	lift = 0.03, -- the glow's height over the floor; the fill, edges and dash stack above it
+	layer = 0.02, -- between stacked see-through tops, so they never shimmer on a phone (Review-QA's rule)
 })
 
 export type Leg = { from: Vector3, to: Vector3, length: number }
@@ -248,7 +249,7 @@ function TrailLine.new(parent: Instance?): LineHandle
 				leg.from,
 				leg.to,
 				w,
-				look.lift + 0.01
+				look.lift + look.layer
 			)
 			for _, sign in { -1, 1 } do
 				strip(
@@ -256,7 +257,7 @@ function TrailLine.new(parent: Instance?): LineHandle
 					leg.from,
 					leg.to,
 					look.edgeWidth,
-					look.lift + 0.02,
+					look.lift + look.layer * 2,
 					sign * (w - look.edgeWidth) / 2
 				)
 			end
@@ -278,7 +279,7 @@ function TrailLine.new(parent: Instance?): LineHandle
 					base,
 					dir,
 					sign,
-					look.lift + 0.01,
+					look.lift + look.layer,
 					0
 				)
 				-- the dark edge along each slanted side, from the base's corner to the tip
@@ -289,7 +290,7 @@ function TrailLine.new(parent: Instance?): LineHandle
 					corner + inward,
 					tip + inward,
 					look.edgeWidth,
-					look.lift + 0.02
+					look.lift + look.layer * 2
 				)
 			end
 		end
@@ -303,7 +304,7 @@ function TrailLine.new(parent: Instance?): LineHandle
 						a,
 						b,
 						w * 0.6,
-						look.lift + 0.03
+						look.lift + look.layer * 3
 					)
 				end
 			end
