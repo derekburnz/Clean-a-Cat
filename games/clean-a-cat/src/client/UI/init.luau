@@ -247,7 +247,9 @@ function UI.init()
 		end
 	end)
 	HeldTool.build(playerGui) -- the step's tool under the finger (switch toolCursor), its own layer in GUI space
-	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
+	Spotlight.build(root, HUD.tipShown) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the
+	-- windows; its words keep clear of the step pill
+	HUD.onTipChanged(Spotlight.refit)
 	SudsBubble.build(root) -- Suds's help bubble (switch sudsBubble), at the bottom while the tub is empty
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)

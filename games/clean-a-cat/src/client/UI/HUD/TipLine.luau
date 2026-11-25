@@ -9,7 +9,8 @@
 --   TipLine.build(root)    makes it once
 --   TipLine.set(tip)       shows a tip ({ step, total, say }) or nil to take it away
 --   TipLine.isShown()      true while a tip shows (the HUD hides its step bar then)
---   TipLine.onChanged(fn)  fn() when it shows or hides
+--   TipLine.onChanged(fn)  fn() when it shows, hides or changes size
+--   TipLine.shown()        the pill while it shows, else nil (the tutorial's dim keeps its words clear of it)
 --
 -- It only shows words; which step comes when, and so the count, is the caller's (the opening's own step list).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -29,7 +30,7 @@ export type Tip = { step: number, total: number, say: string }
 local CHIP_GOLD = Color3.fromHex("FFD84D") -- the draft's count chip, the same gold as the dim's lit ring
 local STROKE = 4 -- design px: the pill's ink edge (the kit's --stroke)
 local CHIP_STROKE = 3
-local LIP = 6 -- design px: the ink lip under the pill (the kit's --lip)
+local LIP = 4 -- design px: the ink lip under the pill (Design-Agent on #429: the 3 to 4 px it drew on a phone)
 local Z = 9 -- over the tutorial's dim (8), under the windows and the recap (10)
 
 -- Sizes in design pixels: full, then compact for a short screen.
@@ -67,6 +68,11 @@ local function fit()
 	p.holder.Size = UDim2.fromOffset(size.X, size.Y + LIP)
 end
 
+function TipLine.shown(): GuiObject?
+	local p = parts
+	return if p and TipLine.isShown() then p.holder else nil
+end
+
 local function redraw()
 	local p = parts
 	if p == nil then
@@ -80,7 +86,9 @@ local function redraw()
 	end
 	local scale, short = Kit.screenScale()
 	local s = if short then SIZES.short else SIZES.full
-	p.scale.Scale = scale
+	-- never drawn smaller than its design size: at the HUD's phone scale (0.75) the words were about 18 px, small
+	-- for the one line that says what to do next (Design-Agent on #429: about 26 px on a phone, 30 on a desktop)
+	p.scale.Scale = math.max(scale, 1)
 	p.count.TextSize = s.count
 	p.count.Text = `{current.step} / {current.total}`
 	p.say.TextSize = s.say
@@ -187,7 +195,12 @@ function TipLine.build(root: Instance)
 	say.LayoutOrder = 2
 
 	parts = { holder = holder, scale = scale, pill = pill, lip = lip, count = count, say = say }
-	pill:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit)
+	pill:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		fit()
+		for _, listener in listeners do
+			listener()
+		end
+	end)
 	holder.Parent = root
 	for _, name in { TipLine.FLAG, HUD_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)

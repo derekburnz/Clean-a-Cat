@@ -3,7 +3,9 @@
 -- a gold ring around one HUD button, a gold arrow nudges toward it and a few words say what to do. Behind the live
 -- switch tutorialDim, off by default (rule 16: every first-session change ships behind its own switch).
 --
---   Spotlight.build(root)               makes it once, over the HUD and under the windows
+--   Spotlight.build(root, avoid)        makes it once, over the HUD and under the windows; avoid() is the step pill
+--                                       (HUD/TipLine) while it shows, which the words keep clear of
+--   Spotlight.refit()                   places it again (the step pill showed, hid or changed size)
 --   Spotlight.point(target, say, done)  lights `target` with the words `say`; done() once the player presses it
 --   Spotlight.clear()                   takes it away without calling done
 --   Spotlight.isOn()
@@ -34,6 +36,7 @@ local RING_INK = 4 -- real px: its ink edge, outside the gold
 local RING_GOLD = Color3.fromHex("FFD84D") -- the step pill's count chip gold (HUD/TipLine)
 local RING_CORNER = 14 -- real px: a small round, so little of the square hole shows past the ring's corners
 local GAP = 26 -- design px between the ring and the arrow
+local CLEAR = 10 -- design px between the step pill and the words under it
 local NUDGE = 10 -- design px the arrow nudges toward the button
 local SIZES = { full = { arrow = 66, say = 40 }, short = { arrow = 60, say = 36 } }
 
@@ -53,6 +56,7 @@ local target: GuiObject? = nil
 local onDone: (() -> ())? = nil
 local watching: { RBXScriptConnection } = {}
 local nudgeTween: Tween? = nil
+local avoid: (() -> GuiObject?)? = nil
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -112,9 +116,30 @@ local function place()
 	p.arrow.Size = UDim2.fromOffset(s.arrow, s.arrow)
 	p.nudge.Size = UDim2.fromOffset(s.arrow + NUDGE, s.arrow)
 	p.say.TextSize = s.say
-	-- level with the button's face, just right of the ring
+	-- level with the button's face, just right of the ring; below the step pill when the two would meet (Review-QA
+	-- on #429: on a 667 x 375 phone the centred pill covered "Tap Index")
 	local face = lit.AbsolutePosition - origin
-	p.callout.Position = UDim2.fromOffset(right + GAP * scale, face.Y + lit.AbsoluteSize.Y / 2)
+	local x = right + GAP * scale
+	local y = face.Y + lit.AbsoluteSize.Y / 2
+	local pill = if avoid then avoid() else nil
+	if pill then
+		local calloutSize = p.callout.AbsoluteSize
+		local pillAt = pill.AbsolutePosition - origin
+		local pillEnd = pillAt + pill.AbsoluteSize
+		local half = calloutSize.Y / 2
+		local meets = x < pillEnd.X
+			and x + calloutSize.X > pillAt.X
+			and y - half < pillEnd.Y
+			and y + half > pillAt.Y
+		if meets then
+			y = pillEnd.Y + CLEAR * scale + half
+		end
+	end
+	p.callout.Position = UDim2.fromOffset(x, y)
+end
+
+function Spotlight.refit()
+	place()
 end
 
 local function startNudge()
@@ -159,6 +184,8 @@ function Spotlight.point(lit: GuiObject, say: string, done: (() -> ())?)
 	table.insert(watching, lit:GetPropertyChangedSignal("AbsolutePosition"):Connect(place))
 	table.insert(watching, lit:GetPropertyChangedSignal("AbsoluteSize"):Connect(place))
 	table.insert(watching, p.layer:GetPropertyChangedSignal("AbsoluteSize"):Connect(place))
+	-- the words grew (a larger text setting): they may now meet the step pill
+	table.insert(watching, p.callout:GetPropertyChangedSignal("AbsoluteSize"):Connect(place))
 	-- the button went away (its switch went off): no step to finish
 	table.insert(
 		watching,
@@ -182,7 +209,8 @@ function Spotlight.point(lit: GuiObject, say: string, done: (() -> ())?)
 	end
 end
 
-function Spotlight.build(root: Instance)
+function Spotlight.build(root: Instance, keepClearOf: (() -> GuiObject?)?)
+	avoid = keepClearOf
 	local layer = frame("Spotlight", root)
 	layer.Size = UDim2.fromScale(1, 1)
 	layer.Visible = false
