@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="bundle,timer,hud">
+<meta name="states" content="bundle,hud">
 <title>Spa Starter Pack</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
@@ -17,11 +17,20 @@
    and the saving are true; keep the item prices unchanged while the pack shows. Nothing random and no coins in it.
    Shown only to a player who owns none of the three (for an owner the saving would be false); buying any one of them
    takes the pack away for that player. The window opens only when the player taps the HUD button.
-   bundle: the default, with no timer.
-   timer: a timer chip in the title band, only if Derek overrides the no-countdown pick: then it must be real (a fixed
-     time from the player's first view, owned by the server, never restarting) and the pack really gone for that player
-     afterwards. Never "Limited time" words. Dropping it is removing one element (.timer).
-   hud: no window. The Starter button in the HUD's button grid. It bobs and sparkles for a few seconds when it first
+   Countdown: Derek's call, 2026-11-25 ("countdown but make it end"). It is real: kept on the server per player, it
+     starts at the player's first join (Derek, 2026-11-25: "72h from first join"), it never restarts, and when it hits zero the offer is gone for that player for
+     good (the three items stay for sale on their own). The length is 72 hours from first join. When the button first shows is still Derek's pick: Planning's
+     pick is right after the tutorial, small, with the true time left and no window opening by itself; the other option
+     is from the second visit with whatever time is left. Either way the first view shows less than 72 hours. The start is a first-join stamp the server saves once and never moves. If the 72 hours end
+     before the button's first showing, the pack never shows: no button, no window, no 0:00 chip. No words say "72 hours". The clock
+     shows days: "1d 20:14:36" in the window, "1d 20h" on the HUD (hours and minutes once under a day, "5h 12m").
+     Never "Limited time" or hurry words: the clock alone says it. The window shows it in the title band and the HUD
+     button under its label; both read the same server end time. The HUD chip never shows seconds (no
+     ticking seconds); seconds tick only inside the window. Nothing changes near the end: no red, no flash, no extra bob.
+     After a no, the window stays shut for that visit. Players PolicyService restricts see no pack and no timer.
+   bundle: the window.
+   hud: no window. The Starter button in the HUD's button grid, the same size as the others and last in the row, so it
+     does not crowd the first minutes if it shows right after the tutorial. It bobs and sparkles for a few seconds when it first
      appears (three bobs, about 5 s), then sits still. Each later visit it bobs once more on appearing, and after the
      player has opened the window once, or after three visits, it never moves again. Reduced Motion: still, always.
      Motion-FX builds the motion.
@@ -30,7 +39,6 @@
    Words follow Roblox's guidance for young players: "Get pack", never "BUY NOW" or pressure words. */
 .win.pack { width: 900px; }
 .pack .body { display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: 18px; }
-body:not([data-state="timer"]) .only-timer { display: none !important; }
 body[data-state="hud"] .packlayer { display: none; }
 body:not([data-state="hud"]) .hudlayer { display: none; }
 
@@ -77,6 +85,10 @@ body.short .save { font-size: 17px; }
 .starter { --top: #ffe98f; --bot: #ffc94d; --dep: #d19e22; }
 .starter .gift { font-size: 50px; }
 .starter .cap { white-space: nowrap; }
+/* the same countdown under the HUD button's label */
+.starter .left { position: absolute; left: 50%; bottom: -50px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;
+  font-family: var(--font-head); font-size: 17px; color: var(--ink); background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 1px 6px; }
+.starter .left .ic { font-size: 16px; }
 .starter .glint { position: absolute; pointer-events: none; font-size: 22px; opacity: 0; }
 .starter .glint.a { left: -14px; top: -10px; }
 .starter .glint.b { right: -16px; top: 18px; font-size: 18px; }
@@ -124,7 +136,7 @@ body.short .starter .gift { font-size: 42px; }
       <div class="band">
         <div class="badge"><i data-ic="gift"></i></div>
         <span class="title outlined">Spa Starter Pack</span>
-        <span class="timer only-timer"><i data-ic="clock"></i>2:59:24</span>
+        <span class="timer"><i data-ic="clock"></i>1d 20:14:36</span>
       </div>
       <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
       <div class="body">
@@ -166,7 +178,7 @@ body.short .starter .gift { font-size: 42px; }
       <button class="rbtn sky" data-tap aria-label="Tools"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Tools.png" alt=""><span class="cap outlined thin">Tools</span></button>
       <button class="rbtn pink" data-tap aria-label="Helpers"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Helper.png" alt=""><span class="cap outlined thin">Helpers</span></button>
       <button class="rbtn gold" data-tap aria-label="Builder"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Build.png" alt=""><span class="cap outlined thin">Build</span></button>
-      <button class="rbtn starter" data-tap aria-label="Spa Starter Pack"><i data-ic="gift" class="gift"></i><span class="cap outlined thin">Starter</span>
+      <button class="rbtn starter" data-tap aria-label="Spa Starter Pack"><i data-ic="gift" class="gift"></i><span class="cap outlined thin">Starter</span><span class="left"><i data-ic="clock"></i>1d 20h</span>
         <i data-ic="sparkle" class="glint a"></i><i data-ic="sparkle" class="glint b"></i><i data-ic="sparkle" class="glint c"></i></button>
     </div>
   </div>

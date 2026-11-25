@@ -201,6 +201,75 @@ local Cues: { [string]: Cue } = {
 		voices = 1,
 	},
 	-- synth: CleanACat_Music_SpaA and CleanACat_Music_SpaB; two beds that alternate
+	-- The batch after the game was picked (2026-11-25): soft and cosy, Derek's feel pick.
+	-- synth: CleanACat_Sfx_FoamSwell; BathFoamy ("so foamy")
+	foamSwell = {
+		ids = { "rbxassetid://86501880035340" },
+		group = "Sfx",
+		volume = 0.45,
+		pitch = { 0.97, 1.03 },
+		minGap = 1.0,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_RinseLoop (seamless 2 s loop); at the cat while the shower sprays (RinseSpray)
+	rinseLoop = {
+		ids = { "rbxassetid://127073369403196" },
+		group = "Sfx",
+		volume = 0.3,
+		voices = 1,
+		looped = true,
+	},
+	-- synth: CleanACat_Sfx_FoamDrop; the rinse's end (ShakeOff "rinse"), the last foam lands round the feet
+	foamDrop = {
+		ids = { "rbxassetid://137954820723713" },
+		group = "Sfx",
+		volume = 0.45,
+		pitch = { 0.97, 1.03 },
+		minGap = 0.5,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_StepChime; a wash bar fills (ShakeOff), smaller than the reveal chime
+	stepChime = {
+		ids = { "rbxassetid://92248002357092" },
+		group = "Sfx",
+		volume = 0.4,
+		minGap = 0.5,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_ClawSnip; each claw (ClawSnipped)
+	clawSnip = {
+		ids = { "rbxassetid://108380936951876" },
+		group = "Sfx",
+		volume = 0.4,
+		pitch = { 0.95, 1.08 },
+		minGap = 0.05,
+		voices = 2,
+	},
+	-- synth: CleanACat_Sfx_VisitorChime; a special customer arrives (VisitorArrived)
+	visitorChime = {
+		ids = { "rbxassetid://129234437034334" },
+		group = "Sfx",
+		volume = 0.45,
+		minGap = 3.0,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_CrateDrop; a gift crate lands (CrateDropped), at the crate
+	crateDrop = {
+		ids = { "rbxassetid://80481093417771" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 0.5,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_BowTie; the bow is tied, the easy last step (BowTied)
+	bowTie = {
+		ids = { "rbxassetid://85030390046657" },
+		group = "Sfx",
+		volume = 0.45,
+		pitch = { 0.97, 1.03 },
+		minGap = 0.3,
+		voices = 1,
+	},
 	spaMusicA = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
 	spaMusicB = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
 }

@@ -365,6 +365,129 @@ def ui_click(rng: np.random.Generator) -> np.ndarray:
     return np.sin(2 * np.pi * 1800 * x) * env(len(x), 0.0008, 120)
 
 
+# --- The wash bar batch (2026-11-25, after Derek picked the game: soft and cosy, pastel bubbles, gentle sounds,
+# small sparkles; never splashy or cartoony). -----------------------------------------------------------------
+
+
+def place(out: np.ndarray, sig: np.ndarray, at: float, gain: float = 1.0) -> None:
+    start = int(RATE * at)
+    end = min(len(out), start + len(sig))
+    if start < end:
+        out[start:end] += sig[: end - start] * gain
+
+
+def foam_swell(rng: np.random.Generator) -> np.ndarray:
+    """"So foamy": the cat is covered. A soft cluster of rising bubbles, quieter as they climb, over a faint airy
+    shimmer, about 0.8 s."""
+    out = np.zeros(int(RATE * 0.85))
+    for i in range(7):
+        base = 700 + i * 110 + rng.uniform(-30, 30)
+        place(out, bubble(base, base * 1.7, 0.09, rng), i * 0.075, 0.75 - i * 0.07)
+    x = t(0.85)
+    air = bandpass(rng.standard_normal(len(x)), 2500, 7000) * np.sin(np.pi * np.clip(x / 0.85, 0, 1)) ** 2 * 0.12
+    return out + air
+
+
+def rinse_loop(rng: np.random.Generator) -> np.ndarray:
+    """The Shower tool's spray on fur: a soft, even water hiss with a gentle flutter and a scatter of tiny droplet
+    ticks. 2 s and circular so it loops with no seam. Kept low and warm, never a blasting hose."""
+    length = 2.0
+    n = int(RATE * length)
+    x = np.arange(n) / RATE
+    # circular noise: filter a tripled copy and keep the middle, so both ends match
+    raw = rng.standard_normal(n)
+    hiss = bandpass(np.concatenate([raw, raw, raw]), 900, 5000)[n : 2 * n]
+    flutter = 0.85 + 0.15 * np.sin(2 * np.pi * 4 * x) * np.sin(2 * np.pi * 0.5 * x)
+    out = hiss * flutter * 0.6
+    for _ in range(26):
+        at = rng.uniform(0, length)
+        m = int(RATE * 0.02)
+        tt = np.arange(m) / RATE
+        f0 = rng.uniform(1800, 3200)
+        tick = np.sin(2 * np.pi * f0 * tt * (1 + 1.5 * tt)) * np.exp(-tt / 0.004) * rng.uniform(0.1, 0.25)
+        idx = (int(RATE * at) + np.arange(m)) % n
+        out[idx] += tick
+    return out
+
+
+def foam_drop(rng: np.random.Generator) -> np.ndarray:
+    """The last foam slides off at the rinse's end and lands round the feet: four soft muted plops, each a little
+    lower, about 0.7 s."""
+    out = np.zeros(int(RATE * 0.7))
+    for i, at in enumerate((0.0, 0.11, 0.2, 0.31)):
+        x = t(0.16)
+        freq = 420 - i * 45 + 140 * np.exp(-x * 50)
+        tone = np.sin(2 * np.pi * np.cumsum(freq) / RATE) * env(len(x), 0.004, 30)
+        puff = lowpass(rng.standard_normal(len(x)), 1800) * env(len(x), 0.003, 45) * 0.35
+        place(out, lowpass(tone + puff, 3000), at, 0.9 - i * 0.12)
+    return out
+
+
+def step_chime(rng: np.random.Generator) -> np.ndarray:
+    """A wash bar fills: three small soft notes stepping up (G6, B6, D7) and a faint sparkle, short and warm, a
+    smaller cousin of the reveal chime so the last step's chime still feels bigger."""
+    out = np.zeros(int(RATE * 0.7))
+    for at, freq, gain in ((0.0, 1568.0, 0.55), (0.06, 1975.5, 0.5), (0.12, 2349.3, 0.45)):
+        place(out, chime_note(freq, 0.55) * np.exp(-t(0.55) * 2), at, gain)
+    x = t(0.4)
+    sparkle = bandpass(rng.standard_normal(len(x)), 6000, 11000) * env(len(x), 0.01, 9) * 0.05
+    place(out, sparkle, 0.1)
+    return out
+
+
+def claw_snip(rng: np.random.Generator) -> np.ndarray:
+    """A pet nail clipper: one small soft snip, a tiny click with a short bright tick, never a crunch."""
+    out = np.zeros(int(RATE * 0.09))
+    n = int(RATE * 0.025)
+    click = bandpass(rng.standard_normal(n), 1500, 6000) * env(n, 0.0004, 220)
+    place(out, click, 0.0, 0.8)
+    x = t(0.05)
+    tick = np.sin(2 * np.pi * 3100 * x) * env(len(x), 0.0005, 140) * 0.35
+    place(out, tick, 0.012)
+    return out
+
+
+def visitor_chime(rng: np.random.Generator) -> np.ndarray:
+    """A special customer arrives: a soft harp-like rising run on a major pentatonic (C6 D6 E6 G6 A6 C7) with a
+    light shimmer on top, about 1.3 s. Inviting, never a fanfare."""
+    out = np.zeros(int(RATE * 1.3))
+    notes = (1046.5, 1174.7, 1318.5, 1568.0, 1760.0, 2093.0)
+    for i, freq in enumerate(notes):
+        x = t(0.9)
+        pluck = env(len(x), 0.002, 4.5) * (np.sin(2 * np.pi * freq * x) + 0.3 * np.sin(2 * np.pi * freq * 2 * x) + 0.08 * np.sin(2 * np.pi * freq * 3 * x))
+        place(out, pluck, i * 0.065, 0.5 + 0.05 * i)
+    x = t(1.0)
+    shimmer = bandpass(rng.standard_normal(len(x)), 6500, 12000) * np.sin(np.pi * np.clip(x / 1.0, 0, 1)) ** 2 * 0.06
+    place(out, shimmer, 0.2)
+    return out
+
+
+def crate_drop(rng: np.random.Generator) -> np.ndarray:
+    """A gift crate lands by the door: a soft hollow wooden bonk, a little bounce, then a small bright twinkle so it
+    reads as a present, about 0.8 s."""
+    out = np.zeros(int(RATE * 0.8))
+    for at, gain, f0 in ((0.0, 1.0, 190.0), (0.16, 0.4, 230.0)):
+        x = t(0.22)
+        freq = f0 + 60 * np.exp(-x * 40)
+        body = np.sin(2 * np.pi * np.cumsum(freq) / RATE) * env(len(x), 0.002, 22)
+        knock = bandpass(rng.standard_normal(len(x)), 500, 2200) * env(len(x), 0.001, 70) * 0.5
+        place(out, lowpass(body + knock, 2500), at, gain)
+    for at, freq in ((0.26, 2637.0), (0.33, 3136.0)):
+        place(out, chime_note(freq, 0.4) * np.exp(-t(0.4) * 3), at, 0.25)
+    return out
+
+
+def bow_tie(rng: np.random.Generator) -> np.ndarray:
+    """The bow is tied: a quick soft ribbon swish and a tiny two-note sparkle, about 0.45 s."""
+    out = np.zeros(int(RATE * 0.45))
+    x = t(0.16)
+    swish = bandpass(rng.standard_normal(len(x)), 2500, 7000) * np.sin(np.pi * np.clip(x / 0.16, 0, 1)) ** 2 * 0.5
+    place(out, swish, 0.0)
+    for at, freq in ((0.12, 2349.3), (0.18, 2793.8)):
+        place(out, chime_note(freq, 0.3) * np.exp(-t(0.3) * 4), at, 0.3)
+    return out
+
+
 SOUNDS = [
     ("sfx", "CleanACat_Sfx_BubblePop_1", lambda r: bubble_pop(r, 0)),
     ("sfx", "CleanACat_Sfx_BubblePop_2", lambda r: bubble_pop(r, 1)),
@@ -391,12 +514,20 @@ SOUNDS = [
     ("sfx", "CleanACat_Sfx_BoxThud", box_thud),
     ("sfx", "CleanACat_Sfx_BoxRustle", box_rustle),
     ("sfx", "CleanACat_Sfx_CollarJingle", collar_jingle),
+    ("sfx", "CleanACat_Sfx_FoamSwell", foam_swell),
+    ("sfx", "CleanACat_Sfx_RinseLoop", rinse_loop),
+    ("sfx", "CleanACat_Sfx_FoamDrop", foam_drop),
+    ("sfx", "CleanACat_Sfx_StepChime", step_chime),
+    ("sfx", "CleanACat_Sfx_ClawSnip", claw_snip),
+    ("sfx", "CleanACat_Sfx_VisitorChime", visitor_chime),
+    ("sfx", "CleanACat_Sfx_CrateDrop", crate_drop),
+    ("sfx", "CleanACat_Sfx_BowTie", bow_tie),
     ("ui", "CleanACat_Ui_Camera", camera_shutter),
     ("ui", "CleanACat_Ui_Click", ui_click),
 ]
 
 
-LOOPS = {"CleanACat_Sfx_SpongeLoop", "CleanACat_Sfx_DryerHum", "CleanACat_Sfx_TruckRumble"}  # seamless loops: no end fade
+LOOPS = {"CleanACat_Sfx_SpongeLoop", "CleanACat_Sfx_DryerHum", "CleanACat_Sfx_TruckRumble", "CleanACat_Sfx_RinseLoop"}  # seamless loops: no end fade
 
 
 def write_ogg(sig: np.ndarray, path: Path, loop: bool = False) -> None:

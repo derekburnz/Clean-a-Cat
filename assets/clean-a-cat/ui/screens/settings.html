@@ -9,10 +9,10 @@
 <link rel="stylesheet" href="kit.css">
 <style>
 /* Settings window: plain, calm and roomy. Two volume sliders with big bubble thumbs (at least 44 px on touch; the
-   whole slider is the touch area), then four switches. A switch row is pressable anywhere along its length and its
+   whole slider is the touch area), then five switches. A switch row is pressable anywhere along its length and its
    switch says On or Off in words, so colour is never the only clue. Odds are an info line, not a switch,
    because the game never hides odds.
-   Wide screens: one column. Short phones: two columns of three rows, so nothing scrolls. */
+   Wide screens: one column. Short phones: two columns of four rows, so nothing scrolls. Visitors (fifth pass): on by default, the owner can shut the door. */
 .win.settings { width: 760px; display: flex; flex-direction: column; }
 .win.settings > .band { flex: none; }
 .win.settings > .body { padding: 10px 26px 16px; min-height: 0; border-radius: 0 0 20px 20px; }   /* scrolls only on a screen shorter than any we test */
@@ -47,12 +47,12 @@
 .set .always { font-size: 40px; display: grid; place-items: center; width: 64px; }
 .set.locked .sw { box-shadow: none; margin-bottom: 0; background: linear-gradient(#a9e59a, #7fcf83); }
 
-/* short phones: two columns of three rows */
+/* short phones: two columns of four rows */
 body.short .win.settings { width: 900px; }
 body.short .win.settings > .body { padding: 6px 18px 10px; }
-body.short .rows { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, auto); grid-auto-flow: column; column-gap: 26px; }
+body.short .rows { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, auto); grid-auto-flow: column; column-gap: 26px; }
 body.short .set { min-height: 74px; column-gap: 10px; grid-template-columns: 38px 1fr auto; padding: 0 2px; }
-body.short .set:nth-child(4) { border-top: 0; }
+body.short .set:nth-child(5) { border-top: 0; }
 body.short .set > .ic { width: 34px; height: 34px; }
 body.short .set .l { font-size: 22px; }
 body.short .set .d { font-size: 17px; }
@@ -110,6 +110,12 @@ body.short .sw .knob .ic { width: 20px; height: 20px; }
           <i data-ic="sparkle"></i>
           <span class="lab"><span class="l">Less sparkle</span><span class="d">Fewer flashes</span></span>
           <span class="sw"><span class="w">Off</span><span class="knob"></span></span>
+        </div>
+
+        <div class="set tog on" data-tap role="switch" aria-checked="true" aria-label="Visitors">
+          <i data-ic="friends"></i>
+          <span class="lab"><span class="l">Visitors</span><span class="d">Other players can visit</span></span>
+          <span class="sw"><span class="w">On</span><span class="knob"></span></span>
         </div>
 
         <div class="set info">
