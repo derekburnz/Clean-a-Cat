@@ -98,10 +98,19 @@ function HeldTool.set(icon: string?, at: Vector2?, centre: Vector2?, head: Vecto
 	local size = (if UserInputService.TouchEnabled then TOUCH_SIZE else MOUSE_SIZE) * scale
 	local right = goesRight(point, size, centre, head)
 	local nudge = NUDGE * scale
+	-- never cut off by the screen's edge (Review-QA's nit on #396): the other side when this one runs off, and never
+	-- above the top
+	local screen = p.gui.AbsoluteSize
+	if not right and point.X - nudge - size < 0 then
+		right = true
+	elseif right and point.X + nudge + size > screen.X then
+		right = false
+	end
+	local top = math.max(point.Y - nudge, size)
 	p.tool.Size = UDim2.fromOffset(size, size)
 	p.tool.AnchorPoint = if right then Vector2.new(0, 1) else Vector2.new(1, 1)
 	p.tool.Rotation = if right then TILT else -TILT
-	p.tool.Position = UDim2.fromOffset(point.X + (if right then nudge else -nudge), point.Y - nudge)
+	p.tool.Position = UDim2.fromOffset(point.X + (if right then nudge else -nudge), top)
 	local ring = RING * scale
 	p.ring.Size = UDim2.fromOffset(ring, ring)
 	p.ring.Position = UDim2.fromOffset(point.X, point.Y)
