@@ -1,6 +1,6 @@
 --!strict
 -- Spotlight: the tutorial's dim step, from Design-Agent's draft (tutorial.html, state "dim"). The screen dims except
--- a lit ring around one HUD button, a gold arrow nudges toward it and a few words say what to do. Behind the live
+-- a gold ring around one HUD button, a gold arrow nudges toward it and a few words say what to do. Behind the live
 -- switch tutorialDim, off by default (rule 16: every first-session change ships behind its own switch).
 --
 --   Spotlight.build(root)               makes it once, over the HUD and under the windows
@@ -29,7 +29,9 @@ local DIM = Color3.fromRGB(36, 16, 56)
 local DIM_SHOW = 0.38 -- the draft's 62% dim
 local RING_PAD = Vector2.new(16, 16) -- real px of room around the button
 local RING_PAD_BOTTOM = 38 -- more under it: the button's caption sits below its face
-local RING_STROKE = 4 -- real px
+local RING_STROKE = 5 -- real px: the gold ring
+local RING_INK = 4 -- real px: its ink edge, outside the gold
+local RING_GOLD = Color3.fromHex("FFD84D") -- the step pill's count chip gold (HUD/TipLine)
 local RING_CORNER = 14 -- real px: a small round, so little of the square hole shows past the ring's corners
 local GAP = 26 -- design px between the ring and the arrow
 local NUDGE = 10 -- design px the arrow nudges toward the button
@@ -195,21 +197,30 @@ function Spotlight.build(root: Instance)
 		table.insert(dims, dim)
 	end
 
-	-- a white ring with a warm glow around the lit button
+	-- a gold ring with an ink edge and a soft gold glow around the lit button (Design-Agent's draft after the owner's
+	-- Pet Store Tycoon note, #425: the button to press reads at once)
 	local ring = frame("Ring", layer)
 	ring.ZIndex = 9
 	Kit.corner(ring, UDim.new(0, RING_CORNER))
-	local edge = Kit.stroke(ring, RING_STROKE)
-	edge.Color = Kit.WHITE
+	local gold = Kit.stroke(ring, RING_STROKE)
+	gold.Color = RING_GOLD
+	local inkEdge = frame("Edge", ring)
+	inkEdge.AnchorPoint = Vector2.new(0.5, 0.5)
+	inkEdge.Position = UDim2.fromScale(0.5, 0.5)
+	inkEdge.Size = UDim2.new(1, 2 * RING_STROKE, 1, 2 * RING_STROKE)
+	inkEdge.ZIndex = 9
+	Kit.corner(inkEdge, UDim.new(0, RING_CORNER + RING_STROKE))
+	Kit.stroke(inkEdge, RING_INK)
 	local glow = frame("Glow", ring)
 	glow.AnchorPoint = Vector2.new(0.5, 0.5)
 	glow.Position = UDim2.fromScale(0.5, 0.5)
-	glow.Size = UDim2.new(1, 12, 1, 12)
+	local out = 2 * (RING_STROKE + RING_INK)
+	glow.Size = UDim2.new(1, out + 8, 1, out + 8)
 	glow.ZIndex = 9
-	Kit.corner(glow, UDim.new(0, RING_CORNER + 6))
-	local warm = Kit.stroke(glow, 6)
-	warm.Color = Color3.fromHex("FFF0AA")
-	warm.Transparency = 0.35
+	Kit.corner(glow, UDim.new(0, RING_CORNER + RING_STROKE + RING_INK + 4))
+	local warm = Kit.stroke(glow, 8)
+	warm.Color = RING_GOLD
+	warm.Transparency = 0.45
 
 	-- the arrow and the words, scaled like the HUD, anchored at their left middle
 	local callout = frame("Callout", layer)

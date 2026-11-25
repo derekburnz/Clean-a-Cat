@@ -2314,7 +2314,20 @@ function UIShim.snapshot()
 		local guiName = state[gui].Name
 		local seen = 0
 		local function walk(node, path, depth, groupAlpha)
-			for _, child in guiChildren(node) do
+			-- siblings draw in ZIndex order, then in tree order (ZIndexBehavior Sibling), as the engine draws them
+			local kids = guiChildren(node)
+			local at = {}
+			for index, kid in kids do
+				at[kid] = index
+			end
+			table.sort(kids, function(a, b)
+				local za, zb = rawProp(a, "ZIndex") or 1, rawProp(b, "ZIndex") or 1
+				if za ~= zb then
+					return za < zb
+				end
+				return at[a] < at[b]
+			end)
+			for _, child in kids do
 				if rawProp(child, "Visible") == false then
 					continue
 				end

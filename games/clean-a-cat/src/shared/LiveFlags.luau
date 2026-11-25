@@ -61,7 +61,7 @@ LiveFlags.KEYS = {
 	"catIndexWindow", -- the Cat Index window and its HUD button (UI/CatIndex, IndexWindowController); off by default
 	"queueWindow", -- the "Who's next?" window and the HUD's waiting faces (UI/QueueWindow, QueueWindowController); off by default
 	"tutorialTrail", -- the tutorial's floor trail: green arrows on the floor to a spot, a ring and a gold arrow over it (Spa/FloorTrail); off by default
-	"tutorialTip", -- the tutorial's tip line "Step 2 of 3: Scrub the mud" in the step bar's place (UI/HUD/TipLine); off by default
+	"tutorialTip", -- the tutorial's step pill ("2 / 3" and "Wash him") in the step bar's place, over the dim (UI/HUD/TipLine); off by default
 	"tutorialDim", -- the tutorial's dim step: the screen dims round one HUD button and an arrow says tap it (UI/Spotlight); off by default
 	"windowsHideControls", -- the phone's thumbstick and jump button hide while a window is open (UI/init); off by default
 	"sudsMascot", -- Suds curls up on his bed by the door once named, and purrs and hops when tapped (MascotService, #285); off by default
