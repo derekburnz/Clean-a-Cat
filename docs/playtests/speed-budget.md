@@ -28,13 +28,13 @@ These numbers come from Roblox's performance pages (read 2026-11-24). Roblox cal
 Reference points, 2026-11-24, PC numbers: the street's worst view was about 186,000 triangles and 106 draw calls. The draft backdrop (`worldBackdrop`) adds up to 71,900 triangles on its own, so it stays off live until it passes the iPhone 12 run.
 
 ## How to read the numbers on the phone (plain steps)
-**Memory (Developer Console):** in the game, type `/console` in the chat box and send it. Or open the Roblox menu (the Roblox logo, top left), go to Settings, find Developer Console and tap Open. Choose **Memory** at the top. The first number, Total memory (MB), is the one to write down. Do it once at the start and once after 20 minutes.
+**Memory (Developer Console):** in the game, type `/console` in the chat box and send it. Or open the Roblox menu (the Roblox logo, top left), go to Settings, find Developer Console and tap Open. Pick **Memory** in the dropdown, then **Client**. Take a screenshot of the list at the start and after 20 minutes and send both; Review-QA adds them up. For a quick single number, Settings > Performance Stats shows an overlay with FPS, memory and ping.
 
 **Frame time (MicroProfiler):** the MicroProfiler is Roblox's frame timer.
 1. In the game, open the Roblox menu, go to Settings and set **MicroProfiler** to On. The screen then shows an address with numbers and a port, for example 192.168.1.20:1338.
 2. On a PC or Mac on the same Wi-Fi, type that address into a web browser. Add `/100` to the end so it captures 100 frames instead of the default 30.
-3. Load the page while playing the wash, then save it or take a screenshot. Count the frames over 14 ms. 5 or fewer passes.
-4. Do it once at the start and once after 20 minutes, at the lowest and at the highest graphics quality (Settings, Graphics Quality).
+3. Load the page while playing the wash, press **Save to file** on that page and send the file. Review-QA counts the frames over 14 ms from it; 5 or fewer passes. How the count is done is confirmed on the first run, and this step is then corrected.
+4. Do it once at the start and once after 20 minutes, at the lowest and at the highest graphics quality (Settings, Graphics Quality; if the slider does not move, check whether Graphics Mode must be set to Manual first and note what you saw).
 
 On a PC or in Studio, Ctrl+F6 opens the MicroProfiler and F9 opens the Developer Console. Those keys do not exist on a phone.
 
