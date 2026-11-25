@@ -11,8 +11,9 @@
 /* Tools window: one card per tool with its picture, level pips, what the next level does in plain words and a
    price button. Every state is on show: Sponge is maxed (gold pips, a Max chip and no button), Brush, Shower and
    Tweezers can be bought (green), Dryer costs more than the coins in the band (grey), Nail clipper is locked until
-   a spa level. The coins sit in the band as outlined words so a grey price explains itself.
-   Wide screens: two columns of cards, nothing scrolls. Short phones: one row per tool in a scroll list. */
+   a spa level. Bows (Derek's fifth pass, 2026-11-25): every cat the player washes by hand ends on an easy bow step, and
+   better bows add coins to every bowed cat, so washing by hand keeps paying more than leaving it to helpers. The coins sit in the band as outlined words so a grey price explains itself.
+   Wide screens: two columns of cards; with the Bows card the list scrolls past six. Short phones: one row per tool in a scroll list. */
 .win.tools { width: 1140px; display: flex; flex-direction: column; }
 .win.tools > .band { flex: none; }
 .win.tools > .band .sub { font-size: 20px; opacity: 1; white-space: nowrap; }
@@ -143,6 +144,16 @@ body.short .win.tools > .body::before { content: ""; position: absolute; right: 
           </div>
           <div class="next"><span class="k">Next:</span> Pulls burrs out in one go</div>
           <div class="act"><button class="btn green" data-tap aria-label="Upgrade Tweezers for 120 coins"><span class="lbl price"><i data-ic="coin"></i>120</span></button></div>
+        </div>
+
+        <div class="tool card">
+          <div class="pic"><i data-ic="bow"></i></div>
+          <div class="who">
+            <span class="name">Bows</span>
+            <div class="lv"><span class="pips" aria-label="Level 2 of 5"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><span class="n">Level 2</span></div>
+          </div>
+          <div class="next"><span class="k">Next:</span> +3 coins on every cat you bow</div>
+          <div class="act"><button class="btn green" data-tap aria-label="Upgrade Bows for 300 coins"><span class="lbl price"><i data-ic="coin"></i>300</span></button></div>
         </div>
 
         <div class="tool card locked">

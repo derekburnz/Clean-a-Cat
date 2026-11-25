@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="full,compact,side">
+<meta name="states" content="full,side">
 <title>Recap card</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
@@ -12,8 +12,10 @@
    Pay rows follow Derek's pick of 2026-11-25: pay = base x speed (stars) x quick bonus x dirt (steps), one line each,
    the base in coins and each part as a "×" so the sum is plain. The quick bonus line shows only when the cat was taken
    inside the first 10% of its heart bar; no line ever shows a loss. Numbers here are placeholders for tuning.md.
-   full: the card the first times, and for a rare cat. compact: the slim strip for every other cat, so 20 cats a
-   session do not mean 20 windows to close. The player taps Next cat (or X); nothing here closes by itself.
+   full: the card after EVERY cat (Derek's fifth pass, 2026-11-25: the full card, not the slim strip), closed with one
+   tap on Next cat. The strip below is kept in the file for reference only and is not shown.
+   The bow line (fifth pass): every cat the player washes by hand ends with a bow, and the bow adds its bonus after the
+   rest. The quick bonus line shows only when it applied (this cat waited past the first 10%, so no line). The player taps Next cat (or X); nothing here closes by itself.
    side: the full card as a narrow column at the left with no dim (switch recapSide), so the clean cat stays in view
    in the middle. Same content, stacked: portrait and name, stars, rows, total, one full-width button at the bottom.
    The thumbstick and jump button are hidden while it shows (as for any window), and the button sits at the card's
@@ -145,12 +147,12 @@ body.short .foot .actions .btn { padding: 0 26px 4px; }
           <div class="rows">
             <div class="line"><i data-ic="coin"></i>Base pay<span class="v">40</span></div>
             <div class="line"><i data-ic="star"></i>Speed<span class="v">×1.2</span></div>
-            <div class="line"><i data-ic="sparkle"></i>Quick bonus<span class="v">×2</span></div>
             <div class="line"><i data-ic="mud"></i>Dirt · 3 steps<span class="v">×1.25</span></div>
+            <div class="line"><i data-ic="bow"></i>Bow bonus<span class="v">+5</span></div>
           </div>
           <div class="foot">
           <div class="total">
-            <span class="big"><i data-ic="coin"></i>+120</span>
+            <span class="big"><i data-ic="coin"></i>+65</span>
             <div class="xpb"><span class="t">+25 XP</span><div class="bar"><i style="width:74%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
           </div>
           <div class="actions">
@@ -176,12 +178,12 @@ body.short .foot .actions .btn { padding: 0 26px 4px; }
         <div class="rows">
           <div class="line"><i data-ic="coin"></i>Base pay<span class="v">40</span></div>
           <div class="line"><i data-ic="star"></i>Speed<span class="v">×1.2</span></div>
-          <div class="line"><i data-ic="sparkle"></i>Quick bonus<span class="v">×2</span></div>
           <div class="line"><i data-ic="mud"></i>Dirt · 3 steps<span class="v">×1.25</span></div>
+          <div class="line"><i data-ic="bow"></i>Bow bonus<span class="v">+5</span></div>
         </div>
         <div class="sfoot">
           <div class="total">
-            <span class="big"><i data-ic="coin"></i>+120</span>
+            <span class="big"><i data-ic="coin"></i>+65</span>
             <div class="xpb"><span class="t">+25 XP</span><div class="bar"><i style="width:74%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
           </div>
           <button class="btn green" data-tap><span class="lbl">Next cat</span></button>

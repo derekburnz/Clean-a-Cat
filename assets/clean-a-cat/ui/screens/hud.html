@@ -3,12 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="">
+<meta name="states" content="full,unlock">
 <title>HUD</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <style>
-/* HUD while walking around the spa. Numbers are outlined words with no box; only pressable things look like buttons. */
+/* HUD while walking around the spa. Numbers are outlined words with no box; only pressable things look like buttons.
+   full: every button a player has later. unlock (Derek's fifth pass, 2026-11-25: "make sure they don't appear all at
+   same time and overload a player can add a context tutorial when they get unlocked"): buttons arrive one at a time.
+   Here the player has only Index and the Quests button has just arrived: it pops in, a cream tip beside it says what it
+   is in a few words, and the tip goes on the first tap or after 6 s. No dim, no arrow, play goes on. Order and minutes:
+   Design-Agent/first-session-2026-11-25/first-five-minutes-timeline.md (Index 2:45, Quests 6:00, then Helpers and
+   Build as the economy opens them, a minute apart at least). */
+body[data-state="unlock"] .later { display: none; }
+body:not([data-state="unlock"]) .only-unlock { display: none; }
+.newtip { position: absolute; left: calc(100% + 18px); top: 50%; transform: translateY(-50%); width: max-content; max-width: 280px; display: flex; flex-direction: column; gap: 2px;
+  background: var(--cream); border: var(--stroke) solid var(--ink); border-radius: 16px; padding: 8px 14px 10px; box-shadow: 0 4px 0 var(--ink); text-align: left; }
+.newtip::before { content: ""; position: absolute; left: -13px; top: 50%; width: 18px; height: 18px; background: var(--cream); border-left: var(--stroke) solid var(--ink);
+  border-bottom: var(--stroke) solid var(--ink); transform: translateY(-50%) rotate(45deg); }
+.newtip b { font-family: var(--font-head); font-weight: 400; font-size: 22px; color: var(--ink); }
+.newtip span { font-family: var(--font-body); font-weight: 800; font-size: 17px; color: var(--ink-soft); }
+.rbtn.fresh { box-shadow: 0 0 0 5px #ffd84d, 0 6px 0 var(--dep), 0 6px 0 var(--stroke) var(--ink); }
 .top { position: absolute; top: calc(58px / var(--s) + 6px); }
 .goal { left: 50%; transform: translateX(-50%); top: 14px; display: flex; align-items: center; gap: 10px; font-family: var(--font-head); font-size: 30px; white-space: nowrap; }
 .goal .step { font-size: 22px; color: #ffe98f; }
@@ -64,9 +79,11 @@ body.short .queue .head { display: none; }
 
   <div class="top side">
     <button class="rbtn mint" data-tap aria-label="Cat Index"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Index.png" alt=""><span class="cap outlined thin">Index</span><span class="dot">2</span></button>
-    <button class="rbtn sky" data-tap aria-label="Tools"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Tools.png" alt=""><span class="cap outlined thin">Tools</span></button>
-    <button class="rbtn pink" data-tap aria-label="Helpers"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Helper.png" alt=""><span class="cap outlined thin">Helpers</span></button>
-    <button class="rbtn gold" data-tap aria-label="Builder"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Build.png" alt=""><span class="cap outlined thin">Build</span><span class="dot">!</span></button>
+    <button class="rbtn sky later" data-tap aria-label="Tools"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Tools.png" alt=""><span class="cap outlined thin">Tools</span></button>
+    <button class="rbtn pink later" data-tap aria-label="Helpers"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Helper.png" alt=""><span class="cap outlined thin">Helpers</span></button>
+    <button class="rbtn gold later" data-tap aria-label="Builder"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Build.png" alt=""><span class="cap outlined thin">Build</span><span class="dot">!</span></button>
+    <button class="rbtn lilac fresh only-unlock" data-tap aria-label="Quests, new"><i data-ic="book"></i><span class="cap outlined thin">Quests</span>
+      <span class="newtip"><b>Quests</b><span>Daily and weekly jobs for coins</span></span></button>
   </div>
 
   <div class="queue">

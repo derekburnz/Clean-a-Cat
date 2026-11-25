@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="states" content="">
+<title>Quests</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+/* Quests (Derek's fifth pass, 2026-11-25: "couple daily quests that reset each day per player and a couple weekly
+   quests that give a crate when completed all weekly quests"). Two columns: Today (two daily quests, coins each) and
+   This week (three weekly quests, coins each, and the crate for finishing all of them). Each quest: what to do in
+   plain words, a progress bar with the count, what it pays, and a Claim button once done. The crate is earned, so no
+   odds rule applies, but the eye button opens the same chance list as the shop crate. Resets are said in plain
+   words ("New quests tomorrow"), never a ticking clock or "hurry", and nothing is lost by missing a day.
+   Short phones: the two columns stay side by side with tighter rows, and the crate moves under Today, where there is room. */
+.win.quests { width: 1060px; }
+.quests .body { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.col { display: flex; flex-direction: column; gap: 10px; }
+.col h3 { margin: 0; display: flex; align-items: baseline; justify-content: space-between; font-family: var(--font-head); font-weight: 400; font-size: 26px; }
+.col h3 small { font-family: var(--font-body); font-weight: 800; font-size: 16px; color: var(--ink-soft); }
+.q { display: grid; grid-template-columns: 52px 1fr auto; grid-template-rows: auto auto; grid-template-areas: "ic say act" "ic bar act"; column-gap: 12px; row-gap: 6px;
+  align-items: center; padding: 10px 12px; }
+.q > .ic { grid-area: ic; font-size: 44px; justify-self: center; }
+.q .say { grid-area: say; font-weight: 800; font-size: 19px; line-height: 1.15; }
+.q .prog { grid-area: bar; display: flex; align-items: center; gap: 8px; }
+.q .prog .bar { flex: 1; height: 18px; }
+.q .prog .n { font-family: var(--font-head); font-size: 18px; color: var(--ink-soft); white-space: nowrap; }
+.q .act { grid-area: act; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.q .pays { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-head); font-size: 22px; color: var(--gold-ink); }
+.q .pays .ic { font-size: 24px; }
+.q.done { background: #f1fbf4; border-color: #9ed9b2; }
+.q.claimed { opacity: .6; }
+.q.claimed .say { text-decoration: line-through; text-decoration-thickness: 2px; }
+/* the weekly crate: the reward for finishing all three */
+.crate { display: grid; grid-template-columns: 72px 1fr auto; column-gap: 12px; align-items: center; padding: 10px 12px; background: linear-gradient(#fff6d6, #fff);
+  border: 3px solid #f0cf6b; border-radius: var(--radius-card); }
+.crate > .ic { font-size: 62px; justify-self: center; }
+.crate .t { font-family: var(--font-head); font-size: 22px; line-height: 1.1; }
+.crate .d { font-weight: 800; font-size: 16px; color: var(--ink-soft); }
+.crate .pips { display: flex; gap: 6px; margin-top: 4px; }
+.crate .pips i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--ink); background: #fff; }
+.crate .pips i.on { background: #4fcf93; }
+.eye { width: max(52px, calc(46px / var(--s))); height: max(52px, calc(46px / var(--s))); border-radius: 16px; border: 3px solid var(--ink); background: #fff; display: grid; place-items: center; font-size: 30px; box-shadow: 0 4px 0 var(--ink); }
+
+.crate.on-short { display: none; }
+body.short .crate.on-short { display: grid; }
+body.short .crate.on-wide { display: none; }
+body.short .win.quests { width: 880px; }
+body.short .quests .body { gap: 12px; padding-top: 6px; }
+body.short .col { gap: 6px; }
+body.short .col h3 { font-size: 22px; }
+body.short .col h3 small { display: none; }
+body.short .q { padding: 4px 10px; grid-template-columns: 36px 1fr auto; row-gap: 2px; }
+body.short .q .act { flex-direction: row; gap: 8px; }
+body.short .q > .ic { font-size: 30px; }
+body.short .q .say { font-size: 16px; }
+body.short .q .prog .bar { height: 14px; }
+body.short .q .pays { font-size: 19px; }
+body.short .crate { grid-template-columns: 44px 1fr auto; padding: 4px 10px; }
+body.short .crate > .ic { font-size: 38px; }
+body.short .quests .body { padding-bottom: 8px; }
+body.short .crate .t { font-size: 19px; }
+body.short .crate .d { display: none; }
+body.short .crate .pips i { width: 18px; height: 18px; }
+</style>
+</head>
+<body class="no-move">
+<div id="screen"><div id="stage">
+  <div class="world spa" style="background-image:url(img/world-spa.jpg)"></div>
+  <div class="backdrop"></div>
+
+  <div class="win quests">
+    <div class="band">
+      <div class="badge"><i data-ic="book"></i></div>
+      <span class="title outlined">Quests</span>
+    </div>
+    <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+    <div class="body">
+      <div class="col">
+        <h3>Today <small>New quests tomorrow</small></h3>
+        <div class="q card done">
+          <i data-ic="paw"></i>
+          <span class="say">Wash 5 customer cats</span>
+          <div class="prog"><div class="bar"><i style="width:100%"></i></div><span class="n">5 / 5</span></div>
+          <div class="act"><span class="pays"><i data-ic="coin"></i>50</span><button class="btn green small" data-tap><span class="lbl">Claim</span></button></div>
+        </div>
+        <div class="q card">
+          <i data-ic="bow"></i>
+          <span class="say">Put a bow on 3 cats</span>
+          <div class="prog"><div class="bar"><i style="width:33%"></i></div><span class="n">1 / 3</span></div>
+          <div class="act"><span class="pays"><i data-ic="coin"></i>40</span></div>
+        </div>
+        <div class="crate on-short">
+          <i data-ic="gift"></i>
+          <div><span class="t">Weekly crate</span><div class="d">A pet for finishing every weekly quest</div><div class="pips" aria-label="1 of 3 weekly quests done"><i class="on"></i><i></i><i></i></div></div>
+          <button class="eye" data-tap aria-label="See the chances in the crate"><i data-ic="eye"></i></button>
+        </div>
+      </div>
+      <div class="col">
+        <h3>This week <small>Finish all three for a crate</small></h3>
+        <div class="q card claimed">
+          <i data-ic="star"></i>
+          <span class="say">Get 3 stars on 20 cats</span>
+          <div class="prog"><div class="bar"><i style="width:100%"></i></div><span class="n">20 / 20</span></div>
+          <div class="act"><span class="pays"><i data-ic="check"></i></span></div>
+        </div>
+        <div class="q card">
+          <i data-ic="sparkle"></i>
+          <span class="say">Wash 2 special visitors' cats</span>
+          <div class="prog"><div class="bar"><i style="width:50%"></i></div><span class="n">1 / 2</span></div>
+          <div class="act"><span class="pays"><i data-ic="coin"></i>300</span></div>
+        </div>
+        <div class="q card">
+          <i data-ic="mud"></i>
+          <span class="say">Wash 10 very dirty cats</span>
+          <div class="prog"><div class="bar"><i style="width:40%"></i></div><span class="n">4 / 10</span></div>
+          <div class="act"><span class="pays"><i data-ic="coin"></i>300</span></div>
+        </div>
+        <div class="crate on-wide">
+          <i data-ic="gift"></i>
+          <div><span class="t">Weekly crate</span><div class="d">A pet for finishing every weekly quest</div><div class="pips" aria-label="1 of 3 weekly quests done"><i class="on"></i><i></i><i></i></div></div>
+          <button class="eye" data-tap aria-label="See the chances in the crate"><i data-ic="eye"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+<script src="kit.js"></script>
+</body>
+</html>
