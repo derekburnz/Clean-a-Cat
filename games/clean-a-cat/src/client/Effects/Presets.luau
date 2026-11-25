@@ -144,6 +144,44 @@ local function mud(count: number): Emitter
 	}
 end
 
+-- The wet-dog shake when a wash bar fills (ShakeOff, switch washMeter): flecks fly out sideways all round the coat
+-- and fall. Mud for the scrub, water for the rinse, tinted at play time.
+local function flecks(count: number): Emitter
+	return {
+		texture = "",
+		color = { MUD, MUD_DARK },
+		size = { 0.16, 0.06 },
+		transparency = { 0, 1 },
+		lifetime = { 0.35, 0.6 },
+		speed = { 5, 8 },
+		spread = 180,
+		acceleration = Vector3.new(0, -22, 0),
+		drag = 1,
+		lightEmission = 0,
+		maxRate = 0,
+		burst = count,
+	}
+end
+
+-- The Shower tool's spray where it meets the fur (RinseSpray, switch washMeter): a short fan of water drops that
+-- bounce off along the fur's normal and fall. Rate from how fast the finger moves, like the foam.
+local function spray(rate: number): Emitter
+	return {
+		texture = "",
+		color = { WATER, FOAM_WHITE },
+		size = { 0.14, 0.05 },
+		transparency = { 0.15, 1 },
+		lifetime = { 0.3, 0.5 },
+		speed = { 3, 5 },
+		spread = 40,
+		acceleration = Vector3.new(0, -20, 0),
+		drag = 1,
+		lightEmission = 0.1,
+		maxRate = rate,
+		burst = 0,
+	}
+end
+
 local DUST = Color3.fromRGB(214, 200, 178)
 local DUST_PALE = Color3.fromRGB(236, 230, 220)
 
@@ -199,6 +237,8 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		bowHearts = hearts(3),
 		dryerAir = air(6),
 		roadDust = dust(5),
+		shakeFlecks = flecks(8),
+		rinseSpray = spray(8),
 	},
 	high = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 16),
@@ -211,6 +251,8 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		bowHearts = hearts(3),
 		dryerAir = air(12),
 		roadDust = dust(9),
+		shakeFlecks = flecks(14),
+		rinseSpray = spray(16),
 	},
 }
 
