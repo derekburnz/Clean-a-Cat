@@ -193,10 +193,39 @@ local function inBox(player: Player): boolean
 end
 
 -- Shows the player's client where the carried cat is (nil: not carried, or in the tub).
+local function hasAsset(name: string): boolean
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	return assets ~= nil and assets:FindFirstChild(name) ~= nil
+end
+
+-- Marks what is in the player's arms on their character, so every other player's game can draw it (switch
+-- carryShared, Motion-FX): a customer's cat once taken, or Suds from the box opening until he is in the tub.
+local function showHeld(player: Player)
+	local character = player.Character
+	if character == nil then
+		return
+	end
+	local model: string?, held: string? = nil, nil
+	local cat = cats[player]
+	if carrying[player] == "arms" and cat and cat.kind then
+		model, held = CarryRules.modelName(cat.kind :: string, hasAsset), "sit"
+	elseif player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == false then
+		local loaf = SudsRules.asset("_Dirty_Loaf", hasAsset)
+		if hasAsset(loaf) then
+			model, held = loaf, "loaf"
+		else
+			model, held = SudsRules.asset("_Dirty_Sit", hasAsset), "sit"
+		end
+	end
+	character:SetAttribute(CarryRules.CHARACTER_CAT, model)
+	character:SetAttribute(CarryRules.CHARACTER_HELD, held)
+end
+
 local function sayCarry(player: Player, kind: string?)
 	local where = carrying[player]
 	player:SetAttribute(CarryRules.ATTRIBUTE, where)
 	player:SetAttribute(CarryRules.KIND_ATTRIBUTE, if where then kind else nil)
+	showHeld(player)
 end
 
 local function newCat(player: Player): SpaRules.Cat
@@ -681,6 +710,13 @@ function SpaService.Start()
 			player:SetAttribute(SudsRules.JOINED_ATTRIBUTE, Workspace:GetServerTimeNow())
 		end
 		task.spawn(checkOwner, player)
+		-- what is in their arms, for everyone else (showHeld): Suds while the box is open, and on a new character
+		player:GetAttributeChangedSignal(SudsRules.BOX_ATTRIBUTE):Connect(function()
+			showHeld(player)
+		end)
+		player.CharacterAdded:Connect(function()
+			showHeld(player)
+		end)
 	end
 	Players.PlayerAdded:Connect(stampJoin)
 	for _, player in Players:GetPlayers() do

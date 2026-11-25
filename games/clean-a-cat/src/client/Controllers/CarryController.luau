@@ -205,10 +205,11 @@ end
 -- A client-only copy of the cat of `kind`, posed to sit, that never collides, catches a ray or touches anything.
 local function copyOf(kind: string): Model?
 	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
+	local found = assets :: Instance
 	local asset = if assets
-		then assets:FindFirstChild(`CleanACat_Cat_{kind}_Dirty_Sit`) or assets:FindFirstChild(
-			`CleanACat_Cat_{kind}_Dirty`
-		)
+		then found:FindFirstChild(CarryRules.modelName(kind, function(name: string): boolean
+			return found:FindFirstChild(name) ~= nil
+		end))
 		else nil
 	if not (asset and asset:IsA("Model")) then
 		warn(`CarryController: ReplicatedStorage.Assets has no dirty model for {kind}`)

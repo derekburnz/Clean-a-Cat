@@ -18,6 +18,12 @@ CarryRules.ATTRIBUTE = "CarryCat"
 CarryRules.KIND_ATTRIBUTE = "CarryKind"
 CarryRules.DOOR = "door"
 CarryRules.ARMS = "arms"
+-- On the carrier's character, for every other player's game (switch carryShared, Motion-FX draws it): CHARACTER_CAT is
+-- the ReplicatedStorage.Assets model of the cat in their arms and CHARACTER_HELD how it is held ("sit" or "loaf"); both
+-- nil when the arms are empty. The carrier's own game draws theirs itself (CarryController, OpeningController).
+CarryRules.CHARACTER_CAT = "CarryCat"
+CarryRules.CHARACTER_HELD = "CarryHeld"
+CarryRules.SHARED_FLAG = "carryShared"
 CarryRules.TAKE_REACH = 14 -- studs, flat, from the front customer's spot; the client's prompt reaches 10
 CarryRules.PLACE_REACH = 16 -- studs, flat, from the tub's spot; the client's prompt reaches 10
 
@@ -43,6 +49,12 @@ end
 function CarryRules.within(at: Vector3, spot: Vector3, reach: number): boolean
 	local offset = at - spot
 	return Vector3.new(offset.X, 0, offset.Z).Magnitude <= reach
+end
+
+-- The Assets model a customer's cat of `kind` is carried as: its sitting body, or its dirty body when it has none.
+function CarryRules.modelName(kind: string, has: (string) -> boolean): string
+	local sit = `CleanACat_Cat_{kind}_Dirty_Sit`
+	return if has(sit) then sit else `CleanACat_Cat_{kind}_Dirty`
 end
 
 -- The door line as the player sees it: while the cat is still with its customer at the door, that customer is at the
