@@ -44,6 +44,16 @@ return function()
 		end)
 	end)
 
+	describe("CarryRules.modelName", function()
+		it("carries the sitting body, or the dirty body when there is none", function()
+			local function has(name: string): boolean
+				return name == "CleanACat_Cat_Smudge_Dirty_Sit"
+			end
+			expect(CarryRules.modelName("Smudge", has)).to.equal("CleanACat_Cat_Smudge_Dirty_Sit")
+			expect(CarryRules.modelName("Cotton", has)).to.equal("CleanACat_Cat_Cotton_Dirty")
+		end)
+	end)
+
 	describe("CarryRules.shownLine", function()
 		it("puts the customer still holding the cat at the front", function()
 			local kinds, needs = CarryRules.shownLine(
