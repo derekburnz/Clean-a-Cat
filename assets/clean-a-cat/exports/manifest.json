@@ -9815,18 +9815,19 @@
    "CleanACat_Cat_Stardust_Glow",
    "CleanACat_Cat_Stardust_Prop2",
    "CleanACat_Cat_Stardust_Comet_Glow",
+   "CleanACat_Cat_Stardust_Tail_Star",
    "CleanACat_Cat_Stardust_Tail_Star_Glow"
   ],
-  "triangles": 1188,
+  "triangles": 1212,
   "budget": 2100,
-  "parts": 104,
+  "parts": 106,
   "size_studs": {
-   "x": 1.5,
+   "x": 1.47,
    "y": 1.97,
    "z": 2.38
   },
   "size_roblox": [
-   1.5,
+   1.47,
    2.38,
    1.97
   ],
@@ -9920,10 +9921,10 @@
    "warnings": [],
    "qa_accepted": {},
    "checks": {
-    "budget": "1188/2100 tris",
+    "budget": "1212/2100 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "686 faces on swatch centers",
+    "uv": "698 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00",
@@ -9997,18 +9998,19 @@
    "CleanACat_Cat_Stardust_Dirty_Glow",
    "CleanACat_Cat_Stardust_Dirty_Prop2",
    "CleanACat_Cat_Stardust_Dirty_Comet_Glow",
+   "CleanACat_Cat_Stardust_Dirty_Tail_Star",
    "CleanACat_Cat_Stardust_Dirty_Tail_Star_Glow"
   ],
-  "triangles": 3174,
+  "triangles": 3198,
   "budget": 4300,
-  "parts": 205,
+  "parts": 207,
   "size_studs": {
-   "x": 1.5,
+   "x": 1.47,
    "y": 2.01,
    "z": 2.38
   },
   "size_roblox": [
-   1.5,
+   1.47,
    2.38,
    2.01
   ],
@@ -10153,10 +10155,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3174/4300 tris",
+    "budget": "3198/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1941 faces on swatch centers",
+    "uv": "1953 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
@@ -10228,18 +10230,19 @@
    "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
    "CleanACat_Cat_Stardust_Dirty_Sit_Prop2",
    "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+   "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star",
    "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow"
   ],
-  "triangles": 3258,
+  "triangles": 3282,
   "budget": 4300,
-  "parts": 213,
+  "parts": 215,
   "size_studs": {
-   "x": 1.56,
+   "x": 1.54,
    "y": 1.81,
    "z": 2.29
   },
   "size_roblox": [
-   1.56,
+   1.54,
    2.29,
    1.81
   ],
@@ -10374,13 +10377,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3258/4300 tris",
+    "budget": "3282/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1987 faces on swatch centers",
+    "uv": "1999 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.12 y=0.26",
+    "centered": "footprint center x=0.13 y=0.25",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -10405,20 +10408,21 @@
    "CleanACat_Cat_Stardust_Sit_Glow",
    "CleanACat_Cat_Stardust_Sit_Prop2",
    "CleanACat_Cat_Stardust_Sit_Comet_Glow",
+   "CleanACat_Cat_Stardust_Sit_Tail_Star",
    "CleanACat_Cat_Stardust_Sit_Tail_Star_Glow"
   ],
-  "triangles": 1248,
+  "triangles": 1272,
   "budget": 2100,
-  "parts": 109,
+  "parts": 111,
   "size_studs": {
-   "x": 1.46,
-   "y": 1.81,
+   "x": 1.45,
+   "y": 1.8,
    "z": 2.29
   },
   "size_roblox": [
-   1.46,
+   1.45,
    2.29,
-   1.81
+   1.8
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -10502,13 +10506,13 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "1248/2100 tris",
+    "budget": "1272/2100 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "716 faces on swatch centers",
+    "uv": "728 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.07 y=0.26",
+    "centered": "footprint center x=0.08 y=0.26",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
