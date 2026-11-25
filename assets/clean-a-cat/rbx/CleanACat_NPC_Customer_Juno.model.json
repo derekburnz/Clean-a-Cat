@@ -56,9 +56,9 @@
      0.8
     ],
     "Color": [
-     0.7882,
-     0.7216,
-     0.9098
+     0.9294,
+     0.7333,
+     0.6314
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -217,9 +217,9 @@
      0.3
     ],
     "Color": [
-     0.7882,
-     0.7216,
-     0.9098
+     0.9294,
+     0.7333,
+     0.6314
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -266,9 +266,9 @@
      0.03
     ],
     "Color": [
-     0.7255,
-     0.6392,
-     0.8706
+     0.949,
+     0.7216,
+     0.5412
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -1614,9 +1614,9 @@
        0.46
       ],
       "Color": [
-       0.7882,
-       0.7216,
-       0.9098
+       0.9294,
+       0.7333,
+       0.6314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -1778,9 +1778,9 @@
        0.46
       ],
       "Color": [
-       0.7882,
-       0.7216,
-       0.9098
+       0.9294,
+       0.7333,
+       0.6314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
