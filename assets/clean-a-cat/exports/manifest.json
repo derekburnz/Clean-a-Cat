@@ -9195,11 +9195,11 @@
   "size_studs": {
    "x": 4.85,
    "y": 1.1,
-   "z": 5.0
+   "z": 5.2
   },
   "size_roblox": [
    4.85,
-   5.0,
+   5.2,
    1.1
   ],
   "pivot": "base center (floor contact)",
@@ -10587,11 +10587,11 @@
   "size_studs": {
    "x": 4.18,
    "y": 1.1,
-   "z": 5.0
+   "z": 5.17
   },
   "size_roblox": [
    4.18,
-   5.0,
+   5.17,
    1.1
   ],
   "pivot": "base center (floor contact)",

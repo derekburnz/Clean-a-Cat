@@ -2,7 +2,7 @@
 
 Until now both stood in the spa as plain slabs made in code (`PH_ToolsBoard`, brown, and `PH_BuildBoard`, blue, each
 4 x 5 x 0.4 studs). These keep the slab's footprint, so they stand where the slabs stand: 4 studs wide between the
-posts, 5 high, the pivot on the floor at the middle, the front at -Z in Roblox (-Y here). No writing is baked in; the
+posts, 5.2 high (#461: the title faces grew from 0.36 to 0.56 so a title reads on a phone), the pivot on the floor at the middle, the front at -Z in Roblox (-Y here). No writing is baked in; the
 words come from the UI. Like every `Prop_` they are walk-through unless the game sets CanCollide.
 
   CleanACat_Prop_ToolsBoard   a cream peg board in a mint frame on two wooden posts with a bubblegum header and three
@@ -65,6 +65,9 @@ def _stand(b, top):
         b.box_base((sx * POST_X, 0.0, 0.0), (0.42, 1.1, 0.12), "wood_light", bevel=False)
 
 
+SCREEN_H = 0.56     # a title face's height: at 0.36 the title was about 14 px on a phone, and the UI rule is 18 or more
+
+
 def _screen(name, mat, z, w, h, y):
     s = Builder()
     s.box_base((0, y, z), (w, 0.06, h), "offwhite", bevel=False)
@@ -83,7 +86,7 @@ def build_tools_board(mat):
         b.box((0, -0.05 - SHELF_D / 2, z - 0.05), (W - 0.9, SHELF_D, 0.1), "wood_light")   # its back sunk in the board
         for sx in (1, -1):                              # a mint bracket under each end
             b.box((sx * 1.2, -0.2, z - 0.2), (0.1, 0.3, 0.22), "spa_mint", bevel=False)
-    b.box_base((0, 0.02, 4.45), (2.6, 0.26, 0.55), "spa_bubblegum")                        # the header
+    b.box_base((0, 0.02, 4.45), (2.6, 0.26, 0.72), "spa_bubblegum")                        # the header
     main = _tris(b.finalize(TOOLS, mat))
 
     y = -0.05 - SHELF_D / 2                             # the middle of a shelf, front to back
@@ -118,7 +121,7 @@ def build_tools_board(mat):
     for i, sw in enumerate(("spa_sky", "spa_cream", "spa_bubblegum")):
         s.box_base((0.0 + 0.03 * (i - 1), y, z + 0.16 * i - 0.005 * i), (0.95 - 0.06 * i, 0.4, 0.17), sw)
     decor = _tris(s.finalize(TOOLS + "_Decor", mat))
-    return [main, soap, brush, decor, _screen(TOOLS, mat, 4.55, 2.3, 0.36, -0.13)]
+    return [main, soap, brush, decor, _screen(TOOLS, mat, 4.53, 2.3, SCREEN_H, -0.13)]
 
 
 def tools_board_rbx_extras():
@@ -141,7 +144,7 @@ def build_build_board(mat):
     for i, z in enumerate(CARD_Z):
         b.box((0.17, FACE_Y - 0.015, z), (2.74, 0.05, CARD_H), "spa_cream", bevel=False)   # a row card
         b.box((-1.4, FACE_Y - 0.02, z), (0.3, 0.06, 0.3), CHIPS[i], bevel=False)           # its colour chip
-    b.box_base((0, 0.02, 4.5), (2.5, 0.22, 0.5), "wood_light")                             # the title plank
+    b.box_base((0, 0.02, 4.5), (2.5, 0.22, 0.7), "wood_light")                             # the title plank
     hx, hz = -POST_X, 4.5                              # a hard hat hung on the left post
     b.sphere((hx, POST_Y, hz), HAT, "pastel_butter", segments=10, rings=5, scale=(1, 1, 0.62))
     b.cyl_base((hx, POST_Y - 0.03, hz - 0.03), HAT + 0.06, 0.05, "pastel_butter", segments=10, bevel=False)
@@ -158,7 +161,7 @@ def build_build_board(mat):
     s.cyl_base((0, 0, -0.1 - BELL_R * 1.75), BELL_R + 0.04, 0.07, "fur_golden", segments=10, bevel=False)   # the lip
     s.sphere((0, 0, -0.1 - BELL_R * 1.9), 0.07, "fur_brown", segments=6, rings=4)          # the clapper
     bell = _tris(s.finalize(BUILD + "_Bell", mat, location=BELL_AT))
-    return [main, bell, _screen(BUILD, mat, 4.57, 2.2, 0.36, -0.12)]
+    return [main, bell, _screen(BUILD, mat, 4.57, 2.2, SCREEN_H, -0.12)]
 
 
 def build_board_rbx_extras():
