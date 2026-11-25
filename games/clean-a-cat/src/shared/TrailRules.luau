@@ -9,6 +9,7 @@ TrailRules.START_GAP = 1.5 -- studs clear of the player's feet
 TrailRules.END_GAP = 3 -- studs short of the spot: the ring marks it
 TrailRules.FADE = 2 -- studs over which an arrow fades in at the start and out at the end
 TrailRules.MAX_MARKS = 24 -- a long walk shows the nearest part of the way
+TrailRules.LINE_HIDE = 3 -- studs: the guide line (switch trailLine) goes once the player is this close to the spot
 
 -- An arrow's spot on the floor, the way it points (flat, unit length) and its fade: 0 is solid, 1 is gone.
 export type Mark = { position: Vector3, direction: Vector3, fade: number }
@@ -40,6 +41,11 @@ function TrailRules.marks(from: Vector3, to: Vector3, floorY: number, phase: num
 		})
 	end
 	return marks
+end
+
+-- True while the guide line (switch trailLine) shows: the player is further than LINE_HIDE from the spot, flat.
+function TrailRules.lineShown(from: Vector3, to: Vector3): boolean
+	return Vector3.new(to.X - from.X, 0, to.Z - from.Z).Magnitude > TrailRules.LINE_HIDE
 end
 
 return table.freeze(TrailRules)
