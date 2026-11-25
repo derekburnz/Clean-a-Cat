@@ -473,6 +473,47 @@ def thumb_queue(mat, out, res):
     return render(objs, objs, out, res, az=4, el=12, margin=0.98, lens=45)
 
 
+def _split(mat, out, res, state):
+    """One half of the split thumbnail (#500): Muffin sitting, seen straight on and close, with the camera on its
+    middle line. `state` 'dirty' is the whole cat muddy, 'clean' the whole cat fluffy with a bow by its ear, lather
+    at its foot and a few bubbles. Both use the same camera (framed on a fixed box round the cat), so
+    `store_compose.py` takes the left half of the picture from one and the right half from the other and they meet on
+    the cat's middle line. Things that belong to one half only are built on that half: the cat's left (+X) is the
+    picture's right."""
+    cat = cat_state("Muffin", mat, "sit", state)
+    body = [o for o in cat if not any(t in o.name for t in ("_Mud", "_Tangle", "_Fluff"))]
+    lo, hi = common.bounds(body)
+    half = max(-lo.x, hi.x) + 0.5
+    focus = (Vector((-half, lo.y, 0.0)), Vector((half, hi.y, hi.z + 0.4)))
+    objs = list(cat)
+    if state == "clean":
+        spec = cats.ROSTER["Muffin"]
+        k = cats.scale_of(spec, "sit")
+        h = cats.dims(spec, "sit")["head"]
+        at = Vector(cats.joints(spec, "sit")["Head"]) + Vector(cats.bow_at(spec, "sit")) * k
+        at.x += h["s"][0] * k * 0.27                     # by the ear on the clean half: a whole bow, not half of one
+        bow = props.build_bow(list(props.BOWS)[0], mat)
+        _move(bow, at, 1.0, -8)
+        objs += _fresh(bow)
+        fm = Builder()
+        for x, y, r in ((hi.x + 0.12, -0.3, 0.24), (hi.x + 0.3, 0.05, 0.2)):
+            stations.foam_mound(fm, x, y, -0.02, r)
+        stations.foam_bubble(fm, hi.x + 0.16, -0.25, 0.2, 0.14)
+        objs += _fresh([common.shade_smooth(fm.finalize("Foam", mat, bevel=0))])
+        objs += floating(mat, [(hi.x + 0.28, -0.5, 0.62, 0.13), (hi.x + 0.2, -0.4, 1.35, 0.09)])
+    return render(objs, focus, out, res, az=0, el=6, margin=1.0, lens=70)
+
+
+def split_dirty(mat, out, res):
+    """The split thumbnail's muddy half (#500)."""
+    return _split(mat, out, res, "dirty")
+
+
+def split_clean(mat, out, res):
+    """The split thumbnail's clean half (#500)."""
+    return _split(mat, out, res, "clean")
+
+
 SHOTS = {
     "icon-a": (icon_scrub, (512, 512), (1024, 1024)),
     "icon-b": (icon_face, (512, 512), (1024, 1024)),
@@ -482,6 +523,8 @@ SHOTS = {
     "thumb-3": (thumb_queue, (960, 540), (1920, 1080)),
     "thumb-spa": (thumb_spa, (900, 900), (1600, 1600)),
     "icon-spa": (icon_spa, (512, 512), (1024, 1024)),
+    "split-dirty": (split_dirty, (700, 860), (1400, 1720)),
+    "split-clean": (split_clean, (700, 860), (1400, 1720)),
 }
 
 
