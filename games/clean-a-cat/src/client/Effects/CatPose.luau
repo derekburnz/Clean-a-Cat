@@ -8,6 +8,10 @@
 --   twitch  one ear flicks for TWITCH_SECONDS every 4 to 9 s
 --   shake   the shake-off on CatClean: head roll and tail whip, SHAKE_SECONDS, skipped with Reduce Motion
 --   wiggle  the happy wiggle on CatFluffed: tail wag, ears up, head tilt, WIGGLE_SECONDS, skipped with Reduce Motion
+--   mood    a waiting cat's heart bar (the HeartFill attribute, 1 full to 0 empty, issue #528): happy with the tail up
+--           while the bar is high, grumpy as it drops (ears out to the side, head a little low, the tail lashing now
+--           and then), and with the bar empty the leaving pose (ears flat, head and tail down, no sway). The pose is
+--           held with Reduce Motion; only the lash stops.
 local CatPose = {}
 
 CatPose.JOINTS = { "Body", "Head", "Tail", "EarL", "EarR", "Eye1", "Eye2" }
@@ -191,6 +195,65 @@ function CatPose.sample(pose: Pose, state: State, now: number, reducedMotion: bo
 		local ears = math.rad(12) * CatPose.wobble(wiggle, CatPose.WIGGLE_SECONDS, 2)
 		pose.earL += ears
 		pose.earR -= ears
+	end
+end
+
+-- Mood (issue #528). Signs follow the rig's axes (cats.py and rbx_export.py: EarL on the cat's left at +X, the cat
+-- facing -Z, the tail out behind at +Z): a negative tail pitch lifts the tail, a negative earL and a positive earR
+-- tip the ears out to the side, a negative head pitch lowers the head.
+CatPose.MOOD = table.freeze({
+	happyFrom = 0.45, -- the bar's fill where happy starts to show
+	happyFull = 0.65,
+	grumpyFrom = 0.5, -- grumpy grows below this
+	grumpyFull = 0.3,
+	goneFrom = 0.1, -- the leaving pose grows below this, full at 0
+	tailUp = math.rad(14),
+	happySway = 0.35, -- happy: this much more tail sway
+	grumpyEars = math.rad(22),
+	grumpyHead = math.rad(5),
+	lash = math.rad(20), -- the grumpy tail lash, each way
+	lashEvery = 1.6, -- seconds between lashes
+	lashSeconds = 0.5,
+	goneEars = math.rad(34),
+	goneHead = math.rad(10),
+	goneTail = math.rad(12), -- down
+})
+
+local function smooth(from: number, to: number, x: number): number
+	local u = math.clamp((x - from) / (to - from), 0, 1)
+	return u * u * (3 - 2 * u)
+end
+
+-- The three mood weights for a heart bar at `fill` (0 to 1), each 0 to 1: happy, grumpy, gone. Grumpy and gone do
+-- not add up: gone takes over from grumpy as the bar empties.
+function CatPose.mood(fill: number): (number, number, number)
+	local m = CatPose.MOOD
+	local f = math.clamp(fill, 0, 1)
+	local happy = smooth(m.happyFrom, m.happyFull, f)
+	local gone = 1 - smooth(0, m.goneFrom, f)
+	local grumpy = smooth(m.grumpyFrom, m.grumpyFull, f) * (1 - gone)
+	return happy, grumpy, gone
+end
+
+-- Adds the mood for a heart bar at `fill` on top of a sampled pose. Call after CatPose.sample.
+function CatPose.applyMood(
+	pose: Pose,
+	state: State,
+	now: number,
+	fill: number,
+	reducedMotion: boolean
+)
+	local m = CatPose.MOOD
+	local happy, grumpy, gone = CatPose.mood(fill)
+	pose.tailPitch += -m.tailUp * happy + m.tailUp * 0.5 * grumpy + m.goneTail * gone
+	pose.tailYaw *= (1 + m.happySway * happy) * (1 - 0.6 * grumpy) * (1 - 0.85 * gone)
+	local ears = m.grumpyEars * grumpy + m.goneEars * gone
+	pose.earL -= ears
+	pose.earR += ears
+	pose.headPitch -= m.grumpyHead * grumpy + m.goneHead * gone
+	if not reducedMotion and grumpy > 0 then
+		local into = (now + state.seed * m.lashEvery) % m.lashEvery
+		pose.tailYaw += m.lash * grumpy * CatPose.wobble(into, m.lashSeconds, 1.5)
 	end
 end
 

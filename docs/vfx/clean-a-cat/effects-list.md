@@ -47,6 +47,8 @@ Part names from Model-Agent (issue #11): Body, Head, Eye1, Eye2, EarL, EarR, Tai
 | Ear twitch (one ear, 0.25 s, every 4 to 9 s) | always, within 60 studs | EarL, EarR | skipped | #6 | built, switch catMotion |
 | Shake-off (head roll and tail whip, 0.5 s) | CatClean | Head, Tail, EarL, EarR | skipped | #6 | built, switch catMotion |
 | Happy wiggle (tail wag, ears, head tilt, 0.8 s) | CatFluffed | Head, Tail, EarL, EarR | skipped | #7 | built, switch catMotion |
+| Waiting moods: happy (tail up, wider sway) while the heart bar is high, grumpy below half (ears out, head a little low, a tail lash every 1.6 s), leaving at empty (ears flat, head and tail down, no sway) | a waiting cat's HeartFill attribute (on the cat or its customer), refreshed by the server about once a second | Head, Tail, EarL, EarR | the pose is held, the lash stops | #528 | built, switch catMotion; shows once Gameplay sets HeartFill (#507) |
+| Customer impatience: a foot tap while standing, every 2.4 s at 40% down to 1 s near empty; head hangs as they leave | the customer's HeartFill attribute | LegL, Head | head kept low, no tap | #528 | built, switch customerWalk; shows once Gameplay sets HeartFill (#507) |
 
 Body never moves, so mud on the body stays put and the server can still move the whole cat. Phone budget: 4 cats at 30 updates a second, half rate past 30 studs, none past 60. Still to measure on a phone profile in Studio.
 

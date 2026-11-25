@@ -96,4 +96,44 @@ function CustomerPose.sample(pose: Pose, phase: number, amount: number, pitch: n
 	pose.headYaw = yaw * idle
 end
 
+-- Impatience (issue #528): as the cat's heart bar (HeartFill, 1 full to 0 empty) drops below TAP_FROM, a standing
+-- customer taps a foot now and then, more often as it empties; with the bar empty their head hangs a little as they
+-- leave. `standing` is 1 - the walk amount, so no tap mid-step. With reduced motion only the head stays low.
+CustomerPose.TAP_FROM = 0.4
+CustomerPose.TAP = math.rad(9) -- the toe lift, at the hip
+CustomerPose.TAP_SECONDS = 0.3
+CustomerPose.TAP_EVERY = table.freeze({ 2.4, 1.0 }) -- seconds between taps, at TAP_FROM and at empty
+CustomerPose.HEAD_DOWN = math.rad(8)
+
+function CustomerPose.tapEvery(fill: number): number
+	local u = math.clamp(1 - fill / CustomerPose.TAP_FROM, 0, 1)
+	local a, b = CustomerPose.TAP_EVERY[1], CustomerPose.TAP_EVERY[2]
+	return a + (b - a) * u
+end
+
+function CustomerPose.mood(
+	pose: Pose,
+	fill: number,
+	now: number,
+	seed: number,
+	standing: number,
+	still: boolean
+)
+	local f = math.clamp(fill, 0, 1)
+	if f >= CustomerPose.TAP_FROM then
+		return
+	end
+	local gone = math.clamp(1 - f / 0.1, 0, 1)
+	pose.headPitch -= CustomerPose.HEAD_DOWN * gone
+	if still or gone >= 1 then
+		return
+	end
+	local every = CustomerPose.tapEvery(f)
+	local into = (now + seed * every) % every
+	if into < CustomerPose.TAP_SECONDS then
+		local lift = math.sin(math.pi * into / CustomerPose.TAP_SECONDS)
+		pose.legL += CustomerPose.TAP * lift * standing * (1 - gone)
+	end
+end
+
 return CustomerPose

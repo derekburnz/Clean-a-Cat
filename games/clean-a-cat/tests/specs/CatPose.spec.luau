@@ -128,4 +128,75 @@ return function()
 			expect(CatPose.MAX_CATS.low < CatPose.MAX_CATS.high).to.equal(true)
 		end)
 	end)
+	describe("mood", function()
+		it("is happy with a full bar, grumpy as it drops and gone when empty", function()
+			local h, g, x = CatPose.mood(1)
+			expect(h).to.equal(1)
+			expect(g).to.equal(0)
+			expect(x).to.equal(0)
+			h, g, x = CatPose.mood(0.25)
+			expect(h).to.equal(0)
+			expect(g).to.equal(1)
+			expect(x).to.equal(0)
+			h, g, x = CatPose.mood(0)
+			expect(h).to.equal(0)
+			expect(g).to.equal(0)
+			expect(x).to.equal(1)
+		end)
+		it("changes smoothly as the bar drains", function()
+			local last = { CatPose.mood(1) }
+			for i = 999, 0, -1 do
+				local now = { CatPose.mood(i / 1000) }
+				for k = 1, 3 do
+					expect(math.abs(now[k] - last[k]) < 0.02).to.equal(true)
+				end
+				last = now
+			end
+		end)
+		it("clamps a fill outside 0 to 1", function()
+			local a = { CatPose.mood(-2) }
+			local b = { CatPose.mood(0) }
+			expect(a[3]).to.equal(b[3])
+			local c = { CatPose.mood(5) }
+			expect(c[1]).to.equal(1)
+		end)
+		it(
+			"lifts the tail when happy, puts the ears out when grumpy and drops everything when leaving",
+			function()
+				local state = CatPose.newState(0.3, 0)
+				local function at(fill: number)
+					local pose = CatPose.newPose()
+					CatPose.sample(pose, state, 0, true)
+					CatPose.applyMood(pose, state, 0, fill, true)
+					return pose
+				end
+				local happy, grumpy, gone = at(1), at(0.25), at(0)
+				expect(happy.tailPitch < 0).to.equal(true)
+				expect(happy.earL).to.equal(0)
+				expect(grumpy.earL < 0 and grumpy.earR > 0).to.equal(true)
+				expect(grumpy.headPitch < 0).to.equal(true)
+				expect(gone.earR > grumpy.earR).to.equal(true)
+				expect(gone.headPitch < grumpy.headPitch).to.equal(true)
+				expect(gone.tailPitch > 0).to.equal(true)
+			end
+		)
+		it("lashes the grumpy tail only with motion on", function()
+			local state = CatPose.newState(0, 0)
+			local moving, still = false, true
+			for i = 0, 32 do
+				local t = i * 0.05
+				local a, b = CatPose.newPose(), CatPose.newPose()
+				CatPose.applyMood(a, state, t, 0.25, false)
+				CatPose.applyMood(b, state, t, 0.25, true)
+				if math.abs(a.tailYaw) > math.rad(5) then
+					moving = true
+				end
+				if b.tailYaw ~= 0 then
+					still = false
+				end
+			end
+			expect(moving).to.equal(true)
+			expect(still).to.equal(true)
+		end)
+	end)
 end
