@@ -12,11 +12,14 @@
    game ... make sure the pet for liking/joining group is obvious to find"). A stand inside the spa holds the pet; the
    player walks up or taps it and this card opens. Never a pop up: it opens only from the stand. It lights up once at
    about 7:00 (first-five-minutes-timeline.md) with one line from Suds, then simply stays in the spa.
-   Two steps, each a row with a button that does it: Join Creampuff Games (Roblox's group prompt) and Like the game
-   (Roblox has no like prompt, so the row says where: the thumbs up on the game page, and the button opens nothing
-   we cannot do; the game checks group membership on the server; a like cannot be checked by a game, so the like row
-   is honest about it: it ticks when the player says they did it). Then Claim gives the pet.
-   todo: nothing done. ready: both done, Claim is green. claimed: the pet is yours, the stand stays as a thank-you.
+   Three rows (Derek, 2026-11-25: "make it prompt them to like check and then give them it"): Like the game, Favourite
+   it, Join Creampuff Games. Only the group join gates the pet: the server reads membership itself (IsInGroup), so it
+   cannot be faked. Roblox gives a game no way to read a thumbs up, and the favourite prompt's result comes from the
+   player's device, so rewarding either would reward a tap on trust; the Rules of Conduct also bar content "used to
+   inappropriately drive discoverability or engagement" (Review-QA, PR 503). So the like row is only asked (no button,
+   no tick), and the favourite row opens Roblox's prompt (AvatarEditorService:PromptSetFavorite) and ticks if the
+   player says yes, but never gates the pet. Growth-Agent to confirm against Roblox's Kids and Select reward post.
+   todo: nothing done. ready: group joined (favourite too here), Claim is green. claimed: the pet is yours, the stand stays as a thank-you.
    No pressure words, no timer, and the pet is shown whole before anything is asked. */
 .win.gift { width: 820px; }
 .gift .body { display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: center; }
@@ -32,6 +35,8 @@
 .st .d { font-weight: 800; font-size: 16px; color: var(--ink-soft); line-height: 1.15; }
 .st .ok { font-size: 40px; }
 .st.done { background: #f1fbf4; border-color: #9ed9b2; }
+.st.ask { background: #fff7fb; border-style: dashed; }
+body.short .st { min-height: 0; }
 .claim { margin-top: 4px; }
 body:not([data-state="ready"]):not([data-state="claimed"]) .only-ready { display: none !important; }
 body[data-state="ready"] .only-todo, body[data-state="claimed"] .only-todo { display: none !important; }
@@ -45,7 +50,15 @@ body.short .lead { display: none; }
 body.short .st { padding: 6px 10px; grid-template-columns: 40px 1fr auto; }
 body.short .st > .ic { font-size: 34px; }
 body.short .st .t { font-size: 19px; }
-body.short .st .d { font-size: 15px; }
+body.short .st .d { display: none; }
+body.short .steps { gap: 6px; }
+body.short .st { padding: 2px 10px; }
+body.short .st.ask { padding: 6px 10px; }
+body.short .st.ask > .ic { font-size: 26px; }
+body.short .st .ok { font-size: 30px; }
+body.short .petpic { height: 160px; }
+body.short .gift .body { grid-template-columns: 160px 1fr; padding-top: 4px; padding-bottom: 6px; }
+body.short .claim { margin-top: 0; }
 </style>
 </head>
 <body class="no-move">
@@ -62,22 +75,27 @@ body.short .st .d { font-size: 15px; }
     <div class="body">
       <div class="petpic"><img src="img/portrait_Starcoat_ink.png" alt=""><span class="rar epic tag">Starcoat</span></div>
       <div class="steps">
-        <span class="lead not-claimed">Say hi to our group and like the game, then Starcoat follows you around your spa.</span>
-        <span class="lead only-claimed">Starcoat is yours. Thank you for joining and liking!</span>
-        <div class="st card" data-state-done>
+        <span class="lead not-claimed">Join our group and Starcoat follows you around your spa. A like and a favourite help us too!</span>
+        <span class="lead only-claimed">Starcoat is yours. Thank you for joining!</span>
+        <div class="st card ask">
+          <i data-ic="heart"></i>
+          <div><div class="t">Like the game</div><div class="d">Tap the thumbs up on the game's page</div></div>
+          <span></span>
+        </div>
+        <div class="st card chk">
+          <i data-ic="star"></i>
+          <div><div class="t">Favourite it</div><div class="d">So you can find us again</div></div>
+          <button class="btn sky small only-todo" data-tap><span class="lbl">Favourite</span></button>
+          <i data-ic="check" class="ok only-ready"></i>
+        </div>
+        <div class="st card chk">
           <i data-ic="friends"></i>
           <div><div class="t">Join Creampuff Games</div><div class="d">Our group on Roblox</div></div>
           <button class="btn sky small only-todo" data-tap><span class="lbl">Join</span></button>
           <i data-ic="check" class="ok only-ready"></i>
         </div>
-        <div class="st card">
-          <i data-ic="heart"></i>
-          <div><div class="t">Like the game</div><div class="d">The thumbs up on the game's page</div></div>
-          <button class="btn sky small only-todo" data-tap><span class="lbl">I did it</span></button>
-          <i data-ic="check" class="ok only-ready"></i>
-        </div>
         <button class="btn green wide claim not-claimed only-ready" data-tap><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
-        <button class="btn off wide claim only-todo" data-tap aria-label="Claim Starcoat, after both steps"><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
+        <button class="btn off wide claim only-todo" data-tap aria-label="Claim Starcoat, after joining the group"><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
       </div>
     </div>
   </div>
@@ -86,7 +104,7 @@ body.short .st .d { font-size: 15px; }
 <script>
 // done rows go green in ready and claimed
 const st = new URLSearchParams(location.search).get('state');
-if (st === 'ready' || st === 'claimed') document.querySelectorAll('.st').forEach((r) => r.classList.add('done'));
+if (st === 'ready' || st === 'claimed') document.querySelectorAll('.st.chk').forEach((r) => r.classList.add('done'));
 </script>
 </body>
 </html>
