@@ -41,6 +41,8 @@ local ASSET_WAIT_SECONDS = 5
 local HOLD_REASON = "carry" -- ControlHold, while walking up to the customer
 local VIEW_REASON = "carry" -- WashView, from the hop into the tub until the wash holds it
 local WASH_FLAG = "washView"
+local BODY_WAIT_SECONDS = 5 -- a new character's root and humanoid, after a reset while carrying
+local BODY_SETTLE_SECONDS = 0.3
 
 local player = Players.LocalPlayer
 local scrub: any = nil -- ScrubController: where the tub's seat is and the size a cat sits at there
@@ -363,19 +365,33 @@ function CarryController.Start()
 		end
 	end)
 	-- A reset while carrying: the new character picks the cat up where it stands, with no reach.
-	player.CharacterAdded:Connect(function()
+	-- It waits for the new body to be built (its root and arms), or the copy would sit where the asset was made
+	-- with no arms to follow (Sync-Agent's run on 542efbc: the cat at the world's origin).
+	player.CharacterAdded:Connect(function(character: Model)
 		walking = false
-		if where() == CarryRules.ARMS then
-			local kind = player:GetAttribute(CarryRules.KIND_ATTRIBUTE)
-			letGo()
-			if type(kind) == "string" then
-				task.defer(function()
-					if where() == CarryRules.ARMS and held == nil then
-						lift(kind, nil, false)
-					end
-				end)
-			end
+		if where() ~= CarryRules.ARMS then
+			return
 		end
+		local kind = player:GetAttribute(CarryRules.KIND_ATTRIBUTE)
+		letGo()
+		if type(kind) ~= "string" then
+			return
+		end
+		local mine = turn
+		task.spawn(function()
+			local root = character:WaitForChild("HumanoidRootPart", BODY_WAIT_SECONDS)
+			character:WaitForChild("Humanoid", BODY_WAIT_SECONDS)
+			task.wait(BODY_SETTLE_SECONDS) -- the arms' joints are made a moment after the root
+			if
+				root ~= nil
+				and turn == mine
+				and player.Character == character
+				and where() == CarryRules.ARMS
+				and held == nil
+			then
+				lift(kind, nil, false)
+			end
+		end)
 	end)
 	-- The plot came or went: the line's and the tub's spots moved.
 	SpaLayout.changed(function()

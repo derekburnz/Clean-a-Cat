@@ -39,13 +39,13 @@ end
 
 local function refresh()
 	trove:Clean()
-	-- No picks while the front customer still holds the cat for the player to take (switch customerCarry): the
-	-- server refuses them then.
+	-- No picks while a customer's cat is being carried in (switch customerCarry): the server refuses them while the
+	-- front customer still holds it, and with it in the arms they crowd the tub's "Put in tub" (Sync-Agent, 542efbc).
 	local player = Players.LocalPlayer
 	if
 		not allOn()
 		or player:GetAttribute(SERVED) ~= true
-		or player:GetAttribute(CarryRules.ATTRIBUTE) == CarryRules.DOOR
+		or player:GetAttribute(CarryRules.ATTRIBUTE) ~= nil
 	then
 		return
 	end

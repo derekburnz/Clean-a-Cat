@@ -32,6 +32,7 @@ local Icons =
 local ToolOnCat = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ToolOnCat"))
 local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LaterStepRules = require(Shared:WaitForChild("LaterStepRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -52,6 +53,7 @@ local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge on
 local TURN_FLAG = "scrubTurn" -- the cat turns to show its muddy side when too little faces the camera
 local FEEL_FLAG = "scrubFeel" -- a patch takes a few strokes, and a finger on the cat never walks the player
 local WASH_FLAG = "washView" -- every cat in the tub is washed in the close-up wash view, the avatar hidden
+local SCENE_FLAG = "washScene" -- Motion-FX's tighter close-up (Effects/WashCamera): the bow column moves in to stay in it
 local WASH_REASON = "scrub" -- this controller's hold on Spa/WashView
 local OPENING_REASON = "opening" -- the opening's own hold on the view (OpeningController): no Walk button then
 local MARKER_UP = 3.6 -- studs over the cat's seat where the paw marker bobs while the player has stepped out
@@ -367,6 +369,10 @@ end
 -- cat and inside the shot: the row was off the top of the close-up (Sync-Agent's run on f01718c). The photo camera
 -- stands on the other side.
 local function bowSpot(index: number): CFrame
+	-- the tighter wash scene cut the top bow off the left edge (Sync-Agent's run on 542efbc: BowPink at x -21 px)
+	if LiveFlags.isOn(WASH_FLAG) and LiveFlags.isOn(SCENE_FLAG) then
+		return CFrame.new(2.7, 3.3 - (index - 1) * 1.15, -1.5)
+	end
 	if LiveFlags.isOn(WASH_FLAG) then
 		return CFrame.new(3.6, 4.1 - (index - 1) * 1.35, -1.5)
 	end
@@ -1662,6 +1668,31 @@ local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, raw
 	end)
 end
 
+-- A customer's cat is being carried in (switch customerCarry, CarryController): the last washed cat leaves the tub
+-- now rather than when the next one is put in (Sync-Agent's run on 542efbc: clean Suds sat in the tub through the
+-- carry while also on his bed). A customer's cat has gone home by then; Suds and the prototype's cat had waited.
+local function clearDoneCat()
+	local v = visit
+	local cat = if v then v.cat else nil
+	if
+		v == nil
+		or cat == nil
+		or v.stage ~= "done"
+		or Players.LocalPlayer:GetAttribute(CarryRules.ATTRIBUTE) == nil
+	then
+		return
+	end
+	BrushShine.untrack(cat.model)
+	cat.model:Destroy()
+	v.cat = nil
+	v.catParams.FilterDescendantsInstances = {}
+	for _, button in v.bowButtons do
+		show(button, false)
+	end
+	showCamera(v, false)
+	updateWashView(v)
+end
+
 -- Back into the close-up from a step out: the marker and the prompt go and the view comes back.
 local function stepIn(v: Visit)
 	if not v.steppedOut then
@@ -1859,6 +1890,7 @@ local function enable()
 	-- When the app loses focus mid-scrub (a call, a swipe home), Roblox can skip that touch's InputEnded. Let go
 	-- here so the camera and the controls are never left held and the next press can scrub.
 	trove:Connect(UserInputService.WindowFocusReleased, release)
+	trove:Connect(Players.LocalPlayer:GetAttributeChangedSignal(CarryRules.ATTRIBUTE), clearDoneCat)
 	if RunService:IsStudio() then
 		trove:Connect(Workspace:GetAttributeChangedSignal(TEST_STEP_ATTRIBUTE), testFinishStep)
 	end
