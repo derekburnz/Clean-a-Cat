@@ -19,7 +19,12 @@
 --   WashCamera.retarget(move, from, shot, now) -> Move?   the move moveTo starts, or nil while leaving; pure, for
 --                          the specs
 --   handle.destroy()       gives the camera back at once
+--   WashCamera.shot(tub, cat?) -> CFrame  as above; with washScene on, the scene's shot, framed on `cat` when given
 --   WashCamera.sceneShot(tub) -> CFrame   the wash scene's tighter shot (switch `washScene`); shot() uses it when on
+--   WashCamera.sceneShotOn(spot, cat) -> CFrame  the scene's shot framed on the cat's bounding box, from in front of
+--                          `spot` (its LookVector: the side the cat's face is on)
+--   WashCamera.sceneDistanceFor(boxHeight) -> number  the scene's camera distance for a cat whose bounding box is
+--                          `boxHeight` tall; pure, for the specs
 --   WashCamera.sceneDistance() -> number  how far the scene's camera sits from where it looks; pure, for the specs
 --   WashCamera.sceneFill(height, distance) -> number  the share of the screen's height a `height` stud cat fills at
 --                          `distance` with the scene's field of view; pure, for the specs
@@ -27,8 +32,10 @@
 -- The wash scene (Derek's dev test 2026-11-24: "it stays zoomed out at your normal character view it should be a
 -- seperate view like my pet salon"), behind `washScene`: the camera comes in close and a little high, the field of
 -- view narrows from the player's to SCENE.fov so the cat fills about SCENE.fill of the screen's height, and a soft
--- depth of field blurs the room behind the tub (not on the low tier, where the blur costs too much). Both ease with
--- the camera and go back on the exit. Station steps reach it through moveTo with shot(), so they match. The switch
+-- depth of field blurs the room behind the tub (lighter on the low tier, which is every phone; Roblox itself drops
+-- the effect at low graphics quality). Both ease with the camera and go back on the exit. Given the cat, shot()
+-- frames his own bounding box, so a station that seats him higher or lower than the tub frames him the same; station
+-- steps reach it through moveTo with shot(), so they match. The switch
 -- counts only once LiveFlags lists it as off by default: until then a missing key would read as on.
 --   Each onDone fires exactly once, deferred, also when exit is called twice or the handle is destroyed first.
 local Lighting = game:GetService("Lighting")
@@ -61,6 +68,10 @@ WashCamera.SCENE = table.freeze({
 	pitch = 38,
 	lookUp = 2.9,
 	blur = 0.5, -- the depth of field's far intensity, everything past the tub
+	blurLow = 0.3, -- the same on the low tier (phones): lighter, so it costs less (Sync-Agent: phones had none)
+	-- On screen a cat in the tub reads as this much taller than his bounding box (his ears and the view's slant:
+	-- Sync-Agent measured 0.645 for a 3 stud box framed as 3), so a shot framed on a box scales by it.
+	boxToScreen = 3.5 / 3,
 	focusRadius = 3, -- studs around the cat kept sharp
 })
 WashCamera.FLAG = "washScene"
@@ -90,6 +101,27 @@ end
 function WashCamera.sceneDistance(): number
 	local s = WashCamera.SCENE
 	return s.height / (s.fill * 2 * math.tan(math.rad(s.fov) / 2))
+end
+
+function WashCamera.sceneDistanceFor(boxHeight: number): number
+	local s = WashCamera.SCENE
+	return boxHeight * s.boxToScreen / (s.fill * 2 * math.tan(math.rad(s.fov) / 2))
+end
+
+-- Framed on the cat: his bounding box's middle, at the distance that makes him `fill` of the screen, from in front
+-- of `spot` and `pitch` up. At the tub this matches sceneShot to within a tenth of a stud.
+function WashCamera.sceneShotOn(spot: CFrame, cat: Model): CFrame
+	local s = WashCamera.SCENE
+	local box, size = cat:GetBoundingBox()
+	local d = WashCamera.sceneDistanceFor(size.Y)
+	local look = box.Position
+	local flat = Vector3.new(spot.LookVector.X, 0, spot.LookVector.Z)
+	local ahead = if flat.Magnitude > 0.01 then flat.Unit else Vector3.zAxis
+	local pitch = math.rad(s.pitch)
+	return CFrame.lookAt(
+		look + ahead * (d * math.cos(pitch)) + Vector3.yAxis * (d * math.sin(pitch)),
+		look
+	)
 end
 
 function WashCamera.sceneShot(tub: CFrame): CFrame
@@ -134,8 +166,11 @@ function WashCamera.progress(elapsed: number, reduced: boolean): number
 	return WashCamera.ease(elapsed / WashCamera.SECONDS)
 end
 
-function WashCamera.shot(tub: CFrame): CFrame
+function WashCamera.shot(tub: CFrame, cat: Model?): CFrame
 	if sceneOn() then
+		if cat and cat.Parent then
+			return WashCamera.sceneShotOn(tub, cat)
+		end
 		return WashCamera.sceneShot(tub)
 	end
 	local s = WashCamera.SHOT
@@ -188,7 +223,7 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 	local fovFrom, fovTo = homeFov, if scene then WashCamera.SCENE.fov else homeFov
 	local blur: DepthOfFieldEffect? = nil
 	local blurFrom, blurTo = 0, 0
-	if scene and Effects.tier() ~= "low" then
+	if scene then
 		local made = Instance.new("DepthOfFieldEffect")
 		made.Name = BLUR_NAME
 		made.FarIntensity = 0
@@ -197,7 +232,7 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 		made.InFocusRadius = WashCamera.SCENE.focusRadius
 		made.Parent = Lighting
 		blur = made
-		blurTo = WashCamera.SCENE.blur
+		blurTo = if Effects.tier() == "low" then WashCamera.SCENE.blurLow else WashCamera.SCENE.blur
 	end
 	local function aim(toFov: number, toBlur: number)
 		fovFrom, fovTo = cam.FieldOfView, toFov
