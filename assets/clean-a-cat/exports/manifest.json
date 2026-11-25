@@ -8641,6 +8641,53 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_ToteBag.png"
  },
  {
+  "name": "CleanACat_Prop_BuildBoard",
+  "category": "Prop",
+  "module": "boards",
+  "objects": [
+   "CleanACat_Prop_BuildBoard",
+   "CleanACat_Prop_BuildBoard_Bell",
+   "CleanACat_Prop_BuildBoard_Screen"
+  ],
+  "triangles": 796,
+  "budget": 900,
+  "parts": 36,
+  "size_studs": {
+   "x": 4.85,
+   "y": 1.1,
+   "z": 5.0
+  },
+  "size_roblox": [
+   4.85,
+   5.0,
+   1.1
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "796/900 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "460 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.11 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BuildBoard.png"
+ },
+ {
   "name": "CleanACat_Prop_BuildPad",
   "category": "Prop",
   "module": "spa_props",
@@ -9744,6 +9791,54 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Toolbox.png"
+ },
+ {
+  "name": "CleanACat_Prop_ToolsBoard",
+  "category": "Prop",
+  "module": "boards",
+  "objects": [
+   "CleanACat_Prop_ToolsBoard",
+   "CleanACat_Prop_ToolsBoard_Display_BubbleSoap",
+   "CleanACat_Prop_ToolsBoard_Display_ProBrush",
+   "CleanACat_Prop_ToolsBoard_Decor",
+   "CleanACat_Prop_ToolsBoard_Screen"
+  ],
+  "triangles": 1792,
+  "budget": 1800,
+  "parts": 61,
+  "size_studs": {
+   "x": 4.18,
+   "y": 1.1,
+   "z": 5.0
+  },
+  "size_roblox": [
+   4.18,
+   5.0,
+   1.1
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 3
+   },
+   "checks": {
+    "budget": "1792/1800 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1086 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_ToolsBoard.png"
  },
  {
   "name": "CleanACat_Prop_Twig",
