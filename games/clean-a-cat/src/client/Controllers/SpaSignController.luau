@@ -89,8 +89,10 @@ local function line(
 	label.BackgroundTransparency = 1
 	label.Font = Enum.Font.FredokaOne
 	label.TextColor3 = INK
-	label.TextScaled = true
+	-- TextWrapped first: in Roblox, turning TextWrapped off also turns TextScaled off (Sync-Agent's run on
+	-- ff0803d drew both lines at size 8), so scaling goes on after it.
 	label.TextWrapped = false
+	label.TextScaled = true
 	label.Parent = gui
 	local limit = Instance.new("UITextSizeConstraint")
 	limit.MaxTextSize = maxSize
