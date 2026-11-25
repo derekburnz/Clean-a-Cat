@@ -56,9 +56,9 @@
      0.8
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     0.949,
+     0.749,
+     0.7961
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -168,9 +168,9 @@
      0.9
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     0.949,
+     0.749,
+     0.7961
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -217,9 +217,9 @@
      0.14
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     0.949,
+     0.749,
+     0.7961
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -266,9 +266,9 @@
      0.14
     ],
     "Color": [
-     0.6588,
-     0.902,
-     0.8118
+     0.949,
+     0.749,
+     0.7961
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -316,8 +316,8 @@
     ],
     "Color": [
      1.0,
-     0.702,
-     0.7804
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -365,8 +365,8 @@
     ],
     "Color": [
      1.0,
-     0.702,
-     0.7804
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -414,8 +414,8 @@
     ],
     "Color": [
      1.0,
-     0.702,
-     0.7804
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -463,8 +463,8 @@
     ],
     "Color": [
      1.0,
-     0.702,
-     0.7804
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -512,8 +512,8 @@
     ],
     "Color": [
      1.0,
-     0.702,
-     0.7804
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -1710,9 +1710,9 @@
        0.46
       ],
       "Color": [
-       0.6588,
-       0.902,
-       0.8118
+       0.949,
+       0.749,
+       0.7961
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -1874,9 +1874,9 @@
        0.46
       ],
       "Color": [
-       0.6588,
-       0.902,
-       0.8118
+       0.949,
+       0.749,
+       0.7961
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
