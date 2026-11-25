@@ -25,6 +25,11 @@ Remotes.ClientToServer = {
 	-- holding the kitten back for the box (SudsRules.waitsForBox): marks the box opened; the player then carries him
 	"RequestPlaceKitten", -- ()  1 a second; the box opened this session and not yet handed out (SudsBox false), no cat
 	-- out, and the player's character within SudsRules.PLACE_REACH studs of their tub: hands the kitten to the tub
+	-- Carrying a customer's cat in (SpaService, switches scrubPrototype and customerCarry; CarryRules).
+	"RequestTakeCat", -- ()  1 a second (burst 2); the cat is with the front customer (CarryCat "door") and the player's
+	-- character within CarryRules.TAKE_REACH studs of SpotQueue1: the cat goes into their arms (CarryCat "arms")
+	"RequestPlaceCat", -- ()  1 a second (burst 2); the cat is in their arms (CarryCat "arms") and the character within
+	-- CarryRules.PLACE_REACH studs of their tub: the cat is in the tub and CatReady follows
 	-- Tools board (ToolService, behind toolsBoard).
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
 	-- Builds (BuildService, behind builds).

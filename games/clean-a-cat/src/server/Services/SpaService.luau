@@ -14,6 +14,9 @@
 -- customers, no bows, a 3 star score that is never added to the save, and nothing paid. His photo names him Suds.
 -- With `openingBox` on too, he waits in the box from the opening scene: no cat comes until the player taps the box
 -- (RequestOpenBox), which the save remembers, so the scene never plays again once he is out.
+-- With `customerCarry` on too (claim #406), a customer's cat stays in its carrier with the front customer until the
+-- player takes it (RequestTakeCat) and goes into the tub only when the player puts it there (RequestPlaceCat); the
+-- Player attribute CarryRules.ATTRIBUTE says where it is. Until then the client gets no CatReady, so no wash starts.
 local GroupService = game:GetService("GroupService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -22,6 +25,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
+local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -69,6 +73,9 @@ local waiting: { [Player]: boolean } = {}
 -- The save-loaded step below has finished for this player (the owner replay is applied), so a parked ask may run.
 local loadDone: { [Player]: boolean } = {}
 local random = Random.new()
+-- Where each player's customer cat is while it is carried in (switch customerCarry): "door" with the front customer,
+-- "arms" while carried; nil once it is in the tub, or for a cat that is never carried.
+local carrying: { [Player]: CarryRules.Where } = {}
 
 local function rollCustomer(player: Player): string
 	local save = DataService.get(player)
@@ -185,7 +192,18 @@ local function inBox(player: Player): boolean
 	)
 end
 
+-- Shows the player's client where the carried cat is (nil: not carried, or in the tub).
+local function sayCarry(player: Player, kind: string?)
+	local where = carrying[player]
+	player:SetAttribute(CarryRules.ATTRIBUTE, where)
+	player:SetAttribute(CarryRules.KIND_ATTRIBUTE, if where then kind else nil)
+end
+
 local function newCat(player: Player): SpaRules.Cat
+	if carrying[player] then
+		carrying[player] = nil
+		sayCarry(player, nil)
+	end
 	local id = (nextId[player] or 0) + 1
 	nextId[player] = id
 	local cat = SpaRules.newCat(id, os.clock())
@@ -228,7 +246,12 @@ local function newCat(player: Player): SpaRules.Cat
 		local line = queueFor(player)
 		cat.kind = table.remove(line, 1)
 		cat.needs = table.remove(needsFor(player), 1)
-		FigureService.served(player, cat.kind :: string) -- that customer's figure leaves the line
+		if CarryRules.carried(cat.kind, cat.stray, cat.mascot, LiveFlags.isOn) then
+			-- (switch customerCarry) the customer stays at the front holding their cat until the player takes it
+			carrying[player] = "door" -- CarryRules.DOOR
+		else
+			FigureService.served(player, cat.kind :: string) -- that customer's figure leaves the line
+		end
 		Telemetry.onboarding(player, "first_customer")
 	end
 	cats[player] = cat
@@ -257,8 +280,19 @@ local function sendQueue(player: Player)
 	for place, list in needsFor(player) do
 		needs[place] = CatRules.liveNeeds(list, LiveFlags.isOn)
 	end
-	NetService.fire(player, "CustomerQueue", table.clone(line), needs)
-	FigureService.showQueue(player, table.clone(queueFor(player)))
+	-- a cat still with its customer at the door (switch customerCarry): that customer stays at the front of the line
+	local cat = cats[player]
+	local kinds, shownNeeds = CarryRules.shownLine(
+		line,
+		needs,
+		carrying[player],
+		if cat then cat.kind else nil,
+		if cat and cat.kind
+			then CatRules.liveNeeds(cat.needs or CatRules.needs(cat.kind), LiveFlags.isOn)
+			else nil
+	)
+	NetService.fire(player, "CustomerQueue", kinds, shownNeeds)
+	FigureService.showQueue(player, table.clone(kinds))
 end
 
 -- A brand new save's kitten waits in the box (switch openingBox): the client plays the scene while SudsBox is true.
@@ -313,7 +347,11 @@ local function onRequestCat(player: Player)
 			end
 		end
 	end
-	sendCat(player, cat :: SpaRules.Cat)
+	if carrying[player] then
+		sayCarry(player, cat.kind) -- still at the door or in the player's arms: no wash until it is in the tub
+	else
+		sendCat(player, cat :: SpaRules.Cat)
+	end
 	if LiveFlags.isOn(CUSTOMERS_FLAG) then
 		sendQueue(player)
 	end
@@ -379,6 +417,77 @@ local function onPlaceKitten(player: Player)
 	handOut(player)
 end
 
+-- Whether the player's character stands within `reach` studs (along the ground) of `spot`.
+local function standsNear(player: Player, spot: Vector3, reach: number): boolean
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
+	return root ~= nil
+		and root:IsA("BasePart")
+		and CarryRules.within((root :: BasePart).Position, spot, reach)
+end
+
+-- The player takes the cat from the front customer (switch customerCarry): it is in their arms, and that customer
+-- leaves the line. Only while the cat is at the door and the player stands by the front of the line.
+local function onTakeCat(player: Player)
+	local cat = cats[player]
+	if
+		not (LiveFlags.isOn(FLAG) and LiveFlags.isOn(CarryRules.FLAG))
+		or carrying[player] ~= CarryRules.DOOR
+		or cat == nil
+		or cat.kind == nil
+		or not standsNear(
+			player,
+			SpaLayout.lineSpot("SpotQueue", 1, player).Position,
+			CarryRules.TAKE_REACH
+		)
+	then
+		return
+	end
+	carrying[player] = "arms" -- CarryRules.ARMS
+	FigureService.served(player, cat.kind :: string)
+	sayCarry(player, cat.kind)
+	sendQueue(player)
+end
+
+-- The player puts the carried cat in the tub (switch customerCarry): the wash starts (CatReady). Only while it is in
+-- their arms and they stand by their own tub.
+local function onPlaceCat(player: Player)
+	local cat = cats[player]
+	if
+		not (LiveFlags.isOn(FLAG) and LiveFlags.isOn(CarryRules.FLAG))
+		or carrying[player] ~= CarryRules.ARMS
+		or cat == nil
+		or not standsNear(player, SpaLayout.tubSpot(player).Position, CarryRules.PLACE_REACH)
+	then
+		return
+	end
+	carrying[player] = nil
+	sayCarry(player, nil)
+	sendCat(player, cat)
+end
+
+-- The carry switched off while a cat is out of the tub: it goes straight into the tub, as before the switch, and a
+-- customer still holding it leaves the line.
+local function dropCarry(player: Player)
+	local where = carrying[player]
+	local cat = cats[player]
+	if where == nil then
+		return
+	end
+	carrying[player] = nil
+	sayCarry(player, nil)
+	if cat == nil then
+		return
+	end
+	if where == CarryRules.DOOR and cat.kind then
+		FigureService.served(player, cat.kind :: string)
+	end
+	sendCat(player, cat)
+	if LiveFlags.isOn(CUSTOMERS_FLAG) then
+		sendQueue(player)
+	end
+end
+
 -- The player picks a waiting customer to be washed next: it moves to the front of the line (#201).
 local function onPickCustomer(player: Player, rawIndex: unknown)
 	if
@@ -387,7 +496,9 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 		return
 	end
 	local index = Guard.int(rawIndex, 2, QUEUE_SIZE)
-	if index == nil or queues[player] == nil then
+	-- No pick while a customer still holds the cat at the door (switch customerCarry): the line the player sees then
+	-- has that customer in front of the server's line, so the places would not match.
+	if index == nil or queues[player] == nil or carrying[player] == CarryRules.DOOR then
 		return
 	end
 	-- A new save's first customer is the guaranteed common cat; picking past it would skip that. Picks open once a
@@ -627,6 +738,8 @@ function SpaService.Start()
 	NetService.on("RequestPickCustomer", { perSecond = 1, burst = 2 }, onPickCustomer)
 	NetService.on("RequestOpenBox", { perSecond = 1 }, onOpenBox)
 	NetService.on("RequestPlaceKitten", { perSecond = 1 }, onPlaceKitten)
+	NetService.on("RequestTakeCat", { perSecond = 1, burst = 2 }, onTakeCat)
+	NetService.on("RequestPlaceCat", { perSecond = 1, burst = 2 }, onPlaceCat)
 	-- The opening or the kitten switched off while a kitten waits in a box: the box goes, and the tub gets him (or,
 	-- with sudsWash off, the usual first cat).
 	for _, flag in { SudsRules.BOX_FLAG, SudsRules.FLAG } do
@@ -649,14 +762,31 @@ function SpaService.Start()
 		:Connect(function()
 			if not LiveFlags.isOn(FLAG) then
 				table.clear(cats)
+				for player in table.clone(carrying) do
+					carrying[player] = nil
+					sayCarry(player, nil)
+				end
 			end
 		end)
 	-- Customers switched on or off: the next cat follows the switch; a queue left over is dropped.
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CUSTOMERS_FLAG)
 		:Connect(function()
 			if not LiveFlags.isOn(CUSTOMERS_FLAG) then
+				for player in table.clone(carrying) do
+					dropCarry(player)
+				end
 				table.clear(queues)
 				table.clear(queueNeeds)
+			end
+		end)
+	-- The carry switched off: a cat at the door or in someone's arms goes straight into their tub.
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CarryRules.FLAG)
+		:Connect(function()
+			if LiveFlags.isOn(CarryRules.FLAG) then
+				return
+			end
+			for player in table.clone(carrying) do
+				dropCarry(player)
 			end
 		end)
 	-- A later wash step switched on or off: the waiting cards show or drop its need at once (CatRules.liveNeeds).
@@ -682,6 +812,7 @@ function SpaService.Start()
 		waiting[player] = nil
 		loadDone[player] = nil
 		isOwner[player] = nil
+		carrying[player] = nil
 	end)
 end
 
