@@ -20,6 +20,9 @@ local FLAG = "customerFigures"
 local CUSTOMERS_FLAG = "customers"
 local FOLDER_NAME = "Customers"
 local CARRIER_ASSET = "CleanACat_Prop_Carrier"
+-- Model-Agent's carrier looks (#458), the same Attachments and attributes as the first: each customer keeps one by
+-- their look number, so a line is not three of one thing. A look not in the game yet falls back to the first.
+local CARRIER_LOOKS = { CARRIER_ASSET, "CleanACat_Prop_CarrierSky", "CleanACat_Prop_CarrierButter" }
 local MAX_SHOWN = 3 -- one on each queue mat
 
 local FigureService = {}
@@ -168,8 +171,14 @@ local function template(look: Look): Model?
 end
 
 -- The carrier hanging from the figure's right hand by its Grip, door to the front, the cat inside.
-local function carrierFor(figure: Model, kind: string): Model?
-	local carrierAsset = asset(CARRIER_ASSET)
+local function carrierFor(figure: Model, kind: string, lookNumber: number): Model?
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	-- stepped past the figure looks, so one figure look does not always carry the same carrier
+	local wanted = CARRIER_LOOKS[(lookNumber + lookNumber // #LOOKS) % #CARRIER_LOOKS + 1]
+	local variant = if assets then assets:FindFirstChild(wanted) else nil
+	local carrierAsset = if variant and variant:IsA("Model")
+		then variant :: Model
+		else asset(CARRIER_ASSET)
 	local hand = figure:FindFirstChild("RightGripAttachment", true)
 	if carrierAsset == nil or hand == nil or not hand:IsA("Attachment") then
 		return nil
@@ -255,7 +264,7 @@ local function buildFolder(slot: number, kinds: { string }, lookNumbers: { numbe
 			if root and root:IsA("BasePart") then
 				(root :: BasePart).Anchored = true
 			end
-			local carrier = carrierFor(figure, kinds[index])
+			local carrier = carrierFor(figure, kinds[index], lookNumbers[index] or index)
 			if carrier then
 				carrier.Parent = figure
 			end
