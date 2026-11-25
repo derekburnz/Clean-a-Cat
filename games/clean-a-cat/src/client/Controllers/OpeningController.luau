@@ -21,6 +21,7 @@
 -- The console says how long after the join the truck started, to measure on a phone.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local Workspace = game:GetService("Workspace")
 
@@ -370,8 +371,12 @@ local function plotLanding(): CFrame?
 	return nil
 end
 
--- How long the opening took to start, for a measure on a real phone.
+-- How long the opening took to start, for a measure in a Studio run (Sync-Agent's timing check). Silent in a real
+-- server, so players' consoles stay clean (Review-QA, after #422).
 local function sayStarted()
+	if not RunService:IsStudio() then
+		return
+	end
 	local joined = player:GetAttribute(SudsRules.JOINED_ATTRIBUTE)
 	local sinceJoin = if type(joined) == "number"
 		then string.format("%.2f", Workspace:GetServerTimeNow() - joined)

@@ -2,8 +2,9 @@
 -- LiveFlagService: reads the live switches from their DataStore every LiveFlags.CHECK_SECONDS and copies each
 -- to a ReplicatedStorage attribute. A failed read keeps what the server had. Studio uses its own store name,
 -- so a test in Studio can never flip a switch for live players.
--- Budget note: this costs one DataStore read per switch per minute per server. That is fine for a few dozen
--- switches. Retire a switch once its feature has been on for good, so the list stays short.
+-- Budget: one DataStore read a minute per server for every switch, from the entry LiveFlags.ALL_ENTRY (#325; one
+-- read per switch hit 58 a minute, near the 60 plus 10 per player budget the saves share). A store that has no
+-- such entry yet (flags.sh writes it on its first set) is read the older way, one entry per switch, until it has.
 local DataStoreService = game:GetService("DataStoreService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -29,27 +30,51 @@ local function readOne(store: DataStore, key: string)
 	end
 end
 
+-- Reads the entry that holds every switch and publishes them all. Returns "done" when it did, "missing" when the
+-- store has no such entry yet (or it is not a table), and "failed" when the read failed (nothing changes).
+local function readAll(store: DataStore): "done" | "missing" | "failed"
+	local ok, value = pcall(function()
+		return store:GetAsync(LiveFlags.ALL_ENTRY)
+	end)
+	if not ok then
+		return "failed"
+	end
+	if type(value) ~= "table" then
+		return "missing"
+	end
+	for _, key in LiveFlags.KEYS do
+		publish(key, LiveFlags.storedIn(value, key))
+	end
+	return "done"
+end
+
 local function refresh(store: DataStore)
+	if readAll(store) ~= "missing" then
+		return
+	end
 	for _, key in LiveFlags.KEYS do
 		readOne(store, key)
 	end
 end
 
--- The first read asks for every switch at once, so it takes one store round trip instead of one per switch (about
--- 45 in a row took 6 to 7 s, and the first player in a new server missed the opening, 2026-11-24). It is marked
--- done when every answer is in, or after READ_WAIT_SECONDS; a switch still unanswered then keeps its default until
--- the next minute's read.
+-- The first read is marked done when every answer is in, or after READ_WAIT_SECONDS; a switch still unanswered then
+-- keeps its default until the next minute's read. In the older layout it asks for every switch at once, so it takes
+-- one store round trip instead of one per switch (about 45 in a row took 6 to 7 s, and the first player in a new
+-- server missed the opening, 2026-11-24).
 local function firstRead(store: DataStore)
-	local left = #LiveFlags.KEYS
-	for _, key in LiveFlags.KEYS do
-		task.spawn(function()
-			readOne(store, key)
-			left -= 1
-		end)
-	end
 	local deadline = os.clock() + LiveFlags.READ_WAIT_SECONDS
-	while left > 0 and os.clock() < deadline do
-		task.wait(0.05)
+	local all = readAll(store)
+	if all == "missing" then
+		local left = #LiveFlags.KEYS
+		for _, key in LiveFlags.KEYS do
+			task.spawn(function()
+				readOne(store, key)
+				left -= 1
+			end)
+		end
+		while left > 0 and os.clock() < deadline do
+			task.wait(0.05)
+		end
 	end
 	ReplicatedStorage:SetAttribute(LiveFlags.READ_ATTRIBUTE, true)
 end
