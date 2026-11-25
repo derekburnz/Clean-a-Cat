@@ -1917,6 +1917,12 @@ function ScrubController.stage(): string?
 	return if v then hudStage(v) else nil
 end
 
+-- True from the photo until the cat leaves and the recap card (or the next cat's request) comes: the stage already
+-- says "done", but the cat is still in the tub and the card is on its way, so no help bubble should show yet.
+function ScrubController.leaving(): boolean
+	return nextCatThread ~= nil
+end
+
 -- Where a cat sits in the tub: the tub's CatSeat once a cat has come, else its usual height over the tub's spot
 -- (the opening's carried kitten is set down here, OpeningController).
 function ScrubController.seatSpot(): CFrame
