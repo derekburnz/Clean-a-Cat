@@ -375,9 +375,10 @@ def compose_split(raw_dir, final=False):
     box = art.getchannel("A").point(lambda a: 255 if a > 60 else 0).getbbox()
     reach = max(rm - box[0], box[2] - rm)                  # crop evenly about the middle line, so it stays central
     art = art.crop((rm - reach, box[1], rm + reach, box[3]))
-    k = min(w * 0.6 / art.width, h * 0.9 / art.height)
-    art = art.resize((int(art.width * k) // 2 * 2, int(art.height * k)), Image.LANCZOS)
-    top = int(h * 0.03)
+    solid = dirty.getchannel("A").point(lambda a: 255 if a >= 250 else 0).getbbox()   # the cat without its shadow
+    k = h * 1.1 / (solid[3] - solid[1])                    # close: the head and chest fill about 0.7 of the height
+    art = art.resize((int(art.width * k) // 2 * 2, int(art.height * k)), Image.LANCZOS)   # and the feet drop under
+    top = int(h * 0.025)                                   # the title and out of the frame (Review-QA on #500)
     bg.alpha_composite(art, (mid - art.width // 2, top))
     fx = Image.new("RGBA", size, (0, 0, 0, 0))
     d = ImageDraw.Draw(fx)
