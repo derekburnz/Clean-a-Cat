@@ -181,6 +181,8 @@ type Visit = {
 	rinsed: number, -- (washMeter) puffs the player has sprayed off in the rinse
 	popped: { [Model]: boolean }, -- (washMeter) those puffs
 	shaking: string?, -- (washMeter) the step whose full bar the cat is shaking off; input waits until it ends
+	held: string?, -- (washMeter) the full bar still shown after the shake until heldUntil (os.clock), or the next
+	heldUntil: number, -- step's first progress
 	away: boolean, -- the cat sits at a later step's station, not in the tub
 	hold: Paw?, -- the paw under the press in the Pawdicure, held since holdSince
 	holdSince: number,
@@ -287,16 +289,9 @@ local function updateWashView(v: {
 	end
 end
 
--- (washMeter) The bar the HUD shows for this visit: its step and how full, or nil when no area step is under way.
--- While the cat shakes off a full bar, that bar stays full.
-local function meterOf(v: Visit?): (string?, number)
-	if v == nil or v.cat == nil or not LiveFlags.isOn(WashMeter.FLAG) then
-		return nil, 0
-	end
+-- (washMeter) The area step under way and how much of it is done, 0 to 1, or nil.
+local function workOf(v: Visit): (string?, number)
 	local cat = v.cat :: Cat
-	if v.shaking then
-		return v.shaking, 1
-	end
 	if v.step == "smell" then
 		if not v.lather then
 			return nil, 0
@@ -320,6 +315,22 @@ local function meterOf(v: Visit?): (string?, number)
 	return nil, 0
 end
 
+-- (washMeter) The bar the HUD shows for this visit: its step and how full, or nil when no area step is under way.
+-- While the cat shakes off a full bar, that bar stays full.
+local function meterOf(v: Visit?): (string?, number)
+	if v == nil or v.cat == nil or not LiveFlags.isOn(WashMeter.FLAG) then
+		return nil, 0
+	end
+	if v.shaking then
+		return v.shaking, 1
+	end
+	local step, fill = workOf(v)
+	if v.held and os.clock() < v.heldUntil and fill <= 0 then
+		return v.held, 1
+	end
+	return step, fill
+end
+
 local meterStep: string? = nil
 local meterFill = 0
 
@@ -341,7 +352,15 @@ end
 -- for the shake, and `after` runs once it ends while this visit and cat still stand.
 local function shakeOff(v: Visit, cat: Cat, step: string, after: (() -> ())?)
 	v.shaking = step
+	v.held = step
+	v.heldUntil = os.clock() + WashMeter.HOLD_SECONDS
 	syncMeter(v)
+	task.delay(WashMeter.HOLD_SECONDS, function()
+		if visit == v and v.held == step then
+			v.held = nil
+			syncMeter(v)
+		end
+	end)
 	Moments.ShakeOff:Fire(cat.model, step)
 	task.delay(WashMeter.SHAKE_SECONDS, function()
 		if visit ~= v or v.cat ~= cat or v.shaking ~= step then
@@ -1019,6 +1038,7 @@ local function armLater(v: Visit, cat: Cat)
 	v.rinsed = 0
 	v.popped = {}
 	v.shaking = nil
+	v.held = nil
 	v.hold = nil
 	v.step = nil
 	ringPaw(v, nil)
@@ -2184,6 +2204,8 @@ local function buildVisit(folder: Folder): Visit
 		rinsed = 0,
 		popped = {},
 		shaking = nil,
+		held = nil,
+		heldUntil = 0,
 		away = false,
 		hold = nil,
 		holdSince = 0,

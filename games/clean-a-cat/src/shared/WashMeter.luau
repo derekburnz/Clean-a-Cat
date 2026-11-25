@@ -10,6 +10,9 @@ local WashMeter = {}
 WashMeter.FLAG = "washMeter"
 WashMeter.FULL_AT = 0.9 -- share of an area step done when the bar is full
 WashMeter.SHAKE_SECONDS = 0.7 -- the shake off, before the next step starts
+-- The full bar stays up this long from the shake, so its "Squeaky clean!" cheer shows (Review-QA on #468), unless
+-- the player gets on with the next step first.
+WashMeter.HOLD_SECONDS = 1.3
 -- The steps with a bar, as ScrubController.meterChanged names them.
 WashMeter.STEPS = table.freeze({ "scrub", "brush", "lather", "rinse", "claws" }) :: { string }
 
