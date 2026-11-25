@@ -186,31 +186,44 @@ function Effects.burst(name: string, position: Vector3, color: Color3?)
 	entry.emitter:Emit(Tier.burst(preset.burst, lessSparkle()))
 end
 
-function Effects.glow(model: Model, seconds: number)
+-- A Highlight on `model` inside the tier's Highlight budget, or nil when the budget is full (or before start). It
+-- frees its place in the budget when destroyed; the caller fades it and destroys it.
+function Effects.highlight(model: Model, fill: Color3, outline: Color3): Highlight?
 	if not started or not model:IsDescendantOf(workspace) then
-		return
+		return nil
 	end
 	if activeHighlights >= PresetData.budgets[tier].maxHighlights then
-		return
+		return nil
 	end
 	activeHighlights += 1
 	local highlight = Instance.new("Highlight")
 	highlight.Name = "CleanACat_Fx_Glow"
 	highlight.DepthMode = Enum.HighlightDepthMode.Occluded
-	highlight.FillColor = Color3.fromRGB(255, 250, 235)
-	highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-	highlight.FillTransparency = 0.75
-	highlight.OutlineTransparency = 0.3
+	highlight.FillColor = fill
+	highlight.OutlineColor = outline
+	highlight.FillTransparency = 1
+	highlight.OutlineTransparency = 1
 	highlight.Adornee = model
 	highlight.Parent = model
 	local released = false
-	local function release()
+	highlight.Destroying:Once(function()
 		if not released then
 			released = true
 			activeHighlights -= 1
 		end
+	end)
+	return highlight
+end
+
+function Effects.glow(model: Model, seconds: number)
+	local made =
+		Effects.highlight(model, Color3.fromRGB(255, 250, 235), Color3.fromRGB(255, 255, 255))
+	if made == nil then
+		return
 	end
-	highlight.Destroying:Once(release)
+	local highlight = made :: Highlight
+	highlight.FillTransparency = 0.75
+	highlight.OutlineTransparency = 0.3
 	if reducedMotion() then
 		task.delay(seconds, function()
 			highlight:Destroy()

@@ -6,6 +6,7 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 | Moment | Effect | Where it plays | Preset | Phone budget | Reduce Motion | Issue | Status |
 |---|---|---|---|---|---|---|---|
 | (dirty cat in view) | REMOVED 2026-11-25 (Derek: no green stink smoke anywhere; mud on the coat shows a dirty cat). Was stinkWisps, #122 | | | | | #122 | removed |
+| VisitorArrived | A special visitor walks in: a soft gold outline fades in and out over 2.6 s, three small gold bursts at the feet, then a small gold star bobs over their head for as long as they are in the spa. Nothing stops play | the visitor | revealSparkle (gold) | 1 Highlight (inside the budget), 1 BillboardGui, bursts 6 phone, 8 PC | the glow just shows and fades, the star sits still; less sparkle: one burst | #528 | built; plays once Gameplay adds VisitorArrived (#510) |
 | ScrubMove | Foam bubbles at the sponge point, drift up and pop; rate follows drag speed | hit point on the cat | foamTrail | Rate 8, life 0.8 s | kept, halved | #4 | built, switch scrubEffects |
 | ScrubMove (Bubble Soap) | Wider ring of bubbles | hit point | foamTrailWide | Rate 8, life 0.8 s | kept, halved | #4 | planned |
 | ScrubMove (Golden Sponge pass) | Gold-tinted bubbles, same count | hit point | foamTrailGold | Rate 8, life 0.8 s | kept, halved | #4 | planned |
