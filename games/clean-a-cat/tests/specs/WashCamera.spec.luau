@@ -31,9 +31,27 @@ return function()
 			expect(S.lookUp + d * math.sin(pitch) < 8).to.equal(true) -- well under the spa's ceiling
 		end)
 
+		it(
+			"framed on the cat's box, a 3 stud cat in the tub gets the tub shot's distance",
+			function()
+				expect(math.abs(WashCamera.sceneDistanceFor(3) - WashCamera.sceneDistance()) < 1e-6).to.equal(
+					true
+				)
+				-- a taller box backs the camera off in step, so he fills the same share at every station
+				expect(WashCamera.sceneDistanceFor(3.6) > WashCamera.sceneDistanceFor(3)).to.equal(
+					true
+				)
+				local d = WashCamera.sceneDistanceFor(3.6)
+				expect(math.abs(WashCamera.sceneFill(3.6 * S.boxToScreen, d) - S.fill) < 1e-6).to.equal(
+					true
+				)
+			end
+		)
+
 		it("blurs only past the cat, gently", function()
 			expect(S.focusRadius >= S.height / 2).to.equal(true)
 			expect(S.blur > 0 and S.blur <= 0.6).to.equal(true)
+			expect(S.blurLow > 0 and S.blurLow <= S.blur).to.equal(true)
 		end)
 	end)
 end
