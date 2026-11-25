@@ -48,8 +48,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_Backdrop.png"
+  }
  },
  {
   "name": "CleanACat_Area_SpaPlot",
@@ -103,8 +102,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_SpaPlot.png"
+  }
  },
  {
   "name": "CleanACat_Area_Street",
@@ -156,8 +154,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_Street.png"
+  }
  },
  {
   "name": "CleanACat_Area_VipBuilding",
@@ -205,8 +202,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipBuilding.png"
+  }
  },
  {
   "name": "CleanACat_Area_VipLocked",
@@ -253,8 +249,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipLocked.png"
+  }
  },
  {
   "name": "CleanACat_Area_VipRoom",
@@ -306,8 +301,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipRoom.png"
+  }
  },
  {
   "name": "CleanACat_Bow_Mint",
@@ -352,8 +346,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Mint.png"
+  }
  },
  {
   "name": "CleanACat_Bow_Pink",
@@ -398,8 +391,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Pink.png"
+  }
  },
  {
   "name": "CleanACat_Bow_Sky",
@@ -444,8 +436,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Sky.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton",
@@ -573,8 +564,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton_Dirty",
@@ -637,18 +627,18 @@
    "CleanACat_Cat_Cotton_Dirty_Claw07",
    "CleanACat_Cat_Cotton_Dirty_Claw08"
   ],
-  "triangles": 2642,
+  "triangles": 2654,
   "budget": 3200,
-  "parts": 134,
+  "parts": 135,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -663,7 +653,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -778,18 +777,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2642/3200 tris",
+    "budget": "2654/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1635 faces on swatch centers",
+    "uv": "1641 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton_Dirty_Sit",
@@ -850,9 +848,9 @@
    "CleanACat_Cat_Cotton_Dirty_Sit_Claw07",
    "CleanACat_Cat_Cotton_Dirty_Sit_Claw08"
   ],
-  "triangles": 2666,
+  "triangles": 2678,
   "budget": 3200,
-  "parts": 137,
+  "parts": 138,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -876,7 +874,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -981,18 +988,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2666/3200 tris",
+    "budget": "2678/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1651 faces on swatch centers",
+    "uv": "1657 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Cotton_Sit",
@@ -1110,8 +1116,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Cotton_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky",
@@ -1239,8 +1244,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky_Dirty",
@@ -1303,18 +1307,18 @@
    "CleanACat_Cat_Inky_Dirty_Claw07",
    "CleanACat_Cat_Inky_Dirty_Claw08"
   ],
-  "triangles": 2642,
+  "triangles": 2654,
   "budget": 3200,
-  "parts": 134,
+  "parts": 135,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -1329,7 +1333,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -1444,18 +1457,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2642/3200 tris",
+    "budget": "2654/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1635 faces on swatch centers",
+    "uv": "1641 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky_Dirty_Sit",
@@ -1516,9 +1528,9 @@
    "CleanACat_Cat_Inky_Dirty_Sit_Claw07",
    "CleanACat_Cat_Inky_Dirty_Sit_Claw08"
   ],
-  "triangles": 2666,
+  "triangles": 2678,
   "budget": 3200,
-  "parts": 137,
+  "parts": 138,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -1542,7 +1554,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -1647,18 +1668,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2666/3200 tris",
+    "budget": "2678/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1651 faces on swatch centers",
+    "uv": "1657 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Inky_Sit",
@@ -1776,8 +1796,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Inky_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud",
@@ -1913,8 +1932,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud_Dirty",
@@ -1977,9 +1995,9 @@
    "CleanACat_Cat_LilacCloud_Dirty_Claw07",
    "CleanACat_Cat_LilacCloud_Dirty_Claw08"
   ],
-  "triangles": 2922,
+  "triangles": 2934,
   "budget": 3200,
-  "parts": 144,
+  "parts": 145,
   "size_studs": {
    "x": 1.53,
    "y": 2.04,
@@ -2003,7 +2021,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -2126,18 +2153,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2922/3200 tris",
+    "budget": "2934/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1799 faces on swatch centers",
+    "uv": "1805 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=-0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud_Dirty_Sit",
@@ -2198,9 +2224,9 @@
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw07",
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw08"
   ],
-  "triangles": 3024,
+  "triangles": 3036,
   "budget": 3200,
-  "parts": 149,
+  "parts": 150,
   "size_studs": {
    "x": 1.64,
    "y": 1.27,
@@ -2224,7 +2250,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -2337,18 +2372,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3024/3200 tris",
+    "budget": "3036/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1857 faces on swatch centers",
+    "uv": "1863 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.13 y=-0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_LilacCloud_Sit",
@@ -2474,8 +2508,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_LilacCloud_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble",
@@ -2607,8 +2640,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble_Dirty",
@@ -2671,18 +2703,18 @@
    "CleanACat_Cat_Marble_Dirty_Claw07",
    "CleanACat_Cat_Marble_Dirty_Claw08"
   ],
-  "triangles": 2774,
+  "triangles": 2786,
   "budget": 3200,
-  "parts": 150,
+  "parts": 151,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.97
   },
   "size_roblox": [
    1.39,
    1.97,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -2697,7 +2729,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -2816,18 +2857,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2774/3200 tris",
+    "budget": "2786/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1705 faces on swatch centers",
+    "uv": "1711 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble_Dirty_Sit",
@@ -2888,9 +2928,9 @@
    "CleanACat_Cat_Marble_Dirty_Sit_Claw07",
    "CleanACat_Cat_Marble_Dirty_Sit_Claw08"
   ],
-  "triangles": 2798,
+  "triangles": 2810,
   "budget": 3200,
-  "parts": 153,
+  "parts": 154,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -2914,7 +2954,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -3023,18 +3072,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2798/3200 tris",
+    "budget": "2810/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1721 faces on swatch centers",
+    "uv": "1727 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Marble_Sit",
@@ -3156,8 +3204,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Marble_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin",
@@ -3289,8 +3336,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin_Dirty",
@@ -3353,18 +3399,18 @@
    "CleanACat_Cat_Muffin_Dirty_Claw07",
    "CleanACat_Cat_Muffin_Dirty_Claw08"
   ],
-  "triangles": 2738,
+  "triangles": 2750,
   "budget": 3200,
-  "parts": 142,
+  "parts": 143,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -3379,7 +3425,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -3498,18 +3553,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2738/3200 tris",
+    "budget": "2750/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1683 faces on swatch centers",
+    "uv": "1689 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin_Dirty_Sit",
@@ -3570,9 +3624,9 @@
    "CleanACat_Cat_Muffin_Dirty_Sit_Claw07",
    "CleanACat_Cat_Muffin_Dirty_Sit_Claw08"
   ],
-  "triangles": 2764,
+  "triangles": 2776,
   "budget": 3200,
-  "parts": 146,
+  "parts": 147,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -3596,7 +3650,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -3705,18 +3768,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2764/3200 tris",
+    "budget": "2776/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1695 faces on swatch centers",
+    "uv": "1701 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Muffin_Sit",
@@ -3838,8 +3900,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Muffin_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches",
@@ -3971,8 +4032,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches_Dirty",
@@ -4035,18 +4095,18 @@
    "CleanACat_Cat_Patches_Dirty_Claw07",
    "CleanACat_Cat_Patches_Dirty_Claw08"
   ],
-  "triangles": 2714,
+  "triangles": 2726,
   "budget": 3200,
-  "parts": 140,
+  "parts": 141,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -4061,7 +4121,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -4180,18 +4249,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2714/3200 tris",
+    "budget": "2726/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1671 faces on swatch centers",
+    "uv": "1677 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches_Dirty_Sit",
@@ -4252,9 +4320,9 @@
    "CleanACat_Cat_Patches_Dirty_Sit_Claw07",
    "CleanACat_Cat_Patches_Dirty_Sit_Claw08"
   ],
-  "triangles": 2726,
+  "triangles": 2738,
   "budget": 3200,
-  "parts": 142,
+  "parts": 143,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -4278,7 +4346,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -4387,18 +4464,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2726/3200 tris",
+    "budget": "2738/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1681 faces on swatch centers",
+    "uv": "1687 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Patches_Sit",
@@ -4520,8 +4596,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Patches_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge",
@@ -4653,8 +4728,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge_Dirty",
@@ -4717,18 +4791,18 @@
    "CleanACat_Cat_Smudge_Dirty_Claw07",
    "CleanACat_Cat_Smudge_Dirty_Claw08"
   ],
-  "triangles": 2738,
+  "triangles": 2750,
   "budget": 3200,
-  "parts": 142,
+  "parts": 143,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -4743,7 +4817,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -4862,18 +4945,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2738/3200 tris",
+    "budget": "2750/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1683 faces on swatch centers",
+    "uv": "1689 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge_Dirty_Sit",
@@ -4934,9 +5016,9 @@
    "CleanACat_Cat_Smudge_Dirty_Sit_Claw07",
    "CleanACat_Cat_Smudge_Dirty_Sit_Claw08"
   ],
-  "triangles": 2764,
+  "triangles": 2776,
   "budget": 3200,
-  "parts": 146,
+  "parts": 147,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -4960,7 +5042,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -5069,18 +5160,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2764/3200 tris",
+    "budget": "2776/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1695 faces on swatch centers",
+    "uv": "1701 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Smudge_Sit",
@@ -5202,8 +5292,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Smudge_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat",
@@ -5339,8 +5428,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat_Dirty",
@@ -5403,9 +5491,9 @@
    "CleanACat_Cat_Starcoat_Dirty_Claw07",
    "CleanACat_Cat_Starcoat_Dirty_Claw08"
   ],
-  "triangles": 2726,
+  "triangles": 2738,
   "budget": 3200,
-  "parts": 141,
+  "parts": 142,
   "size_studs": {
    "x": 1.39,
    "y": 2.09,
@@ -5429,7 +5517,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -5554,18 +5651,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2726/3200 tris",
+    "budget": "2738/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1677 faces on swatch centers",
+    "uv": "1683 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat_Dirty_Sit",
@@ -5626,9 +5722,9 @@
    "CleanACat_Cat_Starcoat_Dirty_Sit_Claw07",
    "CleanACat_Cat_Starcoat_Dirty_Sit_Claw08"
   ],
-  "triangles": 2786,
+  "triangles": 2798,
   "budget": 3200,
-  "parts": 147,
+  "parts": 148,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -5652,7 +5748,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -5765,18 +5870,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2786/3200 tris",
+    "budget": "2798/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1711 faces on swatch centers",
+    "uv": "1717 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Starcoat_Sit",
@@ -5902,8 +6006,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Starcoat_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Suds",
@@ -6040,8 +6143,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Suds.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Suds_Dirty",
@@ -6104,18 +6206,18 @@
    "CleanACat_Cat_Suds_Dirty_Claw07",
    "CleanACat_Cat_Suds_Dirty_Claw08"
   ],
-  "triangles": 2666,
+  "triangles": 2678,
   "budget": 3200,
-  "parts": 136,
+  "parts": 137,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -6130,7 +6232,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -6253,18 +6364,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2666/3200 tris",
+    "budget": "2678/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1647 faces on swatch centers",
+    "uv": "1653 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Suds_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Suds_Dirty_Loaf",
@@ -6300,9 +6410,9 @@
    "CleanACat_Cat_Suds_Dirty_Loaf_Tail",
    "CleanACat_Cat_Suds_Dirty_Loaf_Mud15"
   ],
-  "triangles": 1246,
+  "triangles": 1258,
   "budget": 2600,
-  "parts": 83,
+  "parts": 84,
   "size_studs": {
    "x": 1.39,
    "y": 2.07,
@@ -6410,18 +6520,17 @@
     "back to back": 17
    },
    "checks": {
-    "budget": "1246/2600 tris",
+    "budget": "1258/2600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "712 faces on swatch centers",
+    "uv": "718 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.23",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Suds_Dirty_Loaf.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Suds_Dirty_Sit",
@@ -6482,9 +6591,9 @@
    "CleanACat_Cat_Suds_Dirty_Sit_Claw07",
    "CleanACat_Cat_Suds_Dirty_Sit_Claw08"
   ],
-  "triangles": 2690,
+  "triangles": 2702,
   "budget": 3200,
-  "parts": 139,
+  "parts": 140,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -6508,7 +6617,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -6621,18 +6739,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2690/3200 tris",
+    "budget": "2702/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1663 faces on swatch centers",
+    "uv": "1669 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Suds_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Suds_Loaf",
@@ -6755,8 +6872,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Suds_Loaf.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Suds_Sit",
@@ -6885,8 +7001,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Suds_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee",
@@ -7014,8 +7129,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee_Dirty",
@@ -7078,18 +7192,18 @@
    "CleanACat_Cat_Toffee_Dirty_Claw07",
    "CleanACat_Cat_Toffee_Dirty_Claw08"
   ],
-  "triangles": 2666,
+  "triangles": 2678,
   "budget": 3200,
-  "parts": 141,
+  "parts": 142,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.97
   },
   "size_roblox": [
    1.39,
    1.97,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -7104,7 +7218,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -7219,18 +7342,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2666/3200 tris",
+    "budget": "2678/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1651 faces on swatch centers",
+    "uv": "1657 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee_Dirty_Sit",
@@ -7291,9 +7413,9 @@
    "CleanACat_Cat_Toffee_Dirty_Sit_Claw07",
    "CleanACat_Cat_Toffee_Dirty_Sit_Claw08"
   ],
-  "triangles": 2690,
+  "triangles": 2702,
   "budget": 3200,
-  "parts": 144,
+  "parts": 145,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -7317,7 +7439,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -7422,18 +7553,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2690/3200 tris",
+    "budget": "2702/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1667 faces on swatch centers",
+    "uv": "1673 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Toffee_Sit",
@@ -7551,8 +7681,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Toffee_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux",
@@ -7688,8 +7817,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux_Dirty",
@@ -7752,18 +7880,18 @@
    "CleanACat_Cat_Tux_Dirty_Claw07",
    "CleanACat_Cat_Tux_Dirty_Claw08"
   ],
-  "triangles": 2678,
+  "triangles": 2690,
   "budget": 3200,
-  "parts": 137,
+  "parts": 138,
   "size_studs": {
    "x": 1.39,
-   "y": 2.0,
+   "y": 2.01,
    "z": 1.86
   },
   "size_roblox": [
    1.39,
    1.86,
-   2.0
+   2.01
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -7778,7 +7906,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 13,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -7901,18 +8038,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2678/3200 tris",
+    "budget": "2690/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1653 faces on swatch centers",
+    "uv": "1659 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Dirty.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux_Dirty_Sit",
@@ -7973,9 +8109,9 @@
    "CleanACat_Cat_Tux_Dirty_Sit_Claw07",
    "CleanACat_Cat_Tux_Dirty_Sit_Claw08"
   ],
-  "triangles": 2690,
+  "triangles": 2702,
   "budget": 3200,
-  "parts": 139,
+  "parts": 140,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -7999,7 +8135,16 @@
     "TangleCount": 6,
     "FluffCount": 10,
     "ClawCount": 8,
-    "WetDarken": 0.3
+    "WetDarken": 0.3,
+    "DirtLevels": 4,
+    "MudAtLevel1": 5,
+    "TanglesAtLevel1": 0,
+    "MudAtLevel2": 8,
+    "TanglesAtLevel2": 2,
+    "MudAtLevel3": 14,
+    "TanglesAtLevel3": 4,
+    "MudAtLevel4": 20,
+    "TanglesAtLevel4": 6
    },
    "rides": {
     "Mud01": "Head",
@@ -8112,18 +8257,17 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2690/3200 tris",
+    "budget": "2702/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1663 faces on swatch centers",
+    "uv": "1669 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.14 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Dirty_Sit.png"
+  }
  },
  {
   "name": "CleanACat_Cat_Tux_Sit",
@@ -8249,8 +8393,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Cat_Tux_Sit.png"
+  }
  },
  {
   "name": "CleanACat_NPC_BuilderKitten",
@@ -8302,8 +8445,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_BuilderKitten.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Bea",
@@ -8352,8 +8494,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Bea.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Juno",
@@ -8403,8 +8544,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Juno.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Kit",
@@ -8453,8 +8593,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Kit.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Mo",
@@ -8503,8 +8642,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Mo.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Pip",
@@ -8553,8 +8691,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Pip.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Rae",
@@ -8603,8 +8740,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Rae.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Sunny",
@@ -8653,8 +8789,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Sunny.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Customer_Theo",
@@ -8704,8 +8839,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Theo.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Helper",
@@ -8757,8 +8891,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Helper.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Helper2",
@@ -8810,8 +8943,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Helper2.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Helper3",
@@ -8863,8 +8995,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Helper3.png"
+  }
  },
  {
   "name": "CleanACat_NPC_Scarf",
@@ -8908,8 +9039,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Scarf.png"
+  }
  },
  {
   "name": "CleanACat_NPC_StarBeret",
@@ -8954,8 +9084,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_StarBeret.png"
+  }
  },
  {
   "name": "CleanACat_NPC_StarShades",
@@ -9000,8 +9129,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_StarShades.png"
+  }
  },
  {
   "name": "CleanACat_NPC_SunHat",
@@ -9045,8 +9173,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_SunHat.png"
+  }
  },
  {
   "name": "CleanACat_NPC_ToteBag",
@@ -9092,8 +9219,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_ToteBag.png"
+  }
  },
  {
   "name": "CleanACat_Prop_BowButtonMint",
@@ -9138,8 +9264,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonMint.png"
+  }
  },
  {
   "name": "CleanACat_Prop_BowButtonPink",
@@ -9184,8 +9309,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonPink.png"
+  }
  },
  {
   "name": "CleanACat_Prop_BowButtonSky",
@@ -9230,8 +9354,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonSky.png"
+  }
  },
  {
   "name": "CleanACat_Prop_BuildBoard",
@@ -9277,8 +9400,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BuildBoard.png"
+  }
  },
  {
   "name": "CleanACat_Prop_BuildPad",
@@ -9319,8 +9441,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BuildPad.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Burr",
@@ -9362,8 +9483,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Burr.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Carrier",
@@ -9407,8 +9527,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Carrier.png"
+  }
  },
  {
   "name": "CleanACat_Prop_CarrierButter",
@@ -9452,8 +9571,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_CarrierButter.png"
+  }
  },
  {
   "name": "CleanACat_Prop_CarrierSky",
@@ -9497,8 +9615,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_CarrierSky.png"
+  }
  },
  {
   "name": "CleanACat_Prop_ChanceBoard",
@@ -9541,8 +9658,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_ChanceBoard.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Coin",
@@ -9586,8 +9702,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Coin.png"
+  }
  },
  {
   "name": "CleanACat_Prop_CoinStack",
@@ -9629,8 +9744,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_CoinStack.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Cushion",
@@ -9670,8 +9784,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Cushion.png"
+  }
  },
  {
   "name": "CleanACat_Prop_DeliveryBox",
@@ -9715,8 +9828,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_DeliveryBox.png"
+  }
  },
  {
   "name": "CleanACat_Prop_DeliveryTruck",
@@ -9763,8 +9875,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_DeliveryTruck.png"
+  }
  },
  {
   "name": "CleanACat_Prop_FoamPuff",
@@ -9810,8 +9921,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_FoamPuff.png"
+  }
  },
  {
   "name": "CleanACat_Prop_FoamPuff2",
@@ -9857,8 +9967,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_FoamPuff2.png"
+  }
  },
  {
   "name": "CleanACat_Prop_FoamPuff3",
@@ -9904,8 +10013,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_FoamPuff3.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Hammer",
@@ -9951,8 +10059,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Hammer.png"
+  }
  },
  {
   "name": "CleanACat_Prop_HardHat",
@@ -9997,8 +10104,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HardHat.png"
+  }
  },
  {
   "name": "CleanACat_Prop_HelperCap",
@@ -10043,8 +10149,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HelperCap.png"
+  }
  },
  {
   "name": "CleanACat_Prop_HelperCap2",
@@ -10089,8 +10194,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HelperCap2.png"
+  }
  },
  {
   "name": "CleanACat_Prop_HelperCap3",
@@ -10135,8 +10239,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_HelperCap3.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Leaf",
@@ -10181,8 +10284,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Leaf.png"
+  }
  },
  {
   "name": "CleanACat_Prop_PetCrate",
@@ -10226,8 +10328,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_PetCrate.png"
+  }
  },
  {
   "name": "CleanACat_Prop_PhotoCamera",
@@ -10271,8 +10372,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_PhotoCamera.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Pothole",
@@ -10314,8 +10414,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Pothole.png"
+  }
  },
  {
   "name": "CleanACat_Prop_QueueMat",
@@ -10355,8 +10454,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_QueueMat.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Star",
@@ -10400,8 +10498,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Star.png"
+  }
  },
  {
   "name": "CleanACat_Prop_StarPhoto",
@@ -10448,8 +10545,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_StarPhoto.png"
+  }
  },
  {
   "name": "CleanACat_Prop_StrayBox",
@@ -10489,8 +10585,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_StrayBox.png"
+  }
  },
  {
   "name": "CleanACat_Prop_SudsBed",
@@ -10532,8 +10627,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_SudsBed.png"
+  }
  },
  {
   "name": "CleanACat_Prop_TipJar",
@@ -10579,8 +10673,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_TipJar.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Toolbox",
@@ -10620,8 +10713,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Toolbox.png"
+  }
  },
  {
   "name": "CleanACat_Prop_ToolsBoard",
@@ -10668,8 +10760,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_ToolsBoard.png"
+  }
  },
  {
   "name": "CleanACat_Prop_Twig",
@@ -10713,8 +10804,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Twig.png"
+  }
  },
  {
   "name": "CleanACat_Prop_WindowSign",
@@ -10760,8 +10850,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_WindowSign.png"
+  }
  },
  {
   "name": "CleanACat_Station_BrushTable",
@@ -10804,8 +10893,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_BrushTable.png"
+  }
  },
  {
   "name": "CleanACat_Station_BrushTableUp",
@@ -10850,8 +10938,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_BrushTableUp.png"
+  }
  },
  {
   "name": "CleanACat_Station_BubbleBath",
@@ -10898,8 +10985,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_BubbleBath.png"
+  }
  },
  {
   "name": "CleanACat_Station_Dryer",
@@ -10946,8 +11032,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Dryer.png"
+  }
  },
  {
   "name": "CleanACat_Station_FrontDesk",
@@ -10992,8 +11077,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_FrontDesk.png"
+  }
  },
  {
   "name": "CleanACat_Station_Pawdicure",
@@ -11036,8 +11120,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Pawdicure.png"
+  }
  },
  {
   "name": "CleanACat_Station_Tub",
@@ -11084,8 +11167,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_Tub.png"
+  }
  },
  {
   "name": "CleanACat_Station_WaitBench",
@@ -11129,8 +11211,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_WaitBench.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Brush",
@@ -11175,8 +11256,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Brush.png"
+  }
  },
  {
   "name": "CleanACat_Tool_BrushFluffy",
@@ -11221,8 +11301,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushFluffy.png"
+  }
  },
  {
   "name": "CleanACat_Tool_BrushGolden",
@@ -11267,8 +11346,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_BrushGolden.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Clipper",
@@ -11312,8 +11390,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Clipper.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Comb",
@@ -11358,8 +11435,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Comb.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Dryer",
@@ -11404,8 +11480,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Dryer.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Shampoo",
@@ -11449,8 +11524,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Shampoo.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Shower",
@@ -11495,8 +11569,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Shower.png"
+  }
  },
  {
   "name": "CleanACat_Tool_ShowerGolden",
@@ -11541,8 +11614,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_ShowerGolden.png"
+  }
  },
  {
   "name": "CleanACat_Tool_ShowerRain",
@@ -11587,8 +11659,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_ShowerRain.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Sponge",
@@ -11632,8 +11703,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Sponge.png"
+  }
  },
  {
   "name": "CleanACat_Tool_SpongeBubble",
@@ -11677,8 +11747,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeBubble.png"
+  }
  },
  {
   "name": "CleanACat_Tool_SpongeGolden",
@@ -11722,8 +11791,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_SpongeGolden.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Towel",
@@ -11768,8 +11836,7 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Towel.png"
+  }
  },
  {
   "name": "CleanACat_Tool_Tweezers",
@@ -11813,7 +11880,6 @@
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Tool_Tweezers.png"
+  }
  }
 ]

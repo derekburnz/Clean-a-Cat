@@ -134,6 +134,8 @@ def main():
         if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)
             extra["nest"] = {**extra.get("nest", {}), **dnest}
             extra["attributes"] = {**extra.get("attributes", {}), **dattrs}
+            if name in dirt.MODEL_ATTRS:              # each mud piece and tangle says its dirt level
+                extra["model_attributes"] = {**extra.get("model_attributes", {}), **dirt.MODEL_ATTRS[name]}
         _rbx_path, parts = rbx_export.write_model(objs, name, args.rbx, **extra)
         if not args.no_fbx:
             common.export_asset(objs, name, args.out, glb=False)
