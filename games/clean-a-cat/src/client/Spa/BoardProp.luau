@@ -26,8 +26,7 @@ export type Board = {
 	root: PVInstance, -- what is parented to Workspace and destroyed
 	rows: { Attachment }, -- row 1 at the top
 	bell: Attachment, -- the builder's "Tell me when it's done" spot (the slab's foot)
-	displays: { [string]: Instance }, -- the model's _Display_ children by name, with where they belong
-	homes: { [string]: Instance },
+	displays: { [string]: { Instance } }, -- the parts and decals of the model's _Display_ children, by name
 }
 
 local ROW_STEP = 0.58 -- studs between rows made below a model's last Row (its own Row spacing on the builder board)
@@ -109,18 +108,23 @@ local function fromModel(spec: Spec, count: number): Board?
 	if screen and screen:IsA("BasePart") then
 		screenText(screen :: BasePart, spec.title)
 	end
-	local displays: { [string]: Instance } = {}
-	local homes: { [string]: Instance } = {}
+	-- a display hides by its look alone, so it stays in the model: it moves with the board and goes when the board
+	-- does (Review-QA on #432)
+	local displays: { [string]: { Instance } } = {}
 	local prefix = `{spec.asset}_Display_`
 	for _, item in model:GetDescendants() do
 		if item:IsA("Model") and string.sub(item.Name, 1, #prefix) == prefix then
-			local name = string.sub(item.Name, #prefix + 1)
-			displays[name] = item
-			homes[name] = item.Parent :: Instance
+			local looks: { Instance } = {}
+			for _, piece in item:GetDescendants() do
+				if piece:IsA("BasePart") or piece:IsA("Decal") then
+					table.insert(looks, piece)
+				end
+			end
+			displays[string.sub(item.Name, #prefix + 1)] = looks
 		end
 	end
 	local root: PVInstance = model
-	return { root = root, rows = rows, bell = bell, displays = displays, homes = homes }
+	return { root = root, rows = rows, bell = bell, displays = displays }
 end
 
 local function fromSlab(spec: Spec, count: number): Board
@@ -142,7 +146,7 @@ local function fromSlab(spec: Spec, count: number): Board
 	bell.Position = Vector3.new(0, -spec.size.Y / 2 + 0.5, -spec.size.Z / 2) -- at the foot
 	bell.Parent = part
 	local root: PVInstance = part
-	return { root = root, rows = rows, bell = bell, displays = {}, homes = {} }
+	return { root = root, rows = rows, bell = bell, displays = {} }
 end
 
 local function pivotFor(board: Board, at: CFrame): CFrame
@@ -164,9 +168,16 @@ function BoardProp.moveTo(board: Board, at: CFrame)
 end
 
 function BoardProp.showDisplay(board: Board, name: string, shown: boolean)
-	local display = board.displays[name]
-	if display then
-		display.Parent = if shown then board.homes[name] else nil
+	local looks = board.displays[name]
+	if looks == nil then
+		return
+	end
+	for _, piece in looks do
+		if piece:IsA("BasePart") then
+			(piece :: BasePart).LocalTransparencyModifier = if shown then 0 else 1
+		elseif piece:IsA("Decal") then
+			(piece :: Decal).LocalTransparencyModifier = if shown then 0 else 1
+		end
 	end
 end
 

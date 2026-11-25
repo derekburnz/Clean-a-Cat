@@ -39,7 +39,9 @@ local function enable()
 		return
 	end
 	local offered = ToolRules.offered(LiveFlags.isOn)
-	local made = BoardProp.make(SPEC, SpaLayout.spot("Tools"), #offered)
+	-- every tool keeps its own shelf (its place in IDS, where the model's display stands), so with one switched off
+	-- the next tool's prompt is never on the empty shelf (Review-QA on #432)
+	local made = BoardProp.make(SPEC, SpaLayout.spot("Tools"), #ToolRules.IDS)
 	-- a tool on sale shows on its shelf until it is owned; one switched off never shows
 	local function showDisplay(id: string)
 		BoardProp.showDisplay(made, id, table.find(offered, id) ~= nil and not owns(id))
@@ -47,9 +49,9 @@ local function enable()
 	for _, id in ToolRules.IDS do
 		showDisplay(id)
 	end
-	for index, id in offered do
+	for _, id in offered do
 		local tool = ToolRules.TOOLS[id]
-		local spot = made.rows[index]
+		local spot = made.rows[table.find(ToolRules.IDS, id) :: number]
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = `Buy {tool.name}`
 		prompt.ObjectText = `{tool.price} coins`
