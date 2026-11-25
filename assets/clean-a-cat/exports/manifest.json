@@ -8253,6 +8253,408 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_BuilderKitten.png"
  },
  {
+  "name": "CleanACat_NPC_Customer_Bea",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Bea_Body",
+   "CleanACat_NPC_Customer_Bea_Head",
+   "CleanACat_NPC_Customer_Bea_ArmL",
+   "CleanACat_NPC_Customer_Bea_ArmR",
+   "CleanACat_NPC_Customer_Bea_LegL",
+   "CleanACat_NPC_Customer_Bea_LegR"
+  ],
+  "triangles": 1124,
+  "budget": 1600,
+  "parts": 47,
+  "size_studs": {
+   "x": 2.9,
+   "y": 1.77,
+   "z": 5.09
+  },
+  "size_roblox": [
+   2.9,
+   5.09,
+   1.77
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 3
+   },
+   "checks": {
+    "budget": "1124/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "642 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.35 y=0.14",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Bea.png"
+ },
+ {
+  "name": "CleanACat_NPC_Customer_Juno",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Juno_Body",
+   "CleanACat_NPC_Customer_Juno_Head",
+   "CleanACat_NPC_Customer_Juno_ArmL",
+   "CleanACat_NPC_Customer_Juno_ArmR",
+   "CleanACat_NPC_Customer_Juno_LegL",
+   "CleanACat_NPC_Customer_Juno_LegR"
+  ],
+  "triangles": 1204,
+  "budget": 1600,
+  "parts": 39,
+  "size_studs": {
+   "x": 2.71,
+   "y": 1.53,
+   "z": 5.5
+  },
+  "size_roblox": [
+   2.71,
+   5.5,
+   1.53
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 3
+   },
+   "checks": {
+    "budget": "1204/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "698 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.24 y=-0.02",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Juno.png"
+ },
+ {
+  "name": "CleanACat_NPC_Customer_Kit",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Kit_Body",
+   "CleanACat_NPC_Customer_Kit_Head",
+   "CleanACat_NPC_Customer_Kit_ArmL",
+   "CleanACat_NPC_Customer_Kit_ArmR",
+   "CleanACat_NPC_Customer_Kit_LegL",
+   "CleanACat_NPC_Customer_Kit_LegR"
+  ],
+  "triangles": 948,
+  "budget": 1600,
+  "parts": 49,
+  "size_studs": {
+   "x": 2.71,
+   "y": 1.65,
+   "z": 5.52
+  },
+  "size_roblox": [
+   2.71,
+   5.52,
+   1.65
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 3
+   },
+   "checks": {
+    "budget": "948/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "542 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.24 y=0.05",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Kit.png"
+ },
+ {
+  "name": "CleanACat_NPC_Customer_Mo",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Mo_Body",
+   "CleanACat_NPC_Customer_Mo_Head",
+   "CleanACat_NPC_Customer_Mo_ArmL",
+   "CleanACat_NPC_Customer_Mo_ArmR",
+   "CleanACat_NPC_Customer_Mo_LegL",
+   "CleanACat_NPC_Customer_Mo_LegR"
+  ],
+  "triangles": 936,
+  "budget": 1600,
+  "parts": 38,
+  "size_studs": {
+   "x": 2.74,
+   "y": 1.45,
+   "z": 5.24
+  },
+  "size_roblox": [
+   2.74,
+   5.24,
+   1.45
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 2
+   },
+   "checks": {
+    "budget": "936/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "532 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.23 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Mo.png"
+ },
+ {
+  "name": "CleanACat_NPC_Customer_Pip",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Pip_Body",
+   "CleanACat_NPC_Customer_Pip_Head",
+   "CleanACat_NPC_Customer_Pip_ArmL",
+   "CleanACat_NPC_Customer_Pip_ArmR",
+   "CleanACat_NPC_Customer_Pip_LegL",
+   "CleanACat_NPC_Customer_Pip_LegR"
+  ],
+  "triangles": 1092,
+  "budget": 1600,
+  "parts": 43,
+  "size_studs": {
+   "x": 2.74,
+   "y": 1.63,
+   "z": 4.86
+  },
+  "size_roblox": [
+   2.74,
+   4.86,
+   1.63
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 4
+   },
+   "checks": {
+    "budget": "1092/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "630 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.28 y=0.02",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Pip.png"
+ },
+ {
+  "name": "CleanACat_NPC_Customer_Rae",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Rae_Body",
+   "CleanACat_NPC_Customer_Rae_Head",
+   "CleanACat_NPC_Customer_Rae_ArmL",
+   "CleanACat_NPC_Customer_Rae_ArmR",
+   "CleanACat_NPC_Customer_Rae_LegL",
+   "CleanACat_NPC_Customer_Rae_LegR"
+  ],
+  "triangles": 1024,
+  "budget": 1600,
+  "parts": 44,
+  "size_studs": {
+   "x": 2.71,
+   "y": 1.85,
+   "z": 5.02
+  },
+  "size_roblox": [
+   2.71,
+   5.02,
+   1.85
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 2
+   },
+   "checks": {
+    "budget": "1024/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "580 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.24 y=0.14",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Rae.png"
+ },
+ {
+  "name": "CleanACat_NPC_Customer_Sunny",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Sunny_Body",
+   "CleanACat_NPC_Customer_Sunny_Head",
+   "CleanACat_NPC_Customer_Sunny_ArmL",
+   "CleanACat_NPC_Customer_Sunny_ArmR",
+   "CleanACat_NPC_Customer_Sunny_LegL",
+   "CleanACat_NPC_Customer_Sunny_LegR"
+  ],
+  "triangles": 1076,
+  "budget": 1600,
+  "parts": 41,
+  "size_studs": {
+   "x": 2.96,
+   "y": 2.2,
+   "z": 5.34
+  },
+  "size_roblox": [
+   2.96,
+   5.34,
+   2.2
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 3
+   },
+   "checks": {
+    "budget": "1076/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "616 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.33 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Sunny.png"
+ },
+ {
+  "name": "CleanACat_NPC_Customer_Theo",
+  "category": "NPC",
+  "module": "townsfolk",
+  "objects": [
+   "CleanACat_NPC_Customer_Theo_Body",
+   "CleanACat_NPC_Customer_Theo_Head",
+   "CleanACat_NPC_Customer_Theo_ArmL",
+   "CleanACat_NPC_Customer_Theo_ArmR",
+   "CleanACat_NPC_Customer_Theo_LegL",
+   "CleanACat_NPC_Customer_Theo_LegR"
+  ],
+  "triangles": 1264,
+  "budget": 1600,
+  "parts": 45,
+  "size_studs": {
+   "x": 2.72,
+   "y": 1.5,
+   "z": 5.7
+  },
+  "size_roblox": [
+   2.72,
+   5.7,
+   1.5
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 2
+   },
+   "checks": {
+    "budget": "1264/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "736 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.24 y=-0.02",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Customer_Theo.png"
+ },
+ {
   "name": "CleanACat_NPC_Helper",
   "category": "NPC",
   "module": "busy_spa",
@@ -8922,14 +9324,14 @@
   "budget": 950,
   "parts": 47,
   "size_studs": {
-   "x": 1.68,
-   "y": 2.58,
-   "z": 2.75
+   "x": 1.44,
+   "y": 2.08,
+   "z": 2.03
   },
   "size_roblox": [
-   1.68,
-   2.75,
-   2.58
+   1.44,
+   2.03,
+   2.08
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8967,14 +9369,14 @@
   "budget": 950,
   "parts": 44,
   "size_studs": {
-   "x": 1.71,
-   "y": 2.58,
-   "z": 2.75
+   "x": 1.47,
+   "y": 2.08,
+   "z": 2.03
   },
   "size_roblox": [
-   1.71,
-   2.75,
-   2.58
+   1.47,
+   2.03,
+   2.08
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -9012,14 +9414,14 @@
   "budget": 950,
   "parts": 64,
   "size_studs": {
-   "x": 1.68,
-   "y": 2.58,
-   "z": 2.75
+   "x": 1.44,
+   "y": 2.08,
+   "z": 2.1
   },
   "size_roblox": [
-   1.68,
-   2.75,
-   2.58
+   1.44,
+   2.1,
+   2.08
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",

@@ -1,4 +1,6 @@
-"""Customers (issue #16). A customer is Roblox's own R15 rig, made in game with
+"""Customers as they were before #446 (issue #16); townsfolk.py builds the customers that replace them, and these
+accessories stay until the game has switched over (the rare visitor in busy_spa.py wears the same kind).
+A customer was Roblox's own R15 rig, made in game with
 Players:CreateHumanoidModelFromDescription from a HumanoidDescription that sets only body colours (no clothing
 images, no catalogue items, so nothing waits on an upload), wearing one of our accessories:
 

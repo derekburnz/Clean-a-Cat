@@ -1,0 +1,421 @@
+"""The customers (issue #446): cosy townsfolk, each with a face, hair and an outfit of its own, built to walk.
+
+The owner on 2026-11-25: "rework customers to be much better can check asset library if needed", and what bothers him
+most is how they look and how they walk in. Until now a customer was a bare Roblox R15 figure in body colours with one
+accessory (customers.py), set down on its mat with no walk. These replace it. They are built on the customer builder of
+the owner's own asset library (his earlier cafe game's townsfolk: `models/blender-generators/customers.py` there),
+with new looks in our colours, cut at the joints so they can walk, and with a hand that holds the carrier.
+
+  CleanACat_NPC_Customer_<Name>     Model, pivot on the floor between the feet, front -Y here (-Z in Roblox).
+                                    4.9 to 5.4 studs to the top of the hair. Nothing collides.
+      ..._Body                      the main object: torso, hips, skirt, neck, scarf, hood or backpack. Its biggest
+                                    part is the PrimaryPart.
+      ..._Head                      child Model, pivot at the top of the neck: face, hair, hat, glasses
+      ..._ArmL, ..._ArmR            child Models, pivot at the shoulder. The left arm hangs straight down (with the
+                                    look's tote bag when it has one). The right arm is built already held out to the
+                                    side by `CarryArmDegrees`, so the carrier hangs clear of the leg.
+      ..._LegL, ..._LegR            child Models, pivot at the hip: the leg and its shoe
+                                    Each joint turns about its pivot's X axis (the side to side axis) for a step, a
+                                    swing or a nod. Left and right are the customer's own.
+  Attachments: `Grip` in the right hand (on the right arm's biggest part, so it follows the arm): put the carrier's
+  own `Grip` there, the carrier facing the way the customer faces. `Overhead` over the head, clear of any hat, for a
+  bubble or a timer.
+  Attributes: `Look` (the name), `WalkSpeed` (studs a second for the walk in), `LegLength` (hip to floor: a step of
+  A degrees each way covers 2 * LegLength * sin(A)), `CarryArmDegrees` (how far the right arm is held out; turn the
+  arm back by it about the pivot's Z to hang it straight), `Height`.
+
+The carrier (spa_props) was resized with them: its Grip is 1.95 up, so with the hand 2.0 or more above the floor it
+swings just over the ground beside the leg.
+
+LOOKS has the eight customers. A look is a dict of palette swatches and switches; `body` picks the build.
+"""
+
+import math
+
+from mathutils import Matrix, Vector
+
+import rbx_export
+import spa_props
+from common import Builder
+from stations import _tris
+
+PREFIX = "CleanACat_NPC_Customer_"
+FACE_INK = "fur_black"
+
+ADULT = dict(leg=1.45, pelvis=0.35, torso=1.5, tw=1.4, td=0.8, arm=1.3, hw=1.5, hd=1.35, hh=1.45, speed=6.5)
+TALL = dict(leg=1.68, pelvis=0.35, torso=1.6, tw=1.42, td=0.8, arm=1.42, hw=1.46, hd=1.32, hh=1.4, speed=7.0)
+SMALL = dict(leg=1.35, pelvis=0.33, torso=1.45, tw=1.36, td=0.8, arm=1.2, hw=1.52, hd=1.36, hh=1.46, speed=6.0)
+
+LOOKS = {
+    # a golden-haired gardener in a mint sundress and a straw sun hat
+    "Sunny": dict(body=ADULT, skin="skin_light", hair="fur_golden", style="long", sunhat="pastel_butter",
+                  band="spa_bubblegum", top="spa_mint", skirt="spa_mint", legs="skin_light", shoes="offwhite",
+                  patch="heart", patch_sw="spa_bubblegum"),
+    # tall, in a striped butter jumper and a mint scarf
+    "Mo": dict(body=TALL, skin="skin_deep", hair="fur_black", style="short", top="pastel_butter", stripes="offwhite",
+               scarf="spa_mint", pants="pants_navy", shoes="offwhite", brows=True),
+    # a student with a bob, a sky hoodie and a pink tote bag
+    "Pip": dict(body=SMALL, skin="skin_tan", hair="choco", style="bob", top="spa_sky", hood=True, pocket="pastel_sky",
+                pants="fur_puddle", shoes="offwhite", tote="spa_bubblegum"),
+    # a ginger ponytail, denim dungarees over a pink tee
+    "Rae": dict(body=ADULT, skin="skin_light", hair="fur_ginger", style="ponytail", tie="spa_mint",
+                top="spa_bubblegum", overalls="fur_puddle", shoes="shirt_red", brows=True),
+    # hair in two puffs, a lilac hoodie and mint headphones
+    "Juno": dict(body=ADULT, skin="skin_deep", hair="choco", style="puffs", top="pastel_lilac", hood=True,
+                 pocket="fur_lavender", pants="fur_ink", shoes="offwhite", phones="spa_mint"),
+    # a granny with a silver bun, round glasses and a lilac cardigan
+    "Bea": dict(body=SMALL, skin="skin_light", hair="fur_silver", style="bun", glasses="brass", top="offwhite",
+                cardigan="fur_lavender", skirt="fur_puddle", legs="fur_ink", shoes="hair_brown", brows=True),
+    # tall, russet curls and a beard, a sky jumper with a paw on it
+    "Theo": dict(body=TALL, skin="skin_light", hair="fur_russet", style="curls", beard=True, top="pastel_sky",
+                 patch="paw", patch_sw="offwhite", pants="fur_bramble", shoes="choco", brows=True),
+    # a cat-ear beanie, a butter tee and a pink backpack
+    "Kit": dict(body=ADULT, skin="skin_tan", hair="hair_brown", style="beanie", beanie="spa_mint", ears=True,
+                top="pastel_butter", patch="paw", patch_sw="spa_bubblegum", pants="pants_navy", shoes="offwhite",
+                backpack="spa_bubblegum", brows=True),
+}
+
+for _n in LOOKS:                                        # a walker arrives whole, its arms and legs with it
+    rbx_export.MODEL_PROPS["_Customer_" + _n] = {"ModelStreamingMode": "Atomic"}
+
+
+def _ry(deg):
+    return Matrix.Rotation(math.radians(deg), 3, "Y")
+
+
+def _rz(deg):
+    return Matrix.Rotation(math.radians(deg), 3, "Z")
+
+
+class Piece:
+    """One jointed piece. Shapes are given in the customer's own space, as if the piece hung straight; they are stored
+    from the joint (the object's origin), turned about it by `tilt`."""
+
+    def __init__(self, joint=(0.0, 0.0, 0.0), tilt=None):
+        self.b = Builder()
+        self.joint = Vector(joint)
+        self.tilt = tilt
+
+    def at(self, p):
+        """Where a point of the straight piece is in the customer's space once the piece is tilted."""
+        v = Vector(p) - self.joint
+        return self.joint + (self.tilt @ v if self.tilt else v)
+
+    def _c(self, c):
+        v = Vector(c) - self.joint
+        return tuple(self.tilt @ v) if self.tilt else tuple(v)
+
+    def _r(self, rot):
+        if isinstance(rot, tuple):
+            rot = Matrix.Rotation(rot[0], 3, rot[1])
+        if self.tilt is None:
+            return rot
+        return self.tilt @ rot if rot is not None else self.tilt
+
+    def box(self, c, s, sw, bevel=True, rot=None):
+        self.b.box(self._c(c), s, sw, bevel, self._r(rot))
+
+    def box_base(self, c, s, sw, bevel=True, rot=None):
+        self.box((c[0], c[1], c[2] + s[2] / 2), s, sw, bevel, rot)
+
+    def wedge(self, c, s, sw, bevel=True, rot=None):
+        self.b.wedge(self._c(c), s, sw, bevel, self._r(rot))
+
+    def sphere(self, c, r, sw, segments=10, rings=6, scale=(1, 1, 1), rot=None):
+        self.b.sphere(self._c(c), r, sw, segments, rings, scale, self._r(rot))
+
+    def pyramid(self, c, size, h, sw, rot=None):
+        self.b.pyramid(self._c(c), size, h, sw, rot=self._r(rot))
+
+    def finalize(self, name, mat):
+        return _tris(self.b.finalize(name, mat, location=tuple(self.joint)))
+
+
+class Frame:
+    """A body's key heights and joints."""
+
+    def __init__(self, body):
+        self.d = body
+        self.hip = body["leg"] + 0.1                    # the pelvis's bottom
+        self.waist = self.hip + body["pelvis"]
+        self.top = self.waist - 0.05 + body["torso"]    # the shoulders
+        self.head0 = self.top + 0.1
+        self.head1 = self.head0 + body["hh"]
+        self.face = -body["hd"] / 2                     # the face's plane (-Y is the front)
+        self.arm_x = body["tw"] / 2 + 0.2
+        self.shoulder = self.top - 0.12                 # the arm's joint
+        self.arm1 = self.top + 0.05                     # the sleeve's top
+        self.arm0 = self.arm1 - body["arm"]             # the wrist
+        self.hand = self.arm0 - 0.15                    # the hand's middle
+        self.leg_joint = self.hip + 0.1
+
+
+def carry_degrees(look):
+    """How far the right arm is held out so the carrier clears the body and the floor."""
+    f = Frame(look["body"])
+    reach = f.shoulder - f.hand
+    half = look["body"]["tw"] / 2 - 0.05                            # the hips
+    if look.get("skirt"):
+        half = (look["body"]["tw"] + 0.05) / 2 + SKIRT_FLARE
+    out = half + spa_props.CAR_W / 2 + 0.04 - f.arm_x                 # how far out the hand must be
+    a_body = math.degrees(math.asin(min(1.0, max(0.0, out / reach))))
+    lift = spa_props.GRIP_H + 0.06                                    # the hand at least this high
+    a_floor = math.degrees(math.acos(min(1.0, (f.shoulder - lift) / reach)))
+    return round(max(a_body, a_floor, 18.0), 1)
+
+
+SKIRT_FLARE = 0.14
+
+
+def _legs(legs, f, look):
+    d = f.d
+    sw, shoes = look.get("legs") or look.get("pants") or look.get("overalls"), look["shoes"]
+    toe = "offwhite" if shoes != "offwhite" else "fur_silver"
+    for sx, p in zip((1, -1), legs):
+        x = sx * 0.32
+        p.box_base((x, 0.0, 0.25), (0.56, 0.6, f.leg_joint - 0.25), sw)
+        if look.get("shorts"):
+            p.box_base((x, 0.0, 0.3 + d["leg"] * 0.55), (0.6, 0.64, d["leg"] * 0.45 - 0.15), look["shorts"])
+        p.box_base((x, -0.12, 0.0), (0.62, 0.9, 0.3), shoes)
+        p.box((x, -0.58, 0.18), (0.5, 0.04, 0.12), toe, bevel=False)                  # a toe cap
+
+
+def _lower(b, f, look):
+    """Hips, and the skirt when there is one."""
+    d = f.d
+    if look.get("skirt"):
+        lo, hi = f.hip - 0.4, f.waist + 0.05
+        b.box_base((0, 0, lo), (d["tw"] + 0.05, d["td"] + 0.1, hi - lo), look["skirt"])
+        for sx in (1, -1):                                                           # the flare
+            b.wedge((sx * ((d["tw"] + 0.05) / 2 + SKIRT_FLARE / 2), 0, lo + (hi - lo) / 2),
+                    (d["td"] + 0.06, SKIRT_FLARE, hi - lo - 0.02), look["skirt"], bevel=False, rot=_rz(90 * sx))
+    else:
+        b.box_base((0, 0, f.hip), (d["tw"] - 0.1, d["td"] - 0.04, d["pelvis"] + 0.05),
+                   look.get("shorts") or look.get("pants") or look.get("overalls"))
+
+
+def _patch(b, kind, sw, y, z):
+    """A small picture on the chest: a paw print or a heart."""
+    if kind == "paw":
+        b.box((0, y, z - 0.07), (0.26, 0.03, 0.18), sw, bevel=False)
+        for dx, dz in ((-0.19, 0.06), (-0.065, 0.15), (0.065, 0.15), (0.19, 0.06)):
+            b.box((dx, y, z + dz), (0.1, 0.03, 0.1), sw, bevel=False)
+    else:                                                # a heart in four rows of blocks
+        for sx in (1, -1):
+            b.box((sx * 0.09, y, z + 0.11), (0.13, 0.03, 0.07), sw, bevel=False)
+        for k, wd in enumerate((0.34, 0.22, 0.1)):
+            b.box((0, y, z + 0.04 - 0.07 * k), (wd, 0.03, 0.07), sw, bevel=False)
+
+
+def _torso(b, f, look):
+    d = f.d
+    w, dep, z0, z1 = d["tw"], d["td"], f.waist - 0.05, f.top
+    fy = -dep / 2                                                                  # the chest's front
+    main = look.get("cardigan") or look["top"]
+    b.box_base((0, 0, z0), (w, dep, z1 - z0), main)
+    if look.get("cardigan"):
+        b.box((0, fy - 0.015, (z0 + z1) / 2 + 0.05), (0.42, 0.04, z1 - z0 - 0.15), look["top"], bevel=False)
+        for z in (z0 + 0.35, z0 + 0.7, z0 + 1.05):
+            b.box((0.27, fy - 0.01, z), (0.08, 0.04, 0.08), "offwhite", bevel=False)      # buttons
+    if look.get("stripes"):
+        for k in range(3):
+            b.box((0, 0, z0 + 0.35 + 0.38 * k), (w + 0.03, dep + 0.03, 0.12), look["stripes"], bevel=False)
+    if look.get("patch"):
+        _patch(b, look["patch"], look["patch_sw"], fy - 0.012, z0 + (z1 - z0) * 0.56)
+    if look.get("hood"):
+        b.box((0, dep / 2 + 0.12, z1 - 0.2), (0.95, 0.3, 0.55), look["top"])                 # the hood, down
+        b.box((0, fy - 0.015, z0 + 0.35), (0.8, 0.03, 0.4), look["pocket"], bevel=False)     # the pocket
+        for x in (-0.15, 0.15):
+            b.box((x, fy - 0.01, z1 - 0.32), (0.05, 0.04, 0.4), "offwhite", bevel=False)     # the strings
+    if look.get("overalls"):
+        ov = look["overalls"]
+        b.box((0, fy - 0.015, z0 + 0.45), (0.8, 0.04, 0.8), ov, bevel=False)                 # the bib
+        _patch(b, "paw", "offwhite", fy - 0.045, z0 + 0.52)
+        for sx in (1, -1):
+            b.box((sx * 0.3, fy - 0.015, z1 - 0.25), (0.14, 0.04, 0.55), ov, bevel=False)    # the straps
+            b.box((sx * 0.3, dep / 2 + 0.015, z1 - 0.3), (0.14, 0.04, 0.6), ov, bevel=False)
+            b.box((sx * 0.3, fy - 0.04, z0 + 0.82), (0.08, 0.02, 0.08), "brass", bevel=False)
+    if look.get("scarf"):
+        b.box_base((0, 0, z1 - 0.1), (0.95, dep - 0.05, 0.28), look["scarf"])
+        b.box((0.3, fy - 0.04, z1 - 0.45), (0.28, 0.06, 0.6), look["scarf"], bevel=False, rot=_ry(-8))
+    if look.get("backpack"):
+        b.box((0, dep / 2 + 0.22, (z0 + z1) / 2 + 0.05), (w - 0.2, 0.44, z1 - z0 - 0.15), look["backpack"])
+        b.box((0, dep / 2 + 0.45, (z0 + z1) / 2 - 0.05), (w - 0.5, 0.06, 0.4), "offwhite", bevel=False)
+        for sx in (1, -1):
+            b.box((sx * 0.33, fy - 0.015, (z0 + z1) / 2 + 0.1), (0.14, 0.04, z1 - z0 - 0.3), look["backpack"],
+                  bevel=False)
+    b.box_base((0, 0, f.top - 0.05), (0.5, 0.5, 0.2), look["skin"], bevel=False)             # the neck
+
+
+def _arm(p, f, look, sx):
+    sleeve = look.get("cardigan") or look["top"]
+    x = sx * f.arm_x
+    p.box_base((x, 0, f.arm0), (0.42, 0.46, f.arm1 - f.arm0), sleeve)
+    if look.get("stripes"):
+        for k in range(2):
+            p.box((x, 0, f.arm0 + 0.3 + 0.38 * k), (0.45, 0.49, 0.12), look["stripes"], bevel=False)
+    p.box_base((x, 0, f.arm0 - 0.32), (0.4, 0.42, 0.34), look["skin"])                       # the hand
+    if look.get("cardigan"):
+        p.box_base((x, 0, f.arm0 - 0.02), (0.45, 0.49, 0.1), sleeve)                         # a cuff
+    if sx == 1 and look.get("tote"):                     # the left hand carries a tote bag by its handles
+        hand = f.hand
+        p.box_base((x, 0, hand - 1.05), (0.26, 0.9, 0.82), look["tote"])
+        for dy in (-0.2, 0.2):
+            p.box_base((x, dy, hand - 0.24), (0.08, 0.08, 0.3), look["tote"], bevel=False)
+        yb, zb = 0.0, hand - 0.62                                                            # a paw print on it
+        p.box((x + 0.14, yb, zb - 0.06), (0.02, 0.22, 0.16), "offwhite", bevel=False)
+        for dy, dz in ((-0.16, 0.05), (-0.055, 0.13), (0.055, 0.13), (0.16, 0.05)):
+            p.box((x + 0.14, yb + dy, zb + dz), (0.02, 0.085, 0.085), "offwhite", bevel=False)
+
+
+def _face(h, f, look):
+    d = f.d
+    y = f.face
+    ez = f.head0 + d["hh"] * 0.47
+    for sx in (1, -1):
+        # every mark is 0.03 thick and set 0.01 into the face, so it touches the head and stands 0.02 proud
+        h.box((sx * 0.32, y - 0.005, ez), (0.17, 0.03, 0.28), FACE_INK, bevel=False)             # eyes
+        h.box((sx * 0.32 - 0.03, y - 0.025, ez + 0.06), (0.06, 0.01, 0.07), "milk", bevel=False)
+        h.box((sx * 0.52, y - 0.005, ez - 0.25), (0.24, 0.03, 0.1), "blush", bevel=False)        # cheeks
+        if look.get("brows"):
+            h.box((sx * 0.33, y - 0.005, ez + 0.27), (0.24, 0.03, 0.06), look["hair"], bevel=False)
+    mz = ez - 0.33
+    h.box((0, y - 0.005, mz), (0.16, 0.03, 0.05), "nose_brick", bevel=False)                     # a smile
+    for sx in (1, -1):
+        h.box((sx * 0.105, y - 0.005, mz + 0.03), (0.05, 0.03, 0.07), "nose_brick", bevel=False)
+    if look.get("beard"):                     # under the smile and along the jaw, clear of the mouth and cheeks
+        hb = look["hair"]
+        h.box((0, y - 0.03, f.head0 + 0.13), (0.62, 0.06, 0.28), hb, bevel=False)
+        for sx in (1, -1):
+            h.box((sx * 0.49, y - 0.03, f.head0 + 0.17), (0.36, 0.06, 0.36), hb, bevel=False)
+            h.box((sx * (d["hw"] / 2 - 0.03), y + 0.2, f.head0 + 0.42), (0.14, 0.5, 0.66), hb, bevel=False)
+    if look.get("glasses"):
+        g = look["glasses"]
+        for sx in (1, -1):
+            cx = sx * 0.32
+            for dz in (-0.2, 0.2):
+                h.box((cx, y - 0.025, ez + dz), (0.4, 0.05, 0.05), g, bevel=False)
+            for dx in (-0.18, 0.18):
+                h.box((cx + dx, y - 0.025, ez), (0.05, 0.05, 0.35), g, bevel=False)
+        h.box((0, y - 0.025, ez + 0.05), (0.23, 0.05, 0.05), g, bevel=False)
+
+
+def _hair(h, f, look):
+    d = f.d
+    hw, hd, top, h0 = d["hw"], d["hd"], f.head1, f.head0
+    fy, hc = f.face, look["hair"]
+    style = look["style"]
+    if style in ("bob", "short", "bun", "curls", "puffs", "long", "ponytail"):
+        h.box_base((0, 0, top - 0.3), (hw + 0.12, hd + 0.12, 0.42 if style != "short" else 0.36), hc)     # crown
+        drop = {"bob": 0.95, "short": 0.45, "bun": 0.6, "curls": 0.6, "puffs": 0.55, "long": 1.1,
+                "ponytail": 0.5}[style]
+        h.box_base((0, hd / 2 - 0.05, top - 0.1 - drop), (hw + 0.07, 0.24, drop), hc)                      # back
+        for sx in (1, -1):                                                                                # sides
+            h.box_base((sx * (hw / 2 + 0.03), 0.12, top - 0.1 - drop * 0.85), (0.12, hd - 0.2, drop * 0.85), hc)
+        if style not in ("short", "bun"):
+            h.box((0, fy - 0.05, top - 0.22), (hw - 0.1, 0.12, 0.26), hc)                                 # fringe
+    if style == "bob":
+        h.box((0, hd / 2 + 0.02, top - 1.0), (hw + 0.16, 0.28, 0.12), hc)                                 # its hem
+        for sx in (1, -1):
+            h.box((sx * (hw / 2 + 0.05), 0.1, top - 1.0), (0.16, hd - 0.1, 0.12), hc)
+    if style == "long":                                    # down the back to the shoulder blades
+        lo = h0 - 0.55
+        h.box_base((0, hd / 2 + 0.03, lo), (hw + 0.04, 0.22, top - 0.1 - 1.1 - lo + 0.02), hc)
+    if style == "ponytail":
+        h.box((0, hd / 2 + 0.1, top - 0.45), (0.34, 0.12, 0.26), look["tie"], bevel=False)                # the tie
+        h.box_base((0, hd / 2 + 0.24, h0 + 0.05), (0.36, 0.3, top - 0.45 - h0 - 0.05), hc)                # the tail
+    if style == "bun":
+        h.sphere((0, hd / 2 - 0.05, top - 0.05), 0.4, hc, segments=10, rings=6)
+    if style == "curls":
+        for x, y, z in ((-0.5, -0.2, 0.18), (0.0, -0.3, 0.22), (0.5, -0.2, 0.18), (-0.35, 0.35, 0.2),
+                        (0.35, 0.35, 0.2)):
+            h.sphere((x, y, top + z), 0.3, hc, segments=8, rings=5)
+    if style == "puffs":
+        for sx in (1, -1):
+            h.sphere((sx * 0.62, 0.1, top + 0.18), 0.42, hc, segments=10, rings=6)
+    if style == "beanie":
+        bn = look["beanie"]
+        h.box_base((0, 0.06, h0 + 0.35), (hw + 0.1, hd - 0.06, 0.6), hc)                                  # hair below
+        h.box_base((0, 0, top - 0.38), (hw + 0.14, hd + 0.14, 0.62), bn)
+        h.box_base((0, 0, top - 0.42), (hw + 0.2, hd + 0.2, 0.2), bn)                                     # its fold
+        if look.get("ears"):                                                                              # cat ears
+            for sx in (1, -1):
+                h.pyramid((sx * 0.5, 0.0, top + 0.2), 0.46, 0.42, bn, rot=_ry(-10 * sx))
+                h.pyramid((sx * 0.5, -0.13, top + 0.21), 0.24, 0.26, "spa_bubblegum", rot=_ry(-10 * sx))
+        else:
+            h.sphere((0, 0, top + 0.36), 0.24, "offwhite", segments=8, rings=5)                           # pom-pom
+    if look.get("sunhat"):                                                  # sits on the hair's crown
+        h.box_base((0, 0, top + 0.11), (2.3, 2.2, 0.07), look["sunhat"])                                  # brim
+        h.box_base((0, 0, top + 0.18), (hw + 0.06, hd + 0.06, 0.26), look["sunhat"])
+        h.box_base((0, 0, top + 0.2), (hw + 0.1, hd + 0.1, 0.1), look["band"], bevel=False)               # its band
+        yf = -(hd + 0.1) / 2
+        h.box((0.42, yf - 0.02, top + 0.25), (0.24, 0.04, 0.24), "offwhite", bevel=False, rot=_ry(45))    # a daisy
+        h.box((0.42, yf - 0.05, top + 0.25), (0.1, 0.02, 0.1), "pastel_butter", bevel=False)
+    if look.get("phones"):
+        h.box_base((0, 0, top + 0.1), (hw + 0.36, 0.22, 0.14), "fur_ink", bevel=False)                    # the band
+        for sx in (1, -1):
+            h.box_base((sx * (hw / 2 + 0.11), 0, h0 + 0.55), (0.14, 0.22, top + 0.1 - h0 - 0.55), "fur_ink",
+                       bevel=False)
+            h.box((sx * (hw / 2 + 0.17), 0, h0 + 0.6), (0.24, 0.5, 0.5), look["phones"])                  # the cups
+
+
+def top_of(look):
+    """The highest point of a look: the hair, or its hat."""
+    f = Frame(look["body"])
+    extra = 0.12
+    if look.get("sunhat"):
+        extra = 0.44
+    elif look["style"] == "beanie":
+        extra = 0.62
+    elif look["style"] in ("puffs", "curls"):
+        extra = 0.6
+    elif look.get("phones"):
+        extra = 0.24
+    return f.head1 + extra
+
+
+def grip_at(look, carry=True):
+    """The middle of the right hand in the customer's space, where the carrier's Grip goes."""
+    f = Frame(look["body"])
+    tilt = _ry(carry_degrees(look)) if carry else None
+    p = Piece((-f.arm_x, 0, f.shoulder), tilt)
+    return p.at((-f.arm_x, 0, f.hand))
+
+
+def build_customer(name, mat, carry=True):
+    """The customer's six objects: Body first (the main object), then Head, ArmL, ArmR, LegL, LegR. `carry` False
+    hangs the right arm straight (pictures only)."""
+    look = LOOKS[name]
+    f = Frame(look["body"])
+    asset = PREFIX + name
+    body = Piece()
+    _lower(body, f, look)
+    _torso(body, f, look)
+    head = Piece((0, 0, f.head0))
+    head.box_base((0, 0, f.head0), (f.d["hw"], f.d["hd"], f.d["hh"]), look["skin"])
+    _face(head, f, look)
+    _hair(head, f, look)
+    arm_l = Piece((f.arm_x, 0, f.shoulder))
+    arm_r = Piece((-f.arm_x, 0, f.shoulder), _ry(carry_degrees(look)) if carry else None)
+    _arm(arm_l, f, look, 1)
+    _arm(arm_r, f, look, -1)
+    legs = [Piece((0.32, 0, f.leg_joint)), Piece((-0.32, 0, f.leg_joint))]
+    _legs(legs, f, look)
+    pieces = (("_Body", body), ("_Head", head), ("_ArmL", arm_l), ("_ArmR", arm_r), ("_LegL", legs[0]),
+              ("_LegR", legs[1]))
+    return [p.finalize(asset + sfx, mat) for sfx, p in pieces]
+
+
+def customer_rbx_extras(name):
+    look = LOOKS[name]
+    f = Frame(look["body"])
+    return {"attachments": [("_ArmR", "Grip", Matrix.Translation(grip_at(look))),
+                            ("_Body", "Overhead", Matrix.Translation((0.0, 0.0, top_of(look) + 0.6)))],
+            "attributes": {"Look": {"String": name}, "WalkSpeed": {"Float64": look["body"]["speed"]},
+                           "LegLength": {"Float64": round(f.leg_joint, 3)},
+                           "CarryArmDegrees": {"Float64": carry_degrees(look)},
+                           "Height": {"Float64": round(top_of(look), 3)}}}
+
+
+ASSETS = {PREFIX + n: ((lambda mat, n=n: build_customer(n, mat)), 1600) for n in LOOKS}
+EXTRAS = {PREFIX + n: (lambda n=n: customer_rbx_extras(n)) for n in LOOKS}
