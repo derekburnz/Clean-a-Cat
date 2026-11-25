@@ -47,6 +47,7 @@ local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local Trove = require(Shared:WaitForChild("Vendor"):WaitForChild("Trove"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
+local WashMeter = require(Shared:WaitForChild("WashMeter"))
 
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
@@ -177,6 +178,11 @@ type Visit = {
 	swirl: number, -- studs swirled on the cat in this bath
 	lather: boolean, -- this bath lathers foam on (the switch latherFoam as the bath began)
 	rinsing: boolean, -- (latherFoam) he is covered and the foam is rinsing off
+	rinsed: number, -- (washMeter) puffs the player has sprayed off in the rinse
+	popped: { [Model]: boolean }, -- (washMeter) those puffs
+	shaking: string?, -- (washMeter) the step whose full bar the cat is shaking off; input waits until it ends
+	held: string?, -- (washMeter) the full bar still shown after the shake until heldUntil (os.clock), or the next
+	heldUntil: number, -- step's first progress
 	away: boolean, -- the cat sits at a later step's station, not in the tub
 	hold: Paw?, -- the paw under the press in the Pawdicure, held since holdSince
 	holdSince: number,
@@ -202,6 +208,10 @@ ScrubController.walkChanged = Signal.new() :: Signal.Signal<boolean>
 -- are on the screen (GUI space, as InputObject.Position; nil when off screen), and (nil, nil, nil) when it lifts. The
 -- HUD draws the step's tool there (UI/HUD/HeldTool, switch toolCursor). Not for a gamepad, whose point is the middle.
 ScrubController.pointerMoved = Signal.new() :: Signal.Signal<Vector2?, Vector2?, Vector2?>
+-- Fires (fill, step) as the player works an area step (switch washMeter, WashMeter): how full its bar is, 0 to 1,
+-- and the step ("scrub", "brush", "lather", "rinse" or "claws"); (nil, nil) when no bar shows. The HUD draws the bar
+-- at the top (HudController). ScrubController.meter() gives the latest.
+ScrubController.meterChanged = Signal.new() :: Signal.Signal<number?, string?>
 
 -- The recap card (#224, switch recapCard): RecapController sets a handler that shows the card after a customer's cat
 -- goes home and calls `nextCat` once when the player closes it. With no handler, or the switch off, the next cat
@@ -279,12 +289,100 @@ local function updateWashView(v: {
 	end
 end
 
+-- (washMeter) The area step under way and how much of it is done, 0 to 1, or nil.
+local function workOf(v: Visit): (string?, number)
+	local cat = v.cat :: Cat
+	if v.step == "smell" then
+		if not v.lather then
+			return nil, 0
+		elseif v.rinsing then
+			return "rinse", WashMeter.fill(v.rinsed, #v.suds)
+		end
+		return "lather", WashMeter.fill(#v.suds, LATHER.count, 1)
+	elseif v.step == "claws" then
+		local clipped = 0
+		for _, paw in cat.paws do
+			if paw.clipped then
+				clipped += 1
+			end
+		end
+		return "claws", WashMeter.fill(clipped, #cat.paws, 1)
+	elseif v.step == nil and v.stage == "dirty" then
+		return "scrub", WashMeter.fill(v.scrub.clearedCount, v.scrub.total)
+	elseif v.step == nil and v.stage == "clean" then
+		return "brush", WashMeter.fill(v.strokes, v.brushStrokes, 1)
+	end
+	return nil, 0
+end
+
+-- (washMeter) The bar the HUD shows for this visit: its step and how full, or nil when no area step is under way.
+-- While the cat shakes off a full bar, that bar stays full.
+local function meterOf(v: Visit?): (string?, number)
+	if v == nil or v.cat == nil or not LiveFlags.isOn(WashMeter.FLAG) then
+		return nil, 0
+	end
+	if v.shaking then
+		return v.shaking, 1
+	end
+	local step, fill = workOf(v)
+	if v.held and os.clock() < v.heldUntil and fill <= 0 then
+		return v.held, 1
+	end
+	return step, fill
+end
+
+local meterStep: string? = nil
+local meterFill = 0
+
+-- Tells the HUD the bar's step and fill when either changed.
+local function syncMeter(v: Visit?)
+	local step, fill = meterOf(v)
+	if step == meterStep and (step == nil or fill == meterFill) then
+		return
+	end
+	meterStep, meterFill = step, fill
+	ScrubController.meterChanged:Fire(if step then fill else nil, step)
+end
+
+function ScrubController.meter(): (number?, string?)
+	return if meterStep then meterFill else nil, meterStep
+end
+
+-- (washMeter) The bar of `step` is full: the cat shakes off what is left (Motion-FX's ShakeOff), the bar stays full
+-- for the shake, and `after` runs once it ends while this visit and cat still stand.
+local function shakeOff(v: Visit, cat: Cat, step: string, after: (() -> ())?)
+	v.shaking = step
+	v.held = step
+	v.heldUntil = os.clock() + WashMeter.HOLD_SECONDS
+	syncMeter(v)
+	task.delay(WashMeter.HOLD_SECONDS, function()
+		if visit == v and v.held == step then
+			v.held = nil
+			syncMeter(v)
+		end
+	end)
+	Moments.ShakeOff:Fire(cat.model, step)
+	local during = v.step
+	task.delay(WashMeter.SHAKE_SECONDS, function()
+		if visit ~= v or v.cat ~= cat or v.shaking ~= step then
+			return
+		end
+		v.shaking = nil
+		-- the step moved on meanwhile (a switch dropped it, or the claws' own delay): only the hold on input ends
+		if after and v.step == during then
+			after()
+		end
+		syncMeter(v)
+	end)
+end
+
 local function setStage(v: Visit, stage: Stage)
 	v.stage = stage
 	ToolOnCat.hide() -- the next touch shows the new step's tool (switch toolOnCat)
 	ScrubController.stageChanged:Fire(hudStage(v))
 	if visit == v then
 		updateWashView(v)
+		syncMeter(v)
 	end
 end
 
@@ -757,6 +855,9 @@ local function reveal(v: Visit, cat: Cat)
 	end
 	setWet(cat, 1)
 	endStroke()
+	if LiveFlags.isOn(WashMeter.FLAG) then
+		shakeOff(v, cat, "scrub") -- the last of the mud flies off; the brush waits for the shake
+	end
 	setStage(v, "clean")
 	Moments.CatClean:Fire(cat.model)
 	report("ReportScrubbed", v)
@@ -810,8 +911,14 @@ local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number, hit: In
 			end
 		end
 	end
-	if ScrubRules.shouldReveal(v.scrub) then
+	if
+		if LiveFlags.isOn(WashMeter.FLAG)
+			then not v.scrub.revealed and WashMeter.full(v.scrub.clearedCount, v.scrub.total)
+			else ScrubRules.shouldReveal(v.scrub)
+	then
 		reveal(v, cat)
+	else
+		syncMeter(v)
 	end
 end
 
@@ -819,6 +926,7 @@ end
 local function setStep(v: Visit, step: string?)
 	v.step = step
 	ScrubController.stageChanged:Fire(hudStage(v))
+	syncMeter(v)
 end
 
 local function nextPaw(cat: Cat): Paw?
@@ -929,6 +1037,10 @@ local function armLater(v: Visit, cat: Cat)
 	v.swirl = 0
 	v.lather = false
 	v.rinsing = false
+	v.rinsed = 0
+	v.popped = {}
+	v.shaking = nil
+	v.held = nil
 	v.hold = nil
 	v.step = nil
 	ringPaw(v, nil)
@@ -1053,6 +1165,8 @@ local function nextLater(v: Visit, cat: Cat)
 		v.swirl = 0
 		v.lather = LiveFlags.isOn(LATHER.flag)
 		v.rinsing = false
+		v.rinsed = 0
+		v.popped = {}
 		if not v.lather then
 			makeSuds(v, cat) -- the ring of puffs to pop; with latherFoam the rubbing makes them
 		end
@@ -1077,6 +1191,13 @@ end
 local function rinseOff(v: Visit, cat: Cat)
 	v.rinsing = true
 	Moments.BathFoamy:Fire(cat.model, cat.model:GetBoundingBox().Position)
+	if LiveFlags.isOn(WashMeter.FLAG) then
+		-- (washMeter) the player sprays it off with the shower (rinseAt), as in the owner's salon video
+		endStroke()
+		ToolOnCat.hide()
+		syncMeter(v)
+		return
+	end
 	task.spawn(function()
 		task.wait(LATHER.wait)
 		local count = #v.suds
@@ -1093,6 +1214,46 @@ local function rinseOff(v: Visit, cat: Cat)
 			Moments.BathDone:Fire(cat.model)
 			nextLater(v, cat)
 		end
+	end)
+end
+
+-- (washMeter) Spraying the foam off: each puff within the shower's reach of `point` pops. At a full bar the rest
+-- drops off as he shakes, and the bath is done.
+local function rinseAt(v: Visit, cat: Cat, point: Vector3, normal: Vector3)
+	if v.shaking then
+		return
+	end
+	Moments.RinseSpray:Fire(cat.model, point, normal)
+	local reach = spongeRadius() * WashDraft.RINSE_REACH
+	local count = #v.suds
+	for _, puff in v.suds do
+		if
+			not v.popped[puff]
+			and puff.Parent
+			and (puff:GetPivot().Position - point).Magnitude <= reach
+		then
+			v.popped[puff] = true
+			v.rinsed += 1
+			local at = puff:GetBoundingBox().Position
+			popPuff(puff)
+			Moments.SudsPopped:Fire(cat.model, at, count - v.rinsed)
+		end
+	end
+	if not WashMeter.full(v.rinsed, count) then
+		syncMeter(v)
+		return
+	end
+	for _, puff in v.suds do
+		if not v.popped[puff] and puff.Parent then
+			v.popped[puff] = true
+			popPuff(puff) -- the last of the foam drops off with the shake
+		end
+	end
+	v.rinsed = count
+	endStroke()
+	Moments.BathDone:Fire(cat.model)
+	shakeOff(v, cat, "rinse", function()
+		nextLater(v, cat)
 	end)
 end
 
@@ -1134,6 +1295,8 @@ local function latherAt(v: Visit, cat: Cat, point: Vector3, normal: Vector3, tra
 	end
 	if #v.suds >= LATHER.count then
 		rinseOff(v, cat)
+	else
+		syncMeter(v)
 	end
 end
 
@@ -1177,6 +1340,11 @@ local function clipPaw(v: Visit, cat: Cat, paw: Paw)
 	end
 	ringPaw(v, nextPaw(cat))
 	Moments.PawClipped:Fire(cat.model, paw.leg:GetPivot().Position, left)
+	if left == 0 and LiveFlags.isOn(WashMeter.FLAG) then
+		shakeOff(v, cat, "claws")
+	else
+		syncMeter(v)
+	end
 	task.spawn(function()
 		for index, claw in paw.claws do
 			if index > 1 then
@@ -1243,6 +1411,7 @@ local function dropLater(need: string)
 	end
 	v.suds = {}
 	v.hold = nil
+	v.shaking = nil -- a shake under way ends with its step, so its callback does not move on a second time
 	ringPaw(v, nil)
 	setStep(v, nil)
 	nextLater(v, cat)
@@ -1297,11 +1466,25 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 	Moments.BrushSwipe:Fire(cat.model, v.strokes)
 	report("ReportBrushStroke", v)
 	if v.strokes >= v.brushStrokes then
+		local meter = LiveFlags.isOn(WashMeter.FLAG)
+		if meter then
+			shakeOff(v, cat, "brush") -- the bar stays full while he shakes his fur out, then the next step
+		end
 		setStage(v, "fluffed")
 		setWet(cat, 0)
 		endStroke()
 		Moments.CatFluffed:Fire(cat.model)
-		task.spawn(dryThenBows, v, cat)
+		if meter then
+			task.delay(WashMeter.SHAKE_SECONDS, function()
+				if visit == v and v.cat == cat and v.stage == "fluffed" and v.step == nil then
+					dryThenBows(v, cat)
+				end
+			end)
+		else
+			task.spawn(dryThenBows, v, cat)
+		end
+	else
+		syncMeter(v)
 	end
 end
 
@@ -1338,6 +1521,9 @@ local function onPointer(input: InputObject)
 	if not v or not cat or (v.stage ~= "dirty" and v.stage ~= "clean" and v.step == nil) then
 		return
 	end
+	if v.shaking then
+		return -- (washMeter) the cat is shaking off a full bar; the next step starts after it
+	end
 	pointerAt(input, cat)
 	local ray = pointerRay(input)
 	local result = if ray then cast(ray, v.catParams) else nil
@@ -1346,7 +1532,7 @@ local function onPointer(input: InputObject)
 	if result then
 		local headModel = if cat.head then cat.head.Parent else nil
 		ToolOnCat.show(
-			ToolOnCat.modelFor(v.stage, v.step, ownsUpgrade),
+			ToolOnCat.modelFor(v.stage, if v.rinsing then "rinse" else v.step, ownsUpgrade),
 			result.Position,
 			result.Normal,
 			headModel ~= nil and result.Instance:IsDescendantOf(headModel)
@@ -1396,7 +1582,9 @@ local function onPointer(input: InputObject)
 		Moments.ScrubMove:Fire(cat.model, point, result.Normal, travel / dt)
 		rubAt(v, cat, point, travel, result.Instance)
 	elseif v.step == "smell" then
-		if v.lather then
+		if v.rinsing and LiveFlags.isOn(WashMeter.FLAG) then
+			rinseAt(v, cat, point, result.Normal)
+		elseif v.lather then
 			latherAt(v, cat, point, result.Normal, travel)
 		else
 			swirlAt(v, cat, travel)
@@ -1484,7 +1672,9 @@ local function turnToShow(v: Visit, cat: Cat)
 	local yaw = ScrubRules.turnToShow(
 		offsets,
 		camera.CFrame.Position - centre,
-		ScrubRules.patchesNeeded(v.scrub)
+		if LiveFlags.isOn(WashMeter.FLAG)
+			then math.max(0, WashMeter.needed(v.scrub.total) - v.scrub.clearedCount)
+			else ScrubRules.patchesNeeded(v.scrub)
 	)
 	if yaw == nil then
 		return
@@ -2018,6 +2208,11 @@ local function buildVisit(folder: Folder): Visit
 		swirl = 0,
 		lather = false,
 		rinsing = false,
+		rinsed = 0,
+		popped = {},
+		shaking = nil,
+		held = nil,
+		heldUntil = 0,
 		away = false,
 		hold = nil,
 		holdSince = 0,
@@ -2170,6 +2365,7 @@ local function disable()
 	updateWashView(nil)
 	trove:Clean()
 	ScrubController.stageChanged:Fire(nil)
+	syncMeter(nil)
 end
 
 local function refresh()

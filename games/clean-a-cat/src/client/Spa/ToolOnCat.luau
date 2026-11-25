@@ -34,6 +34,8 @@ local FAINT = 0.6 -- see-through on the kitten's head
 function ToolOnCat.modelFor(stage: string?, step: string?, owns: (string) -> boolean): string?
 	if step == "claws" then
 		return "CleanACat_Tool_Clipper"
+	elseif step == "rinse" then
+		return "CleanACat_Tool_Shower" -- (washMeter) spray the foam off
 	elseif step == "smell" then
 		return "CleanACat_Tool_SpongeBubble" -- "Swirl the suds"
 	elseif stage == "dirty" then

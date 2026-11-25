@@ -56,6 +56,7 @@ WashDraft.NEED_FLAG =
 -- CLAW_HOLD seconds on each front paw clips that paw's claws. The models carry four claws on each front paw, each
 -- too small to press on a phone, so a paw's four clip together, one snip after another (Design-Agent).
 WashDraft.SWIRL_TRAVEL = 12 -- studs of swirl on the cat
+WashDraft.RINSE_REACH = 1.6 -- (washMeter) the shower pops foam this many sponge reaches round the finger
 WashDraft.SUDS = 6 -- suds puffs round the cat (placeholders until the models carry their own)
 WashDraft.CLAW_HOLD = 0.5 -- seconds on a paw (Design-Agent: 0.35 went by too fast to feel like trimming)
 WashDraft.SNIP_GAP = 0.05 -- seconds between one paw's claw snips, so one hold reads as four trims
