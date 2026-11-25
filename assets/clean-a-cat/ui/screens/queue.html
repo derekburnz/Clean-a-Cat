@@ -3,22 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="normal,rare">
+<meta name="states" content="normal,special">
 <title>Who's next?</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <style>
-/* "Who's next?": the player opens it from the HUD's waiting faces and picks which customer to serve.
-   One card per waiting cat: dirty portrait, rarity, what it needs, a calm patience bar (a heart and a bar, no
-   numbers and no warning words), what it pays and one green Wash button. A cat a helper is washing shows who has
-   it instead of a button. normal: five everyday customers. rare: the second card is a rare VIP customer (glow and
-   crown) with the same honest rows as everyone else, and the title band says how often a Rare cat visits.
+/* "Who's next?", the bench menu (Derek's picks, 2026-11-25): the player opens it from the HUD's waiting faces and
+   picks which customer to wash, or presses "Wash next" in the title band to take whoever is first in line. One card per
+   waiting cat: the portrait at its dirt level (Model-Agent's Dirty1 to Dirty4, dirtier looks dirtier), rarity, a
+   dirt row (four mud drops and the exact step count, since levels 2 and 3 look close at phone size), the heart bar
+   (no numbers and no warning words) with a tick at its first 10%: a cat taken that early pays the quick bonus, so
+   the picture wears a "Quick bonus" tag while it lasts. Pay shows the base ("40+"): speed, the quick bonus and dirt add on top,
+   and the recap shows each part. A cat a helper is washing shows who has it and how far along they are.
+   normal: six everyday customers. special: the second card is a special visitor (issue 471's cats), which only the
+   player can wash and which leaves when its heart bar runs out; the band says one is here. No countdown numbers.
    The row scrolls sideways when the cards do not fit; the arrows show only then (the script at the bottom). */
 .win.queue { width: max-content; }
-.queue .body { display: flex; align-items: center; gap: 10px; }
+.queue .body { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+.queue .row { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .band .sub .ic { font-size: 24px; margin-right: 4px; }
-body:not([data-state="rare"]) .only-rare { display: none !important; }
-body[data-state="rare"] .only-normal { display: none !important; }
+body:not([data-state="special"]) .only-special { display: none !important; }
+body[data-state="special"] .only-normal { display: none !important; }
 
 .cards { flex: 1; min-width: 0; display: flex; gap: 14px; padding: 32px 8px 6px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none;
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-l, 0px), #000 calc(100% - var(--fade-r, 0px)), transparent 100%);
@@ -44,6 +49,7 @@ body.scrolls .nav { display: grid; }
 .tile.common::after { box-shadow: inset 0 0 0 4px var(--r-common); }
 .tile.uncommon::after { box-shadow: inset 0 0 0 4px var(--r-uncommon); }
 .tile.rare::after { box-shadow: inset 0 0 0 4px var(--r-rare); }
+.tile.epic::after { box-shadow: inset 0 0 0 4px var(--r-epic); }
 .qcard > .rar { position: absolute; left: 50%; top: 130px; transform: translateX(-50%); }
 .qcard .name { font-family: var(--font-head); font-size: 26px; line-height: 1; text-align: center; margin-top: 13px; }
 .qcard .pay { display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 18px; color: var(--ink-soft); line-height: 1; }
@@ -81,13 +87,42 @@ body.scrolls .nav { display: grid; }
 .spark.a { right: -7px; top: 104px; font-size: 30px; }
 .spark.b { left: -8px; top: 180px; font-size: 22px; }
 
+/* dirt: four mud drops, the level's filled, and the exact step count */
+.dirt { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; }
+.drops { display: inline-flex; gap: 4px; }
+.drop { width: 16px; height: 16px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; border: 2px solid var(--ink); background: #fff; }
+.drop.on { background: #9a6a3f; }
+.steps { font-weight: 800; font-size: 17px; color: var(--ink-soft); line-height: 1; white-space: nowrap; }
+.steps b { font-family: var(--font-head); font-weight: 400; font-size: 22px; color: var(--ink); }
+/* the heart bar's first 10%: a tick, and a gold bar with a chip while a cat is still in it */
+.pat { position: relative; }
+.pat .bar::after { content: ""; position: absolute; left: 90%; top: -2px; bottom: -2px; width: 3px; background: var(--ink); opacity: .55; }
+.quick { white-space: nowrap; position: absolute; right: -9px; top: -9px; transform: rotate(8deg); box-shadow: 0 3px 0 var(--ink); display: inline-flex; align-items: center; gap: 3px; background: linear-gradient(#fff4b8, #ffd84d);
+  border: 3px solid var(--ink); border-radius: 12px; padding: 2px 8px 3px 5px; font-family: var(--font-head); font-size: 17px; line-height: 1.1; color: #3a2a00; z-index: 1; }
+.quick .ic { font-size: 18px; }
+body.short .quick { top: -19px; right: auto; left: -8px; transform: rotate(-6deg); font-size: 15px; padding: 1px 6px 2px 4px; }
+body.short .quick .ic { font-size: 15px; }
+/* a helper's progress on the cat they have (the same bar shows over the cat in the world) */
+.busy { flex-direction: column; gap: 4px; padding: 6px 10px; }
+.busy .who { display: flex; align-items: center; gap: 8px; }
+.busy .bar { width: 100%; height: 14px; border-width: 2px; }
+/* the special visitor: a lilac glow, a "Special" chip in the rarity's place, and one plain line saying only the player can wash it */
+.qcard.special { background: linear-gradient(#f3e6ff, #fff 46%); border-color: var(--r-epic, #c07cff);
+  box-shadow: 0 0 0 4px rgba(192, 124, 255, .3), 0 0 22px 4px rgba(192, 124, 255, .5); }
+.only { font-weight: 800; font-size: 15px; line-height: 1.1; color: #7a3fc0; text-align: center; }
+/* "Wash next" in the title band takes whoever is first in line (their face on the button), so a player who does not
+   want to choose never has to; the cards stay for picking the rare and special ones */
+.wnext { position: absolute; top: 11px; right: 60px; height: 50px; font-size: 24px; padding: 0 18px 0 6px; gap: 8px; z-index: 2; }
+.wnext .mini { width: 38px; height: 38px; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); background: #fff; flex: none; }
+.wnext .mini img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+
 /* phones held sideways: the picture moves beside the name and the pay beside the patience bar, so the card is
    short enough and three fit with the next one peeking in */
 body.short .queue .body { padding: 8px 12px 10px; gap: 8px; }
 body.short .cards { gap: 10px; padding: 14px 6px 4px; }
 body.short .nav { height: 88px; }
-body.short .qcard { width: 200px; display: grid; grid-template-columns: 66px 1fr auto; grid-template-rows: 33px 33px auto auto auto;
-  grid-template-areas: "pic name name" "pic rar rar" "needs needs needs" "pat pat pay" "act act act"; column-gap: 10px; row-gap: 0; padding: 8px; }
+body.short .qcard { width: 200px; display: grid; grid-template-columns: 66px 1fr auto; grid-template-rows: 33px 33px auto auto auto auto;
+  grid-template-areas: "pic name name" "pic rar rar" "needs needs needs" "pat pat pay" "only only only" "act act act"; column-gap: 10px; row-gap: 0; padding: 8px; }
 body.short .qcard .pic { grid-area: pic; }
 body.short .qcard .tile { width: 66px; height: 66px; border-radius: 14px; }
 body.short .tile::after { border-radius: 10px; }
@@ -100,10 +135,14 @@ body.short .qcard .pay { grid-area: pay; align-self: center; margin-top: 7px; }
 body.short .qcard .pay > span:first-child { display: none; }
 body.short .qcard .pay .v { font-size: 24px; gap: 5px; }
 body.short .qcard .pay .v .ic { font-size: 24px; }
-body.short .needs { grid-area: needs; margin-top: 7px; }
-body.short .needs .cap { display: none; }
-body.short .needs .set { justify-content: flex-start; padding: 2px 4px; gap: 4px; }
-body.short .need { width: 32px; height: 32px; font-size: 24px; }
+body.short .dirt { grid-area: needs; margin-top: 7px; padding: 3px 6px; }
+body.short .drop { width: 13px; height: 13px; }
+body.short .steps { font-size: 15px; }
+body.short .steps b { font-size: 19px; }
+body.short .only { display: none; }
+body.short .wnext { top: 6px; right: 84px; height: 46px; font-size: 20px; padding: 0 12px 0 5px; }
+body.short .wnext .mini { width: 32px; height: 32px; }
+body.short .band .sub { display: none; }
 body.short .pat { grid-area: pat; margin-top: 7px; gap: 6px; }
 body.short .pat > .ic { font-size: 22px; }
 body.short .pat .bar { height: 16px; }
@@ -113,9 +152,6 @@ body.short .busy { font-size: 16px; }
 body.short .busy b { font-size: 18px; }
 body.short .busy .ic { font-size: 34px; }
 body.short .new { top: -8px; left: -8px; font-size: 16px; padding: 2px 7px; }
-body.short .vipmark { left: 50px; top: -14px; transform: rotate(14deg); }
-body.short .vipmark .ic { font-size: 32px; }
-body.short .vipmark span { display: none; }
 body.short .spark.a { right: -8px; top: -9px; font-size: 26px; }
 body.short .spark.b { display: none; }
 </style>
@@ -133,77 +169,78 @@ body.short .spark.b { display: none; }
       <div class="badge"><i data-ic="queue"></i></div>
       <span class="title outlined">Who's next?</span>
       <span class="sub only-normal">Pick a cat to wash</span>
-      <span class="sub only-rare"><i data-ic="crown"></i>A Rare cat is here · 11% of customers</span>
+      <span class="sub only-special"><i data-ic="sparkle"></i>A special visitor is here</span>
     </div>
+    <button class="btn green wnext" data-tap><span class="mini"><img src="img/portrait_Muffin_Dirty1_ink.png" alt=""></span><span class="lbl">Wash next</span></button>
     <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
     <div class="body">
+      <div class="row">
       <button class="nav prev end" data-tap aria-label="Earlier customers"><svg class="ic"><use href="#chev"/></svg></button>
       <div class="cards scroll" id="cards">
 
         <div class="qcard">
-          <div class="pic"><div class="tile common"><img src="img/portrait_Muffin_Dirty_ink.png" alt=""></div></div>
+          <div class="pic"><div class="tile common"><img src="img/portrait_Muffin_Dirty1_ink.png" alt=""></div><span class="quick"><i data-ic="sparkle"></i>Quick bonus</span></div>
           <span class="rar common">Common</span>
           <span class="name">Muffin</span>
-          <div class="needs" aria-label="Needs: mud, tangles"><span class="cap">Needs</span><div class="set well"><span class="need"><i data-ic="mud"></i></span><span class="need"><i data-ic="tangle"></i></span></div></div>
-          <div class="pat" aria-label="Patience: happy to wait"><i data-ic="heart"></i><div class="bar"><i style="width:86%"></i></div></div>
-          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>40</span></div>
+          <div class="dirt well" aria-label="Dirt 1 of 4, 3 steps"><span class="drops"><i class="drop on"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i></span><span class="steps"><b>3</b> steps</span></div>
+          <div class="pat" aria-label="Patience"><i data-ic="heart"></i><div class="bar gold"><i style="width:96%"></i></div></div>
+          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>40+</span></div>
           <div class="act"><button class="btn green wide" data-tap><i data-ic="sponge"></i><span class="lbl">Wash</span></button></div>
         </div>
 
         <div class="qcard only-normal">
-          <div class="pic"><div class="tile common"><img src="img/portrait_Cotton_Dirty_ink.png" alt=""></div></div>
+          <div class="pic"><div class="tile common"><img src="img/portrait_Cotton_Dirty2_ink.png" alt=""></div></div>
           <span class="rar common">Common</span>
           <span class="name">Cotton</span>
-          <div class="needs" aria-label="Needs: mud, burrs"><span class="cap">Needs</span><div class="set well"><span class="need"><i data-ic="mud"></i></span><span class="need"><i data-ic="burr"></i></span></div></div>
-          <div class="pat" aria-label="Patience: happy to wait"><i data-ic="heart"></i><div class="bar"><i style="width:68%"></i></div></div>
-          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>40</span></div>
+          <div class="dirt well" aria-label="Dirt 2 of 4, 5 steps"><span class="drops"><i class="drop on"></i><i class="drop on"></i><i class="drop"></i><i class="drop"></i></span><span class="steps"><b>5</b> steps</span></div>
+          <div class="pat" aria-label="Patience"><i data-ic="heart"></i><div class="bar"><i style="width:68%"></i></div></div>
+          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>40+</span></div>
           <div class="act"><button class="btn green wide" data-tap><i data-ic="sponge"></i><span class="lbl">Wash</span></button></div>
         </div>
 
-        <div class="qcard vip only-rare">
-          <div class="vipmark"><i data-ic="crown"></i><span>VIP</span></div>
-          <i data-ic="sparkle" class="spark a"></i><i data-ic="sparkle" class="spark b"></i>
-          <div class="pic"><div class="tile rare"><img src="img/portrait_Marble_Dirty_ink.png" alt=""></div><span class="new">New!</span></div>
-          <span class="rar rare">Rare</span>
-          <span class="name">Marble</span>
-          <div class="needs" aria-label="Needs: mud, tangles, wet coat, nails"><span class="cap">Needs</span><div class="set well"><span class="need"><i data-ic="mud"></i></span><span class="need"><i data-ic="tangle"></i></span><span class="need"><i data-ic="wet"></i></span><span class="need"><i data-ic="nails"></i></span></div></div>
-          <div class="pat" aria-label="Patience: happy to wait"><i data-ic="heart"></i><div class="bar"><i style="width:74%"></i></div></div>
-          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>100</span></div>
+        <div class="qcard special only-special">
+          <div class="pic"><div class="tile epic"><img src="img/portrait_Sherbet_Dirty3_ink.png" alt=""></div></div>
+          <span class="rar epic">Special</span>
+          <span class="name">Sherbet</span>
+          <div class="dirt well" aria-label="Dirt 3 of 4, 7 steps"><span class="drops"><i class="drop on"></i><i class="drop on"></i><i class="drop on"></i><i class="drop"></i></span><span class="steps"><b>7</b> steps</span></div>
+          <div class="pat" aria-label="Patience"><i data-ic="heart"></i><div class="bar"><i style="width:74%"></i></div></div>
+          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>250+</span></div>
+          <span class="only">Only you can wash</span>
           <div class="act"><button class="btn green wide" data-tap><i data-ic="sponge"></i><span class="lbl">Wash</span></button></div>
         </div>
 
         <div class="qcard helped">
-          <div class="pic"><div class="tile common"><img src="img/portrait_Smudge_Dirty_ink.png" alt=""></div></div>
+          <div class="pic"><div class="tile common"><img src="img/portrait_Smudge_Dirty2_ink.png" alt=""></div></div>
           <span class="rar common">Common</span>
           <span class="name">Smudge</span>
-          <div class="needs" aria-label="Needs: mud, smell"><span class="cap">Needs</span><div class="set well"><span class="need"><i data-ic="mud"></i></span><span class="need"><i data-ic="smell"></i></span></div></div>
-          <div class="pat" aria-label="Patience: being washed"><i data-ic="heart"></i><div class="bar"><i style="width:100%"></i></div></div>
-          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>40</span></div>
-          <div class="act"><div class="busy"><i data-ic="helper"></i><span><b>Jo</b><br>is washing</span></div></div>
+          <div class="dirt well" aria-label="Dirt 2 of 4, 4 steps"><span class="drops"><i class="drop on"></i><i class="drop on"></i><i class="drop"></i><i class="drop"></i></span><span class="steps"><b>4</b> steps</span></div>
+          <div class="pat" aria-label="Patience"><i data-ic="heart"></i><div class="bar"><i style="width:100%"></i></div></div>
+          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>40+</span></div>
+          <div class="act"><div class="busy"><span class="who"><i data-ic="helper"></i><span><b>Jo</b> is washing</span></span><div class="bar sky"><i style="width:60%"></i></div></div></div>
         </div>
 
         <div class="qcard">
-          <div class="pic"><div class="tile uncommon"><img src="img/portrait_Patches_Dirty_ink.png" alt=""></div></div>
+          <div class="pic"><div class="tile uncommon"><img src="img/portrait_Patches_Dirty3_ink.png" alt=""></div></div>
           <span class="rar uncommon">Uncommon</span>
           <span class="name">Patches</span>
-          <div class="needs" aria-label="Needs: mud, tangles, wet coat"><span class="cap">Needs</span><div class="set well"><span class="need"><i data-ic="mud"></i></span><span class="need"><i data-ic="tangle"></i></span><span class="need"><i data-ic="wet"></i></span></div></div>
-          <div class="pat" aria-label="Patience: waiting"><i data-ic="heart"></i><div class="bar gold"><i style="width:48%"></i></div></div>
-          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>60</span></div>
+          <div class="dirt well" aria-label="Dirt 3 of 4, 6 steps"><span class="drops"><i class="drop on"></i><i class="drop on"></i><i class="drop on"></i><i class="drop"></i></span><span class="steps"><b>6</b> steps</span></div>
+          <div class="pat" aria-label="Patience"><i data-ic="heart"></i><div class="bar gold"><i style="width:48%"></i></div></div>
+          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>60+</span></div>
           <div class="act"><button class="btn green wide" data-tap><i data-ic="sponge"></i><span class="lbl">Wash</span></button></div>
         </div>
 
         <div class="qcard">
-          <div class="pic"><div class="tile uncommon"><img src="img/portrait_Tux_Dirty_ink.png" alt=""></div><span class="new">New!</span></div>
+          <div class="pic"><div class="tile uncommon"><img src="img/portrait_Tux_Dirty4_ink.png" alt=""></div><span class="new">New!</span></div>
           <span class="rar uncommon">Uncommon</span>
           <span class="name">Tux</span>
-          <div class="needs" aria-label="Needs: tangles, wet coat, nails"><span class="cap">Needs</span><div class="set well"><span class="need"><i data-ic="tangle"></i></span><span class="need"><i data-ic="wet"></i></span><span class="need"><i data-ic="nails"></i></span></div></div>
-          <div class="pat" aria-label="Patience: getting sleepy"><i data-ic="heart"></i><div class="bar peach"><i style="width:26%"></i></div></div>
-          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>60</span></div>
+          <div class="dirt well" aria-label="Dirt 4 of 4, 9 steps"><span class="drops"><i class="drop on"></i><i class="drop on"></i><i class="drop on"></i><i class="drop on"></i></span><span class="steps"><b>9</b> steps</span></div>
+          <div class="pat" aria-label="Patience"><i data-ic="heart"></i><div class="bar peach"><i style="width:26%"></i></div></div>
+          <div class="pay"><span>Pays</span><span class="v"><i data-ic="coin"></i>60+</span></div>
           <div class="act"><button class="btn green wide" data-tap><i data-ic="sponge"></i><span class="lbl">Wash</span></button></div>
         </div>
-
       </div>
       <button class="nav next" data-tap aria-label="More customers"><svg class="ic"><use href="#chev"/></svg></button>
+      </div>
     </div>
   </div>
 </div></div>
