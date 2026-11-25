@@ -43,6 +43,7 @@ local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 local CatIndex = require(script:WaitForChild("CatIndex"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local HUD = require(script:WaitForChild("HUD"))
+local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
 local Motion = require(script:WaitForChild("Motion"))
 local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
@@ -245,6 +246,7 @@ function UI.init()
 			listener()
 		end
 	end)
+	HeldTool.build(playerGui) -- the step's tool under the finger (switch toolCursor), its own layer in GUI space
 	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
 	SudsBubble.build(root) -- Suds's help bubble (switch sudsBubble), at the bottom while the tub is empty
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
@@ -289,6 +291,12 @@ end
 
 function UI.onWalk(fn: () -> ())
 	table.insert(walkListeners, fn)
+end
+
+-- The wash step's tool under the finger (switch toolCursor): `at` is where the finger is (nil when it lifts), and
+-- `centre` and `head` where the cat's middle and head are, so the tool keeps off the face (ScrubController.pointerMoved).
+function UI.setToolPoint(at: Vector2?, centre: Vector2?, head: Vector2?)
+	HeldTool.set(if at then HUD.toolIcon() else nil, at, centre, head)
 end
 
 function UI.setCoins(coins: unknown)
