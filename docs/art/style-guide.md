@@ -175,8 +175,8 @@ The owner on 2026-11-25: "rework customers to be much better", and what bothered
 | `CleanACat_NPC_Customer_Mo` | tall | short black hair, a striped butter jumper, a mint scarf, navy trousers |
 | `CleanACat_NPC_Customer_Pip` | small | a brown bob, a sky hoodie, a pink tote bag with a paw in the left hand |
 | `CleanACat_NPC_Customer_Rae` | adult | a ginger ponytail, denim dungarees with a paw over a pink tee, red shoes |
-| `CleanACat_NPC_Customer_Juno` | adult | hair in two puffs, a lilac hoodie, mint headphones |
-| `CleanACat_NPC_Customer_Bea` | small | a granny: a silver bun, round brass glasses, a lilac cardigan, a denim skirt |
+| `CleanACat_NPC_Customer_Juno` | adult | hair in two puffs, a peach hoodie, mint headphones |
+| `CleanACat_NPC_Customer_Bea` | small | a granny: a silver bun, round brass glasses, a sage cardigan, a denim skirt |
 | `CleanACat_NPC_Customer_Theo` | tall | russet curls and a beard, a sky jumper with a paw |
 | `CleanACat_NPC_Customer_Kit` | adult | a mint cat-ear beanie, a butter tee with a paw, a pink backpack |
 
@@ -184,7 +184,7 @@ The owner on 2026-11-25: "rework customers to be much better", and what bothered
 - **Joints.** The main object is `..._Body` (torso, hips, skirt, neck, scarf, hood, backpack); its biggest part is the PrimaryPart. Five child Models, each with its pivot at the joint: `..._Head` (top of the neck), `..._ArmL` and `..._ArmR` (shoulder), `..._LegL` and `..._LegR` (hip). Turn one about its pivot's X axis for a step, an arm swing or a nod, and the head about its Y to look round. Left and right are the customer's own. No knees or elbows: a step of about 25 degrees each way reads as a walk at this size.
 - **The carrier hand.** The right arm is built already held out to the side by the root attribute `CarryArmDegrees` (20 to 36), which is what it takes for the carrier to clear the hips or the skirt. The Attachment `Grip` is in the middle of that hand, on the arm's biggest part so it follows the arm: put the carrier's own `Grip` on it with the carrier facing the customer's way, and it swings 0.06 to 0.3 over the ground beside the leg. To hang the arm straight, turn it back by `CarryArmDegrees` about its pivot's Z.
 - **Other Attachments and attributes.** `Overhead` over the head, clear of any hat, for a bubble or a timer. `Look` (the name), `WalkSpeed` (6 to 7 studs a second), `LegLength` (hip joint to floor: a step of A degrees each way covers 2 x LegLength x sin A), `Height`.
-- **Rules kept from this.** A customer's face is never covered (hats sit on the hair, glasses are thin frames). Clothes are our pastels with one deeper colour (navy, denim, brown) so a customer stands out from the pastel room. No customer wears the staff's mint smock. Children are not in this set: a child's hand is too low for the carrier, so a child needs a different way to bring a cat.
+- **Rules kept from this.** A customer's face is never covered (hats sit on the hair, glasses are thin frames). Clothes are our pastels with one deeper colour (navy, denim, brown) so a customer stands out from the pastel room. No customer wears the staff's mint smock. No townsperson wears lilac or gold: those mean a special customer (#479; Bea's cardigan and Juno's hoodie were lilac until then). Children are not in this set: a child's hand is too low for the carrier, so a child needs a different way to bring a cat.
 
 #### The special customers (#476), a draft
 The owner on 2026-11-25: special customers "that expire that only I can take their cats and have them have the really cool cat designs". These bring the special cats (section 20). `townsfolk.SPECIAL_LOOKS` holds a first three, built exactly like the townsfolk (same joints, `Grip`, `Overhead` and attributes, so the walk in and the carry work unchanged) with one more root attribute, `Special` = true. They are not in the game's townsfolk list, so nothing spawns them until the game wires it.
@@ -195,7 +195,7 @@ The owner on 2026-11-25: special customers "that expire that only I can take the
 | `CleanACat_NPC_Customer_Rex` | tall | a jolly king: a gold crown with three jewels, a silver beard, a berry cape with a pearl collar, a gold star on a lilac tunic |
 | `CleanACat_NPC_Customer_Pearl` | adult | a grand lady: a wide lilac hat with a gold band and a pink plume, pearls, white gloves, a lilac dress with a gold star |
 
-- **One shared cue, so a player learns it once.** Lilac and gold are the game's prize colours (the better tools, the pet crate, the VIP room). Every special customer wears lilac, gold shoes and a gold star, and a hat no townsperson wears. No townsperson wears gold. Bea's lilac cardigan is the nearest thing in the town, and her brown shoes, bun and butter carrier keep her apart.
+- **One shared cue, so a player learns it once.** Lilac and gold are the game's prize colours (the better tools, the pet crate, the VIP room). Every special customer wears lilac, gold shoes and a gold star, and a hat no townsperson wears. No townsperson wears lilac or gold (#479).
 - **Their carrier.** `CleanACat_Prop_CarrierRoyal` (`spa_props.py`): the same carrier in lilac on a deeper lilac tray with a gold gate and handle, gold stars on the sides and a little gold crown on the roof. Same size, hinge, Attachments and attributes as the other three. 610 triangles, 63 parts.
 - **The cape** hangs from the collar between the arms and sweeps back 11 degrees, so a leg swinging behind passes under it at a 26 degree step. It is part of the body and does not move.
 - 1,218 to 1,332 triangles and 55 to 74 parts each, inside the customer budget. 5.6 to 6.1 studs to the top of the hat.

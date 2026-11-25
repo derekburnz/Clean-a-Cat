@@ -33,7 +33,8 @@ SPECIAL_LOOKS has the special customers (issue #476), who bring the special cats
 2026-11-25: special customers "that expire that only I can take their cats". A draft: same build, joints, Attachments
 and attributes as the townsfolk, so the walk in and the carry work unchanged, plus a root attribute `Special` = true.
 They are told from the townsfolk across a yard by one shared cue: lilac and gold (the game's prize colours), gold
-shoes, a gold star, and a hat no townsperson wears (a beret, a crown, a wide feathered hat). They carry
+shoes, a gold star, and a hat no townsperson wears (a beret, a crown, a wide feathered hat). No look in LOOKS wears
+lilac or gold (#479). They carry
 `CleanACat_Prop_CarrierRoyal` (spa_props). Vivi is the rare visitor of #142 (busy_spa.VISITORS) on the new build.
 """
 
@@ -67,12 +68,12 @@ LOOKS = {
     # a ginger ponytail, denim dungarees over a pink tee
     "Rae": dict(body=ADULT, skin="skin_light", hair="fur_ginger", style="ponytail", tie="spa_mint",
                 top="spa_bubblegum", overalls="fur_puddle", shoes="shirt_red", brows=True),
-    # hair in two puffs, a lilac hoodie and mint headphones
-    "Juno": dict(body=ADULT, skin="skin_deep", hair="choco", style="puffs", top="pastel_lilac", hood=True,
-                 pocket="fur_lavender", pants="fur_ink", shoes="offwhite", phones="spa_mint"),
-    # a granny with a silver bun, round glasses and a lilac cardigan
+    # hair in two puffs, a peach hoodie and mint headphones (lilac until #479: lilac is the special customers')
+    "Juno": dict(body=ADULT, skin="skin_deep", hair="choco", style="puffs", top="fur_peach", hood=True,
+                 pocket="fur_apricot", pants="fur_ink", shoes="offwhite", phones="spa_mint"),
+    # a granny with a silver bun, round glasses and a sage cardigan (lilac until #479)
     "Bea": dict(body=SMALL, skin="skin_light", hair="fur_silver", style="bun", glasses="brass", top="offwhite",
-                cardigan="fur_lavender", skirt="fur_puddle", legs="fur_ink", shoes="hair_brown", brows=True),
+                cardigan="fur_fern", skirt="fur_puddle", legs="fur_ink", shoes="hair_brown", brows=True),
     # tall, russet curls and a beard, a sky jumper with a paw on it
     "Theo": dict(body=TALL, skin="skin_light", hair="fur_russet", style="curls", beard=True, top="pastel_sky",
                  patch="paw", patch_sw="offwhite", pants="fur_bramble", shoes="choco", brows=True),
