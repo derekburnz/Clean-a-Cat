@@ -9,7 +9,8 @@
 -- module only draws it. The legs, hips and root stay the character's own, so they keep walking under the cat.
 --
 -- API
---   Carry.hold(character, cat, held?) -> Handle    held: "sit" (default) or "loaf" (lying across the arms)
+--   Carry.hold(character, cat, held?, reach?, quiet?) -> Handle    held: "sit" (default) or "loaf" (lying across
+--       the arms); quiet: no purr (another player's carry, CarryShared)
 --       folds the arms over FOLD_SECONDS and lifts `cat` from where it is onto them, with a purr that loops while
 --       it is held. The cat follows the arms every frame until placeIn.
 --   handle.placeIn(target, onDone?, endScale?)  the arms open and the cat hops off them, landing with its base on
@@ -401,7 +402,13 @@ end
 
 export type Held = "sit" | "loaf"
 
-function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?): Handle
+function Carry.hold(
+	character: Model,
+	cat: Model,
+	held: Held?,
+	reach: boolean?,
+	quiet: boolean?
+): Handle
 	local loaf = held == "loaf"
 	local reaching = reach == true
 	local reduced = Effects.reducedMotion()
@@ -426,7 +433,9 @@ function Carry.hold(character: Model, cat: Model, held: Held?, reach: boolean?):
 	local holding = true
 	local written: { [Joint]: CFrame } = {}
 	local destroyed = false
-	local purr = Audio.loop("carryPurr", ownPart(cat))
+	local purr: Audio.LoopHandle = if quiet == true
+		then { stop = function() end, setSpeed = function(_speed: number) end }
+		else Audio.loop("carryPurr", ownPart(cat))
 	local hop: { start: number, from: CFrame, to: Vector3, onDone: (() -> ())?, scale: number }? =
 		nil
 	local connection: RBXScriptConnection? = nil
