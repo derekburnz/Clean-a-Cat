@@ -46,7 +46,15 @@ Recap.SIDE_FLAG = "recapSide"
 Recap.sideOnPhones = false
 
 local MAX_STARS_SHOWN = 5
-local ROW_ICONS = { wash = "Paw", tip = "Heart", bonus = "Station" } :: { [string]: string }
+-- speed: the stars it earned; early: picked in the first tenth of its heart bar; dirt: the extra steps (tuning.md)
+local ROW_ICONS = {
+	wash = "Paw",
+	tip = "Heart",
+	bonus = "Station",
+	speed = "Star",
+	early = "Sparkle",
+	dirt = "Mud",
+} :: { [string]: string }
 local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
 local RED_TOP, RED_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")
 local NEW_PINK = Color3.fromHex("FF86CF")
