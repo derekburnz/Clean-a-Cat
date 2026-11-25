@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="states" content="plain,values,timer,hud">
+<title>Spa Starter Pack</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+/* The Spa Starter Pack (plan page pick `starterpack`, Growth-Agent/starter-pack-check-2026-11-25.md), drawn after a
+   pack window Derek liked in another game on 2026-11-25: three item cards joined by plus signs, one big green buy
+   button, and a HUD button that gently grows and shrinks with sparkles popping round it. Ideas only, our own look.
+   Nothing in the pack is random (a random part would make the whole pack a paid random item). Fixed contents: a look
+   for the tub, a bandana for Suds and 1 hour of double tips. 99 Robux.
+   plain: the default. The plain price, no per-item prices, no crossed out price, no timer.
+   values: each card shows what the item costs on its own and the button says the true saving. Use it only if those
+     three items are really sold on their own at those prices (a made up "was" price breaks Roblox's rule).
+   timer: values plus a timer chip. Only if Derek wants it, and only a real one the server owns that never restarts;
+     never "Limited time" words. Dropping it is removing one element (.timer).
+   hud: no window. The Starter button in the HUD's button grid: it bobs bigger and smaller and sparkles pop round it
+     (Motion-FX builds it; Reduced Motion keeps it still). It is in the shop afterwards; the window opens once at the
+     start of the second visit and a no is final for that visit.
+   Pictures are stand-ins: the tub is the Bubble Bath station render and the bandana a bow on Suds until Model-Agent
+   draws them. The per-item prices and the saving in values are placeholders.
+   Words follow Roblox's guidance for young players: "Get pack", never "BUY NOW" or pressure words. */
+.win.pack { width: 900px; }
+.pack .body { display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: 18px; }
+body:not([data-state="values"]):not([data-state="timer"]) .only-values { display: none !important; }
+body:not([data-state="timer"]) .only-timer { display: none !important; }
+body[data-state="hud"] .packlayer { display: none; }
+body:not([data-state="hud"]) .hudlayer { display: none; }
+
+.items { display: flex; align-items: center; gap: 12px; }
+.item { width: 230px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 10px 12px; background: #fff;
+  border: var(--stroke) solid var(--ink); border-radius: var(--radius-card); box-shadow: 0 5px 0 var(--ink); }
+.item .pic { position: relative; width: 100%; height: 170px; border-radius: 16px; border: 3px solid var(--ink); overflow: hidden; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 45%, #fffbe8 0 18%, transparent 19%), repeating-conic-gradient(from 0deg at 50% 45%, var(--ra) 0 10deg, var(--rb) 10deg 20deg); }
+.item.tub .pic { --ra: #c9f5e5; --rb: #a8e6cf; }
+.item.suds .pic { --ra: #ffd3df; --rb: #ffb3c7; }
+.item.tips .pic { --ra: #ffe98f; --rb: #ffd35e; }
+.item .pic img { width: 92%; height: 92%; object-fit: contain; }
+.item .pic .big { font-size: 112px; }
+.item .pic .x2 { position: absolute; right: 26px; bottom: 22px; font-family: var(--font-head); font-size: 38px; color: #fff; background: #ff86b0;
+  border: 3px solid var(--ink); border-radius: 14px; padding: 0 10px 2px; transform: rotate(-8deg); box-shadow: 0 3px 0 var(--ink); }
+.item .pic .bandana { position: absolute; right: 18px; bottom: 16px; font-size: 54px; transform: rotate(10deg); }
+.item .name { font-family: var(--font-head); font-size: 24px; line-height: 1.05; text-align: center; }
+.item .what { font-weight: 800; font-size: 16px; color: var(--ink-soft); line-height: 1.1; text-align: center; }
+.item .each { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-head); font-size: 20px; color: var(--ink-soft); }
+.plus { flex: none; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(#ffe98f, #ffc94d); border: var(--stroke) solid var(--ink);
+  display: grid; place-items: center; box-shadow: 0 4px 0 var(--ink); }
+.plus svg { width: 26px; height: 26px; }
+/* our own Robux mark: a plain hexagon (the price unit, not an icon of Roblox's) */
+.rbx { width: 1em; height: 1em; flex: none; }
+
+.buyrow { position: relative; display: flex; align-items: center; gap: 16px; }
+.buy { min-width: 300px; font-size: 40px; padding: 0 34px; gap: 10px; height: 80px; }
+.buy .rbx { width: 38px; height: 38px; }
+.save { transform: rotate(6deg); font-family: var(--font-head); font-size: 20px; color: #3a2a00;
+  background: linear-gradient(#fff4b8, #ffd84d); border: 3px solid var(--ink); border-radius: 12px; padding: 2px 10px 3px; box-shadow: 0 3px 0 var(--ink); white-space: nowrap; }
+.timer { margin-left: 14px; position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 20px; color: var(--ink); background: #fff;
+  border: 3px solid var(--line); border-radius: 12px; padding: 2px 10px; }
+.timer .ic { font-size: 22px; }
+.fine { font-weight: 800; font-size: 16px; color: var(--ink-soft); text-align: center; line-height: 1.2; margin-top: -4px; }
+
+/* ---------- the HUD button ---------- */
+.side { position: absolute; left: 20px; top: calc(58px / var(--s) + 24px); display: grid; grid-template-columns: repeat(2, 76px); gap: 40px 16px; }
+.rbtn > img.ic { font-size: 52px; }
+.starter { --top: #ffe98f; --bot: #ffc94d; --dep: #d19e22; }
+.starter .gift { font-size: 50px; }
+.starter .cap { white-space: nowrap; }
+.starter .glint { position: absolute; pointer-events: none; font-size: 22px; opacity: 0; }
+.starter .glint.a { left: -14px; top: -10px; }
+.starter .glint.b { right: -16px; top: 18px; font-size: 18px; }
+.starter .glint.c { left: 4px; bottom: -6px; font-size: 16px; }
+/* the bob: 100% to 108% and back over 1.6 s, eased; the sparkles pop one after another */
+@keyframes bob { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes glint { 0%, 100% { opacity: 0; transform: scale(.3) rotate(0); } 20% { opacity: 1; transform: scale(1.1) rotate(20deg); } 45% { opacity: 0; transform: scale(.6) rotate(45deg); } }
+.starter { animation: bob 1.6s ease-in-out infinite; }
+.starter .glint.a { animation: glint 2.4s ease-out infinite; }
+.starter .glint.b { animation: glint 2.4s ease-out .8s infinite; }
+.starter .glint.c { animation: glint 2.4s ease-out 1.6s infinite; }
+@media (prefers-reduced-motion: reduce) { .starter, .starter .glint { animation: none !important; } .starter .glint.a { opacity: 1; } }
+
+/* phones held sideways: shorter pictures, smaller cards */
+body.short .pack .body { gap: 10px; padding-top: 10px; }
+body.short .win.pack { width: 760px; }
+body.short .item { width: 196px; padding: 8px 8px 10px; gap: 4px; }
+body.short .item .pic { height: 112px; }
+body.short .item .pic .big { font-size: 76px; }
+body.short .item .pic .x2 { font-size: 28px; right: 18px; bottom: 12px; }
+body.short .item .pic .bandana { font-size: 40px; right: 12px; bottom: 8px; }
+body.short .item .name { font-size: 21px; }
+body.short .item .what { display: none; }
+body.short .plus { width: 44px; height: 44px; }
+body.short .buy { height: 64px; font-size: 32px; min-width: 240px; }
+body.short .buy .rbx { width: 30px; height: 30px; }
+body.short .fine { display: none; }
+body.short .side { grid-template-columns: repeat(5, 66px); gap: 0 14px; }
+body.short .side .rbtn { width: 66px; height: 66px; font-size: 38px; border-radius: 20px; }
+body.short .starter .gift { font-size: 42px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="rbx" viewBox="0 0 64 64"><path d="M32 4l24 14v28L32 60 8 46V18z" fill="#5fc98b" stroke="#45226b" stroke-width="6" stroke-linejoin="round"/><path d="M32 20l11 6v12l-11 6-11-6V26z" fill="#fff" stroke="#45226b" stroke-width="4" stroke-linejoin="round"/></symbol>
+  <symbol id="plus" viewBox="0 0 32 32"><path d="M16 5v22M5 16h22" stroke="#45226b" stroke-width="7" stroke-linecap="round"/><path d="M16 5v22M5 16h22" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></symbol>
+</svg>
+<div id="screen"><div id="stage">
+  <div class="world spa" style="background-image:url(img/world-spa.jpg)"></div>
+
+  <div class="packlayer">
+    <div class="backdrop"></div>
+    <div class="win pack">
+      <div class="band">
+        <div class="badge"><i data-ic="gift"></i></div>
+        <span class="title outlined">Spa Starter Pack</span>
+        <span class="timer only-timer"><i data-ic="clock"></i>2:59:24</span>
+      </div>
+      <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+      <div class="body">
+        <div class="items">
+          <div class="item tub">
+            <div class="pic"><img src="img/icon_Station_BubbleBath_ink.png" alt=""></div>
+            <span class="name">Bubble Tub</span>
+            <span class="what">A new look for your tub</span>
+            <span class="each only-values"><svg class="rbx"><use href="#rbx"/></svg>49</span>
+          </div>
+          <span class="plus"><svg><use href="#plus"/></svg></span>
+          <div class="item suds">
+            <div class="pic"><img src="img/portrait_Suds_ink.png" alt=""><i data-ic="bow" class="bandana"></i></div>
+            <span class="name">Suds' Bandana</span>
+            <span class="what">Suds wears it in your spa</span>
+            <span class="each only-values"><svg class="rbx"><use href="#rbx"/></svg>25</span>
+          </div>
+          <span class="plus"><svg><use href="#plus"/></svg></span>
+          <div class="item tips">
+            <div class="pic"><i data-ic="coin" class="big"></i><span class="x2">x2</span></div>
+            <span class="name">Double Tips</span>
+            <span class="what">Every tip doubled for 1 hour</span>
+            <span class="each only-values"><svg class="rbx"><use href="#rbx"/></svg>49</span>
+          </div>
+        </div>
+        <div class="buyrow">
+          <button class="btn green buy" data-tap><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">99 · Get pack</span></button>
+          <span class="save only-values">Save 24</span>
+        </div>
+        <span class="fine">Nothing random. The tub look and bandana are yours to keep.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hudlayer">
+    <div class="side">
+      <button class="rbtn mint" data-tap aria-label="Cat Index"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Index.png" alt=""><span class="cap outlined thin">Index</span></button>
+      <button class="rbtn sky" data-tap aria-label="Tools"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Tools.png" alt=""><span class="cap outlined thin">Tools</span></button>
+      <button class="rbtn pink" data-tap aria-label="Helpers"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Helper.png" alt=""><span class="cap outlined thin">Helpers</span></button>
+      <button class="rbtn gold" data-tap aria-label="Builder"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Build.png" alt=""><span class="cap outlined thin">Build</span></button>
+      <button class="rbtn starter" data-tap aria-label="Spa Starter Pack"><i data-ic="gift" class="gift"></i><span class="cap outlined thin">Starter</span>
+        <i data-ic="sparkle" class="glint a"></i><i data-ic="sparkle" class="glint b"></i><i data-ic="sparkle" class="glint c"></i></button>
+    </div>
+  </div>
+</div></div>
+<script>
+// a window hides the thumbstick and jump button (as every window does); the HUD state keeps them
+if (new URLSearchParams(location.search).get('state') !== 'hud') document.body.classList.add('no-move');
+</script>
+<script src="kit.js"></script>
+</body>
+</html>
