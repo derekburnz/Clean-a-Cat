@@ -11,6 +11,7 @@ Client-only, cosmetic effects. Owner: Motion-FX-Agent (vfx-animator). What each 
 | `CatMotion.luau` | One PreSimulation loop that pivots the rig joints (Head, Tail, EarL, EarR, eye squash) from CatPose. Body never moves |
 | `CustomerPose.luau`, `CustomerMotion.luau` | The customers' walk and idle (Model-Agent's townsfolk): legs and free arm swing at a cadence matched to LegLength while the body moves, the carrying arm barely sways, a look round and nod when standing. Behind `customerWalk` |
 | `TrailLine.luau` | The tutorial guide line (#451): a see-through green floor band from the feet to the spot with an arrowhead and a running dash. Flat pooled parts, no particles. FloorTrail calls it behind `trailLine` |
+| `FoamDrop.luau` | The rinse's end (ShakeOff "rinse", `washMeter`): 4 to 6 foam blobs slide off the lower coat, land round the feet, flatten and fade in 1.4 s. Pooled per drop, destroyed after |
 
 `Controllers/EffectsController.luau` binds Moments. Live switches: `scrubEffects`, `revealEffects`, `fluffEffects`, `catMotion`, `dryEffects` and `openingBox`, all off by default.
 

@@ -9,6 +9,8 @@
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
+--   UI.setWashMeter(f, step) the bar that fills while the player works an area step (UI/HUD/WashMeter, switch
+--                             washMeter); f from 0 to 1, nil hides it
 --   UI.setWashPlan(later)     the later steps ("bath", "claws") this wash takes, which join the step bar (#267)
 --   UI.onSettingsChanged(fn)  fn(settings) on every change on the Settings card (UI/Settings, switch settingsCard,
 --                             #230); with the switch on, the Menu opens that card
@@ -309,6 +311,12 @@ end
 
 function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
+end
+
+-- The bar that fills while the player works an area step: fraction 0 to 1 (nil hides it) and the step ("scrub",
+-- "brush", "lather", "rinse", "claws"), from ScrubController.meterChanged.
+function UI.setWashMeter(fraction: number?, step: string?)
+	HUD.setMeter(fraction, step)
 end
 
 -- The later steps ("bath", "claws") this cat's wash takes, for the step bar (#267).

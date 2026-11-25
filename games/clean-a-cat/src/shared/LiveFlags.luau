@@ -91,6 +91,9 @@ LiveFlags.KEYS = {
 	"latherFoam", -- the Bubble Bath lathers foam onto the fur where the player rubs, then it rinses off by itself once he is covered (the owner's 2026-11-25 note, ScrubController); off by default
 	"trailLine", -- the tutorial's guide: one see-through green line from the player's feet to the spot with an arrowhead, instead of the floor chevrons (Spa/FloorTrail, Effects/TrailLine, #451); off by default
 	"placeAfterHop", -- the opening asks the server to take Suds only once his hop into the tub lands, so the tub's kitten never shows mid-hop (the owner's dev note of 2026-11-25, OpeningController); off by default
+	"townsfolk", -- the customers at the door are Model-Agent's eight townsfolk with the carrier in their hand, walking in from the pavement and up the line (FigureService, CustomerWalkController, #446); off by default
+	"customerWalk", -- the townsfolk's legs and arms swing as they walk and they look round while they wait (Effects/CustomerMotion, Motion-FX #462); off by default
+	"washMeter", -- a fill bar at the top over the wash's area steps (scrub, brush, lather, a new spray-off rinse, claws); at about 90 percent the cat shakes off the rest and the next step starts (the owner's 2026-11-25 salon video note, ScrubController, WashMeter); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -154,6 +157,9 @@ LiveFlags.OFF_BY_DEFAULT = {
 	placeAfterHop = true,
 	latherFoam = true,
 	trailLine = true,
+	townsfolk = true,
+	customerWalk = true,
+	washMeter = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

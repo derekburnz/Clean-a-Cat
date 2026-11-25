@@ -57,5 +57,21 @@ return function()
 			expect(LineLooks.served(line, "Marble")).to.equal(nil)
 			expect(LineLooks.served(nil, "Tux")).to.equal(nil)
 		end)
+
+		it("tells where each customer stood before, 0 for a walk-in", function()
+			expect(table.concat(LineLooks.cameFrom(nil, { 0, 1, 2 }), ",")).to.equal("0,0,0")
+			-- a serve: 1 and 2 move up a place, 3 is new
+			expect(table.concat(LineLooks.cameFrom({ 0, 1, 2 }, { 1, 2, 3 }), ",")).to.equal(
+				"2,3,0"
+			)
+			-- a pick: 2 goes to the front, the others step back
+			expect(table.concat(LineLooks.cameFrom({ 0, 1, 2 }, { 2, 0, 1 }), ",")).to.equal(
+				"3,1,2"
+			)
+			-- a resend: nobody moves
+			expect(table.concat(LineLooks.cameFrom({ 0, 1, 2 }, { 0, 1, 2 }), ",")).to.equal(
+				"1,2,3"
+			)
+		end)
 	end)
 end

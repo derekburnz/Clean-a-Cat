@@ -6,17 +6,29 @@
 -- SpaService calls showQueue whenever it sends the queue. The figures only show the queue; they change nothing.
 -- Behind the LiveFlags switch `customerFigures` (and `customers`), off by default. While it is off, or before the
 -- plot is placed, each client draws its own placeholder line (DoorController).
+--
+-- With the switch `townsfolk` on (#446), each customer is instead one of Model-Agent's eight townsfolk
+-- (CleanACat_NPC_Customer_<Name>, a plain anchored Model with jointed limbs, keeping its asset name so Motion-FX's
+-- CustomerMotion finds it), the carrier on the Grip in its right hand. A customer who was not in the line as last
+-- drawn is placed on the pavement and one who moved up is placed on their old mat, each marked with their mat and the
+-- time they set off (WalkRules); every client walks them there (CustomerWalkController).
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local WalkRules = require(Shared:WaitForChild("WalkRules"))
 
 local LineLooks = require(script.Parent.Parent.Util.LineLooks)
 
 local FLAG = "customerFigures"
+local TOWNSFOLK_FLAG = "townsfolk"
+-- Model-Agent's townsfolk (#446), CleanACat_NPC_Customer_<name>. A look number n is TOWNSFOLK[n % #TOWNSFOLK + 1].
+local TOWNSFOLK = { "Sunny", "Mo", "Pip", "Rae", "Juno", "Bea", "Theo", "Kit" }
 local CUSTOMERS_FLAG = "customers"
 local FOLDER_NAME = "Customers"
 local CARRIER_ASSET = "CleanACat_Prop_Carrier"
@@ -72,6 +84,8 @@ local building: { [string]: boolean } = {}
 -- Each player's door line as last drawn, with every customer's look, so a look moves up the line with its owner and
 -- goes to the front with them when picked (#206). A look number n is LOOKS[n % #LOOKS + 1].
 local lines: { [Player]: LineLooks.Line } = {}
+-- The look numbers of the townsfolk last put in each player's plot, front first, so the next draw knows who moved.
+local shown: { [Player]: { number } } = {}
 local warned: { [string]: boolean } = {}
 
 local function warnOnce(key: string, text: string)
@@ -170,16 +184,22 @@ local function template(look: Look): Model?
 	return figure
 end
 
--- The carrier hanging from the figure's right hand by its Grip, door to the front, the cat inside.
-local function carrierFor(figure: Model, kind: string, lookNumber: number): Model?
+-- The carrier hanging from `hand` (the figure's right hand) by its Grip, door to the front, the cat inside. `looks`
+-- is how many figure looks there are.
+local function carrierFor(
+	figure: Model,
+	hand: Instance?,
+	kind: string,
+	lookNumber: number,
+	looks: number
+): Model?
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	-- stepped past the figure looks, so one figure look does not always carry the same carrier
-	local wanted = CARRIER_LOOKS[(lookNumber + lookNumber // #LOOKS) % #CARRIER_LOOKS + 1]
+	local wanted = CARRIER_LOOKS[(lookNumber + lookNumber // looks) % #CARRIER_LOOKS + 1]
 	local variant = if assets then assets:FindFirstChild(wanted) else nil
 	local carrierAsset = if variant and variant:IsA("Model")
 		then variant :: Model
 		else asset(CARRIER_ASSET)
-	local hand = figure:FindFirstChild("RightGripAttachment", true)
 	if carrierAsset == nil or hand == nil or not hand:IsA("Attachment") then
 		return nil
 	end
@@ -242,9 +262,75 @@ local function lookRun(first: number, count: number): { number }
 	return run
 end
 
+-- One of Model-Agent's townsfolk for look number `lookNumber`, holding the carrier with a cat of `kind`, standing on
+-- `spot` (its pivot is on the floor between its feet, front -Z, as a spot's).
+local function townsfolkFor(lookNumber: number, kind: string, spot: CFrame): Model?
+	local base = asset(`CleanACat_NPC_Customer_{TOWNSFOLK[lookNumber % #TOWNSFOLK + 1]}`)
+	if base == nil then
+		return nil
+	end
+	local figure = base:Clone() :: Model
+	figure:PivotTo(spot)
+	setAll(figure, true)
+	local grip = figure:FindFirstChild("Grip", true)
+	local carrier = carrierFor(figure, grip, kind, lookNumber, #TOWNSFOLK)
+	if carrier then
+		-- under the arm's joint Model, so the carrier sways with the arm Motion-FX turns
+		local arm = if grip then grip:FindFirstAncestorWhichIsA("Model") else nil
+		carrier.Parent = if arm and arm ~= (figure :: Instance) then arm else figure
+	end
+	figure:SetAttribute("CatKind", kind)
+	CollectionService:AddTag(figure, WalkRules.TAG)
+	return figure
+end
+
+-- The townsfolk for `kinds` in plot `slot`, front first. `from[index]` is where that customer stood as last drawn
+-- (LineLooks.cameFrom: 0 for a new one); nil `from` puts everyone straight on their mat. Not parented yet.
+local function buildTownsfolk(
+	slot: number,
+	kinds: { string },
+	lookNumbers: { number },
+	from: { number }?
+): Folder
+	local folder = Instance.new("Folder")
+	folder.Name = FOLDER_NAME
+	local now = Workspace:GetServerTimeNow()
+	local arrivals = 0
+	for index = 1, math.min(#kinds, MAX_SHOWN) do
+		local mat = queueSpot(index, slot)
+		local was = if from then from[index] else index
+		local start = mat
+		local setOff = now
+		if was == 0 then
+			start = queueSpot(WalkRules.STREET_PLACE, slot)
+			setOff = now + arrivals * WalkRules.FILE_GAP -- new customers come in single file
+			arrivals += 1
+		elseif was ~= nil and was ~= index then
+			start = queueSpot(was, slot)
+		end
+		local figure = townsfolkFor(lookNumbers[index] or index, kinds[index], start)
+		if figure then
+			if start ~= mat then
+				figure:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
+				figure:SetAttribute(WalkRules.AT_ATTRIBUTE, setOff)
+			end
+			figure.Parent = folder
+		end
+	end
+	return folder
+end
+
 -- Builds the customers for `kinds` in plot `slot`, front first, customer `index` in look number `lookNumbers[index]`.
--- Not parented yet. May yield while a look's template is made.
-local function buildFolder(slot: number, kinds: { string }, lookNumbers: { number }): Folder
+-- Not parented yet. May yield while a look's template is made. With `townsfolk` on, see buildTownsfolk.
+local function buildFolder(
+	slot: number,
+	kinds: { string },
+	lookNumbers: { number },
+	from: { number }?
+): Folder
+	if LiveFlags.isOn(TOWNSFOLK_FLAG) then
+		return buildTownsfolk(slot, kinds, lookNumbers, from)
+	end
 	local folder = Instance.new("Folder")
 	folder.Name = FOLDER_NAME
 	for index = 1, math.min(#kinds, MAX_SHOWN) do
@@ -264,7 +350,13 @@ local function buildFolder(slot: number, kinds: { string }, lookNumbers: { numbe
 			if root and root:IsA("BasePart") then
 				(root :: BasePart).Anchored = true
 			end
-			local carrier = carrierFor(figure, kinds[index], lookNumbers[index] or index)
+			local carrier = carrierFor(
+				figure,
+				figure:FindFirstChild("RightGripAttachment", true),
+				kinds[index],
+				lookNumbers[index] or index,
+				#LOOKS
+			)
 			if carrier then
 				carrier.Parent = figure
 			end
@@ -287,15 +379,19 @@ local function draw(player: Player)
 		or not LiveFlags.isOn(FLAG)
 		or not LiveFlags.isOn(CUSTOMERS_FLAG)
 	then
+		shown[player] = nil
 		return
 	end
-	local folder = buildFolder(slot, line.kinds, line.looks)
+	local drawn = table.move(line.looks, 1, math.min(#line.looks, MAX_SHOWN), 1, {})
+	local folder =
+		buildFolder(slot, line.kinds, line.looks, LineLooks.cameFrom(shown[player], drawn))
 	-- template() may have yielded: draw only if this is still the newest queue.
 	if lines[player] ~= line or folderOf(player) ~= plot then
 		folder:Destroy()
 		return
 	end
 	folder.Parent = plot
+	shown[player] = drawn
 end
 
 -- Called by SpaService with the player's queue, front first. Customers already known keep their looks
@@ -307,7 +403,20 @@ function FigureService.showQueue(player: Player, kinds: { string })
 			table.insert(clean, kind)
 		end
 	end
-	lines[player] = LineLooks.show(lines[player], clean)
+	local line = LineLooks.show(lines[player], clean)
+	lines[player] = line
+	-- A resend of the same townsfolk leaves them be, so one walking in is not set back on their mat.
+	local before = shown[player]
+	local _, folder = folderOf(player)
+	if LiveFlags.isOn(TOWNSFOLK_FLAG) and before and folder then
+		local same = #before == math.min(#line.looks, MAX_SHOWN)
+		for index, look in before do
+			same = same and line.looks[index] == look
+		end
+		if same then
+			return
+		end
+	end
 	task.spawn(draw, player)
 end
 
@@ -369,10 +478,13 @@ function FigureService.Start()
 	Players.PlayerRemoving:Connect(function(player: Player)
 		clear(player)
 		lines[player] = nil
+		shown[player] = nil
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(drawAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(drawAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CUSTOMERS_FLAG)
+		:Connect(drawAll)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. TOWNSFOLK_FLAG)
 		:Connect(drawAll)
 end
 

@@ -59,6 +59,11 @@ local sudsPoint: Signal<Model, Vector3> = Signal.new()
 local catToWindow: Signal<Model> = Signal.new()
 -- (cat): a customer's cat goes home.
 local catReturned: Signal<Model> = Signal.new()
+-- (cat, step): (switch washMeter) the bar of `step` ("scrub", "brush", "rinse" or "claws") is full and the cat shakes
+-- off what is left; the next step starts WashMeter.SHAKE_SECONDS later.
+local shakeOff: Signal<Model, string> = Signal.new()
+-- (cat, point, normal): (switch washMeter) a spray of the shower on the fur while the foam is rinsed off, every move.
+local rinseSpray: Signal<Model, Vector3, Vector3> = Signal.new()
 
 local Moments = {
 	ScrubStart = scrubStart,
@@ -85,6 +90,8 @@ local Moments = {
 	SudsPoint = sudsPoint,
 	CatToWindow = catToWindow,
 	CatReturned = catReturned,
+	ShakeOff = shakeOff,
+	RinseSpray = rinseSpray,
 
 	-- Every moment name, in the order they happen in a first session. Tests and tools read this list.
 	NAMES = table.freeze({
@@ -100,7 +107,9 @@ local Moments = {
 		"BathStart",
 		"SudsPopped",
 		"BathFoamy",
+		"RinseSpray",
 		"BathDone",
+		"ShakeOff",
 		"ClawsStart",
 		"ClawSnipped",
 		"PawClipped",
