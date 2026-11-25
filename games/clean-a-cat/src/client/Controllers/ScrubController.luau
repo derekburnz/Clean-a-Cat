@@ -92,6 +92,19 @@ local SUDS_POP = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection
 -- its pivot at the middle of its back and its front at -Z, so it faces out from the cat
 local FOAM_ASSETS =
 	{ "CleanACat_Prop_FoamPuff", "CleanACat_Prop_FoamPuff2", "CleanACat_Prop_FoamPuff3" }
+-- (switch latherFoam) the owner's note of 2026-11-25, with My Pet Salon's "so foamy" for reference: rubbing lathers
+-- foam onto the fur where the finger goes, `count` puffs over WashDraft.SWIRL_TRAVEL studs, each popping in at
+-- `size` of a ring puff (give or take `vary`); once he is covered the foam rinses off by itself, one puff `gap` s
+-- after another from `wait` s on, and the bath is done
+local LATHER = {
+	flag = "latherFoam",
+	count = 14,
+	size = 0.62,
+	vary = 0.18,
+	grow = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+	wait = 0.55,
+	gap = 0.07,
+}
 local SNIP = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- a claw shortens as it fades
 local RING_COLOR = Color3.fromHex("FFC94D") -- the outline on the paw to press next
 -- The HUD's name for each later step (stageChanged): a step bar entry for each comes with the HUD's part of #267.
@@ -160,6 +173,8 @@ type Visit = {
 	step: string?, -- the later step under way: "smell" (the Bubble Bath) or "claws" (the Pawdicure)
 	suds: { Model }, -- the bath's foam puffs (Model-Agent's CleanACat_Prop_FoamPuff, or PH_Suds balls), cleared in order
 	swirl: number, -- studs swirled on the cat in this bath
+	lather: boolean, -- this bath lathers foam on (the switch latherFoam as the bath began)
+	rinsing: boolean, -- (latherFoam) he is covered and the foam is rinsing off
 	away: boolean, -- the cat sits at a later step's station, not in the tub
 	hold: Paw?, -- the paw under the press in the Pawdicure, held since holdSince
 	holdSince: number,
@@ -910,6 +925,8 @@ local function armLater(v: Visit, cat: Cat)
 	end
 	v.suds = {}
 	v.swirl = 0
+	v.lather = false
+	v.rinsing = false
 	v.hold = nil
 	v.step = nil
 	ringPaw(v, nil)
@@ -1031,7 +1048,11 @@ local function nextLater(v: Visit, cat: Cat)
 	seatAt(v, cat, if step then CatRules.NEED_STATION[step] else nil)
 	if step == "smell" then
 		v.swirl = 0
-		makeSuds(v, cat)
+		v.lather = LiveFlags.isOn(LATHER.flag)
+		v.rinsing = false
+		if not v.lather then
+			makeSuds(v, cat) -- the ring of puffs to pop; with latherFoam the rubbing makes them
+		end
 		setStep(v, "smell")
 		Moments.BathStart:Fire(cat.model)
 	elseif step == "claws" and nextPaw(cat) ~= nil then
@@ -1046,6 +1067,69 @@ local function nextLater(v: Visit, cat: Cat)
 		end
 		ringPaw(v, nil)
 		showBows(v, cat)
+	end
+end
+
+-- (latherFoam) Covered: the foam rinses off by itself, puff after puff, and the bath is done.
+local function rinseOff(v: Visit, cat: Cat)
+	v.rinsing = true
+	task.spawn(function()
+		task.wait(LATHER.wait)
+		local count = #v.suds
+		for index, puff in v.suds do
+			if visit ~= v or v.cat ~= cat or v.step ~= "smell" then
+				return
+			end
+			local at = puff:GetBoundingBox().Position
+			popPuff(puff)
+			Moments.SudsPopped:Fire(cat.model, at, count - index)
+			task.wait(LATHER.gap)
+		end
+		if visit == v and v.cat == cat and v.step == "smell" then
+			Moments.BathDone:Fire(cat.model)
+			nextLater(v, cat)
+		end
+	end)
+end
+
+-- (latherFoam) Rubbing in the Bubble Bath: foam pops in on the fur at `point` (facing out along `normal`) as the
+-- travel adds up, until he wears LATHER.count puffs.
+local function latherAt(v: Visit, cat: Cat, point: Vector3, normal: Vector3, travel: number)
+	if v.rinsing then
+		return
+	end
+	v.swirl += travel
+	local want =
+		math.clamp(math.floor(v.swirl / WashDraft.SWIRL_TRAVEL * LATHER.count), 0, LATHER.count)
+	if #v.suds < want then
+		local size = cat.model:GetExtentsSize()
+		local reach = math.max(size.X, size.Z) * LATHER.size
+		while #v.suds < want do
+			local index = #v.suds + 1
+			local puff = foamPuff(index, reach * (1 + LATHER.vary * (2 * math.random() - 1)))
+			local full = puff:GetScale()
+			puff:PivotTo(
+				CFrame.lookAlong(point, normal) * CFrame.Angles(0, 0, math.random() * 2 * math.pi)
+			)
+			puff:ScaleTo(full * 0.2)
+			puff.Parent = cat.model
+			table.insert(v.suds, puff)
+			local grow = Instance.new("NumberValue")
+			grow.Value = 0.2
+			grow.Changed:Connect(function(value: number)
+				if puff.Parent then
+					puff:ScaleTo(full * math.max(value, 0.05))
+				end
+			end)
+			local tween = TweenService:Create(grow, LATHER.grow, { Value = 1 })
+			tween.Completed:Connect(function()
+				grow:Destroy()
+			end)
+			tween:Play()
+		end
+	end
+	if #v.suds >= LATHER.count then
+		rinseOff(v, cat)
 	end
 end
 
@@ -1308,7 +1392,11 @@ local function onPointer(input: InputObject)
 		Moments.ScrubMove:Fire(cat.model, point, result.Normal, travel / dt)
 		rubAt(v, cat, point, travel, result.Instance)
 	elseif v.step == "smell" then
-		swirlAt(v, cat, travel)
+		if v.lather then
+			latherAt(v, cat, point, result.Normal, travel)
+		else
+			swirlAt(v, cat, travel)
+		end
 	elseif v.stage == "clean" then
 		brushAt(v, cat, travel)
 	end
@@ -1924,6 +2012,8 @@ local function buildVisit(folder: Folder): Visit
 		step = nil,
 		suds = {},
 		swirl = 0,
+		lather = false,
+		rinsing = false,
 		away = false,
 		hold = nil,
 		holdSince = 0,
