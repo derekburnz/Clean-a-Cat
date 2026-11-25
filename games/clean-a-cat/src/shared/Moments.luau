@@ -64,6 +64,12 @@ local catReturned: Signal<Model> = Signal.new()
 local shakeOff: Signal<Model, string> = Signal.new()
 -- (cat, point, normal): (switch washMeter) a spray of the shower on the fur while the foam is rinsed off, every move.
 local rinseSpray: Signal<Model, Vector3, Vector3> = Signal.new()
+-- (customer): (switch heartBar) a waiting customer's heart bar fell to HeartRules.GRUMPY_AT: the cat turns grumpy. The
+-- model is the customer's figure in the player's own door line, with HeartFill on it.
+local heartLow: Signal<Model> = Signal.new()
+-- (customer): (switch heartBar) a waiting customer's bar ran out and they leave with their cat; fired just before the
+-- server redraws the line, so the figure is still there for a moment.
+local catLeft: Signal<Model> = Signal.new()
 
 local Moments = {
 	ScrubStart = scrubStart,
@@ -92,6 +98,8 @@ local Moments = {
 	CatReturned = catReturned,
 	ShakeOff = shakeOff,
 	RinseSpray = rinseSpray,
+	HeartLow = heartLow,
+	CatLeft = catLeft,
 
 	-- Every moment name, in the order they happen in a first session. Tests and tools read this list.
 	NAMES = table.freeze({
@@ -121,6 +129,8 @@ local Moments = {
 		"SudsPoint",
 		"CatToWindow",
 		"CatReturned",
+		"HeartLow",
+		"CatLeft",
 	}),
 }
 

@@ -63,6 +63,20 @@ function LineLooks.picked(line: Line?, index: number): Line?
 	return { kinds = kinds, looks = looks, nextLook = line.nextLook }
 end
 
+-- The customer at `index` left the line without being served (their heart bar ran out, switch heartBar): they and
+-- their look go, the rest keep their order. Nil when there is nobody at that place.
+function LineLooks.left(line: Line?, index: number): Line?
+	if line == nil or index < 1 or index > #line.kinds or index ~= math.floor(index) then
+		return nil
+	end
+	local kinds, looks = table.clone(line.kinds), table.clone(line.looks)
+	table.remove(kinds, index)
+	if looks[index] ~= nil then
+		table.remove(looks, index)
+	end
+	return { kinds = kinds, looks = looks, nextLook = line.nextLook }
+end
+
 -- Where each customer of `looks` stood in the line as last drawn (`shown`, look numbers front first): their old place,
 -- or 0 for a customer who was not there and walks in from the street. Nil `shown` (nothing drawn yet): all 0.
 function LineLooks.cameFrom(shown: { number }?, looks: { number }): { number }

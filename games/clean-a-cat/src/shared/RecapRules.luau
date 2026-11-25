@@ -31,7 +31,16 @@ export type Recap = {
 	isNew: boolean, -- the cat's first Washed stamp in the Cat Index
 	full: boolean, -- the full card, or the slim strip
 	mascot: boolean, -- the opening's kitten (SudsRules, #285): his name and score only, no rarity and no coins
+	-- The pay formula's extra coins, one line each (HeartRules.pay, switches heartBar and dirtLevels); 0 or nil when
+	-- off (nil in a recap made before these lines existed).
+	speed: number?, -- for a quick wash (the wash grade)
+	early: number?, -- for picking the cat early in its heart bar
+	dirt: number?, -- for a dirtier cat
+	grade: number?, -- the wash's stars, 1 to 3; 0 when there is no grade
 }
+
+-- The pay formula's lines for make; each 0 when not given.
+export type Extra = { speed: number?, early: number?, dirt: number?, grade: number? }
 
 export type Row = { key: string, say: string, value: number }
 
@@ -54,9 +63,11 @@ function RecapRules.make(
 	pay: CatRules.Pay,
 	bonus: number,
 	starsBefore: number,
-	isNew: boolean
+	isNew: boolean,
+	extra: Extra?
 ): Recap
 	local rarity = CatRules.rarityOf(cat) or "Common"
+	local more: Extra = extra or {}
 	return {
 		cat = cat,
 		rarity = rarity,
@@ -67,6 +78,10 @@ function RecapRules.make(
 		isNew = isNew,
 		full = RecapRules.isFull(starsBefore, rarity),
 		mascot = false,
+		speed = more.speed or 0,
+		early = more.early or 0,
+		dirt = more.dirt or 0,
+		grade = more.grade or 0,
 	}
 end
 
@@ -83,12 +98,21 @@ function RecapRules.mascot(name: string, stars: number): Recap
 		isNew = false,
 		full = true,
 		mascot = true,
+		speed = 0,
+		early = 0,
+		dirt = 0,
+		grade = 0,
 	}
 end
 
 -- Every coin the customer paid.
 function RecapRules.total(recap: Recap): number
-	return recap.coins + recap.tip + recap.bonus
+	return recap.coins
+		+ (recap.speed or 0)
+		+ (recap.early or 0)
+		+ (recap.dirt or 0)
+		+ recap.tip
+		+ recap.bonus
 end
 
 -- The card's coin rows, in order; a row worth 0 is left out.
@@ -100,6 +124,10 @@ function RecapRules.rows(recap: Recap): { Row }
 		end
 	end
 	add("wash", "Washed and dried", recap.coins)
+	local grade = recap.grade or 0
+	add("speed", `Quick wash, {grade} {if grade == 1 then "star" else "stars"}`, recap.speed or 0)
+	add("early", "Picked early", recap.early or 0)
+	add("dirt", "Extra dirty", recap.dirt or 0)
 	add("tip", "Happy owner tip", recap.tip)
 	add("bonus", "Spa stations bonus", recap.bonus)
 	return rows
@@ -132,6 +160,19 @@ function RecapRules.clean(raw: unknown): Recap?
 	if coins == nil or tip == nil or bonus == nil or stars == nil then
 		return nil
 	end
+	-- the formula's lines are optional (an older server sends none); a bad one is refused like any amount
+	local function optional(raw: unknown, max: number): number?
+		if raw == nil then
+			return 0
+		end
+		return amount(raw, max)
+	end
+	local speed, early, dirt =
+		optional(t.speed, MAX_AMOUNT), optional(t.early, MAX_AMOUNT), optional(t.dirt, MAX_AMOUNT)
+	local grade = optional(t.grade, 3)
+	if speed == nil or early == nil or dirt == nil or grade == nil then
+		return nil
+	end
 	return {
 		cat = cat,
 		rarity = rarity,
@@ -142,6 +183,10 @@ function RecapRules.clean(raw: unknown): Recap?
 		isNew = t.isNew == true,
 		full = t.full == true,
 		mascot = t.mascot == true,
+		speed = speed,
+		early = early,
+		dirt = dirt,
+		grade = grade,
 	}
 end
 

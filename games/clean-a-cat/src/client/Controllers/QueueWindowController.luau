@@ -10,6 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
+local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
@@ -29,6 +30,7 @@ local index: any = nil
 local line: { string } = {}
 local lineNeeds: { [number]: { CatRules.Need } } = {} -- each place's needs as the server rolled them (#267)
 local lineDirt: { [number]: number }? = nil -- each place's dirt level while dirtLevels is on (DirtRules)
+local lineHearts: { [number]: HeartRules.Heart }? = nil -- each place's heart bar while heartBar is on
 
 local function allOn(names: { string }): boolean
 	for _, name in names do
@@ -57,7 +59,7 @@ local function show()
 	end
 	local player = Players.LocalPlayer
 	local entries: { [string]: IndexRules.Entry } = if index then index.entries else {}
-	local cards = QueueViewRules.cards(line, entries, built(), lineNeeds, lineDirt)
+	local cards = QueueViewRules.cards(line, entries, built(), lineNeeds, lineDirt, lineHearts)
 	local pickOn = allOn(PICK_FLAGS)
 	local served = player:GetAttribute(SERVED) == true
 	local pickable: { [number]: boolean } = {}
@@ -74,11 +76,13 @@ end
 
 function QueueWindowController.Start()
 	Remotes.event("CustomerQueue").OnClientEvent
-		:Connect(function(raw: unknown, rawNeeds: unknown, rawDirt: unknown)
+		:Connect(function(raw: unknown, rawNeeds: unknown, rawDirt: unknown, rawHearts: unknown)
 			line = QueueViewRules.clean(raw)
 			lineNeeds = QueueViewRules.cleanNeeds(rawNeeds)
 			-- the server sends the levels only while dirtLevels is on
 			lineDirt = if rawDirt == nil then nil else QueueViewRules.cleanDirt(rawDirt)
+			-- and the heart bars only while heartBar is on
+			lineHearts = if rawHearts == nil then nil else QueueViewRules.cleanHearts(rawHearts)
 			show()
 		end)
 	UI.onQueuePick(function(place: number)
