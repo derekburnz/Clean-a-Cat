@@ -12,14 +12,14 @@
    game ... make sure the pet for liking/joining group is obvious to find"). A stand inside the spa holds the pet; the
    player walks up or taps it and this card opens. Never a pop up: it opens only from the stand. It lights up once at
    about 7:00 (first-five-minutes-timeline.md) with one line from Suds, then simply stays in the spa.
-   Three rows (Derek, 2026-11-25: "make it prompt them to like check and then give them it"): Like the game, Favourite
-   it, Join Creampuff Games. Only the group join gates the pet: the server reads membership itself (IsInGroup), so it
-   cannot be faked. Roblox gives a game no way to read a thumbs up, and the favourite prompt's result comes from the
-   player's device, so rewarding either would reward a tap on trust; the Rules of Conduct also bar content "used to
-   inappropriately drive discoverability or engagement" (Review-QA, PR 503). So the like row is only asked (no button,
-   no tick), and the favourite row opens Roblox's prompt (AvatarEditorService:PromptSetFavorite) and ticks if the
-   player says yes, but never gates the pet. Growth-Agent to confirm against Roblox's Kids and Select reward post.
-   todo: nothing done. ready: group joined (favourite too here), Claim is green. claimed: the pet is yours, the stand stays as a thank-you.
+   Three rows (Derek, 2026-11-25: "make it prompt them to like check and then give them it"; later "maybe ask for like
+   and favourite together"): Like the game, Favourite it, Join Creampuff Games. The pet waits on the two steps a game can
+   check: the favourite (Roblox's own prompt, AvatarEditorService:PromptSetFavorite, returns the result) and the group
+   join (the server reads membership with IsInGroup). Roblox gives a game no way to read a thumbs up, so the like row is
+   only asked: no button, no tick, and it never gates the pet (Review-QA, PR 503: a like reward would reward a tap).
+   Policy: Review-QA flagged the Rules of Conduct line on content "used to inappropriately drive discoverability or
+   engagement"; Growth-Agent to confirm the favourite gate against Roblox's reward rules before it goes live.
+   todo: nothing done. ready: favourite and group done, Claim is green. claimed: the pet is yours, the stand stays as a thank-you.
    No pressure words, no timer, and the pet is shown whole before anything is asked. */
 .win.gift { width: 820px; }
 .gift .body { display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: center; }
@@ -75,8 +75,8 @@ body.short .claim { margin-top: 0; }
     <div class="body">
       <div class="petpic"><img src="img/portrait_Starcoat_ink.png" alt=""><span class="rar epic tag">Starcoat</span></div>
       <div class="steps">
-        <span class="lead not-claimed">Join our group and Starcoat follows you around your spa. A like and a favourite help us too!</span>
-        <span class="lead only-claimed">Starcoat is yours. Thank you for joining!</span>
+        <span class="lead not-claimed">Favourite the game and join our group, then Starcoat follows you around your spa. A like helps us too!</span>
+        <span class="lead only-claimed">Starcoat is yours. Thank you for joining and favouriting!</span>
         <div class="st card ask">
           <i data-ic="heart"></i>
           <div><div class="t">Like the game</div><div class="d">Tap the thumbs up on the game's page</div></div>
@@ -95,7 +95,7 @@ body.short .claim { margin-top: 0; }
           <i data-ic="check" class="ok only-ready"></i>
         </div>
         <button class="btn green wide claim not-claimed only-ready" data-tap><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
-        <button class="btn off wide claim only-todo" data-tap aria-label="Claim Starcoat, after joining the group"><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
+        <button class="btn off wide claim only-todo" data-tap aria-label="Claim Starcoat, after favouriting and joining"><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
       </div>
     </div>
   </div>
