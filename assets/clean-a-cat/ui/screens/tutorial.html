@@ -228,7 +228,7 @@ body.short .sbub .btn { min-width: 100px; height: 50px; font-size: 21px; }
   const HY = 228, CX = 480, C = 800;
   const toGround = (x, y) => { const k = y - HY; return [(x - CX) / k, C / k]; };
   const toScreen = (X, D) => { const k = C / D; return [CX + X * k, HY + k]; };
-  const A = toGround(432, 586), B = toGround(600, 560), E = toGround(712, 440);
+  const A = toGround(425, 548), B = toGround(600, 545), E = toGround(712, 440);
   const pts = [];
   for (let i = 0; i <= 120; i++) { const t = i / 120, u = 1 - t;
     pts.push([u*u*A[0] + 2*u*t*B[0] + t*t*E[0], u*u*A[1] + 2*u*t*B[1] + t*t*E[1]]); }
@@ -253,8 +253,8 @@ body.short .sbub .btn { min-width: 100px; height: 50px; font-size: 21px; }
   const shape = [...left, bl, hl, tip, hr, br, ...right.slice().reverse()];
   const ptsAttr = a => a.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ');
   function el(tag, attrs) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); g.appendChild(e); return e; }
-  el('polygon', { points: ptsAttr(shape), fill: 'rgba(214,255,217,.35)', stroke: 'rgba(214,255,217,.55)', 'stroke-width': 10, 'stroke-linejoin': 'round' });
-  el('polygon', { points: ptsAttr(shape), fill: 'rgba(99,232,127,.55)', stroke: 'rgba(28,138,63,.75)', 'stroke-width': 3, 'stroke-linejoin': 'round' });
+  el('polygon', { points: ptsAttr(shape), fill: 'none', stroke: 'rgba(214,255,217,.2)', 'stroke-width': 10, 'stroke-linejoin': 'round' });
+  el('polygon', { points: ptsAttr(shape), fill: 'rgba(99,232,127,.4)', stroke: 'rgba(28,138,63,.6)', 'stroke-width': 3, 'stroke-linejoin': 'round' });
   const run = el('polyline', { points: ptsAttr(mid), fill: 'none', stroke: 'rgba(255,255,255,.75)', 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-dasharray': '26 90' });
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const t0 = performance.now();
