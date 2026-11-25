@@ -12,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -38,7 +39,14 @@ end
 
 local function refresh()
 	trove:Clean()
-	if not allOn() or Players.LocalPlayer:GetAttribute(SERVED) ~= true then
+	-- No picks while the front customer still holds the cat for the player to take (switch customerCarry): the
+	-- server refuses them then.
+	local player = Players.LocalPlayer
+	if
+		not allOn()
+		or player:GetAttribute(SERVED) ~= true
+		or player:GetAttribute(CarryRules.ATTRIBUTE) == CarryRules.DOOR
+	then
 		return
 	end
 	local folder: Folder = trove:Add(Instance.new("Folder"))
@@ -76,6 +84,7 @@ function QueuePickController.Start()
 			:Connect(refresh)
 	end
 	Players.LocalPlayer:GetAttributeChangedSignal(SERVED):Connect(refresh)
+	Players.LocalPlayer:GetAttributeChangedSignal(CarryRules.ATTRIBUTE):Connect(refresh)
 	-- The plot came or went: the line's spots moved.
 	SpaLayout.changed(function()
 		task.delay(1, refresh)
