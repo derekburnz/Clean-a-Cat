@@ -40,7 +40,8 @@ from common import Builder, scale_mesh
 # third along the flanks) and tiles (mosaic tiles in the second and third colours and cream on the flanks, back and
 # crown), both built as geometry so they hold in gold; #2739 (the Cat Makeovers): mark ((shape, colour or colours)): a
 # forehead mark from MARKS; Christmas: inner_ear (the colour inside the ears, pink by default); Tier 8: rosettes (each spot a ring round a third-colour middle), cuff (a fur band round each
-# leg above the paw, a snow boot's top). Themed cats wear a prop, some two (props.py).
+# leg above the paw, a snow boot's top); Clean a Cat #474: ears (the ears' own colour), and a mark's third entry is its size.
+# Themed cats wear a prop, some two (props.py).
 ROSTER = {
     # Clean a Cat's first Cat Index (model list v1, issue #22). Working names, final names from Design-Agent. None of
     # these names or coats is a Cat Cafe cat: the coats use the coat_* swatches (palette rows 17 and 18).
@@ -91,12 +92,13 @@ SPECIAL_CATS = {
                       face=tuple((x, 0.375, 0.14, 0.1, ("spa_mint", "pearl", "gold_mid", "pearl", "spa_mint")[i])
                                  for i, x in enumerate((-0.32, -0.16, 0.0, 0.16, 0.32)))
                       + ((-0.32, 0.255, 0.14, 0.1, "pearl"), (0.32, 0.255, 0.14, 0.1, "pearl"))),
-    # a pastel tiger: bubblegum and mint stripes turn about on white, tiger stripes on the cheeks
-    "Sherbet":   dict(rarity="Special", fur="coat_cotton", second="fur_bubblegum", third="spa_mint", eyes="eye_sky",
-                      pattern="stripes", muzzle=None, nose="nose_bubblegum", stripes2=True, tip="fur_bubblegum",
-                      mark=("heart", "fur_bubblegum"), eye_k=1.1, fluff_twist=7,
-                      face=((0.38, 0.1, 0.1, 0.05, "fur_bubblegum"), (0.36, 0.0, 0.14, 0.05, "spa_mint"),
-                            (-0.38, 0.1, 0.1, 0.05, "fur_bubblegum"), (-0.36, 0.0, 0.14, 0.05, "spa_mint"))),
+    # a pastel tiger: bubblegum pink with mint and cream stripes turn about, mint ears and a big cream heart (#474:
+    # on white it read as a roster cat on a small card, so the whole coat carries the colour)
+    "Sherbet":   dict(rarity="Special", fur="fur_bubblegum", second="spa_mint", third="coat_cotton", eyes="eye_sky",
+                      pattern="stripes", muzzle=None, nose="nose_bubblegum", stripes2=True, tip="spa_mint",
+                      ears="spa_mint", mark=("bigheart", "coat_cotton", 1.5), eye_k=1.1, fluff_twist=7,
+                      face=((0.38, 0.1, 0.1, 0.05, "spa_mint"), (0.36, 0.0, 0.14, 0.05, "coat_cotton"),
+                            (-0.38, 0.1, 0.1, 0.05, "spa_mint"), (-0.36, 0.0, 0.14, 0.05, "coat_cotton"))),
     # the night sky: deep blue fading to violet and pink, stars all over, a big star on the brow
     "Stardust":  dict(rarity="Special", fur="galaxy_blue", second="aurora_violet", third="fur_bubblegum",
                       eyes="eye_mint", pattern="gradient", muzzle=None, nose="nose_bubblegum", glow_eyes=True,
@@ -104,21 +106,24 @@ SPECIAL_CATS = {
                       face=((0.36, 0.38, 0.05, 0.05, "sparkle"), (-0.37, 0.3, 0.05, 0.05, "sparkle"),
                             (0.3, 0.26, 0.04, 0.04, "milk"), (-0.27, 0.41, 0.04, 0.04, "milk"),
                             (0.39, -0.03, 0.04, 0.04, "milk"))),
-    # a rose leopard: berry rings round pink middles on vanilla, on the brow too, a thick tail
-    "Rosette":   dict(rarity="Special", fur="fur_vanilla", second="royal_berry", third="fur_rose", eyes="eye_gold",
-                      pattern="spots", rosettes=True, muzzle="milk", nose="nose_bubblegum", tip="royal_berry",
-                      tail_thick=0.3, ear_tufts=True, eye_k=1.1,
-                      face=((0.0, 0.36, 0.17, 0.15, "royal_berry"), (0.0, 0.36, 0.08, 0.07, "fur_rose", 0, 1),
-                            (0.27, 0.31, 0.15, 0.13, "royal_berry"), (0.27, 0.31, 0.07, 0.06, "fur_rose", 0, 1),
-                            (-0.27, 0.31, 0.15, 0.13, "royal_berry"), (-0.27, 0.31, 0.07, 0.06, "fur_rose", 0, 1),
-                            (0.4, 0.13, 0.07, 0.07, "royal_berry"), (-0.4, 0.13, 0.07, 0.07, "royal_berry"))),
-    # ink black with a rainbow crest from the brow down the back, a pink and a mint front toe and bright mint eyes
+    # a rose leopard: berry rings round pink middles on vanilla, a thick tail; on the head one big berry diamond
+    # between two small ones and dark berry ears (#474: three small rings blurred to dots on a small card)
+    "Rosette":   dict(rarity="Special", fur="fur_vanilla", second="royal_berry", third="fur_rose", eyes="eye_mint",
+                      pattern="spots", rosettes=True, muzzle="fur_rose", nose="nose_bubblegum", tip="royal_berry",
+                      tail_thick=0.3, ear_tufts=True, ears="royal_berry", inner_ear="fur_rose", eye_k=1.1,
+                      face=((0.0, 0.35, 0.24, 0.24, "royal_berry", 45), (0.0, 0.35, 0.11, 0.11, "fur_rose", 45, 1),
+                            (0.33, 0.34, 0.12, 0.12, "royal_berry", 45), (-0.33, 0.34, 0.12, 0.12, "royal_berry", 45),
+                            (0.38, 0.08, 0.1, 0.14, "royal_berry"), (-0.38, 0.08, 0.1, 0.14, "royal_berry"))),
+    # ink black with a rainbow crest from the brow down the back, a pink and a mint front toe, bright mint eyes,
+    # violet inside the ears and two bright stripes on each cheek (#474, to stand further from the tuxedo cat)
     "Prism":     dict(rarity="Special", fur="coat_inky", second="coat_inky", eyes="eye_mint", pattern="solid",
                       muzzle=None, nose="nose_bubblegum", glow_eyes=True, curl=True, tip="aurora_violet",
                       mane=("neon_pink", "fur_marmalade", "pastel_butter", "spa_mint", "spa_sky", "aurora_violet"),
-                      mane_tall=0.3, toes=("neon_pink", "spa_mint", None, None), eye_k=1.1,
+                      mane_tall=0.3, toes=("neon_pink", "spa_mint", None, None), inner_ear="aurora_violet", eye_k=1.1,
                       face=((0.0, 0.42, 0.14, 0.05, "aurora_violet"), (0.0, 0.365, 0.14, 0.05, "spa_sky"),
-                            (0.0, 0.31, 0.14, 0.05, "spa_mint"))),
+                            (0.0, 0.31, 0.14, 0.05, "spa_mint"),
+                            (0.36, 0.12, 0.13, 0.05, "neon_pink"), (0.36, 0.04, 0.13, 0.05, "pastel_butter"),
+                            (-0.36, 0.12, 0.13, 0.05, "spa_sky"), (-0.36, 0.04, 0.13, 0.05, "aurora_violet"))),
     # jade with rows of gold glyphs between dark bands, gold paws, a gold drop under a row of gold dots
     "Jade":      dict(rarity="Special", fur="fur_emerald", second="gold_mid", third="sign_teal", eyes="eye_gold",
                       pattern="solid", muzzle=None, nose="nose_dark", glyphs="haunch", socks="gold_mid", tip="gold_mid",
@@ -160,7 +165,7 @@ def look(spec):
     c["leg"] = c["fur"]
     # socks when the coat names them, else dark socks on points and white on a tuxedo
     c["paw"] = c.get("socks") or (c["second"] if pat == "points" or tux else c["fur"])
-    c["ear"] = c["second"] if pat == "points" else c["third"] if pat == "gradient" else c["fur"]
+    c["ear"] = spec.get("ears") or (c["second"] if pat == "points" else c["third"] if pat == "gradient" else c["fur"])
     c.setdefault("tip", c["second"] if pat in ("points", "stripes") or tux else c["third"] if pat == "gradient" else c["fur"])
     belly = c.get("muzzle") or (c["second"] if tux else None)
     c["belly"] = belly if belly != c["fur"] else None
@@ -464,7 +469,8 @@ def _head(spec, c, h):
         b.box((0, fy + 0.012, (lo + fz) / 2), (0.16 * k, 0.06, fz - lo), c["blaze"], bevel=False)
         b.box((0, fy + 0.014, fz + 0.11), (0.11 * k, 0.06, 0.22), c["blaze"], bevel=False)
     if spec.get("mark"):                                # the Cat Makeovers: a mark on the forehead
-        _forehead_mark(b, spec["mark"][0], spec["mark"][1], fy - 0.012, fz + 0.31, 1.35)   # clear of the eyes
+        # clear of the eyes; a third entry is its size, for a mark big enough to read on a small card (#474)
+        _forehead_mark(b, spec["mark"][0], spec["mark"][1], fy - 0.012, fz + 0.31, *spec["mark"][2:] or (1.35,))
     for x, z, fw, fh, col, *more in spec.get("face", ()):      # face paint (the special cats): flat marks on the face
         ang, layer = (list(more) + [0, 0])[:2]         # so a card picture shows the coat; x and z from the eye line on
         zk = sz / 0.84                                  # A's head, a mark over another one layer further out
@@ -517,6 +523,7 @@ MARKS = {
                   (-0.044, 0.076, 0.07, 0.032, 150), (0.044, 0.076, 0.07, 0.032, 30), (-0.044, -0.076, 0.07, 0.032, 30)),   # three bold bars and a crossbar near each arm's tip (Derek2 11-09: "a more clear snowflake")
     "drop": ((0, -0.03, 0.1, 0.1, 45), (0, 0.035, 0.065, 0.065, 45), (0, 0.08, 0.035, 0.035, 45)),
     "heart": ((0.04, 0.02, 0.09, 0.09, 45), (-0.04, 0.02, 0.09, 0.09, 45), (0, -0.02, 0.1, 0.1, 45)),
+    "bigheart": ((0.065, 0.035, 0.1, 0.1, 45), (-0.065, 0.035, 0.1, 0.1, 45), (0, -0.03, 0.13, 0.13, 45)),   # two lobes well apart over a bigger point, so the notch shows on a small card (#474)
     "pat": ((0, 0, 0.2, 0.11, 0), (-0.045, 0.025, 0.07, 0.03, 0)),              # a butter pat and its shine
     "star": ((0, 0, 0.05, 0.17, 0), (0, 0, 0.05, 0.17, 72), (0, 0, 0.05, 0.17, -72), (0, 0, 0.05, 0.17, 36),
              (0, 0, 0.05, 0.17, -36)),
