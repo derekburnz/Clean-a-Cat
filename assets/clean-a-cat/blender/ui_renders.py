@@ -137,6 +137,11 @@ def portrait(name, mat, out, dirty=False, level=None):
     head = [o for o in objs if o.name.endswith(("_Head", "_EarL", "_EarR", "_Eye1", "_Eye2"))]
     lo, hi = common.bounds(head)
     lo = Vector((lo.x, lo.y, lo.z - (hi.z - lo.z) * 0.34))
+    worn = [o for o in objs if o.get("rides") == "Head"]      # a special cat's head piece is part of its picture,
+    if worn:                                                  # so less chest shows and the face stays big
+        wlo, whi = common.bounds(worn)
+        lo = Vector((min(lo.x, wlo.x), min(lo.y, wlo.y), lo.z + (hi.z - lo.z) * 0.1))
+        hi = Vector((max(hi.x, whi.x), max(hi.y, whi.y), max(hi.z, whi.z)))
     path = os.path.join(out, f"portrait_{name}{'_Dirty' if dirty else ''}{level or ''}.png")
     shot(objs, path, PORTRAIT_RAW, PORTRAIT_VIEW, focus=(lo, hi), pad=1.1)
     _clear()

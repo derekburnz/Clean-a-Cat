@@ -9,6 +9,8 @@
   "Rarity": "Special",
   "Cat": "Rosette",
   "Special": true,
+  "PropSlot": "Head",
+  "PropSlot2": "Back",
   "Dirty": true,
   "MudCount": 20,
   "TangleCount": 6,
@@ -1717,7 +1719,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.8,
+           1.0152,
            0.0
           ],
           "orientation": [
@@ -1748,19 +1750,19 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0,
-           0.41,
-           -0.24
+           -0.47,
+           0.39,
+           -0.27
           ],
           "orientation": [
            [
-            1.0,
-            0.0,
+            0.5,
+            -0.866,
             0.0
            ],
            [
-            0.0,
-            1.0,
+            0.866,
+            0.5,
             0.0
            ],
            [
@@ -4345,7 +4347,7 @@
           "position": [
            -0.1801,
            1.5577,
-           -0.8639
+           -0.8756
           ],
           "orientation": [
            [
@@ -4369,7 +4371,7 @@
         "Size": [
          0.2727,
          0.1254,
-         0.24
+         0.2166
         ],
         "Color": [
          0.4941,
@@ -4388,7 +4390,7 @@
           "position": [
            0.0909,
            -0.0447,
-           -0.0043
+           0.0074
           ],
           "orientation": [
            [
@@ -4521,7 +4523,7 @@
           "position": [
            0.0472,
            1.5596,
-           -0.7884
+           -0.8001
           ],
           "orientation": [
            [
@@ -4545,7 +4547,7 @@
         "Size": [
          0.1818,
          0.1293,
-         0.0889
+         0.0655
         ],
         "Color": [
          0.4941,
@@ -6219,6 +6221,1925 @@
       }
      },
      "name": "CleanACat_Cat_Rosette_Dirty_Fluff03"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Rosette_Dirty/55"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7204,
+           -0.4874
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.587,
+         0.4402,
+         0.587
+        ],
+        "Color": [
+         0.5569,
+         0.1647,
+         0.2902
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           -0.8704,
+           0.1874
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Rosette_Dirty/55",
+        "Follows": "Head"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2739,
+           1.6661,
+           -0.3984
+          ],
+          "orientation": [
+           [
+            0.9511,
+            0.0,
+            0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.309,
+            0.0,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1693,
+           1.6661,
+           -0.2544
+          ],
+          "orientation": [
+           [
+            0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6661,
+           -0.1993
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1693,
+           1.6661,
+           -0.2544
+          ],
+          "orientation": [
+           [
+            -0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            -0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2739,
+           1.6661,
+           -0.3984
+          ],
+          "orientation": [
+           [
+            -0.9511,
+            0.0,
+            0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.309,
+            0.0,
+            -0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2739,
+           1.6661,
+           -0.5764
+          ],
+          "orientation": [
+           [
+            -0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            -0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1693,
+           1.6661,
+           -0.7204
+          ],
+          "orientation": [
+           [
+            -0.5878,
+            0.0,
+            -0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.809,
+            0.0,
+            -0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6661,
+           -0.7754
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1693,
+           1.6661,
+           -0.7204
+          ],
+          "orientation": [
+           [
+            0.5878,
+            0.0,
+            -0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.809,
+            0.0,
+            0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2739,
+           1.6661,
+           -0.5764
+          ],
+          "orientation": [
+           [
+            0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0761,
+         0.163,
+         0.2177
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7857,
+           -0.8135
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.154,
+         0.1087,
+         0.154
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.8943,
+           -0.8135
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0924,
+         0.1087,
+         0.0924
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           2.003,
+           -0.8135
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0308,
+         0.1087,
+         0.0308
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3101,
+           1.7748,
+           -0.5882
+          ],
+          "orientation": [
+           [
+            0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.154,
+         0.087,
+         0.154
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3101,
+           1.8617,
+           -0.5882
+          ],
+          "orientation": [
+           [
+            0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0924,
+         0.087,
+         0.0924
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3101,
+           1.9487,
+           -0.5882
+          ],
+          "orientation": [
+           [
+            0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0308,
+         0.087,
+         0.0308
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1917,
+           1.7748,
+           -0.2236
+          ],
+          "orientation": [
+           [
+            0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.154,
+         0.087,
+         0.154
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1917,
+           1.8617,
+           -0.2236
+          ],
+          "orientation": [
+           [
+            0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0924,
+         0.087,
+         0.0924
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1917,
+           1.9487,
+           -0.2236
+          ],
+          "orientation": [
+           [
+            0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0308,
+         0.087,
+         0.0308
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1917,
+           1.7748,
+           -0.2236
+          ],
+          "orientation": [
+           [
+            -0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            -0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.154,
+         0.087,
+         0.154
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1917,
+           1.8617,
+           -0.2236
+          ],
+          "orientation": [
+           [
+            -0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            -0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0924,
+         0.087,
+         0.0924
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1917,
+           1.9487,
+           -0.2236
+          ],
+          "orientation": [
+           [
+            -0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            -0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0308,
+         0.087,
+         0.0308
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3101,
+           1.7748,
+           -0.5882
+          ],
+          "orientation": [
+           [
+            -0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            -0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.154,
+         0.087,
+         0.154
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3101,
+           1.8617,
+           -0.5882
+          ],
+          "orientation": [
+           [
+            -0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            -0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0924,
+         0.087,
+         0.0924
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3101,
+           1.9487,
+           -0.5882
+          ],
+          "orientation": [
+           [
+            -0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            -0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0308,
+         0.087,
+         0.0308
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6878,
+           -0.8461
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2609,
+         0.1617,
+         0.2609
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7426,
+           -0.8461
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.137,
+         0.0548,
+         0.137
+        ],
+        "Color": [
+         0.5569,
+         0.1647,
+         0.2902
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7765,
+           -0.8461
+          ],
+          "orientation": [
+           [
+            0.9781,
+            0.0,
+            0.2079
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.2079,
+            0.0,
+            0.9781
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0443,
+         0.0652
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Cat_Rosette_Dirty/56"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Cat_Rosette_Dirty_Gem_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             2.0791,
+             -0.8135
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1522,
+           0.1522,
+           0.1522
+          ],
+          "Color": [
+           0.451,
+           0.8667,
+           0.7059
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             0.0,
+             -0.0543,
+             0.3152
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Cat_Rosette_Dirty/56",
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Rosette_Dirty_Gem_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.3101,
+             2.0139,
+             -0.5882
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1196,
+           0.1196,
+           0.1196
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Rosette_Dirty_Gem_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1917,
+             2.0139,
+             -0.2236
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1196,
+           0.1196,
+           0.1196
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Rosette_Dirty_Gem_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1917,
+             2.0139,
+             -0.2236
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1196,
+           0.1196,
+           0.1196
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Rosette_Dirty_Gem_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.3101,
+             2.0139,
+             -0.5882
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1196,
+           0.1196,
+           0.1196
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           2.0248,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Cat_Rosette_Dirty_Gem_Glow"
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         0.85,
+         -0.3
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop"
     }
    ],
    "properties": {
@@ -7015,6 +8936,131 @@
       }
      },
      "name": "CleanACat_Cat_Rosette_Dirty_Fluff08"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Rosette_Dirty/59"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Tail_Rose",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.2872,
+           0.8813
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.5548,
+         0.4438,
+         0.5548
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           -0.0197,
+           -0.0035
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Rosette_Dirty/59",
+        "Follows": "Tail"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.2675,
+         0.8778
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Rosette_Dirty_Tail_Rose"
     }
    ],
    "properties": {
@@ -12719,6 +14765,1700 @@
     }
    },
    "name": "CleanACat_Cat_Rosette_Dirty_Fluff10"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Rosette_Dirty/57"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.97,
+         0.211
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          0.2079,
+          0.0,
+          0.9781
+         ],
+         [
+          -0.9781,
+          0.0,
+          0.2079
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.11,
+       0.4,
+       0.4
+      ],
+      "Color": [
+       0.5569,
+       0.1647,
+       0.2902
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0047,
+         0.0,
+         -0.9927
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.2079,
+          -0.9781
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9781,
+          0.2079
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Rosette_Dirty/57",
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.184,
+         1.1699,
+         0.2535
+        ],
+        "orientation": [
+         [
+          -0.7357,
+          0.1046,
+          -0.6691
+         ],
+         [
+          -0.6773,
+          -0.1137,
+          0.7269
+         ],
+         [
+          0.0,
+          0.988,
+          0.1545
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.075,
+       0.55
+      ],
+      "Color": [
+       0.5569,
+       0.1647,
+       0.2902
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0665,
+         1.231,
+         0.2665
+        ],
+        "orientation": [
+         [
+          -0.969,
+          0.0498,
+          -0.2419
+         ],
+         [
+          -0.247,
+          -0.1955,
+          0.9491
+         ],
+         [
+          0.0,
+          0.9794,
+          0.2017
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.075,
+       0.55
+      ],
+      "Color": [
+       0.5569,
+       0.1647,
+       0.2902
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0665,
+         1.231,
+         0.2665
+        ],
+        "orientation": [
+         [
+          -0.969,
+          -0.0498,
+          0.2419
+         ],
+         [
+          0.247,
+          -0.1955,
+          0.9491
+         ],
+         [
+          0.0,
+          0.9794,
+          0.2017
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.075,
+       0.55
+      ],
+      "Color": [
+       0.5569,
+       0.1647,
+       0.2902
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.184,
+         1.1699,
+         0.2535
+        ],
+        "orientation": [
+         [
+          -0.7357,
+          -0.1046,
+          0.6691
+         ],
+         [
+          0.6773,
+          -0.1137,
+          0.7269
+         ],
+         [
+          0.0,
+          0.988,
+          0.1545
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.075,
+       0.55
+      ],
+      "Color": [
+       0.5569,
+       0.1647,
+       0.2902
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.2678,
+         1.0653,
+         0.2313
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5592,
+          -0.829
+         ],
+         [
+          0.2079,
+          -0.8109,
+          0.547
+         ],
+         [
+          -0.9781,
+          -0.1724,
+          0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.558,
+         1.2568,
+         0.272
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5592,
+          0.829
+         ],
+         [
+          -0.2079,
+          -0.8109,
+          -0.547
+         ],
+         [
+          0.9781,
+          -0.1724,
+          -0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.4809,
+         1.3686,
+         0.2957
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5592,
+          0.829
+         ],
+         [
+          0.2079,
+          0.8109,
+          -0.547
+         ],
+         [
+          -0.9781,
+          0.1724,
+          -0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1907,
+         1.1772,
+         0.255
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5592,
+          -0.829
+         ],
+         [
+          -0.2079,
+          0.8109,
+          0.547
+         ],
+         [
+          0.9781,
+          0.1724,
+          0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1907,
+         1.1772,
+         0.255
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.8829,
+          -0.4695
+         ],
+         [
+          0.2079,
+          -0.4592,
+          0.8637
+         ],
+         [
+          -0.9781,
+          -0.0976,
+          0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.355,
+         1.4794,
+         0.3193
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.8829,
+          0.4695
+         ],
+         [
+          -0.2079,
+          -0.4592,
+          -0.8637
+         ],
+         [
+          0.9781,
+          -0.0976,
+          -0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.2333,
+         1.5428,
+         0.3327
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.8829,
+          0.4695
+         ],
+         [
+          0.2079,
+          0.4592,
+          -0.8637
+         ],
+         [
+          -0.9781,
+          0.0976,
+          -0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0689,
+         1.2405,
+         0.2685
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.8829,
+          -0.4695
+         ],
+         [
+          -0.2079,
+          0.4592,
+          0.8637
+         ],
+         [
+          0.9781,
+          0.0976,
+          0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0689,
+         1.2405,
+         0.2685
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          0.2079,
+          0.0,
+          0.9781
+         ],
+         [
+          -0.9781,
+          0.0,
+          0.2079
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0689,
+         1.5828,
+         0.3413
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          -0.2079,
+          0.0,
+          -0.9781
+         ],
+         [
+          0.9781,
+          0.0,
+          -0.2079
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0689,
+         1.5828,
+         0.3413
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.2079,
+          0.0,
+          -0.9781
+         ],
+         [
+          -0.9781,
+          0.0,
+          -0.2079
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0689,
+         1.2405,
+         0.2685
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.2079,
+          0.0,
+          0.9781
+         ],
+         [
+          0.9781,
+          0.0,
+          0.2079
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0689,
+         1.2405,
+         0.2685
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.8829,
+          0.4695
+         ],
+         [
+          0.2079,
+          0.4592,
+          0.8637
+         ],
+         [
+          -0.9781,
+          0.0976,
+          0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.2333,
+         1.5428,
+         0.3327
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.8829,
+          -0.4695
+         ],
+         [
+          -0.2079,
+          0.4592,
+          -0.8637
+         ],
+         [
+          0.9781,
+          0.0976,
+          -0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.355,
+         1.4794,
+         0.3193
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.8829,
+          -0.4695
+         ],
+         [
+          0.2079,
+          -0.4592,
+          -0.8637
+         ],
+         [
+          -0.9781,
+          -0.0976,
+          -0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1907,
+         1.1772,
+         0.255
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.8829,
+          0.4695
+         ],
+         [
+          -0.2079,
+          -0.4592,
+          0.8637
+         ],
+         [
+          0.9781,
+          -0.0976,
+          0.1836
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1907,
+         1.1772,
+         0.255
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5592,
+          0.829
+         ],
+         [
+          0.2079,
+          0.8109,
+          0.547
+         ],
+         [
+          -0.9781,
+          0.1724,
+          0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4809,
+         1.3686,
+         0.2957
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5592,
+          -0.829
+         ],
+         [
+          -0.2079,
+          0.8109,
+          -0.547
+         ],
+         [
+          0.9781,
+          0.1724,
+          -0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.558,
+         1.2568,
+         0.272
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5592,
+          -0.829
+         ],
+         [
+          0.2079,
+          -0.8109,
+          -0.547
+         ],
+         [
+          -0.9781,
+          -0.1724,
+          -0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.1469
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Rosette_Dirty_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.2678,
+         1.0653,
+         0.2313
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5592,
+          0.829
+         ],
+         [
+          -0.2079,
+          -0.8109,
+          0.547
+         ],
+         [
+          0.9781,
+          -0.1724,
+          0.1163
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1379,
+       0.5531
+      ],
+      "Color": [
+       0.949,
+       0.749,
+       0.7961
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Rosette_Dirty/58"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Fan_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5886,
+           1.3584,
+           0.2935
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.5886,
+           -0.1484,
+           -0.1825
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Rosette_Dirty/58",
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Fan_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3333,
+           1.5832,
+           0.3413
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Fan_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6645,
+           0.3586
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Fan_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3333,
+           1.5832,
+           0.3413
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Rosette_Dirty_Fan_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.5886,
+           1.3584,
+           0.2935
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.21,
+         0.111
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Rosette_Dirty_Fan_Glow"
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Rosette_Dirty_Prop2"
   }
  ],
  "properties": {

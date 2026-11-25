@@ -60,8 +60,9 @@ CARRIERS = {
                                   "star"),
     "CleanACat_Prop_CarrierButter": ("pastel_butter", "spa_mint", "spa_bubblegum", "spa_sky", "spa_cream", "none",
                                      "paw"),
-    # the special customers' carrier (#476): lilac and gold, the game's prize colours, a little crown on the roof
-    "CleanACat_Prop_CarrierRoyal": ("pastel_lilac", "velvet_lilac", "gold_mid", "spa_bubblegum", "gold_mid", "crown",
+    # the special customers' carrier (#476): lilac and gold, the game's prize colours. Since #486 it has no roof:
+    # a special cat's head and back pieces stand taller and wider than a roof allows, and the prize shows on the way in
+    "CleanACat_Prop_CarrierRoyal": ("pastel_lilac", "velvet_lilac", "gold_mid", "spa_bubblegum", "gold_mid", "open",
                                     "star"),
 }
 ROOF_FROM = 1.36        # where the side walls stop and the roof slopes in
@@ -99,21 +100,36 @@ def _carrier(name, mat):
     for sx in (1, -1):
         b.box_base((sx * (w / 2 - 0.02 - wt / 2), 0.06, TRAY_H - 0.05), (wt, ln - 0.14, ROOF_FROM - TRAY_H + 0.07),
                    shell, bevel=False)
+        if roof == "open":                 # no roof (#486): a gold rail caps each wall and carries the handle's hoop
+            b.box_base((sx * (w / 2 - 0.02 - wt / 2 + 0.035), 0.06, ROOF_FROM + 0.01), (wt + 0.07, ln - 0.08, 0.08), trim)
+            b.box_base((sx * (w / 2 - 0.02 - wt / 2), 0.06, ROOF_FROM + 0.05), (0.15, 0.2, GRIP_H - ROOF_FROM - 0.07),
+                       trim, bevel=False)
+            continue
         run, rise = ROOF_IN, h - ROOF_FROM
         slope = math.atan2(rise, run)
         mid = (sx * (w / 2 - 0.02 - run / 2 - 0.045), 0.06, ROOF_FROM + rise / 2 - 0.03)
         b.box(mid, (math.hypot(run, rise) + 0.16, ln - 0.13, wt), shell, bevel=False,
               rot=Matrix.Rotation(sx * slope, 3, "Y"))
-    b.box_base((0, 0.06, h - wt), (w - 2 * ROOF_IN + 0.1, ln - 0.12, wt), shell)                 # the roof
+    if roof != "open":
+        b.box_base((0, 0.06, h - wt), (w - 2 * ROOF_IN + 0.1, ln - 0.12, wt), shell)             # the roof
     x0, x1 = w / 2 - 0.08, w / 2 - ROOF_IN - 0.02
     z0, zs, z1 = TRAY_H - 0.06, ROOF_FROM, h - 0.06
     zm = (z0 + z1) / 2
     back = [(x0, z0 - zm), (x0, zs - zm), (x1, z1 - zm), (-x1, z1 - zm), (-x0, zs - zm), (-x0, z0 - zm)]
     b.prism((0, ln / 2 - wt / 2 - 0.02, zm), [(-x, z) for x, z in reversed(back)], wt, shell, rot=_FRONT)
     # the handle: two posts and a chunky grip
-    for sx in (1, -1):
-        b.box_base((sx * 0.33, 0.06, h - 0.02), (0.15, 0.2, 0.17), trim, bevel=False)
-    b.box((0, 0.06, GRIP_H), (0.9, 0.26, 0.16), trim)
+    if roof == "open":                     # the hoop's top bar: the same grip, as wide as the carrier
+        b.box((0, 0.06, GRIP_H), (w + 0.06, 0.26, 0.16), trim)
+        y, z = ln / 2 - wt / 2 - 0.02, h - 0.07                                    # a little crown on the headboard
+        b.box_base((0, y, z), (0.5, 0.2, 0.13), accent, bevel=False)
+        for dx, ht in ((-0.17, 0.16), (0.0, 0.24), (0.17, 0.16)):
+            b.pyramid((dx, y, z + 0.13), 0.16, ht, accent)
+        b.box((0, y - 0.105, z + 0.07), (0.09, 0.03, 0.09), "royal_berry", bevel=False,
+              rot=Matrix.Rotation(math.radians(45), 3, "Y"))
+    else:
+        for sx in (1, -1):
+            b.box_base((sx * 0.33, 0.06, h - 0.02), (0.15, 0.2, 0.17), trim, bevel=False)
+        b.box((0, 0.06, GRIP_H), (0.9, 0.26, 0.16), trim)
     if roof == "bow":                                                              # a bow on the front of the roof
         y, z = -ln / 2 + 0.18, h + 0.09
         b.box((0, y, z), (0.18, 0.16, 0.18), accent)

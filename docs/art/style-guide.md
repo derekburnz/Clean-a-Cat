@@ -196,7 +196,7 @@ The owner on 2026-11-25: special customers "that expire that only I can take the
 | `CleanACat_NPC_Customer_Pearl` | adult | a grand lady: a wide lilac hat with a gold band and a pink plume, pearls, white gloves, a lilac dress with a gold star |
 
 - **One shared cue, so a player learns it once.** Lilac and gold are the game's prize colours (the better tools, the pet crate, the VIP room). Every special customer wears lilac, gold shoes and a gold star, and a hat no townsperson wears. No townsperson wears lilac or gold (#479).
-- **Their carrier.** `CleanACat_Prop_CarrierRoyal` (`spa_props.py`): the same carrier in lilac on a deeper lilac tray with a gold gate and handle, gold stars on the sides and a little gold crown on the roof. Same size, hinge, Attachments and attributes as the other three. 610 triangles, 63 parts.
+- **Their carrier.** `CleanACat_Prop_CarrierRoyal` (`spa_props.py`): the same carrier in lilac on a deeper lilac tray with a gold gate, gold stars on the sides and a little gold crown. Since #486 it has no roof: a gold rail caps each wall, the handle is a hoop from wall to wall with its grip where it always was, and the crown sits on the headboard. A special cat's head and back pieces stand taller and wider than a roof allows, and an open carrier shows the prize on the way in. Same size, hinge, Attachments (`CatSeat`, `Grip`) and attributes as the other three. 630 triangles, 62 parts.
 - **The cape** hangs from the collar between the arms and sweeps back 11 degrees, so a leg swinging behind passes under it at a 26 degree step. It is part of the body and does not move.
 - 1,218 to 1,332 triangles and 55 to 74 parts each, inside the customer budget. 5.6 to 6.1 studs to the top of the hat.
 - Staying a draft: working names, three looks, no rules. How a special customer appears, how long they wait and what they pay is the game's design.
@@ -290,8 +290,30 @@ Rules for a special cat:
 - **One big cue, judged at 64 px (#474).** Small marks shrink to dots on a card: three small rings read as a spotted roster cat and thin stripes with a small heart as a white one. What holds at 64 px is a coat colour no roster cat has, ears in another colour (`ears` in the spec), or one mark a third of the face wide (a `mark` takes a size as its third entry). A cat on a cream, white, grey, ginger or black coat needs at least two of these.
 - No new swatch and no texture: every colour is already in the palette.
 - Mud lies over the paint on the brow (above the eyes), so a filthy special cat hides its marks and the wash brings them back. Round the eyes, nose and mouth the face stays clear as on every cat.
-- Inside the cat budgets: 824 to 1,160 triangles clean, 2,810 to 3,170 muddy.
-- `ui_renders.py` renders their portraits like the roster's, with one per dirt level.
+- `ui_renders.py` renders their portraits like the roster's, with one per dirt level. The head piece is inside the picture, so a little less chest shows.
+
+#### Their built-in pieces (#486), a draft
+The owner on 2026-11-25: "make the special cats even better" and "look through roblox asset pack cats repo". In his asset library the best cats (Mythical and Secret) differ from the common ones by what is built onto them: a piece on the head, a piece on the back, lit parts and a tail piece. A coat alone, however rich, stays an ordinary cat's outline. So each special cat now has both, drawn by `props.py` (the library's way of drawing pieces on a cat, ported: the same frames, the same object names). The twelve pieces are new drawings for this game; the table names the library piece each idea grew from.
+
+| Cat | On the head (`_Prop`, in the Head) | On the back (`_Prop2`) | Lit parts (Neon) | Grew from, in the library's `props.py` |
+|---|---|---|---|---|
+| Stardust | a gold tiara with one big star and a gem on a stalk each side | a shooting star on a violet saddle, three streamers over the tail | the big star, the gems, the comet and a star on the tail tip | `tree_star`, `moon_antlers`, `star_trail` |
+| Sherbet | a swirl of whipped cream with a cherry, a wafer and sprinkles | two mint heart wings | the cherry and a pink heart on each wing | `ice_cream_hat`, `candy_puff`, `sugar_wings`, `fairy_wings` |
+| Rosette | one bold gold crown with a berry velvet cap and a single rose on the band, set back from the brow | one scalloped rose fan with berry ribs, and a rose on the tail tip | a gem on each of the crown's five points, a pearl on each scallop | `queen_crown`, `flower_crown`, `fire_wings` |
+| Prism | a crystal horn with rainbow rings, a small crystal each side | a rainbow over the back from a cloud on each side | the horn, the crystals and the rainbow | `unicorn_horn`, `rainbow_pot` |
+| Jade | two gold horns with jade tips and a lotus in bloom | jade spines down the back and two gold ribbed wings with mint skin | the horn tips, the lotus heart, the spine and rib tips and a pearl on the tail | `ember_horns`, `petal_horns`, `petal_spines`, `dragon_wings` |
+| Bathtile | a pink shower cap with a mint frill and butter dots, a rubber duck riding it, soap bubbles | a bar of soap on a mint sponge with a stack of bubbles | a glint on the duck, the top bubbles | `rubber_duck`, `wave_back` |
+
+- **Objects.** `<cat>_Prop` and `_Prop_Glass` sit inside the Head's Model and turn with it. `<cat>_Prop2` and `_Prop2_Glass` are children of the cat and follow the body. Every lit part is its own Model ending `_Glow`, inside the piece it belongs to, built of Neon parts. A tail piece (`_Tail_...`) sits inside the Tail. Root attributes `PropSlot` and `PropSlot2` name the slots; each piece's Model has `Follows` (Head, Body or Tail). No model file holds a script.
+- **The bow and the carry spot.** A head piece takes the crown, where a roster cat's `BowSlot` and `Carry` are. On these six `BowSlot` is on the front corner of the head at the cat's left, beside the ear, and the Attachment is turned 60 degrees out over the edge (`props.bow_corner`), so the bow the wash ends with sits like a hair bow and touches no piece. `Carry` is 0.03 above the top of the head piece (`props.head_top`), so a name tag or a carried thing never lands inside it. The game needs no change: it reads both Attachments as before.
+- **No white foam on a special cat.** White foam is what the wash leaves to rinse, so foam built onto a cat reads as a cat not yet clean (Review-QA on #486: Bathtile's first head piece was a pile of foam). A bath theme uses things with their own colour: a cap, a duck, a sponge, see-through bubbles.
+- **Keep the brow clear.** A head piece stands on the crown and does not hang over the front edge, so the face marks read at 64 px (Review-QA on #486: Rosette's first crown had three roses over the brow).
+- **Tail pieces stay above the floor.** A sitting cat's tail lies on the ground; `props._off_floor` lifts the piece on its tip.
+- **For the game.** The wash should skip any Model whose name contains `_Prop` or ends `_Glow`: the pieces are not fur. A motion that turns the Head or the Tail carries their pieces with it; nothing else needs to move.
+- **Mud stays off the pieces.** `dirt.py` places the mud, tangles and fluff on the cat alone, so a filthy special cat still shows its crown. The pieces have a small footprint on the back, so the mud zones round them stay reachable.
+- **Nothing floats.** Every part of a piece touches the cat or another part of the piece; no two see-through bubbles touch each other (#176).
+- **Sizes.** No back piece is wider than 0.78 studs each side or taller than 0.95 studs over the back, so a walking cat at the carrier's scale stays inside the royal carrier's walls and under its handle. Head pieces stand up to 0.85 studs over the head.
+- **Cost.** 1,188 to 2,040 triangles and 75 to 143 parts clean (a roster cat: about 800 to 1,100 and 47 to 78), 3,174 to 4,050 triangles and 176 to 244 parts muddy with every piece of mud on. Budgets: 2,100 clean and 4,300 muddy (`props.SPECIAL_BUDGET`, `dirt.py`). They are meant as rare visitors, one at a time; a room full of them would need a look at the phone frame rate first.
 
 How special customers appear, expire and pay is the game's design and not in the models.
 

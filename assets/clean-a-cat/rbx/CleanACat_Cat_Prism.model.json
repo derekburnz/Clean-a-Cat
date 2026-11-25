@@ -8,7 +8,9 @@
   },
   "Rarity": "Special",
   "Cat": "Prism",
-  "Special": true
+  "Special": true,
+  "PropSlot": "Head",
+  "PropSlot2": "Back"
  },
  "children": [
   {
@@ -328,7 +330,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.68,
+           1.065,
            0.0
           ],
           "orientation": [
@@ -359,19 +361,19 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0,
-           0.41,
-           -0.24
+           -0.47,
+           0.39,
+           -0.27
           ],
           "orientation": [
            [
-            1.0,
-            0.0,
+            0.5,
+            -0.866,
             0.0
            ],
            [
-            0.0,
-            1.0,
+            0.866,
+            0.5,
             0.0
            ],
            [
@@ -1129,7 +1131,7 @@
        "CFrame": {
         "position": [
          -0.0,
-         1.67,
+         1.64,
          -0.64
         ],
         "orientation": [
@@ -1153,7 +1155,7 @@
       },
       "Size": [
        0.12,
-       0.2,
+       0.14,
        0.15
       ],
       "Color": [
@@ -1178,7 +1180,7 @@
        "CFrame": {
         "position": [
          0.0,
-         1.72,
+         1.66,
          -0.51
         ],
         "orientation": [
@@ -1201,8 +1203,8 @@
        }
       },
       "Size": [
+       0.18,
        0.22,
-       0.34,
        0.15
       ],
       "Color": [
@@ -1226,8 +1228,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.0,
-         1.77,
+         -0.0,
+         1.68,
          -0.38
         ],
         "orientation": [
@@ -1250,8 +1252,8 @@
        }
       },
       "Size": [
-       0.16,
-       0.4,
+       0.12,
+       0.22,
        0.15
       ],
       "Color": [
@@ -2217,6 +2219,823 @@
       }
      },
      "name": "CleanACat_Cat_Prism_EarR"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Prism/11"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Prism_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.64,
+           -0.7988
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.9703,
+            0.0,
+            0.2419
+           ],
+           [
+            -0.2419,
+            0.0,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0489,
+         0.287,
+         0.287
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.8872,
+           0.0,
+           0.2928
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.9703,
+            -0.2419
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.2419,
+            0.9703
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Prism/11",
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7412,
+           -0.824
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.9703,
+            0.0,
+            0.2419
+           ],
+           [
+            -0.2419,
+            0.0,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0489,
+         0.2478,
+         0.2478
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.8425,
+           -0.8492
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.9703,
+            0.0,
+            0.2419
+           ],
+           [
+            -0.2419,
+            0.0,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0489,
+         0.2087,
+         0.2087
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.9437,
+           -0.8745
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            0.9703,
+            0.0,
+            0.2419
+           ],
+           [
+            -0.2419,
+            0.0,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0489,
+         0.1696,
+         0.1696
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Cat_Prism/12"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             1.6737,
+             -0.8072
+            ],
+            "orientation": [
+             [
+              0.0,
+              -1.0,
+              0.0
+             ],
+             [
+              0.9703,
+              0.0,
+              0.2419
+             ],
+             [
+              -0.2419,
+              0.0,
+              0.9703
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.2174,
+           0.2228,
+           0.2228
+          ],
+          "Color": [
+           1.0,
+           1.0,
+           1.0
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             -0.1087,
+             0.0,
+             0.0
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.9703,
+              -0.2419
+             ],
+             [
+              -1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.2419,
+              0.9703
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Cat_Prism/12",
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             1.8847,
+             -0.8598
+            ],
+            "orientation": [
+             [
+              0.0,
+              -1.0,
+              0.0
+             ],
+             [
+              0.9703,
+              0.0,
+              0.2419
+             ],
+             [
+              -0.2419,
+              0.0,
+              0.9703
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.2174,
+           0.1467,
+           0.1467
+          ],
+          "Color": [
+           1.0,
+           1.0,
+           1.0
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             2.0956,
+             -0.9123
+            ],
+            "orientation": [
+             [
+              0.0,
+              -1.0,
+              0.0
+             ],
+             [
+              0.9703,
+              0.0,
+              0.2419
+             ],
+             [
+              -0.2419,
+              0.0,
+              0.9703
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.2174,
+           0.0707,
+           0.0707
+          ],
+          "Color": [
+           1.0,
+           1.0,
+           1.0
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.2393,
+             1.6094,
+             -0.7657
+            ],
+            "orientation": [
+             [
+              0.4649,
+              -0.8829,
+              0.0653
+             ],
+             [
+              0.8744,
+              0.4695,
+              0.1229
+             ],
+             [
+              -0.1392,
+              0.0,
+              0.9903
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0942,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.5608,
+           0.8275,
+           0.9961
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.2831,
+             1.6918,
+             -0.7788
+            ],
+            "orientation": [
+             [
+              0.4649,
+              -0.8829,
+              0.0653
+             ],
+             [
+              0.8744,
+              0.4695,
+              0.1229
+             ],
+             [
+              -0.1392,
+              0.0,
+              0.9903
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0942,
+           0.087,
+           0.087
+          ],
+          "Color": [
+           0.5608,
+           0.8275,
+           0.9961
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.3269,
+             1.7742,
+             -0.7919
+            ],
+            "orientation": [
+             [
+              0.4649,
+              -0.8829,
+              0.0653
+             ],
+             [
+              0.8744,
+              0.4695,
+              0.1229
+             ],
+             [
+              -0.1392,
+              0.0,
+              0.9903
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0942,
+           0.0435,
+           0.0435
+          ],
+          "Color": [
+           0.5608,
+           0.8275,
+           0.9961
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.2393,
+             1.6094,
+             -0.7657
+            ],
+            "orientation": [
+             [
+              -0.4649,
+              -0.8829,
+              -0.0653
+             ],
+             [
+              0.8744,
+              -0.4695,
+              0.1229
+             ],
+             [
+              -0.1392,
+              0.0,
+              0.9903
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0942,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           1.0,
+           0.4196,
+           0.5059
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.2831,
+             1.6918,
+             -0.7788
+            ],
+            "orientation": [
+             [
+              -0.4649,
+              -0.8829,
+              -0.0653
+             ],
+             [
+              0.8744,
+              -0.4695,
+              0.1229
+             ],
+             [
+              -0.1392,
+              0.0,
+              0.9903
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0942,
+           0.087,
+           0.087
+          ],
+          "Color": [
+           1.0,
+           0.4196,
+           0.5059
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Prism_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.3269,
+             1.7742,
+             -0.7919
+            ],
+            "orientation": [
+             [
+              -0.4649,
+              -0.8829,
+              -0.0653
+             ],
+             [
+              0.8744,
+              -0.4695,
+              0.1229
+             ],
+             [
+              -0.1392,
+              0.0,
+              0.9903
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0942,
+           0.0435,
+           0.0435
+          ],
+          "Color": [
+           1.0,
+           0.4196,
+           0.5059
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Cylinder"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           1.5683,
+           -0.7809
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Cat_Prism_Glow"
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         0.85,
+         -0.3
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Prism_Prop"
     }
    ],
    "properties": {
@@ -3313,6 +4132,1700 @@
     }
    },
    "name": "CleanACat_Cat_Prism_LegB2"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Prism/13"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Prism_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.53,
+         1.02,
+         0.231
+        ],
+        "orientation": [
+         [
+          0.9563,
+          -0.0558,
+          0.287
+         ],
+         [
+          0.0,
+          0.9816,
+          0.1908
+         ],
+         [
+          -0.2924,
+          -0.1825,
+          0.9387
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.37,
+       0.37,
+       0.37
+      ],
+      "Color": [
+       1.0,
+       1.0,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         -0.4393,
+         -0.9295,
+         -0.5636
+        ],
+        "orientation": [
+         [
+          0.9563,
+          0.0,
+          -0.2924
+         ],
+         [
+          -0.0558,
+          0.9816,
+          -0.1825
+         ],
+         [
+          0.287,
+          0.1908,
+          0.9387
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Prism/13",
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Prism_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.63,
+         0.96,
+         0.231
+        ],
+        "orientation": [
+         [
+          0.9563,
+          -0.0558,
+          0.287
+         ],
+         [
+          0.0,
+          0.9816,
+          0.1908
+         ],
+         [
+          -0.2924,
+          -0.1825,
+          0.9387
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.28,
+       0.28,
+       0.28
+      ],
+      "Color": [
+       1.0,
+       1.0,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Prism_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.38,
+         0.95,
+         0.231
+        ],
+        "orientation": [
+         [
+          0.9563,
+          -0.0558,
+          0.287
+         ],
+         [
+          0.0,
+          0.9816,
+          0.1908
+         ],
+         [
+          -0.2924,
+          -0.1825,
+          0.9387
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3,
+       0.3,
+       0.3
+      ],
+      "Color": [
+       1.0,
+       1.0,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Prism_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.63,
+         0.96,
+         0.231
+        ],
+        "orientation": [
+         [
+          0.9563,
+          -0.0558,
+          0.287
+         ],
+         [
+          0.0,
+          0.9816,
+          0.1908
+         ],
+         [
+          -0.2924,
+          -0.1825,
+          0.9387
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.28,
+       0.28,
+       0.28
+      ],
+      "Color": [
+       1.0,
+       1.0,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Prism_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.53,
+         1.02,
+         0.231
+        ],
+        "orientation": [
+         [
+          0.9563,
+          -0.0558,
+          0.287
+         ],
+         [
+          0.0,
+          0.9816,
+          0.1908
+         ],
+         [
+          -0.2924,
+          -0.1825,
+          0.9387
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.37,
+       0.37,
+       0.37
+      ],
+      "Color": [
+       1.0,
+       1.0,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Prism_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.38,
+         0.95,
+         0.231
+        ],
+        "orientation": [
+         [
+          0.9563,
+          -0.0558,
+          0.287
+         ],
+         [
+          0.0,
+          0.9816,
+          0.1908
+         ],
+         [
+          -0.2924,
+          -0.1825,
+          0.9387
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3,
+       0.3,
+       0.3
+      ],
+      "Color": [
+       1.0,
+       1.0,
+       1.0
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Prism/14"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.6251,
+           1.1226,
+           0.211
+          ],
+          "orientation": [
+           [
+            -0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.07,
+         0.3956
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.589,
+           -0.1,
+           0.2269
+          ],
+          "orientation": [
+           [
+            -0.9739,
+            0.2269,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            0.2269,
+            0.9739,
+            0.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Prism/14",
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4576,
+           1.4563,
+           0.211
+          ],
+          "orientation": [
+           [
+            -0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.07,
+         0.3737
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1675,
+           1.6489,
+           0.211
+          ],
+          "orientation": [
+           [
+            -0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.07,
+         0.3505
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1675,
+           1.6489,
+           0.211
+          ],
+          "orientation": [
+           [
+            0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            -0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.07,
+         0.3505
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4576,
+           1.4563,
+           0.211
+          ],
+          "orientation": [
+           [
+            0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            -0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.07,
+         0.3737
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.6251,
+           1.1226,
+           0.211
+          ],
+          "orientation": [
+           [
+            0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            -0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.07,
+         0.3956
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5505,
+           1.0996,
+           0.223
+          ],
+          "orientation": [
+           [
+            -0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.076,
+         0.3483
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.403,
+           1.3934,
+           0.241
+          ],
+          "orientation": [
+           [
+            -0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.04,
+         0.3291
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1475,
+           1.563,
+           0.223
+          ],
+          "orientation": [
+           [
+            -0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.076,
+         0.3087
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1475,
+           1.563,
+           0.223
+          ],
+          "orientation": [
+           [
+            0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            -0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.076,
+         0.3087
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.403,
+           1.3934,
+           0.241
+          ],
+          "orientation": [
+           [
+            0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            -0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.04,
+         0.3291
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.5505,
+           1.0996,
+           0.223
+          ],
+          "orientation": [
+           [
+            0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            -0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.076,
+         0.3483
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4758,
+           1.0766,
+           0.235
+          ],
+          "orientation": [
+           [
+            -0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.082,
+         0.3011
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3483,
+           1.3306,
+           0.241
+          ],
+          "orientation": [
+           [
+            -0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.1,
+         0.2845
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1275,
+           1.4772,
+           0.235
+          ],
+          "orientation": [
+           [
+            -0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.082,
+         0.2668
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1275,
+           1.4772,
+           0.235
+          ],
+          "orientation": [
+           [
+            0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            -0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.082,
+         0.2668
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3483,
+           1.3306,
+           0.241
+          ],
+          "orientation": [
+           [
+            0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            -0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.1,
+         0.2845
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4758,
+           1.0766,
+           0.235
+          ],
+          "orientation": [
+           [
+            0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            -0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.082,
+         0.3011
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4012,
+           1.0536,
+           0.247
+          ],
+          "orientation": [
+           [
+            -0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.088,
+         0.2539
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2937,
+           1.2677,
+           0.247
+          ],
+          "orientation": [
+           [
+            -0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.088,
+         0.2399
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1075,
+           1.3914,
+           0.247
+          ],
+          "orientation": [
+           [
+            -0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.088,
+         0.225
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1075,
+           1.3914,
+           0.247
+          ],
+          "orientation": [
+           [
+            0.2945,
+            0.0,
+            0.9557
+           ],
+           [
+            0.9557,
+            0.0,
+            -0.2945
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.088,
+         0.225
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2937,
+           1.2677,
+           0.247
+          ],
+          "orientation": [
+           [
+            0.7546,
+            0.0,
+            0.6562
+           ],
+           [
+            0.6562,
+            0.0,
+            -0.7546
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.088,
+         0.2399
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Prism_Rainbow_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4012,
+           1.0536,
+           0.247
+          ],
+          "orientation": [
+           [
+            0.9739,
+            0.0,
+            0.2269
+           ],
+           [
+            0.2269,
+            0.0,
+            -0.9739
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.088,
+         0.2539
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.21,
+         0.111
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Prism_Rainbow_Glow"
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Prism_Prop2"
   }
  ],
  "properties": {

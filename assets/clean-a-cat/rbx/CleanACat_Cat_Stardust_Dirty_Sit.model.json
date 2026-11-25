@@ -9,6 +9,8 @@
   "Rarity": "Special",
   "Cat": "Stardust",
   "Special": true,
+  "PropSlot": "Head",
+  "PropSlot2": "Back",
   "Dirty": true,
   "MudCount": 20,
   "TangleCount": 6,
@@ -1080,7 +1082,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.608,
+           1.083,
            0.0115
           ],
           "orientation": [
@@ -1111,19 +1113,19 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0,
-           0.3515,
-           -0.188
+           -0.4085,
+           0.3325,
+           -0.2165
           ],
           "orientation": [
            [
-            1.0,
-            0.0,
+            0.5,
+            -0.866,
             0.0
            ],
            [
-            0.0,
-            1.0,
+            0.866,
+            0.5,
             0.0
            ],
            [
@@ -2931,7 +2933,7 @@
           "position": [
            -0.2838,
            1.653,
-           -0.2895
+           -0.2736
           ],
           "orientation": [
            [
@@ -2955,7 +2957,7 @@
         "Size": [
          0.1026,
          0.1083,
-         0.0604
+         0.0285
         ],
         "Color": [
          0.8784,
@@ -3193,7 +3195,7 @@
           "position": [
            0.2838,
            1.653,
-           -0.2895
+           -0.2736
           ],
           "orientation": [
            [
@@ -3217,7 +3219,7 @@
         "Size": [
          0.1026,
          0.1083,
-         0.0604
+         0.0285
         ],
         "Color": [
          0.8784,
@@ -5894,6 +5896,966 @@
       }
      },
      "name": "CleanACat_Cat_Stardust_Dirty_Sit_Fluff03"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Stardust_Dirty_Sit/53"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6245,
+           -0.342
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.57,
+         0.0855,
+         0.0855
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           -0.6555,
+           0.247
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Stardust_Dirty_Sit/53",
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7575,
+           -0.342
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1045,
+         0.247,
+         0.0665
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3848,
+           1.7812,
+           -0.3183
+          ],
+          "orientation": [
+           [
+            -0.7071,
+            -0.0856,
+            0.7019
+           ],
+           [
+            0.7071,
+            -0.0856,
+            0.7019
+           ],
+           [
+            0.0,
+            0.9927,
+            0.121
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0522,
+         0.0522,
+         0.3925
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3848,
+           1.7812,
+           -0.3183
+          ],
+          "orientation": [
+           [
+            -0.7071,
+            0.0856,
+            -0.7019
+           ],
+           [
+            -0.7071,
+            -0.0856,
+            0.7019
+           ],
+           [
+            0.0,
+            0.9927,
+            0.121
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0522,
+         0.0522,
+         0.3925
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Cat_Stardust_Dirty_Sit/54"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.0616,
+             2.1423,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.0,
+              1.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              -1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0855,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             0.0,
+             -0.4512,
+             0.0616
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.0,
+              -1.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Cat_Stardust_Dirty_Sit/54",
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0616,
+             2.1423,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.0,
+              -1.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0842,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.121,
+             2.0991,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.9511,
+              0.309
+             ],
+             [
+              0.0,
+              0.309,
+              -0.9511
+             ],
+             [
+              -1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0829,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1591,
+             1.9819,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.9511,
+              -0.309
+             ],
+             [
+              0.0,
+              0.309,
+              0.9511
+             ],
+             [
+              1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0817,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1364,
+             1.9121,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.5878,
+              -0.809
+             ],
+             [
+              0.0,
+              -0.809,
+              -0.5878
+             ],
+             [
+              -1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0804,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0367,
+             1.8397,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              0.5878,
+              0.809
+             ],
+             [
+              0.0,
+              -0.809,
+              0.5878
+             ],
+             [
+              1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1265,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.0367,
+             1.8397,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              -0.5878,
+              -0.809
+             ],
+             [
+              0.0,
+              -0.809,
+              0.5878
+             ],
+             [
+              -1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1264,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1364,
+             1.9121,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              -0.5878,
+              0.809
+             ],
+             [
+              0.0,
+              -0.809,
+              -0.5878
+             ],
+             [
+              1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0765,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1591,
+             1.9819,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              -0.9511,
+              0.309
+             ],
+             [
+              0.0,
+              0.309,
+              0.9511
+             ],
+             [
+              -1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0752,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "WedgePart",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.121,
+             2.0991,
+             -0.342
+            ],
+            "orientation": [
+             [
+              0.0,
+              -0.9511,
+              -0.309
+             ],
+             [
+              0.0,
+              0.309,
+              -0.9511
+             ],
+             [
+              1.0,
+              0.0,
+              0.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.074,
+           0.2945,
+           0.1232
+          ],
+          "Color": [
+           1.0,
+           0.9569,
+           0.6902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.5415,
+             1.9665,
+             -0.2945
+            ],
+            "orientation": [
+             [
+              0.7071,
+              -0.7071,
+              0.0
+             ],
+             [
+              0.7071,
+              0.7071,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1615,
+           0.1615,
+           0.076
+          ],
+          "Color": [
+           0.9686,
+           0.6588,
+           0.7843
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.5415,
+             1.9665,
+             -0.2945
+            ],
+            "orientation": [
+             [
+              0.7071,
+              -0.7071,
+              0.0
+             ],
+             [
+              0.7071,
+              0.7071,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1615,
+           0.1615,
+           0.076
+          ],
+          "Color": [
+           0.6588,
+           0.8471,
+           0.9412
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           1.691,
+           -0.342
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Glow"
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         0.969,
+         -0.095
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop"
     }
    ],
    "properties": {
@@ -6293,6 +7255,590 @@
       }
      },
      "name": "CleanACat_Cat_Stardust_Dirty_Sit_Fluff09"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Stardust_Dirty_Sit/57"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5964,
+           0.2993,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.076,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.0861,
+           -0.1948,
+           -0.0006
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Stardust_Dirty_Sit/57",
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5174,
+           0.2993,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0749,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4788,
+           0.2712,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.9511,
+            0.309
+           ],
+           [
+            0.0,
+            0.309,
+            -0.9511
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0737,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4543,
+           0.196,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.9511,
+            -0.309
+           ],
+           [
+            0.0,
+            0.309,
+            0.9511
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0726,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4691,
+           0.1506,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.5878,
+            -0.809
+           ],
+           [
+            0.0,
+            -0.809,
+            -0.5878
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0714,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.533,
+           0.1042,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.5878,
+            0.809
+           ],
+           [
+            0.0,
+            -0.809,
+            0.5878
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0703,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5808,
+           0.1042,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.5878,
+            -0.809
+           ],
+           [
+            0.0,
+            -0.809,
+            0.5878
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0692,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.6447,
+           0.1506,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.5878,
+            0.809
+           ],
+           [
+            0.0,
+            -0.809,
+            -0.5878
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.068,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.6595,
+           0.196,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.9511,
+            0.309
+           ],
+           [
+            0.0,
+            0.309,
+            0.9511
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0669,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.635,
+           0.2712,
+           -0.0956
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.9511,
+            -0.309
+           ],
+           [
+            0.0,
+            0.309,
+            -0.9511
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0657,
+         0.19,
+         0.079
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Tail"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.597,
+         0.1045,
+         -0.0095
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow"
     }
    ],
    "properties": {
@@ -12097,6 +13643,1070 @@
     }
    },
    "name": "CleanACat_Cat_Stardust_Dirty_Sit_Fluff10"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Stardust_Dirty_Sit/55"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.9595,
+         0.3277
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.323,
+       0.095,
+       0.266
+      ],
+      "Color": [
+       0.5569,
+       0.4863,
+       0.9412
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         -0.9595,
+         -0.3277
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Stardust_Dirty_Sit/55",
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.1495,
+         0.3657
+        ],
+        "orientation": [
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          -0.229,
+          0.9734
+         ],
+         [
+          0.0,
+          0.9734,
+          0.229
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.076,
+       0.076,
+       0.3318
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1805,
+         1.2873,
+         0.7125
+        ],
+        "orientation": [
+         [
+          0.9565,
+          0.0689,
+          0.2835
+         ],
+         [
+          0.0,
+          0.9717,
+          -0.2363
+         ],
+         [
+          -0.2918,
+          0.226,
+          0.9294
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1045,
+       0.0475,
+       0.6031
+      ],
+      "Color": [
+       0.9686,
+       0.6588,
+       0.7843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.2588,
+         0.76
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9567,
+          -0.2912
+         ],
+         [
+          0.0,
+          0.2912,
+          0.9567
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1045,
+       0.0475,
+       0.6852
+      ],
+      "Color": [
+       0.6588,
+       0.8471,
+       0.9412
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1805,
+         1.2873,
+         0.7125
+        ],
+        "orientation": [
+         [
+          0.9565,
+          -0.0689,
+          -0.2835
+         ],
+         [
+          0.0,
+          0.9717,
+          -0.2363
+         ],
+         [
+          0.2918,
+          0.226,
+          0.9294
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1045,
+       0.0475,
+       0.6031
+      ],
+      "Color": [
+       0.5569,
+       0.4863,
+       0.9412
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Stardust_Dirty_Sit/56"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.0559,
+           1.5399,
+           0.4525
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            1.0
+           ],
+           [
+            0.342,
+            0.9397,
+            0.0
+           ],
+           [
+            -0.9397,
+            0.342,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.076,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.0561,
+           -0.3243,
+           0.0559
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.342,
+            -0.9397
+           ],
+           [
+            0.0,
+            0.9397,
+            0.342
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Stardust_Dirty_Sit/56",
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0559,
+           1.5399,
+           0.4525
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            -0.342,
+            0.9397,
+            0.0
+           ],
+           [
+            0.9397,
+            0.342,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0749,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1183,
+           1.4973,
+           0.437
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.9511,
+            0.309
+           ],
+           [
+            0.342,
+            0.2904,
+            -0.8937
+           ],
+           [
+            -0.9397,
+            0.1057,
+            -0.3253
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0737,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1528,
+           1.3974,
+           0.4006
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.9511,
+            -0.309
+           ],
+           [
+            -0.342,
+            0.2904,
+            0.8937
+           ],
+           [
+            0.9397,
+            0.1057,
+            0.3253
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0726,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.129,
+           1.3285,
+           0.3756
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.5878,
+            -0.809
+           ],
+           [
+            0.342,
+            -0.7602,
+            -0.5523
+           ],
+           [
+            -0.9397,
+            -0.2767,
+            -0.201
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0714,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0385,
+           1.2668,
+           0.3531
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.5878,
+            0.809
+           ],
+           [
+            -0.342,
+            -0.7602,
+            0.5523
+           ],
+           [
+            0.9397,
+            -0.2767,
+            0.201
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0703,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.0385,
+           1.2668,
+           0.3531
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.5878,
+            -0.809
+           ],
+           [
+            0.342,
+            -0.7602,
+            0.5523
+           ],
+           [
+            -0.9397,
+            -0.2767,
+            0.201
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0692,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.129,
+           1.3285,
+           0.3756
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.5878,
+            0.809
+           ],
+           [
+            -0.342,
+            -0.7602,
+            -0.5523
+           ],
+           [
+            0.9397,
+            -0.2767,
+            -0.201
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.068,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1528,
+           1.3974,
+           0.4006
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.9511,
+            0.309
+           ],
+           [
+            0.342,
+            0.2904,
+            0.8937
+           ],
+           [
+            -0.9397,
+            0.1057,
+            0.3253
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0669,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "WedgePart",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1183,
+           1.4973,
+           0.437
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.9511,
+            -0.309
+           ],
+           [
+            -0.342,
+            0.2904,
+            -0.8937
+           ],
+           [
+            0.9397,
+            0.1057,
+            -0.3253
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0657,
+         0.285,
+         0.1118
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.266,
+           1.216,
+           0.9928
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.7071,
+            0.7071
+           ],
+           [
+            0.0,
+            -0.7071,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1425,
+         0.1425,
+         0.076
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.159,
+           1.0877
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.7071,
+            0.7071
+           ],
+           [
+            0.0,
+            -0.7071,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1425,
+         0.1425,
+         0.076
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.266,
+           1.216,
+           0.9928
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.7071,
+            0.7071
+           ],
+           [
+            0.0,
+            -0.7071,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1425,
+         0.1425,
+         0.076
+        ],
+        "Color": [
+         1.0,
+         0.9569,
+         0.6902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.216,
+         0.3943
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Stardust_Dirty_Sit_Comet_Glow"
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Stardust_Dirty_Sit_Prop2"
   }
  ],
  "properties": {

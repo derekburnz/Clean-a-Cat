@@ -93,8 +93,31 @@ def cat_rbx_extras(name):
         attributes["Mascot"] = True
     if spec["rarity"] == "Special":                   # a special customer's cat (cats.SPECIAL_CATS): not in the Index
         attributes["Special"] = True
-    return {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", Matrix.Translation(bow))],
-            "attributes": attributes}
+    bow = Matrix.Translation(bow)
+    slot = props.slot(cat)
+    if slot in ("Head", "Face") and body in cats.BUILT_BODIES:   # a head piece takes the crown (#486): Carry goes
+        top = props.head_top(cat, spec, body, cats.dims(spec, body))   # above it, the bow on the head's front corner
+        carry.z = max(carry.z, joints["Head"][2] + (top + 0.03) * k)
+        at, turn = props.bow_corner(spec, body)
+        bow = Matrix.Translation(Vector(joints["Head"]) + Vector(at) * k) @ turn.to_4x4()
+    extras = {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", bow)],
+              "attributes": attributes}
+    if slot:                                          # built-in pieces (props.py): their slots, what each part follows
+        rides = props.follows(slot)
+        attributes["PropSlot"] = slot
+        extras["part_attributes"] = {"_Prop": {"Follows": rides}, "_Prop_Glass": {"Follows": rides}}
+        extras["nest"] = {"_Prop": "_Head", "_Prop_Glass": "_Head"} if rides == "Head" else {}
+        slot2 = props.slot2(cat)
+        if slot2:
+            attributes["PropSlot2"] = slot2
+            for sfx in ("_Prop2", "_Prop2_Glass"):
+                extras["part_attributes"][sfx] = {"Follows": props.follows(slot2)}
+                if props.follows(slot2) == "Head":
+                    extras["nest"][sfx] = "_Head"
+        for piece, host in props.PIECES.get(cat, {}).items():   # lit and tail pieces: inside their host's Model
+            extras["nest"]["_" + piece] = "_" + host
+            extras["part_attributes"]["_" + piece] = {"Follows": props.piece_follows(cat, piece)}
+    return extras
 
 
 def parse_args():
