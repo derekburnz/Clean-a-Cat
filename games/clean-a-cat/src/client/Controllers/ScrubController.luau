@@ -1601,6 +1601,10 @@ local function onPhotoPaid(rawId: unknown, _coins: unknown, _total: unknown, raw
 	end
 	nextCatThread = task.delay(LEAVE_SECONDS, function()
 		if visit ~= v or v.cat ~= cat then
+			-- gone early: let go of the thread so leaving() reads false (Review-QA's nit on #399)
+			if nextCatThread == coroutine.running() then
+				nextCatThread = nil
+			end
 			return
 		end
 		-- A stray hops into the window; a customer's cat goes home. The prototype's cat just waits.
