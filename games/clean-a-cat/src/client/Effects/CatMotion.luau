@@ -91,27 +91,29 @@ local function eyeParts(eye: PVInstance): { EyePart }
 end
 
 local MOOD_ATTRIBUTE = "HeartFill"
-local MOOD_REACH = 4 -- the cat, its carrier, the customer, and one more
+
+local function parentOf(instance: Instance): Instance?
+	local parent = instance.Parent
+	return if parent == nil or parent:IsA("Workspace") then nil else parent
+end
+
+local function hasFill(instance: Instance): boolean
+	return type(instance:GetAttribute(MOOD_ATTRIBUTE)) == "number"
+end
 
 -- The cat or nearest ancestor (a few steps up) that carries HeartFill, or nil.
 local function moodSource(model: Model): Instance?
-	local at: Instance? = model
-	for _ = 0, MOOD_REACH do
-		local here = at
-		if here == nil or here:IsA("Workspace") then
-			return nil
-		end
-		if type(here:GetAttribute(MOOD_ATTRIBUTE)) == "number" then
-			return here
-		end
-		at = here.Parent
-	end
-	return nil
+	return CatPose.moodHolder(model :: Instance, parentOf, hasFill)
 end
 
 local function moodOf(rig: Rig, now: number): number?
 	local from = rig.moodFrom
-	if from == nil or from.Parent == nil then
+	-- a cat carried away from its customer (to the tub) drops the customer's mood at once
+	if from and not CatPose.within(rig.model :: Instance, from, parentOf) then
+		from = nil
+		rig.moodFrom = nil
+	end
+	if from == nil then
 		-- Gameplay may set the attribute after the cat arrives, so look again, once a second
 		if now < rig.moodLookAt then
 			return nil

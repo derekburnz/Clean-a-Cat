@@ -235,6 +235,40 @@ function CatPose.mood(fill: number): (number, number, number)
 	return happy, grumpy, gone
 end
 
+-- Where a cat reads its mood from: `from` (the cat) or the nearest of its first MOOD_REACH ancestors for which
+-- `hasFill` is true, or nil. `parentOf` returns nil past the top (Workspace). Generic so the specs can use tables.
+CatPose.MOOD_REACH = 4 -- the cat, its carrier, the customer, and one more
+
+function CatPose.moodHolder<T>(from: T, parentOf: (T) -> T?, hasFill: (T) -> boolean): T?
+	local at: T? = from
+	for _ = 0, CatPose.MOOD_REACH do
+		if at == nil then
+			return nil
+		end
+		if hasFill(at) then
+			return at
+		end
+		at = parentOf(at)
+	end
+	return nil
+end
+
+-- Is `holder` still `node` or one of its first MOOD_REACH ancestors? False once the cat has left it, as when the
+-- player carries the customer's cat to the tub (Review-QA on #536): the cat must not keep the customer's mood.
+function CatPose.within<T>(node: T, holder: T, parentOf: (T) -> T?): boolean
+	local at: T? = node
+	for _ = 0, CatPose.MOOD_REACH do
+		if at == nil then
+			return false
+		end
+		if at == holder then
+			return true
+		end
+		at = parentOf(at)
+	end
+	return false
+end
+
 -- Adds the mood for a heart bar at `fill` on top of a sampled pose. Call after CatPose.sample.
 function CatPose.applyMood(
 	pose: Pose,

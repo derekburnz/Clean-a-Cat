@@ -180,6 +180,46 @@ return function()
 				expect(gone.tailPitch > 0).to.equal(true)
 			end
 		)
+		it(
+			"reads the mood from the cat or its customer, and lets go once the cat is carried away",
+			function()
+				-- plain tables stand in for the instances: customer > carrier > cat
+				local customer = { parent = nil :: any, fill = true }
+				local carrier = { parent = customer, fill = false }
+				local cat = { parent = carrier, fill = false }
+				local function parentOf(n: any): any
+					return n.parent
+				end
+				local function hasFill(n: any): boolean
+					return n.fill
+				end
+				expect(CatPose.moodHolder(cat, parentOf, hasFill)).to.equal(customer)
+				expect(CatPose.within(cat, customer, parentOf)).to.equal(true)
+				-- the player lifts the cat out and carries it to the tub
+				local tub = { parent = nil :: any, fill = false }
+				cat.parent = tub
+				expect(CatPose.within(cat, customer, parentOf)).to.equal(false)
+				expect(CatPose.moodHolder(cat, parentOf, hasFill)).to.equal(nil)
+				-- a cat that carries the attribute itself reads its own
+				cat.fill = true
+				expect(CatPose.moodHolder(cat, parentOf, hasFill)).to.equal(cat)
+				expect(CatPose.within(cat, cat, parentOf)).to.equal(true)
+			end
+		)
+		it("looks only a few steps up", function()
+			local top = { parent = nil :: any, fill = true }
+			local node: any = top
+			for _ = 1, CatPose.MOOD_REACH + 1 do
+				node = { parent = node, fill = false }
+			end
+			local function parentOf(n: any): any
+				return n.parent
+			end
+			expect(CatPose.moodHolder(node, parentOf, function(n: any)
+				return n.fill
+			end)).to.equal(nil)
+			expect(CatPose.within(node, top, parentOf)).to.equal(false)
+		end)
 		it("lashes the grumpy tail only with motion on", function()
 			local state = CatPose.newState(0, 0)
 			local moving, still = false, true
