@@ -148,10 +148,15 @@ local function checkTrail()
 	end
 end
 
--- True while a cat is in the tub (from landing to the photo): no bubble then.
+-- True while a cat is in the tub (from landing until it leaves after the photo): no bubble then. The photo sets the
+-- stage to "done" a few seconds before the recap card comes; without the leaving check, "Let's open the spa!" showed
+-- at Suds's photo, 1.4 s before and then under his "Meet Suds!" card (Sync-Agent's run on ff0803d).
 local function catInTub(): boolean
 	local stage = if scrub then scrub.stage() else nil
-	return stage ~= nil and stage ~= "waiting" and stage ~= "done"
+	if stage == "done" then
+		return scrub ~= nil and scrub.leaving()
+	end
+	return stage ~= nil and stage ~= "waiting"
 end
 
 -- The bubble due now, or nil: the switch on, the save's list loaded, and nothing else on screen or in the tub.
