@@ -655,7 +655,6 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 			`+{coins} coins, +{pay.stars} {if pay.stars == 1 then "star" else "stars"}`
 		)
 	end
-	Telemetry.onboarding(player, "first_return")
 end
 
 local function onScrubbed(player: Player, rawId: unknown, rawSeq: unknown)

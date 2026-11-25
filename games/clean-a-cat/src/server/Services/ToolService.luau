@@ -59,7 +59,7 @@ local function onBuy(player: Player, rawId: unknown)
 	showOwned(player, save.tools)
 	NetService.notice(player, `{ToolRules.TOOLS[id].name} is yours`)
 	Telemetry.economy(player, "coins", "sink", spent, save.coins, "Shop", id)
-	Telemetry.onboarding(player, "upgrade_1")
+	Telemetry.onboarding(player, "first_upgrade")
 end
 
 function ToolService.Init(_services: { [string]: any }) end
