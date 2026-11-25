@@ -41,6 +41,7 @@ import common  # noqa: E402
 import contact_sheet  # noqa: E402
 import customers  # noqa: E402
 import dirt  # noqa: E402
+import foam_puffs  # noqa: E402
 import stations  # noqa: E402
 import tools  # noqa: E402
 import vip  # noqa: E402
@@ -67,7 +68,7 @@ def all_assets():
     for name, (fn, budget) in dirt.ASSETS.items():
         out[name] = (fn, budget, "dirt")
     for module in (stations, tools, props, plot, spa_props, customers, build_props, vip, street, rewards,
-                   burrs, busy_spa, opening, loaf, backdrop, boards):
+                   burrs, busy_spa, opening, loaf, backdrop, boards, foam_puffs):
         for name, (fn, budget) in module.ASSETS.items():
             out[name] = (fn, budget, module.__name__)
     return out
