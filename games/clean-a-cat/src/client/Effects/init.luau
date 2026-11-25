@@ -11,7 +11,6 @@
 --   Effects.stopStream(preset)
 --   Effects.burst(preset, position, color?)         one burst at a point, optionally tinted
 --   Effects.glow(model, seconds)                    a soft outline glow that fades out, then is destroyed
---   Effects.newEmitter(preset)                     a fresh emitter from a preset, for one-per-object effects
 --   Effects.popIn(model, anchor, seconds)           grows a small client-only model from nothing (Back Out), holding
 --                                                   `anchor` (an Attachment in it) still, e.g. a bow on its BowSlot
 local RunService = game:GetService("RunService")
@@ -110,19 +109,6 @@ function Effects.start()
 	started = true
 	tier =
 		Tier.pick(UserInputService.TouchEnabled, UserInputService.KeyboardEnabled, qualityLevel())
-end
-
--- A fresh, disabled emitter set up from a preset, for effects that need one per object (stink wisps on each dirty
--- cat). The caller parents it, sets Rate and destroys it. Nil before start or for an unknown preset.
-function Effects.newEmitter(name: string): (ParticleEmitter?, Emitter?)
-	if not started then
-		return nil, nil
-	end
-	local preset = PresetData.emitters[tier][name]
-	if preset == nil then
-		return nil, nil
-	end
-	return newEmitter(name, preset), preset
 end
 
 function Effects.reducedMotion(): boolean

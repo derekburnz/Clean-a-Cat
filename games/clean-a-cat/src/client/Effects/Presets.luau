@@ -187,29 +187,6 @@ local function air(rate: number): Emitter
 	}
 end
 
-local STINK = Color3.fromRGB(118, 178, 66)
-local STINK_PALE = Color3.fromRGB(196, 224, 150)
-
--- Comic stink wisps over a dirty cat (#122): soft green puffs that drift up slowly and fade. Gentle, not gross.
--- Phones get bigger, more solid puffs: at the default camera a cat is only about 40 px tall there (Sync-Agent's
--- iPhone 14 capture, 2026-11-24), and the first size read only when zoomed in.
-local function stink(rate: number, size: number, opacity: number): Emitter
-	return {
-		texture = "",
-		color = { STINK, STINK_PALE },
-		size = { size, size * 1.85 },
-		transparency = { 1 - opacity, 1 },
-		lifetime = { 1.1, 1.4 },
-		speed = { 0.5, 0.8 },
-		spread = 18,
-		acceleration = Vector3.new(0, 0.25, 0),
-		drag = 0.5,
-		lightEmission = 0,
-		maxRate = rate,
-		burst = 0,
-	}
-end
-
 local Presets: { [Tier]: { [string]: Emitter } } = {
 	low = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 8),
@@ -221,7 +198,6 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		furPuff = fur(4),
 		bowHearts = hearts(3),
 		dryerAir = air(6),
-		stinkWisps = stink(4, 0.6, 0.85),
 		roadDust = dust(5),
 	},
 	high = {
@@ -234,7 +210,6 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		furPuff = fur(6),
 		bowHearts = hearts(3),
 		dryerAir = air(12),
-		stinkWisps = stink(5, 0.4, 0.75),
 		roadDust = dust(9),
 	},
 }
