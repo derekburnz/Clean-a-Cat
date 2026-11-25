@@ -4,7 +4,9 @@
 -- - loaded: the game has loaded and the character can move.
 -- - first_move: the session's first input (a key, a tap, a click or a gamepad button). The onboarding funnel logs
 --   it once per save and the play time funnel once per session (its first mark, moved).
--- - window_opened: each window UI.open shows; the server keeps those of the first session's first 5 minutes.
+-- - window_opened: the first time each window shows in the session's first 5 minutes (TelemetryRules.WINDOW_SECONDS),
+--   so window reports never crowd the funnel steps out of ReportStep's rate limit (Review-QA on #437). The server
+--   keeps only the first session's.
 -- first_scrub is reported by ScrubController, the opening's hints by OpeningController.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -45,9 +47,15 @@ function FunnelController.Init(_controllers: { [string]: any }) end
 
 function FunnelController.Start()
 	local windowNames = TelemetryRules.CLIENT_EVENTS.window_opened
-	UI.onOpened(function(name: string)
-		Remotes.event("ReportStep")
-			:FireServer("window_opened", if table.find(windowNames, name) then name else "other")
+	local startedAt = os.clock()
+	local sent: { [string]: boolean } = {}
+	UI.onOpened(function(opened: string)
+		local name = if table.find(windowNames, opened) then opened else "other"
+		if sent[name] or os.clock() - startedAt > TelemetryRules.WINDOW_SECONDS then
+			return
+		end
+		sent[name] = true
+		Remotes.event("ReportStep"):FireServer("window_opened", name)
 	end)
 	if not game:IsLoaded() then
 		game.Loaded:Wait()
