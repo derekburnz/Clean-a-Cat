@@ -8,6 +8,10 @@
 --   FloorTrail.hide()
 --   FloorTrail.isShown()
 --
+-- With the switch trailLine on, it draws Design-Agent's guide line instead (#451): one see-through green band from
+-- the player's feet to the spot with an arrowhead at the end, drawn by Motion-FX's Effects/TrailLine, hidden while
+-- the player is within TrailRules.LINE_HIDE of the spot; no ring or floating arrow then.
+--
 -- It follows the player as they walk and never moves them. With reduced motion (Roblox's setting or the comfort
 -- toggles) the arrows and the gold arrow hold still. Which step shows it, and when, is the first session's call
 -- (issue #5), so nothing here starts it by itself. TrailRules holds the maths.
@@ -23,10 +27,12 @@ local TrailRules = require(Shared:WaitForChild("TrailRules"))
 local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
 local Icons =
 	require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("HUD"):WaitForChild("Icons"))
+local TrailLine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("TrailLine"))
 
 local FloorTrail = {}
 
 FloorTrail.FLAG = "tutorialTrail"
+FloorTrail.LINE_FLAG = "trailLine"
 
 local GREEN = Color3.fromHex("63E87F")
 local FLOW = 0.22 * 4 -- spacings a second the arrows flow (the draft's speed, in our spacing)
@@ -47,6 +53,7 @@ local spot: Vector3? = nil
 local phase = 0
 local clock = 0
 local stepping: RBXScriptConnection? = nil
+local line: TrailLine.Handle? = nil -- the guide line drawn now (trailLine)
 
 local function part(name: string, parent: Instance): Part
 	local p = Instance.new("Part")
@@ -143,12 +150,43 @@ local function draw(dt: number)
 	end
 end
 
+local function dropLine()
+	local drawn = line
+	line = nil
+	if drawn then
+		drawn.destroy()
+	end
+end
+
+-- The guide line, redrawn from the feet each frame; gone while the player is near the spot.
+local function drawLine(_dt: number)
+	local target = spot
+	local from, floorY = feet()
+	if target == nil or from == nil then
+		dropLine()
+		return
+	end
+	local a = Vector3.new(from.X, floorY, from.Z)
+	local b = Vector3.new(target.X, floorY, target.Z)
+	if not TrailRules.lineShown(a, b) then
+		dropLine()
+		return
+	end
+	local drawn = line
+	if drawn then
+		drawn.update(a, b)
+	else
+		line = TrailLine.show(a, b)
+	end
+end
+
 function FloorTrail.isShown(): boolean
 	return spot ~= nil
 end
 
 function FloorTrail.hide()
 	spot = nil
+	dropLine()
 	local connection = stepping
 	if connection then
 		connection:Disconnect()
@@ -163,10 +201,20 @@ end
 
 function FloorTrail.show(target: Vector3)
 	FloorTrail.hide()
-	if not LiveFlags.isOn(FloorTrail.FLAG) then
+	local wantLine = LiveFlags.isOn(FloorTrail.LINE_FLAG)
+	if not (LiveFlags.isOn(FloorTrail.FLAG) or wantLine) then
 		return
 	end
 	spot = target
+	if wantLine then
+		local f = Instance.new("Folder") -- kept so the feet's ray skips it, as with the chevrons
+		f.Name = "PH_TutorialLine"
+		f.Parent = Workspace
+		folder = f
+		stepping = RunService.RenderStepped:Connect(drawLine)
+		drawLine(0)
+		return
+	end
 	local f = Instance.new("Folder")
 	f.Name = "PH_TutorialTrail"
 	local r = part("Ring", f)
@@ -197,11 +245,21 @@ function FloorTrail.show(target: Vector3)
 	draw(0)
 end
 
+local function onSwitch()
+	local target = spot
+	if target == nil then
+		return
+	end
+	if LiveFlags.isOn(FloorTrail.FLAG) or LiveFlags.isOn(FloorTrail.LINE_FLAG) then
+		FloorTrail.show(target) -- the other look, the same spot
+	else
+		FloorTrail.hide()
+	end
+end
+
 ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FloorTrail.FLAG)
-	:Connect(function()
-		if not LiveFlags.isOn(FloorTrail.FLAG) then
-			FloorTrail.hide()
-		end
-	end)
+	:Connect(onSwitch)
+ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FloorTrail.LINE_FLAG)
+	:Connect(onSwitch)
 
 return FloorTrail

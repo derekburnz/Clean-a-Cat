@@ -40,22 +40,4 @@ function Tier.burst(count: number, reducedMotion: boolean): number
 	return count
 end
 
--- Stink wisp rate over a dirty cat: full while every mud patch is on, thinning as patches clear, none at zero.
--- Never below 1 while any mud is left, so the last patch still reads. Reduce Motion halves it.
-function Tier.stinkRate(
-	maxRate: number,
-	left: number,
-	total: number,
-	reducedMotion: boolean
-): number
-	if left <= 0 or total <= 0 then
-		return 0
-	end
-	local rate = maxRate * math.clamp(left / total, 0, 1)
-	if reducedMotion then
-		rate *= 0.5
-	end
-	return math.max(1, math.floor(rate + 0.5))
-end
-
 return Tier

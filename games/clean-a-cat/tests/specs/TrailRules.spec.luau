@@ -38,4 +38,17 @@ return function()
 			expect(middle.fade).to.equal(0)
 		end)
 	end)
+
+	describe("TrailRules.lineShown", function()
+		it(
+			"shows the guide line until the player is within LINE_HIDE of the spot, height aside",
+			function()
+				local spot = Vector3.new(10, 0, 0)
+				expect(TrailRules.lineShown(Vector3.new(0, 0, 0), spot)).to.equal(true)
+				expect(TrailRules.lineShown(Vector3.new(7.5, 0, 0), spot)).to.equal(false)
+				expect(TrailRules.lineShown(Vector3.new(10, 40, 0), spot)).to.equal(false)
+				expect(TrailRules.lineShown(Vector3.new(10, 0, 3.5), spot)).to.equal(true)
+			end
+		)
+	end)
 end

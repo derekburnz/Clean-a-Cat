@@ -49,8 +49,10 @@ TruckDrop.OPENING = 2.32 -- the box keeps inside this from the lane's middle at 
 TruckDrop.JOLT = { dip = 0.4, frontPitch = math.rad(4), backPitch = math.rad(5), seconds = 0.3 }
 TruckDrop.RATTLE = { pitch = math.rad(1.2), seconds = 0.7 } -- the little rattle after each hit
 -- The back door (hinged along its top edge): kicked open by the front wheels' drop over `seconds`, held open until
--- `hold` after the box drops, then slammed shut over `closeSeconds` with a small rebound. The hold lets the box fall
--- clear of the door's sweep first (Sync-Agent saw the slamming door clip it; the clearance spec checks it).
+-- `hold` after the box drops, then swung shut over `closeSeconds` with two small settling bounces. The close starts
+-- from rest and gathers speed (no snap), and the bounces last `settleSeconds` (Derek asked for a more fluid close,
+-- 2026-11-25). The hold lets the box fall clear of the door's sweep first (Sync-Agent saw the slamming door clip it;
+-- the clearance spec checks it).
 -- `model` is the door's real shape for the clearance spec (Model-Agent's truck: hinge height over the pivot, how far
 -- back of it, the panel's length and thickness with its ribs, and the model's DoorOpenDegrees that `open` scales to).
 TruckDrop.DOOR = {
@@ -58,9 +60,10 @@ TruckDrop.DOOR = {
 	open = math.rad(100),
 	seconds = 0.1,
 	swing = math.rad(10),
-	hold = 0.4,
-	closeSeconds = 0.16,
-	rebound = math.rad(6),
+	hold = 0.34,
+	closeSeconds = 0.3,
+	rebound = math.rad(5),
+	settleSeconds = 0.45,
 }
 -- The box (Model-Agent's CleanACat_Prop_DeliveryBox): its footprint along the road and its height.
 TruckDrop.BOX = { width = 2.38, height = 1.7 }
@@ -224,21 +227,35 @@ function TruckDrop.door(opened: number, reduced: boolean): number
 		return 0
 	end
 	local closeAt = TruckDrop.BEATS.drop + d.hold - TruckDrop.BEATS.frontHit
-	if opened < closeAt then
+	local function held(at: number): number
 		if reduced then
 			return d.open
 		end
-		return d.open * TruckDrop.backOut(opened / d.seconds, 1.4)
-			+ d.swing * math.sin(opened * 12) * math.exp(-opened * 4)
+		return d.open * TruckDrop.backOut(at / d.seconds, 1.4)
+			+ d.swing * math.sin(at * 12) * math.exp(-at * 4)
+	end
+	if opened < closeAt then
+		return held(opened)
 	end
 	local u = (opened - closeAt) / d.closeSeconds
 	if u < 1 then
-		return d.open * (1 - u * u) -- falls shut, faster as it goes
+		-- from where the hold left it, easing out of rest and speeding up into the frame: u^2 (2 - u) has no speed
+		-- at the start and a gentle one at the end, so the door swings shut instead of snapping
+		return held(closeAt) * (1 - u * u * (2 - u))
 	end
 	if reduced then
 		return 0
 	end
-	return d.rebound * TruckDrop.hump(opened - closeAt - d.closeSeconds, 0.16)
+	return TruckDrop.settle(opened - closeAt - d.closeSeconds, d.settleSeconds) * d.rebound
+end
+
+-- Two bounces off the frame after a close, the second smaller, falling to rest at `length`: 0 to 1, never below 0.
+function TruckDrop.settle(elapsed: number, length: number): number
+	if elapsed < 0 or elapsed >= length then
+		return 0
+	end
+	local u = elapsed / length
+	return math.abs(math.sin(2 * math.pi * u)) * (1 - u) * (1 - u)
 end
 
 -- The truck at time t. `reduced` (Reduced Motion or Less shake) drops the jolt, the rattle and the door's swing.

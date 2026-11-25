@@ -8,13 +8,13 @@ Client-only, cosmetic effects. Owner: Motion-FX-Agent (vfx-animator). What each 
 | `Presets.luau` | Every effect as data per tier (low, high) and the budget caps |
 | `Tier.luau` | Pure rules with specs: tier pick, foam rate from drag speed, Reduce Motion halving |
 | `CatPose.luau` | Pure motion curves with specs: idle, blink, ear twitch, shake-off, happy wiggle, update rate by distance |
-| `Stink.luau` | Green stink wisps on each dirty cat (one emitter per cat beside the head's Carry attachment), rate from mud left |
 | `CatMotion.luau` | One PreSimulation loop that pivots the rig joints (Head, Tail, EarL, EarR, eye squash) from CatPose. Body never moves |
+| `TrailLine.luau` | The tutorial guide line (#451): a see-through green floor band from the feet to the spot with an arrowhead and a running dash. Flat pooled parts, no particles. FloorTrail calls it behind `trailLine` |
 
-`Controllers/EffectsController.luau` binds Moments. Live switches: `scrubEffects`, `revealEffects`, `fluffEffects`, `catMotion`, `dryEffects`, `stinkEffects` and `openingBox`, all off by default.
+`Controllers/EffectsController.luau` binds Moments. Live switches: `scrubEffects`, `revealEffects`, `fluffEffects`, `catMotion`, `dryEffects` and `openingBox`, all off by default.
 
 Cat motion finds cats by the `Cat` attribute on the cat Model, so the placeholder `PH_Cat` never moves. Phones move at most 4 cats at 30 updates a second, PC 10 at 60; past 30 studs half that, past 60 studs none.
 
-Comfort: every effect asks `UI/Comfort` rather than `GuiService`. Particle counts (foam, bursts, dryer air, stink) halve with `Comfort.lessSparkle()` (Roblox's Reduced Motion or the Settings card's Less sparkle). The bow pop, the glow fade and all cat motion except the blink stop with `Comfort.reducedMotion()` (Reduced Motion, Less screen shake or Less sparkle).
+Comfort: every effect asks `UI/Comfort` rather than `GuiService`. Particle counts (foam, bursts, dryer air) halve with `Comfort.lessSparkle()` (Roblox's Reduced Motion or the Settings card's Less sparkle). The bow pop, the glow fade and all cat motion except the blink stop with `Comfort.reducedMotion()` (Reduced Motion, Less screen shake or Less sparkle).
 
 Opening scene (#281): `TruckDrop` holds every beat and curve (pure, with specs); `OpeningScene.play(origin, { shot, onTap })` plays the truck, the bump, the box drop and the wiggle on this client only, and `handle.open()` pops the flaps and lifts the kitten out. Props come from `ReplicatedStorage.Assets` by name (`CleanACat_Prop_DeliveryTruck`, `CleanACat_Prop_DeliveryBox`, `CleanACat_Cat_Suds_Dirty_Sit`; the speed bump is the plot's own, on SpotBump), with PH_ stand-ins of the same sizes until they land. EffectsController has a stand-in trigger (once per session, 6 studs in front of the player) so it can be watched in Studio (it never runs outside Studio): set `LiveFlag_openingBox` true on ReplicatedStorage in the client command bar. Gameplay owns the real trigger.

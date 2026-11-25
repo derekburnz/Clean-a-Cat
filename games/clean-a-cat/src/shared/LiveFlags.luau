@@ -38,7 +38,6 @@ LiveFlags.KEYS = {
 	"fluffEffects", -- fur puffs, the fluffed glow and bow hearts (Controllers/EffectsController); off by default
 	"catMotion", -- cat idle, blink, ear twitch, shake-off and happy wiggle (Effects/CatMotion); off by default
 	"dryEffects", -- warm air wisps from the dryer nozzle (Controllers/EffectsController); off by default
-	"stinkEffects", -- green stink wisps over dirty cats, thinning as mud clears (Effects/Stink); off by default
 	"toolsBoard", -- the Tools board and Bubble Soap (ToolService, Controllers/ToolsBoardController); off by default
 	"customers", -- customers at the door bring rolled cats and pay on return (SpaService, Controllers/DoorController); off by default
 	"strays", -- strays, the display window and its tips (SpaService, WindowService, Controllers/WindowController); off by default
@@ -89,6 +88,9 @@ LiveFlags.KEYS = {
 	"worldBackdrop", -- the draft world behind the street: hills, houses and trees the road runs into (Model-Agent's CleanACat_Area_Backdrop, BackdropController), this player's own copy; off by default
 	"skyDraft", -- the draft sky and light: pastel haze, soft clouds, warm tint and gentle bloom (Effects/Sky), this player's own; off by default
 	"streetLoadTest", -- dev place only: fills every empty plot with a full plot for the phone frame check (StreetLoadService); off by default
+	"latherFoam", -- the Bubble Bath lathers foam onto the fur where the player rubs, then it rinses off by itself once he is covered (the owner's 2026-11-25 note, ScrubController); off by default
+	"trailLine", -- the tutorial's guide: one see-through green line from the player's feet to the spot with an arrowhead, instead of the floor chevrons (Spa/FloorTrail, Effects/TrailLine, #451); off by default
+	"placeAfterHop", -- the opening asks the server to take Suds only once his hop into the tub lands, so the tub's kitten never shows mid-hop (the owner's dev note of 2026-11-25, OpeningController); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -99,7 +101,6 @@ LiveFlags.OFF_BY_DEFAULT = {
 	fluffEffects = true,
 	catMotion = true,
 	dryEffects = true,
-	stinkEffects = true,
 	toolsBoard = true,
 	customers = true,
 	strays = true,
@@ -150,6 +151,9 @@ LiveFlags.OFF_BY_DEFAULT = {
 	recapSide = true,
 	washChecklist = true,
 	spaSign = true,
+	placeAfterHop = true,
+	latherFoam = true,
+	trailLine = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

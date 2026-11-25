@@ -49,6 +49,7 @@ local PLACE_REACH = 10 -- studs: the tub's prompt, well inside the server's Suds
 local CLICK_REACH = { pick = 40, place = 12 } -- studs: a click or tap on the kitten or the tub
 local SUDS = SudsRules.NAME
 local RECAP_FLAG = "recapCard"
+local LAND_FLAG = "placeAfterHop"
 local PICK_STAND = 2.6 -- studs from the kitten where the player stops to lift him (Derek: walk up, then pick up)
 local WALK_SECONDS = 4 -- the walk up gives up after this and the lift plays where they are
 -- OpeningScene's own copy of the pothole on the road (its BUMP_NAME). Once Suds is inside it goes, so the road is
@@ -70,6 +71,7 @@ local leading = false -- the trail and tip point at the tub until he is set down
 local picker: Instance? = nil -- the prompt and click on the kitten in the box
 local placer: BasePart? = nil -- the tub's prompt while he is carried
 local placing = false -- he is being set down: his hop plays while the server hands him out
+local landed = false -- his hop into the tub has landed (switch placeAfterHop: only then is the server asked)
 local scrub: any = nil
 local walking = false -- the player is walking up to the box to lift him
 local hintShownAt: { [string]: number } = {} -- the opening's tips showing, by their funnel name ("pick", "wash")
@@ -161,6 +163,7 @@ local function clearScene()
 	local scene = handle
 	handle = nil
 	placing = false
+	landed = false
 	clearPicker()
 	stopLeading()
 	if scene then
@@ -230,14 +233,27 @@ local function setDown()
 		return
 	end
 	placing = true
+	landed = false
 	hintFollowed("wash")
 	stopLeading()
-	askToPlace()
+	-- With placeAfterHop on, the server hears once he lands, so the tub's kitten (which comes with its answer) never
+	-- shows while this one is still in the air (the owner's dev note: he appeared in the tub before the drop ended).
+	local afterHop = LiveFlags.isOn(LAND_FLAG)
+	if not afterHop then
+		askToPlace()
+	end
 	enterWash()
 	-- He lands at the tub kitten's size, so the swap to the tub's sit body is not a jump in size.
 	scene.placeIn(
 		if scrub then scrub.seatSpot().Position else SpaLayout.tubSpot().Position,
-		nil,
+		if afterHop
+			then function()
+				if handle == scene and placing and boxState() == false then
+					landed = true
+					askToPlace()
+				end
+			end
+			else nil,
 		if scrub then scrub.seatScale() else nil
 	)
 end
@@ -444,6 +460,11 @@ local function onBoxChanged()
 		end)
 		return
 	end
+	if placing and landed then
+		-- he landed before the server was asked (placeAfterHop): the tub's kitten takes his place now
+		clearScene()
+		return
+	end
 	if placing then
 		-- his hop into the tub is still playing: the scene goes once he lands, as the tub's kitten comes
 		task.delay(Carry.HOP_SECONDS, function()
@@ -460,7 +481,8 @@ end
 -- means his wash is over, so the wash view goes back to the player.
 local function onCatReady(_id: unknown, kind: unknown)
 	if kind == SUDS then
-		if handle ~= nil and not placing then
+		-- before he was set down, or after he landed (placeAfterHop): the tub's kitten is now in his place
+		if handle ~= nil and (not placing or landed) then
 			clearScene()
 		end
 		return
