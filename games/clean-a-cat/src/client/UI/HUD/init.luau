@@ -9,7 +9,8 @@
 --                        nil, "waiting" or "done" hides them
 --   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar;
 --                        SudsRules.NO_BOWS in it leaves the bows out (the opening's kitten, #285)
---   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil
+--   HUD.setTip(tip)      the tutorial's tip line in the step bar's place (HUD/TipLine, switch tutorialTip), or nil;
+--                        HUD.tipShown() is it while it shows, HUD.onTipChanged(fn) when it shows, hides or resizes
 --   HUD.listShown()      true while the tick list of this cat's steps shows (HUD/StepList, switch washChecklist), in
 --                        the pips' place; HUD.onListChanged(fn) when that flips (the button row steps aside for it)
 --
@@ -425,6 +426,15 @@ end
 
 function HUD.setTip(tip: TipLine.Tip?)
 	TipLine.set(tip)
+end
+
+-- The tutorial's step pill while it shows, else nil; HUD.onTipChanged(fn) when it shows, hides or changes size.
+function HUD.tipShown(): GuiObject?
+	return TipLine.shown()
+end
+
+function HUD.onTipChanged(fn: () -> ())
+	TipLine.onChanged(fn)
 end
 
 function HUD.listShown(): boolean

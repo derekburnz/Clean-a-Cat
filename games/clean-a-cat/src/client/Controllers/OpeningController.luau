@@ -56,8 +56,8 @@ local WALK_SECONDS = 4 -- the walk up gives up after this and the lift plays whe
 -- normal"). It was only ever on this player's screen.
 local POTHOLE_NAME = OpeningScene.BUMP_NAME
 local POTHOLE_FADE = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-local TIP_PICK = { step = 1, total = 3, icon = "Paw", say = "Pick him up" }
-local TIP_WASH = { step = 2, total = 3, icon = "Sponge", say = "Wash him" }
+local TIP_PICK = { step = 1, total = 3, say = "Pick him up" }
+local TIP_WASH = { step = 2, total = 3, say = "Wash him" }
 
 local OpeningController = {}
 
