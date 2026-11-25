@@ -42,6 +42,7 @@ local HOLD_REASON = "carry" -- ControlHold, while walking up to the customer
 local VIEW_REASON = "carry" -- WashView, from the hop into the tub until the wash holds it
 local WASH_FLAG = "washView"
 local BODY_WAIT_SECONDS = 5 -- a new character's root and humanoid, after a reset while carrying
+local BODY_TRIES = 6 -- waits of BODY_WAIT_SECONDS for that root: a slow phone can take longer than one (Review-QA, #414)
 local BODY_SETTLE_SECONDS = 0.3
 
 local player = Players.LocalPlayer
@@ -379,7 +380,13 @@ function CarryController.Start()
 		end
 		local mine = turn
 		task.spawn(function()
-			local root = character:WaitForChild("HumanoidRootPart", BODY_WAIT_SECONDS)
+			local root: Instance? = nil
+			for _ = 1, BODY_TRIES do
+				root = character:WaitForChild("HumanoidRootPart", BODY_WAIT_SECONDS)
+				if root ~= nil or turn ~= mine or player.Character ~= character then
+					break
+				end
+			end
 			character:WaitForChild("Humanoid", BODY_WAIT_SECONDS)
 			task.wait(BODY_SETTLE_SECONDS) -- the arms' joints are made a moment after the root
 			if

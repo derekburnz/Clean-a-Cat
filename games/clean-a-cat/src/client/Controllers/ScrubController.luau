@@ -798,6 +798,18 @@ local function showClaws(cat: Cat, long: boolean)
 	end
 end
 
+-- Where a cat sitting on `seat` faces, flat on the floor: its front is the seat's LookVector, as in the tub (the
+-- tub's front faces the player and the cat sits facing it). A seat tipped straight up or down faces the tub's way.
+local function facingOf(seat: CFrame): Vector3
+	local look = seat.LookVector
+	local flat = Vector3.new(look.X, 0, look.Z)
+	if flat.Magnitude < 1e-3 then
+		local tub = SpaLayout.tubSpot().LookVector
+		return Vector3.new(tub.X, 0, tub.Z).Unit
+	end
+	return flat.Unit
+end
+
 -- Sits the cat on the CatSeat of station `id` in the player's plot (at the station's CatScale), or back in the tub
 -- when `id` is nil or that station is not standing: a later step then happens in the tub. A cat that never left the
 -- tub is not moved, so with the later steps off nothing changes (a cat turned to show its mud stays turned).
@@ -825,11 +837,13 @@ local function seatAt(v: Visit, cat: Cat, id: string?)
 	cat.model:PivotTo(target :: CFrame)
 	if visit == v then
 		-- the close-up follows the cat: framed on the station's seat, dropped to about the floor (the tub's shot is
-		-- framed from its floor spot) and turned like the tub, so the camera stays on the player's side; or back on
-		-- the tub
-		local tub = SpaLayout.tubSpot()
+		-- framed from its floor spot) and turned the way he faces there, so the shot is on his face, not his side and
+		-- back (Sync-Agent's run on ec29d4f: the stations' seats face across the room); or back on the tub
 		local seat = (target :: CFrame).Position - Vector3.new(0, SEAT_HEIGHT, 0)
-		WashView.frame(if v.away then CFrame.new(seat) * tub.Rotation else nil)
+		WashView.frame(
+			if v.away then CFrame.lookAlong(seat, facingOf(target :: CFrame)) else nil,
+			cat.model
+		)
 		updateWashView(v)
 	end
 end
@@ -1352,7 +1366,7 @@ local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
 	local cat = buildCat(asset, v.folder, seat)
 	v.cat = cat
 	v.away = false -- a new cat sits in the tub
-	WashView.frame(nil)
+	WashView.frame(nil, cat.model)
 	v.steppedOut = false
 	local marker = v.marker
 	v.marker = nil
