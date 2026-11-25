@@ -110,10 +110,12 @@ local RING_COLOR = Color3.fromHex("FFC94D") -- the outline on the paw to press n
 -- The HUD's name for each later step (stageChanged): a step bar entry for each comes with the HUD's part of #267.
 local LATER_STAGE: { [string]: string } = { smell = "bath", claws = "claws" }
 -- Model-Agent's bow buttons (#441): CleanACat_Prop_BowButton plus the bow id without "Bow" (Pink, Mint, Sky), 1.1
--- studs across with the pivot at the middle and the face at -Z. The slab stays as the invisible tap target at their
--- size, with the model inside it as its Look; a missing model leaves the coloured slab.
+-- studs across with the pivot at the middle and the face at -Z. The slab stays as the invisible tap target, about
+-- their size, with the model inside it as its Look; a missing model leaves the coloured slab.
+-- The slab is flat and a little under the model's size: seen from the wash camera above, a deeper one overlapped
+-- its neighbour by about 20 px (Sync-Agent on b9c0008).
 local BOW_LOOK =
-	{ prefix = "CleanACat_Prop_BowButton", hit = Vector3.new(1.1, 1.1, 0.4), name = "Look" }
+	{ prefix = "CleanACat_Prop_BowButton", hit = Vector3.new(1, 0.95, 0.1), name = "Look" }
 local BOW_COLORS: { [string]: Color3 } = {
 	BowPink = Color3.fromRGB(255, 150, 190),
 	BowMint = Color3.fromRGB(150, 225, 190),
@@ -1015,6 +1017,7 @@ local function popPuff(puff: Model)
 	local shrink = TweenService:Create(grow, SUDS_POP, { Value = 0.3 })
 	shrink.Completed:Connect(function()
 		grow:Destroy()
+		puff:Destroy() -- gone, not kept hidden in the cat (Sync-Agent on b9c0008: 48 parts stayed per bath)
 	end)
 	shrink:Play()
 end
@@ -1073,6 +1076,7 @@ end
 -- (latherFoam) Covered: the foam rinses off by itself, puff after puff, and the bath is done.
 local function rinseOff(v: Visit, cat: Cat)
 	v.rinsing = true
+	Moments.BathFoamy:Fire(cat.model, cat.model:GetBoundingBox().Position)
 	task.spawn(function()
 		task.wait(LATHER.wait)
 		local count = #v.suds

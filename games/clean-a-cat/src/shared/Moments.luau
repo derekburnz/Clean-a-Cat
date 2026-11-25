@@ -32,6 +32,8 @@ local dryStop: Signal<Model> = Signal.new()
 local bathStart: Signal<Model> = Signal.new()
 -- (cat, sudsPosition, sudsLeft): one suds puff pops as the player swirls.
 local sudsPopped: Signal<Model, Vector3, number> = Signal.new()
+-- (cat, catPosition): (switch latherFoam) the last puff lathered on: he is covered ("so foamy"); the rinse follows.
+local bathFoamy: Signal<Model, Vector3> = Signal.new()
 -- (cat): the last suds puff is gone; the smell is washed out.
 local bathDone: Signal<Model> = Signal.new()
 -- (cat): the Pawdicure step starts (#267, switch pawdicure): the long claws wait to be clipped.
@@ -70,6 +72,7 @@ local Moments = {
 	DryStop = dryStop,
 	BathStart = bathStart,
 	SudsPopped = sudsPopped,
+	BathFoamy = bathFoamy,
 	BathDone = bathDone,
 	ClawsStart = clawsStart,
 	ClawSnipped = clawSnipped,
@@ -96,6 +99,7 @@ local Moments = {
 		"DryStop",
 		"BathStart",
 		"SudsPopped",
+		"BathFoamy",
 		"BathDone",
 		"ClawsStart",
 		"ClawSnipped",
