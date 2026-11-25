@@ -77,6 +77,11 @@ Carry.POSE = table.freeze({
 	-- and covered the left half of the face from the front (Sync-Agent, 4ae0e33), so 0.2: a little more arm overlap,
 	-- the face clear (Model-Agent's middle)
 	loafGap6 = 0.2,
+	-- R6 only: the loaf this far further out from the chest than the hug. R6's straight arms climb toward the
+	-- shoulders, so pressed to the chest his underside sat 0.4 to 0.47 into them (Sync-Agent, 0cd502a); out where the
+	-- arms are lower the overlap drops by about a fifth at the same height, so the face stays as clear as at 0.2 and
+	-- his head pokes further past the hands. Raising the arms instead lifts him over the face.
+	loafOut6 = 0.3,
 	loafRoll = 5,
 })
 
@@ -110,6 +115,7 @@ Carry.CROSSED = table.freeze({
 	loafSide = 0,
 	loafGap = -0.15, -- as a sit
 	loafGap6 = -0.15,
+	loafOut6 = 0,
 	loafRoll = 0,
 	fromHands = false,
 	hug = false,
@@ -350,7 +356,10 @@ local function cradle(rig: Rig, reach: number, loaf: boolean): CFrame?
 	local spot = Vector3.new(
 		(a.X + b.X) / 2 + (if loaf then c.loafSide else c.sitSide),
 		math.max(a.Y, b.Y) + (if not loaf then c.gap elseif rig.r15 then c.loafGap else c.loafGap6),
-		if not useHands then ahead elseif loaf and c.hug then -reach else math.min(ahead, -reach)
+		if not useHands
+			then ahead
+			elseif loaf and c.hug then -reach - (if rig.r15 then 0 else c.loafOut6)
+			else math.min(ahead, -reach)
 	)
 	return torso
 		* CFrame.new(spot)

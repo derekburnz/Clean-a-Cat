@@ -43,6 +43,9 @@ return function()
 			-- R6's block arms: he sits higher on them, below his chin's room (0.8 clear at gap 0)
 			expect(p.loafGap6 > p.loafGap and p.loafGap6 < 0.8).to.equal(true)
 			expect(Carry.CROSSED.loafGap6).to.equal(Carry.CROSSED.loafGap)
+			-- R6's loaf sits a little out from the chest, off the climbing arms, but still on them
+			expect(p.loafOut6 > 0 and p.loafOut6 <= 0.5).to.equal(true)
+			expect(Carry.CROSSED.loafOut6).to.equal(0)
 			-- his width faces the chest, not his length: the muddy loaf is 1.38 wide and 1.87 long
 			local size = Vector3.new(1.38, 1.59, 1.87)
 			expect(near(Carry.reach(1, size, true), 0.5 + 0.69 + 0.05)).to.equal(true)
