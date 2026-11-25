@@ -2,8 +2,8 @@
 -- EffectsController: plays effects on the game's moments (Shared.Moments). It only listens.
 -- Scrub effects sit behind the LiveFlags switch `scrubEffects`, reveal effects behind `revealEffects` and brush and bow
 -- effects behind `fluffEffects`, and the cats' procedural motion (Effects/CatMotion) behind `catMotion`, all off by
--- default, because they change the first session. Dryer air is behind `dryEffects`, stink wisps
--- over dirty cats behind `stinkEffects`. The opening truck and box scene (Effects/OpeningScene) is
+-- default, because they change the first session. Dryer air is behind `dryEffects`. There is no stink smoke
+-- (Derek, 2026-11-25: mud on the coat shows a dirty cat). The opening truck and box scene (Effects/OpeningScene) is
 -- started by Controllers/OpeningController.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -14,14 +14,12 @@ local CarryShared =
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
-local Stink = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Stink"))
 
 local SCRUB_FLAG = "scrubEffects"
 local REVEAL_FLAG = "revealEffects"
 local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
-local STINK_FLAG = "stinkEffects"
 local SHARED_CARRY_FLAG = "carryShared"
 local SUDS_FLAG = "sudsWash"
 local SUDS_HOP_HEIGHT = 0.7 -- studs
@@ -60,9 +58,6 @@ function EffectsController.Start()
 	CatMotion.start(Effects.tier(), function(): boolean
 		return LiveFlags.isOn(MOTION_FLAG)
 	end)
-	Stink.start(function(): boolean
-		return LiveFlags.isOn(STINK_FLAG)
-	end)
 	-- other players' carried cats; the switch counts only once LiveFlags lists it as off by default (an unlisted key
 	-- reads as on)
 	CarryShared.start(function(): boolean
@@ -74,9 +69,6 @@ function EffectsController.Start()
 		return LiveFlags.isOn(SCRUB_FLAG)
 	end
 
-	Moments.ScrubStart:Connect(function(cat: Model)
-		Stink.focus(cat)
-	end)
 	Moments.ScrubMove:Connect(
 		function(_cat: Model, hitPoint: Vector3, _normal: Vector3, dragSpeed: number)
 			if scrubOn() then
@@ -89,7 +81,6 @@ function EffectsController.Start()
 	end)
 	Moments.CatClean:Connect(function(cat: Model)
 		CatMotion.shake(cat)
-		Stink.setLeft(cat, 0)
 		if not LiveFlags.isOn(REVEAL_FLAG) or not cat:IsDescendantOf(workspace) then
 			return
 		end
@@ -214,9 +205,7 @@ function EffectsController.Start()
 	end
 
 	Moments.MudPatchCleared:Connect(
-		function(cat: Model, patchPosition: Vector3, patchesLeft: number)
-			Stink.focus(cat)
-			Stink.setLeft(cat, patchesLeft)
+		function(_cat: Model, patchPosition: Vector3, _patchesLeft: number)
 			if scrubOn() then
 				Effects.burst("mudChunks", patchPosition)
 			end
