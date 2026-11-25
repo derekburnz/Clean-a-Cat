@@ -103,7 +103,7 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.Jo.price` | 150 coins, station included | First worker after about 15 cats | 2026-11-25 |
 | `worker.Sam.price` | 1,200 coins, station included | | 2026-11-25 |
 | `worker.Lou` | game pass 249 Robux, station included | Works exactly like Jo and Sam | 2026-11-25 |
-| `worker.washSeconds` | L1 30, L2 45, L3 70, L4 100 | About twice the player's time | 2026-11-25 |
+| `worker.washSeconds` | L1 50, L2 75, L3 110, L4 150 | About twice the player's time at the 8 s step target | 2026-11-25 |
 | `worker.share` | 25% of base × dirt at level 1, +3% each level | No stars, early pick, bow or tip for workers | 2026-11-25 |
 | `worker.levelCost` | L2 200, L3 500, L4 1,200, L5 3,000 | | 2026-11-25 |
 | `worker.levelSpeed` | −5% wash time each level (L5 = ×0.8) | | 2026-11-25 |
@@ -114,7 +114,7 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.petCap` | a worker's pet boosts add together and are capped at +30% | Two pets with the second slot pass, star ups included, never pass the cap | 2026-11-25 |
 | `worker.doubleCoins` | 2x Coins and the Golden Sponge apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
 
-Guard rail check (must stay true, with margin): a player washing Common level 2 cats by hand, with no passes, makes about 0.70 coins a second (10 × 1.25 × 1.2 + 4 per 27 s). Three level 5 workers at the pet cap make 3 × (12.5 × 0.37 / 36 s) × 1.3 ≈ 0.50 coins a second, about 71% of the player. Any change to `worker.*` or `pet.*` re-runs this sum.
+Guard rail check (must stay true, with margin): a player washing Common level 2 cats by hand, with no passes, at the 8 s step target (4.5 steps, about 36 s a cat) at 2 stars makes about 0.49 coins a second ((10 × 1.25 × 1.1 + 4) / 36 s). Three level 5 workers at the pet cap take 75 × 0.8 = 60 s a cat and make 3 × (12.5 × 0.37 × 1.3 / 60 s) ≈ 0.30 coins a second, about 61% of the player. Any change to `worker.*`, `pet.*`, `pay.*` or `dirt.stepSeconds` re-runs this sum.
 
 ## 8. Builds and Finish now
 
