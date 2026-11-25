@@ -1,12 +1,18 @@
 """Customers' things and the spa's small props (issue #16).
 
-  CleanACat_Prop_Carrier      a rounded pet carrier a customer holds: a bubblegum tray, a cream shell with side vents,
-                              a handle on top and a grille door at the front (-Y). The door is its own child Model,
-                              `..._Door_Swing`, pivoted at its hinge on the cat's left side (+X in Blender): turn it
-                              about its pivot's up axis by up to 110 degrees to open it. Attachment `CatSeat` on the
-                              tray: a walking cat's pivot goes there, facing out of the door, at ScaleTo(CatScale)
-                              (root attribute, 0.8) so it fits under the shell and shows through the grille.
-                              Attachment `Grip` at the handle, for welding it to a customer's hands.
+  CleanACat_Prop_Carrier      the pet carrier a customer holds (reworked in #449, the owner on 2026-11-25: the old
+                              one with its grey bars looked "depressing"). A little house with no bars: a tray with
+                              a cushion, a shell with a sloped roof, a chunky handle and an open front (-Y) the
+                              cat looks out of over a low scalloped gate with a paw print. The gate is its own
+                              child Model, `..._Door_Swing`, pivoted at its hinge on the cat's left side (+X in
+                              Blender): turn it about its pivot's up axis by up to 110 degrees to open it.
+                              Attachment `CatSeat` on the tray: a walking cat's pivot goes there, facing out of the
+                              front, at ScaleTo(CatScale) (root attribute, 0.8) so its ears stay under the roof.
+                              Attachment `Grip` at the handle, for welding it to a customer's hand. Size, hinge,
+                              Attachments and attributes are the old carrier's, so it swaps in with no code change.
+  CleanACat_Prop_CarrierSky   the same carrier in two more looks (CARRIERS below), so a line of customers is not
+  CleanACat_Prop_CarrierButter  three of one thing: sky with cat ears and stars, butter with a paw badge. The first
+                              is cream on a bubblegum tray with a bow and hearts.
   CleanACat_Prop_StrayBox     a soft cardboard box with its flaps folded out and a bubblegum blanket inside;
                               `CatSeat` on the blanket for a sitting cat.
   CleanACat_Prop_ChanceBoard  a standing board on two legs by the entrance. Its face part is named `Screen` (front,
@@ -40,43 +46,113 @@ TRAY_H = 0.7
 CAT_SCALE = 0.8    # a walking cat rides at ScaleTo(0.8) so its ears stay under the shell (root attribute CatScale)
 
 
-def build_carrier(mat):
-    name = "CleanACat_Prop_Carrier"
+# The three carriers (#449): one build, a look each. Every look differs in shape as well as colour: the roof's
+# ornament and what is on the sides. (shell, tray, gate and handle, cushion, accent, roof ornament, side shape)
+CARRIERS = {
+    "CleanACat_Prop_Carrier": ("spa_cream", "spa_bubblegum", "spa_mint", "pastel_butter", "bow_pink", "bow", "heart"),
+    "CleanACat_Prop_CarrierSky": ("spa_sky", "spa_cream", "pastel_butter", "spa_bubblegum", "spa_cream", "ears",
+                                  "star"),
+    "CleanACat_Prop_CarrierButter": ("pastel_butter", "spa_mint", "spa_bubblegum", "spa_sky", "spa_cream", "none",
+                                     "paw"),
+}
+ROOF_FROM = 1.8        # where the side walls stop and the roof slopes in
+ROOF_IN = 0.38         # how far each slope comes in by the top
+GATE_H = 0.34          # the gate's straight part; three scallops stand on it
+_FRONT = (math.radians(90), "X")           # a flat shape stood up to face the front
+
+
+def _heart(b, x, y, z, size, sw, sx):
+    """A heart `size` wide on the carrier's side at x: two discs and a square on its corner."""
+    r = size * 0.27
+    for dy in (-1, 1):                         # each piece its own depth, so no two faces share a plane
+        b.cyl((x, y + dy * r * 0.86, z + r * 0.45), r, 0.05 + 0.008 * dy, sw, segments=8, bevel=False,
+              rot=_on_side(sx))
+    k = r * 1.7
+    b.box((x, y, z - r * 0.33), (0.066, k, k), sw, bevel=False,
+          rot=Matrix.Rotation(math.radians(45), 3, "X"))
+
+
+def _on_side(sx):
+    """Turns a flat shape drawn in (along, up) to face out of the carrier's side sx."""
+    return Matrix.Rotation(math.radians(90 * sx), 3, "Z") @ Matrix.Rotation(math.radians(90), 3, "X")
+
+
+def _carrier(name, mat):
+    """A cosy carrier with no bars: the cat looks out of an open house-shaped front over a low scalloped gate."""
+    shell, tray, trim, cushion, accent, roof, side = CARRIERS[name]
     w, ln, h = CAR_W, CAR_L, CAR_H
+    wt = 0.12
     b = Builder()
-    b.box_base((0, 0, 0), (w, ln, TRAY_H), "spa_bubblegum")                         # the tray
-    # the shell: open at the front behind the grille so the cat shows; roof, back and two sides
-    sh, wt = h - TRAY_H + 0.06, 0.12
-    b.box_base((0, 0.06, h - wt), (w - 0.04, ln - 0.12, wt), "spa_cream")                       # roof
-    b.box_base((0, ln / 2 - wt / 2, TRAY_H - 0.06), (w - 0.06, wt, sh - wt + 0.03), "spa_cream", bevel=False)  # back
+    b.box_base((0, 0, 0), (w, ln, TRAY_H), tray)                                    # the tray
+    b.box_base((0, 0, TRAY_H - 0.12), (w + 0.08, ln + 0.08, 0.1), "spa_cream")      # a cream lip round its top
+    b.box_base((0, 0.0, TRAY_H - 0.06), (w - 0.4, ln - 0.5, 0.1), cushion)          # the cushion the cat stands on
+    # the shell: two sides, two roof slopes, the roof and a back the shape of the front opening
     for sx in (1, -1):
-        b.box_base((sx * (w / 2 - 0.02 - wt / 2), 0.06, TRAY_H - 0.05), (wt, ln - 0.14, sh - wt + 0.02), "spa_cream",
-                   bevel=False)
-    for sx in (1, -1):                                                              # side vents: three slots
-        for i in range(3):
-            b.box((sx * (w / 2 - 0.015), 0.35 + 0.45 * (i - 1), TRAY_H + 0.85), (0.04, 0.2, 0.55), "spa_mint",
-                  bevel=False)
-    for sx in (1, -1):                                                              # handle posts and grip
-        b.box_base((sx * 0.38, 0.06, h - 0.02), (0.14, 0.2, 0.32), "spa_mint", bevel=False)
-    b.box((0, 0.06, h + 0.36), (0.9, 0.22, 0.14), "spa_mint")
+        b.box_base((sx * (w / 2 - 0.02 - wt / 2), 0.06, TRAY_H - 0.05), (wt, ln - 0.14, ROOF_FROM - TRAY_H + 0.07),
+                   shell, bevel=False)
+        run, rise = ROOF_IN, h - ROOF_FROM
+        slope = math.atan2(rise, run)
+        mid = (sx * (w / 2 - 0.02 - run / 2 - 0.045), 0.06, ROOF_FROM + rise / 2 - 0.03)
+        b.box(mid, (math.hypot(run, rise) + 0.16, ln - 0.13, wt), shell, bevel=False,
+              rot=Matrix.Rotation(sx * slope, 3, "Y"))
+    b.box_base((0, 0.06, h - wt), (w - 2 * ROOF_IN + 0.1, ln - 0.12, wt), shell)                 # the roof
+    x0, x1 = w / 2 - 0.08, w / 2 - ROOF_IN - 0.02
+    z0, zs, z1 = TRAY_H - 0.06, ROOF_FROM, h - 0.06
+    zm = (z0 + z1) / 2
+    back = [(x0, z0 - zm), (x0, zs - zm), (x1, z1 - zm), (-x1, z1 - zm), (-x0, zs - zm), (-x0, z0 - zm)]
+    b.prism((0, ln / 2 - wt / 2 - 0.02, zm), [(-x, z) for x, z in reversed(back)], wt, shell, rot=_FRONT)
+    # the handle: two posts and a chunky grip
+    for sx in (1, -1):
+        b.box_base((sx * 0.38, 0.06, h - 0.02), (0.16, 0.22, 0.32), trim, bevel=False)
+    b.box((0, 0.06, h + 0.36), (1.0, 0.28, 0.18), trim)
+    if roof == "bow":                                                              # a bow on the front of the roof
+        y, z = -ln / 2 + 0.2, h + 0.1
+        b.box((0, y, z), (0.2, 0.18, 0.2), accent)
+        for sx in (1, -1):
+            b.sphere((sx * 0.26, y, z + 0.03), 0.22, accent, segments=8, rings=4, scale=(1.0, 0.55, 0.75),
+                     rot=Matrix.Rotation(math.radians(-16 * sx), 3, "Y"))
+    elif roof == "ears":                                                           # two cat ears on the slopes
+        for sx in (1, -1):
+            tilt = Matrix.Rotation(math.radians(-14 * sx), 3, "Y")
+            b.pyramid((sx * 0.4, -ln / 2 + 0.5, h - 0.08), 0.46, 0.5, shell, rot=tilt)
+            b.pyramid((sx * 0.4, -ln / 2 + 0.37, h - 0.07), 0.26, 0.32, "spa_bubblegum", rot=tilt)
+    for sx in (1, -1):                                                             # what is on each side
+        x, zc = sx * (w / 2 - 0.02 + 0.025), TRAY_H + 0.62
+        if side == "heart":
+            _heart(b, x, 0.1, zc, 0.6, accent, sx)
+            _heart(b, x, -0.64, zc + 0.2, 0.3, "spa_mint", sx)
+        elif side == "star":
+            b.star((x, 0.0, zc), 0.4, 0.19, 0.05, accent, rot=_on_side(sx))
+        else:                                                                      # a round badge with a paw print
+            b.cyl((x, 0.1, zc), 0.42, 0.05, accent, segments=14, bevel=False, rot=_on_side(sx))
+            px = sx * (w / 2 - 0.02 + 0.06)
+            b.box((px, 0.1, zc - 0.08), (0.03, 0.3, 0.2), trim, bevel=False)
+            for dy, dz in ((-0.21, 0.08), (-0.07, 0.19), (0.07, 0.19), (0.21, 0.08)):
+                b.box((px, 0.1 + dy, zc + dz), (0.03, 0.11, 0.11), trim, bevel=False)
     main = _tris(b.finalize(name, mat))
-    # the door: a grille built from its hinge (the cat's left front corner, +X), the far side at -dw
+    # the gate: built from its hinge (the cat's left front corner, +X), the far side at -dw. Low, so the cat's face
+    # is in the open above it, with a scalloped top and a paw print
     d = Builder()
-    dw, dh = w - 0.24, h - TRAY_H - 0.28
-    for x in (-0.05, -dw + 0.05):                                                   # the two sides
-        d.box((x, 0, 0), (0.1, 0.08, dh), "metal", bevel=False)
-    for z in (dh / 2 - 0.06, -dh / 2 + 0.06):                                       # top and bottom, inside the sides
-        d.box((-dw / 2, 0, z), (dw - 0.18, 0.07, 0.1), "metal", bevel=False)
-    for i in range(1, 5):                                                           # four bars
-        d.box((-dw * i / 5, 0, 0), (0.05, 0.05, dh - 0.2), "metal", bevel=False)
-    hinge = (w / 2 - 0.12, -ln / 2 + 0.075, TRAY_H + 0.14 + dh / 2)                  # on the shell's front face
-    door = d.finalize(name + "_Door_Swing", mat, bevel=0, location=hinge)
+    dw = w - 0.24
+    d.box((-dw / 2, 0, 0), (dw, 0.09, GATE_H), trim)
+    for i in range(3):
+        d.cyl((-dw * (2 * i + 1) / 6, 0.0, GATE_H / 2 - 0.02), dw / 6, 0.07, trim, segments=12, bevel=False,
+              rot=_FRONT)
+    d.box((-dw / 2, -0.055, -0.05), (0.22, 0.03, 0.15), "spa_cream", bevel=False)
+    for dx, dz in ((-0.17, 0.05), (-0.06, 0.13), (0.06, 0.13), (0.17, 0.05)):
+        d.box((-dw / 2 + dx, -0.055, -0.05 + dz), (0.08, 0.03, 0.08), "spa_cream", bevel=False)
+    hinge = (w / 2 - 0.12, -ln / 2 + 0.075, TRAY_H + 0.03 + GATE_H / 2)              # on the shell's front face
+    door = _tris(d.finalize(name + "_Door_Swing", mat, bevel=0, location=hinge))
     return [main, door]
 
 
-def carrier_rbx_extras():
-    return {"attachments": [("CleanACat_Prop_Carrier", "CatSeat", Matrix.Translation((0.0, 0.06, TRAY_H))),
-                            ("CleanACat_Prop_Carrier", "Grip", Matrix.Translation((0.0, 0.06, CAR_H + 0.36)))],
+def build_carrier(mat):
+    return _carrier("CleanACat_Prop_Carrier", mat)
+
+
+def carrier_rbx_extras(name="CleanACat_Prop_Carrier"):
+    return {"attachments": [(name, "CatSeat", Matrix.Translation((0.0, 0.06, TRAY_H))),
+                            (name, "Grip", Matrix.Translation((0.0, 0.06, CAR_H + 0.36)))],
             "attributes": {"DoorOpenDegrees": {"Float64": 110.0}, "CatScale": {"Float64": CAT_SCALE}}}
 
 
@@ -356,13 +432,18 @@ ASSETS = {
     "CleanACat_Prop_Cushion": (build_cushion, 300),
     "CleanACat_Prop_TipJar": (build_tip_jar, 400),
     "CleanACat_Prop_WindowSign": (build_window_sign, 300),
-    "CleanACat_Prop_Carrier": (build_carrier, 400),
+    "CleanACat_Prop_Carrier": (build_carrier, 950),
+    "CleanACat_Prop_CarrierSky": (lambda mat: _carrier("CleanACat_Prop_CarrierSky", mat), 950),
+    "CleanACat_Prop_CarrierButter": (lambda mat: _carrier("CleanACat_Prop_CarrierButter", mat), 950),
     "CleanACat_Prop_StrayBox": (build_stray_box, 200),
     "CleanACat_Prop_ChanceBoard": (build_chance_board, 400),
     "CleanACat_Prop_QueueMat": (build_queue_mat, 200),
     BED: (build_suds_bed, 800),
     CAMERA: (build_photo_camera, 700),
 }
-EXTRAS = {"CleanACat_Prop_Carrier": carrier_rbx_extras, "CleanACat_Prop_StrayBox": stray_box_rbx_extras,
+EXTRAS = {"CleanACat_Prop_Carrier": carrier_rbx_extras,
+          "CleanACat_Prop_CarrierSky": lambda: carrier_rbx_extras("CleanACat_Prop_CarrierSky"),
+          "CleanACat_Prop_CarrierButter": lambda: carrier_rbx_extras("CleanACat_Prop_CarrierButter"),
+          "CleanACat_Prop_StrayBox": stray_box_rbx_extras,
           "CleanACat_Prop_Cushion": cushion_rbx_extras, "CleanACat_Prop_TipJar": tip_jar_rbx_extras,
           BED: suds_bed_rbx_extras, CAMERA: photo_camera_rbx_extras}
