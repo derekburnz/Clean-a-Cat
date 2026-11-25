@@ -63,6 +63,7 @@ Worked example (the recap mockup): an Uncommon at level 3, 3 stars, picked early
 |---|---|---|---|
 | `heart.seconds.first10min` | 240 for every cat | Long early bars so a new player on a phone does not lose cats | 2026-11-25 |
 | `heart.noLeaveBefore` | 10 min of play in the first session | Before then a bar stops at its last sliver and the cat stays grumpy but never leaves (Review-QA, issue 531) | 2026-11-25 |
+| `heart.releaseStagger` | +15 s of grace per place in the line (first in line 0, second +15 s, third +30 s, fourth +45 s) | When the first 10 minutes end, cats held on their last sliver get their grumpy share back; without a stagger they would all leave on the same tick (Review-QA on PR 543). One cat at a time reads kinder | 2026-11-25 |
 | `heart.seconds` | Common 150, Uncommon 140, Rare 120, Epic 100, Legendary 90 | Rarer cats are more tempting and a bit more urgent | 2026-11-25 |
 | `heart.seconds.firstSpecial` | 600 | "Long heart bar so nobody rushes" | 2026-11-25 |
 | `heart.seconds.special` | 240 | | 2026-11-25 |
