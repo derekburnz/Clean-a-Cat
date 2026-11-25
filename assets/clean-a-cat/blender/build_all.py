@@ -90,6 +90,8 @@ def cat_rbx_extras(name):
     attributes = {"Scale": {"Float64": float(spec.get("scale", 1.0))}, "Rarity": spec["rarity"], "Cat": cat}
     if spec.get("mascot"):                            # not a Cat Index cat (cats.EXTRA_CATS): the game must not list it
         attributes["Mascot"] = True
+    if spec["rarity"] == "Special":                   # a special customer's cat (cats.SPECIAL_CATS): not in the Index
+        attributes["Special"] = True
     return {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", Matrix.Translation(bow))],
             "attributes": attributes}
 

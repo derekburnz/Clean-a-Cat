@@ -240,6 +240,27 @@ Both are under 2,000 triangles. An invisible solid `_Barrier` with CanQuery off 
 
 Every pattern part sits proud of the body, and nothing is a texture. Extras cost at most 276 triangles (Lilac Cloud's fluffy coat while sitting), under the 300 each that the issue allows. The index sheet shows each cat clean on its rarity tile with its dirty look behind. Each column is about 160 px wide, an index card's size on a phone.
 
+### The special customers' cats (#471), a draft
+The owner on 2026-11-25: special customers "that expire that only I can take their cats and have them have the really cool cat designs (can look in asset library)". `cats.SPECIAL_CATS` holds a first six. They are outside the Cat Index and the coat table until the design says where they belong. Each is built like a roster cat (`CleanACat_Cat_<Name>`, `_Sit`, `_Dirty`, `_Dirty_Sit`; same pieces, joints, Attachments and mud coat with its dirt levels), with root attributes `Rarity` = "Special" and `Special` = true. The showy coat features are the generator's own, from the owner's asset library; the colourways and working names are new for this game.
+
+| Name | Coat | On the face |
+|---|---|---|
+| Bathtile | `spa_sky` with mosaic tiles in `spa_mint`, `pearl` and cream on the flanks and crown, pearl paws, mint ears and tail tip | a band of mint, pearl and gold tiles across the brow |
+| Sherbet | white with stripes that turn about `fur_bubblegum` and `spa_mint` | a pink heart on the brow, tiger stripes on the cheeks |
+| Stardust | `galaxy_blue` fading to `aurora_violet` and `fur_bubblegum`, star specks all over, mint eyes | one big five pointed star on the brow, small stars round it |
+| Rosette | `fur_vanilla` with `royal_berry` rings round `fur_rose` middles, a thick tail, ear tufts | three rosettes on the brow, a spot on each cheek |
+| Prism | ink black with a rainbow crest standing over the crown and running down the back, a curled tail with a violet tip, a pink and a mint front toe, mint eyes | three rainbow bars under the crest |
+| Jade | `fur_emerald` with rows of gold glyphs between `sign_teal` bands on the flanks and haunches, gold paws, ears and tail tip | a gold drop under a row of gold dots |
+
+Rules for a special cat:
+- **It must read as special in the card picture.** The body's pattern does not show in a head and shoulders picture, so every special cat has marks on its face (`face` in its spec: flat boxes on the front of the head, kept inside the face so nothing sticks out past its edge) or a `mark` on the brow.
+- No new swatch and no texture: every colour is already in the palette.
+- Mud lies over the paint on the brow (above the eyes), so a filthy special cat hides its marks and the wash brings them back. Round the eyes, nose and mouth the face stays clear as on every cat.
+- Inside the cat budgets: 824 to 1,160 triangles clean, 2,810 to 3,170 muddy.
+- `ui_renders.py` renders their portraits like the roster's, with one per dirt level.
+
+How special customers appear, expire and pay is the game's design and not in the models.
+
 ## 21. Bubble bath, pawdicure and long claws (#23)
 `stations.py` builds two later stations on the same 5 by 5 stud pad, facing -Z, with the cat at `ScaleTo(CatScale)` 1.5 on its `CatSeat` and an invisible `_Barrier` (CanQuery off) as at the #18 stations:
 - `CleanACat_Station_BubbleBath`: the wash tub's upgrade, reworked by #172 so it reads as the better bath beside the claw-foot tub (an upgrade changes shape and size, not only colour). A round bubblegum slipper bath: the wall and its cream rolled rim sweep up from the front rim (1.83, as the tub) to a back 1.3 higher behind the cat. It stands on a cream plinth 4.6 across with a gold step, has a gold band at the flare and a white paw print painted on the front and on the back. A gold bubble fountain stands on the back wall to the right of the cat (not behind its head) and arches in; its mint mouth is the part `Spout`, with an Attachment `Bubbles` whose +Y points up: a ParticleEmitter there sends bubbles rising. A rubber duck sits on the rim. Deep blue water stands 0.06 under the front rim with white shine marks. The lather is heaped higher than the tub's: seven low mounds round the cat with white balls on them, a tidy pile at each side of the cat, and at the front left it spills over the rim and down the side to a puddle on the plinth. Clear soap bubbles sit on the lather and the rim and drift up from the fountain (#111). `CatSeat` at 1.5 (`SeatHeight` 1.5; it was 1.32 before #172), the same as the tub, so one camera and one reach serve both baths. The water, the lather and the soap bubbles are child Models (`CleanACat_Station_BubbleBath_Water`, `_Foam` and `_Bubbles`) that do not collide, so the game can tint, hide or move them. 4.6 across, 5.2 tall to the top of the fountain; 113 Parts (68 before), 51 of them the lather and the soap bubbles. The body and the six tall blocks of the slipper back collide, and the `_Barrier` fills the middle; the plinth, the low front rim, the water, the lather and the fountain do not.

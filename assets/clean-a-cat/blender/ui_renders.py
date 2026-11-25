@@ -226,11 +226,12 @@ def main(argv):
     mat = common.palette_material(os.path.join(HERE, "..", "exports", palette.TEXTURE_NAME + ".png"))
     makers = build_all.all_assets()
     want = lambda n: not only or any(w in n.lower() for w in only)   # noqa: E731
-    for name in (*cats.ROSTER, *cats.EXTRA_CATS):      # the mascot too: clean in his collar, and as the muddy stray
+    # the mascot too: clean in his collar, and as the muddy stray; and the special customers' cats
+    for name in (*cats.ROSTER, *cats.EXTRA_CATS, *cats.SPECIAL_CATS):
         for dirty in (False, True):
             if want(f"portrait_{name}{'_dirty' if dirty else ''}"):
                 print("ui:", portrait(name, mat, out, dirty))
-        if name in cats.ROSTER:                        # a picture per dirt level for the pick menu's cards
+        if name not in cats.EXTRA_CATS:                # a picture per dirt level for the pick menu's cards
             for level in range(1, dirt.LEVELS + 1):
                 if want(f"portrait_{name}_dirty{level}"):
                     print("ui:", portrait(name, mat, out, True, level))

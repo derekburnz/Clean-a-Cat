@@ -77,9 +77,62 @@ EXTRA_CATS = {
 }
 
 
+# The special customers' cats (the owner 2026-11-25: special customers "that expire that only I can take their cats
+# and have them have the really cool cat designs (can look in asset library)"). A draft, outside the Cat Index and
+# the coat table until the design says where they belong. Same bodies, joints and piece names as the roster, so the
+# carry, the mud coat and the wash work on them unchanged. The showy coat features are the generator's own, from the
+# owner's asset library (tiles, glyphs, rosettes, a mane, two colour stripes, a fade, sparkle, forehead marks); the
+# colourways and working names are new for this game. Rarity "Special" is theirs alone.
+SPECIAL_CATS = {
+    # a bath tiled in sky, mint and cream: the spa's own cat, a band of tiles across the brow
+    "Bathtile":  dict(rarity="Special", fur="spa_sky", second="spa_mint", third="pearl", eyes="eye_gold",
+                      pattern="solid", muzzle="pearl", nose="nose_bubblegum", tiles=True, tip="spa_mint",
+                      socks="pearl", inner_ear="spa_mint", eye_k=1.1,
+                      face=tuple((x, 0.375, 0.14, 0.1, ("spa_mint", "pearl", "gold_mid", "pearl", "spa_mint")[i])
+                                 for i, x in enumerate((-0.32, -0.16, 0.0, 0.16, 0.32)))
+                      + ((-0.32, 0.255, 0.14, 0.1, "pearl"), (0.32, 0.255, 0.14, 0.1, "pearl"))),
+    # a pastel tiger: bubblegum and mint stripes turn about on white, tiger stripes on the cheeks
+    "Sherbet":   dict(rarity="Special", fur="coat_cotton", second="fur_bubblegum", third="spa_mint", eyes="eye_sky",
+                      pattern="stripes", muzzle=None, nose="nose_bubblegum", stripes2=True, tip="fur_bubblegum",
+                      mark=("heart", "fur_bubblegum"), eye_k=1.1, fluff_twist=7,
+                      face=((0.38, 0.1, 0.1, 0.05, "fur_bubblegum"), (0.36, 0.0, 0.14, 0.05, "spa_mint"),
+                            (-0.38, 0.1, 0.1, 0.05, "fur_bubblegum"), (-0.36, 0.0, 0.14, 0.05, "spa_mint"))),
+    # the night sky: deep blue fading to violet and pink, stars all over, a big star on the brow
+    "Stardust":  dict(rarity="Special", fur="galaxy_blue", second="aurora_violet", third="fur_bubblegum",
+                      eyes="eye_mint", pattern="gradient", muzzle=None, nose="nose_bubblegum", glow_eyes=True,
+                      sparkle=True, mark=("bigstar", "sparkle"), eye_k=1.1,
+                      face=((0.36, 0.38, 0.05, 0.05, "sparkle"), (-0.37, 0.3, 0.05, 0.05, "sparkle"),
+                            (0.3, 0.26, 0.04, 0.04, "milk"), (-0.27, 0.41, 0.04, 0.04, "milk"),
+                            (0.39, -0.03, 0.04, 0.04, "milk"))),
+    # a rose leopard: berry rings round pink middles on vanilla, on the brow too, a thick tail
+    "Rosette":   dict(rarity="Special", fur="fur_vanilla", second="royal_berry", third="fur_rose", eyes="eye_gold",
+                      pattern="spots", rosettes=True, muzzle="milk", nose="nose_bubblegum", tip="royal_berry",
+                      tail_thick=0.3, ear_tufts=True, eye_k=1.1,
+                      face=((0.0, 0.36, 0.17, 0.15, "royal_berry"), (0.0, 0.36, 0.08, 0.07, "fur_rose", 0, 1),
+                            (0.27, 0.31, 0.15, 0.13, "royal_berry"), (0.27, 0.31, 0.07, 0.06, "fur_rose", 0, 1),
+                            (-0.27, 0.31, 0.15, 0.13, "royal_berry"), (-0.27, 0.31, 0.07, 0.06, "fur_rose", 0, 1),
+                            (0.4, 0.13, 0.07, 0.07, "royal_berry"), (-0.4, 0.13, 0.07, 0.07, "royal_berry"))),
+    # ink black with a rainbow crest from the brow down the back, a pink and a mint front toe and bright mint eyes
+    "Prism":     dict(rarity="Special", fur="coat_inky", second="coat_inky", eyes="eye_mint", pattern="solid",
+                      muzzle=None, nose="nose_bubblegum", glow_eyes=True, curl=True, tip="aurora_violet",
+                      mane=("neon_pink", "fur_marmalade", "pastel_butter", "spa_mint", "spa_sky", "aurora_violet"),
+                      mane_tall=0.3, toes=("neon_pink", "spa_mint", None, None), eye_k=1.1,
+                      face=((0.0, 0.42, 0.14, 0.05, "aurora_violet"), (0.0, 0.365, 0.14, 0.05, "spa_sky"),
+                            (0.0, 0.31, 0.14, 0.05, "spa_mint"))),
+    # jade with rows of gold glyphs between dark bands, gold paws, a gold drop under a row of gold dots
+    "Jade":      dict(rarity="Special", fur="fur_emerald", second="gold_mid", third="sign_teal", eyes="eye_gold",
+                      pattern="solid", muzzle=None, nose="nose_dark", glyphs="haunch", socks="gold_mid", tip="gold_mid",
+                      mark=("drop", "gold_mid"), inner_ear="gold_mid", eye_k=1.1,
+                      face=((0.2, 0.36, 0.06, 0.06, "gold_mid"), (-0.2, 0.36, 0.06, 0.06, "gold_mid"),
+                            (0.34, 0.29, 0.05, 0.05, "gold_mid"), (-0.34, 0.29, 0.05, 0.05, "gold_mid"),
+                            (0.39, 0.02, 0.05, 0.13, "gold_mid"), (-0.39, 0.02, 0.05, 0.13, "gold_mid"))),
+}
+STARRY = ("Mythical", "Secret", "Special")     # the rarities whose sparkle is the dense star field, on the face too
+
+
 def spec_of(name):
-    """A cat's spec by name: a roster cat, or one of the extra cats."""
-    return ROSTER.get(name) or EXTRA_CATS[name]
+    """A cat's spec by name: a roster cat, one of the extra cats, or a special customer's cat."""
+    return ROSTER.get(name) or EXTRA_CATS.get(name) or SPECIAL_CATS[name]
 
 
 COAT_FIELDS = ("fur", "second", "third", "ruff", "muzzle", "eyes", "eyes2", "nose", "tip", "socks", "blaze", "cuff")
@@ -412,6 +465,11 @@ def _head(spec, c, h):
         b.box((0, fy + 0.014, fz + 0.11), (0.11 * k, 0.06, 0.22), c["blaze"], bevel=False)
     if spec.get("mark"):                                # the Cat Makeovers: a mark on the forehead
         _forehead_mark(b, spec["mark"][0], spec["mark"][1], fy - 0.012, fz + 0.31, 1.35)   # clear of the eyes
+    for x, z, fw, fh, col, *more in spec.get("face", ()):      # face paint (the special cats): flat marks on the face
+        ang, layer = (list(more) + [0, 0])[:2]         # so a card picture shows the coat; x and z from the eye line on
+        zk = sz / 0.84                                  # A's head, a mark over another one layer further out
+        b.box((x * w, fy - 0.0135 - 0.006 * layer, fz + z * zk), (fw * w, 0.04, fh * zk), col, bevel=False,
+              rot=_rot(ang, "Y") if ang else None)
     b.box((0, fy - 0.025, fz - 0.11 * k), (0.1 * k, 0.06, 0.07 * k), c["nose"], bevel=False)
     _mouth(b, surf, fz - 0.145 * k, k, "fur_grey" if palette.lstar(under) < 35 else "fur_black")
     for side in (-1, 1):
@@ -423,7 +481,7 @@ def _head(spec, c, h):
     if spec.get("moon"):                                # crescent on the forehead
         b.box((0.02, fy - 0.015, fz + 0.24), (0.16, 0.04, 0.06), "sparkle", bevel=False)
         b.box((-0.05, fy - 0.012, fz + 0.19), (0.06, 0.04, 0.08), "sparkle", bevel=False)     # a hair behind the top bar
-    if spec.get("sparkle") and spec["rarity"] in ("Mythical", "Secret"):   # star specks on the face too
+    if spec.get("sparkle") and spec["rarity"] in STARRY:   # star specks on the face too
         for (x, z) in ((0.36 * w, fz + 0.2), (-0.37 * w, fz - 0.17)):
             b.box((x, fy - 0.015, z), (0.06, 0.04, 0.06), "sparkle", bevel=False)      # proud of the blush
     if spec.get("sprinkles"):                           # a few sprinkles on the cheeks and brow
@@ -433,7 +491,9 @@ def _head(spec, c, h):
     if spec.get("mane"):                                # over the crown from the brow and down the back of the head
         m = spec["mane"]
         for i in range(3):
-            b.box((0, cy - 0.12 + i * 0.13, top + 0.03 + 0.01 * (i % 2)), (0.16 + 0.02 * (i % 2), 0.15, 0.1 + 0.02 * (i % 2)),
+            # the middle tuft is taller and set deeper, so no two tufts share a top or a bottom plane
+            tall = spec.get("mane_tall", 0.0) * (i + 1) / 3      # a crest: each tuft stands over the one in front
+            b.box((0, cy - 0.12 + i * 0.13, top + 0.03 + tall / 2), (0.16 + 0.02 * (i % 2), 0.15, 0.1 + 0.04 * (i % 2) + tall),
                   m[i % len(m)], bevel=False)
         for i in range(2):
             b.box((0, cy + sy / 2 + 0.03 + 0.01 * (i % 2), top - 0.1 - i * 0.16), (0.17 + 0.02 * ((i + 1) % 2), 0.1, 0.17),
@@ -465,6 +525,9 @@ MARKS = {
 
 def _forehead_mark(b, shape, colour, y, z, s=1.0):
     """A forehead mark (MARKS, scaled by s) in `colour`, or colours[i] when colour is a tuple, standing out from the face at y."""
+    if shape == "bigstar":                              # one real five pointed star, a point up
+        b.star((0, y - 0.004, z), 0.145 * s, 0.064 * s, 0.05, colour, rot=_rot(90, "X"))     # its low points clear the eyes
+        return
     for i, (x, dz, w, h, a) in enumerate(MARKS[shape]):
         col = colour[i % len(colour)] if isinstance(colour, tuple) else colour
         b.box((x * s, y - 0.003 * i, z + dz * s), (w * s, 0.04, h * s), col, bevel=False, rot=_rot(a, "Y") if a else None)
@@ -597,11 +660,13 @@ def _leg(c, hip_z, w, paw, paw_y=-0.01, toe=None, rock=None):
     return b
 
 
-def _toe(b, base, paw, swatch):
-    """Paint on the front third of a paw standing at `base` (bottom centre), a little proud all round."""
+def _toe(b, base, paw, swatch, deep=0.11):
+    """Paint on the front third of a paw standing at `base` (bottom centre), a little proud all round. `deep` is
+    how far back it reaches: the sitting cat's back paws take a little more, so the paint's back edge is not in
+    the plane of the back of the front legs."""
     x, y, z = base
     front = y - paw[1] / 2
-    b.box_base((x, front + 0.045, z + 0.004), (paw[0] + 0.02, 0.11, paw[2] + 0.012), swatch, bevel=False)
+    b.box_base((x, front - 0.01 + deep / 2, z + 0.004), (paw[0] + 0.026, deep, paw[2] + 0.012), swatch, bevel=False)
 
 
 def _coat_extras(b, spec, c, centre, size, sides=True, front=True, top=True):
@@ -630,7 +695,7 @@ def _coat_extras(b, spec, c, centre, size, sides=True, front=True, top=True):
             specks += [(-hx - 0.03, y0 + 0.1, z0 + 0.08), (hx + 0.03, y0 - 0.08, z0 - 0.08), (hx + 0.03, y0 + 0.26, z0 + 0.12)]
         if top:
             specks += [(0.16, y0 + 0.22, tz + 0.03), (-0.18, y0 - 0.16, tz + 0.03)]
-        if spec["rarity"] in ("Mythical", "Secret"):                # a denser star field on the heroes
+        if spec["rarity"] in STARRY:                # a denser star field on the heroes
             if sides:
                 specks += [(-hx - 0.03, y0 - 0.2, z0 + 0.13), (hx + 0.03, y0 + 0.1, z0 + 0.17)]
             if top:
@@ -967,8 +1032,8 @@ def _body_b(spec, c, d):
     b.box(d["chest"][0], d["chest"][1], c["fur"])
     for i, (x, y) in enumerate(d["back_paws"]):
         b.box_base((x, y, 0.01), (0.24, 0.4, 0.11), c["paw"])                  # 0.01 up: no shared floor plane
-        if spec.get("toes"):
-            _toe(b, (x, y, 0.01), (0.24, 0.4, 0.11), spec["toes"][2 + i])
+        if spec.get("toes") and spec["toes"][2 + i]:
+            _toe(b, (x, y, 0.01), (0.24, 0.4, 0.11), spec["toes"][2 + i], deep=0.135)
     front, htop = cy0 - csy / 2, hsz
     pat = spec["pattern"]
     if spec.get("tuxedo"):
@@ -1006,7 +1071,8 @@ def _body_b(spec, c, d):
     if spec.get("glyphs") or spec.get("tiles"):         # #2584 on each haunch and each side of the chest
         for side in (-1, 1):
             _flank_art(b, spec, c, side, hsx / 2, hy0 + 0.04, hsy * 0.75, hz0 + 0.01, 0.26)
-            _flank_art(b, spec, c, side, csx / 2, cy0 + 0.02, csy * 0.7, 0.82, 0.22)
+            if spec.get("glyphs") != "haunch":          # "haunch": the sitting chest is left bare (the triangle budget)
+                _flank_art(b, spec, c, side, csx / 2, cy0 + 0.02, csy * 0.7, 0.82, 0.22)
         if spec.get("tiles"):
             _top_tiles(b, c, 0.0, hy0 + 0.17, htop, 2, 2, hsx * 0.45, hsy * 0.3)
     if spec.get("rocks"):                               # #2739 slabs on the haunches, the chest front and its back
@@ -1219,6 +1285,6 @@ def parse(asset):
 
 ASSETS = {}
 BUILT_BODIES = ("walk", "sit")      # Clean a Cat builds A and B only
-for _n in (*ROSTER, *EXTRA_CATS):
+for _n in (*ROSTER, *EXTRA_CATS, *SPECIAL_CATS):
     for _body in BUILT_BODIES:
         ASSETS[f"CleanACat_Cat_{_n}{SUFFIX[_body]}"] = (lambda mat, n=_n, bd=_body: build_cat(n, mat, body=bd), 1500)

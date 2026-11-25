@@ -64,6 +64,11 @@ PIX = 0.09
 MUD_PROUD = 0.02
 RELIEF_MAX = 0.11
 FACE_BARE = 0.012                  # on the front of the head mud lies on bare fur only: the face keeps its drawing
+# A special cat's brow is painted (cats.py `face` and `mark`). There the mud lies over the paint like over any other
+# coat relief, from this far above the eyes' middles (before the cat's scale): a filthy special cat hides its marks
+# and the wash brings them back. Set by build_dirty for the cat being built; the roster's faces are as they were.
+BROW_PAINT = [False]
+BROW_FROM = 0.15
 # The scrub counts a rub within the sponge's radius (0.9 studs) of the piece's middle, with the cat at 1.5 times at
 # a station, so no part of a piece is further than this from its middle (before the station's scale).
 SCRUB_REACH = 0.6
@@ -386,7 +391,8 @@ def _shell(ob, block, span, n, k, eyes, head):
                                                   distance=2.0, depsgraph=dg)
                     if ok:
                         z = (ob.matrix_world @ loc - p).dot(nrm)
-                        if head and nrm.y < -0.5 and z > FACE_BARE * k:
+                        brow = BROW_PAINT[0] and eyes and p.z > max(e.z for e in eyes) + BROW_FROM * k
+                        if head and nrm.y < -0.5 and z > FACE_BARE * k and not brow:
                             return None
                         if z <= RELIEF_MAX * k:
                             relief = max(relief, z)
@@ -644,6 +650,7 @@ def build_dirty(name, mat, body, base=None):
     look = cats.look(spec)
     nest = {}
     cat_objs = list(objs)
+    BROW_PAINT[0] = bool(spec.get("face") or spec.get("mark"))
     for ob, piece in _coat(cat_objs, base, body, k, eyes, mat):
         objs.append(ob)
         if piece in RIDES:
@@ -671,7 +678,9 @@ def build_dirty(name, mat, body, base=None):
         b.sphere((0, 0, 0), 1.0, sw, segments=8, rings=4, scale=(r, r * 0.9, r * 0.62))
         b.sphere((0.62 * r, 0.25 * r, 0.12 * r), 1.0, sw, segments=6, rings=3, scale=(r * 0.68, r * 0.62, r * 0.5))
         ob = b.finalize(f"{base}_{part}", mat, location=tuple(p + nrm * 0.4 * r))
-        twist = Matrix.Rotation(math.radians(17 + 31 * i), 4, "Z")   # turned about the normal, a different way each
+        # turned about the normal, a different way each; a cat's `fluff_twist` turns all of its puffs a little more
+        # when the gate finds one of them lying flat on a mud face
+        twist = Matrix.Rotation(math.radians(17 + 31 * i + spec.get("fluff_twist", 0)), 4, "Z")
         ob.matrix_world = Matrix.Translation(ob.location) @ _align(nrm).to_4x4() @ twist   # time: no face lies flat on fur
         _apply_rotation(ob)
         ob.hide_render = True                          # the previews show the cat as it arrives
@@ -730,7 +739,7 @@ def _apply_rotation(ob):
 
 
 ASSETS = {}
-for _n in (*cats.ROSTER, *cats.EXTRA_CATS):
+for _n in (*cats.ROSTER, *cats.EXTRA_CATS, *cats.SPECIAL_CATS):
     for _body in cats.BUILT_BODIES:   # 3,200: the long claws (#23) put the fluffiest coat a little over 3,000
         ASSETS[f"CleanACat_Cat_{_n}_Dirty{cats.SUFFIX[_body]}"] = (
             lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3200)
