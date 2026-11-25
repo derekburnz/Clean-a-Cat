@@ -21,7 +21,9 @@
      starts at the player's first view, it never restarts, and when it hits zero the offer is gone for that player for
      good (the three items stay for sale on their own). The length is Planning-Agent's; 2:59:24 is a placeholder.
      Never "Limited time" or hurry words: the clock alone says it. The window shows it in the title band and the HUD
-     button under its label; both read the same server end time.
+     button under its label; both read the same server end time. The HUD chip shows hours and minutes only ("2h 59m", no
+     ticking seconds); seconds tick only inside the window. Nothing changes near the end: no red, no flash, no extra bob.
+     After a no, the window stays shut for that visit. Players PolicyService restricts see no pack and no timer.
    bundle: the window.
    hud: no window. The Starter button in the HUD's button grid. It bobs and sparkles for a few seconds when it first
      appears (three bobs, about 5 s), then sits still. Each later visit it bobs once more on appearing, and after the
@@ -171,7 +173,7 @@ body.short .starter .gift { font-size: 42px; }
       <button class="rbtn sky" data-tap aria-label="Tools"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Tools.png" alt=""><span class="cap outlined thin">Tools</span></button>
       <button class="rbtn pink" data-tap aria-label="Helpers"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Helper.png" alt=""><span class="cap outlined thin">Helpers</span></button>
       <button class="rbtn gold" data-tap aria-label="Builder"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Build.png" alt=""><span class="cap outlined thin">Build</span></button>
-      <button class="rbtn starter" data-tap aria-label="Spa Starter Pack"><i data-ic="gift" class="gift"></i><span class="cap outlined thin">Starter</span><span class="left"><i data-ic="clock"></i>2:59:24</span>
+      <button class="rbtn starter" data-tap aria-label="Spa Starter Pack"><i data-ic="gift" class="gift"></i><span class="cap outlined thin">Starter</span><span class="left"><i data-ic="clock"></i>2h 59m</span>
         <i data-ic="sparkle" class="glint a"></i><i data-ic="sparkle" class="glint b"></i><i data-ic="sparkle" class="glint c"></i></button>
     </div>
   </div>
