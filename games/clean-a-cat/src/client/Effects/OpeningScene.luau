@@ -30,6 +30,12 @@
 --   Both onDone callbacks fire exactly once, deferred, even when the call does nothing (not landed yet, already
 --   opened or carried, no kitten, destroyed) or the scene is destroyed part way.
 --   handle.destroy()   removes everything this scene made and gives the camera back
+--   OpeningScene.holdCamera(getOrigin) -> release   holds the camera from the moment a new save's box is known, before
+--                                   the scene can start (the spot or the character may still be on the way), so the
+--                                   default camera never shows a frame behind the player first (issue #541). Each
+--                                   frame it places the camera at the shot's first framing once getOrigin() gives the
+--                                   landing spot. play() takes the camera over from it; release() gives it back to
+--                                   the player only if play() has not. Reduced Motion or Less shake: no hold.
 --
 -- Props come from ReplicatedStorage.Assets by name (Model-Agent, #279 and #278); until they land, plain PH_ parts of
 -- the same sizes and joint names stand in, so the scene can be checked today.
@@ -345,8 +351,72 @@ local function layBump(cframe: CFrame)
 	bump.Parent = Workspace
 end
 
+-- The shot's framing at scene time `t` for a box landing at `origin`, the bump at `bumpX`.
+local function shotFraming(origin: CFrame, t: number, bumpX: number?): CFrame
+	local function at(x: number, y: number, z: number): Vector3
+		return origin.Position
+			+ origin.RightVector * x
+			+ origin.UpVector * y
+			+ origin.LookVector * z
+	end
+	local look = at(TruckDrop.lookX(t, bumpX), SHOT_LOOK_Y, TruckDrop.ROAD_Z * 0.45)
+	return CFrame.lookAt(at(SHOT_FROM.X, SHOT_FROM.Y, SHOT_FROM.Z), look)
+end
+
+-- The early hold (holdCamera): one at a time; play() takes it over.
+local earlyHold: { connection: RBXScriptConnection }? = nil
+
+local function endEarlyHold(): boolean
+	local hold = earlyHold
+	if hold == nil then
+		return false
+	end
+	earlyHold = nil
+	hold.connection:Disconnect()
+	return true
+end
+
+function OpeningScene.holdCamera(getOrigin: () -> CFrame?): () -> ()
+	if Effects.reducedMotion() or Workspace.CurrentCamera == nil then
+		return function() end
+	end
+	endEarlyHold()
+	local function place()
+		local cam = Workspace.CurrentCamera
+		if cam == nil then
+			return
+		end
+		if cam.CameraType ~= Enum.CameraType.Scriptable then
+			cam.CameraType = Enum.CameraType.Scriptable
+		end
+		local ok, origin = pcall(getOrigin)
+		if ok and typeof(origin) == "CFrame" then
+			cam.CFrame = shotFraming(origin, 0, TruckDrop.bumpAt(bumpOffset(origin, nil)))
+		end
+	end
+	local hold = { connection = RunService.PreRender:Connect(place) }
+	earlyHold = hold
+	place()
+	return function()
+		if earlyHold ~= hold then
+			return -- play() took it over, or a newer hold replaced it
+		end
+		endEarlyHold()
+		local cam = Workspace.CurrentCamera
+		if cam then
+			local character = Players.LocalPlayer and Players.LocalPlayer.Character
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				cam.CameraSubject = humanoid :: Humanoid
+			end
+			cam.CameraType = Enum.CameraType.Custom
+		end
+	end
+end
+
 function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local opts: Options = options or {}
+	local hadEarlyHold = endEarlyHold() -- the scene's own frame loop holds the camera from here
 	Audio.start() -- safe to call twice; the truck's sounds play even before AudioController has started
 	local reduced = Effects.reducedMotion()
 	local useShot = opts.shot == true and not reduced
@@ -627,8 +697,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			if cam == nil then
 				giveCameraBack(if t >= TruckDrop.BEATS.done then "shot over" else "no camera")
 			else
-				local look = at(TruckDrop.lookX(t, bumpX), SHOT_LOOK_Y, TruckDrop.ROAD_Z * 0.45)
-				cam.CFrame = CFrame.lookAt(at(SHOT_FROM.X, SHOT_FROM.Y, SHOT_FROM.Z), look)
+				cam.CFrame = shotFraming(origin, t, bumpX)
 			end
 		end
 	end
@@ -730,6 +799,12 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	}
 
 	connection = RunService.PreRender:Connect(frame)
+	frame() -- the first framing now, not on the next frame, so no frame shows the camera where it was (#541)
+	if hadEarlyHold and not holdingShot then
+		-- the early hold had the camera but this scene takes no shot (option B): it goes back to the player now
+		holdingShot = true
+		giveCameraBack("no shot")
+	end
 	return handle
 end
 
