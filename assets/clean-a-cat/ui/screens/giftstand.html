@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="states" content="todo,ready,claimed">
+<title>Gift Stand</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+/* The gift stand's card (Derek's fifth pass, 2026-11-25: "have one pet that can be got by joining group and liking
+   game ... make sure the pet for liking/joining group is obvious to find"). A stand inside the spa holds the pet; the
+   player walks up or taps it and this card opens. Never a pop up: it opens only from the stand. It lights up once at
+   about 7:00 (first-five-minutes-timeline.md) with one line from Suds, then simply stays in the spa.
+   Two steps, each a row with a button that does it: Join Creampuff Games (Roblox's group prompt) and Like the game
+   (Roblox has no like prompt, so the row says where: the thumbs up on the game page, and the button opens nothing
+   we cannot do; the game checks group membership on the server; a like cannot be checked by a game, so the like row
+   is honest about it: it ticks when the player says they did it). Then Claim gives the pet.
+   todo: nothing done. ready: both done, Claim is green. claimed: the pet is yours, the stand stays as a thank-you.
+   No pressure words, no timer, and the pet is shown whole before anything is asked. */
+.win.gift { width: 820px; }
+.gift .body { display: grid; grid-template-columns: 250px 1fr; gap: 22px; align-items: center; }
+.petpic { position: relative; height: 250px; border-radius: 20px; border: var(--stroke) solid var(--ink); overflow: hidden; display: grid; place-items: center;
+  background: radial-gradient(circle at 50% 45%, #fffbe8 0 18%, transparent 19%), repeating-conic-gradient(from 0deg at 50% 45%, #ffd3df 0 10deg, #ffb3c7 10deg 20deg); }
+.petpic img { width: 88%; height: 88%; object-fit: contain; }
+.petpic .tag { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); white-space: nowrap; }
+.steps { display: flex; flex-direction: column; gap: 10px; }
+.lead { font-weight: 800; font-size: 19px; color: var(--ink-soft); line-height: 1.25; }
+.st { display: grid; grid-template-columns: 50px 1fr auto; column-gap: 12px; align-items: center; padding: 10px 12px; }
+.st > .ic { font-size: 42px; justify-self: center; }
+.st .t { font-family: var(--font-head); font-size: 22px; line-height: 1.1; }
+.st .d { font-weight: 800; font-size: 16px; color: var(--ink-soft); line-height: 1.15; }
+.st .ok { font-size: 40px; }
+.st.done { background: #f1fbf4; border-color: #9ed9b2; }
+.claim { margin-top: 4px; }
+body:not([data-state="ready"]):not([data-state="claimed"]) .only-ready { display: none !important; }
+body[data-state="ready"] .only-todo, body[data-state="claimed"] .only-todo { display: none !important; }
+body:not([data-state="claimed"]) .only-claimed { display: none !important; }
+body[data-state="claimed"] .not-claimed { display: none !important; }
+
+body.short .win.gift { width: 820px; }
+body.short .gift .body { grid-template-columns: 180px 1fr; gap: 14px; }
+body.short .petpic { height: 180px; }
+body.short .lead { display: none; }
+body.short .st { padding: 6px 10px; grid-template-columns: 40px 1fr auto; }
+body.short .st > .ic { font-size: 34px; }
+body.short .st .t { font-size: 19px; }
+body.short .st .d { font-size: 15px; }
+</style>
+</head>
+<body class="no-move">
+<div id="screen"><div id="stage">
+  <div class="world spa" style="background-image:url(img/world-spa.jpg)"></div>
+  <div class="backdrop"></div>
+
+  <div class="win gift">
+    <div class="band">
+      <div class="badge"><i data-ic="gift"></i></div>
+      <span class="title outlined">Free pet</span>
+    </div>
+    <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+    <div class="body">
+      <div class="petpic"><img src="img/portrait_Starcoat_ink.png" alt=""><span class="rar epic tag">Starcoat</span></div>
+      <div class="steps">
+        <span class="lead not-claimed">Say hi to our group and like the game, then Starcoat follows you around your spa.</span>
+        <span class="lead only-claimed">Starcoat is yours. Thank you for joining and liking!</span>
+        <div class="st card" data-state-done>
+          <i data-ic="friends"></i>
+          <div><div class="t">Join Creampuff Games</div><div class="d">Our group on Roblox</div></div>
+          <button class="btn sky small only-todo" data-tap><span class="lbl">Join</span></button>
+          <i data-ic="check" class="ok only-ready"></i>
+        </div>
+        <div class="st card">
+          <i data-ic="heart"></i>
+          <div><div class="t">Like the game</div><div class="d">The thumbs up on the game's page</div></div>
+          <button class="btn sky small only-todo" data-tap><span class="lbl">I did it</span></button>
+          <i data-ic="check" class="ok only-ready"></i>
+        </div>
+        <button class="btn green wide claim not-claimed only-ready" data-tap><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
+        <button class="btn off wide claim only-todo" data-tap aria-label="Claim Starcoat, after both steps"><i data-ic="paw"></i><span class="lbl">Claim Starcoat</span></button>
+      </div>
+    </div>
+  </div>
+</div></div>
+<script src="kit.js"></script>
+<script>
+// done rows go green in ready and claimed
+const st = new URLSearchParams(location.search).get('state');
+if (st === 'ready' || st === 'claimed') document.querySelectorAll('.st').forEach((r) => r.classList.add('done'));
+</script>
+</body>
+</html>
