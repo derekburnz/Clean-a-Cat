@@ -3,30 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="plain,values,timer,hud">
+<meta name="states" content="bundle,timer,hud">
 <title>Spa Starter Pack</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
 <style>
-/* The Spa Starter Pack (plan page pick `starterpack`, Growth-Agent/starter-pack-check-2026-11-25.md), drawn after a
-   pack window Derek liked in another game on 2026-11-25: three item cards joined by plus signs, one big green buy
-   button, and a HUD button that gently grows and shrinks with sparkles popping round it. Ideas only, our own look.
-   Nothing in the pack is random (a random part would make the whole pack a paid random item). Fixed contents: a look
-   for the tub, a bandana for Suds and 1 hour of double tips. 99 Robux.
-   plain: the default. The plain price, no per-item prices, no crossed out price, no timer.
-   values: each card shows what the item costs on its own and the button says the true saving. Use it only if those
-     three items are really sold on their own at those prices (a made up "was" price breaks Roblox's rule).
-   timer: values plus a timer chip. Only if Derek wants it, and only a real one the server owns that never restarts;
-     never "Limited time" words. Dropping it is removing one element (.timer).
-   hud: no window. The Starter button in the HUD's button grid: it bobs bigger and smaller and sparkles pop round it
-     (Motion-FX builds it; Reduced Motion keeps it still). It is in the shop afterwards; the window opens once at the
-     start of the second visit and a no is final for that visit.
-   Pictures are stand-ins: the tub is the Bubble Bath station render and the bandana a bow on Suds until Model-Agent
-   draws them. The per-item prices and the saving in values are placeholders.
+/* The Spa Starter Pack (plan page picks `starterpack` and `packtimer`; Growth-Agent/starter-pack-check-2026-11-25.md,
+   last section), drawn after a pack window Derek liked in another game on 2026-11-25: three item cards joined by plus
+   signs, each with its real shop price, a struck through total, one big green button with the pack price, and a HUD
+   button that bobs with sparkles. Ideas only, our own look.
+   Contents (Planning's pick): Golden Sponge 99 + second pet slot 149 + 2x Coins 199 = 447; the pack is 249, labelled
+   "Bundle · save 44%" (never "SALE"). All three are real passes sold on their own at those prices, so the struck total
+   and the saving are true; keep the item prices unchanged while the pack shows. Nothing random and no coins in it.
+   Shown only to a player who owns none of the three (for an owner the saving would be false); buying any one of them
+   takes the pack away for that player. The window opens only when the player taps the HUD button.
+   bundle: the default, with no timer.
+   timer: a timer chip in the title band, only if Derek overrides the no-countdown pick: then it must be real (a fixed
+     time from the player's first view, owned by the server, never restarting) and the pack really gone for that player
+     afterwards. Never "Limited time" words. Dropping it is removing one element (.timer).
+   hud: no window. The Starter button in the HUD's button grid. It bobs and sparkles for a few seconds when it first
+     appears (three bobs, about 5 s), then sits still. Each later visit it bobs once more on appearing, and after the
+     player has opened the window once, or after three visits, it never moves again. Reduced Motion: still, always.
+     Motion-FX builds the motion.
+   Pictures: the Golden Sponge is Model-Agent's tool render; the pet slot and 2x Coins use kit icons until icons are
+   drawn. The hexagon stands in for Roblox's own Robux glyph, which the build uses.
    Words follow Roblox's guidance for young players: "Get pack", never "BUY NOW" or pressure words. */
 .win.pack { width: 900px; }
 .pack .body { display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: 18px; }
-body:not([data-state="values"]):not([data-state="timer"]) .only-values { display: none !important; }
 body:not([data-state="timer"]) .only-timer { display: none !important; }
 body[data-state="hud"] .packlayer { display: none; }
 body:not([data-state="hud"]) .hudlayer { display: none; }
@@ -36,14 +39,15 @@ body:not([data-state="hud"]) .hudlayer { display: none; }
   border: var(--stroke) solid var(--ink); border-radius: var(--radius-card); box-shadow: 0 5px 0 var(--ink); }
 .item .pic { position: relative; width: 100%; height: 170px; border-radius: 16px; border: 3px solid var(--ink); overflow: hidden; display: grid; place-items: center;
   background: radial-gradient(circle at 50% 45%, #fffbe8 0 18%, transparent 19%), repeating-conic-gradient(from 0deg at 50% 45%, var(--ra) 0 10deg, var(--rb) 10deg 20deg); }
-.item.tub .pic { --ra: #c9f5e5; --rb: #a8e6cf; }
-.item.suds .pic { --ra: #ffd3df; --rb: #ffb3c7; }
+.item.sponge .pic { --ra: #c9f5e5; --rb: #a8e6cf; }
+.item.slot .pic { --ra: #ffd3df; --rb: #ffb3c7; }
 .item.tips .pic { --ra: #ffe98f; --rb: #ffd35e; }
 .item .pic img { width: 92%; height: 92%; object-fit: contain; }
 .item .pic .big { font-size: 112px; }
 .item .pic .x2 { position: absolute; right: 26px; bottom: 22px; font-family: var(--font-head); font-size: 38px; color: #fff; background: #ff86b0;
   border: 3px solid var(--ink); border-radius: 14px; padding: 0 10px 2px; transform: rotate(-8deg); box-shadow: 0 3px 0 var(--ink); }
-.item .pic .bandana { position: absolute; right: 18px; bottom: 16px; font-size: 54px; transform: rotate(10deg); }
+.item .pic .plus1 { position: absolute; right: 24px; bottom: 20px; font-family: var(--font-head); font-size: 34px; color: #fff; background: #3fb071;
+  border: 3px solid var(--ink); border-radius: 14px; padding: 0 10px 2px; transform: rotate(-8deg); box-shadow: 0 3px 0 var(--ink); }
 .item .name { font-family: var(--font-head); font-size: 24px; line-height: 1.05; text-align: center; }
 .item .what { font-weight: 800; font-size: 16px; color: var(--ink-soft); line-height: 1.1; text-align: center; }
 .item .each { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-head); font-size: 20px; color: var(--ink-soft); }
@@ -58,6 +62,10 @@ body:not([data-state="hud"]) .hudlayer { display: none; }
 .buy .rbx { width: 38px; height: 38px; }
 .save { transform: rotate(6deg); font-family: var(--font-head); font-size: 20px; color: #3a2a00;
   background: linear-gradient(#fff4b8, #ffd84d); border: 3px solid var(--ink); border-radius: 12px; padding: 2px 10px 3px; box-shadow: 0 3px 0 var(--ink); white-space: nowrap; }
+.was { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-head); font-size: 26px; color: var(--ink-soft); }
+.was s { text-decoration-thickness: 3px; text-decoration-color: #e0475b; }
+body.short .was { font-size: 22px; }
+body.short .save { font-size: 17px; }
 .timer { margin-left: 14px; position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 20px; color: var(--ink); background: #fff;
   border: 3px solid var(--line); border-radius: 12px; padding: 2px 10px; }
 .timer .ic { font-size: 22px; }
@@ -73,13 +81,14 @@ body:not([data-state="hud"]) .hudlayer { display: none; }
 .starter .glint.a { left: -14px; top: -10px; }
 .starter .glint.b { right: -16px; top: 18px; font-size: 18px; }
 .starter .glint.c { left: 4px; bottom: -6px; font-size: 16px; }
-/* the bob: 100% to 108% and back over 1.6 s, eased; the sparkles pop one after another */
+/* the bob: 100% to 108% and back over 1.6 s, three times (about 5 s), then still; the sparkles pop one after another
+   for the same few seconds. Never a loop: a button that keeps moving is nagging (Growth-Agent's ruling). */
 @keyframes bob { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 @keyframes glint { 0%, 100% { opacity: 0; transform: scale(.3) rotate(0); } 20% { opacity: 1; transform: scale(1.1) rotate(20deg); } 45% { opacity: 0; transform: scale(.6) rotate(45deg); } }
-.starter { animation: bob 1.6s ease-in-out infinite; }
-.starter .glint.a { animation: glint 2.4s ease-out infinite; }
-.starter .glint.b { animation: glint 2.4s ease-out .8s infinite; }
-.starter .glint.c { animation: glint 2.4s ease-out 1.6s infinite; }
+.starter { animation: bob 1.6s ease-in-out 3; }
+.starter .glint.a { animation: glint 2.4s ease-out 2; }
+.starter .glint.b { animation: glint 2.4s ease-out .8s 2; }
+.starter .glint.c { animation: glint 2.4s ease-out 1.6s 2; }
 @media (prefers-reduced-motion: reduce) { .starter, .starter .glint { animation: none !important; } .starter .glint.a { opacity: 1; } }
 
 /* phones held sideways: shorter pictures, smaller cards */
@@ -89,7 +98,7 @@ body.short .item { width: 196px; padding: 8px 8px 10px; gap: 4px; }
 body.short .item .pic { height: 112px; }
 body.short .item .pic .big { font-size: 76px; }
 body.short .item .pic .x2 { font-size: 28px; right: 18px; bottom: 12px; }
-body.short .item .pic .bandana { font-size: 40px; right: 12px; bottom: 8px; }
+body.short .item .pic .plus1 { font-size: 26px; right: 16px; bottom: 10px; }
 body.short .item .name { font-size: 21px; }
 body.short .item .what { display: none; }
 body.short .plus { width: 44px; height: 44px; }
@@ -120,32 +129,33 @@ body.short .starter .gift { font-size: 42px; }
       <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
       <div class="body">
         <div class="items">
-          <div class="item tub">
-            <div class="pic"><img src="img/icon_Station_BubbleBath_ink.png" alt=""></div>
-            <span class="name">Bubble Tub</span>
-            <span class="what">A new look for your tub</span>
-            <span class="each only-values"><svg class="rbx"><use href="#rbx"/></svg>49</span>
+          <div class="item sponge">
+            <div class="pic"><img src="img/icon_Tool_SpongeGolden_ink.png" alt=""></div>
+            <span class="name">Golden Sponge</span>
+            <span class="what">Wider scrub with gold bubbles</span>
+            <span class="each"><svg class="rbx"><use href="#rbx"/></svg>99</span>
           </div>
           <span class="plus"><svg><use href="#plus"/></svg></span>
-          <div class="item suds">
-            <div class="pic"><img src="img/portrait_Suds_ink.png" alt=""><i data-ic="bow" class="bandana"></i></div>
-            <span class="name">Suds' Bandana</span>
-            <span class="what">Suds wears it in your spa</span>
-            <span class="each only-values"><svg class="rbx"><use href="#rbx"/></svg>25</span>
+          <div class="item slot">
+            <div class="pic"><i data-ic="paw" class="big"></i><span class="plus1">+1</span></div>
+            <span class="name">Pet Slot</span>
+            <span class="what">One more pet beside you</span>
+            <span class="each"><svg class="rbx"><use href="#rbx"/></svg>149</span>
           </div>
           <span class="plus"><svg><use href="#plus"/></svg></span>
           <div class="item tips">
             <div class="pic"><i data-ic="coin" class="big"></i><span class="x2">x2</span></div>
-            <span class="name">Double Tips</span>
-            <span class="what">Every tip doubled for 1 hour</span>
-            <span class="each only-values"><svg class="rbx"><use href="#rbx"/></svg>49</span>
+            <span class="name">2x Coins</span>
+            <span class="what">Double coins from every cat, for good</span>
+            <span class="each"><svg class="rbx"><use href="#rbx"/></svg>199</span>
           </div>
         </div>
         <div class="buyrow">
-          <button class="btn green buy" data-tap><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">99 · Get pack</span></button>
-          <span class="save only-values">Save 24</span>
+          <span class="was" aria-label="Bought one by one: 447"><svg class="rbx"><use href="#rbx"/></svg><s>447</s></span>
+          <button class="btn green buy" data-tap><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">249 · Get pack</span></button>
+          <span class="save">Bundle · save 44%</span>
         </div>
-        <span class="fine">Nothing random. The tub look and bandana are yours to keep.</span>
+        <span class="fine">Nothing random. All three are yours to keep.</span>
       </div>
     </div>
   </div>
