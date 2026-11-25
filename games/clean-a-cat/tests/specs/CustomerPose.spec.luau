@@ -67,5 +67,29 @@ return function()
 			local b = CustomerPose.approach(CustomerPose.approach(0, 1, 6, 0.05), 1, 6, 0.05)
 			expect(near(a, b)).to.equal(true)
 		end)
+		it("taps a foot only once the cat's heart bar is low, faster as it empties", function()
+			expect(CustomerPose.tapEvery(0.4)).to.equal(CustomerPose.TAP_EVERY[1])
+			expect(near(CustomerPose.tapEvery(0), CustomerPose.TAP_EVERY[2])).to.equal(true)
+			local function lifted(fill: number, standing: number, still: boolean): boolean
+				for i = 0, 60 do
+					local pose = CustomerPose.newPose()
+					CustomerPose.mood(pose, fill, i * 0.05, 0.2, standing, still)
+					if pose.legL > 0 then
+						return true
+					end
+				end
+				return false
+			end
+			expect(lifted(0.8, 1, false)).to.equal(false)
+			expect(lifted(0.2, 1, false)).to.equal(true)
+			expect(lifted(0.2, 0, false)).to.equal(false)
+			expect(lifted(0.2, 1, true)).to.equal(false)
+		end)
+		it("hangs the head as the cat leaves, with reduced motion too", function()
+			local pose = CustomerPose.newPose()
+			CustomerPose.mood(pose, 0, 1, 0.2, 1, true)
+			expect(near(pose.headPitch, -CustomerPose.HEAD_DOWN)).to.equal(true)
+			expect(pose.legL).to.equal(0)
+		end)
 	end)
 end

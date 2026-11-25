@@ -10,6 +10,8 @@
 -- now and then. The right arm carries the cat carrier, so it only sways a hint. Reduced motion holds the idle head;
 -- the walk stays, since legs gliding without a step read worse.
 --
+-- A customer whose cat's heart bar (the HeartFill attribute) runs low taps a foot while standing (CustomerPose.mood).
+--
 -- Budget: 30 updates a second near the camera, 15 past 30 studs, none past 60 (back to rest), at most MAX customers.
 --
 -- API
@@ -166,8 +168,14 @@ local function update(rig: Rig, now: number)
 	else
 		rig.phase = 0
 	end
-	local pitch, yaw = CustomerPose.idle(now, rig.seed, Comfort.reducedMotion())
+	local still = Comfort.reducedMotion()
+	local pitch, yaw = CustomerPose.idle(now, rig.seed, still)
 	CustomerPose.sample(rig.pose, rig.phase, rig.amount, pitch, yaw)
+	-- the cat's heart bar, set by Gameplay on the customer (issue #528)
+	local fill = rig.model:GetAttribute("HeartFill")
+	if type(fill) == "number" then
+		CustomerPose.mood(rig.pose, fill, now, rig.seed, 1 - rig.amount, still)
+	end
 	apply(rig, rig.pose)
 	rig.moved = true
 end
