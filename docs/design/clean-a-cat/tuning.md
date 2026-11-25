@@ -80,11 +80,20 @@ Worked example (the recap mockup): an Uncommon at level 3, 3 stars, picked early
 
 ## 6. Tools (coins, kept forever)
 
+One hand tool per kind of step, as in the Tools window mock (`tools.html`). Each starts at level 1 and has two upgrades; a level makes that step about 15% quicker (fewer strokes or a wider scrub), which helps stars. The old Bubble Soap and Pro Brush become Sponge level 2 and Brush level 2.
+
 | key | value | why | changed |
 |---|---|---|---|
-| `tool.BubbleSoap` | 45 | First purchase after about 3 cats (pace) | 2026-11-25 |
-| `tool.ProBrush` | 250 | Around cat 20 | 2026-11-25 |
-| `tool.GoldenSponge` | game pass 99 Robux, +20% on cats washed by hand | Pass, never sold for coins | 2026-11-25 |
+| `tool.Sponge` | L2 45, L3 250 | Sponge L2 is the first purchase, after about 3 cats (pace) | 2026-11-25 |
+| `tool.Brush` | L2 120, L3 600 | | 2026-11-25 |
+| `tool.Tweezers` | L2 120, L3 600 | | 2026-11-25 |
+| `tool.Shower` | L2 250, L3 1,200 | | 2026-11-25 |
+| `tool.Dryer` | L2 600, L3 2,000 | | 2026-11-25 |
+| `tool.NailClipper` | L2 400, L3 1,500, shown from 15 spa stars | Claws are the rarest step | 2026-11-25 |
+| `tool.levelSpeed` | −15% step time per level | | 2026-11-25 |
+| `tool.GoldenSponge` | game pass 99 Robux, the Sponge at its best plus gold bubbles, +20% on cats washed by hand | Pass, never sold for coins | 2026-11-25 |
+
+The Bows card in the Tools window sells the next bow tier from section 5 (the mock's "300, +3" becomes Silk, 150, +4).
 
 ## 7. Workers
 
@@ -101,7 +110,11 @@ Worked example (the recap mockup): an Uncommon at level 3, 3 stars, picked early
 | `worker.modes` | about to leave, rarest, dirtiest, first in line (default first in line) | | 2026-11-25 |
 | `worker.nameLength` | 3 to 16 letters, filtered | | 2026-11-25 |
 
-Guard rail check (must stay true): a player washing Common level 2 cats by hand makes about 0.7 coins a second (10 × 1.25 × 1.2 + 4 per 27 s). Four level 5 workers with the best pets make 4 × (12.5 × 0.37 / 36 s) × 1.2 ≈ 0.62 coins a second, below the player. Any change to `worker.*` or `pet.*` re-runs this sum.
+| `worker.count` | 3 at most (Jo, Sam and Lou) | | 2026-11-25 |
+| `worker.petCap` | a worker's pet boosts add together and are capped at +30% | Two pets with the second slot pass, star ups included, never pass the cap | 2026-11-25 |
+| `worker.doubleCoins` | 2x Coins and the Golden Sponge apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
+
+Guard rail check (must stay true, with margin): a player washing Common level 2 cats by hand, with no passes, makes about 0.70 coins a second (10 × 1.25 × 1.2 + 4 per 27 s). Three level 5 workers at the pet cap make 3 × (12.5 × 0.37 / 36 s) × 1.3 ≈ 0.50 coins a second, about 71% of the player. Any change to `worker.*` or `pet.*` re-runs this sum.
 
 ## 8. Builds and Finish now
 
@@ -134,7 +147,7 @@ Today's `BuildRules` stations (Brush Table, Dryer, Bubble Bath, Pawdicure) becom
 | `crate.price` | 49 Robux, or 5 for 199 | From the design; hidden where paid random items are restricted | 2026-11-25 |
 | `crate.chance` | Common 50 (two pets, 25 each), Uncommon 26 (two, 13 each), Rare 16 (two, 8 each), Epic 6 (one), Legendary 2 (one) | Adds to 100; shown as percentages before any buy or open | 2026-11-25 |
 | `crate.good` | the day 2 crate: Common 30, Uncommon 30, Rare 24, Epic 12, Legendary 4 | Earned only, never sold; its own chance list shows | 2026-11-25 |
-| `pet.boost` | Common +5%, Uncommon +8%, Rare +12%, Epic +16%, Legendary +20% | With a worker, on that worker's pay; with the player, on tips | 2026-11-25 |
+| `pet.boost` | Common +5%, Uncommon +8%, Rare +12%, Epic +16%, Legendary +20% | Every pet's boost is its rarity's, so the crate's chance list shows each pet with its chance and its boost. With a worker, on that worker's pay (capped, section 7); with the player, on tips. Boosts add, never multiply | 2026-11-25 |
 | `pet.starUp` | 3 of the same pet fuse into star 2 (boost ×1.5), 3 star 2 into star 3 (boost ×2) | Fusing is free and fixed | 2026-11-25 |
 | `pet.slots` | 1 for the player, 1 per worker; 2 each with the pass | | 2026-11-25 |
 
@@ -144,7 +157,7 @@ Pet names and looks come from Model-Agent. The rarity split above fixes the chan
 
 | key | value | why | changed |
 |---|---|---|---|
-| `quest.daily` | 2 a day from the pool, reset at midnight in the player's time zone (server uses UTC offset from the client clock, clamped) | "A couple of daily quests" | 2026-11-25 |
+| `quest.daily` | 2 a day from the pool, reset at midnight in the player's time zone: the server saves the offset once at first join (from the client clock, clamped to whole hours from −12 to +14) and never takes a new one, so changing a clock cannot reset quests early | "A couple of daily quests" | 2026-11-25 |
 | `quest.dailyPool` | Wash 5 customer cats 50, Put a bow on 3 cats 40, Wash 2 cats at dirt level 3 or 4 60, Get 3 stars 4 times 50, Take 2 cats early 40 | All doable in one 20 min session | 2026-11-25 |
 | `quest.weekly` | Get 3 stars on 20 cats 300, Wash 2 special visitors' cats 300, Wash 10 cats at dirt level 4 300 | Reset Monday 00:00 UTC | 2026-11-25 |
 | `quest.weeklyCrate` | a normal crate when all three weekly quests are done | Earned, never sold for Robux | 2026-11-25 |
@@ -188,7 +201,7 @@ Cats washed to afford the next purchase. Re-time on the iPhone 12 once dirt leve
 
 | Purchase | Target | Expected with these values |
 |---|---|---|
-| Bubble Soap (45) | after 3 cats | The three tutorial cats pay about 16 each, so 48 after cat 3 |
+| Sponge level 2 (45) | after 3 cats | The three tutorial cats pay about 16 each, so 48 after cat 3 |
 | Second Tub (90) | after about 8 cats | Cats 4 to 8 pay about 22 each, so about 113 spare after cat 8 |
 | Jo (150) | after about 15 cats | Cats 9 to 15 pay about 23 each, so about 160 after cat 15 |
 | Third Tub (1,000) | offered about minute 15, bought in the second session | |
