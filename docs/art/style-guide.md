@@ -246,14 +246,15 @@ The owner on 2026-11-25: special customers "that expire that only I can take the
 | Name | Coat | On the face |
 |---|---|---|
 | Bathtile | `spa_sky` with mosaic tiles in `spa_mint`, `pearl` and cream on the flanks and crown, pearl paws, mint ears and tail tip | a band of mint, pearl and gold tiles across the brow |
-| Sherbet | white with stripes that turn about `fur_bubblegum` and `spa_mint` | a pink heart on the brow, tiger stripes on the cheeks |
+| Sherbet | `fur_bubblegum` pink with stripes that turn about `spa_mint` and cream, mint ears and tail tip (#474; it was white, which read as a roster cat on a small card) | a big cream heart on the brow, tiger stripes on the cheeks |
 | Stardust | `galaxy_blue` fading to `aurora_violet` and `fur_bubblegum`, star specks all over, mint eyes | one big five pointed star on the brow, small stars round it |
-| Rosette | `fur_vanilla` with `royal_berry` rings round `fur_rose` middles, a thick tail, ear tufts | three rosettes on the brow, a spot on each cheek |
-| Prism | ink black with a rainbow crest standing over the crown and running down the back, a curled tail with a violet tip, a pink and a mint front toe, mint eyes | three rainbow bars under the crest |
+| Rosette | `fur_vanilla` with `royal_berry` rings round `fur_rose` middles, a thick tail, dark berry ears with tufts, a rose muzzle and chest, mint eyes (#474) | one big berry diamond with a rose middle between two small diamonds, a berry bar on each cheek |
+| Prism | ink black with a rainbow crest standing over the crown and running down the back, a curled tail with a violet tip, a pink and a mint front toe, mint eyes | three rainbow bars under the crest, two bright stripes on each cheek, violet inside the ears (#474) |
 | Jade | `fur_emerald` with rows of gold glyphs between `sign_teal` bands on the flanks and haunches, gold paws, ears and tail tip | a gold drop under a row of gold dots |
 
 Rules for a special cat:
 - **It must read as special in the card picture.** The body's pattern does not show in a head and shoulders picture, so every special cat has marks on its face (`face` in its spec: flat boxes on the front of the head, kept inside the face so nothing sticks out past its edge) or a `mark` on the brow.
+- **One big cue, judged at 64 px (#474).** Small marks shrink to dots on a card: three small rings read as a spotted roster cat and thin stripes with a small heart as a white one. What holds at 64 px is a coat colour no roster cat has, ears in another colour (`ears` in the spec), or one mark a third of the face wide (a `mark` takes a size as its third entry). A cat on a cream, white, grey, ginger or black coat needs at least two of these.
 - No new swatch and no texture: every colour is already in the palette.
 - Mud lies over the paint on the brow (above the eyes), so a filthy special cat hides its marks and the wash brings them back. Round the eyes, nose and mouth the face stays clear as on every cat.
 - Inside the cat budgets: 824 to 1,160 triangles clean, 2,810 to 3,170 muddy.

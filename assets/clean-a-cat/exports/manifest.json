@@ -6132,9 +6132,9 @@
    "CleanACat_Cat_Prism_LegB1",
    "CleanACat_Cat_Prism_LegB2"
   ],
-  "triangles": 932,
+  "triangles": 980,
   "budget": 1500,
-  "parts": 48,
+  "parts": 52,
   "size_studs": {
    "x": 1.0,
    "y": 1.97,
@@ -6235,10 +6235,10 @@
    "warnings": [],
    "qa_accepted": {},
    "checks": {
-    "budget": "932/1500 tris",
+    "budget": "980/1500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "530 faces on swatch centers",
+    "uv": "554 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00",
@@ -6309,9 +6309,9 @@
    "CleanACat_Cat_Prism_Dirty_Claw07",
    "CleanACat_Cat_Prism_Dirty_Claw08"
   ],
-  "triangles": 2918,
+  "triangles": 2966,
   "budget": 3200,
-  "parts": 149,
+  "parts": 153,
   "size_studs": {
    "x": 1.39,
    "y": 2.18,
@@ -6466,10 +6466,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2918/3200 tris",
+    "budget": "2966/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1785 faces on swatch centers",
+    "uv": "1809 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=-0.00 y=0.00",
@@ -6538,9 +6538,9 @@
    "CleanACat_Cat_Prism_Dirty_Sit_Claw07",
    "CleanACat_Cat_Prism_Dirty_Sit_Claw08"
   ],
-  "triangles": 2914,
+  "triangles": 2962,
   "budget": 3200,
-  "parts": 152,
+  "parts": 156,
   "size_studs": {
    "x": 1.46,
    "y": 1.24,
@@ -6681,10 +6681,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2914/3200 tris",
+    "budget": "2962/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1787 faces on swatch centers",
+    "uv": "1811 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.11 y=-0.02",
@@ -6709,9 +6709,9 @@
    "CleanACat_Cat_Prism_Sit_LegF1",
    "CleanACat_Cat_Prism_Sit_LegF2"
   ],
-  "triangles": 904,
+  "triangles": 952,
   "budget": 1500,
-  "parts": 48,
+  "parts": 52,
   "size_studs": {
    "x": 1.28,
    "y": 1.24,
@@ -6804,10 +6804,10 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "904/1500 tris",
+    "budget": "952/1500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "516 faces on swatch centers",
+    "uv": "540 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.20 y=-0.02",
@@ -6834,9 +6834,9 @@
    "CleanACat_Cat_Rosette_LegB1",
    "CleanACat_Cat_Rosette_LegB2"
   ],
-  "triangles": 1160,
+  "triangles": 1136,
   "budget": 1500,
-  "parts": 80,
+  "parts": 78,
   "size_studs": {
    "x": 1.0,
    "y": 2.01,
@@ -6867,12 +6867,12 @@
     "hex": "#F2BFCB"
    },
    "muzzle": {
-    "swatch": "milk",
-    "hex": "#FFFFFF"
+    "swatch": "fur_rose",
+    "hex": "#F2BFCB"
    },
    "eyes": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    },
    "nose": {
     "swatch": "nose_bubblegum",
@@ -6883,8 +6883,8 @@
     "hex": "#8E2A4A"
    },
    "eyes2": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    }
   },
   "joints_roblox": {
@@ -6947,10 +6947,10 @@
     "back to back": 3
    },
    "checks": {
-    "budget": "1160/1500 tris",
+    "budget": "1136/1500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "636 faces on swatch centers",
+    "uv": "624 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.01",
@@ -7021,9 +7021,9 @@
    "CleanACat_Cat_Rosette_Dirty_Claw07",
    "CleanACat_Cat_Rosette_Dirty_Claw08"
   ],
-  "triangles": 3146,
+  "triangles": 3122,
   "budget": 3200,
-  "parts": 181,
+  "parts": 179,
   "size_studs": {
    "x": 1.39,
    "y": 2.04,
@@ -7102,12 +7102,12 @@
     "hex": "#F2BFCB"
    },
    "muzzle": {
-    "swatch": "milk",
-    "hex": "#FFFFFF"
+    "swatch": "fur_rose",
+    "hex": "#F2BFCB"
    },
    "eyes": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    },
    "nose": {
     "swatch": "nose_bubblegum",
@@ -7118,8 +7118,8 @@
     "hex": "#8E2A4A"
    },
    "eyes2": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    }
   },
   "joints_roblox": {
@@ -7183,10 +7183,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3146/3200 tris",
+    "budget": "3122/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1891 faces on swatch centers",
+    "uv": "1879 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.03",
@@ -7255,9 +7255,9 @@
    "CleanACat_Cat_Rosette_Dirty_Sit_Claw07",
    "CleanACat_Cat_Rosette_Dirty_Sit_Claw08"
   ],
-  "triangles": 3002,
+  "triangles": 2978,
   "budget": 3200,
-  "parts": 170,
+  "parts": 168,
   "size_studs": {
    "x": 1.56,
    "y": 1.27,
@@ -7334,12 +7334,12 @@
     "hex": "#F2BFCB"
    },
    "muzzle": {
-    "swatch": "milk",
-    "hex": "#FFFFFF"
+    "swatch": "fur_rose",
+    "hex": "#F2BFCB"
    },
    "eyes": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    },
    "nose": {
     "swatch": "nose_bubblegum",
@@ -7350,8 +7350,8 @@
     "hex": "#8E2A4A"
    },
    "eyes2": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    }
   },
   "joints_roblox": {
@@ -7407,10 +7407,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3002/3200 tris",
+    "budget": "2978/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1823 faces on swatch centers",
+    "uv": "1811 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.15 y=-0.01",
@@ -7435,9 +7435,9 @@
    "CleanACat_Cat_Rosette_Sit_LegF1",
    "CleanACat_Cat_Rosette_Sit_LegF2"
   ],
-  "triangles": 992,
+  "triangles": 968,
   "budget": 1500,
-  "parts": 66,
+  "parts": 64,
   "size_studs": {
    "x": 1.26,
    "y": 1.27,
@@ -7468,12 +7468,12 @@
     "hex": "#F2BFCB"
    },
    "muzzle": {
-    "swatch": "milk",
-    "hex": "#FFFFFF"
+    "swatch": "fur_rose",
+    "hex": "#F2BFCB"
    },
    "eyes": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    },
    "nose": {
     "swatch": "nose_bubblegum",
@@ -7484,8 +7484,8 @@
     "hex": "#8E2A4A"
    },
    "eyes2": {
-    "swatch": "eye_gold",
-    "hex": "#F2B53A"
+    "swatch": "eye_mint",
+    "hex": "#73DDB4"
    }
   },
   "joints_roblox": {
@@ -7540,10 +7540,10 @@
     "back to back": 1
    },
    "checks": {
-    "budget": "992/1500 tris",
+    "budget": "968/1500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "552 faces on swatch centers",
+    "uv": "540 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.19 y=-0.01",
@@ -7591,16 +7591,16 @@
   "dirty": false,
   "coat": {
    "fur": {
-    "swatch": "coat_cotton",
-    "hex": "#FBF7F1"
-   },
-   "second": {
     "swatch": "fur_bubblegum",
     "hex": "#F7A8C8"
    },
-   "third": {
+   "second": {
     "swatch": "spa_mint",
     "hex": "#A8E6CF"
+   },
+   "third": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
    },
    "eyes": {
     "swatch": "eye_sky",
@@ -7611,8 +7611,8 @@
     "hex": "#F28DAE"
    },
    "tip": {
-    "swatch": "fur_bubblegum",
-    "hex": "#F7A8C8"
+    "swatch": "spa_mint",
+    "hex": "#A8E6CF"
    },
    "eyes2": {
     "swatch": "eye_sky",
@@ -7820,16 +7820,16 @@
   },
   "coat": {
    "fur": {
-    "swatch": "coat_cotton",
-    "hex": "#FBF7F1"
-   },
-   "second": {
     "swatch": "fur_bubblegum",
     "hex": "#F7A8C8"
    },
-   "third": {
+   "second": {
     "swatch": "spa_mint",
     "hex": "#A8E6CF"
+   },
+   "third": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
    },
    "eyes": {
     "swatch": "eye_sky",
@@ -7840,8 +7840,8 @@
     "hex": "#F28DAE"
    },
    "tip": {
-    "swatch": "fur_bubblegum",
-    "hex": "#F7A8C8"
+    "swatch": "spa_mint",
+    "hex": "#A8E6CF"
    },
    "eyes2": {
     "swatch": "eye_sky",
@@ -8048,16 +8048,16 @@
   },
   "coat": {
    "fur": {
-    "swatch": "coat_cotton",
-    "hex": "#FBF7F1"
-   },
-   "second": {
     "swatch": "fur_bubblegum",
     "hex": "#F7A8C8"
    },
-   "third": {
+   "second": {
     "swatch": "spa_mint",
     "hex": "#A8E6CF"
+   },
+   "third": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
    },
    "eyes": {
     "swatch": "eye_sky",
@@ -8068,8 +8068,8 @@
     "hex": "#F28DAE"
    },
    "tip": {
-    "swatch": "fur_bubblegum",
-    "hex": "#F7A8C8"
+    "swatch": "spa_mint",
+    "hex": "#A8E6CF"
    },
    "eyes2": {
     "swatch": "eye_sky",
@@ -8178,16 +8178,16 @@
   "dirty": false,
   "coat": {
    "fur": {
-    "swatch": "coat_cotton",
-    "hex": "#FBF7F1"
-   },
-   "second": {
     "swatch": "fur_bubblegum",
     "hex": "#F7A8C8"
    },
-   "third": {
+   "second": {
     "swatch": "spa_mint",
     "hex": "#A8E6CF"
+   },
+   "third": {
+    "swatch": "coat_cotton",
+    "hex": "#FBF7F1"
    },
    "eyes": {
     "swatch": "eye_sky",
@@ -8198,8 +8198,8 @@
     "hex": "#F28DAE"
    },
    "tip": {
-    "swatch": "fur_bubblegum",
-    "hex": "#F7A8C8"
+    "swatch": "spa_mint",
+    "hex": "#A8E6CF"
    },
    "eyes2": {
     "swatch": "eye_sky",
