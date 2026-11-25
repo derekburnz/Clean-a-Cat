@@ -4616,9 +4616,9 @@
            0.095
           ],
           "Color": [
-           1.0,
-           0.9569,
-           0.6902
+           0.3686,
+           0.7451,
+           1.0
           ],
           "Material": "Neon",
           "Anchored": true,
@@ -5709,91 +5709,64 @@
      }
     },
     {
+     "name": "CleanACat_Cat_Bathtile_Sit_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.133,
+         1.6704,
+         0.5748
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1934,
+       0.1934,
+       0.1934
+      ],
+      "Color": [
+       0.6588,
+       0.8471,
+       0.9412
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_Bathtile_Sit/14"
      },
      "children": [
-      {
-       "name": "CleanACat_Cat_Bathtile_Sit_Bubbles_Glow",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.133,
-           1.6704,
-           0.5747
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1934,
-         0.1934,
-         0.1934
-        ],
-        "Color": [
-         0.6588,
-         0.8471,
-         0.9412
-        ],
-        "Material": "Neon",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Ball",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.133,
-           -0.3594,
-           -0.0855
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Cat_Bathtile_Sit/14",
-        "Follows": "Body"
-       }
-      },
       {
        "name": "CleanACat_Cat_Bathtile_Sit_Bubbles_Glow",
        "className": "Part",
@@ -5830,9 +5803,9 @@
          0.133
         ],
         "Color": [
-         1.0,
-         0.9569,
-         0.6902
+         0.3686,
+         0.7451,
+         1.0
         ],
         "Material": "Neon",
         "Anchored": true,
@@ -5841,9 +5814,36 @@
         "CastShadow": false,
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth",
-        "Shape": "Ball"
+        "Shape": "Ball",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.1995,
+           -0.4367,
+           -0.1045
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
        },
        "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Bathtile_Sit/14",
         "Follows": "Body"
        }
       }

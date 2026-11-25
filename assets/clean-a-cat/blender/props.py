@@ -194,7 +194,10 @@ def _tail_axes(ctx):
 
 
 # ------------------------------------------------------------------------------- the special cats' pieces --
-GOLD, GOLD_LT, LIT = "gold_mid", "gold_light", "sparkle"
+GOLD = "gold_mid"
+# Neon is for small gems in a deep colour: a cream, white or pastel Neon part clips to white with a halo in game
+# (#491, #496). A big shape that must keep its outline is solid (STAR is Stardust's pale yellow).
+STAR, NEON_GOLD, NEON_SKY, NEON_MINT = "sparkle", "eye_gold", "eye_sky", "eye_mint"
 BODY_SIT = "sit"
 
 
@@ -218,9 +221,6 @@ def _heart(P, c, r, sw, lean=None, depth=0.05):
 
 
 # Stardust ---------------------------------------------------------------------------------------------------
-STAR, NEON_GOLD = "sparkle", "eye_gold"     # a big star is solid pale yellow; its lit accent is deep gold (#491)
-
-
 def star_tiara(ctx):
     """Stardust: a big pale star stands on a gold band between the ears with a lit gem on a stalk each side and a
     small lit gem at its heart. The star itself is solid: as cream Neon it clipped to white with a halo in game and
@@ -318,7 +318,7 @@ def rose_crown(ctx):
         ht = 0.3 if k == 0 else 0.24
         x, y = r * math.cos(a), y0 + r * math.sin(a)
         P.pyramid((x, y, 0.13 + ht / 2), 0.17, ht, GOLD, rot=_rz(-90 + 72 * k))
-        G.ico((x, y, 0.15 + ht), 0.07 if k == 0 else 0.055, "eye_mint" if k == 0 else LIT)
+        G.ico((x, y, 0.15 + ht), 0.07 if k == 0 else 0.055, NEON_MINT if k == 0 else NEON_GOLD)
     _rose(P, (0, y0 - r - 0.03, 0.09), 0.12, "fur_rose", "royal_berry")
 
 
@@ -344,7 +344,7 @@ def rose_fan(ctx):
         if k < n:
             am = math.radians(span[0] + step * (k + 0.5))
             chain.append((math.cos(am) * L, math.sin(am) * L))
-            G.ico(tuple(root + lean @ Vector((math.cos(am), 0, math.sin(am))) * (L + 0.01)), 0.06, LIT)
+            G.ico(tuple(root + lean @ Vector((math.cos(am), 0, math.sin(am))) * (L + 0.01)), 0.06, NEON_GOLD)
     U.fan(tuple(root), (0.0, 0.0), chain, 0.05, "fur_rose", rot=lean @ _rx(90))
     tip, d, th, _a, _b = _tail_axes(ctx)
     T = ctx.piece("Tail_Rose", "tail", tuple(tip))
@@ -413,7 +413,7 @@ def lotus_horns(ctx):
     for k in range(3):                                                                     # inner petals
         R = _rz(120 * k + 30) @ _rx(-20)
         P.box(tuple(c + R @ Vector((0, 0, 0.13)) + Vector((0, 0, 0.04))), (0.11, 0.05, 0.24), "fur_strawberry", rot=R)
-    G.ico(tuple(c + Vector((0, 0, 0.17))), 0.085, GOLD_LT)
+    G.ico(tuple(c + Vector((0, 0, 0.17))), 0.085, NEON_GOLD)
 
 
 def dragon_back(ctx):
@@ -425,7 +425,7 @@ def dragon_back(ctx):
     for i, f in enumerate((-0.1, 0.11, 0.31, 0.47)):
         h = 0.34 - 0.06 * i
         P.pyramid((0, f * L, h / 2 - 0.01), 0.2 - 0.02 * i, h, "sign_teal", rot=_rx(-16))
-        G.ico((0, f * L + h * 0.26, h * 0.92), 0.06, GOLD_LT)
+        G.ico((0, f * L + h * 0.26, h * 0.92), 0.06, NEON_GOLD)
     U = ctx.pen("up")
     W = ctx.piece("Wings_Glow", "up", (0, 0.08, 0.3))
     y0 = 0.08
@@ -437,7 +437,7 @@ def dragon_back(ctx):
             a = math.radians(ang)
             dirv = lean @ Vector((sx * math.cos(a), 0, math.sin(a)))
             U.bar(tuple(root), tuple(root + dirv * Lw), 0.075, 0.07 + 0.008 * k, GOLD, up=(0, 1, 0))
-            W.ico(tuple(root + dirv * (Lw + 0.02)), 0.055, GOLD_LT)
+            W.ico(tuple(root + dirv * (Lw + 0.02)), 0.055, NEON_GOLD)
         chain = []                                           # the skin between the ribs, scalloped between their tips
         for k, (ang, Lw) in enumerate(ribs):
             chain.append((sx * math.cos(math.radians(ang)) * Lw * 0.94, math.sin(math.radians(ang)) * Lw * 0.94))
@@ -447,7 +447,7 @@ def dragon_back(ctx):
         U.fan(tuple(root), (0.0, 0.0), chain, 0.035, "spa_mint", rot=lean @ _rx(90))
     tip, d, th, _a, _b = _tail_axes(ctx)
     T = ctx.piece("Tail_Pearl_Glow", "tail", tuple(tip))
-    T.ico(tuple(_off_floor(ctx, tip + d * 0.06, th * 0.8)), th * 0.8, GOLD_LT)
+    T.ico(tuple(_off_floor(ctx, tip + d * 0.06, th * 0.8)), th * 0.8, NEON_GOLD)
 
 
 # Bathtile ---------------------------------------------------------------------------------------------------
@@ -470,14 +470,14 @@ def shower_cap(ctx):
     P.box(tuple(d0 + Vector((0, 0.21, 0.08))), (0.12, 0.1, 0.1), "pastel_butter", rot=_rx(-30))
     for sx in (-1, 1):
         P.box(tuple(d0 + Vector((sx * 0.085, -0.2, 0.21))), (0.035, 0.035, 0.045), "fur_black")
-    G.ico(tuple(d0 + Vector((0, -0.13, 0.33))), 0.05, LIT)                                   # a glint on its head
+    G.ico(tuple(d0 + Vector((0, -0.13, 0.33))), 0.05, NEON_SKY)                              # a lit water drop on its head
     for x, y, z, r in ((-0.33, 0.12, 0.22, 0.12), (0.3, 0.2, 0.22, 0.1)):
         C.sphere((x, y, z), r, "bubble", segments=8, rings=5)
 
 
 def bubble_trail(ctx):
-    """Bathtile's back piece: a bar of pink soap on a mint sponge with a stack of bubbles rising off it, the top
-    ones lit. Grew from the library's wave_back (bubbles drifting over the back)."""
+    """Bathtile's back piece: a bar of pink soap on a mint sponge with a stack of bubbles rising off it, a lit
+    drop on the top one. Grew from the library's wave_back (bubbles drifting over the back)."""
     U, C = ctx.pen("up"), ctx.gpen("up")
     G = ctx.piece("Bubbles_Glow", "up", (0, 0.3, 0.4))
     y0 = 0.3 if ctx.body == "walk" else 0.14
@@ -494,8 +494,8 @@ def bubble_trail(ctx):
         r2 = r * 0.86
         nxt.z = at.z + math.sqrt(max(0.0, ((r + r2) * 0.78) ** 2 - dx * dx - dy * dy))
         at, r = nxt, r2
-    G.ico(tuple(at), r, "pastel_sky")
-    G.ico(tuple(at + Vector((0.07, 0.02, r * 0.8))), 0.07, LIT)
+    U.ico(tuple(at), r, "pastel_sky")                # the top bubble is solid too; only its glint is lit (#496)
+    G.ico(tuple(at + Vector((0.07, 0.02, r * 0.8))), 0.07, NEON_SKY)
 
 
 PROPS = {"Stardust": ("Head", star_tiara), "Sherbet": ("Head", sundae_top), "Rosette": ("Head", rose_crown),
