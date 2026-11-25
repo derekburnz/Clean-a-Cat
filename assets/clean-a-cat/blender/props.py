@@ -218,39 +218,47 @@ def _heart(P, c, r, sw, lean=None, depth=0.05):
 
 
 # Stardust ---------------------------------------------------------------------------------------------------
+STAR, NEON_GOLD = "sparkle", "eye_gold"     # a big star is solid pale yellow; its lit accent is deep gold (#491)
+
+
 def star_tiara(ctx):
-    """Stardust: a big lit star stands on a gold band between the ears with a lit gem on a stalk each side. Grew
-    from the library's tree_star and moon_antlers (a lit shape held high on the head)."""
+    """Stardust: a big pale star stands on a gold band between the ears with a lit gem on a stalk each side and a
+    small lit gem at its heart. The star itself is solid: as cream Neon it clipped to white with a halo in game and
+    lost its shape (#491). Grew from the library's tree_star and moon_antlers (a bright shape held high)."""
     P = ctx.pen("head")
     G = ctx.piece("Glow", "head", (0, -0.12, 0.1))
     y = -0.12
     P.box((0, y, 0.03), (0.6, 0.09, 0.09), GOLD)
     P.box((0, y, 0.17), (0.11, 0.07, 0.26), GOLD)
-    G.star((0, y, 0.42), 0.31, 0.14, 0.09, LIT, rot=_rx(90))
-    for sx, sw in ((-1, "fur_bubblegum"), (1, "pastel_sky")):
+    P.star((0, y, 0.42), 0.31, 0.14, 0.09, STAR, rot=_rx(90))
+    G.box((0, y, 0.415), (0.1, 0.13, 0.1), NEON_GOLD, rot=_ry(45))
+    for sx, sw in ((-1, "neon_pink"), (1, "eye_sky")):
         a, b = Vector((sx * 0.26, y, 0.05)), Vector((sx * 0.55, y + 0.05, 0.34))
         P.bar(tuple(a), tuple(b), 0.055, 0.055, GOLD, up=(0, 1, 0))
-        G.box(tuple(b + Vector((sx * 0.02, 0, 0.05))), (0.17, 0.08, 0.17), sw, rot=_ry(45))
+        G.box(tuple(b + Vector((sx * 0.02, 0, 0.05))), (0.15, 0.08, 0.15), sw, rot=_ry(45))
 
 
 def comet_back(ctx):
-    """Stardust's back piece: a shooting star, a lit star on a violet saddle with three streamers sweeping back
-    over the tail. Grew from the library's star_trail."""
+    """Stardust's back piece: a shooting star, a pale star on a violet saddle with three streamers sweeping back
+    over the tail, a small lit gem on the end of each. Grew from the library's star_trail."""
     U = ctx.pen("up")
     G = ctx.piece("Comet_Glow", "up", (0, 0.2, 0.3))
     y0 = 0.13
     U.box((0, y0, 0.03), (0.34, 0.28, 0.1), "aurora_violet")
     c = Vector((0, y0 + 0.08, 0.5))
     U.bar((0, y0, 0.06), tuple(c - Vector((0, 0, 0.1))), 0.08, 0.08, GOLD, up=(0, 1, 0))
-    G.star(tuple(c), 0.3, 0.13, 0.08, LIT, rot=_rx(70))
+    U.star(tuple(c), 0.3, 0.13, 0.08, STAR, rot=_rx(70))
     for k, (dx, sw) in enumerate(((-0.2, "fur_bubblegum"), (0.0, "pastel_sky"), (0.2, "aurora_violet"))):
         a = c + Vector((dx * 0.5, 0.03, -0.05))
         b = c + Vector((dx * 1.4, 0.62 + 0.1 * (k == 1), -0.2 - 0.06 * (k == 1)))
         U.bar(tuple(a), tuple(b), 0.11, 0.05, sw, up=(0, 0, 1))
-        G.box(tuple(b), (0.15, 0.08, 0.15), LIT, rot=_rx(45))
+        G.box(tuple(b), (0.13, 0.08, 0.13), NEON_GOLD, rot=_rx(45))
     tip, d, th, _a, _b = _tail_axes(ctx)
-    T = ctx.piece("Tail_Star_Glow", "tail", tuple(tip))
-    T.star(tuple(_off_floor(ctx, tip + d * 0.1, 0.2)), 0.2, 0.09, 0.08, LIT, rot=_rx(90))
+    at = _off_floor(ctx, tip + d * 0.1, 0.2)
+    T = ctx.piece("Tail_Star", "tail", tuple(tip))
+    T.star(tuple(at), 0.2, 0.09, 0.08, STAR, rot=_rx(90))
+    TG = ctx.piece("Tail_Star_Glow", "tail", tuple(tip))
+    TG.box(tuple(at), (0.07, 0.11, 0.07), NEON_GOLD, rot=_ry(45))
 
 
 # Sherbet ----------------------------------------------------------------------------------------------------
@@ -495,7 +503,7 @@ PROPS = {"Stardust": ("Head", star_tiara), "Sherbet": ("Head", sundae_top), "Ros
 PROPS2 = {"Stardust": ("Back", comet_back), "Sherbet": ("Back", heart_wings), "Rosette": ("Back", rose_fan),
           "Prism": ("Back", rainbow_arc), "Jade": ("Back", dragon_back), "Bathtile": ("Back", bubble_trail)}
 # Extra objects a piece draws (Ctx.piece): cat -> {suffix: the object it hangs from, or "Tail"}.
-PIECES = {"Stardust": {"Glow": "Prop", "Comet_Glow": "Prop2", "Tail_Star_Glow": "Tail"},
+PIECES = {"Stardust": {"Glow": "Prop", "Comet_Glow": "Prop2", "Tail_Star": "Tail", "Tail_Star_Glow": "Tail"},
           "Sherbet": {"Cherry_Glow": "Prop", "Wings_Glow": "Prop2"},
           "Rosette": {"Gem_Glow": "Prop", "Fan_Glow": "Prop2", "Tail_Rose": "Tail"},
           "Prism": {"Glow": "Prop", "Rainbow_Glow": "Prop2"},
