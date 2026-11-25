@@ -277,16 +277,18 @@ COAT = {
 # steps to clean"). One dirty model serves every level: each mud piece and tangle has the lowest level at which it
 # shows, in the order of COAT and of the tangles, and its child Model carries that number as the attribute
 # `DirtLevel`. A cat at level L keeps the pieces with DirtLevel <= L; the game destroys the rest when the cat
-# arrives. The levels are chosen for the card picture (head and shoulders, about 96 px), where each must add
-# something on the face: 1 is muddy paws and one smudge on the corner of the brow, 2 adds a cheek, the bib and the
-# first tangles, 3 a splat on the brow, a shoulder and the sides, 4 the whole other side of the face, the crown
-# and the back, with every tangle. What a level means in steps or pay is the game's.
+# arrives. The levels are chosen for the card picture (head and shoulders, down to 64 px), where each adds mud in a
+# place of its own, so the four pictures differ in shape and not only in amount (#478: a level that only thickened
+# the one below could not be told from it on a small card). As the picture shows them: 1 is muddy paws and one
+# smudge on the top left corner of the brow, 2 adds the lower left (a cheek with its drip) and the bib, 3 the top
+# of the head (a splat on the brow, the crown, the back), 4 the whole right side (the temple and the shoulder under
+# it), the back and every tangle. What a level means in steps or pay is the game's.
 LEVELS = 4
 LEVEL_NAMES = ("a little muddy", "muddy", "very muddy", "filthy")
 MUD_LEVEL = {
     #       cheek temple brow crown back corner | the body's fourteen, in COAT's order
-    "sit":  [2, 3, 4, 4, 4, 1,   2, 3, 4, 3, 4, 3, 4, 3, 1, 1, 1, 1, 2, 3],
-    "walk": [2, 3, 4, 4, 4, 1,   2, 4, 4, 3, 3, 4, 3, 3, 1, 1, 1, 1, 2, 4],
+    "sit":  [2, 4, 3, 3, 3, 1,   2, 4, 4, 3, 4, 3, 4, 4, 1, 1, 1, 1, 2, 3],
+    "walk": [2, 4, 3, 3, 3, 1,   2, 4, 4, 3, 3, 4, 3, 4, 1, 1, 1, 1, 2, 4],
 }
 TANGLE_LEVEL = [2, 2, 3, 3, 4, 4]
 assert all(len(v) == MUD for v in MUD_LEVEL.values()) and len(TANGLE_LEVEL) == TANGLES

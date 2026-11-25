@@ -4021,7 +4021,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_Bathtile_Dirty_Sit/10",
-      "DirtLevel": 3
+      "DirtLevel": 4
      },
      "children": [
       {
@@ -4333,7 +4333,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_Bathtile_Dirty_Sit/11",
-      "DirtLevel": 4
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -4547,7 +4547,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_Bathtile_Dirty_Sit/12",
-      "DirtLevel": 4
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -4810,7 +4810,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_Bathtile_Dirty_Sit/13",
-      "DirtLevel": 4
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -9006,7 +9006,7 @@
    "className": "Model",
    "attributes": {
     "Rojo_Target_PrimaryPart": "CleanACat_Cat_Bathtile_Dirty_Sit/16",
-    "DirtLevel": 3
+    "DirtLevel": 4
    },
    "children": [
     {
@@ -10290,7 +10290,7 @@
    "className": "Model",
    "attributes": {
     "Rojo_Target_PrimaryPart": "CleanACat_Cat_Bathtile_Dirty_Sit/22",
-    "DirtLevel": 3
+    "DirtLevel": 4
    },
    "children": [
     {

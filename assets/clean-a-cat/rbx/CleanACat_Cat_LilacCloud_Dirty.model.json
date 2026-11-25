@@ -21,7 +21,7 @@
   "TanglesAtLevel1": 0,
   "MudAtLevel2": 8,
   "TanglesAtLevel2": 2,
-  "MudAtLevel3": 13,
+  "MudAtLevel3": 14,
   "TanglesAtLevel3": 4,
   "MudAtLevel4": 20,
   "TanglesAtLevel4": 6
@@ -2354,7 +2354,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/12",
-      "DirtLevel": 3
+      "DirtLevel": 4
      },
      "children": [
       {
@@ -2666,7 +2666,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/13",
-      "DirtLevel": 4
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -2929,7 +2929,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/14",
-      "DirtLevel": 4
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -3192,7 +3192,7 @@
      "className": "Model",
      "attributes": {
       "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/15",
-      "DirtLevel": 4
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -9134,7 +9134,7 @@
    "className": "Model",
    "attributes": {
     "Rojo_Target_PrimaryPart": "CleanACat_Cat_LilacCloud_Dirty/24",
-    "DirtLevel": 3
+    "DirtLevel": 4
    },
    "children": [
     {
