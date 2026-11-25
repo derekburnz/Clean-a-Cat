@@ -28,6 +28,13 @@ The carrier (spa_props) was resized with them: its Grip is 1.95 up, so with the 
 swings just over the ground beside the leg.
 
 LOOKS has the eight customers. A look is a dict of palette swatches and switches; `body` picks the build.
+
+SPECIAL_LOOKS has the special customers (issue #476), who bring the special cats (cats.SPECIAL_CATS). The owner on
+2026-11-25: special customers "that expire that only I can take their cats". A draft: same build, joints, Attachments
+and attributes as the townsfolk, so the walk in and the carry work unchanged, plus a root attribute `Special` = true.
+They are told from the townsfolk across a yard by one shared cue: lilac and gold (the game's prize colours), gold
+shoes, a gold star, and a hat no townsperson wears (a beret, a crown, a wide feathered hat). They carry
+`CleanACat_Prop_CarrierRoyal` (spa_props). Vivi is the rare visitor of #142 (busy_spa.VISITORS) on the new build.
 """
 
 import math
@@ -75,7 +82,24 @@ LOOKS = {
                 backpack="spa_bubblegum", brows=True),
 }
 
-for _n in LOOKS:                                        # a walker arrives whole, its arms and legs with it
+SPECIAL_LOOKS = {
+    # the star visitor: a lilac beret with a gold star, gold rimmed violet shades, a lilac coat with gold buttons
+    "Vivi": dict(body=ADULT, skin="skin_tan", hair="fur_black", style="bob", beret="velvet_lilac",
+                 shades=("gold_mid", "aurora_violet"), top="velvet_lilac", buttons="gold_mid", pearls="pearl",
+                 pants="pearl", shoes="gold_mid"),
+    # a jolly king: a gold crown, a berry cape with a pearl collar, a silver beard, a gold star on a lilac tunic
+    "Rex": dict(body=TALL, skin="skin_light", hair="fur_silver", style="short", beard=True, crown="gold_mid",
+                cape=("royal_berry", "pearl"), top="velvet_lilac", patch="star", patch_sw="gold_mid",
+                buttons="gold_mid", pants="pearl", shoes="gold_mid", brows=True),
+    # a grand lady: a wide lilac hat with a gold band and a pink feather, pearls, gloves, a lilac dress
+    "Pearl": dict(body=ADULT, skin="skin_deep", hair="choco", style="bob", sunhat="velvet_lilac", band="gold_mid",
+                  feather="spa_bubblegum", top="pastel_lilac", skirt="velvet_lilac", pearls="pearl", gloves="pearl",
+                  patch="star", patch_sw="gold_mid", legs="pearl", shoes="gold_mid"),
+}
+ALL_LOOKS = {**LOOKS, **SPECIAL_LOOKS}
+_X90 = Matrix.Rotation(math.radians(90), 3, "X")       # stands a flat star up to face the front
+
+for _n in ALL_LOOKS:                                    # a walker arrives whole, its arms and legs with it
     rbx_export.MODEL_PROPS["_Customer_" + _n] = {"ModelStreamingMode": "Atomic"}
 
 
@@ -126,6 +150,12 @@ class Piece:
 
     def pyramid(self, c, size, h, sw, rot=None):
         self.b.pyramid(self._c(c), size, h, sw, rot=self._r(rot))
+
+    def cyl(self, c, r, h, sw, segments=12, bevel=True, rot=None, radius2=None):
+        self.b.cyl(self._c(c), r, h, sw, segments=segments, bevel=bevel, rot=self._r(rot), radius2=radius2)
+
+    def star(self, c, outer, inner, h, sw, rot=None):
+        self.b.star(self._c(c), outer, inner, h, sw, rot=self._r(rot))
 
     def finalize(self, name, mat):
         return _tris(self.b.finalize(name, mat, location=tuple(self.joint)))
@@ -194,9 +224,13 @@ def _lower(b, f, look):
                    look.get("shorts") or look.get("pants") or look.get("overalls"))
 
 
-def _patch(b, kind, sw, y, z):
-    """A small picture on the chest: a paw print or a heart."""
-    if kind == "paw":
+def _patch(b, kind, sw, y, z, x=0.0):
+    """A small picture on the chest: a paw print, a heart or a star, x to the wearer's left of the middle."""
+    if x:
+        b = _Shift(b, x)
+    if kind == "star":                                   # one five pointed star (the special customers)
+        b.star((0, y - 0.005, z + 0.02), 0.24, 0.105, 0.04, sw, rot=_X90)
+    elif kind == "paw":
         b.box((0, y, z - 0.07), (0.26, 0.03, 0.18), sw, bevel=False)
         for dx, dz in ((-0.19, 0.06), (-0.065, 0.15), (0.065, 0.15), (0.19, 0.06)):
             b.box((dx, y, z + dz), (0.1, 0.03, 0.1), sw, bevel=False)
@@ -205,6 +239,19 @@ def _patch(b, kind, sw, y, z):
             b.box((sx * 0.09, y, z + 0.11), (0.13, 0.03, 0.07), sw, bevel=False)
         for k, wd in enumerate((0.34, 0.22, 0.1)):
             b.box((0, y, z + 0.04 - 0.07 * k), (wd, 0.03, 0.07), sw, bevel=False)
+
+
+class _Shift:
+    """A builder that draws everything x to the side."""
+
+    def __init__(self, b, x):
+        self.b, self.x = b, x
+
+    def box(self, c, *a, **k):
+        self.b.box((c[0] + self.x, c[1], c[2]), *a, **k)
+
+    def star(self, c, *a, **k):
+        self.b.star((c[0] + self.x, c[1], c[2]), *a, **k)
 
 
 def _torso(b, f, look):
@@ -221,7 +268,30 @@ def _torso(b, f, look):
         for k in range(3):
             b.box((0, 0, z0 + 0.35 + 0.38 * k), (w + 0.03, dep + 0.03, 0.12), look["stripes"], bevel=False)
     if look.get("patch"):
-        _patch(b, look["patch"], look["patch_sw"], fy - 0.012, z0 + (z1 - z0) * 0.56)
+        _patch(b, look["patch"], look["patch_sw"], fy - 0.012, z0 + (z1 - z0) * 0.56,
+               0.36 if look.get("buttons") else 0.0)     # a medal on the chest's left when buttons run down the middle
+    if look.get("buttons"):                              # a row of buttons down the front
+        for k in range(3):
+            b.box((0, fy - 0.01, z0 + 0.3 + 0.36 * k), (0.12, 0.05, 0.12), look["buttons"], bevel=False)
+    if look.get("pearls"):                               # a string of pearls: a low arc on the chest
+        for dx, dz in ((-0.34, 0.0), (-0.2, -0.1), (0.0, -0.15), (0.2, -0.1), (0.34, 0.0)):
+            b.box((dx, fy - 0.01, z1 - 0.22 + dz), (0.11, 0.05, 0.11), look["pearls"], bevel=False)
+    if look.get("cape"):
+        cape, trim = look["cape"]
+        # down the back between the arms, swept back so a leg swinging behind passes under it; below the hands it
+        # widens, so it shows beside the legs from the front
+        top_z, hem_z, sweep = z1 - 0.02, f.hip - 0.85, math.radians(11)
+        split = f.arm0 - 0.4                              # just under the hanging hands
+        tilt = Matrix.Rotation(sweep, 3, "X")
+        y_at = lambda z: dep / 2 + 0.07 + math.tan(sweep) * (top_z - z)      # noqa: E731
+        # the lower length laps 0.08 over the upper and is thicker, so they join with no two faces in one plane
+        for lo, hi, wd, th in ((split, top_z, w - 0.06, 0.12), (hem_z, split + 0.08, w + 0.34, 0.15)):
+            zc = (lo + hi) / 2
+            b.box((0, y_at(zc), zc), (wd, th, (hi - lo) / math.cos(sweep)), cape, rot=tilt)
+        b.box_base((0, 0.03, z1 - 0.13), (w + 0.1, dep + 0.16, 0.26), trim)                    # the collar
+        for i, dx in enumerate((-0.48, -0.16, 0.16, 0.48)):                                   # its ermine specks
+            b.box((dx, fy - 0.065, z1 - 0.01 + 0.03 * (i % 2)), (0.07, 0.03, 0.09), "fur_ink", bevel=False)
+        b.box((0, fy - 0.07, z1 - 0.06), (0.16, 0.05, 0.16), "gold_mid", bevel=False, rot=_ry(45))   # the clasp
     if look.get("hood"):
         b.box((0, dep / 2 + 0.12, z1 - 0.2), (0.95, 0.3, 0.55), look["top"])                 # the hood, down
         b.box((0, fy - 0.015, z0 + 0.35), (0.8, 0.03, 0.4), look["pocket"], bevel=False)     # the pocket
@@ -254,7 +324,7 @@ def _arm(p, f, look, sx):
     if look.get("stripes"):
         for k in range(2):
             p.box((x, 0, f.arm0 + 0.3 + 0.38 * k), (0.45, 0.49, 0.12), look["stripes"], bevel=False)
-    p.box_base((x, 0, f.arm0 - 0.32), (0.4, 0.42, 0.34), look["skin"])                       # the hand
+    p.box_base((x, 0, f.arm0 - 0.32), (0.4, 0.42, 0.34), look.get("gloves") or look["skin"])   # the hand
     if look.get("cardigan"):
         p.box_base((x, 0, f.arm0 - 0.02), (0.45, 0.49, 0.1), sleeve)                         # a cuff
     if sx == 1 and look.get("tote"):                     # the left hand carries a tote bag by its handles
@@ -289,6 +359,13 @@ def _face(h, f, look):
         for sx in (1, -1):
             h.box((sx * 0.49, y - 0.03, f.head0 + 0.17), (0.36, 0.06, 0.36), hb, bevel=False)
             h.box((sx * (d["hw"] / 2 - 0.03), y + 0.2, f.head0 + 0.42), (0.14, 0.5, 0.66), hb, bevel=False)
+    if look.get("shades"):                    # gold rims, the lenses proud of them, over the eyes
+        rim, lens = look["shades"]
+        for sx in (1, -1):
+            h.box((sx * 0.33, y - 0.03, ez + 0.02), (0.56, 0.06, 0.42), rim, bevel=False)
+            h.box((sx * 0.33, y - 0.055, ez + 0.02), (0.44, 0.05, 0.3), lens, bevel=False)
+            h.box((sx * (d["hw"] / 2 + 0.02), y + 0.3, ez + 0.12), (0.06, 0.62, 0.07), rim, bevel=False)   # an arm
+        h.box((0, y - 0.03, ez + 0.1), (0.14, 0.05, 0.07), rim, bevel=False)                      # the bridge
     if look.get("glasses"):
         g = look["glasses"]
         for sx in (1, -1):
@@ -349,8 +426,33 @@ def _hair(h, f, look):
         h.box_base((0, 0, top + 0.18), (hw + 0.06, hd + 0.06, 0.26), look["sunhat"])
         h.box_base((0, 0, top + 0.2), (hw + 0.1, hd + 0.1, 0.1), look["band"], bevel=False)               # its band
         yf = -(hd + 0.1) / 2
-        h.box((0.42, yf - 0.02, top + 0.25), (0.24, 0.04, 0.24), "offwhite", bevel=False, rot=_ry(45))    # a daisy
-        h.box((0.42, yf - 0.05, top + 0.25), (0.1, 0.02, 0.1), "pastel_butter", bevel=False)
+        if look.get("feather"):                                             # a plume standing off the band
+            at = Vector((0.5, 0.12, top + 0.34))                            # its foot, inside the hat's crown
+            # a plume that curls over: each length thinner than the last, so no two share a front or a back plane
+            for deg, ln, wd, th in ((12, 0.56, 0.42, 0.15), (38, 0.4, 0.34, 0.12), (66, 0.3, 0.24, 0.09)):
+                lean = _ry(deg)
+                h.box(tuple(at + lean @ Vector((0, 0, ln / 2))), (wd, th, ln), look["feather"], rot=lean)
+                at = at + lean @ Vector((0, 0, ln - 0.12))
+            h.box((0.6, yf - 0.02, top + 0.25), (0.2, 0.04, 0.2), "gold_light", bevel=False, rot=_ry(45))   # its pin
+        else:
+            h.box((0.42, yf - 0.02, top + 0.25), (0.24, 0.04, 0.24), "offwhite", bevel=False, rot=_ry(45))    # a daisy
+            h.box((0.42, yf - 0.05, top + 0.25), (0.1, 0.02, 0.1), "pastel_butter", bevel=False)
+    if look.get("beret"):                                                   # worn to one side, a gold star in front
+        bt = look["beret"]
+        tilt = _ry(-9)
+        h.cyl((0, 0, top + 0.16), 0.7, 0.12, bt, segments=12, bevel=False)                                # its band
+        h.cyl((0.14, 0.03, top + 0.36), 1.0, 0.32, bt, segments=14, rot=tilt, radius2=0.82)               # the crown
+        h.cyl((0.18, 0.03, top + 0.58), 0.07, 0.14, bt, segments=6, bevel=False, rot=tilt)                # the stalk
+        h.star((-0.3, -0.84, top + 0.4), 0.3, 0.14, 0.07, "gold_mid", rot=Matrix.Rotation(math.radians(80), 3, "X"))
+    if look.get("crown"):                                                   # a band, five points, three jewels
+        cr = look["crown"]
+        cw, cd = hw - 0.3, hd - 0.3
+        h.box_base((0, 0, top + 0.1), (cw, cd, 0.26), cr)
+        for dx, dy in ((-1, -1), (1, -1), (-1, 1), (1, 1)):
+            h.pyramid((dx * (cw / 2 - 0.13), dy * (cd / 2 - 0.13), top + 0.36), 0.26, 0.3, cr)
+        h.pyramid((0, -(cd / 2 - 0.13), top + 0.36), 0.3, 0.42, cr)
+        for dx, sw in ((-0.36, "spa_sky"), (0.0, "royal_berry"), (0.36, "spa_mint")):
+            h.box((dx, -cd / 2 - 0.01, top + 0.23), (0.13, 0.04, 0.13), sw, bevel=False, rot=_ry(45))
     if look.get("phones"):
         h.box_base((0, 0, top + 0.1), (hw + 0.36, 0.22, 0.14), "fur_ink", bevel=False)                    # the band
         for sx in (1, -1):
@@ -364,7 +466,11 @@ def top_of(look):
     f = Frame(look["body"])
     extra = 0.12
     if look.get("sunhat"):
-        extra = 0.44
+        extra = 1.2 if look.get("feather") else 0.44
+    elif look.get("crown"):
+        extra = 0.8
+    elif look.get("beret"):
+        extra = 0.68
     elif look["style"] == "beanie":
         extra = 0.62
     elif look["style"] in ("puffs", "curls"):
@@ -385,7 +491,7 @@ def grip_at(look, carry=True):
 def build_customer(name, mat, carry=True):
     """The customer's six objects: Body first (the main object), then Head, ArmL, ArmR, LegL, LegR. `carry` False
     hangs the right arm straight (pictures only)."""
-    look = LOOKS[name]
+    look = ALL_LOOKS[name]
     f = Frame(look["body"])
     asset = PREFIX + name
     body = Piece()
@@ -407,15 +513,16 @@ def build_customer(name, mat, carry=True):
 
 
 def customer_rbx_extras(name):
-    look = LOOKS[name]
+    look = ALL_LOOKS[name]
     f = Frame(look["body"])
     return {"attachments": [("_ArmR", "Grip", Matrix.Translation(grip_at(look))),
                             ("_Body", "Overhead", Matrix.Translation((0.0, 0.0, top_of(look) + 0.6)))],
             "attributes": {"Look": {"String": name}, "WalkSpeed": {"Float64": look["body"]["speed"]},
                            "LegLength": {"Float64": round(f.leg_joint, 3)},
                            "CarryArmDegrees": {"Float64": carry_degrees(look)},
-                           "Height": {"Float64": round(top_of(look), 3)}}}
+                           "Height": {"Float64": round(top_of(look), 3)},
+                           **({"Special": {"Bool": True}} if name in SPECIAL_LOOKS else {})}}
 
 
-ASSETS = {PREFIX + n: ((lambda mat, n=n: build_customer(n, mat)), 1600) for n in LOOKS}
-EXTRAS = {PREFIX + n: (lambda n=n: customer_rbx_extras(n)) for n in LOOKS}
+ASSETS = {PREFIX + n: ((lambda mat, n=n: build_customer(n, mat)), 1600) for n in ALL_LOOKS}
+EXTRAS = {PREFIX + n: (lambda n=n: customer_rbx_extras(n)) for n in ALL_LOOKS}
