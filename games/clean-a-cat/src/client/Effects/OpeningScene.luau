@@ -18,9 +18,6 @@
 --       is on a plot, else TruckDrop.BUMP_X. The truck's jolt is timed to it, so it hits the bump the player sees,
 --       and a pothole (CleanACat_Prop_Pothole) is laid there if the road has none.
 --   handle.open(onDone?)            flaps pop open, the kitten peeks out and shakes off mud; onDone when it is over
---   handle.hopOut(toward, onDone?)  the kitten hops out of the box toward a world point; onDone when he lands. The
---                                   camera turn toward the tub is gone (Sync-Agent: Roblox's camera undid it, and with
---                                   the carry the player walks to the tub themselves)
 --   handle.pickUp(character, onDone?)  the player bends and reaches into the box, then lifts the kitten into their
 --                                   arms (Effects/Carry), with a purr; he stays in their arms as they walk. Call it
 --                                   once the player stands at the box facing it. onDone once he is in them
@@ -28,9 +25,10 @@
 --                                   He becomes the loaf body as he leaves the box, so handle.kitten changes here
 --   handle.placeIn(target, onDone?, endScale?) the arms open and the carried kitten hops in, his base on `target`
 --                                   (the tub's seat), easing to `endScale` (the tub body's size); onDone when he lands. Then Gameplay eases into the wash (Effects/WashCamera)
---   Derek 2026-11-24 picked the carry over the hop-out ("we should pick him up out of crate"); hopOut stays for now.
+--   Derek 2026-11-24 picked the carry over the hop-out ("we should pick him up out of crate"), so the hop out of the
+--   box is gone; Carry's own hop into the tub keeps TruckDrop.HOP's timing.
 --   Both onDone callbacks fire exactly once, deferred, even when the call does nothing (not landed yet, already
---   opened or hopping, no kitten, destroyed) or the scene is destroyed part way.
+--   opened or carried, no kitten, destroyed) or the scene is destroyed part way.
 --   handle.destroy()   removes everything this scene made and gives the camera back
 --
 -- Props come from ReplicatedStorage.Assets by name (Model-Agent, #279 and #278); until they land, plain PH_ parts of
@@ -71,7 +69,6 @@ export type Handle = {
 	box: Model,
 	kitten: Model?,
 	open: (onDone: (() -> ())?) -> (),
-	hopOut: (toward: Vector3, onDone: (() -> ())?) -> (),
 	pickUp: (character: Model, onDone: (() -> ())?) -> (),
 	placeIn: (target: Vector3, onDone: (() -> ())?, endScale: number?) -> (),
 	destroy: () -> (),
@@ -419,7 +416,6 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	-- It also holds at 0 until the game has finished loading: Sync-Agent saw short frames with nothing drawn for up to
 	-- 1.46 s after the start, the truck model already there, so the first frame seen had it 12 studs into its drive.
 	local loaded = game:IsLoaded()
-	local heldFor = 0
 	local holdingShot = useShot and Workspace.CurrentCamera ~= nil
 	local function shotCamera(): Camera?
 		local cam = Workspace.CurrentCamera -- re-read: a respawn can replace it
@@ -431,13 +427,12 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	if holdingShot then
 		shotCamera()
 	end
-	-- `why` goes to the output, so a playtest shows when and why the shot ended (Sync-Agent's speed runs).
-	local function giveCameraBack(why: string)
+	-- `why` names what ended the shot (it went to the output for Sync-Agent's speed runs; taken out before live).
+	local function giveCameraBack(_why: string)
 		if not holdingShot then
 			return
 		end
 		holdingShot = false
-		print(`[Opening] camera back {string.format("%.2f", clock)} s into the scene ({why})`)
 		local cam = Workspace.CurrentCamera
 		if cam == nil then
 			return
@@ -455,7 +450,6 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 	local landed = false
 	local opened: number? = nil
 	local shookOff = false
-	local hopping: { start: number, from: Vector3, to: Vector3, onDone: (() -> ())? }? = nil
 	local lastWiggle: number? = nil
 	local destroyed = false
 	local connection: RBXScriptConnection? = nil
@@ -541,7 +535,7 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			end
 		end
 		local cat = kitten
-		if cat and seat and hopping == nil and carry == nil then
+		if cat and seat and carry == nil then
 			-- The chest (about CHEST of the cat's height) rises to the rim's Peek point.
 			local rim = if peek
 				then (peek.WorldPosition - seat.WorldPosition).Magnitude
@@ -562,35 +556,10 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 		end
 	end
 
-	local function hopStep()
-		local hop = hopping
-		local cat = kitten
-		if hop == nil or cat == nil then
-			return
-		end
-		local e = os.clock() - hop.start
-		local along, height = TruckDrop.hop(e, reduced)
-		local pos = hop.from:Lerp(hop.to, along) + up * height
-		local flat = (hop.to - hop.from) * (Vector3.one - up)
-		local facing = if flat.Magnitude > 0.01 then flat.Unit else -across
-		cat:PivotTo(CFrame.lookAt(pos, pos + facing, up))
-		if e >= TruckDrop.HOP.seconds and hop.onDone then
-			local done = hop.onDone
-			hop.onDone = nil
-			Audio.play("boxThud", { at = cat.PrimaryPart :: Instance?, pitch = 1.6 })
-			done()
-		end
-	end
-
 	local function frame()
 		local now = os.clock()
 		if not loaded then
 			loaded = game:IsLoaded()
-			if loaded then
-				print(`[Opening] held {string.format("%.2f", heldFor)} s while the game loaded`)
-			else
-				heldFor += now - lastFrame
-			end
 			lastFrame = now
 		end
 		local dt = now - lastFrame
@@ -612,7 +581,6 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 
 		if opened then
 			openStep(os.clock() - opened)
-			hopStep()
 		else
 			local state = TruckDrop.box(t, reduced, bumpX)
 			if state.visible then
@@ -697,29 +665,9 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			openStep(0)
 			Audio.play("meow", { at = cat.PrimaryPart :: Instance?, variant = 2 })
 		end,
-		hopOut = function(toward: Vector3, onDone: (() -> ())?)
-			local cat = kitten
-			if cat == nil or destroyed or hopping or carry then
-				if onDone then
-					task.defer(onDone) -- nothing to hop: still answer, so a caller never hangs
-				end
-				return
-			end
-			local from = cat:GetPivot().Position
-			local flat = (toward - from) * (Vector3.one - up)
-			local dir = if flat.Magnitude > 0.01 then flat.Unit else -across
-			-- lands on the pavement (the landing spot's height), a hop's length toward the target
-			local ground = from - up * up:Dot(from - origin.Position)
-			hopping = {
-				start = os.clock(),
-				from = from,
-				to = ground + dir * TruckDrop.HOP.distance,
-				onDone = onDone,
-			}
-		end,
 		pickUp = function(character: Model, onDone: (() -> ())?)
 			local cat = kitten
-			if cat == nil or destroyed or hopping or carry then
+			if cat == nil or destroyed or carry then
 				if onDone then
 					task.defer(onDone) -- nothing to pick up: still answer, so a caller never hangs
 				end
@@ -771,11 +719,6 @@ function OpeningScene.play(origin: CFrame, options: Options?): Handle
 			destroyed = true
 			if carry then
 				carry.destroy() -- the arms go back and a pending placeIn still hears back
-			end
-			local hop = hopping
-			if hop and hop.onDone then
-				task.defer(hop.onDone) -- destroyed mid-hop: the caller still hears back
-				hop.onDone = nil
 			end
 			if connection then
 				connection:Disconnect()

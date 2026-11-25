@@ -1,8 +1,10 @@
 --!strict
 -- LiveFlags: live on/off switches, so a feature can be turned on or off in every running server within about
--- a minute, with no publish and no restart. Each switch is one boolean entry in the DataStore named STORE.
--- The flags workflow (tools/opencloud/flags.sh) writes them; LiveFlagService reads them every CHECK_SECONDS
--- and copies each to a ReplicatedStorage attribute (ATTRIBUTE_PREFIX .. key) so client code can read it too.
+-- a minute, with no publish and no restart. Every switch is a boolean in one entry, ALL_ENTRY, of the DataStore
+-- named STORE (a table keyed by switch name), so one read a minute covers them all (#325). The flags workflow
+-- (tools/opencloud/flags.sh) writes it; LiveFlagService reads it every CHECK_SECONDS and copies each switch to a
+-- ReplicatedStorage attribute (ATTRIBUTE_PREFIX .. key) so client code can read it too. Until flags.sh first writes
+-- ALL_ENTRY, servers read the older layout instead: one boolean entry per switch, named after the switch.
 --
 -- Two kinds of switch:
 -- - A plain key in KEYS is ON unless the store says an explicit false. A missing entry, a wrong type or a
@@ -17,6 +19,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LiveFlags = {}
 
 LiveFlags.STORE = "CleanACat_Flags"
+-- The entry that holds every switch. A switch name never has an underscore, so it can never be a switch's own entry.
+LiveFlags.ALL_ENTRY = "_switches"
 LiveFlags.ATTRIBUTE_PREFIX = "LiveFlag_"
 LiveFlags.CHECK_SECONDS = 60
 -- Set true on ReplicatedStorage once a server has read every switch for the first time (or gave up after
@@ -154,6 +158,15 @@ function LiveFlags.resolve(key: string, stored: unknown): boolean
 		return stored == true
 	end
 	return stored ~= false
+end
+
+-- What the ALL_ENTRY entry `all` stores for `key`: nil when `all` is not a table or has no such key, which then
+-- means the same as a missing entry did in the one-entry-per-switch layout.
+function LiveFlags.storedIn(all: unknown, key: string): unknown
+	if type(all) ~= "table" then
+		return nil
+	end
+	return (all :: { [any]: unknown })[key]
 end
 
 -- Is the switch on right now? Works on the server and the client. Before LiveFlagService's first read the

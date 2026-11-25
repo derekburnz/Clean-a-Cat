@@ -15,9 +15,9 @@ on:
         options: [dev, studio, live]
         default: dev
       action:
-        description: "show | set | clear (clear puts the switch back at its default)"
+        description: "show | set | clear (clear puts the switch back at its default) | migrate (rebuild the one entry from the older per-switch entries)"
         type: choice
-        options: [show, set, clear]
+        options: [show, set, clear, migrate]
         default: show
       key:
         description: "Which switch (set and clear): a name in LiveFlags.KEYS, or several split by commas"
@@ -65,6 +65,7 @@ jobs:
           echo "Switches of the ${{ inputs.target }} experience ($UNIVERSE_ID)"
           case "$ACTION" in
           show) bash tools/opencloud/flags.sh show ;;
+          migrate) bash tools/opencloud/flags.sh migrate && bash tools/opencloud/flags.sh show ;;
           set | clear)
             IFS=',' read -ra keys <<< "$KEY"
             for k in "${keys[@]}"; do
