@@ -19,9 +19,9 @@
    takes the pack away for that player. The window opens only when the player taps the HUD button.
    Countdown: Derek's call, 2026-11-25 ("countdown but make it end"). It is real: kept on the server per player, it
      starts at the player's first view, it never restarts, and when it hits zero the offer is gone for that player for
-     good (the three items stay for sale on their own). The length is Planning-Agent's; 2:59:24 is a placeholder.
+     good (the three items stay for sale on their own). The length is Planning-Agent's (their pick: 72 hours from the first time the button shows), so the clock shows days: "2d 23:59:24" in the window, "2d 23h" on the HUD (hours and minutes once under a day, "5h 12m").
      Never "Limited time" or hurry words: the clock alone says it. The window shows it in the title band and the HUD
-     button under its label; both read the same server end time. The HUD chip shows hours and minutes only ("2h 59m", no
+     button under its label; both read the same server end time. The HUD chip never shows seconds (no
      ticking seconds); seconds tick only inside the window. Nothing changes near the end: no red, no flash, no extra bob.
      After a no, the window stays shut for that visit. Players PolicyService restricts see no pack and no timer.
    bundle: the window.
@@ -131,7 +131,7 @@ body.short .starter .gift { font-size: 42px; }
       <div class="band">
         <div class="badge"><i data-ic="gift"></i></div>
         <span class="title outlined">Spa Starter Pack</span>
-        <span class="timer"><i data-ic="clock"></i>2:59:24</span>
+        <span class="timer"><i data-ic="clock"></i>2d 23:59:24</span>
       </div>
       <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
       <div class="body">
@@ -173,7 +173,7 @@ body.short .starter .gift { font-size: 42px; }
       <button class="rbtn sky" data-tap aria-label="Tools"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Tools.png" alt=""><span class="cap outlined thin">Tools</span></button>
       <button class="rbtn pink" data-tap aria-label="Helpers"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Helper.png" alt=""><span class="cap outlined thin">Helpers</span></button>
       <button class="rbtn gold" data-tap aria-label="Builder"><img class="ic" src="../icons/hud/CleanACat_Icon_Hud_Build.png" alt=""><span class="cap outlined thin">Build</span></button>
-      <button class="rbtn starter" data-tap aria-label="Spa Starter Pack"><i data-ic="gift" class="gift"></i><span class="cap outlined thin">Starter</span><span class="left"><i data-ic="clock"></i>2h 59m</span>
+      <button class="rbtn starter" data-tap aria-label="Spa Starter Pack"><i data-ic="gift" class="gift"></i><span class="cap outlined thin">Starter</span><span class="left"><i data-ic="clock"></i>2d 23h</span>
         <i data-ic="sparkle" class="glint a"></i><i data-ic="sparkle" class="glint b"></i><i data-ic="sparkle" class="glint c"></i></button>
     </div>
   </div>
