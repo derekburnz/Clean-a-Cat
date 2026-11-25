@@ -29,6 +29,7 @@ local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForC
 local ControlHold = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local Icons =
 	require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("HUD"):WaitForChild("Icons"))
+local ToolOnCat = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ToolOnCat"))
 local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
@@ -252,6 +253,7 @@ end
 
 local function setStage(v: Visit, stage: Stage)
 	v.stage = stage
+	ToolOnCat.hide() -- the next touch shows the new step's tool (switch toolOnCat)
 	ScrubController.stageChanged:Fire(hudStage(v))
 	if visit == v then
 		updateWashView(v)
@@ -687,6 +689,11 @@ local function ownsTool(id: string): boolean
 	return Players.LocalPlayer:GetAttribute(ToolRules.ATTRIBUTE_PREFIX .. id) == true
 end
 
+-- An owned tool shows as its own model on the cat only while the Tools board is on (switch toolOnCat).
+local function ownsUpgrade(id: string): boolean
+	return LiveFlags.isOn(TOOLS_FLAG) and ownsTool(id)
+end
+
 -- How far the sponge reaches: wider with Bubble Soap. The server sets the owned-tool attributes.
 local function spongeRadius(): number
 	if not LiveFlags.isOn(TOOLS_FLAG) then
@@ -1116,6 +1123,19 @@ local function onPointer(input: InputObject)
 	pointerAt(input, cat)
 	local ray = pointerRay(input)
 	local result = if ray then cast(ray, v.catParams) else nil
+	-- the step's real tool on the fur under the finger (switch toolOnCat), see-through on his head; off the cat it
+	-- goes away
+	if result then
+		local headModel = if cat.head then cat.head.Parent else nil
+		ToolOnCat.show(
+			ToolOnCat.modelFor(v.stage, v.step, ownsUpgrade),
+			result.Position,
+			result.Normal,
+			headModel ~= nil and result.Instance:IsDescendantOf(headModel)
+		)
+	else
+		ToolOnCat.hide()
+	end
 	if v.step == "claws" then
 		-- the Pawdicure: a press resting on a paw with long claws starts its hold; sliding to another paw restarts.
 		-- A paw is small on a phone and the far one hides behind the body, so a press anywhere else on the cat holds
@@ -1207,6 +1227,7 @@ local function release()
 		ScrubController.pointerMoved:Fire(nil, nil, nil)
 	end
 	activeInput = nil
+	ToolOnCat.hide()
 	local v = visit
 	if v then
 		v.hold = nil

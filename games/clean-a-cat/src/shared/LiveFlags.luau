@@ -77,6 +77,7 @@ LiveFlags.KEYS = {
 	"washView", -- every cat in the tub is washed in the close-up wash view with the avatar hidden, not only Suds in the opening (Spa/WashView, Controllers/ScrubController); off by default
 	"autoTool", -- the wash picks each step's tool by itself with no tool tray at the bottom; the top line and the tick list say what to do (UI/HUD); off by default
 	"toolCursor", -- the wash step's tool (sponge, brush, ...) drawn under the finger while it works on the cat, kept off the cat's face (UI/HUD/HeldTool); off by default
+	"toolOnCat", -- the wash step's real 3D tool (sponge, brush, clipper) on the cat's fur where the player rubs, following the finger (Spa/ToolOnCat); off by default
 	"smallPrompts", -- every tap prompt (pick him up, open the box, the boards) drawn as a small pill beside its thing instead of Roblox's big black button (Controllers/PromptController); off by default
 	"worldBackdrop", -- the draft world behind the street: hills, houses and trees the road runs into (Model-Agent's CleanACat_Area_Backdrop, BackdropController), this player's own copy; off by default
 	"skyDraft", -- the draft sky and light: pastel haze, soft clouds, warm tint and gentle bloom (Effects/Sky), this player's own; off by default
@@ -133,6 +134,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	smallPrompts = true,
 	autoTool = true,
 	toolCursor = true,
+	toolOnCat = true,
 	openingReplay = true,
 	sudsBubble = true,
 	recapSide = true,
