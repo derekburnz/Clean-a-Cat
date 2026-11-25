@@ -128,7 +128,7 @@ def main():
         if name in props.EXTRAS:
             extra = props.EXTRAS[name]()
         for maker in (tools, plot, spa_props, customers, build_props, street, busy_spa, opening, backdrop,
-                      boards, crates, townsfolk):
+                      boards, crates, townsfolk, vip):
             if name in maker.EXTRAS:
                 extra = maker.EXTRAS[name]()
         if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)

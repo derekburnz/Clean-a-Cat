@@ -257,6 +257,59 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipLocked.png"
  },
  {
+  "name": "CleanACat_Area_VipRoom",
+  "category": "Area",
+  "module": "vip",
+  "objects": [
+   "CleanACat_Area_VipRoom",
+   "CleanACat_Area_VipRoom_Decor",
+   "CleanACat_Area_VipRoom_Sign_Decor",
+   "CleanACat_Area_VipRoom_Screen",
+   "CleanACat_Area_VipRoom_Lamp_Decor",
+   "CleanACat_Area_VipRoom_Bulbs"
+  ],
+  "triangles": 3752,
+  "budget": 5000,
+  "parts": 192,
+  "size_studs": {
+   "x": 17.92,
+   "y": 14.01,
+   "z": 15.77
+  },
+  "size_roblox": [
+   17.92,
+   15.77,
+   14.01
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 4,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "3752/5000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "2368 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.32 (want 0)",
+    "centered": "footprint center x=0.00 y=6.14",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipRoom.png"
+ },
+ {
   "name": "CleanACat_Bow_Mint",
   "category": "Bow",
   "module": "props",
