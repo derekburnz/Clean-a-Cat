@@ -7,9 +7,10 @@
                               child Model, `..._Door_Swing`, pivoted at its hinge on the cat's left side (+X in
                               Blender): turn it about its pivot's up axis by up to 110 degrees to open it.
                               Attachment `CatSeat` on the tray: a walking cat's pivot goes there, facing out of the
-                              front, at ScaleTo(CatScale) (root attribute, 0.8) so its ears stay under the roof.
-                              Attachment `Grip` at the handle, for welding it to a customer's hand. Size, hinge,
-                              Attachments and attributes are the old carrier's, so it swaps in with no code change.
+                              front, at ScaleTo(CatScale) (root attribute, 0.7) so its ears stay under the roof.
+                              Attachment `Grip` at the handle, 1.95 up, for welding it to a customer's hand (#446:
+                              it was 2.66 up and the carrier 2.3 tall, too tall to hang from a hand). 1.36 wide,
+                              2.0 long, 1.75 to the roof.
   CleanACat_Prop_CarrierSky   the same carrier in two more looks (CARRIERS below), so a line of customers is not
   CleanACat_Prop_CarrierButter  three of one thing: sky with cat ears and stars, butter with a paw badge. The first
                               is cream on a bubblegum tray with a bow and hearts.
@@ -41,9 +42,13 @@ from common import Builder
 from stations import _tris
 
 # Carrier: outer size, shell and tray split
-CAR_W, CAR_L, CAR_H = 1.6, 2.5, 2.3
-TRAY_H = 0.7
-CAT_SCALE = 0.8    # a walking cat rides at ScaleTo(0.8) so its ears stay under the shell (root attribute CatScale)
+# #446: sized so a customer carries it at their side by the handle with a straight arm: the Grip is 1.95 up, under
+# a 5 stud customer's hand, and the tray is low. (It was 1.6 x 2.5 x 2.3 with the Grip 2.66 up, which hung under the
+# floor from any hand.)
+CAR_W, CAR_L, CAR_H = 1.36, 2.0, 1.75
+TRAY_H = 0.3
+GRIP_H = CAR_H + 0.2    # the middle of the handle's grip, where a hand closes on it
+CAT_SCALE = 0.7    # a walking cat rides at ScaleTo(0.7) so its ears stay under the roof (root attribute CatScale)
 
 
 # The three carriers (#449): one build, a look each. Every look differs in shape as well as colour: the roof's
@@ -55,9 +60,9 @@ CARRIERS = {
     "CleanACat_Prop_CarrierButter": ("pastel_butter", "spa_mint", "spa_bubblegum", "spa_sky", "spa_cream", "none",
                                      "paw"),
 }
-ROOF_FROM = 1.8        # where the side walls stop and the roof slopes in
-ROOF_IN = 0.38         # how far each slope comes in by the top
-GATE_H = 0.34          # the gate's straight part; three scallops stand on it
+ROOF_FROM = 1.36        # where the side walls stop and the roof slopes in
+ROOF_IN = 0.32         # how far each slope comes in by the top
+GATE_H = 0.28          # the gate's straight part; three scallops stand on it
 _FRONT = (math.radians(90), "X")           # a flat shape stood up to face the front
 
 
@@ -85,7 +90,7 @@ def _carrier(name, mat):
     b = Builder()
     b.box_base((0, 0, 0), (w, ln, TRAY_H), tray)                                    # the tray
     b.box_base((0, 0, TRAY_H - 0.12), (w + 0.08, ln + 0.08, 0.1), "spa_cream")      # a cream lip round its top
-    b.box_base((0, 0.0, TRAY_H - 0.06), (w - 0.4, ln - 0.5, 0.1), cushion)          # the cushion the cat stands on
+    b.box_base((0, 0.0, TRAY_H - 0.06), (w - 0.36, ln - 0.4, 0.1), cushion)          # the cushion the cat stands on
     # the shell: two sides, two roof slopes, the roof and a back the shape of the front opening
     for sx in (1, -1):
         b.box_base((sx * (w / 2 - 0.02 - wt / 2), 0.06, TRAY_H - 0.05), (wt, ln - 0.14, ROOF_FROM - TRAY_H + 0.07),
@@ -103,32 +108,32 @@ def _carrier(name, mat):
     b.prism((0, ln / 2 - wt / 2 - 0.02, zm), [(-x, z) for x, z in reversed(back)], wt, shell, rot=_FRONT)
     # the handle: two posts and a chunky grip
     for sx in (1, -1):
-        b.box_base((sx * 0.38, 0.06, h - 0.02), (0.16, 0.22, 0.32), trim, bevel=False)
-    b.box((0, 0.06, h + 0.36), (1.0, 0.28, 0.18), trim)
+        b.box_base((sx * 0.33, 0.06, h - 0.02), (0.15, 0.2, 0.17), trim, bevel=False)
+    b.box((0, 0.06, GRIP_H), (0.9, 0.26, 0.16), trim)
     if roof == "bow":                                                              # a bow on the front of the roof
-        y, z = -ln / 2 + 0.2, h + 0.1
-        b.box((0, y, z), (0.2, 0.18, 0.2), accent)
+        y, z = -ln / 2 + 0.18, h + 0.09
+        b.box((0, y, z), (0.18, 0.16, 0.18), accent)
         for sx in (1, -1):
-            b.sphere((sx * 0.26, y, z + 0.03), 0.22, accent, segments=8, rings=4, scale=(1.0, 0.55, 0.75),
+            b.sphere((sx * 0.23, y, z + 0.03), 0.2, accent, segments=8, rings=4, scale=(1.0, 0.55, 0.75),
                      rot=Matrix.Rotation(math.radians(-16 * sx), 3, "Y"))
     elif roof == "ears":                                                           # two cat ears on the slopes
         for sx in (1, -1):
             tilt = Matrix.Rotation(math.radians(-14 * sx), 3, "Y")
-            b.pyramid((sx * 0.4, -ln / 2 + 0.5, h - 0.08), 0.46, 0.5, shell, rot=tilt)
-            b.pyramid((sx * 0.4, -ln / 2 + 0.37, h - 0.07), 0.26, 0.32, "spa_bubblegum", rot=tilt)
+            b.pyramid((sx * 0.34, -ln / 2 + 0.42, h - 0.08), 0.4, 0.44, shell, rot=tilt)
+            b.pyramid((sx * 0.34, -ln / 2 + 0.31, h - 0.07), 0.23, 0.28, "spa_bubblegum", rot=tilt)
     for sx in (1, -1):                                                             # what is on each side
-        x, zc = sx * (w / 2 - 0.02 + 0.025), TRAY_H + 0.62
+        x, zc = sx * (w / 2 - 0.02 + 0.025), TRAY_H + 0.52
         if side == "heart":
-            _heart(b, x, 0.1, zc, 0.6, accent, sx)
-            _heart(b, x, -0.64, zc + 0.2, 0.3, "spa_mint", sx)
+            _heart(b, x, 0.12, zc, 0.52, accent, sx)
+            _heart(b, x, -0.5, zc + 0.17, 0.26, "spa_mint", sx)
         elif side == "star":
-            b.star((x, 0.0, zc), 0.4, 0.19, 0.05, accent, rot=_on_side(sx))
+            b.star((x, 0.0, zc), 0.36, 0.17, 0.05, accent, rot=_on_side(sx))
         else:                                                                      # a round badge with a paw print
-            b.cyl((x, 0.1, zc), 0.42, 0.05, accent, segments=14, bevel=False, rot=_on_side(sx))
+            b.cyl((x, 0.1, zc), 0.36, 0.05, accent, segments=14, bevel=False, rot=_on_side(sx))
             px = sx * (w / 2 - 0.02 + 0.06)
-            b.box((px, 0.1, zc - 0.08), (0.03, 0.3, 0.2), trim, bevel=False)
-            for dy, dz in ((-0.21, 0.08), (-0.07, 0.19), (0.07, 0.19), (0.21, 0.08)):
-                b.box((px, 0.1 + dy, zc + dz), (0.03, 0.11, 0.11), trim, bevel=False)
+            b.box((px, 0.1, zc - 0.07), (0.03, 0.26, 0.17), trim, bevel=False)
+            for dy, dz in ((-0.18, 0.07), (-0.06, 0.16), (0.06, 0.16), (0.18, 0.07)):
+                b.box((px, 0.1 + dy, zc + dz), (0.03, 0.095, 0.095), trim, bevel=False)
     main = _tris(b.finalize(name, mat))
     # the gate: built from its hinge (the cat's left front corner, +X), the far side at -dw. Low, so the cat's face
     # is in the open above it, with a scalloped top and a paw print
@@ -152,7 +157,7 @@ def build_carrier(mat):
 
 def carrier_rbx_extras(name="CleanACat_Prop_Carrier"):
     return {"attachments": [(name, "CatSeat", Matrix.Translation((0.0, 0.06, TRAY_H))),
-                            (name, "Grip", Matrix.Translation((0.0, 0.06, CAR_H + 0.36)))],
+                            (name, "Grip", Matrix.Translation((0.0, 0.06, GRIP_H)))],
             "attributes": {"DoorOpenDegrees": {"Float64": 110.0}, "CatScale": {"Float64": CAT_SCALE}}}
 
 
