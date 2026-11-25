@@ -63,7 +63,9 @@ WashCamera.SCENE = table.freeze({
 	-- right (the camera about 17 percent further out), a higher look point drops him under the pips, and a steeper
 	-- pitch sees over a station's rim to his paws.
 	height = 3.5,
-	fill = 0.55,
+	-- 0.55 framed on his box read 0.57 to 0.63 (Sync-Agent, 5781142: suds and fluff widen him at the Bubble Bath),
+	-- so the aim sits a little lower and lands inside 0.5 to 0.6 at every station
+	fill = 0.52,
 	fov = 50,
 	pitch = 38,
 	lookUp = 2.9,
@@ -72,6 +74,9 @@ WashCamera.SCENE = table.freeze({
 	-- On screen a cat in the tub reads as this much taller than his bounding box (his ears and the view's slant:
 	-- Sync-Agent measured 0.645 for a 3 stud box framed as 3), so a shot framed on a box scales by it.
 	boxToScreen = 3.5 / 3,
+	-- framed on his box, the camera looks this far over its middle, so he sits a little lower on screen, clear of
+	-- the step dots (they touched his ears at the Bubble Bath and were 4 to 6 px clear elsewhere)
+	boxLookAbove = 0.3,
 	focusRadius = 3, -- studs around the cat kept sharp
 })
 WashCamera.FLAG = "washScene"
@@ -109,12 +114,12 @@ function WashCamera.sceneDistanceFor(boxHeight: number): number
 end
 
 -- Framed on the cat: his bounding box's middle, at the distance that makes him `fill` of the screen, from in front
--- of `spot` and `pitch` up. At the tub this matches sceneShot to within a tenth of a stud.
+-- of `spot` and `pitch` up, looking `boxLookAbove` over the middle.
 function WashCamera.sceneShotOn(spot: CFrame, cat: Model): CFrame
 	local s = WashCamera.SCENE
 	local box, size = cat:GetBoundingBox()
 	local d = WashCamera.sceneDistanceFor(size.Y)
-	local look = box.Position
+	local look = box.Position + Vector3.yAxis * s.boxLookAbove
 	local flat = Vector3.new(spot.LookVector.X, 0, spot.LookVector.Z)
 	local ahead = if flat.Magnitude > 0.01 then flat.Unit else Vector3.zAxis
 	local pitch = math.rad(s.pitch)
