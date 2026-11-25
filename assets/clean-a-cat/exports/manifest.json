@@ -8918,18 +8918,18 @@
    "CleanACat_Prop_Carrier",
    "CleanACat_Prop_Carrier_Door_Swing"
   ],
-  "triangles": 344,
-  "budget": 400,
-  "parts": 22,
+  "triangles": 900,
+  "budget": 950,
+  "parts": 47,
   "size_studs": {
-   "x": 1.61,
-   "y": 2.5,
-   "z": 2.73
+   "x": 1.68,
+   "y": 2.58,
+   "z": 2.75
   },
   "size_roblox": [
-   1.61,
-   2.73,
-   2.5
+   1.68,
+   2.75,
+   2.58
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8937,12 +8937,15 @@
    "pass": true,
    "failed": [],
    "warnings": [],
-   "qa_accepted": {},
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 1
+   },
    "checks": {
-    "budget": "344/400 tris",
+    "budget": "900/950 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "184 faces on swatch centers",
+    "uv": "574 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00",
@@ -8951,6 +8954,96 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Carrier.png"
+ },
+ {
+  "name": "CleanACat_Prop_CarrierButter",
+  "category": "Prop",
+  "module": "spa_props",
+  "objects": [
+   "CleanACat_Prop_CarrierButter",
+   "CleanACat_Prop_CarrierButter_Door_Swing"
+  ],
+  "triangles": 712,
+  "budget": 950,
+  "parts": 44,
+  "size_studs": {
+   "x": 1.71,
+   "y": 2.58,
+   "z": 2.75
+  },
+  "size_roblox": [
+   1.71,
+   2.75,
+   2.58
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "712/950 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "436 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_CarrierButter.png"
+ },
+ {
+  "name": "CleanACat_Prop_CarrierSky",
+  "category": "Prop",
+  "module": "spa_props",
+  "objects": [
+   "CleanACat_Prop_CarrierSky",
+   "CleanACat_Prop_CarrierSky_Door_Swing"
+  ],
+  "triangles": 592,
+  "budget": 950,
+  "parts": 64,
+  "size_studs": {
+   "x": 1.68,
+   "y": 2.58,
+   "z": 2.75
+  },
+  "size_roblox": [
+   1.68,
+   2.75,
+   2.58
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "592/950 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "380 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_CarrierSky.png"
  },
  {
   "name": "CleanACat_Prop_ChanceBoard",

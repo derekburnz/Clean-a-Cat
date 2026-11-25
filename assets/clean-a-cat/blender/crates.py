@@ -4,7 +4,7 @@ The owner on 2026-11-24: players "can earn crates that roll for" pets, hard to g
 rules for crates yet, so nothing uses this model; it is here so the crate has a look when they do. It is our own
 shape. The owner's library crates are themed loot crates from another game and were not ported.
 
-It must not be taken for the customers' carrier (a pink tray under a cream shell with a grille), the cardboard
+It must not be taken for the customers' carrier (a little pastel house on a tray), the cardboard
 delivery box or the stray box, nor for a plain present, so: wooden slats in a lilac frame, a lilac lid with two cat
 ears, and a gold paw latch. Lilac and gold are what a better tool wears (style guide, tool tiers), so the crate reads
 as a prize in the game's own colours.
