@@ -73,10 +73,13 @@ type Order = {
 	since: number, -- server time the customer's heart bar started full (HeartRules, switch heartBar)
 	lasts: number, -- seconds from full to empty, fixed when they join
 	early: boolean?, -- picked to go next while their bar was still nearly full (switch queuePick)
+	tutorial: boolean, -- one of a new spa's first customers (HeartRules.TUTORIAL_STARS_CUSTOMERS)
 }
 local queueOrders: { [Player]: { Order } } = {}
 -- The save's play time when it loaded and the os.clock() then, for the heart bars' first minutes.
 local playBase: { [Player]: { play: number, at: number } } = {}
+-- Whether the last heart tick was still in the first minutes (no cat leaves), to see the moment they end.
+local noLeaveWas: { [Player]: boolean } = {}
 local handedOut: { [Player]: number } = {} -- cats handed out this session, for the stray turns
 -- Asked for a cat before the save loaded while sudsWash is on: answered once it loads, so a slow load can never hand
 -- a brand new player a customer's cat in place of the kitten.
@@ -141,11 +144,14 @@ end
 -- A new customer's order for a cat of `kind`, joining the line now at `place`.
 local function newOrder(player: Player, kind: string, place: number): Order
 	local dirt = rollDirt(player, kind, place)
+	local save = DataService.get(player)
+	local fresh = save == nil or save.stars <= 0
 	return {
 		needs = rollNeeds(kind, dirt),
 		dirt = dirt,
 		since = Workspace:GetServerTimeNow(),
 		lasts = HeartRules.lasts(kind, played(player)),
+		tutorial = fresh and place <= HeartRules.TUTORIAL_STARS_CUSTOMERS,
 	}
 end
 
@@ -330,6 +336,7 @@ local function newCat(player: Player): SpaRules.Cat
 		if order then
 			cat.needs = order.needs
 			cat.dirt = order.dirt
+			cat.tutorial = order.tutorial
 			-- picked or taken while the heart bar was still nearly full: the early bonus (switch heartBar)
 			cat.early = order.early == true
 				or HeartRules.early(order.since, order.lasts, Workspace:GetServerTimeNow())
@@ -741,9 +748,10 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	if LiveFlags.isOn(HeartRules.FLAG) then
 		-- The pay formula (issue 507): base x wash grade x early pick x dirt, one recap line for each.
 		local needs = CatRules.liveNeeds(cat.needs or CatRules.needs(kind), LiveFlags.isOn)
-		local seconds = os.clock() - (cat.washFrom or os.clock())
+		local seconds = cat.washSeconds or (os.clock() - (cat.washFrom or os.clock()))
+		local handSteps = DirtRules.steps(needs) - 1 -- the bow is not timed
 		local formula = HeartRules.pay(kind, {
-			grade = HeartRules.grade(seconds, DirtRules.steps(needs)),
+			grade = if cat.tutorial then 3 else HeartRules.grade(seconds, handSteps),
 			early = cat.early == true,
 			dirt = if dirtOn then cat.dirt else nil,
 		})
@@ -802,8 +810,9 @@ end
 local function onPickBow(player: Player, rawId: unknown, rawSeq: unknown, rawBow: unknown)
 	local bow = Guard.oneOf(rawBow, SpaRules.BOWS)
 	withCat(player, rawId, rawSeq, function(cat)
-		if bow then
-			SpaRules.pickBow(cat, bow)
+		if bow and SpaRules.pickBow(cat, bow) and cat.washFrom then
+			-- the bow ends the hand steps: the wash grade counts from the tub to here (tuning pay.starTimes)
+			cat.washSeconds = os.clock() - (cat.washFrom :: number)
 		end
 	end)
 end
@@ -854,6 +863,16 @@ local function tickHearts()
 		local orders = ordersFor(player)
 		local playTime = played(player)
 		local paused = save.stars <= 0
+		local noLeave = playTime < HeartRules.NO_LEAVE_BEFORE
+		local minutesEnded = noLeaveWas[player] == true and not noLeave
+		noLeaveWas[player] = noLeave
+		if minutesEnded then
+			-- the cats on the sliver get a grumpy bar's worth back, and the cards learn their bars empty now
+			for _, order in orders do
+				order.since = HeartRules.graceSince(order.since, order.lasts, now)
+			end
+			sendQueue(player)
+		end
 		local leaving: number? = nil
 		for place, order in orders do
 			if paused then
@@ -1067,6 +1086,7 @@ function SpaService.Start()
 		queues[player] = nil
 		queueOrders[player] = nil
 		playBase[player] = nil
+		noLeaveWas[player] = nil
 		handedOut[player] = nil
 		waiting[player] = nil
 		loadDone[player] = nil

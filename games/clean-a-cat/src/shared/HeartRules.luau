@@ -39,9 +39,12 @@ HeartRules.EARLY_TIMES = 1.25 -- tuning pay.early
 HeartRules.GRUMPY_AT = 0.3 -- the cat looks grumpy once this share of its bar or less is left
 HeartRules.FILL_ATTRIBUTE = "HeartFill" -- number 0 to 1 on each waiting customer's figure, for the mood poses
 
--- The wash grade (tuning pay.starTimes): 3 stars under GRADE_STEP_SECONDS[1] seconds per step, 2 under [2], else 1.
-HeartRules.GRADE_STEP_SECONDS = table.freeze({ 7, 11 }) :: { number }
-HeartRules.GRADE_TIMES = table.freeze({ 0.8, 1, 1.2 }) :: { number } -- by grade 1, 2, 3 (tuning pay.stars)
+-- The wash grade (tuning pay.starTimes): 3 stars at GRADE_STEP_SECONDS[1] seconds or less per hand step on average,
+-- 2 at [2] or less, else 1. A slow wash is never a cut (tuning pay.stars).
+HeartRules.GRADE_STEP_SECONDS = table.freeze({ 12, 20 }) :: { number }
+HeartRules.GRADE_TIMES = table.freeze({ 1, 1.1, 1.2 }) :: { number } -- by grade 1, 2, 3 (tuning pay.stars)
+-- Suds and a new spa's first TUTORIAL_STARS_CUSTOMERS customers always get 3 stars (tuning pay.starsTutorial).
+HeartRules.TUTORIAL_STARS_CUSTOMERS = 2
 
 -- How long a customer with a cat of `name` joining the line now waits at most, after `played` seconds of play.
 function HeartRules.lasts(name: string, played: number): number
@@ -67,6 +70,16 @@ function HeartRules.shown(since: number, lasts: number, now: number, played: num
 		return math.max(left, HeartRules.SLIVER)
 	end
 	return left
+end
+
+-- The start of a bar once the first minutes end (Review-QA on #543): a bar that sat at the sliver, or anywhere under
+-- GRUMPY_AT, gets GRUMPY_AT of itself back, so the cats that waited on the sliver do not all leave the moment the
+-- minutes end. Any other bar keeps its start.
+function HeartRules.graceSince(since: number, lasts: number, now: number): number
+	if HeartRules.left(since, lasts, now) >= HeartRules.GRUMPY_AT then
+		return since
+	end
+	return now - lasts * (1 - HeartRules.GRUMPY_AT)
 end
 
 -- True once the bar is empty and the save has played NO_LEAVE_BEFORE: the customer leaves.
@@ -110,11 +123,11 @@ function HeartRules.fill(heart: Heart, now: number): number
 	return if heart.stops then math.max(left, HeartRules.SLIVER) else left
 end
 
--- The wash grade, 1 to 3 stars, for a wash of `steps` steps that took `seconds`.
+-- The wash grade, 1 to 3 stars, for a wash of `steps` hand steps that took `seconds` of hand work.
 function HeartRules.grade(seconds: number, steps: number): number
 	local each = seconds / math.max(steps, 1)
-	for index, under in HeartRules.GRADE_STEP_SECONDS do
-		if each < under then
+	for index, most in HeartRules.GRADE_STEP_SECONDS do
+		if each <= most then
 			return 4 - index
 		end
 	end
@@ -123,7 +136,7 @@ end
 
 export type Pay = {
 	base: number, -- the rarity's coins for the wash
-	speed: number, -- extra coins for the wash grade (below 0 for a slow wash)
+	speed: number, -- extra coins for the wash grade
 	early: number, -- extra coins for picking the cat early
 	dirt: number, -- extra coins for a dirtier cat
 	coins: number, -- base + speed + early + dirt
@@ -139,8 +152,8 @@ export type Wash = {
 }
 
 -- What a customer's cat of `name` pays after `wash`: the base times each multiplier in turn, each step's extra kept
--- as its own amount so the recap lists one line per multiplier and the lines add up to the coins exactly. A slow wash
--- (grade 1) makes `speed` negative. The tip stays as it is.
+-- as its own amount so the recap lists one line per multiplier and the lines add up to the coins exactly. The tip
+-- stays as it is.
 function HeartRules.pay(name: string, wash: Wash): Pay
 	local rarity = CatRules.pay(name)
 	local grade = math.clamp(wash.grade or 1, 1, #HeartRules.GRADE_TIMES)

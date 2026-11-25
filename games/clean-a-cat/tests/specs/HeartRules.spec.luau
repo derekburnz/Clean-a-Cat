@@ -37,17 +37,29 @@ return function()
 			expect(HeartRules.gone(0, 0, 999, LATE)).to.equal(false)
 		end)
 
+		it("gives a sliver bar a grumpy bar's worth back when the first minutes end", function()
+			local since = HeartRules.graceSince(0, 150, 400)
+			expect(math.abs(HeartRules.left(since, 150, 400) - HeartRules.GRUMPY_AT) < 1e-9).to.equal(
+				true
+			)
+			expect(HeartRules.gone(since, 150, 400, LATE)).to.equal(false)
+			expect(HeartRules.gone(since, 150, 400 + 150 * HeartRules.GRUMPY_AT + 0.01, LATE)).to.equal(
+				true
+			)
+			expect(HeartRules.graceSince(100, 150, 120)).to.equal(100) -- a fuller bar keeps its start
+		end)
+
 		it("gives the early bonus only in the first tenth of the bar", function()
 			expect(HeartRules.early(0, 150, 15)).to.equal(true)
 			expect(HeartRules.early(0, 150, 16)).to.equal(false)
 		end)
 
-		it("grades the wash by seconds per step", function()
-			expect(HeartRules.grade(20, 3)).to.equal(3) -- under 7 s a step
-			expect(HeartRules.grade(21, 3)).to.equal(2)
-			expect(HeartRules.grade(32, 3)).to.equal(2)
-			expect(HeartRules.grade(33, 3)).to.equal(1)
-			expect(HeartRules.grade(60, 10)).to.equal(3)
+		it("grades the wash by seconds per hand step", function()
+			expect(HeartRules.grade(24, 2)).to.equal(3) -- 12 s a step or less
+			expect(HeartRules.grade(25, 2)).to.equal(2)
+			expect(HeartRules.grade(40, 2)).to.equal(2) -- 20 s a step or less
+			expect(HeartRules.grade(41, 2)).to.equal(1)
+			expect(HeartRules.grade(108, 9)).to.equal(3)
 		end)
 
 		it("pays base x stars x early x dirt, one line each, adding up", function()
@@ -59,10 +71,11 @@ return function()
 			expect(pay.tip).to.equal(3)
 			expect(pay.grade).to.equal(3)
 			local slow = HeartRules.pay("Cotton", { grade = 1, early = false })
-			expect(slow.coins).to.equal(8)
-			expect(slow.speed).to.equal(-2)
+			expect(slow.coins).to.equal(10) -- a slow wash is never a cut
+			expect(slow.speed).to.equal(0)
 			expect(slow.early).to.equal(0)
 			expect(slow.dirt).to.equal(0)
+			expect(HeartRules.pay("Cotton", { grade = 2, early = false }).speed).to.equal(1)
 			local plain = HeartRules.pay("Cotton", { early = false })
 			expect(plain.coins).to.equal(10)
 		end)
