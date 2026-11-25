@@ -36,6 +36,7 @@ local Carry = require(Client:WaitForChild("Effects"):WaitForChild("Carry"))
 local ControlHold = require(Client:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local FloorTrail = require(Client:WaitForChild("Spa"):WaitForChild("FloorTrail"))
 local OpeningScene = require(Client:WaitForChild("Effects"):WaitForChild("OpeningScene"))
+local PromptFocus = require(Client:WaitForChild("Spa"):WaitForChild("PromptFocus"))
 local UI = require(Client:WaitForChild("UI"))
 local WashView = require(Client:WaitForChild("Spa"):WaitForChild("WashView"))
 
@@ -277,6 +278,11 @@ local function leadToTub()
 	tapTarget(spot, "Wash him", PLACE_REACH, CLICK_REACH.place, setDown)
 	spot.Parent = Workspace
 	placer = spot
+	-- with him in their arms, "Wash him" always wins over a board's prompt nearby (switch promptFocus, #540)
+	local wash = spot:FindFirstChildOfClass("ProximityPrompt")
+	if wash then
+		PromptFocus.claim(wash :: ProximityPrompt)
+	end
 end
 
 -- The player walks up to `target` (stopping PICK_STAND short of it) and turns to face it, then `onArrive`. Their

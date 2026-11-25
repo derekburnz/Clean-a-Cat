@@ -1085,6 +1085,8 @@ local function armLater(v: Visit, cat: Cat)
 	end
 	v.plan = plan
 	ScrubController.planChanged:Fire(table.clone(plan))
+	-- a new cat or a step put back: the bar shows this cat's work, never the last cat's full bar (Review-QA's pass A)
+	syncMeter(v)
 end
 
 -- One foam puff: Model-Agent's shape `index` (taken in turn), or a placeholder ball in a Model of its own when the
