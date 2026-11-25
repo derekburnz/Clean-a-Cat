@@ -15,6 +15,7 @@ local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForCh
 local CustomerMotion =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerMotion"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
+local FoamDrop = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("FoamDrop"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
 
 local SCRUB_FLAG = "scrubEffects"
@@ -24,6 +25,9 @@ local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
 local SHARED_CARRY_FLAG = "carryShared"
 local CUSTOMER_WALK_FLAG = "customerWalk"
+local WASH_METER_FLAG = "washMeter"
+local SHAKE_BEATS = { 0, 0.18, 0.36 } -- seconds: flecks fly with each swing of the shake
+local SPRAY_HOLD = 0.15 -- seconds the spray keeps going after the last RinseSpray
 local SUDS_FLAG = "sudsWash"
 local SUDS_HOP_HEIGHT = 0.7 -- studs
 local SUDS_HOP_SECONDS = 0.32
@@ -72,6 +76,55 @@ function EffectsController.Start()
 		return LiveFlags.OFF_BY_DEFAULT[CUSTOMER_WALK_FLAG] == true
 			and LiveFlags.isOn(CUSTOMER_WALK_FLAG)
 	end)
+
+	-- The wash bar (switch washMeter, Derek's salon video 2026-11-25): when a step's bar fills the cat shakes off the
+	-- rest with flecks flying; the rinse sprays water off the fur and ends with the last foam dropping round the feet.
+	-- The Moments arrive with Gameplay's wash bar PR, so each is hooked only when it exists.
+	local function meterOn(): boolean
+		return LiveFlags.OFF_BY_DEFAULT[WASH_METER_FLAG] == true and LiveFlags.isOn(WASH_METER_FLAG)
+	end
+	if Moments.ShakeOff then
+		Moments.ShakeOff:Connect(function(cat: Model, step: string)
+			if not meterOn() or not cat:IsDescendantOf(workspace) then
+				return
+			end
+			CatMotion.shake(cat)
+			Effects.stopStream(foamPreset)
+			Effects.stopStream("rinseSpray")
+			local preset = if step == "scrub"
+				then "shakeFlecks"
+				elseif step == "rinse" then "shakeDroplets"
+				else "revealSparkle"
+			for _, at in SHAKE_BEATS do
+				task.delay(at, function()
+					if cat:IsDescendantOf(workspace) then
+						Effects.burst(preset, coatPoint(cat))
+					end
+				end)
+			end
+			if step == "rinse" then
+				FoamDrop.drop(cat)
+			end
+		end)
+	end
+	if Moments.RinseSpray then
+		local sprayAt = 0
+		Moments.RinseSpray:Connect(function(_cat: Model, point: Vector3, normal: Vector3)
+			if not meterOn() then
+				return
+			end
+			-- the emitter sprays along its +Y, so turn the look-along-normal frame to point +Y out of the fur
+			local aim = CFrame.lookAt(point, point + normal) * CFrame.Angles(-math.pi / 2, 0, 0)
+			Effects.streamFrom("rinseSpray", aim, 1)
+			local now = os.clock()
+			sprayAt = now
+			task.delay(SPRAY_HOLD, function()
+				if sprayAt == now then
+					Effects.stopStream("rinseSpray")
+				end
+			end)
+		end)
+	end
 
 	local function scrubOn(): boolean
 		return LiveFlags.isOn(SCRUB_FLAG)

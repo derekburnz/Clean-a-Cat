@@ -1,0 +1,38 @@
+--!strict
+local StarterPlayer = game:GetService("StarterPlayer")
+
+local Client = StarterPlayer:WaitForChild("StarterPlayerScripts"):WaitForChild("Client")
+local FoamDrop = require(Client:WaitForChild("Effects"):WaitForChild("FoamDrop")) :: any
+
+return function()
+	describe("FoamDrop.at", function()
+		it("falls from the coat to the floor, speeding up, then flattens", function()
+			local f0 = FoamDrop.at(0, false)
+			local fHalf = FoamDrop.at(FoamDrop.FALL / 2, false)
+			local fEnd = FoamDrop.at(FoamDrop.FALL, false)
+			expect(f0).to.equal(0)
+			expect(fHalf < 0.5).to.equal(true) -- speeding up
+			expect(fEnd).to.equal(1)
+			local _, squash = FoamDrop.at(FoamDrop.FALL + FoamDrop.SETTLE, false)
+			expect(math.abs(squash - FoamDrop.SQUASH) < 1e-6).to.equal(true)
+		end)
+		it("stays solid while it falls and is gone by the end", function()
+			local _, _, seen = FoamDrop.at(0.1, false)
+			expect(seen).to.equal(FoamDrop.SEEN)
+			local _, _, gone = FoamDrop.at(FoamDrop.total(), false)
+			expect(gone).to.equal(1)
+			expect(FoamDrop.total() <= 1.5).to.equal(true)
+		end)
+		it("with reduced motion sits flat on the floor and only fades", function()
+			local fall, squash = FoamDrop.at(0, true)
+			expect(fall).to.equal(1)
+			expect(squash).to.equal(FoamDrop.SQUASH)
+			local _, _, gone = FoamDrop.at(FoamDrop.total(), true)
+			expect(gone).to.equal(1)
+		end)
+		it("keeps to a phone-sized handful", function()
+			expect(FoamDrop.BLOBS.low <= 4).to.equal(true)
+			expect(FoamDrop.BLOBS.high <= 6).to.equal(true)
+		end)
+	end)
+end
