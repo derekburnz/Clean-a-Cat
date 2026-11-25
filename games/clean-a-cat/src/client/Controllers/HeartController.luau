@@ -56,7 +56,9 @@ local function watch(instance: Instance)
 	end
 	local figure = instance :: Model
 	local fill = figure:GetAttribute(HeartRules.FILL_ATTRIBUTE)
-	lastFill[figure] = if type(fill) == "number" then fill else nil
+	if type(fill) == "number" then
+		lastFill[figure] = fill
+	end
 	figure:GetAttributeChangedSignal(HeartRules.FILL_ATTRIBUTE):Connect(function()
 		onFill(figure)
 	end)

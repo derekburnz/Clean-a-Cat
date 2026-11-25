@@ -894,7 +894,10 @@ function SpaService.Start()
 				and LiveFlags.isOn(FLAG)
 				and LiveFlags.isOn(CUSTOMERS_FLAG)
 			then
-				local ok, err = pcall(tickHearts)
+				local ok, err = pcall(function()
+					tickHearts()
+					return nil :: any
+				end)
 				if not ok then
 					warn("SpaService: heart bars:", err)
 				end
