@@ -488,6 +488,130 @@ def bow_tie(rng: np.random.Generator) -> np.ndarray:
     return out
 
 
+def soft_pluck(freq: float, length: float, decay: float = 4.5) -> np.ndarray:
+    x = t(length)
+    return env(len(x), 0.002, decay) * (np.sin(2 * np.pi * freq * x) + 0.3 * np.sin(2 * np.pi * freq * 2 * x) + 0.08 * np.sin(2 * np.pi * freq * 3 * x))
+
+
+def shimmer(rng: np.random.Generator, length: float, gain: float) -> np.ndarray:
+    x = t(length)
+    return bandpass(rng.standard_normal(len(x)), 6500, 12000) * np.sin(np.pi * np.clip(x / length, 0, 1)) ** 2 * gain
+
+
+def heart_low(rng: np.random.Generator) -> np.ndarray:
+    """A waiting cat's heart bar is getting low: a soft two-note nudge stepping down (A5 then F5), round and quiet,
+    about 0.6 s. A reminder, never an alarm."""
+    out = np.zeros(int(RATE * 0.6))
+    for at, freq, gain in ((0.0, 880.0, 0.7), (0.16, 698.5, 0.6)):
+        x = t(0.42)
+        tone = env(len(x), 0.012, 7) * (np.sin(2 * np.pi * freq * x) + 0.2 * np.sin(2 * np.pi * freq * 2 * x))
+        place(out, tone, at, gain)
+    return out
+
+
+def cat_leave(rng: np.random.Generator) -> np.ndarray:
+    """A cat gives up and leaves: three gentle notes falling (E6 C6 A5) over a soft airy whoosh going away, about
+    1 s. A little sad, kind to young players."""
+    out = np.zeros(int(RATE * 1.0))
+    for i, freq in enumerate((1318.5, 1046.5, 880.0)):
+        place(out, soft_pluck(freq, 0.6, 5.5), i * 0.12, 0.5 - i * 0.06)
+    x = t(0.7)
+    whoosh = bandpass(rng.standard_normal(len(x)), 1200, 4000) * np.sin(np.pi * np.clip(x / 0.7, 0, 1)) ** 2 * np.exp(-x * 2) * 0.12
+    place(out, whoosh, 0.05)
+    return out
+
+
+def crate_open(rng: np.random.Generator) -> np.ndarray:
+    """A crate is tapped open: a soft wooden knock, a puff of air as the lid lifts and a short rising sparkle run
+    (G6 B6 D7), about 0.9 s. The same every time, whatever is inside: no near-miss build-up."""
+    out = np.zeros(int(RATE * 0.9))
+    x = t(0.15)
+    freq = 330 + 80 * np.exp(-x * 50)
+    knock = np.sin(2 * np.pi * np.cumsum(freq) / RATE) * env(len(x), 0.002, 30)
+    knock += bandpass(rng.standard_normal(len(x)), 700, 2600) * env(len(x), 0.001, 80) * 0.4
+    place(out, lowpass(knock, 3000), 0.0, 0.8)
+    x = t(0.25)
+    puff = bandpass(rng.standard_normal(len(x)), 1500, 6000) * np.sin(np.pi * np.clip(x / 0.25, 0, 1)) ** 2 * 0.25
+    place(out, puff, 0.06)
+    for i, f0 in enumerate((1568.0, 1975.5, 2349.3)):
+        place(out, soft_pluck(f0, 0.5, 6), 0.14 + i * 0.05, 0.35)
+    place(out, shimmer(rng, 0.5, 0.05), 0.18)
+    return out
+
+
+def pet_reveal(rng: np.random.Generator) -> np.ndarray:
+    """The pet is shown: a warm major chord blooming upward (C6 E6 G6 C7), held softly, with a light shimmer, about
+    1.5 s. One sound for every pet, so rarity is shown by the card and its chance, not by a bigger fanfare."""
+    out = np.zeros(int(RATE * 1.5))
+    for i, freq in enumerate((1046.5, 1318.5, 1568.0, 2093.0)):
+        x = t(1.3)
+        bloom = env(len(x), 0.02, 2.6) * (np.sin(2 * np.pi * freq * x) + 0.25 * np.sin(2 * np.pi * freq * 2 * x))
+        place(out, bloom, i * 0.05, 0.4)
+    place(out, shimmer(rng, 1.0, 0.07), 0.1)
+    return out
+
+
+def star_up(rng: np.random.Generator) -> np.ndarray:
+    """Three pets fuse into a star up: a soft swirl rising, a quick climb of four notes (C6 E6 G6 C7) and one bright
+    held bell (E7), about 1.3 s. A little brighter than the pet reveal."""
+    out = np.zeros(int(RATE * 1.3))
+    x = t(0.45)
+    sweep = bandpass(rng.standard_normal(len(x)), 1500, 7000) * (0.25 + 0.75 * (x / 0.45) ** 2) * 0.2
+    place(out, sweep, 0.0)
+    for i, freq in enumerate((1046.5, 1318.5, 1568.0, 2093.0)):
+        place(out, soft_pluck(freq, 0.5, 6), 0.2 + i * 0.06, 0.4)
+    place(out, chime_note(2637.0, 0.85) * np.exp(-t(0.85) * 1.2), 0.45, 0.45)
+    place(out, shimmer(rng, 0.8, 0.07), 0.45)
+    return out
+
+
+def quest_done(rng: np.random.Generator) -> np.ndarray:
+    """A quest is ticked off: a small happy two-note "ta-da" (G6 then C7) with a tick of sparkle, about 0.7 s."""
+    out = np.zeros(int(RATE * 0.7))
+    place(out, chime_note(1568.0, 0.3) * np.exp(-t(0.3) * 5), 0.0, 0.5)
+    place(out, chime_note(2093.0, 0.6) * np.exp(-t(0.6) * 2.5), 0.1, 0.55)
+    place(out, shimmer(rng, 0.35, 0.05), 0.12)
+    return out
+
+
+def check_in(rng: np.random.Generator) -> np.ndarray:
+    """The check in card's reward is taken: three light bell taps like coins in a jar (E7 G7 E7), each softer,
+    about 0.8 s."""
+    out = np.zeros(int(RATE * 0.8))
+    for i, freq in enumerate((2637.0, 3136.0, 2637.0)):
+        place(out, chime_note(freq, 0.4) * np.exp(-t(0.4) * 4), i * 0.09, 0.45 - i * 0.08)
+    x = t(0.04)
+    tick = bandpass(rng.standard_normal(len(x)), 3000, 8000) * env(len(x), 0.0005, 120) * 0.3
+    for i in range(3):
+        place(out, tick, i * 0.09)
+    return out
+
+
+def worker_done(rng: np.random.Generator) -> np.ndarray:
+    """A worker finishes a cat: one small soft ding (D6) with a single bubble, quieter than the player's own reveal,
+    about 0.5 s, since it can come often."""
+    out = np.zeros(int(RATE * 0.5))
+    place(out, chime_note(1174.7, 0.45) * np.exp(-t(0.45) * 4), 0.0, 0.5)
+    place(out, bubble(1100, 1900, 0.08, rng), 0.03, 0.35)
+    return out
+
+
+def build_done(rng: np.random.Generator) -> np.ndarray:
+    """A build is finished: two soft wooden taps like a little mallet, then a warm major chord (D6 F#6 A6 D7) rising,
+    with a shimmer, about 1.4 s."""
+    out = np.zeros(int(RATE * 1.4))
+    for at, f0 in ((0.0, 420.0), (0.14, 470.0)):
+        x = t(0.12)
+        freq = f0 + 90 * np.exp(-x * 60)
+        tap = np.sin(2 * np.pi * np.cumsum(freq) / RATE) * env(len(x), 0.001, 40)
+        tap += bandpass(rng.standard_normal(len(x)), 900, 3000) * env(len(x), 0.0008, 110) * 0.4
+        place(out, lowpass(tap, 3500), at, 0.7)
+    for i, freq in enumerate((1174.7, 1480.0, 1760.0, 2349.3)):
+        place(out, soft_pluck(freq, 1.0, 3), 0.3 + i * 0.05, 0.4)
+    place(out, shimmer(rng, 0.9, 0.06), 0.35)
+    return out
+
+
 SOUNDS = [
     ("sfx", "CleanACat_Sfx_BubblePop_1", lambda r: bubble_pop(r, 0)),
     ("sfx", "CleanACat_Sfx_BubblePop_2", lambda r: bubble_pop(r, 1)),
@@ -522,6 +646,15 @@ SOUNDS = [
     ("sfx", "CleanACat_Sfx_VisitorChime", visitor_chime),
     ("sfx", "CleanACat_Sfx_CrateDrop", crate_drop),
     ("sfx", "CleanACat_Sfx_BowTie", bow_tie),
+    ("sfx", "CleanACat_Sfx_HeartLow", heart_low),
+    ("sfx", "CleanACat_Sfx_CatLeave", cat_leave),
+    ("sfx", "CleanACat_Sfx_CrateOpen", crate_open),
+    ("sfx", "CleanACat_Sfx_PetReveal", pet_reveal),
+    ("sfx", "CleanACat_Sfx_StarUp", star_up),
+    ("sfx", "CleanACat_Sfx_WorkerDone", worker_done),
+    ("sfx", "CleanACat_Sfx_BuildDone", build_done),
+    ("ui", "CleanACat_Ui_QuestDone", quest_done),
+    ("ui", "CleanACat_Ui_CheckIn", check_in),
     ("ui", "CleanACat_Ui_Camera", camera_shutter),
     ("ui", "CleanACat_Ui_Click", ui_click),
 ]
