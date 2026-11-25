@@ -42,13 +42,13 @@ Rules for the whole session: one ask at a time and at least a minute apart, noth
 
 **The spa**
 - The bench: three or four cats wait, each with a card that shows how dirty it is, its steps and its pay. Pick one from the menu or press Wash next. Rarer cats are more often dirty and pay much more.
-- Waiting: a waiting cat's heart bar drops and it gets grumpy. When the bar is fully empty the cat leaves and that job is lost. Nothing else is taken. Early bars are long so a new player on a phone does not lose cats.
+- Waiting: a waiting cat's heart bar drops and it gets grumpy. When the bar is fully empty the cat leaves and that job is lost. Nothing else is taken. Early bars are long so no cat can leave before about minute 10 of a new player's first session on a phone.
 - Workers: human staff. Jo and Sam are hired with coins and Lou is a paid extra. Each comes with their own station in one purchase. A worker takes any cat by the mode the player sets (about to leave, rarest, dirtiest or first in line), is slower on dirtier cats, earns much less than the player and shows a progress bar above the cat. Players can rename their workers and typed names are filtered.
 - Suds: the mascot kitten. He walks on four paws, explains new things in a bubble at the bottom of the screen and never washes. He is not a pet and not in the Cat Index.
 - Special visitors: they appear now and then and leave after a while. Only the player can wash their cats, which are always very dirty, pay the most and have the coolest designs. Names and designs from Catch a Cat Cafe, the owner's earlier game, may be reused for them. They fill their own page in the Cat Index. After the scripted first one, a crate from a visitor is rare.
 - Pets: cats that come from crates. One slot for the player and one for each worker. A pet stays beside the player or beside its worker and a worker's pet raises that worker's money. A pet already owned is kept, and three of the same fuse into a star up with better stats.
 
-**Progression:** tools from about 2:30, the Index at 2:45, Quests at 6:00, the first short station build, the first worker at about minute 10, the first long build at about minute 15 and then more stations up to four tubs. Long builds take hours and never more than 24. A Grand Reopening is not at launch, but the saves are shaped so it can be added.
+**Progression:** tools from about 2:30, the Index at 2:45, Quests at 6:00, the first short station build (15 seconds or less, so no Finish now price shows in the first minutes), the first worker at about minute 10, the first long build at about minute 15 and then more stations up to four tubs. Long builds take hours and never more than 24. A Grand Reopening is not at launch, but the saves are shaped so it can be added.
 
 **Economy**
 - Pay for one cat: a base amount, multiplied by speed (stars), by how soon the cat was taken and by how dirty it was (steps), plus the bow bonus and a tip. Taking a cat inside the first 10% of its heart bar gives a big bonus and a normal wait costs nothing.
@@ -86,7 +86,7 @@ Rules for the whole session: one ask at a time and at least a minute apart, noth
 | Crate | Developer product, random | 49, or 5 for 199 | The chance of every pet shows as a percentage before buying. PolicyService is read per player and the Robux crate is hidden where paid random items are restricted. The same crate can be earned. |
 | Finish now on any build | Developer product | 5, 15, 35, 75 or 99 by time left | The price is on the button, no pop up, waiting is always free |
 | Starter pack | Developer product, fixed | 299 | Golden Sponge, second pet slot and 2x Coins, worth 547. A real countdown of 72 hours from first join, kept on the server, then gone for good. |
-| Private server | Roblox setting | 100, or free with Roblox Plus | The owner sets it on the game's page. What the setting allows is being checked. |
+| Private server | Roblox setting | 100 a month | The owner sets Requires Robux at 100 on the game's page. Roblox Plus subscribers get paid private servers at no cost as a platform benefit, so no second price is needed. Changing the price later cancels every active private server. |
 
 Rules that hold everywhere: no Robux product gives coins. Fusing pets is free with a fixed result. Nothing is ever sold to keep or bring back a cat that is leaving, and no price shows when a cat is about to leave. A no is final for that visit.
 
@@ -129,7 +129,7 @@ The game is playtest worthy when a new player can run the whole first session on
 
 **Open questions for the owner** (none blocks the build; each has the version we build unless he says otherwise)
 1. The free pet. He is looking into how other games check a like. Recommended: like and favourite asked together, with the favourite and the group checked.
-2. Private servers. He wants them free with Roblox Plus or 100 Robux. Recommended: set what Roblox's setting allows once Growth-Agent has checked it.
+2. Private servers. He wants them free with Roblox Plus or 100 Robux. Checked by Growth-Agent on 2026-11-25: one price of 100 Robux does both, since Plus subscribers get paid private servers free. It is a monthly fee, not a one time purchase. Recommended: 100.
 3. Workers and bows. Recommended, from his note: workers tie no bow, so the bow bonus belongs to cats washed by hand.
 4. The like ask at minute 7. Recommended: keep it there, since the special visitor's wash and crate sit at minute 5.
 
