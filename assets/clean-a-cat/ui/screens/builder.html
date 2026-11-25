@@ -10,12 +10,16 @@
 <style>
 /* Builder window: two build slots side by side, so a short build and a long build can run at once.
    Stations: the builder kitten builds one station at a time. Rooms: the building site builds one room.
-   busy:  Bubble Bath is building (countdown and bar); the next station is grey with "Kitten busy".
+   busy:  Third Tub is building (countdown and bar); the next station is grey with "Kitten busy".
           VIP Room is building, 7:42:10 left, with a bell button and the words "Notify me" under it,
           because a phone has no hover text.
-   ready: Bubble Bath is finished: a Ready! marker and a green "Open it!" button; the kitten is free, so the next
+   ready: Third Tub is finished: a Ready! marker and a green "Open it!" button; the kitten is free, so the next
           station has its green price button. The room is still building and its bell is now on.
-   There is no way to pay to skip a timer, and a timer here is a real build, never a sale clock. */
+   Finish now (agreed design, tuning.md section 8): a small sky button under a running build's bar with its Robux
+   price on it (5, 15, 35, 75 or 99 by time left), no pop up before Roblox's own purchase prompt. It never sits where
+   Start build was, so a player who taps the same spot twice never buys by mistake, and it hides when under 15 s are
+   left, so the first tutorial build (15 s) never shows a price. Waiting is always free. A timer here is a real build,
+   never a sale clock. Names follow tuning.md: the stations slot builds tubs, the rooms slot builds rooms. */
 .win.builder { width: 1060px; display: flex; flex-direction: column; }
 .win.builder > .band { flex: none; }
 .win.builder > .body { min-height: 0; border-radius: 0 0 20px 20px; }   /* scrolls only on a screen shorter than any we test */
@@ -61,6 +65,9 @@
 .now .k.good { color: var(--good); }
 .now .info .btn { align-self: flex-start; min-width: 190px; margin: 2px 0 6px; }
 .now .info .btn .ic { font-size: 30px; }
+.skip { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: max(44px, calc(44px / var(--s))); padding: 0 14px; border-radius: 14px;
+  border: 3px solid var(--ink); background: linear-gradient(#bfe9ff, #63c7ff); box-shadow: 0 3px 0 var(--ink); font-family: var(--font-head); font-size: 19px; color: var(--ink); white-space: nowrap; }
+.skip .rbx { width: 22px; height: 22px; flex: none; }
 
 /* what comes after */
 .after { display: grid; grid-template-columns: 64px 1fr auto; column-gap: 12px; align-items: center; padding: 0 2px 0 12px; margin-top: auto; min-height: 72px; }
@@ -96,6 +103,7 @@ body.short .now { grid-template-columns: 76px 1fr auto; column-gap: 10px; paddin
 body.short .now .tile { width: 76px; height: 76px; border-radius: 14px; }
 body.short .now .tile svg.art { width: 60px; height: 60px; }
 body.short .now .info { gap: 5px; }
+body.short .skip { font-size: 16px; padding: 0 10px; }
 body.short .now .k { font-size: 17px; }
 body.short .now .name { font-size: 22px; }
 body.short .now .time { font-size: 22px; gap: 5px; }
@@ -145,15 +153,16 @@ body.short .after .btn .ic { font-size: 24px; }
             <div class="tile"><img class="bath" src="img/icon_Station_BubbleBath_ink.png" alt=""></div>
             <div class="info">
               <span class="k">Building now</span>
-              <span class="name">Bubble Bath</span>
+              <span class="name">Third Tub</span>
               <span class="time"><i data-ic="clock"></i><span>3:48</span><span class="u">left</span></span>
-              <div class="bar gold" aria-label="62 percent built"><i style="width:62%"></i></div>
+              <div class="bar gold" aria-label="87 percent built"><i style="width:87%"></i></div>
+              <button class="skip" data-tap aria-label="Finish now for 5 Robux"><span>Finish now</span><svg class="rbx"><use href="#rbx"/></svg><span>5</span></button>
             </div>
           </div>
           <div class="after wait only-busy">
-            <div class="pic"><img src="img/icon_Station_Pawdicure_ink.png" alt=""></div>
-            <div><div class="name">Pawdicure</div><div class="sub"><i data-ic="coin"></i><span class="num">900</span></div></div>
-            <button class="btn off" data-tap aria-label="Build Pawdicure for 900 coins. The kitten is busy"><span class="lbl">Kitten busy</span></button>
+            <div class="pic"><img src="img/icon_Station_BubbleBath_ink.png" alt=""></div>
+            <div><div class="name">Fourth Tub</div><div class="sub"><i data-ic="coin"></i><span class="num">5,000</span></div></div>
+            <button class="btn off" data-tap aria-label="Build Fourth Tub for 5,000 coins. The kitten is busy"><span class="lbl">Kitten busy</span></button>
           </div>
 
           <div class="now well done only-ready">
@@ -162,14 +171,14 @@ body.short .after .btn .ic { font-size: 24px; }
             <div class="tile"><img class="bath" src="img/icon_Station_BubbleBath_ink.png" alt=""></div>
             <div class="info">
               <span class="k good">The kitten is done!</span>
-              <span class="name">Bubble Bath</span>
-              <button class="btn green" data-tap aria-label="Open the Bubble Bath"><span class="lbl">Open it!</span></button>
+              <span class="name">Third Tub</span>
+              <button class="btn green" data-tap aria-label="Open the Third Tub"><span class="lbl">Open it!</span></button>
             </div>
           </div>
           <div class="after only-ready">
-            <div class="pic"><img src="img/icon_Station_Pawdicure_ink.png" alt=""></div>
-            <div><div class="name">Pawdicure</div><div class="sub"><i data-ic="clock"></i><span>Takes 1 hr</span></div></div>
-            <button class="btn green" data-tap aria-label="Build Pawdicure for 900 coins"><span class="lbl price"><i data-ic="coin"></i>900</span></button>
+            <div class="pic"><img src="img/icon_Station_BubbleBath_ink.png" alt=""></div>
+            <div><div class="name">Fourth Tub</div><div class="sub"><i data-ic="clock"></i><span>Takes 4 hr</span></div></div>
+            <button class="btn green" data-tap aria-label="Build Fourth Tub for 5,000 coins"><span class="lbl price"><i data-ic="coin"></i>5,000</span></button>
           </div>
         </div>
 
@@ -193,8 +202,10 @@ body.short .after .btn .ic { font-size: 24px; }
               <span class="name">VIP Room</span>
               <span class="time only-busy"><i data-ic="clock"></i><span>7:42:10</span><span class="u">left</span></span>
               <div class="bar gold only-busy" aria-label="36 percent built"><i style="width:36%"></i></div>
+              <button class="skip only-busy" data-tap aria-label="Finish now for 75 Robux"><span>Finish now</span><svg class="rbx"><use href="#rbx"/></svg><span>75</span></button>
               <span class="time only-ready"><i data-ic="clock"></i><span>7:31:48</span><span class="u">left</span></span>
               <div class="bar gold only-ready" aria-label="37 percent built"><i style="width:37%"></i></div>
+              <button class="skip only-ready" data-tap aria-label="Finish now for 75 Robux"><span>Finish now</span><svg class="rbx"><use href="#rbx"/></svg><span>75</span></button>
             </div>
             <div class="bell only-busy">
               <!-- Under 13 gate: the bell, "Notify me" and "Bell is on" stay hidden unless the server says this player may
@@ -217,6 +228,7 @@ body.short .after .btn .ic { font-size: 24px; }
     </div>
   </div>
 </div></div>
+<svg width="0" height="0" style="position:absolute"><symbol id="rbx" viewBox="0 0 64 64"><path d="M32 4l24 14v28L32 60 8 46V18z" fill="#5fc98b" stroke="#45226b" stroke-width="6" stroke-linejoin="round"/><path d="M32 20l11 6v12l-11 6-11-6V26z" fill="#fff" stroke="#45226b" stroke-width="4" stroke-linejoin="round"/></symbol></svg>
 <script src="kit.js"></script>
 </body>
 </html>
