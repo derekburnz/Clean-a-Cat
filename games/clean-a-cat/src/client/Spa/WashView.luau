@@ -32,6 +32,7 @@ local player = Players.LocalPlayer
 local held: { [string]: boolean } = {}
 local wash: WashCamera.Handle? = nil
 local spot: CFrame? = nil -- what the shot frames (WashView.frame): nil is the tub
+local framed: Model? = nil -- the cat the shot fits (WashView.frame); nil frames the spot alone
 local hiddenParts: { BasePart } = {}
 local hiddenDecals: { Decal } = {}
 local hideConnection: RBXScriptConnection? = nil
@@ -101,7 +102,7 @@ local function apply()
 	end
 	if want then
 		ControlHold.set(HOLD_REASON, true)
-		wash = WashCamera.enter(WashCamera.shot(spot or SpaLayout.tubSpot()))
+		wash = WashCamera.enter(WashCamera.shot(spot or SpaLayout.tubSpot(), framed))
 		hideCharacter(true)
 	else
 		local turn = releaseTurn
@@ -137,11 +138,14 @@ end
 -- Frames the view on `where` (a spot on the floor that faces the player, like SpaLayout.tubSpot), or back on the
 -- tub with nil: a cat at a later step's station is washed there in the same close-up (Sync-Agent's run on
 -- f01718c: with the view dropped, the Pawdicure's paws were 10 px behind the avatar). An open view eases over.
-function WashView.frame(where: CFrame?)
+-- `cat` is the cat on that spot: with the wash scene (switch washScene) the shot fits his own size, so a station's
+-- seat height never pushes him up under the step dots (Motion-FX, #416).
+function WashView.frame(where: CFrame?, cat: Model?)
 	spot = where
+	framed = cat
 	local view = wash
 	if view then
-		view.moveTo(WashCamera.shot(where or SpaLayout.tubSpot()))
+		view.moveTo(WashCamera.shot(where or SpaLayout.tubSpot(), cat))
 	end
 end
 
