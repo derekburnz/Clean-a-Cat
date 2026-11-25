@@ -1,6 +1,6 @@
 --!strict
--- BuildBoardController: the builder board beside the Tools board, as a placeholder part with one prompt per
--- build. The player walks up and taps a prompt; BuildService checks and starts the build. A running build's
+-- BuildBoardController: the builder board beside the Tools board, Model-Agent's board (Spa/BoardProp; the plain slab
+-- when the model is missing) with one prompt per build on its rows. The player walks up and taps a prompt; BuildService checks and starts the build. A running build's
 -- prompt shows its countdown, and a built one's prompt goes away. Nothing opens by itself.
 -- Behind the LiveFlags switch `builds`.
 -- With `longBuildOffer` on as well, a running build of an hour or more gets a bell prompt, "Tell me when it's
@@ -13,6 +13,8 @@ local ExperienceNotificationService = game:GetService("ExperienceNotificationSer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
+local BoardProp = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BoardProp"))
+
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -23,13 +25,19 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "builds"
 local BELL_FLAG = "longBuildOffer"
-local BOARD_SIZE = Vector3.new(4, 5, 0.4)
+local SPEC: BoardProp.Spec = {
+	asset = "CleanACat_Prop_BuildBoard",
+	title = "Builds",
+	placeholder = "PH_BuildBoard",
+	size = Vector3.new(4, 5, 0.4),
+	color = Color3.fromRGB(120, 150, 190),
+}
 
 local BuildBoardController = {}
 
 BuildBoardController.finished = Signal.new() :: Signal.Signal<string>
 
-local board: Part? = nil
+local board: BoardProp.Board? = nil
 local prompts: { [string]: ProximityPrompt } = {}
 local connections: { RBXScriptConnection } = {}
 local ticker: thread? = nil
@@ -41,11 +49,6 @@ local comeBack: BillboardGui? = nil
 local canOptIn: boolean? = nil -- Roblox would show the opt-in prompt; checked once, before any ask
 local askedFor: { [number]: boolean } = {} -- builds (by end time) the bell was tapped for: it never asks twice
 local toldCannot = false -- cannot_prompt reported this session
-
--- Standing on the floor at the builder spot, its front facing the way the spot faces.
-local function boardCFrame(): CFrame
-	return SpaLayout.spot("SpotBuilder") * CFrame.new(0, BOARD_SIZE.Y / 2, 0)
-end
 
 local function countdown(seconds: number): string
 	local s = math.max(0, math.ceil(seconds))
@@ -133,17 +136,10 @@ local function enable()
 	if board then
 		return
 	end
-	local part = Instance.new("Part")
-	part.Name = "PH_BuildBoard"
-	part.Size = BOARD_SIZE
-	part.Color = Color3.fromRGB(120, 150, 190)
-	part.Anchored = true
-	part.CFrame = boardCFrame()
-	for index, id in BuildRules.offered(LiveFlags.isOn) do
-		local spot = Instance.new("Attachment")
-		spot.Name = id
-		spot.Position = Vector3.new(0, BOARD_SIZE.Y / 2 - index, -BOARD_SIZE.Z / 2) -- down the front (-Z)
-		spot.Parent = part
+	local offered = BuildRules.offered(LiveFlags.isOn)
+	local made = BoardProp.make(SPEC, SpaLayout.spot("SpotBuilder"), #offered)
+	for index, id in offered do
+		local spot = made.rows[index]
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.HoldDuration = 0
 		prompt.MaxActivationDistance = BuildRules.PROMPT_REACH
@@ -157,11 +153,8 @@ local function enable()
 			end)
 		)
 	end
-	-- The bell and the come back line, at the foot of the board.
-	local foot = Instance.new("Attachment")
-	foot.Name = "Bell"
-	foot.Position = Vector3.new(0, -BOARD_SIZE.Y / 2 + 0.5, -BOARD_SIZE.Z / 2)
-	foot.Parent = part
+	-- The bell and the come back line, by the model's bell (at the slab's foot).
+	local foot = made.bell
 	local bellPrompt = Instance.new("ProximityPrompt")
 	bellPrompt.ActionText = "Tell me when it's done"
 	bellPrompt.HoldDuration = 0
@@ -208,7 +201,7 @@ local function enable()
 	text.TextStrokeTransparency = 0.4
 	text.Parent = gui
 	gui.Adornee = foot
-	gui.Parent = part
+	gui.Parent = made.root
 	comeBack = gui
 	if canOptIn == nil then
 		task.spawn(function()
@@ -219,8 +212,8 @@ local function enable()
 		end)
 	end
 	refreshPrompts()
-	part.Parent = Workspace
-	board = part
+	made.root.Parent = Workspace
+	board = made
 	table.insert(connections, Remotes.event("Builds").OnClientEvent:Connect(onBuilds))
 	table.insert(
 		connections,
@@ -251,9 +244,10 @@ local function disable()
 	table.clear(prompts)
 	bell = nil
 	comeBack = nil
-	if board then
-		board:Destroy()
-		board = nil
+	local made = board
+	board = nil
+	if made then
+		made.root:Destroy()
 	end
 end
 
@@ -282,9 +276,9 @@ function BuildBoardController.Start()
 	end
 	-- The plot placed or taken away: the board moves to its spot.
 	SpaLayout.changed(function()
-		local part = board
-		if part then
-			part.CFrame = boardCFrame()
+		local made = board
+		if made then
+			BoardProp.moveTo(made, SpaLayout.spot("SpotBuilder"))
 		end
 	end)
 	refresh()
