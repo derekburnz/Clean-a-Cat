@@ -7,7 +7,8 @@ Python with Pillow) trims them, adds the ink outline and writes the finals and t
 
   portrait_<Cat>.png, portrait_<Cat>_Dirty.png   head and shoulders of every roster cat, sitting, clean and muddy
   portrait_Helper.png, _Helper2, _Helper3        each helper look in its bath cap, same crop as the cats
-  portrait_Staff_<Name>.png                      each human staff look (staff.py) in the spa uniform, a draft
+  portrait_Staff_<Name>.png                      each member of the human staff (spa_staff.py, the game models):
+                                                 the head whole, the apron down to its paw
   icon_<Model name without CleanACat_>.png       one three-quarter picture of each model in ICONS
   icon_Customer_<Name>.png, icon_Visitor_<Name>.png   head and shoulders of each customer and rare visitor look, on
                                                  the stand-in block figure (the game's customers are R15 rigs)
@@ -35,7 +36,8 @@ import customers  # noqa: E402
 import dirt  # noqa: E402
 import palette  # noqa: E402
 import scenes  # noqa: E402
-import staff  # noqa: E402
+import spa_staff  # noqa: E402
+import townsfolk  # noqa: E402
 
 PORTRAIT_RAW, ICON_RAW = 1024, 512
 PORTRAIT_VIEW = (16, 6)            # azimuth and elevation, degrees: nearly face on, so both eyes show
@@ -159,13 +161,15 @@ def helper_portrait(i, mat, out):
     return path
 
 
-def staff_portrait(look, mat, out):
-    """Head and shoulders of one staff look (staff.py): the head and hair whole, the smock down to the name badge.
-    The shoulders run off the sides, so the head is big enough to read in a small round frame."""
-    objs = staff.build(mat, look)
+def staff_portrait(name, mat, out):
+    """Head and shoulders of one member of staff (spa_staff.py, the game model): the head and hair whole, the apron
+    down to its paw. The shoulders run off the sides, so the head is big enough to read in a small round frame."""
+    look = spa_staff.LOOKS[name]
+    objs = spa_staff.build_staff(name, mat)
     bpy.context.view_layer.update()
-    lo, hi = Vector((-1.2, -0.65, 2.86)), Vector((1.2, 0.65, 5.38))      # one frame, so every look is the same size
-    path = os.path.join(out, f"portrait_Staff_{look[0]}.png")
+    f = townsfolk.Frame(look["body"])
+    lo, hi = Vector((-1.2, -0.65, f.top - 0.72)), Vector((1.2, 0.65, townsfolk.top_of(look) + 0.02))
+    path = os.path.join(out, f"portrait_Staff_{name}.png")
     shot(objs, path, PORTRAIT_RAW, PORTRAIT_VIEW, focus=(lo, hi), pad=1.04)
     _clear()
     return path
@@ -238,9 +242,9 @@ def main(argv):
     for i, look in enumerate(busy_spa.HELPERS):
         if want("portrait_" + look[0].replace("CleanACat_NPC_", "")):
             print("ui:", helper_portrait(i, mat, out))
-    for look in staff.LOOKS:
-        if want("portrait_Staff_" + look[0]):
-            print("ui:", staff_portrait(look, mat, out))
+    for name in spa_staff.LOOKS:
+        if want("portrait_Staff_" + name):
+            print("ui:", staff_portrait(name, mat, out))
     for asset in ICONS:
         if asset in makers and want("icon_" + asset):
             print("ui:", icon(asset, mat, out, makers))

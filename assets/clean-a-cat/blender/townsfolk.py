@@ -315,13 +315,63 @@ def _torso(b, f, look):
         for sx in (1, -1):
             b.box((sx * 0.33, fy - 0.015, (z0 + z1) / 2 + 0.1), (0.14, 0.04, z1 - z0 - 0.3), look["backpack"],
                   bevel=False)
+    if look.get("apron"):
+        _apron(b, f, look)
     b.box_base((0, 0, f.top - 0.05), (0.5, 0.5, 0.2), look["skin"], bevel=False)             # the neck
+
+
+def _apron(b, f, look):
+    """The staff uniform over the smock: a bib apron with a big paw, a waistband tied in a bow at the back, straps
+    that cross on the back, a collar, a towel and a pocket with a sponge and a brush. `apron` is (cloth, trim)."""
+    d = f.d
+    cloth, trim = look["apron"]
+    w, dep, z0, z1 = d["tw"], d["td"], f.waist - 0.05, f.top
+    fy, by = -dep / 2, dep / 2
+    bib0, bib1 = z0 + 0.2, z1 - 0.3
+    b.box((0, fy - 0.02, (bib0 + bib1) / 2), (0.98, 0.06, bib1 - bib0), cloth, bevel=False)          # the bib
+    pz = (bib0 + bib1) / 2 - 0.02                                                                  # its paw
+    b.box((0, fy - 0.045, pz - 0.12), (0.4, 0.03, 0.27), trim, bevel=False)
+    for dx, dz in ((-0.29, 0.08), (-0.1, 0.22), (0.1, 0.22), (0.29, 0.08)):
+        b.box((dx, fy - 0.045, pz + dz), (0.15, 0.03, 0.15), trim, bevel=False)
+    b.box_base((0, 0, z0 + 0.02), (w + 0.08, dep + 0.08, 0.2), trim)                               # the waistband
+    hem = f.hip - 0.5                                                                              # the skirt
+    b.box((0, fy - 0.045, (hem + z0 + 0.06) / 2), (w - 0.04, 0.15, z0 + 0.06 - hem), cloth)
+    b.box((0, fy - 0.05, hem + 0.05), (w - 0.01, 0.17, 0.14), trim, bevel=False)                   # its hem
+    for sx in (1, -1):                                                                             # the straps
+        b.box((sx * 0.37, fy - 0.015, (bib1 + z1) / 2 + 0.01), (0.16, 0.05, z1 - bib1 + 0.04), cloth, bevel=False)
+        b.box((sx * 0.37, 0, z1 + 0.012), (0.16, dep + 0.07, 0.05), cloth, bevel=False)
+    lo, hi = z0 + 0.22, z1 - 0.05                                                                  # they cross behind
+    lean = math.degrees(math.atan2(0.74, hi - lo))
+    ln = math.hypot(0.74, hi - lo)
+    for sx, th, sunk in ((1, 0.05, 0.02), (-1, 0.09, 0.03)):   # one thicker and deeper, so no two faces share a plane
+        b.box((0, by + th / 2 - sunk, (lo + hi) / 2), (0.15, th, ln), cloth, bevel=False, rot=_ry(lean * sx))
+    b.box((0, by + 0.09, z0 + 0.12), (0.2, 0.14, 0.2), trim, bevel=False)                          # the bow's knot
+    for sx in (1, -1):
+        b.box((sx * 0.3, by + 0.08, z0 + 0.15), (0.46, 0.1, 0.3), trim, rot=_ry(-14 * sx))         # its loops
+        b.box((sx * 0.13, by + 0.07, z0 - 0.2), (0.14, 0.07, 0.48), trim, bevel=False, rot=_ry(10 * sx))   # its tails
+    b.box_base((0, 0, z1 - 0.08), (1.0, dep - 0.06, 0.2), cloth, bevel=False)                      # the collar
+    if look.get("towel"):                                 # tucked in the waistband on the wearer's right
+        tw_ = look["towel"]
+        b.box((-0.42, fy - 0.135, z0 - 0.17), (0.36, 0.06, 0.62), tw_, bevel=False)
+        for dz in (-0.36, -0.24):
+            b.box((-0.42, fy - 0.14, z0 + dz), (0.37, 0.065, 0.05), "offwhite", bevel=False)
+    if look.get("pocket_tools"):                          # a pocket on the left with a sponge and a brush in it
+        b.box((0.36, fy - 0.135, z0 - 0.3), (0.44, 0.05, 0.34), trim, bevel=False)
+        b.box((0.27, fy - 0.13, z0 - 0.08), (0.2, 0.045, 0.2), "pastel_butter", bevel=False)       # the sponge
+        b.box((0.47, fy - 0.13, z0 - 0.02), (0.08, 0.045, 0.3), "spa_sky", bevel=False)            # the brush
+        b.box((0.47, fy - 0.13, z0 + 0.17), (0.15, 0.05, 0.12), "offwhite", bevel=False)
 
 
 def _arm(p, f, look, sx):
     sleeve = look.get("cardigan") or look["top"]
     x = sx * f.arm_x
-    p.box_base((x, 0, f.arm0), (0.42, 0.46, f.arm1 - f.arm0), sleeve)
+    if look.get("short_sleeves"):                        # the staff: a short sleeve with a cuff, the forearm bare
+        cut = f.arm1 - 0.58
+        p.box_base((x, 0, cut), (0.42, 0.46, f.arm1 - cut), sleeve)
+        p.box_base((x, 0, cut - 0.04), (0.47, 0.51, 0.14), look["short_sleeves"])
+        p.box_base((x, 0, f.arm0), (0.36, 0.4, cut - f.arm0 + 0.02), look["skin"], bevel=False)
+    else:
+        p.box_base((x, 0, f.arm0), (0.42, 0.46, f.arm1 - f.arm0), sleeve)
     if look.get("stripes"):
         for k in range(2):
             p.box((x, 0, f.arm0 + 0.3 + 0.38 * k), (0.45, 0.49, 0.12), look["stripes"], bevel=False)
@@ -454,6 +504,13 @@ def _hair(h, f, look):
         h.pyramid((0, -(cd / 2 - 0.13), top + 0.36), 0.3, 0.42, cr)
         for dx, sw in ((-0.36, "spa_sky"), (0.0, "royal_berry"), (0.36, "spa_mint")):
             h.box((dx, -cd / 2 - 0.01, top + 0.23), (0.13, 0.04, 0.13), sw, bevel=False, rot=_ry(45))
+    if look.get("headband"):                              # the staff: a towelling band round the hair, a paw in front
+        band, mark = look["headband"]
+        h.box_base((0, 0, top - 0.28), (hw + 0.3, hd + 0.3, 0.25), band)       # its top just under the head's
+        yb = -(hd + 0.3) / 2 - 0.012
+        h.box((0, yb, top - 0.19), (0.22, 0.03, 0.14), mark, bevel=False)
+        for dx, dz in ((-0.16, -0.03), (-0.055, 0.05), (0.055, 0.05), (0.16, -0.03)):
+            h.box((dx, yb, top - 0.11 + dz), (0.08, 0.03, 0.08), mark, bevel=False)
     if look.get("phones"):
         h.box_base((0, 0, top + 0.1), (hw + 0.36, 0.22, 0.14), "fur_ink", bevel=False)                    # the band
         for sx in (1, -1):
@@ -492,9 +549,12 @@ def grip_at(look, carry=True):
 def build_customer(name, mat, carry=True):
     """The customer's six objects: Body first (the main object), then Head, ArmL, ArmR, LegL, LegR. `carry` False
     hangs the right arm straight (pictures only)."""
-    look = ALL_LOOKS[name]
+    return build_figure(PREFIX + name, ALL_LOOKS[name], mat, carry)
+
+
+def build_figure(asset, look, mat, carry=True):
+    """Any figure on this body (the customers here, the staff in spa_staff.py): six objects named from `asset`."""
     f = Frame(look["body"])
-    asset = PREFIX + name
     body = Piece()
     _lower(body, f, look)
     _torso(body, f, look)

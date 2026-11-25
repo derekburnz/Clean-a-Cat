@@ -13599,6 +13599,152 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Scarf.png"
  },
  {
+  "name": "CleanACat_NPC_Staff_Jo",
+  "category": "NPC",
+  "module": "spa_staff",
+  "objects": [
+   "CleanACat_NPC_Staff_Jo_Body",
+   "CleanACat_NPC_Staff_Jo_Head",
+   "CleanACat_NPC_Staff_Jo_ArmL",
+   "CleanACat_NPC_Staff_Jo_ArmR",
+   "CleanACat_NPC_Staff_Jo_LegL",
+   "CleanACat_NPC_Staff_Jo_LegR"
+  ],
+  "triangles": 1532,
+  "budget": 1600,
+  "parts": 69,
+  "size_studs": {
+   "x": 2.27,
+   "y": 1.69,
+   "z": 5.02
+  },
+  "size_roblox": [
+   2.27,
+   5.02,
+   1.69
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 4
+   },
+   "checks": {
+    "budget": "1532/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "870 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.01",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Staff_Jo.png"
+ },
+ {
+  "name": "CleanACat_NPC_Staff_Lou",
+  "category": "NPC",
+  "module": "spa_staff",
+  "objects": [
+   "CleanACat_NPC_Staff_Lou_Body",
+   "CleanACat_NPC_Staff_Lou_Head",
+   "CleanACat_NPC_Staff_Lou_ArmL",
+   "CleanACat_NPC_Staff_Lou_ArmR",
+   "CleanACat_NPC_Staff_Lou_LegL",
+   "CleanACat_NPC_Staff_Lou_LegR"
+  ],
+  "triangles": 1528,
+  "budget": 1600,
+  "parts": 70,
+  "size_studs": {
+   "x": 2.23,
+   "y": 1.93,
+   "z": 4.86
+  },
+  "size_roblox": [
+   2.23,
+   4.86,
+   1.93
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 4
+   },
+   "checks": {
+    "budget": "1528/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "860 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.11",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Staff_Lou.png"
+ },
+ {
+  "name": "CleanACat_NPC_Staff_Sam",
+  "category": "NPC",
+  "module": "spa_staff",
+  "objects": [
+   "CleanACat_NPC_Staff_Sam_Body",
+   "CleanACat_NPC_Staff_Sam_Head",
+   "CleanACat_NPC_Staff_Sam_ArmL",
+   "CleanACat_NPC_Staff_Sam_ArmR",
+   "CleanACat_NPC_Staff_Sam_LegL",
+   "CleanACat_NPC_Staff_Sam_LegR"
+  ],
+  "triangles": 1444,
+  "budget": 1600,
+  "parts": 67,
+  "size_studs": {
+   "x": 2.29,
+   "y": 1.65,
+   "z": 5.24
+  },
+  "size_roblox": [
+   2.29,
+   5.24,
+   1.65
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 4
+   },
+   "checks": {
+    "budget": "1444/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "810 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.01",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_Staff_Sam.png"
+ },
+ {
   "name": "CleanACat_NPC_StarBeret",
   "category": "NPC",
   "module": "busy_spa",
