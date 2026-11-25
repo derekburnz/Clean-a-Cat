@@ -3,17 +3,26 @@
 -- bigger and smaller with shiny sparkles popping round it). Design-Agent's spec: the `hud` state of
 -- assets/clean-a-cat/ui/screens/starterpack.html (PR 493).
 --
---   bob       the button's UIScale goes 1.00 to 1.08 and back over BOB_SECONDS, sine in and out, looping
+--   bob       the button's UIScale goes 1.00 to 1.08 and back over BOB_SECONDS, sine in and out, `bobs` times,
+--             then the button sits still (it never loops: Growth-Agent's ruling via Review-QA, 2026-11-25)
 --   sparkles  three small stars at the top-left, right and bottom-left edges pop in turn, one every SPARKLE_GAP on a
 --             SPARKLE_CYCLE: they grow from 0.3 to 1.1 with a 20 degree turn as they fade in, then shrink and fade
---             out by 45% of the cycle
---   comfort   Reduced Motion or Less sparkle (UI/Comfort): no bob and one sparkle shown still
+--             out by 45% of the cycle; only while the bobs play (a pop under way finishes)
+--   settle    when the bobs end the button rests at its own scale with one still star, and the frame loop lets go
+--   comfort   Reduced Motion or Less sparkle (UI/Comfort): nothing moves; it settles at once
 --
--- Client only and cosmetic. It works only while the button is visible, and lets go by itself when the button is
--- destroyed. Any HUD button can use it; the caller decides when (the starter pack's switch, for one).
+-- THE CALLER OWNS THE LIMIT (our monetization policy: no endless nagging): 3 bobs on the button's first appearance,
+-- 1 on each later visit, and no call at all once the player has opened the pack window or after three visits. That
+-- per-player count lives with the caller (the save or the controller), not here.
+--
+-- Client only and cosmetic. It steps only while the button is visible inside an enabled ScreenGui, and lets go by
+-- itself when the button is destroyed. Any HUD button can use it. The stars are drawn from Frames (two crossed
+-- rounded bars each), so they need no font glyph and no image upload.
 --
 -- API
---   Attention.start(button) -> Handle      handle.stop() puts the button back as it was
+--   Attention.start(button, bobs?) -> Handle   plays `bobs` (default DEFAULT_BOBS) bobs with sparkles, then settles;
+--                                           handle.stop() removes the stars and puts the button back as it was
+--   Attention.length(bobs) -> number       pure: seconds until it is all over, the last sparkle's fade included
 --   Attention.bob(t) -> number             pure: the scale at `t` seconds
 --   Attention.sparkle(t, index) -> (scale, transparency, degrees)   pure: sparkle `index` (1 to 3) at `t` seconds
 local RunService = game:GetService("RunService")
@@ -23,6 +32,7 @@ local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Co
 local Attention = {}
 
 Attention.BOB_SECONDS = 1.6
+Attention.DEFAULT_BOBS = 3
 Attention.BOB_SIZE = 0.08
 Attention.SPARKLE_CYCLE = 2.4
 Attention.SPARKLE_GAP = 0.8
@@ -42,9 +52,20 @@ function Attention.bob(t: number): number
 	return 1 + Attention.BOB_SIZE * 0.5 * (1 - math.cos(2 * math.pi * t / Attention.BOB_SECONDS))
 end
 
-function Attention.sparkle(t: number, index: number): (number, number, number)
+-- Sparkle `index` at `t`; with `cutoff` set, a pop that would start at or after `cutoff` seconds is not shown.
+function Attention.sparkle(t: number, index: number, cutoff: number?): (number, number, number)
 	local cycle = Attention.SPARKLE_CYCLE
-	local u = ((t - (index - 1) * Attention.SPARKLE_GAP) % cycle) / cycle
+	local since = t - (index - 1) * Attention.SPARKLE_GAP
+	if since < 0 then
+		return 0, 1, 0
+	end
+	if
+		cutoff
+		and since - (since % cycle) + (index - 1) * Attention.SPARKLE_GAP >= cutoff - 1e-6
+	then
+		return 0, 1, 0
+	end
+	local u = (since % cycle) / cycle
 	local inEnd, outEnd = Attention.SPARKLE_IN, Attention.SPARKLE_OUT
 	if u < inEnd then
 		local k = u / inEnd
@@ -58,9 +79,59 @@ function Attention.sparkle(t: number, index: number): (number, number, number)
 	return 0, 1, 0
 end
 
+function Attention.length(bobs: number): number
+	return bobs * Attention.BOB_SECONDS + Attention.SPARKLE_OUT * Attention.SPARKLE_CYCLE
+end
+
 export type Handle = { stop: () -> () }
 
-function Attention.start(button: GuiObject): Handle
+type Star = { holder: Frame, bars: { Frame } }
+
+local function makeStar(button: GuiObject, i: number): Star
+	local spot = Attention.SPOTS[i]
+	local holder = Instance.new("Frame")
+	holder.Name = "AttentionSparkle" .. i
+	holder.BackgroundTransparency = 1
+	holder.AnchorPoint = Vector2.new(0.5, 0.5)
+	holder.Position = UDim2.fromScale(spot.x, spot.y)
+	holder.Size = UDim2.fromScale(spot.size, spot.size)
+	holder.SizeConstraint = Enum.SizeConstraint.RelativeYY
+	holder.ZIndex = button.ZIndex + 2
+	local bars: { Frame } = {}
+	-- a four-point twinkle: a long bar and a cross bar, rounded, so it reads as a shine at any size
+	for b = 1, 2 do
+		local bar = Instance.new("Frame")
+		bar.Name = "Bar"
+		bar.BorderSizePixel = 0
+		bar.BackgroundColor3 = if i == 2 then WHITE else GOLD
+		bar.BackgroundTransparency = 1
+		bar.AnchorPoint = Vector2.new(0.5, 0.5)
+		bar.Position = UDim2.fromScale(0.5, 0.5)
+		bar.Size = if b == 1 then UDim2.fromScale(0.22, 1) else UDim2.fromScale(1, 0.22)
+		bar.ZIndex = holder.ZIndex
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(1, 0)
+		corner.Parent = bar
+		bar.Parent = holder
+		table.insert(bars, bar)
+	end
+	holder.Parent = button
+	return { holder = holder, bars = bars }
+end
+
+local function show(star: Star, i: number, scale: number, seen: number, degrees: number)
+	local size = Attention.SPOTS[i].size * scale
+	star.holder.Size = UDim2.fromScale(size, size)
+	star.holder.Rotation = degrees
+	for _, bar in star.bars do
+		bar.BackgroundTransparency = seen
+	end
+end
+
+function Attention.start(button: GuiObject, bobs: number?): Handle
+	local count = math.max(0, math.floor(bobs or Attention.DEFAULT_BOBS))
+	local playFor = count * Attention.BOB_SECONDS
+	local endAt = Attention.length(count)
 	local made = false
 	local scale = button:FindFirstChildOfClass("UIScale")
 	if scale == nil then
@@ -73,62 +144,63 @@ function Attention.start(button: GuiObject): Handle
 	local uiScale = scale :: UIScale
 	local base = uiScale.Scale
 
-	local stars: { TextLabel } = {}
-	for i, spot in Attention.SPOTS do
-		local star = Instance.new("TextLabel")
-		star.Name = "AttentionSparkle" .. i
-		star.BackgroundTransparency = 1
-		star.AnchorPoint = Vector2.new(0.5, 0.5)
-		star.Position = UDim2.fromScale(spot.x, spot.y)
-		star.Size = UDim2.fromScale(spot.size, spot.size)
-		star.SizeConstraint = Enum.SizeConstraint.RelativeYY
-		star.Text = "✦"
-		star.TextScaled = true
-		star.TextColor3 = if i == 2 then WHITE else GOLD
-		star.TextTransparency = 1
-		star.ZIndex = button.ZIndex + 2
-		local stroke = Instance.new("UIStroke")
-		stroke.Color = Color3.fromRGB(255, 180, 60)
-		stroke.Thickness = 1
-		stroke.Transparency = 0.4
-		stroke.Parent = star
-		star.Parent = button
-		table.insert(stars, star)
+	local stars: { Star } = {}
+	for i = 1, #Attention.SPOTS do
+		table.insert(stars, makeStar(button, i))
 	end
 
 	local start = os.clock()
 	local stepping: RBXScriptConnection? = nil
 	local watchers: { RBXScriptConnection } = {}
+	local settled = false
 	local stopped = false
 
-	local function frame()
-		local t = os.clock() - start
-		if Comfort.reducedMotion() or Comfort.lessSparkle() then
-			uiScale.Scale = base
-			for i, star in stars do
-				star.TextTransparency = if i == 1 then 0 else 1
-				star.Rotation = 0
-				star.Size = UDim2.fromScale(Attention.SPOTS[i].size, Attention.SPOTS[i].size)
-			end
+	-- the rest pose, written once: own scale, the first star still, the others hidden; the frame loop lets go
+	local function settle()
+		if settled then
 			return
 		end
-		uiScale.Scale = base * Attention.bob(t)
+		settled = true
+		local c = stepping
+		if c then
+			c:Disconnect()
+			stepping = nil
+		end
+		uiScale.Scale = base
 		for i, star in stars do
-			local s, seen, degrees = Attention.sparkle(t, i)
-			local size = Attention.SPOTS[i].size * s
-			star.Size = UDim2.fromScale(size, size)
-			star.TextTransparency = seen
-			star.Rotation = degrees
+			show(star, i, 1, if i == 1 then 0 else 1, 0)
 		end
 	end
 
+	local function frame()
+		local t = os.clock() - start
+		if t >= endAt or Comfort.reducedMotion() or Comfort.lessSparkle() then
+			settle()
+			return
+		end
+		uiScale.Scale = if t < playFor then base * Attention.bob(t) else base
+		for i, star in stars do
+			local s, seen, degrees = Attention.sparkle(t, i, playFor)
+			show(star, i, s, seen, degrees)
+		end
+	end
+
+	local screen = button:FindFirstAncestorWhichIsA("ScreenGui")
+	local function shown(): boolean
+		local gui = button:FindFirstAncestorWhichIsA("ScreenGui")
+		return button.Visible and button.Parent ~= nil and (gui == nil or gui.Enabled)
+	end
+
 	local function run()
-		local shown = button.Visible and button.Parent ~= nil
-		if shown and stepping == nil then
+		if settled or stopped then
+			return
+		end
+		if shown() and stepping == nil then
 			stepping = RunService.RenderStepped:Connect(frame)
 			frame()
-		elseif not shown and stepping then
-			stepping:Disconnect()
+		elseif not shown() and stepping then
+			local c = stepping :: RBXScriptConnection
+			c:Disconnect()
 			stepping = nil
 		end
 	end
@@ -138,15 +210,16 @@ function Attention.start(button: GuiObject): Handle
 			return
 		end
 		stopped = true
-		if stepping then
-			stepping:Disconnect()
+		local c = stepping
+		if c then
+			c:Disconnect()
 			stepping = nil
 		end
-		for _, c in watchers do
-			c:Disconnect()
+		for _, w in watchers do
+			w:Disconnect()
 		end
 		for _, star in stars do
-			star:Destroy()
+			star.holder:Destroy()
 		end
 		if made then
 			uiScale:Destroy()
@@ -156,6 +229,9 @@ function Attention.start(button: GuiObject): Handle
 	end
 
 	table.insert(watchers, button:GetPropertyChangedSignal("Visible"):Connect(run))
+	if screen then
+		table.insert(watchers, screen:GetPropertyChangedSignal("Enabled"):Connect(run))
+	end
 	table.insert(
 		watchers,
 		button.AncestryChanged:Connect(function()
@@ -166,7 +242,11 @@ function Attention.start(button: GuiObject): Handle
 			end
 		end)
 	)
-	run()
+	if count == 0 or Comfort.reducedMotion() or Comfort.lessSparkle() then
+		settle()
+	else
+		run()
+	end
 	return { stop = stop }
 end
 

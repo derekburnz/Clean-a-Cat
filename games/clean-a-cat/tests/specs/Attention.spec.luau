@@ -48,4 +48,27 @@ return function()
 			expect(#Attention.SPOTS).to.equal(3)
 		end)
 	end)
+	describe("Attention never loops", function()
+		it("plays 3 bobs by default and is over a moment after the last", function()
+			expect(Attention.DEFAULT_BOBS).to.equal(3)
+			local over = Attention.length(3)
+			expect(over > 3 * Attention.BOB_SECONDS and over < 3 * Attention.BOB_SECONDS + 1.2).to.equal(
+				true
+			)
+			expect(near(Attention.length(1), Attention.BOB_SECONDS + 0.45 * 2.4)).to.equal(true)
+		end)
+		it("starts no new sparkle once the bobs are over, but lets one under way finish", function()
+			local playFor = 3 * Attention.BOB_SECONDS -- 4.8 s
+			-- star 1 pops at 0, 2.4 and 4.8: the one at 4.8 is not shown
+			local s, seen = Attention.sparkle(4.85, 1, playFor)
+			expect(s).to.equal(0)
+			expect(seen).to.equal(1)
+			-- star 3 pops at 1.6 and 4.0: the one at 4.0 is still fading at 4.9
+			local s3 = Attention.sparkle(4.9, 3, playFor)
+			expect(s3 > 0).to.equal(true)
+			-- with no limit the same moment shows star 1 again
+			local again = Attention.sparkle(4.85, 1)
+			expect(again > 0).to.equal(true)
+		end)
+	end)
 end
