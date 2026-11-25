@@ -14,7 +14,7 @@ How to read a row: **key** is the config name the engineer uses, **value** is th
 | `dirt.steps.2` | 4 or 5 (even roll) | | 2026-11-25 |
 | `dirt.steps.3` | 6 or 7 (even roll) | | 2026-11-25 |
 | `dirt.steps.4` | 8, 9 or 10 (even roll) | Top end of his range; about 50 s at 5 s a step | 2026-11-25 |
-| `dirt.stepSeconds` | 5 (target) | One step should take about 5 s on an iPhone 12; re-time on the phone | 2026-11-25 |
+| `dirt.stepSeconds` | 8 (target) | Sync-Agent's Studio run (b504978) took about 22 s for the first mud step with real touch drags, a first try that includes learning; 8 s is the target once known. Re-time on the iPhone 12 | 2026-11-25 |
 | `dirt.chance.Common` | L1 55, L2 30, L3 12, L4 3 | Most early cats are quick, so the first minutes keep moving | 2026-11-25 |
 | `dirt.chance.Uncommon` | L1 40, L2 35, L3 18, L4 7 | | 2026-11-25 |
 | `dirt.chance.Rare` | L1 25, L2 35, L3 28, L4 12 | "Rarer cats are more often dirty" | 2026-11-25 |
@@ -47,8 +47,9 @@ Pay = base × stars × early pick × dirt, rounded, then + bow + tip. Friends th
 | `pay.base.Legendary` | 80 | | 2026-11-25 |
 | `pay.base.Special` | 120 | "Pay the most" | 2026-11-25 |
 | `pay.tip` | Common 2, Uncommon 3, Rare 5, Epic 8, Legendary 15, Special 20 | Unchanged where it exists | 2026-11-25 |
-| `pay.stars` | 1 star ×0.8, 2 stars ×1.0, 3 stars ×1.2 | Speed counts but a slow wash still pays | 2026-11-25 |
-| `pay.starTimes` | 3 stars under 7 s per step, 2 stars under 11 s per step, else 1 | Per step so a 10 step cat is not harder to star | 2026-11-25 |
+| `pay.stars` | 1 star ×1.0, 2 stars ×1.1, 3 stars ×1.2 | Speed is a bonus, never a cut: a slow young player still gets full base pay | 2026-11-25 |
+| `pay.starTimes` | 3 stars at 12 s or less per step on average, 2 stars at 20 s or less, else 1 | Per step so a 10 step cat is not harder to star. The clock runs only while a hand step (scrub, brush, lather, rinse, dry, claws) is on screen; the cat landing, the bow, the photo and any tip or card are not counted (Review-QA on PR 545) | 2026-11-25 |
+| `pay.starsTutorial` | Suds and the first two customers always get 3 stars | The tutorial teaches, it never grades | 2026-11-25 |
 | `pay.early` | ×1.25 when taken in the first 10% of its heart bar | Derek: a big bonus for an early pick; a normal wait costs nothing | 2026-11-25 |
 | `pay.dirt` | L1 ×1.0, L2 ×1.25, L3 ×1.6, L4 ×2.0 | More steps pay more per cat and about the same per second | 2026-11-25 |
 | `pay.bow` | plain ribbon +2 | Every hand washed cat gets a bow | 2026-11-25 |
@@ -102,7 +103,7 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.Jo.price` | 150 coins, station included | First worker after about 15 cats | 2026-11-25 |
 | `worker.Sam.price` | 1,200 coins, station included | | 2026-11-25 |
 | `worker.Lou` | game pass 249 Robux, station included | Works exactly like Jo and Sam | 2026-11-25 |
-| `worker.washSeconds` | L1 30, L2 45, L3 70, L4 100 | About twice the player's time | 2026-11-25 |
+| `worker.washSeconds` | L1 50, L2 75, L3 110, L4 150 | About twice the player's time at the 8 s step target | 2026-11-25 |
 | `worker.share` | 25% of base × dirt at level 1, +3% each level | No stars, early pick, bow or tip for workers | 2026-11-25 |
 | `worker.levelCost` | L2 200, L3 500, L4 1,200, L5 3,000 | | 2026-11-25 |
 | `worker.levelSpeed` | −5% wash time each level (L5 = ×0.8) | | 2026-11-25 |
@@ -113,7 +114,7 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.petCap` | a worker's pet boosts add together and are capped at +30% | Two pets with the second slot pass, star ups included, never pass the cap | 2026-11-25 |
 | `worker.doubleCoins` | 2x Coins and the Golden Sponge apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
 
-Guard rail check (must stay true, with margin): a player washing Common level 2 cats by hand, with no passes, makes about 0.70 coins a second (10 × 1.25 × 1.2 + 4 per 27 s). Three level 5 workers at the pet cap make 3 × (12.5 × 0.37 / 36 s) × 1.3 ≈ 0.50 coins a second, about 71% of the player. Any change to `worker.*` or `pet.*` re-runs this sum.
+Guard rail check (must stay true, with margin): a player washing Common level 2 cats by hand, with no passes, at the 8 s step target (4.5 steps, about 36 s a cat) at 2 stars makes about 0.49 coins a second ((10 × 1.25 × 1.1 + 4) / 36 s). Three level 5 workers at the pet cap take 75 × 0.8 = 60 s a cat and make 3 × (12.5 × 0.37 × 1.3 / 60 s) ≈ 0.30 coins a second, about 61% of the player. Any change to `worker.*`, `pet.*`, `pay.*` or `dirt.stepSeconds` re-runs this sum.
 
 ## 8. Builds and Finish now
 
@@ -205,4 +206,4 @@ Cats washed to afford the next purchase. Re-time on the iPhone 12 once dirt leve
 | Jo (150) | after about 15 cats | Cats 9 to 15 pay about 23 each, so about 160 after cat 15 |
 | Third Tub (1,000) | offered about minute 15, bought in the second session | |
 
-Average early cat (no friends, plain ribbon): base 14.3 across rarities × dirt 1.18 × stars 1.1 + tip 3 + bow 2 ≈ 23.6 coins.
+Average early cat (no friends, plain ribbon): base 14.3 across rarities × dirt 1.18 × stars 1.1 (1 to 1.2) + tip 3 + bow 2 ≈ 23.6 coins.
