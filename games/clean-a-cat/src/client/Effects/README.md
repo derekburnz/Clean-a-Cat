@@ -9,6 +9,7 @@ Client-only, cosmetic effects. Owner: Motion-FX-Agent (vfx-animator). What each 
 | `Tier.luau` | Pure rules with specs: tier pick, foam rate from drag speed, Reduce Motion halving |
 | `CatPose.luau` | Pure motion curves with specs: idle, blink, ear twitch, shake-off, happy wiggle, update rate by distance |
 | `CatMotion.luau` | One PreSimulation loop that pivots the rig joints (Head, Tail, EarL, EarR, eye squash) from CatPose. Body never moves |
+| `TrailLine.luau` | The tutorial guide line (#451): a see-through green floor band from the feet to the spot with an arrowhead and a running dash. Flat pooled parts, no particles. FloorTrail calls it behind `trailLine` |
 
 `Controllers/EffectsController.luau` binds Moments. Live switches: `scrubEffects`, `revealEffects`, `fluffEffects`, `catMotion`, `dryEffects` and `openingBox`, all off by default.
 
