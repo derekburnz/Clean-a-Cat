@@ -34,7 +34,7 @@ SPECIAL_LOOKS has the special customers (issue #476), who bring the special cats
 and attributes as the townsfolk, so the walk in and the carry work unchanged, plus a root attribute `Special` = true.
 They are told from the townsfolk across a yard by one shared cue: lilac and gold (the game's prize colours), gold
 shoes, a gold star, and a hat no townsperson wears (a beret, a crown, a wide feathered hat). No look in LOOKS wears
-lilac or gold (#479). They carry
+lilac or gold (#479), and none wears a mint top, dress or trousers: a mint outfit is the staff's (#484). They carry
 `CleanACat_Prop_CarrierRoyal` (spa_props). Vivi is the rare visitor of #142 (busy_spa.VISITORS) on the new build.
 """
 
@@ -55,10 +55,10 @@ TALL = dict(leg=1.68, pelvis=0.35, torso=1.6, tw=1.42, td=0.8, arm=1.42, hw=1.46
 SMALL = dict(leg=1.35, pelvis=0.33, torso=1.45, tw=1.36, td=0.8, arm=1.2, hw=1.52, hd=1.36, hh=1.46, speed=6.0)
 
 LOOKS = {
-    # a golden-haired gardener in a mint sundress and a straw sun hat
+    # a golden-haired gardener in a rose sundress and a straw sun hat (mint until #484: a mint outfit is the staff's)
     "Sunny": dict(body=ADULT, skin="skin_light", hair="fur_golden", style="long", sunhat="pastel_butter",
-                  band="spa_bubblegum", top="spa_mint", skirt="spa_mint", legs="skin_light", shoes="offwhite",
-                  patch="heart", patch_sw="spa_bubblegum"),
+                  band="spa_bubblegum", top="fur_rose", skirt="fur_rose", legs="skin_light", shoes="offwhite",
+                  patch="heart", patch_sw="offwhite"),
     # tall, in a striped butter jumper and a mint scarf
     "Mo": dict(body=TALL, skin="skin_deep", hair="fur_black", style="short", top="pastel_butter", stripes="offwhite",
                scarf="spa_mint", pants="pants_navy", shoes="offwhite", brows=True),
