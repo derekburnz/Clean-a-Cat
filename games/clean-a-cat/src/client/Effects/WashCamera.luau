@@ -19,7 +19,20 @@
 --   WashCamera.retarget(move, from, shot, now) -> Move?   the move moveTo starts, or nil while leaving; pure, for
 --                          the specs
 --   handle.destroy()       gives the camera back at once
+--   WashCamera.sceneShot(tub) -> CFrame   the wash scene's tighter shot (switch `washScene`); shot() uses it when on
+--   WashCamera.sceneDistance() -> number  how far the scene's camera sits from where it looks; pure, for the specs
+--   WashCamera.sceneFill(height, distance) -> number  the share of the screen's height a `height` stud cat fills at
+--                          `distance` with the scene's field of view; pure, for the specs
+--
+-- The wash scene (Derek's dev test 2026-11-24: "it stays zoomed out at your normal character view it should be a
+-- seperate view like my pet salon"), behind `washScene`: the camera comes in close and a little high, the field of
+-- view narrows from the player's to SCENE.fov so the cat fills about SCENE.fill of the screen's height, and a soft
+-- depth of field blurs the room behind the tub (not on the low tier, where the blur costs too much). Both ease with
+-- the camera and go back on the exit. Station steps reach it through moveTo with shot(), so they match. The switch
+-- counts only once LiveFlags lists it as off by default: until then a missing key would read as on.
 --   Each onDone fires exactly once, deferred, also when exit is called twice or the handle is destroyed first.
+local Lighting = game:GetService("Lighting")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
@@ -32,7 +45,59 @@ WashCamera.SECONDS = 0.6 -- each ease, in and out (Derek's ask, about 0.6 s)
 -- above its seat so the whole cat and the tub's rim are in frame on a phone.
 WashCamera.SHOT = table.freeze({ ahead = 6.5, up = 5, lookUp = 1.2 })
 
+-- The wash scene. `height` is a cat in the tub: the 2 stud tall models at the tub's CAT_SCALE 1.5 (ScrubController),
+-- ears included. The camera looks at `lookUp` over the tub spot (a little under the cat's middle, so the tub's rim
+-- shows), from `pitch` degrees above level, at the distance that makes the cat `fill` of the screen's height with
+-- `fov` (vertical degrees; the player's camera is 70). The narrower view keeps him big without the camera inside the
+-- tub's rim, and flattens the room behind him.
+WashCamera.SCENE = table.freeze({
+	height = 3,
+	fill = 0.55,
+	fov = 50,
+	pitch = 30,
+	lookUp = 2.6,
+	blur = 0.5, -- the depth of field's far intensity, everything past the tub
+	focusRadius = 3, -- studs around the cat kept sharp
+})
+WashCamera.FLAG = "washScene"
+
 local BIND_NAME = "CleanACat_WashCamera"
+local BLUR_NAME = "CleanACat_WashSceneBlur"
+
+local function sceneOn(): boolean
+	local shared = ReplicatedStorage:FindFirstChild("Shared")
+	local module = shared and shared:FindFirstChild("LiveFlags")
+	if module and module:IsA("ModuleScript") then
+		local ok, result = pcall(function(): boolean
+			local flags = require(module) :: any
+			-- a key LiveFlags doesn't list as off by default reads as on, so it must be listed first
+			return flags.OFF_BY_DEFAULT[WashCamera.FLAG] == true
+				and flags.isOn(WashCamera.FLAG) == true
+		end)
+		return ok and result == true
+	end
+	return false
+end
+
+function WashCamera.sceneFill(height: number, distance: number): number
+	return height / (2 * distance * math.tan(math.rad(WashCamera.SCENE.fov) / 2))
+end
+
+function WashCamera.sceneDistance(): number
+	local s = WashCamera.SCENE
+	return s.height / (s.fill * 2 * math.tan(math.rad(s.fov) / 2))
+end
+
+function WashCamera.sceneShot(tub: CFrame): CFrame
+	local s = WashCamera.SCENE
+	local d = WashCamera.sceneDistance()
+	local look = tub.Position + Vector3.yAxis * s.lookUp
+	local pitch = math.rad(s.pitch)
+	local from = look
+		+ tub.LookVector * (d * math.cos(pitch))
+		+ Vector3.yAxis * (d * math.sin(pitch))
+	return CFrame.lookAt(from, look)
+end
 
 export type Handle = {
 	exit: (onDone: (() -> ())?) -> (),
@@ -66,6 +131,9 @@ function WashCamera.progress(elapsed: number, reduced: boolean): number
 end
 
 function WashCamera.shot(tub: CFrame): CFrame
+	if sceneOn() then
+		return WashCamera.sceneShot(tub)
+	end
 	local s = WashCamera.SHOT
 	local look = tub.Position + Vector3.yAxis * s.lookUp
 	local from = tub.Position + tub.LookVector * s.ahead + Vector3.yAxis * s.up
@@ -110,6 +178,29 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 	local move: Move = { from = home, to = shot, start = os.clock(), leaving = false }
 	local bound = true
 
+	-- the wash scene's field of view and blur, eased with each move (nothing when the switch is off)
+	local scene = sceneOn()
+	local homeFov = cam.FieldOfView
+	local fovFrom, fovTo = homeFov, if scene then WashCamera.SCENE.fov else homeFov
+	local blur: DepthOfFieldEffect? = nil
+	local blurFrom, blurTo = 0, 0
+	if scene and Effects.tier() ~= "low" then
+		local made = Instance.new("DepthOfFieldEffect")
+		made.Name = BLUR_NAME
+		made.FarIntensity = 0
+		made.NearIntensity = 0
+		made.FocusDistance = WashCamera.sceneDistance()
+		made.InFocusRadius = WashCamera.SCENE.focusRadius
+		made.Parent = Lighting
+		blur = made
+		blurTo = WashCamera.SCENE.blur
+	end
+	local function aim(toFov: number, toBlur: number)
+		fovFrom, fovTo = cam.FieldOfView, toFov
+		local b = blur
+		blurFrom, blurTo = if b then b.FarIntensity else 0, toBlur
+	end
+
 	local function unbind()
 		if bound then
 			bound = false
@@ -122,11 +213,26 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 		if cam.CameraType == Enum.CameraType.Scriptable then
 			cam.CameraType = savedType
 		end
+		if scene then
+			cam.FieldOfView = homeFov
+		end
+		local b = blur
+		blur = nil
+		if b then
+			b:Destroy()
+		end
 	end
 
 	RunService:BindToRenderStep(name, Enum.RenderPriority.Camera.Value + 1, function()
 		local k = WashCamera.progress(os.clock() - move.start, reduced)
 		cam.CFrame = move.from:Lerp(move.to, k)
+		if scene then
+			cam.FieldOfView = fovFrom + (fovTo - fovFrom) * k
+			local b = blur
+			if b then
+				b.FarIntensity = blurFrom + (blurTo - blurFrom) * k
+			end
+		end
 		if k >= 1 then
 			if move.leaving then
 				giveBack()
@@ -147,6 +253,7 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 			answer() -- still easing in: the enter's onDone hears back now
 			pending = exitDone
 			move = { from = cam.CFrame, to = home, start = os.clock(), leaving = true }
+			aim(homeFov, 0)
 		end,
 		destroy = function()
 			if done then
@@ -163,6 +270,7 @@ function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
 			local onward = WashCamera.retarget(move, cam.CFrame, newShot, os.clock())
 			if onward then
 				move = onward
+				aim(fovTo, blurTo)
 			end
 		end,
 	}
