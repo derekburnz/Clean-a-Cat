@@ -73,5 +73,15 @@ return function()
 				"1,2,3"
 			)
 		end)
+
+		it("drops a customer who left, keeping the rest in order", function()
+			local line = LineLooks.show(nil, { "Tux", "Smudge", "Marble" })
+			local after = LineLooks.left(line, 2) :: LineLooks.Line
+			expect(table.concat(after.kinds, ",")).to.equal("Tux,Marble")
+			expect(looksOf(after)).to.equal("0,2")
+			expect(after.nextLook).to.equal(3)
+			expect(LineLooks.left(line, 4)).to.equal(nil)
+			expect(LineLooks.left(nil, 1)).to.equal(nil)
+		end)
 	end)
 end

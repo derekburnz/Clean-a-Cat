@@ -29,6 +29,7 @@ local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
+local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -64,12 +65,21 @@ local cats: { [Player]: SpaRules.Cat } = {}
 local nextId: { [Player]: number } = {}
 local lastSeq: { [Player]: number } = {} -- the newest report number each client sent
 local queues: { [Player]: { string } } = {} -- customers waiting at the door, front first
--- What each waiting customer's cat needs, in the same order as queues (#267): rolled when the customer joins the
--- line, so the card shows a smell or long claws before the pick, and moved with the customer on a pick.
-local queueNeeds: { [Player]: { { CatRules.Need } } } = {}
--- Each waiting customer's dirt level (DirtRules, switch dirtLevels), in the same order as queues and queueNeeds:
--- rolled with the needs and moved with them.
-local queueDirt: { [Player]: { number } } = {}
+-- What each waiting customer brings, in the same order as queues: rolled when the customer joins the line, so the
+-- card shows it before the pick, and moved with the customer on a pick.
+type Order = {
+	needs: { CatRules.Need }, -- what the cat needs (#267)
+	dirt: number, -- its dirt level (DirtRules, switch dirtLevels)
+	since: number, -- server time the customer's heart bar started full (HeartRules, switch heartBar)
+	lasts: number, -- seconds from full to empty, fixed when they join
+	early: boolean?, -- picked to go next while their bar was still nearly full (switch queuePick)
+	tutorial: boolean, -- one of a new spa's first customers (HeartRules.TUTORIAL_STARS_CUSTOMERS)
+}
+local queueOrders: { [Player]: { Order } } = {}
+-- The save's play time when it loaded and the os.clock() then, for the heart bars' first minutes.
+local playBase: { [Player]: { play: number, at: number } } = {}
+-- Whether the last heart tick was still in the first minutes (no cat leaves), to see the moment they end.
+local noLeaveWas: { [Player]: boolean } = {}
 local handedOut: { [Player]: number } = {} -- cats handed out this session, for the stray turns
 -- Asked for a cat before the save loaded while sudsWash is on: answered once it loads, so a slow load can never hand
 -- a brand new player a customer's cat in place of the kitten.
@@ -112,24 +122,37 @@ local function rollNeeds(kind: string, dirt: number): { CatRules.Need }
 	return CatRules.rollNeeds(kind, nextNumber, LiveFlags.isOn)
 end
 
--- The needs list beside the player's door queue, kept as long as the queue.
-local function needsFor(player: Player): { { CatRules.Need } }
-	local list = queueNeeds[player]
+-- The orders beside the player's door queue, kept as long as the queue.
+local function ordersFor(player: Player): { Order }
+	local list = queueOrders[player]
 	if list == nil then
 		list = {}
-		queueNeeds[player] = list
+		queueOrders[player] = list
 	end
-	return list :: { { CatRules.Need } }
+	return list :: { Order }
 end
 
--- The dirt levels beside the player's door queue, kept as long as the queue.
-local function dirtFor(player: Player): { number }
-	local list = queueDirt[player]
-	if list == nil then
-		list = {}
-		queueDirt[player] = list
+-- Seconds this save has been played, this session included (0 before it loads).
+local function played(player: Player): number
+	local base = playBase[player]
+	if base == nil then
+		return 0
 	end
-	return list :: { number }
+	return base.play + math.max(0, os.clock() - base.at)
+end
+
+-- A new customer's order for a cat of `kind`, joining the line now at `place`.
+local function newOrder(player: Player, kind: string, place: number): Order
+	local dirt = rollDirt(player, kind, place)
+	local save = DataService.get(player)
+	local fresh = save == nil or save.stars <= 0
+	return {
+		needs = rollNeeds(kind, dirt),
+		dirt = dirt,
+		since = Workspace:GetServerTimeNow(),
+		lasts = HeartRules.lasts(kind, played(player)),
+		tutorial = fresh and place <= HeartRules.TUTORIAL_STARS_CUSTOMERS,
+	}
 end
 
 -- The player's door queue, filled to QUEUE_SIZE, so there is always a customer waiting.
@@ -140,27 +163,18 @@ local function queueFor(player: Player): { string }
 		queues[player] = queue
 	end
 	local q = queue :: { string }
-	local d = dirtFor(player)
-	local n = needsFor(player)
-	-- a line left from before these lists existed, or out of step: roll what is missing, drop what is extra
-	while #d < #q do
-		table.insert(d, rollDirt(player, q[#d + 1], #d + 1))
+	local o = ordersFor(player)
+	-- out of step: roll what is missing, drop what is extra
+	while #o < #q do
+		table.insert(o, newOrder(player, q[#o + 1], #o + 1))
 	end
-	while #d > #q do
-		table.remove(d)
-	end
-	while #n < #q do
-		table.insert(n, rollNeeds(q[#n + 1], d[#n + 1]))
-	end
-	while #n > #q do
-		table.remove(n)
+	while #o > #q do
+		table.remove(o)
 	end
 	while #q < QUEUE_SIZE do
 		local kind = rollCustomer(player)
-		local dirt = rollDirt(player, kind, #q + 1)
 		table.insert(q, kind)
-		table.insert(d, dirt)
-		table.insert(n, rollNeeds(kind, dirt))
+		table.insert(o, newOrder(player, kind, #q))
 	end
 	return q
 end
@@ -318,8 +332,15 @@ local function newCat(player: Player): SpaRules.Cat
 		-- The front customer hands over their cat; queueFor refills the line when it is next read.
 		local line = queueFor(player)
 		cat.kind = table.remove(line, 1)
-		cat.needs = table.remove(needsFor(player), 1)
-		cat.dirt = table.remove(dirtFor(player), 1)
+		local order = table.remove(ordersFor(player), 1)
+		if order then
+			cat.needs = order.needs
+			cat.dirt = order.dirt
+			cat.tutorial = order.tutorial
+			-- picked or taken while the heart bar was still nearly full: the early bonus (switch heartBar)
+			cat.early = order.early == true
+				or HeartRules.early(order.since, order.lasts, Workspace:GetServerTimeNow())
+		end
 		if CarryRules.carried(cat.kind, cat.stray, cat.mascot, LiveFlags.isOn) then
 			-- (switch customerCarry) the customer stays at the front holding their cat until the player takes it
 			carrying[player] = "door" -- CarryRules.DOOR
@@ -340,6 +361,9 @@ local function sendCat(player: Player, cat: SpaRules.Cat)
 	if kind == nil then
 		NetService.fire(player, "CatReady", cat.id, nil, nil, nil, nil, cat.brushStrokes)
 		return
+	end
+	if cat.washFrom == nil then
+		cat.washFrom = os.clock() -- in the tub: the wash grade's clock starts (HeartRules)
 	end
 	local save = DataService.get(player)
 	local needs = CatRules.liveNeeds(cat.needs or CatRules.needs(kind), LiveFlags.isOn)
@@ -362,9 +386,10 @@ end
 -- Sends the door line to the client and the figures (switch customers).
 local function sendQueue(player: Player)
 	local line = queueFor(player)
+	local orders = ordersFor(player)
 	local needs: { { CatRules.Need } } = {}
-	for place, list in needsFor(player) do
-		needs[place] = CatRules.liveNeeds(list, LiveFlags.isOn)
+	for place, order in orders do
+		needs[place] = CatRules.liveNeeds(order.needs, LiveFlags.isOn)
 	end
 	local dirtOn = LiveFlags.isOn(DirtRules.FLAG)
 	-- a cat still with its customer at the door (switch customerCarry): that customer stays at the front of the line
@@ -381,13 +406,33 @@ local function sendQueue(player: Player)
 	-- each card's dirt level (switch dirtLevels), with the customer still at the door in front as in kinds
 	local shownDirt: { number }? = nil
 	if dirtOn then
-		local list = table.clone(dirtFor(player))
+		local list: { number } = {}
+		for place, order in orders do
+			list[place] = order.dirt
+		end
 		if #kinds > #line then
 			table.insert(list, 1, if cat and cat.dirt then cat.dirt else 1)
 		end
 		shownDirt = list
 	end
-	NetService.fire(player, "CustomerQueue", kinds, shownNeeds, shownDirt)
+	-- each card's heart bar (switch heartBar): { since, lasts, stops, paused } with since the server time it started
+	-- full, lasts its seconds, stops 1 while it never empties (the first minutes of play) and paused 1 while it does
+	-- not drain at all (before the first serve); the customer still at the door, whose cat is taken, shows full
+	local shownHearts: { { number } }? = nil
+	if LiveFlags.isOn(HeartRules.FLAG) then
+		local list: { { number } } = {}
+		local stops = if played(player) < HeartRules.NO_LEAVE_BEFORE then 1 else 0
+		local save = DataService.get(player)
+		local paused = if save == nil or save.stars <= 0 then 1 else 0
+		for place, order in orders do
+			list[place] = { order.since, order.lasts, stops, paused }
+		end
+		if #kinds > #line then
+			table.insert(list, 1, { 0, 0, 1, 1 })
+		end
+		shownHearts = list
+	end
+	NetService.fire(player, "CustomerQueue", kinds, shownNeeds, shownDirt, shownHearts)
 	FigureService.showQueue(player, table.clone(kinds))
 end
 
@@ -604,9 +649,12 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 		return
 	end
 	local line = queueFor(player)
+	local picked = ordersFor(player)[index]
+	if picked and HeartRules.early(picked.since, picked.lasts, Workspace:GetServerTimeNow()) then
+		picked.early = true -- the pick is what counts, not when the wash before it ends
+	end
 	if SpaRules.pickNext(line, index) then
-		SpaRules.pickNext(needsFor(player), index) -- the cat's needs and dirt move with it
-		SpaRules.pickNext(dirtFor(player), index)
+		SpaRules.pickNext(ordersFor(player), index) -- the cat's order moves with it
 		FigureService.picked(player, index) -- the customer's look goes to the front with their cat (#206)
 		sendQueue(player)
 	end
@@ -695,14 +743,37 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	end
 	-- A customer's cat goes home: the customer pays coins plus a tip, and the spa earns stars.
 	local pay = CatRules.pay(kind)
-	if LiveFlags.isOn(DirtRules.FLAG) then
-		pay = DirtRules.pay(pay, cat.dirt) -- a dirtier cat pays more (coins and tip)
+	local extra: RecapRules.Extra? = nil
+	local dirtOn = LiveFlags.isOn(DirtRules.FLAG)
+	if LiveFlags.isOn(HeartRules.FLAG) then
+		-- The pay formula (issue 507): base x wash grade x early pick x dirt, one recap line for each.
+		local needs = CatRules.liveNeeds(cat.needs or CatRules.needs(kind), LiveFlags.isOn)
+		local seconds = cat.washSeconds or (os.clock() - (cat.washFrom or os.clock()))
+		local handSteps = DirtRules.steps(needs) - 1 -- the bow is not timed
+		local formula = HeartRules.pay(kind, {
+			grade = if cat.tutorial then 3 else HeartRules.grade(seconds, handSteps),
+			early = cat.early == true,
+			dirt = if dirtOn then cat.dirt else nil,
+		})
+		-- a slow wash pays less, but the card never shows a minus line: that part comes off the wash's own line
+		local base = formula.base + math.min(formula.speed, 0)
+		pay = { coins = base, tip = formula.tip, stars = formula.stars }
+		local lines: RecapRules.Extra = {
+			speed = math.max(formula.speed, 0),
+			early = formula.early,
+			dirt = formula.dirt,
+			grade = formula.grade,
+		}
+		extra = lines
+	elseif dirtOn then
+		pay = DirtRules.pay(pay, cat.dirt) -- a dirtier cat pays more
 	end
 	-- Built stations (a Brush Table, a dryer) make every customer pay a little more; only while builds are on.
 	local bonus = if LiveFlags.isOn("builds")
 		then BuildRules.payBonus(save.stations, LiveFlags.isOn)
 		else 0
-	coins = pay.coins + pay.tip + bonus
+	local more: RecapRules.Extra = extra or {}
+	coins = pay.coins + (more.speed or 0) + (more.early or 0) + (more.dirt or 0) + pay.tip + bonus
 	save.coins += coins
 	WalletService.show(player)
 	local starsBefore = save.stars
@@ -711,7 +782,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
 	if LiveFlags.isOn(RECAP_FLAG) then
 		-- The recap card shows the payment line by line (#224), so it replaces the toast.
-		local recap = RecapRules.make(kind, pay, bonus, starsBefore, isNew)
+		local recap = RecapRules.make(kind, pay, bonus, starsBefore, isNew, extra)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins, recap)
 	else
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
@@ -739,8 +810,9 @@ end
 local function onPickBow(player: Player, rawId: unknown, rawSeq: unknown, rawBow: unknown)
 	local bow = Guard.oneOf(rawBow, SpaRules.BOWS)
 	withCat(player, rawId, rawSeq, function(cat)
-		if bow then
-			SpaRules.pickBow(cat, bow)
+		if bow and SpaRules.pickBow(cat, bow) and cat.washFrom then
+			-- the bow ends the hand steps: the wash grade counts from the tub to here (tuning pay.starTimes)
+			cat.washSeconds = os.clock() - (cat.washFrom :: number)
 		end
 	end)
 end
@@ -760,6 +832,71 @@ local function onPhoto(player: Player, rawId: unknown, rawSeq: unknown)
 	end)
 end
 
+-- The customer at `place` of the server's line leaves with their cat (switch heartBar): their bar ran out. That job is
+-- lost and nothing else is taken; the line refills at once. The client hears it first (CustomerLeft, at the place as
+-- shown, before the figures are redrawn) so the leaving customer can still be found for the moment and sound.
+local function customerLeaves(player: Player, place: number)
+	local line = queues[player]
+	local kind = if line then line[place] else nil
+	if line == nil or kind == nil then
+		return
+	end
+	local shownPlace = place + (if carrying[player] == CarryRules.DOOR then 1 else 0)
+	NetService.fire(player, "CustomerLeft", shownPlace, kind)
+	table.remove(line, place)
+	table.remove(ordersFor(player), place)
+	FigureService.left(player, shownPlace)
+	sendQueue(player)
+	NetService.notice(player, `{kind} went home`)
+end
+
+-- Once a second (switch heartBar): bars drain, a customer whose bar is empty leaves (one a second at most), and each
+-- figure gets its bar as HeartFill. Nothing drains before the spa's first serve, which is the tutorial.
+local function tickHearts()
+	local now = Workspace:GetServerTimeNow()
+	for player in queues do
+		local save = DataService.get(player)
+		if save == nil or player.Parent ~= Players then
+			continue
+		end
+		queueFor(player) -- keeps the orders in step with the line
+		local orders = ordersFor(player)
+		local playTime = played(player)
+		local paused = save.stars <= 0
+		local noLeave = playTime < HeartRules.NO_LEAVE_BEFORE
+		local minutesEnded = noLeaveWas[player] == true and not noLeave
+		noLeaveWas[player] = noLeave
+		if minutesEnded then
+			-- the cats on the sliver get a grumpy bar's worth back, and the cards learn their bars empty now
+			for _, order in orders do
+				order.since = HeartRules.graceSince(order.since, order.lasts, now)
+			end
+			sendQueue(player)
+		end
+		local leaving: number? = nil
+		for place, order in orders do
+			if paused then
+				order.since = now
+			elseif leaving == nil and HeartRules.gone(order.since, order.lasts, now, playTime) then
+				leaving = place
+			end
+		end
+		if leaving then
+			customerLeaves(player, leaving)
+		end
+		local offset = if carrying[player] == CarryRules.DOOR then 1 else 0
+		local fills: { number } = {}
+		if offset == 1 then
+			fills[1] = 1
+		end
+		for place, order in ordersFor(player) do
+			local fill = HeartRules.shown(order.since, order.lasts, now, playTime)
+			fills[place + offset] = math.floor(fill * 50 + 0.5) / 50 -- steps of 2 percent, so not every tick replicates
+		end
+		FigureService.setHearts(player, fills)
+	end
+end
+
 function SpaService.Init(_services: { [string]: any }) end
 
 function SpaService.Start()
@@ -768,6 +905,24 @@ function SpaService.Start()
 		return cat ~= nil and cat.mascot == true
 	end)
 	NetService.on("RequestCat", { perSecond = 1, burst = 2 }, onRequestCat)
+	task.spawn(function()
+		while true do
+			task.wait(1)
+			if
+				LiveFlags.isOn(HeartRules.FLAG)
+				and LiveFlags.isOn(FLAG)
+				and LiveFlags.isOn(CUSTOMERS_FLAG)
+			then
+				local ok, err = pcall(function()
+					tickHearts()
+					return nil :: any
+				end)
+				if not ok then
+					warn("SpaService: heart bars:", err)
+				end
+			end
+		end
+	end)
 	-- When the server saw the join, so the client can print how long the opening took to start (OpeningController).
 	local function stampJoin(player: Player)
 		if player:GetAttribute(SudsRules.JOINED_ATTRIBUTE) == nil then
@@ -788,6 +943,7 @@ function SpaService.Start()
 	end
 	-- The chance board lights up from the second customer: once a save has stars, a customer was served.
 	DataService.onLoaded:Connect(function(player: Player, save)
+		playBase[player] = { play = save.playSeconds, at = os.clock() }
 		if save.stars > 0 then
 			player:SetAttribute(BOARD_LIT, true)
 		end
@@ -882,8 +1038,7 @@ function SpaService.Start()
 					dropCarry(player)
 				end
 				table.clear(queues)
-				table.clear(queueNeeds)
-				table.clear(queueDirt)
+				table.clear(queueOrders)
 			end
 		end)
 	-- The carry switched off: a cat at the door or in someone's arms goes straight into their tub.
@@ -917,9 +1072,9 @@ function SpaService.Start()
 			end
 			for player, line in queues do
 				queueFor(player)
-				local d, n = dirtFor(player), needsFor(player)
+				local orders = ordersFor(player)
 				for place, kind in line do
-					n[place] = rollNeeds(kind, d[place])
+					orders[place].needs = rollNeeds(kind, orders[place].dirt)
 				end
 				sendQueue(player)
 			end
@@ -929,8 +1084,9 @@ function SpaService.Start()
 		nextId[player] = nil
 		lastSeq[player] = nil
 		queues[player] = nil
-		queueNeeds[player] = nil
-		queueDirt[player] = nil
+		queueOrders[player] = nil
+		playBase[player] = nil
+		noLeaveWas[player] = nil
 		handedOut[player] = nil
 		waiting[player] = nil
 		loadDone[player] = nil
