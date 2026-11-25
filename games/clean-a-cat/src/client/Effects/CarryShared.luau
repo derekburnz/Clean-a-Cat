@@ -27,8 +27,22 @@ local Effects = require(script.Parent)
 
 local CarryShared = {}
 
-CarryShared.CAT_ATTRIBUTE = "CarryCat"
-CarryShared.HELD_ATTRIBUTE = "CarryHeld"
+-- Gameplay's names, read from the character only (the Player's own CarryCat attribute is the door or arms state)
+local function names(): (string, string)
+	local shared = ReplicatedStorage:FindFirstChild("Shared")
+	local module = shared and shared:FindFirstChild("CarryRules")
+	if module and module:IsA("ModuleScript") then
+		local ok, rules = pcall(require, module)
+		if ok and type(rules) == "table" then
+			local r = rules :: any
+			if type(r.CHARACTER_CAT) == "string" and type(r.CHARACTER_HELD) == "string" then
+				return r.CHARACTER_CAT, r.CHARACTER_HELD
+			end
+		end
+	end
+	return "CarryCat", "CarryHeld"
+end
+CarryShared.CAT_ATTRIBUTE, CarryShared.HELD_ATTRIBUTE = names()
 CarryShared.MAX = table.freeze({ low = 3, high = 8 })
 CarryShared.RANGE = 120 -- studs from the camera
 CarryShared.CHECK_SECONDS = 0.25 -- how often the attributes are read: a pickup shows within a quarter second
