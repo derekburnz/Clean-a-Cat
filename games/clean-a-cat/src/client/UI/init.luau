@@ -14,7 +14,7 @@
 --   UI.setIndex(entries, newCats, tier)  the Cat Index window (UI/CatIndex, switch catIndexWindow, #238)
 --   UI.setQueue(cards, headline, pickable)  the "Who's next?" window and the HUD's waiting faces (UI/QueueWindow,
 --                             HUD/Waiting, switch queueWindow, #246); UI.onQueuePick(fn) gets fn(place) on Wash next
---   UI.setTip(tip)            the tutorial's tip line, { step, total, icon, say } or nil (UI/HUD/TipLine, switch
+--   UI.setTip(tip)            the tutorial's tip line, { step, total, say } or nil (UI/HUD/TipLine, switch
 --                             tutorialTip)
 --   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
 --                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
@@ -247,7 +247,9 @@ function UI.init()
 		end
 	end)
 	HeldTool.build(playerGui) -- the step's tool under the finger (switch toolCursor), its own layer in GUI space
-	Spotlight.build(root) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the windows
+	Spotlight.build(root, HUD.tipShown) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the
+	-- windows; its words keep clear of the step pill
+	HUD.onTipChanged(Spotlight.refit)
 	SudsBubble.build(root) -- Suds's help bubble (switch sudsBubble), at the bottom while the tub is empty
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
@@ -312,7 +314,7 @@ function UI.setWashPlan(later: { string })
 	HUD.setPlan(later)
 end
 
-function UI.setTip(tip: { step: number, total: number, icon: string, say: string }?)
+function UI.setTip(tip: { step: number, total: number, say: string }?)
 	HUD.setTip(tip)
 end
 

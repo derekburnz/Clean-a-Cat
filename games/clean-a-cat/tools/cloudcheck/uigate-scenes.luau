@@ -207,6 +207,9 @@ local SCENES = {
 		flag("tutorialDim", true)
 		UI.setCoins(58)
 		UI.setWashStage(nil)
+		-- the step pill sits over the dim (#425), and the dim's words keep clear of it (#429)
+		flag("tutorialTip", true)
+		UI.setTip({ step = 3, total = 3, say = "Open your Index" })
 		UI.pointAt("CatIndex", "Tap Index")
 	end },
 	-- The tutorial's tip line (switch tutorialTip) in the step bar's place, while the first cat is washed.
@@ -215,7 +218,7 @@ local SCENES = {
 		flag("tutorialTip", true)
 		UI.setCoins(0)
 		UI.setWashStage("dirty")
-		UI.setTip({ step = 2, total = 3, icon = "Sponge", say = "Scrub the mud" })
+		UI.setTip({ step = 2, total = 3, say = "Wash him" })
 	end },
 	-- The step bar with both later steps (#267): six steps, on the bath.
 	{ "HudLater", function()
