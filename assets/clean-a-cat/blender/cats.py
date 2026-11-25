@@ -119,7 +119,7 @@ SPECIAL_CATS = {
     "Prism":     dict(rarity="Special", fur="coat_inky", second="coat_inky", eyes="eye_mint", pattern="solid",
                       muzzle=None, nose="nose_bubblegum", glow_eyes=True, curl=True, tip="aurora_violet",
                       mane=("neon_pink", "fur_marmalade", "pastel_butter", "spa_mint", "spa_sky", "aurora_violet"),
-                      mane_tall=0.3, toes=("neon_pink", "spa_mint", None, None), inner_ear="aurora_violet", eye_k=1.1,
+                      mane_tall=0.12, toes=("neon_pink", "spa_mint", None, None), inner_ear="aurora_violet", eye_k=1.1,
                       face=((0.0, 0.42, 0.14, 0.05, "aurora_violet"), (0.0, 0.365, 0.14, 0.05, "spa_sky"),
                             (0.0, 0.31, 0.14, 0.05, "spa_mint"),
                             (0.36, 0.12, 0.13, 0.05, "neon_pink"), (0.36, 0.04, 0.13, 0.05, "pastel_butter"),

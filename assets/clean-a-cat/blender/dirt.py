@@ -646,6 +646,8 @@ def build_dirty(name, mat, body, base=None):
     own = base is None                                 # the held loaf renumbers its mud: it carries no levels
     base = base or f"CleanACat_Cat_{name}_Dirty{cats.SUFFIX[body]}"
     objs = cats.build_cat(name, mat, spec={**spec, "collar": None}, base=base, body=body)   # a stray wears no collar
+    worn = [o for o in objs if o.get("rides")]         # a special cat's built-in pieces (props.py): no mud, no
+    objs = [o for o in objs if o not in worn]          # tangles and no fluff on them; they join again at the end
     bpy.context.view_layer.update()
     k = cats.scale_of(spec, body)
     eyes = [_centre(o) for o in objs if o.name.endswith(("_Eye1", "_Eye2"))]
@@ -709,7 +711,7 @@ def build_dirty(name, mat, body, base=None):
     if own:
         MODEL_ATTRS[base] = {o.name[len(base):]: {"DirtLevel": level_of(o.name, body)} for o in objs
                              if level_of(o.name, body)}
-    return objs, nest, attributes
+    return objs + worn, nest, attributes
 
 
 CLAWS_PER_PAW = 4
@@ -744,4 +746,4 @@ ASSETS = {}
 for _n in (*cats.ROSTER, *cats.EXTRA_CATS, *cats.SPECIAL_CATS):
     for _body in cats.BUILT_BODIES:   # 3,200: the long claws (#23) put the fluffiest coat a little over 3,000
         ASSETS[f"CleanACat_Cat_{_n}_Dirty{cats.SUFFIX[_body]}"] = (
-            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3200)
+            lambda mat, n=_n, bd=_body: build_dirty(n, mat, bd), 3200 + (1100 if _n in cats.SPECIAL_CATS else 0))

@@ -93,8 +93,25 @@ def cat_rbx_extras(name):
         attributes["Mascot"] = True
     if spec["rarity"] == "Special":                   # a special customer's cat (cats.SPECIAL_CATS): not in the Index
         attributes["Special"] = True
-    return {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", Matrix.Translation(bow))],
-            "attributes": attributes}
+    extras = {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", Matrix.Translation(bow))],
+              "attributes": attributes}
+    slot = props.slot(cat)
+    if slot:                                          # built-in pieces (props.py): their slots, what each part follows
+        rides = props.follows(slot)
+        attributes["PropSlot"] = slot
+        extras["part_attributes"] = {"_Prop": {"Follows": rides}, "_Prop_Glass": {"Follows": rides}}
+        extras["nest"] = {"_Prop": "_Head", "_Prop_Glass": "_Head"} if rides == "Head" else {}
+        slot2 = props.slot2(cat)
+        if slot2:
+            attributes["PropSlot2"] = slot2
+            for sfx in ("_Prop2", "_Prop2_Glass"):
+                extras["part_attributes"][sfx] = {"Follows": props.follows(slot2)}
+                if props.follows(slot2) == "Head":
+                    extras["nest"][sfx] = "_Head"
+        for piece, host in props.PIECES.get(cat, {}).items():   # lit and tail pieces: inside their host's Model
+            extras["nest"]["_" + piece] = "_" + host
+            extras["part_attributes"]["_" + piece] = {"Follows": props.piece_follows(cat, piece)}
+    return extras
 
 
 def parse_args():

@@ -8,7 +8,9 @@
   },
   "Rarity": "Special",
   "Cat": "Jade",
-  "Special": true
+  "Special": true,
+  "PropSlot": "Head",
+  "PropSlot2": "Back"
  },
  "children": [
   {
@@ -3491,6 +3493,1020 @@
       }
      },
      "name": "CleanACat_Cat_Jade_EarR"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Jade/11"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6117,
+           -0.6722
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0435,
+         0.5217,
+         0.5217
+        ],
+        "Color": [
+         0.3725,
+         0.7216,
+         0.3529
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.7617,
+           0.0,
+           0.3722
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Jade/11",
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2935,
+           1.7096,
+           -0.3461
+          ],
+          "orientation": [
+           [
+            -0.8805,
+            -0.124,
+            0.4576
+           ],
+           [
+            0.4741,
+            -0.2302,
+            0.8498
+           ],
+           [
+            0.0,
+            0.9652,
+            0.2615
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1413,
+         0.1413,
+         0.3325
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3478,
+           1.9596,
+           -0.2483
+          ],
+          "orientation": [
+           [
+            -0.9806,
+            0.0863,
+            -0.1761
+           ],
+           [
+            -0.1961,
+            -0.4317,
+            0.8805
+           ],
+           [
+            0.0,
+            0.8979,
+            0.4402
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1033,
+         0.1033,
+         0.2469
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2935,
+           1.7096,
+           -0.3461
+          ],
+          "orientation": [
+           [
+            -0.8805,
+            0.124,
+            -0.4576
+           ],
+           [
+            -0.4741,
+            -0.2302,
+            0.8498
+           ],
+           [
+            0.0,
+            0.9652,
+            0.2615
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1413,
+         0.1413,
+         0.3325
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3478,
+           1.9596,
+           -0.2483
+          ],
+          "orientation": [
+           [
+            -0.9806,
+            -0.0863,
+            0.1761
+           ],
+           [
+            0.1961,
+            -0.4317,
+            0.8805
+           ],
+           [
+            0.0,
+            0.8979,
+            0.4402
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1033,
+         0.1033,
+         0.2469
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7172,
+           -0.5672
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.6691,
+            -0.7431
+           ],
+           [
+            0.0,
+            0.7431,
+            0.6691
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1522,
+         0.2609,
+         0.0489
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0909,
+           1.7172,
+           -0.6197
+          ],
+          "orientation": [
+           [
+            0.5,
+            0.6436,
+            0.5795
+           ],
+           [
+            0.0,
+            0.6691,
+            -0.7431
+           ],
+           [
+            -0.866,
+            0.3716,
+            0.3346
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1522,
+         0.2609,
+         0.0489
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0909,
+           1.7172,
+           -0.7247
+          ],
+          "orientation": [
+           [
+            -0.5,
+            0.6436,
+            0.5795
+           ],
+           [
+            0.0,
+            0.6691,
+            -0.7431
+           ],
+           [
+            -0.866,
+            -0.3716,
+            -0.3346
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1522,
+         0.2609,
+         0.0489
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.7172,
+           -0.7772
+          ],
+          "orientation": [
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.6691,
+            -0.7431
+           ],
+           [
+            0.0,
+            -0.7431,
+            -0.6691
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1522,
+         0.2609,
+         0.0489
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.0909,
+           1.7172,
+           -0.7247
+          ],
+          "orientation": [
+           [
+            -0.5,
+            -0.6436,
+            -0.5795
+           ],
+           [
+            0.0,
+            0.6691,
+            -0.7431
+           ],
+           [
+            0.866,
+            -0.3716,
+            -0.3346
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1522,
+         0.2609,
+         0.0489
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.0909,
+           1.7172,
+           -0.6197
+          ],
+          "orientation": [
+           [
+            0.5,
+            -0.6436,
+            -0.5795
+           ],
+           [
+            0.0,
+            0.6691,
+            -0.7431
+           ],
+           [
+            0.866,
+            0.3716,
+            0.3346
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1522,
+         0.2609,
+         0.0489
+        ],
+        "Color": [
+         0.949,
+         0.749,
+         0.7961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0242,
+           1.7663,
+           -0.6303
+          ],
+          "orientation": [
+           [
+            0.866,
+            0.171,
+            0.4698
+           ],
+           [
+            0.0,
+            0.9397,
+            -0.342
+           ],
+           [
+            -0.5,
+            0.2962,
+            0.8138
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1196,
+         0.2609,
+         0.0543
+        ],
+        "Color": [
+         0.949,
+         0.5608,
+         0.6667
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0242,
+           1.7663,
+           -0.714
+          ],
+          "orientation": [
+           [
+            -0.866,
+            0.171,
+            0.4698
+           ],
+           [
+            0.0,
+            0.9397,
+            -0.342
+           ],
+           [
+            -0.5,
+            -0.2962,
+            -0.8138
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1196,
+         0.2609,
+         0.0543
+        ],
+        "Color": [
+         0.949,
+         0.5608,
+         0.6667
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.0483,
+           1.7663,
+           -0.6722
+          ],
+          "orientation": [
+           [
+            0.0,
+            -0.342,
+            -0.9397
+           ],
+           [
+            0.0,
+            0.9397,
+            -0.342
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1196,
+         0.2609,
+         0.0543
+        ],
+        "Color": [
+         0.949,
+         0.5608,
+         0.6667
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Cat_Jade/12"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Cat_Jade_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             1.7748,
+             -0.6722
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1848,
+           0.1848,
+           0.1848
+          ],
+          "Color": [
+           0.9843,
+           0.8941,
+           0.6039
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             0.0,
+             0.0326,
+             0.0435
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Cat_Jade/12",
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Jade_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.2826,
+             2.1498,
+             -0.1667
+            ],
+            "orientation": [
+             [
+              -0.9216,
+              0.1248,
+              -0.3675
+             ],
+             [
+              -0.3881,
+              -0.2963,
+              0.8727
+             ],
+             [
+              0.0,
+              0.9469,
+              0.3215
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0707,
+           0.0707,
+           0.2366
+          ],
+          "Color": [
+           0.451,
+           0.8667,
+           0.7059
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Cat_Jade_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.2826,
+             2.1498,
+             -0.1667
+            ],
+            "orientation": [
+             [
+              -0.9216,
+              -0.1248,
+              0.3675
+             ],
+             [
+              0.3881,
+              -0.2963,
+              0.8727
+             ],
+             [
+              0.0,
+              0.9469,
+              0.3215
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0707,
+           0.0707,
+           0.2366
+          ],
+          "Color": [
+           0.451,
+           0.8667,
+           0.7059
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           1.8074,
+           -0.6287
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Cat_Jade_Glow"
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         0.85,
+         -0.3
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Jade_Prop"
     }
    ],
    "properties": {
@@ -3655,6 +4671,123 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Jade/16"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Jade_Tail_Pearl_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.3266,
+           0.8883
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.352,
+         0.352,
+         0.352
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           -0.0591,
+           -0.0104
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Jade/16",
+        "Follows": "Tail"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.2675,
+         0.8778
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Jade_Tail_Pearl_Glow"
     }
    ],
    "properties": {
@@ -4342,6 +5475,2496 @@
     }
    },
    "name": "CleanACat_Cat_Jade_LegB2"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Jade/13"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4393,
+         1.2077,
+         0.0927
+        ],
+        "orientation": [
+         [
+          -0.6919,
+          -0.1835,
+          0.6983
+         ],
+         [
+          0.722,
+          -0.1758,
+          0.6691
+         ],
+         [
+          0.0,
+          0.9672,
+          0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.075,
+       0.078,
+       0.8
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         -0.568,
+         0.2034,
+         -1.1384
+        ],
+        "orientation": [
+         [
+          -0.6919,
+          0.722,
+          0.0
+         ],
+         [
+          -0.1835,
+          -0.1758,
+          0.9672
+         ],
+         [
+          0.6983,
+          0.6691,
+          0.2542
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Jade/13",
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.9611,
+         -0.0062
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1667,
+       0.1133,
+       0.1667
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.07,
+         0.025
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1,
+       0.1133,
+       0.1
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.1789,
+         0.0562
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0333,
+       0.1133,
+       0.0333
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.9503,
+         0.1988
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.15,
+       0.0933,
+       0.15
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.04,
+         0.2245
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.09,
+       0.0933,
+       0.09
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.1297,
+         0.2502
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.03,
+       0.0933,
+       0.03
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.9395,
+         0.3943
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1333,
+       0.0733,
+       0.1333
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.01,
+         0.4145
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.08,
+       0.0733,
+       0.08
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.0805,
+         0.4347
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0267,
+       0.0733,
+       0.0267
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.9287,
+         0.5518
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1167,
+       0.0533,
+       0.1167
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.98,
+         0.5665
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.07,
+       0.0533,
+       0.07
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.0313,
+         0.5812
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9613,
+          -0.2756
+         ],
+         [
+          0.0,
+          0.2756,
+          0.9613
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0233,
+       0.0533,
+       0.0233
+      ],
+      "Color": [
+       0.1216,
+       0.6471,
+       0.5608
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3008,
+         1.3109,
+         0.0422
+        ],
+        "orientation": [
+         [
+          -0.9349,
+          -0.0455,
+          0.352
+         ],
+         [
+          0.3549,
+          -0.1198,
+          0.9272
+         ],
+         [
+          0.0,
+          0.9918,
+          0.1281
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.075,
+       0.07,
+       0.8
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.422,
+         1.0199,
+         0.0863
+        ],
+        "orientation": [
+         [
+          -0.2919,
+          -0.3145,
+          0.9033
+         ],
+         [
+          0.9565,
+          -0.096,
+          0.2756
+         ],
+         [
+          0.0,
+          0.9444,
+          0.3288
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.075,
+       0.086,
+       0.58
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4691,
+         1.5573,
+         0.1035
+        ],
+        "orientation": [
+         [
+          0.342,
+          0.8713,
+          -0.352
+         ],
+         [
+          0.0,
+          -0.3746,
+          -0.9272
+         ],
+         [
+          -0.9397,
+          0.3171,
+          -0.1281
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.1128
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3368,
+         1.2087,
+         0.0553
+        ],
+        "orientation": [
+         [
+          -0.342,
+          0.8713,
+          0.352
+         ],
+         [
+          0.0,
+          -0.3746,
+          0.9272
+         ],
+         [
+          0.9397,
+          0.3171,
+          0.1281
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.6392
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3368,
+         1.2087,
+         0.0553
+        ],
+        "orientation": [
+         [
+          0.342,
+          -0.6288,
+          0.6983
+         ],
+         [
+          0.0,
+          0.7431,
+          0.6691
+         ],
+         [
+          -0.9397,
+          -0.2289,
+          0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.6392
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.5994,
+         1.4603,
+         0.1509
+        ],
+        "orientation": [
+         [
+          -0.342,
+          -0.6288,
+          -0.6983
+         ],
+         [
+          0.0,
+          0.7431,
+          -0.6691
+         ],
+         [
+          0.9397,
+          -0.2289,
+          -0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.1128
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.6551,
+         1.3287,
+         0.1712
+        ],
+        "orientation": [
+         [
+          0.342,
+          0.6288,
+          -0.6983
+         ],
+         [
+          0.0,
+          -0.7431,
+          -0.6691
+         ],
+         [
+          -0.9397,
+          0.2289,
+          -0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1273,
+       0.2007
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3925,
+         1.0772,
+         0.0756
+        ],
+        "orientation": [
+         [
+          -0.342,
+          0.6288,
+          0.6983
+         ],
+         [
+          0.0,
+          -0.7431,
+          0.6691
+         ],
+         [
+          0.9397,
+          0.2289,
+          0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1273,
+       0.5513
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.6387,
+         1.1523,
+         0.1652
+        ],
+        "orientation": [
+         [
+          0.342,
+          0.4556,
+          -0.8219
+         ],
+         [
+          0.0,
+          -0.8746,
+          -0.4848
+         ],
+         [
+          -0.9397,
+          0.1658,
+          -0.2991
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1226,
+       0.0346
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4062,
+         1.0151,
+         0.0806
+        ],
+        "orientation": [
+         [
+          -0.342,
+          0.4556,
+          0.8219
+         ],
+         [
+          0.0,
+          -0.8746,
+          0.4848
+         ],
+         [
+          0.9397,
+          0.1658,
+          0.2991
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1226,
+       0.5312
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3008,
+         1.3109,
+         0.0422
+        ],
+        "orientation": [
+         [
+          -0.9349,
+          0.0455,
+          -0.352
+         ],
+         [
+          -0.3549,
+          -0.1198,
+          0.9272
+         ],
+         [
+          0.0,
+          0.9918,
+          0.1281
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.075,
+       0.07,
+       0.8
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.4393,
+         1.2077,
+         0.0927
+        ],
+        "orientation": [
+         [
+          -0.6919,
+          0.1835,
+          -0.6983
+         ],
+         [
+          -0.722,
+          -0.1758,
+          0.6691
+         ],
+         [
+          0.0,
+          0.9672,
+          0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.075,
+       0.078,
+       0.8
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.422,
+         1.0199,
+         0.0863
+        ],
+        "orientation": [
+         [
+          -0.2919,
+          0.3145,
+          -0.9033
+         ],
+         [
+          -0.9565,
+          -0.096,
+          0.2756
+         ],
+         [
+          0.0,
+          0.9444,
+          0.3288
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.075,
+       0.086,
+       0.58
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.4691,
+         1.5573,
+         0.1035
+        ],
+        "orientation": [
+         [
+          0.342,
+          -0.8713,
+          0.352
+         ],
+         [
+          0.0,
+          -0.3746,
+          -0.9272
+         ],
+         [
+          0.9397,
+          0.3171,
+          -0.1281
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.1128
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3368,
+         1.2087,
+         0.0553
+        ],
+        "orientation": [
+         [
+          -0.342,
+          -0.8713,
+          -0.352
+         ],
+         [
+          0.0,
+          -0.3746,
+          0.9272
+         ],
+         [
+          -0.9397,
+          0.3171,
+          0.1281
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.6392
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3368,
+         1.2087,
+         0.0553
+        ],
+        "orientation": [
+         [
+          0.342,
+          0.6288,
+          -0.6983
+         ],
+         [
+          0.0,
+          0.7431,
+          0.6691
+         ],
+         [
+          0.9397,
+          -0.2289,
+          0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.6392
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.5994,
+         1.4603,
+         0.1509
+        ],
+        "orientation": [
+         [
+          -0.342,
+          0.6288,
+          0.6983
+         ],
+         [
+          0.0,
+          0.7431,
+          -0.6691
+         ],
+         [
+          -0.9397,
+          -0.2289,
+          -0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1476,
+       0.1128
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.6551,
+         1.3287,
+         0.1712
+        ],
+        "orientation": [
+         [
+          0.342,
+          -0.6288,
+          0.6983
+         ],
+         [
+          0.0,
+          -0.7431,
+          -0.6691
+         ],
+         [
+          0.9397,
+          0.2289,
+          -0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1273,
+       0.2007
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.3925,
+         1.0772,
+         0.0756
+        ],
+        "orientation": [
+         [
+          -0.342,
+          -0.6288,
+          -0.6983
+         ],
+         [
+          0.0,
+          -0.7431,
+          0.6691
+         ],
+         [
+          -0.9397,
+          0.2289,
+          0.2542
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1273,
+       0.5513
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.6387,
+         1.1523,
+         0.1652
+        ],
+        "orientation": [
+         [
+          0.342,
+          -0.4556,
+          0.8219
+         ],
+         [
+          0.0,
+          -0.8746,
+          -0.4848
+         ],
+         [
+          0.9397,
+          0.1658,
+          -0.2991
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1226,
+       0.0346
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Jade_Prop2",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.4062,
+         1.0151,
+         0.0806
+        ],
+        "orientation": [
+         [
+          -0.342,
+          -0.4556,
+          -0.8219
+         ],
+         [
+          0.0,
+          -0.8746,
+          0.4848
+         ],
+         [
+          -0.9397,
+          0.1658,
+          0.2991
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.035,
+       0.1226,
+       0.5312
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Jade/14"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Jade_Spines_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.2228,
+           0.1134
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           -0.1128,
+           0.0066
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Jade/14",
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Spines_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.1676,
+           0.2973
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Spines_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.1124,
+           0.4717
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Spines_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.0572,
+           0.6081
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.12,
+         0.12,
+         0.12
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.11,
+         0.12
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Jade_Spines_Glow"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Jade/15"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Jade_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4487,
+           1.7003,
+           0.0961
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.4487,
+           -0.4903,
+           -0.1051
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Jade/15",
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.7326,
+           1.4887,
+           0.1994
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.702,
+           1.1054,
+           0.1883
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4487,
+           1.7003,
+           0.0961
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.7326,
+           1.4887,
+           0.1994
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Jade_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.702,
+           1.1054,
+           0.1883
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.9843,
+         0.8941,
+         0.6039
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.21,
+         -0.009
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Jade_Wings_Glow"
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Jade_Prop2"
   }
  ],
  "properties": {

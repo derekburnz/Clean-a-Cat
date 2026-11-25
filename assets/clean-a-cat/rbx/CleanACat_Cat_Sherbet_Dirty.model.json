@@ -9,6 +9,8 @@
   "Rarity": "Special",
   "Cat": "Sherbet",
   "Special": true,
+  "PropSlot": "Head",
+  "PropSlot2": "Back",
   "Dirty": true,
   "MudCount": 20,
   "TangleCount": 6,
@@ -1853,7 +1855,7 @@
           "position": [
            -0.3208,
            1.8078,
-           -0.46
+           -0.4521
           ],
           "orientation": [
            [
@@ -1877,7 +1879,7 @@
         "Size": [
          0.0533,
          0.1,
-         0.0533
+         0.0376
         ],
         "Color": [
          0.6588,
@@ -4700,6 +4702,838 @@
       }
      },
      "name": "CleanACat_Cat_Sherbet_Dirty_Fluff03"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Sherbet_Dirty/55"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6661,
+           -0.5526
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.6739,
+         0.337,
+         0.6739
+        ],
+        "Color": [
+         0.9843,
+         0.9686,
+         0.9451
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           -0.8161,
+           0.2526
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Sherbet_Dirty/55",
+        "Follows": "Head"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.8183,
+           -0.5526
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.5,
+         0.275,
+         0.5
+        ],
+        "Color": [
+         0.9843,
+         0.9686,
+         0.9451
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.9487,
+           -0.5526
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.3261,
+         0.1957,
+         0.3261
+        ],
+        "Color": [
+         0.9843,
+         0.9686,
+         0.9451
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.038,
+           2.2585,
+           -0.5417
+          ],
+          "orientation": [
+           [
+            0.2747,
+            0.8389,
+            -0.4698
+           ],
+           [
+            0.0,
+            0.4886,
+            0.8725
+           ],
+           [
+            0.9615,
+            -0.2397,
+            0.1342
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0326,
+         0.0326,
+         0.162
+        ],
+        "Color": [
+         0.2431,
+         0.498,
+         0.3059
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2174,
+           1.9487,
+           -0.4765
+          ],
+          "orientation": [
+           [
+            0.9135,
+            0.4067,
+            0.0
+           ],
+           [
+            -0.4067,
+            0.9135,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1848,
+         0.4348,
+         0.0489
+        ],
+        "Color": [
+         0.8902,
+         0.7176,
+         0.4784
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2174,
+           1.9487,
+           -0.507
+          ],
+          "orientation": [
+           [
+            0.9135,
+            0.4067,
+            0.0
+           ],
+           [
+            -0.4067,
+            0.9135,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1196,
+         0.3261,
+         0.0217
+        ],
+        "Color": [
+         0.6902,
+         0.4824,
+         0.3098
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.163,
+           1.6987,
+           -0.835
+          ],
+          "orientation": [
+           [
+            0.7094,
+            -0.4967,
+            -0.5
+           ],
+           [
+            0.5736,
+            0.8192,
+            0.0
+           ],
+           [
+            0.4096,
+            -0.2868,
+            0.866
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.0435,
+         0.0543
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2026,
+           1.7204,
+           -0.7941
+          ],
+          "orientation": [
+           [
+            0.6275,
+            0.4394,
+            0.6428
+           ],
+           [
+            -0.5736,
+            0.8192,
+            0.0
+           ],
+           [
+            -0.5265,
+            -0.3687,
+            0.766
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.0435,
+         0.0543
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.163,
+           1.6987,
+           -0.2702
+          ],
+          "orientation": [
+           [
+            -0.7094,
+            0.4967,
+            0.5
+           ],
+           [
+            0.5736,
+            0.8192,
+            0.0
+           ],
+           [
+            -0.4096,
+            0.2868,
+            -0.866
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.0435,
+         0.0543
+        ],
+        "Color": [
+         0.9647,
+         0.8745,
+         0.6275
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2026,
+           1.7096,
+           -0.3111
+          ],
+          "orientation": [
+           [
+            -0.6275,
+            -0.4394,
+            -0.6428
+           ],
+           [
+            -0.5736,
+            0.8192,
+            0.0
+           ],
+           [
+            0.5265,
+            0.3687,
+            -0.766
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.0435,
+         0.0543
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2043,
+           1.8617,
+           -0.627
+          ],
+          "orientation": [
+           [
+            0.2802,
+            -0.1962,
+            -0.9397
+           ],
+           [
+            0.5736,
+            0.8192,
+            0.0
+           ],
+           [
+            0.7698,
+            -0.539,
+            0.342
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.0435,
+         0.0543
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2141,
+           1.8617,
+           -0.5149
+          ],
+          "orientation": [
+           [
+            -0.1422,
+            -0.0996,
+            0.9848
+           ],
+           [
+            -0.5736,
+            0.8192,
+            0.0
+           ],
+           [
+            -0.8067,
+            -0.5649,
+            -0.1736
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.0435,
+         0.0543
+        ],
+        "Color": [
+         0.5608,
+         0.8275,
+         0.9961
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Cat_Sherbet_Dirty/56"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Cat_Sherbet_Dirty_Cherry_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             2.1009,
+             -0.5526
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.2283,
+           0.2283,
+           0.2283
+          ],
+          "Color": [
+           1.0,
+           0.4196,
+           0.5059
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             0.0,
+             -0.0761,
+             0.0
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Cat_Sherbet_Dirty/56",
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           2.0248,
+           -0.5526
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Cat_Sherbet_Dirty_Cherry_Glow"
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         0.85,
+         -0.3
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop"
     }
    ],
    "properties": {
@@ -11200,6 +12034,922 @@
     }
    },
    "name": "CleanACat_Cat_Sherbet_Dirty_Fluff10"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Sherbet_Dirty/57"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.2675,
+         1.404,
+         0.1847
+        ],
+        "orientation": [
+         [
+          -0.3746,
+          -0.847,
+          -0.3771
+         ],
+         [
+          0.0,
+          -0.4067,
+          0.9135
+         ],
+         [
+          -0.9272,
+          0.3422,
+          0.1524
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.06,
+       0.3808,
+       0.3808
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.2715,
+         0.7345,
+         -1.2099
+        ],
+        "orientation": [
+         [
+          -0.3746,
+          0.0,
+          -0.9272
+         ],
+         [
+          -0.847,
+          -0.4067,
+          0.3422
+         ],
+         [
+          -0.3771,
+          0.9135,
+          0.1524
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Sherbet_Dirty/57",
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.95,
+         0.011
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3,
+       0.12,
+       0.16
+      ],
+      "Color": [
+       0.949,
+       0.5608,
+       0.6667
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.225,
+         1.115,
+         0.061
+        ],
+        "orientation": [
+         [
+          -0.7071,
+          -0.1925,
+          0.6804
+         ],
+         [
+          0.7071,
+          -0.1925,
+          0.6804
+         ],
+         [
+          0.0,
+          0.9623,
+          0.2722
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1,
+       0.05,
+       0.3674
+      ],
+      "Color": [
+       0.949,
+       0.5608,
+       0.6667
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.5555,
+         1.5423,
+         0.0684
+        ],
+        "orientation": [
+         [
+          -0.3746,
+          -0.847,
+          -0.3771
+         ],
+         [
+          0.0,
+          -0.4067,
+          0.9135
+         ],
+         [
+          -0.9272,
+          0.3422,
+          0.1524
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.3808,
+       0.3808
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4782,
+         1.3117,
+         0.0996
+        ],
+        "orientation": [
+         [
+          0.3323,
+          -0.8656,
+          0.3746
+         ],
+         [
+          0.9336,
+          0.3584,
+          0.0
+         ],
+         [
+          -0.1342,
+          0.3497,
+          0.9272
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.34,
+       0.34,
+       0.07
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.225,
+         1.115,
+         0.061
+        ],
+        "orientation": [
+         [
+          -0.7071,
+          0.1925,
+          -0.6804
+         ],
+         [
+          -0.7071,
+          -0.1925,
+          0.6804
+         ],
+         [
+          0.0,
+          0.9623,
+          0.2722
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.1,
+       0.05,
+       0.3674
+      ],
+      "Color": [
+       0.949,
+       0.5608,
+       0.6667
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.2675,
+         1.404,
+         0.1847
+        ],
+        "orientation": [
+         [
+          0.3746,
+          -0.847,
+          0.3771
+         ],
+         [
+          0.0,
+          0.4067,
+          0.9135
+         ],
+         [
+          -0.9272,
+          -0.3422,
+          0.1524
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.3808,
+       0.3808
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.5555,
+         1.5423,
+         0.0684
+        ],
+        "orientation": [
+         [
+          0.3746,
+          -0.847,
+          0.3771
+         ],
+         [
+          0.0,
+          0.4067,
+          0.9135
+         ],
+         [
+          -0.9272,
+          -0.3422,
+          0.1524
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.06,
+       0.3808,
+       0.3808
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Sherbet_Dirty_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.4782,
+         1.3117,
+         0.0996
+        ],
+        "orientation": [
+         [
+          0.8656,
+          -0.3323,
+          -0.3746
+         ],
+         [
+          0.3584,
+          0.9336,
+          0.0
+         ],
+         [
+          0.3497,
+          -0.1342,
+          0.9272
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.34,
+       0.34,
+       0.07
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Sherbet_Dirty/58"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3526,
+           1.3906,
+           0.1018
+          ],
+          "orientation": [
+           [
+            -0.3746,
+            -0.847,
+            -0.3771
+           ],
+           [
+            0.0,
+            -0.4067,
+            0.9135
+           ],
+           [
+            -0.9272,
+            0.3422,
+            0.1524
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.04,
+         0.168,
+         0.168
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.2163,
+           0.3411,
+           -0.0458
+          ],
+          "orientation": [
+           [
+            -0.3746,
+            0.0,
+            -0.9272
+           ],
+           [
+            -0.847,
+            -0.4067,
+            0.3422
+           ],
+           [
+            -0.3771,
+            0.9135,
+            0.1524
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Sherbet_Dirty/58",
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4797,
+           1.4516,
+           0.0505
+          ],
+          "orientation": [
+           [
+            -0.3746,
+            -0.847,
+            -0.3771
+           ],
+           [
+            0.0,
+            -0.4067,
+            0.9135
+           ],
+           [
+            -0.9272,
+            0.3422,
+            0.1524
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.03,
+         0.168,
+         0.168
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.4456,
+           1.3499,
+           0.0642
+          ],
+          "orientation": [
+           [
+            0.3323,
+            -0.8656,
+            0.3746
+           ],
+           [
+            0.9336,
+            0.3584,
+            0.0
+           ],
+           [
+            -0.1342,
+            0.3497,
+            0.9272
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.15,
+         0.15,
+         0.05
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3526,
+           1.3906,
+           0.1018
+          ],
+          "orientation": [
+           [
+            0.3746,
+            -0.847,
+            0.3771
+           ],
+           [
+            0.0,
+            0.4067,
+            0.9135
+           ],
+           [
+            -0.9272,
+            -0.3422,
+            0.1524
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.03,
+         0.168,
+         0.168
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4797,
+           1.4516,
+           0.0505
+          ],
+          "orientation": [
+           [
+            0.3746,
+            -0.847,
+            0.3771
+           ],
+           [
+            0.0,
+            0.4067,
+            0.9135
+           ],
+           [
+            -0.9272,
+            -0.3422,
+            0.1524
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.04,
+         0.168,
+         0.168
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Sherbet_Dirty_Wings_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.4456,
+           1.3499,
+           0.0642
+          ],
+          "orientation": [
+           [
+            0.8656,
+            -0.3323,
+            -0.3746
+           ],
+           [
+            0.3584,
+            0.9336,
+            0.0
+           ],
+           [
+            0.3497,
+            -0.1342,
+            0.9272
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.15,
+         0.15,
+         0.05
+        ],
+        "Color": [
+         1.0,
+         0.4196,
+         0.5059
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.21,
+         0.011
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Sherbet_Dirty_Wings_Glow"
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Sherbet_Dirty_Prop2"
   }
  ],
  "properties": {

@@ -34,7 +34,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `tools.py` | hand tools: the three sponges (#13), the brush (#14) with its fluffy and golden upgrades and the rain and golden showers (#142), and drafts for the other wash steps (#123: shower, comb, tweezers, towel, nail clipper, hand dryer, shampoo), each with a `Handle` part |
 | `plot.py` | the spa plot (#15): the real build on the graybox layout, every gameplay spot an Attachment (`SPOTS`) |
 | `street.py` | the street (#15): ground, pavements, road, houses, hedges, trees and edge barriers round six plots, with `PlotSlot1` to `PlotSlot6` |
-| `spa_props.py` | the carrier in its four looks (the fourth, `CarrierRoyal`, is the special customers', #476), stray box, chance board and queue mat (#16); the window cushion, tip jar and spa sign (#17); the build pad for a locked station (#18) |
+| `spa_props.py` | the carrier in its four looks (the fourth, `CarrierRoyal`, is the special customers', #476, with no roof since #486), stray box, chance board and queue mat (#16); the window cushion, tip jar and spa sign (#17); the build pad for a locked station (#18) |
 | `build_props.py` | the builder kitten (#20): the kitten in its own coat with `HatSlot` and `HammerGrip`, the hard hat, the hammer pivoted at its grip and the toolbox with `CountdownAnchor` |
 | `rewards.py` | reward props (#125): the paw coin, the star and the coin stack, pivoted at their middles for spinning and popping |
 | `burrs.py` | things stuck in the fur (#126): the burr, the leaf and the forked twig, pivoted at the underside with up out of the fur |
@@ -50,7 +50,7 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 | `store_compose.py` | store art (#24), plain Python with Pillow: backdrops, the game's name as the only words, the 512 icon and 1280 or 1920 thumbnails, and the draft sheet with 150 and 48 px checks; `compose_spa` makes the picked look (stacked title, bubble backdrop; title font Lilita One, OFL, via `TITLE_FONT`) |
 | `customers.py` | the customers' accessories for the R15 rig and the four looks (`LOOKS`, #16) |
 | `townsfolk.py` | the customers as our own townsfolk with joints for the walk in (`LOOKS`, #446) and the special customers who bring the special cats (`SPECIAL_LOOKS`, #476); `build_figure` and the uniform switches (`apron`, `short_sleeves`, `headband`) also build the staff |
-| `props.py` | the three bows (#14) with their `BowSlot` attachment, and the hook for props built into a cat (the builder's hat, #20) |
+| `props.py` | the three bows (#14) with their `BowSlot` attachment, the hook for props built into a cat (the builder's hat, #20) and the pieces built into the special cats (#486): a head piece, a back piece, lit parts and tail pieces, drawn the asset library's way (`Pen`, `Ctx`, `PROPS`, `PROPS2`, `PIECES`) |
 | `scenes.py` | scene pictures for review, with a stand-in avatar for scale (`scenes.py tub <out.png>`, `groom`, `groom-close`, `plot <folder>` for the five plot views, `plot-built <folder>` for the room with every station on its spot, `street <folder>`, or `customers`, `later` for the #23 stations, `mud <out.png>` and `foam <out.png>` for the #107 close-ups); exports nothing |
 
 ## Adding a model
