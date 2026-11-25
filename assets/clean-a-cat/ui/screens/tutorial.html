@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="states" content="trail,tip,dim,suds">
+<meta name="states" content="trail,line,tip,dim,suds">
 <title>Tutorial pointers</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
 <link rel="stylesheet" href="kit.css">
@@ -13,6 +13,11 @@
 
    trail  Step 1: green arrows flow along the floor to the next customer, and a gold arrow bobs over them.
           Both are things in the world (a floor beam and a billboard), so they are drawn on the world picture.
+   line   Derek, 2026-11-25: "use the green or yellow transparent arrow lines starting from character to destination for
+          tutorial stuff with an arrow at the end pointing at it". One see-through green band on the floor from the
+          player's feet to the spot, a soft light running along it toward the spot, and one big arrowhead at its end
+          that points at the thing to use. No ring and no floating arrow: the line is the whole pointer. Switch
+          trailLine (with it off, the chevron trail above stays).
    tip    The step pill at the top: a gold count chip ("4 / 8") and one short instruction on a cream pill (Derek liked
           this in Pet Store Tycoon, 2026-11-24: "the tutorial steps are very well done. feels easy to follow"). It takes
           the goal line's place, so there is still only one thing at the top centre. The same gold arrow bobs over the
@@ -104,6 +109,9 @@ body.short .sbub .btn { min-width: 100px; height: 50px; font-size: 21px; }
 <body>
 <div id="screen"><div id="stage">
   <!-- trail: outside the spa, customers wait by the door -->
+  <div class="world" data-only="line" style="background-image:url(img/world-street.jpg)">
+    <svg class="ground" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g id="gline"></g></svg>
+  </div>
   <div class="world" data-only="trail" style="background-image:url(img/world-street.jpg)">
     <svg class="ground" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <g id="trail"></g>
@@ -118,14 +126,14 @@ body.short .sbub .btn { min-width: 100px; height: 50px; font-size: 21px; }
     </svg>
   </div>
 
-  <div class="top goal steppill" data-only="trail"><span class="n">6 / 8</span><span class="w">Meet the customer</span></div>
+  <div class="top goal steppill" data-only="trail line"><span class="n">6 / 8</span><span class="w">Meet the customer</span></div>
   <div class="top goal steppill" data-only="tip"><span class="n">4 / 8</span><span class="w">Scrub the mud</span></div>
   <div class="top goal steppill" data-only="dim"><span class="n">8 / 8</span><span class="w">Open your Index</span></div>
 
   <div class="top money">
-    <div class="coins outlined"><i data-ic="coin"></i><span class="num" data-only="trail tip">0</span><span class="num" data-only="dim suds">58</span></div>
+    <div class="coins outlined"><i data-ic="coin"></i><span class="num" data-only="trail line tip">0</span><span class="num" data-only="dim suds">58</span></div>
     <div class="lvl"><span class="lv">Lv 1</span>
-      <div class="bar xpb" data-only="trail tip"><i style="width:0"></i></div>
+      <div class="bar xpb" data-only="trail line tip"><i style="width:0"></i></div>
       <div class="bar xpb" data-only="dim suds"><i style="width:25%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
   </div>
 
@@ -208,6 +216,49 @@ body.short .sbub .btn { min-width: 100px; height: 50px; font-size: 21px; }
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const t0 = performance.now();
   (function tick(now) { draw(still ? GAP / 2 : (((now - t0) / 1000) * 0.22 + GAP / 2) % GAP); if (!still) requestAnimationFrame(tick); })(t0);
+})();
+</script>
+<script>
+// The guide line (state line): one see-through band laid out on the floor and drawn in perspective, ending in one
+// arrowhead whose tip touches the spot. A lighter dash runs along it toward the spot.
+(function () {
+  const g = document.getElementById('gline');
+  if (!g) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const HY = 228, CX = 480, C = 800;
+  const toGround = (x, y) => { const k = y - HY; return [(x - CX) / k, C / k]; };
+  const toScreen = (X, D) => { const k = C / D; return [CX + X * k, HY + k]; };
+  const A = toGround(425, 548), B = toGround(600, 545), E = toGround(712, 440);
+  const pts = [];
+  for (let i = 0; i <= 120; i++) { const t = i / 120, u = 1 - t;
+    pts.push([u*u*A[0] + 2*u*t*B[0] + t*t*E[0], u*u*A[1] + 2*u*t*B[1] + t*t*E[1]]); }
+  const len = [0]; for (let i = 1; i < pts.length; i++) len.push(len[i-1] + Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]));
+  const L = len[len.length - 1];
+  const HALF = 0.1, HEAD_L = 0.32, HEAD_W = 0.24, START = 0.02;   // floor units
+  const bodyEnd = L - HEAD_L;
+  const left = [], right = [], mid = [];
+  let tEnd = [1, 0];
+  for (let i = 0; i < pts.length; i++) {
+    if (len[i] < START || len[i] > bodyEnd) continue;
+    const j = Math.min(i + 1, pts.length - 1), k = Math.max(i - 1, 0);
+    let tx = pts[j][0] - pts[k][0], ty = pts[j][1] - pts[k][1]; const m = Math.hypot(tx, ty) || 1; tx /= m; ty /= m; tEnd = [tx, ty];
+    const nx = -ty, ny = tx, p = pts[i];
+    left.push(toScreen(p[0] + nx*HALF, p[1] + ny*HALF)); right.push(toScreen(p[0] - nx*HALF, p[1] - ny*HALF)); mid.push(toScreen(p[0], p[1]));
+  }
+  const last = pts.filter((_, i) => len[i] <= bodyEnd).pop();
+  const nx = -tEnd[1], ny = tEnd[0];
+  const tip = toScreen(E[0], E[1]);
+  const hl = toScreen(last[0] + nx*HEAD_W, last[1] + ny*HEAD_W), hr = toScreen(last[0] - nx*HEAD_W, last[1] - ny*HEAD_W);
+  const bl = left[left.length-1], br = right[right.length-1];
+  const shape = [...left, bl, hl, tip, hr, br, ...right.slice().reverse()];
+  const ptsAttr = a => a.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ');
+  function el(tag, attrs) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); g.appendChild(e); return e; }
+  el('polygon', { points: ptsAttr(shape), fill: 'none', stroke: 'rgba(214,255,217,.2)', 'stroke-width': 10, 'stroke-linejoin': 'round' });
+  el('polygon', { points: ptsAttr(shape), fill: 'rgba(99,232,127,.4)', stroke: 'rgba(28,138,63,.6)', 'stroke-width': 3, 'stroke-linejoin': 'round' });
+  const run = el('polyline', { points: ptsAttr(mid), fill: 'none', stroke: 'rgba(255,255,255,.75)', 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-dasharray': '26 90' });
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const t0 = performance.now();
+  (function tick(now) { run.setAttribute('stroke-dashoffset', still ? 0 : (-(now - t0) / 1000 * 120) % 116); if (!still) requestAnimationFrame(tick); })(t0);
 })();
 </script>
 </body>
