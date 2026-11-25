@@ -51,11 +51,15 @@ WashCamera.SHOT = table.freeze({ ahead = 6.5, up = 5, lookUp = 1.2 })
 -- `fov` (vertical degrees; the player's camera is 70). The narrower view keeps him big without the camera inside the
 -- tub's rim, and flattens the room behind him.
 WashCamera.SCENE = table.freeze({
-	height = 3,
+	-- Sync-Agent on 542efbc (iPhone 12 frame): at height 3 the cat filled 0.645 against the 0.55 aim, so on screen he
+	-- reads as 3.5 studs; the step pips sat over his ears and the Pawdicure's station hid his claws. 3.5 sets the fill
+	-- right (the camera about 17 percent further out), a higher look point drops him under the pips, and a steeper
+	-- pitch sees over a station's rim to his paws.
+	height = 3.5,
 	fill = 0.55,
 	fov = 50,
-	pitch = 30,
-	lookUp = 2.6,
+	pitch = 38,
+	lookUp = 2.9,
 	blur = 0.5, -- the depth of field's far intensity, everything past the tub
 	focusRadius = 3, -- studs around the cat kept sharp
 })
