@@ -109,7 +109,6 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.maxLevel` | 5 | | 2026-11-25 |
 | `worker.modes` | about to leave, rarest, dirtiest, first in line (default first in line) | | 2026-11-25 |
 | `worker.nameLength` | 3 to 16 letters, filtered | | 2026-11-25 |
-
 | `worker.count` | 3 at most (Jo, Sam and Lou) | | 2026-11-25 |
 | `worker.petCap` | a worker's pet boosts add together and are capped at +30% | Two pets with the second slot pass, star ups included, never pass the cap | 2026-11-25 |
 | `worker.doubleCoins` | 2x Coins and the Golden Sponge apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
