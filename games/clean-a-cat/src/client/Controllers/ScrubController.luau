@@ -88,6 +88,10 @@ local GAMEPAD_BUTTON = Enum.KeyCode.ButtonR2 -- not ButtonA, which jumps
 local BUTTON_COLOR = Color3.fromRGB(205, 205, 210)
 local SUDS_COLOR = Color3.fromRGB(250, 252, 255)
 local SUDS_POP = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- a puff shrinks as it fades
+-- Model-Agent's three foam shapes (#433), taken in turn round the cat at ScaleTo(0.36 * the cat's width); each has
+-- its pivot at the middle of its back and its front at -Z, so it faces out from the cat
+local FOAM_ASSETS =
+	{ "CleanACat_Prop_FoamPuff", "CleanACat_Prop_FoamPuff2", "CleanACat_Prop_FoamPuff3" }
 local SNIP = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out) -- a claw shortens as it fades
 local RING_COLOR = Color3.fromHex("FFC94D") -- the outline on the paw to press next
 -- The HUD's name for each later step (stageChanged): a step bar entry for each comes with the HUD's part of #267.
@@ -149,7 +153,7 @@ type Visit = {
 	later: { string }, -- later steps still to come (LaterStepRules.steps), front first
 	plan: { string }, -- all of this cat's later steps, as the HUD names them
 	step: string?, -- the later step under way: "smell" (the Bubble Bath) or "claws" (the Pawdicure)
-	suds: { BasePart }, -- the bath's puffs (PH_Suds), cleared in order
+	suds: { Model }, -- the bath's foam puffs (Model-Agent's CleanACat_Prop_FoamPuff, or PH_Suds balls), cleared in order
 	swirl: number, -- studs swirled on the cat in this bath
 	away: boolean, -- the cat sits at a later step's station, not in the tub
 	hold: Paw?, -- the paw under the press in the Pawdicure, held since holdSince
@@ -873,7 +877,45 @@ local function armLater(v: Visit, cat: Cat)
 	ScrubController.planChanged:Fire(table.clone(plan))
 end
 
--- The Bubble Bath's puffs: WashDraft.SUDS placeholder balls round the cat, never in the way of a ray.
+-- One foam puff: Model-Agent's shape `index` (taken in turn), or a placeholder ball in a Model of its own when the
+-- shapes are missing. Never in the way of a ray, and anchored like the cat's own parts.
+local function foamPuff(index: number, reach: number): Model
+	local assets = ReplicatedStorage:FindFirstChild("Assets") -- never waits: this runs inside a touch
+	local name = FOAM_ASSETS[(index - 1) % #FOAM_ASSETS + 1]
+	local asset = if assets then assets:FindFirstChild(name) else nil
+	local puff: Model
+	if asset and asset:IsA("Model") then
+		puff = (asset :: Model):Clone() :: Model
+		puff:ScaleTo(0.36 * reach)
+	else
+		puff = Instance.new("Model")
+		local ball = makePart("Ball", Vector3.one * reach * 0.32, SUDS_COLOR, CFrame.identity)
+		ball.Shape = Enum.PartType.Ball
+		ball.Material = Enum.Material.SmoothPlastic
+		ball.Transparency = 0.1
+		ball.Parent = puff
+		puff.PrimaryPart = ball
+	end
+	puff.Name = `PH_Suds{index}`
+	for _, part in partsOf(puff) do
+		part.Anchored = true
+		part.CanCollide = false
+		part.CanQuery = false
+		part.CanTouch = false
+		part.CastShadow = false
+	end
+	return puff
+end
+
+-- How far out from the cat's middle a puff sits in local direction `dir` (flat): 0.8 of the way to his box's face
+-- that way, so the puffs hug the cat about as the balls did (Model-Agent's fit on a walking cat at 1.5).
+local function foamReach(size: Vector3, dir: Vector3): number
+	local x = if math.abs(dir.X) > 1e-3 then size.X / 2 / math.abs(dir.X) else math.huge
+	local z = if math.abs(dir.Z) > 1e-3 then size.Z / 2 / math.abs(dir.Z) else math.huge
+	return 0.8 * math.min(x, z)
+end
+
+-- The Bubble Bath's puffs: WashDraft.SUDS foam puffs round the cat, facing out.
 local function makeSuds(v: Visit, cat: Cat)
 	local size = cat.model:GetExtentsSize()
 	local pivot = cat.model:GetPivot()
@@ -881,16 +923,33 @@ local function makeSuds(v: Visit, cat: Cat)
 	for index = 1, WashDraft.SUDS do
 		local angle = (index - 1) / WashDraft.SUDS * 2 * math.pi
 		local high = size.Y * (if index % 2 == 0 then 0.55 else 0.35)
-		local at = pivot * CFrame.Angles(0, angle, 0) * CFrame.new(0, high, -reach * 0.42)
-		local puff = makePart(`PH_Suds{index}`, Vector3.one * reach * 0.32, SUDS_COLOR, at)
-		puff.Shape = Enum.PartType.Ball
-		puff.Material = Enum.Material.SmoothPlastic
-		puff.Transparency = 0.1
-		puff.CanQuery = false
-		puff.CanTouch = false
+		local turn = CFrame.Angles(0, angle, 0)
+		local out = foamReach(size, turn.LookVector)
+		local puff = foamPuff(index, reach)
+		puff:PivotTo(pivot * turn * CFrame.new(0, high, -out))
 		puff.Parent = cat.model
 		table.insert(v.suds, puff)
 	end
+end
+
+-- A puff pops: it shrinks to 30% as it fades, then goes.
+local function popPuff(puff: Model)
+	local start = puff:GetScale()
+	local grow = Instance.new("NumberValue")
+	grow.Value = 1
+	grow.Changed:Connect(function(value: number)
+		if puff.Parent then
+			puff:ScaleTo(start * math.max(value, 0.05))
+		end
+	end)
+	for _, part in partsOf(puff) do
+		TweenService:Create(part, SUDS_POP, { Transparency = 1 }):Play()
+	end
+	local shrink = TweenService:Create(grow, SUDS_POP, { Value = 0.3 })
+	shrink.Completed:Connect(function()
+		grow:Destroy()
+	end)
+	shrink:Play()
 end
 
 -- Shows the bows once the later steps are done. The kitten skips them (his collar is his style moment), so the
@@ -948,8 +1007,9 @@ local function swirlAt(v: Visit, cat: Cat, travel: number)
 	local gone = LaterStepRules.sudsGone(v.swirl, count)
 	for index = before + 1, gone do
 		local puff = v.suds[index]
-		TweenService:Create(puff, SUDS_POP, { Transparency = 1, Size = puff.Size * 0.3 }):Play()
-		Moments.SudsPopped:Fire(cat.model, puff.Position, count - index)
+		local at = puff:GetBoundingBox().Position
+		popPuff(puff)
+		Moments.SudsPopped:Fire(cat.model, at, count - index)
 	end
 	if gone >= count then
 		Moments.BathDone:Fire(cat.model)
