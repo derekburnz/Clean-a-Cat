@@ -868,8 +868,8 @@ local function tickHearts()
 		noLeaveWas[player] = noLeave
 		if minutesEnded then
 			-- the cats on the sliver get a grumpy bar's worth back, and the cards learn their bars empty now
-			for _, order in orders do
-				order.since = HeartRules.graceSince(order.since, order.lasts, now)
+			for place, order in orders do
+				order.since = HeartRules.graceSince(order.since, order.lasts, now, place)
 			end
 			sendQueue(player)
 		end

@@ -72,14 +72,19 @@ function HeartRules.shown(since: number, lasts: number, now: number, played: num
 	return left
 end
 
+-- Extra seconds of grace per place in the line when the first minutes end (tuning heart.releaseStagger), so the cats
+-- held on the sliver leave one at a time.
+HeartRules.RELEASE_STAGGER = 15
+
 -- The start of a bar once the first minutes end (Review-QA on #543): a bar that sat at the sliver, or anywhere under
--- GRUMPY_AT, gets GRUMPY_AT of itself back, so the cats that waited on the sliver do not all leave the moment the
--- minutes end. Any other bar keeps its start.
-function HeartRules.graceSince(since: number, lasts: number, now: number): number
+-- GRUMPY_AT, gets GRUMPY_AT of itself back, plus RELEASE_STAGGER seconds for each place after the first (`place`,
+-- 1 at the front), so the cats that waited on the sliver do not all leave together. Any other bar keeps its start.
+function HeartRules.graceSince(since: number, lasts: number, now: number, place: number?): number
 	if HeartRules.left(since, lasts, now) >= HeartRules.GRUMPY_AT then
 		return since
 	end
-	return now - lasts * (1 - HeartRules.GRUMPY_AT)
+	local stagger = HeartRules.RELEASE_STAGGER * math.max((place or 1) - 1, 0)
+	return now - lasts * (1 - HeartRules.GRUMPY_AT) + stagger
 end
 
 -- True once the bar is empty and the save has played NO_LEAVE_BEFORE: the customer leaves.
@@ -123,9 +128,16 @@ function HeartRules.fill(heart: Heart, now: number): number
 	return if heart.stops then math.max(left, HeartRules.SLIVER) else left
 end
 
+-- No hand step takes less than this: a wash reported faster than MIN_STEP_SECONDS a step is not a hand wash, and
+-- grades 1 (Review-QA on #543), so a client that rushes its reports gains nothing.
+HeartRules.MIN_STEP_SECONDS = 2
+
 -- The wash grade, 1 to 3 stars, for a wash of `steps` hand steps that took `seconds` of hand work.
 function HeartRules.grade(seconds: number, steps: number): number
 	local each = seconds / math.max(steps, 1)
+	if each < HeartRules.MIN_STEP_SECONDS then
+		return 1
+	end
 	for index, most in HeartRules.GRADE_STEP_SECONDS do
 		if each <= most then
 			return 4 - index

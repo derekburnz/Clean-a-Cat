@@ -47,6 +47,11 @@ return function()
 				true
 			)
 			expect(HeartRules.graceSince(100, 150, 120)).to.equal(100) -- a fuller bar keeps its start
+			-- each place after the first waits RELEASE_STAGGER seconds longer
+			local second = HeartRules.graceSince(0, 150, 400, 2)
+			local third = HeartRules.graceSince(0, 150, 400, 3)
+			expect(second - since).to.equal(HeartRules.RELEASE_STAGGER)
+			expect(third - since).to.equal(2 * HeartRules.RELEASE_STAGGER)
 		end)
 
 		it("gives the early bonus only in the first tenth of the bar", function()
@@ -60,6 +65,7 @@ return function()
 			expect(HeartRules.grade(40, 2)).to.equal(2) -- 20 s a step or less
 			expect(HeartRules.grade(41, 2)).to.equal(1)
 			expect(HeartRules.grade(108, 9)).to.equal(3)
+			expect(HeartRules.grade(3, 2)).to.equal(1) -- under 2 s a step is not a hand wash
 		end)
 
 		it("pays base x stars x early x dirt, one line each, adding up", function()
