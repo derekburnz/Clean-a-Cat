@@ -96,6 +96,11 @@ local SNIP = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out
 local RING_COLOR = Color3.fromHex("FFC94D") -- the outline on the paw to press next
 -- The HUD's name for each later step (stageChanged): a step bar entry for each comes with the HUD's part of #267.
 local LATER_STAGE: { [string]: string } = { smell = "bath", claws = "claws" }
+-- Model-Agent's bow buttons (#441): CleanACat_Prop_BowButton plus the bow id without "Bow" (Pink, Mint, Sky), 1.1
+-- studs across with the pivot at the middle and the face at -Z. The slab stays as the invisible tap target at their
+-- size, with the model inside it as its Look; a missing model leaves the coloured slab.
+local BOW_LOOK =
+	{ prefix = "CleanACat_Prop_BowButton", hit = Vector3.new(1.1, 1.1, 0.4), name = "Look" }
 local BOW_COLORS: { [string]: Color3 } = {
 	BowPink = Color3.fromRGB(255, 150, 190),
 	BowMint = Color3.fromRGB(150, 225, 190),
@@ -303,8 +308,28 @@ local function makePart(name: string, size: Vector3, color: Color3, cframe: CFra
 end
 
 local function show(part: BasePart, visible: boolean)
-	part.Transparency = if visible then 0 else 1
+	local look = part:FindFirstChild(BOW_LOOK.name)
+	if look then
+		-- a bow button with its model: the slab only takes taps, the model shows (by its own look, kept as made)
+		part.Transparency = 1
+		for _, piece in look:GetDescendants() do
+			if piece:IsA("BasePart") then
+				(piece :: BasePart).LocalTransparencyModifier = if visible then 0 else 1
+			end
+		end
+	else
+		part.Transparency = if visible then 0 else 1
+	end
 	part.CanQuery = visible
+end
+
+-- Puts a bow button at `at`, its model with it.
+local function placeBow(button: BasePart, at: CFrame)
+	button.CFrame = at
+	local look = button:FindFirstChild(BOW_LOOK.name)
+	if look and look:IsA("Model") then
+		(look :: Model):PivotTo(at)
+	end
 end
 
 local function partsOf(model: Instance): { BasePart }
@@ -390,14 +415,39 @@ local function buildButtons(parent: Instance): ({ BasePart }, BasePart)
 	local buttons = Instance.new("Model")
 	buttons.Name = "PH_Buttons"
 	local bowButtons: { BasePart } = {}
+	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
 	for index, bowId in SpaRules.BOWS do
+		local found = if assets
+			then assets:FindFirstChild(BOW_LOOK.prefix .. (string.gsub(bowId, "^Bow", "")))
+			else nil
+		local look: Model? = nil
+		if found and found:IsA("Model") then
+			local copy = (found :: Model):Clone() :: Model
+			copy.Name = BOW_LOOK.name
+			for _, piece in copy:GetDescendants() do
+				if piece:IsA("BasePart") then
+					local part = piece :: BasePart
+					part.Anchored = true
+					part.CanCollide = false
+					part.CanQuery = false -- the slab takes the tap, so the button's BowId is read off it
+					part.CanTouch = false
+				elseif piece:IsA("Script") or piece:IsA("LocalScript") then
+					piece:Destroy()
+				end
+			end
+			look = copy
+		end
 		local button = makePart(
 			bowId,
-			Vector3.new(1.6, 1.6, 0.4),
+			if look then BOW_LOOK.hit else Vector3.new(1.6, 1.6, 0.4),
 			BOW_COLORS[bowId] or BUTTON_COLOR,
 			tub * bowSpot(index)
 		)
 		button:SetAttribute("BowId", bowId)
+		if look then
+			look.Parent = button
+			placeBow(button, tub * bowSpot(index))
+		end
 		show(button, false)
 		button.Parent = buttons
 		table.insert(bowButtons, button)
@@ -963,7 +1013,7 @@ local function showBows(v: Visit, cat: Cat)
 		end
 		local tub = SpaLayout.tubSpot()
 		for index, button in v.bowButtons do
-			button.CFrame = tub * bowSpot(index) -- the switch is read as they show
+			placeBow(button, tub * bowSpot(index)) -- the switch is read as they show
 			show(button, true)
 		end
 	end
