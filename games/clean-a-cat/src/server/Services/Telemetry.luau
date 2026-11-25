@@ -3,7 +3,9 @@
 -- nothing from a client or from Studio, and a client could send anything.
 --
 --   Telemetry.funnelStep(player, "onboarding_v1", 2, "first_win")   once per save (remembered in save.funnel)
---   Telemetry.onboarding(player, "first_scrub")   a step of TelemetryRules.ONBOARDING_STEPS, with its time_to_step
+--   Telemetry.onboarding(player, "first_scrub")   a step of TelemetryRules.ONBOARDING_STEPS, with its milestone_time
+--   Telemetry.playtime(player, session, 3, first)  a mark of TelemetryRules.PLAYTIME_MARKS, once per session
+--   Telemetry.startSession(player, save) / endSession(player)  FunnelService: where this session's play time starts
 --   Telemetry.event(player, "shop_opened", 1, { "phone", "tier_2" })  a custom event, 3 fields at most
 --   Telemetry.economy(player, "coins", "source", 50, balance, "Gameplay", "quest_reward")
 --
@@ -25,6 +27,27 @@ local Telemetry = {}
 
 local LOG_SIZE = 200
 Telemetry.recent = {} :: { string }
+
+-- This session's start: the save's play time when it loaded and the os.time() then. The save's own playSeconds
+-- moves on each autosave, so it is read once, at load.
+local sessions: { [Player]: { play: number, at: number } } = {}
+
+function Telemetry.startSession(player: Player, save: { playSeconds: number })
+	sessions[player] = { play = save.playSeconds, at = os.time() }
+end
+
+function Telemetry.endSession(player: Player)
+	sessions[player] = nil
+end
+
+-- Seconds this save has been played, this session included; nil before its save loaded.
+local function playedSeconds(player: Player): number?
+	local session = sessions[player]
+	if session == nil then
+		return nil
+	end
+	return session.play + math.max(0, os.time() - session.at)
+end
 
 local function remember(line: string)
 	if not RunService:IsStudio() then
@@ -83,7 +106,7 @@ function Telemetry.funnelStep(
 end
 
 -- A step of the first session funnel (TelemetryRules.ONBOARDING_STEPS), once per save, behind the switch
--- onboardingFunnel. The first time, a time_to_step event follows with the seconds since the first join.
+-- onboardingFunnel. The first time, a milestone_time event follows with the seconds played to reach it.
 function Telemetry.onboarding(player: Player, stepName: string): boolean
 	local step = TelemetryRules.stepNumber(stepName)
 	if step == nil then
@@ -100,16 +123,54 @@ function Telemetry.onboarding(player: Player, stepName: string): boolean
 	if not Telemetry.funnelStep(player, TelemetryRules.ONBOARDING, step, stepName) then
 		return false
 	end
-	local save = DataService.get(player)
-	if save then
-		Telemetry.event(
-			player,
-			"time_to_step",
-			math.max(0, os.time() - save.createdAt),
-			{ stepName }
-		)
+	-- The seconds of play it took to get here, every session counted (the first session's steps: since its load).
+	local played = playedSeconds(player)
+	if played then
+		Telemetry.event(player, "milestone_time", played, { stepName })
 	end
 	return true
+end
+
+-- A mark of the play time funnel (TelemetryRules.PLAYTIME_MARKS), behind onboardingFunnel. `session` names this
+-- session (FunnelService keeps which marks it logged, so each logs once per session). The one field says whether
+-- this is the save's first session. True when it was sent.
+function Telemetry.playtime(
+	player: Player,
+	session: string,
+	step: number,
+	firstSession: boolean
+): boolean
+	local mark = TelemetryRules.PLAYTIME_MARKS[step]
+	if mark == nil or not LiveFlags.isOn(FUNNEL_FLAG) then
+		return false
+	end
+	local custom =
+		TelemetryRules.fields({ if firstSession then "first_session" else "later_session" })
+	remember(`funnel {TelemetryRules.PLAYTIME} {step} {mark.name}`)
+	send(`funnel {TelemetryRules.PLAYTIME}`, function()
+		AnalyticsService:LogFunnelStepEvent(
+			player,
+			TelemetryRules.PLAYTIME,
+			session,
+			step,
+			mark.name,
+			custom
+		)
+	end)
+	return true
+end
+
+-- A side event the client reported (TelemetryRules.CLIENT_EVENTS), once per save for each name and detail, behind
+-- onboardingFunnel. Value: the seconds played so far.
+function Telemetry.clientEvent(player: Player, name: string, detail: string)
+	if not LiveFlags.isOn(FUNNEL_FLAG) or not TelemetryRules.clientEvent(name, detail) then
+		return
+	end
+	local save = DataService.get(player)
+	if save == nil or not TelemetryRules.markOnce(save.funnel, `{name}:{detail}`) then
+		return
+	end
+	Telemetry.event(player, name, playedSeconds(player) or 0, { detail })
 end
 
 -- returned_day_2, once per save: the player is back on the day after their first join. The one field says

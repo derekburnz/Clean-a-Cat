@@ -35,7 +35,9 @@ Remotes.ClientToServer = {
 	-- Builds (BuildService, behind builds).
 	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board, slot free, order, coins
 	-- Funnel (FunnelService, behind onboardingFunnel).
-	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS)  1 a second; logged once per save, nothing else changes
+	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
+	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side
+	-- events only in the save's first session; nothing else changes
 	-- Build notification (NotifyService, behind longBuildOffer).
 	"ReportOptIn", -- (result: one of NotifyRules.RESULTS)  1 a second; logged as notify_opt_in, nothing else changes
 	-- Suds's help bubble (BubbleService, behind sudsBubble).

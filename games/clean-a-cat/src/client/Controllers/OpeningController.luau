@@ -58,6 +58,7 @@ local POTHOLE_NAME = OpeningScene.BUMP_NAME
 local POTHOLE_FADE = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 local TIP_PICK = { step = 1, total = 3, say = "Pick him up" }
 local TIP_WASH = { step = 2, total = 3, say = "Wash him" }
+local HINT_FOLLOW_SECONDS = 10 -- TelemetryRules.HINT_FOLLOW_SECONDS: hint_followed_10s
 
 local OpeningController = {}
 
@@ -71,6 +72,7 @@ local placer: BasePart? = nil -- the tub's prompt while he is carried
 local placing = false -- he is being set down: his hop plays while the server hands him out
 local scrub: any = nil
 local walking = false -- the player is walking up to the box to lift him
+local hintShownAt: { [string]: number } = {} -- the opening's tips showing, by their funnel name ("pick", "wash")
 
 local function boxState(): unknown
 	return player:GetAttribute(SudsRules.BOX_ATTRIBUTE)
@@ -95,6 +97,20 @@ local function enterWash()
 	end
 	holdControls(true)
 	WashView.set("opening", true)
+end
+
+-- The funnel's hint_shown and hint_followed_10s (FunnelService logs each once per save, first session only).
+local function hintShown(name: string)
+	hintShownAt[name] = os.clock()
+	Remotes.event("ReportStep"):FireServer("hint_shown", name)
+end
+
+local function hintFollowed(name: string)
+	local shownAt = hintShownAt[name]
+	hintShownAt[name] = nil
+	if shownAt and os.clock() - shownAt <= HINT_FOLLOW_SECONDS then
+		Remotes.event("ReportStep"):FireServer("hint_followed_10s", name)
+	end
 end
 
 local function clearPicker()
@@ -214,6 +230,7 @@ local function setDown()
 		return
 	end
 	placing = true
+	hintFollowed("wash")
 	stopLeading()
 	askToPlace()
 	enterWash()
@@ -231,6 +248,7 @@ local function leadToTub()
 	local tub = SpaLayout.tubSpot()
 	FloorTrail.show(tub.Position)
 	UI.setTip(TIP_WASH)
+	hintShown("wash")
 	clearPlacer()
 	local spot = Instance.new("Part")
 	spot.Name = "CleanACat_OpeningTub"
@@ -320,6 +338,7 @@ function offerPickUp(scene: OpeningScene.Handle)
 		local at = if kitten then kitten:GetPivot().Position else nil
 		clearPicker()
 		UI.setTip(nil)
+		hintFollowed("pick")
 		if at == nil then
 			lift()
 			return
@@ -340,6 +359,7 @@ function offerPickUp(scene: OpeningScene.Handle)
 	clearPicker()
 	picker = tapTarget(body :: BasePart, "Pick up", PICK_REACH, CLICK_REACH.pick, pickUp)
 	UI.setTip(TIP_PICK)
+	hintShown("pick")
 end
 
 -- Off a plot, the box lands AHEAD studs in front of the player, on the ground, facing the way the player faces.
