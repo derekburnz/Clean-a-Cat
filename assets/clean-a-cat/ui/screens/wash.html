@@ -9,14 +9,12 @@
 <link rel="stylesheet" href="kit.css">
 <style>
 /* Washing one cat, close up at the tub. States finger and water (2026-11-24, Derek: no tool tray, the tool changes
-   by itself as in My Pet Salon; switch autoTool, PR 394): no tray, and the step's tool rides under the finger while it
-   moves, up and to the left of the touch so the thumb never hides it; it fades out when the finger lifts. Derek's playtest notes: several kinds of step (scrub, aim water, pick things
-   out of the fur, hold on the claws), a step counter like "Step 2 of 4", praise with a growing combo, and the pet
-   should not turn by itself, so the player turns the cat with the two round arrows. The thumbstick is hidden while
-   washing so a drag on the cat never walks the avatar. */
+   by itself as in My Pet Salon; switch autoTool, PR 394): no tray, no icon or ring under the finger (Derek: "they can
+   see it being used"). The step's real 3D tool (CleanACat_Tool_Sponge, Shower and the rest) sits on the fur at the
+   touch point and moves with it (switch toolOnCat); the pictures here are cut from Model-Agent's tool renders. */
 .world.wash { background: radial-gradient(ellipse at 50% 40%, #fbe6cf, #f2d2b0); }
 .scene { position: absolute; left: 50%; top: calc(50% + 10px); height: 92%; aspect-ratio: 1040 / 820; transform: translate(-50%, -50%); }
-.scene > img { width: 100%; height: 100%; display: block;
+.scene > img:not(.oncat) { width: 100%; height: 100%; display: block;
   -webkit-mask-image: radial-gradient(ellipse 62% 64% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 62% 64% at 50% 50%, #000 62%, transparent 100%); }
 .mark { position: absolute; transform: translate(-50%, -50%); }
 
@@ -69,14 +67,16 @@ body.touch .slot .k { display: none; }
 .hold .lbl { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-head); font-size: 22px; }
 
 /* the tool under the finger (finger, water) */
-.touch-pt { position: absolute; width: 54px; height: 54px; border-radius: 50%; transform: translate(-50%, -50%);
-  background: rgba(255,255,255,.35); border: 4px solid rgba(255,255,255,.9); box-shadow: 0 0 0 3px rgba(69,34,107,.35); }
-.held { position: absolute; width: 104px; height: 104px; transform: translate(-100%, -100%) rotate(-14deg); filter: drop-shadow(0 5px 0 rgba(69,34,107,.45)); }
-.held .ic { width: 100%; height: 100%; }
+.oncat { position: absolute; transform: translate(-50%, -50%) rotate(-10deg); filter: drop-shadow(0 6px 4px rgba(69,34,107,.3)); pointer-events: none; }
+.oncat.sponge { width: 110px; }
+.oncat.shower { width: 70px; transform: translate(-50%, -50%) rotate(200deg); }
 .foam { position: absolute; border-radius: 50%; background: #fff; border: 3px solid #cfe9ff; transform: translate(-50%, -50%); opacity: .95; }
 .spray { position: absolute; width: 110px; height: 90px; transform: translate(-50%, -10%); }
 .task.low { bottom: 36px; }
-body.short .held { width: 84px; height: 84px; }
+/* finger, water: a heap of suds over the spare sponge baked into the background render, so only the held tool shows */
+.suds { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0 55%, #e3f2ff 100%); box-shadow: inset 0 -4px 0 rgba(143,190,230,.55); }
+body.short .oncat.sponge { width: 92px; }
+body.short .oncat.shower { width: 52px; }
 body.short .task.low { bottom: 24px; }
 
 body.short .scene { top: calc(50% + 34px); height: 80%; }
@@ -107,16 +107,24 @@ body.short .turn .rbtn { width: 76px; height: 76px; }
       <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="rgba(255,255,255,.55)" stroke="#45226b" stroke-width="7"/><circle cx="50" cy="50" r="42" fill="none" stroke="#ffc94d" stroke-width="9" pathLength="100" stroke-dasharray="64 100" stroke-linecap="round"/></svg>
       <span class="lbl outlined thin">Hold</span>
     </div>
-    <!-- finger: the sponge under a moving finger, foam left behind -->
-    <div class="foam" data-only="finger" style="left:44%;top:46%;width:34px;height:34px"></div>
-    <div class="foam" data-only="finger" style="left:48%;top:43%;width:26px;height:26px"></div>
-    <div class="foam" data-only="finger" style="left:52%;top:44%;width:30px;height:30px"></div>
-    <div class="touch-pt" data-only="finger" style="left:56%;top:47%"></div>
-    <div class="held" data-only="finger" style="left:56%;top:47%"><i data-ic="sponge"></i></div>
-    <!-- water: the shower head under the finger, spraying down onto the fur -->
-    <div class="touch-pt" data-only="water" style="left:58%;top:38%"></div>
-    <div class="held" data-only="water" style="left:58%;top:38%"><i data-ic="shower"></i></div>
-    <svg class="spray" data-only="water" style="left:53%;top:36%" viewBox="0 0 110 90"><g stroke="#8fd3ff" stroke-width="6" stroke-linecap="round" fill="none" opacity=".9"><path d="M40 6l-14 70"/><path d="M52 8l-4 74"/><path d="M64 8l6 72"/><path d="M76 6l16 66"/></g></svg>
+    <!-- finger, water: suds over the spare sponge in the background render -->
+    <div class="suds" data-only="finger water" style="left:53%;top:44%;width:8%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:58%;top:41%;width:9%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:63%;top:43%;width:8%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:56%;top:48%;width:9%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:61%;top:48%;width:9%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:66%;top:46%;width:6%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:51%;top:49%;width:6%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:59%;top:36%;width:6%;aspect-ratio:1"></div>
+    <div class="suds" data-only="finger water" style="left:65%;top:51%;width:6%;aspect-ratio:1"></div>
+    <!-- finger: the 3D sponge on the fur under the finger, foam left behind -->
+    <div class="foam" data-only="finger" style="left:39%;top:47%;width:34px;height:34px"></div>
+    <div class="foam" data-only="finger" style="left:42%;top:44%;width:26px;height:26px"></div>
+    <div class="foam" data-only="finger" style="left:43%;top:51%;width:30px;height:30px"></div>
+    <img class="oncat sponge" data-only="finger" src="img/tool3d_Sponge.png" alt="" style="left:47%;top:48%">
+    <!-- water: the 3D shower head just above the fur, spraying down where the finger is -->
+    <img class="oncat shower" data-only="water" src="img/tool3d_Shower.png" alt="" style="left:54%;top:27%">
+    <svg class="spray" data-only="water" style="left:50%;top:33%" viewBox="0 0 110 90"><g stroke="#8fd3ff" stroke-width="6" stroke-linecap="round" fill="none" opacity=".9"><path d="M40 6l-14 70"/><path d="M52 8l-4 74"/><path d="M64 8l6 72"/><path d="M76 6l16 66"/></g></svg>
   </div>
 
   <button class="btn ghost small stop" data-tap><span class="lbl">Stop</span></button>
