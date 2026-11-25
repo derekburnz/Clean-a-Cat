@@ -362,12 +362,14 @@ local function shakeOff(v: Visit, cat: Cat, step: string, after: (() -> ())?)
 		end
 	end)
 	Moments.ShakeOff:Fire(cat.model, step)
+	local during = v.step
 	task.delay(WashMeter.SHAKE_SECONDS, function()
 		if visit ~= v or v.cat ~= cat or v.shaking ~= step then
 			return
 		end
 		v.shaking = nil
-		if after then
+		-- the step moved on meanwhile (a switch dropped it, or the claws' own delay): only the hold on input ends
+		if after and v.step == during then
 			after()
 		end
 		syncMeter(v)
@@ -1409,6 +1411,7 @@ local function dropLater(need: string)
 	end
 	v.suds = {}
 	v.hold = nil
+	v.shaking = nil -- a shake under way ends with its step, so its callback does not move on a second time
 	ringPaw(v, nil)
 	setStep(v, nil)
 	nextLater(v, cat)
@@ -1472,7 +1475,11 @@ local function brushAt(v: Visit, cat: Cat, travel: number)
 		endStroke()
 		Moments.CatFluffed:Fire(cat.model)
 		if meter then
-			task.delay(WashMeter.SHAKE_SECONDS, dryThenBows, v, cat)
+			task.delay(WashMeter.SHAKE_SECONDS, function()
+				if visit == v and v.cat == cat and v.stage == "fluffed" and v.step == nil then
+					dryThenBows(v, cat)
+				end
+			end)
 		else
 			task.spawn(dryThenBows, v, cat)
 		end
