@@ -849,6 +849,22 @@ local function endStroke()
 	lastHit = nil
 end
 
+-- The press on the cat is let go as if the finger lifted: the next touch is a new press.
+local function dropPress()
+	if activeInput ~= nil then
+		ScrubController.pointerMoved:Fire(nil, nil, nil)
+	end
+	activeInput = nil
+	ToolOnCat.hide()
+	local v = visit
+	if v then
+		v.hold = nil
+	end
+	endStroke()
+	holdCamera(false)
+	holdControls(false)
+end
+
 local function reveal(v: Visit, cat: Cat)
 	for _, index in ScrubRules.reveal(v.scrub) do
 		hidePiece(cat.mud[index])
@@ -1173,6 +1189,9 @@ local function nextLater(v: Visit, cat: Cat)
 		setStep(v, "smell")
 		Moments.BathStart:Fire(cat.model)
 	elseif step == "claws" and nextPaw(cat) ~= nil then
+		-- a drag still going from the bath would hold the ringed paw and clip every paw in a second or two, so
+		-- the step went by unseen (Sync-Agent on 92f0410); the claws wait for a new press
+		dropPress()
 		setStep(v, "claws")
 		ringPaw(v, nextPaw(cat))
 		Moments.ClawsStart:Fire(cat.model)
@@ -1633,18 +1652,7 @@ local function isPress(input: InputObject): boolean
 end
 
 local function release()
-	if activeInput ~= nil then
-		ScrubController.pointerMoved:Fire(nil, nil, nil)
-	end
-	activeInput = nil
-	ToolOnCat.hide()
-	local v = visit
-	if v then
-		v.hold = nil
-	end
-	endStroke()
-	holdCamera(false)
-	holdControls(false)
+	dropPress()
 end
 
 -- When the finger lifts and less mud faces the camera than the reveal still needs, the cat turns in the tub
