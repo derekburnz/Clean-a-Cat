@@ -27,6 +27,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
+local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
@@ -66,6 +67,9 @@ local queues: { [Player]: { string } } = {} -- customers waiting at the door, fr
 -- What each waiting customer's cat needs, in the same order as queues (#267): rolled when the customer joins the
 -- line, so the card shows a smell or long claws before the pick, and moved with the customer on a pick.
 local queueNeeds: { [Player]: { { CatRules.Need } } } = {}
+-- Each waiting customer's dirt level (DirtRules, switch dirtLevels), in the same order as queues and queueNeeds:
+-- rolled with the needs and moved with them.
+local queueDirt: { [Player]: { number } } = {}
 local handedOut: { [Player]: number } = {} -- cats handed out this session, for the stray turns
 -- Asked for a cat before the save loaded while sudsWash is on: answered once it loads, so a slow load can never hand
 -- a brand new player a customer's cat in place of the kitten.
@@ -87,11 +91,24 @@ local function rollCustomer(player: Player): string
 	end, first, if save then CatRules.tierFor(save.stars) else 1)
 end
 
--- A cat's needs: its rarity's, plus the later needs whose switches are on, by chance (WashDraft, #267).
-local function rollNeeds(kind: string): { CatRules.Need }
-	return CatRules.rollNeeds(kind, function()
-		return random:NextNumber()
-	end, LiveFlags.isOn)
+local function nextNumber(): number
+	return random:NextNumber()
+end
+
+-- A cat's dirt level (DirtRules): rolled by rarity; level 1 for anyone joining the line before the save's first
+-- serve, so the tutorial's first customers are the easy ones.
+local function rollDirt(player: Player, kind: string): number
+	local save = DataService.get(player)
+	return DirtRules.roll(kind, nextNumber, save == nil or save.stars <= 0)
+end
+
+-- A cat's needs: with dirt levels on, its rarity's plus its level's; otherwise its rarity's plus the later needs whose
+-- switches are on, by chance (WashDraft, #267).
+local function rollNeeds(kind: string, dirt: number): { CatRules.Need }
+	if LiveFlags.isOn(DirtRules.FLAG) then
+		return DirtRules.needs(kind, dirt)
+	end
+	return CatRules.rollNeeds(kind, nextNumber, LiveFlags.isOn)
 end
 
 -- The needs list beside the player's door queue, kept as long as the queue.
@@ -104,6 +121,16 @@ local function needsFor(player: Player): { { CatRules.Need } }
 	return list :: { { CatRules.Need } }
 end
 
+-- The dirt levels beside the player's door queue, kept as long as the queue.
+local function dirtFor(player: Player): { number }
+	local list = queueDirt[player]
+	if list == nil then
+		list = {}
+		queueDirt[player] = list
+	end
+	return list :: { number }
+end
+
 -- The player's door queue, filled to QUEUE_SIZE, so there is always a customer waiting.
 local function queueFor(player: Player): { string }
 	local queue = queues[player]
@@ -112,18 +139,27 @@ local function queueFor(player: Player): { string }
 		queues[player] = queue
 	end
 	local q = queue :: { string }
+	local d = dirtFor(player)
 	local n = needsFor(player)
-	-- a line left from before this list existed, or out of step: roll what is missing, drop what is extra
+	-- a line left from before these lists existed, or out of step: roll what is missing, drop what is extra
+	while #d < #q do
+		table.insert(d, rollDirt(player, q[#d + 1]))
+	end
+	while #d > #q do
+		table.remove(d)
+	end
 	while #n < #q do
-		table.insert(n, rollNeeds(q[#n + 1]))
+		table.insert(n, rollNeeds(q[#n + 1], d[#n + 1]))
 	end
 	while #n > #q do
 		table.remove(n)
 	end
 	while #q < QUEUE_SIZE do
 		local kind = rollCustomer(player)
+		local dirt = rollDirt(player, kind)
 		table.insert(q, kind)
-		table.insert(n, rollNeeds(kind))
+		table.insert(d, dirt)
+		table.insert(n, rollNeeds(kind, dirt))
 	end
 	return q
 end
@@ -271,7 +307,8 @@ local function newCat(player: Player): SpaRules.Cat
 				return random:NextNumber()
 			end, brandNew, CatRules.tierFor(save.stars))
 			cat.stray = true
-			cat.needs = rollNeeds(cat.kind :: string)
+			cat.dirt = DirtRules.roll(cat.kind :: string, nextNumber, brandNew)
+			cat.needs = rollNeeds(cat.kind :: string, cat.dirt :: number)
 			cats[player] = cat
 			return cat
 		end
@@ -281,6 +318,7 @@ local function newCat(player: Player): SpaRules.Cat
 		local line = queueFor(player)
 		cat.kind = table.remove(line, 1)
 		cat.needs = table.remove(needsFor(player), 1)
+		cat.dirt = table.remove(dirtFor(player), 1)
 		if CarryRules.carried(cat.kind, cat.stray, cat.mascot, LiveFlags.isOn) then
 			-- (switch customerCarry) the customer stays at the front holding their cat until the player takes it
 			carrying[player] = "door" -- CarryRules.DOOR
@@ -304,8 +342,20 @@ local function sendCat(player: Player, cat: SpaRules.Cat)
 	end
 	local save = DataService.get(player)
 	local needs = CatRules.liveNeeds(cat.needs or CatRules.needs(kind), LiveFlags.isOn)
-	local locked = CatRules.lockedNeeds(needs, if save then save.stations else {})
-	NetService.fire(player, "CatReady", cat.id, kind, needs, locked, cat.stray, cat.brushStrokes)
+	local locked = CatRules.lockedNeeds(needs, if save then save.stations else {}, LiveFlags.isOn)
+	-- the dirt level only while its switch is on, so switching it off gives every new cat its full mud again
+	local dirt = if LiveFlags.isOn(DirtRules.FLAG) and not cat.mascot then cat.dirt else nil
+	NetService.fire(
+		player,
+		"CatReady",
+		cat.id,
+		kind,
+		needs,
+		locked,
+		cat.stray,
+		cat.brushStrokes,
+		dirt
+	)
 end
 
 -- Sends the door line to the client and the figures (switch customers).
@@ -315,6 +365,7 @@ local function sendQueue(player: Player)
 	for place, list in needsFor(player) do
 		needs[place] = CatRules.liveNeeds(list, LiveFlags.isOn)
 	end
+	local dirtOn = LiveFlags.isOn(DirtRules.FLAG)
 	-- a cat still with its customer at the door (switch customerCarry): that customer stays at the front of the line
 	local cat = cats[player]
 	local kinds, shownNeeds = CarryRules.shownLine(
@@ -326,7 +377,16 @@ local function sendQueue(player: Player)
 			then CatRules.liveNeeds(cat.needs or CatRules.needs(cat.kind), LiveFlags.isOn)
 			else nil
 	)
-	NetService.fire(player, "CustomerQueue", kinds, shownNeeds)
+	-- each card's dirt level (switch dirtLevels), with the customer still at the door in front as in kinds
+	local shownDirt: { number }? = nil
+	if dirtOn then
+		local list = table.clone(dirtFor(player))
+		if #kinds > #line then
+			table.insert(list, 1, if cat and cat.dirt then cat.dirt else 1)
+		end
+		shownDirt = list
+	end
+	NetService.fire(player, "CustomerQueue", kinds, shownNeeds, shownDirt)
 	FigureService.showQueue(player, table.clone(kinds))
 end
 
@@ -544,7 +604,8 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 	end
 	local line = queueFor(player)
 	if SpaRules.pickNext(line, index) then
-		SpaRules.pickNext(needsFor(player), index) -- the cat's needs move with it
+		SpaRules.pickNext(needsFor(player), index) -- the cat's needs and dirt move with it
+		SpaRules.pickNext(dirtFor(player), index)
 		FigureService.picked(player, index) -- the customer's look goes to the front with their cat (#206)
 		sendQueue(player)
 	end
@@ -633,6 +694,9 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	end
 	-- A customer's cat goes home: the customer pays coins plus a tip, and the spa earns stars.
 	local pay = CatRules.pay(kind)
+	if LiveFlags.isOn(DirtRules.FLAG) then
+		pay = DirtRules.pay(pay, cat.dirt) -- a dirtier cat pays more (coins and tip)
+	end
 	-- Built stations (a Brush Table, a dryer) make every customer pay a little more; only while builds are on.
 	local bonus = if LiveFlags.isOn("builds")
 		then BuildRules.payBonus(save.stations, LiveFlags.isOn)
@@ -818,6 +882,7 @@ function SpaService.Start()
 				end
 				table.clear(queues)
 				table.clear(queueNeeds)
+				table.clear(queueDirt)
 			end
 		end)
 	-- The carry switched off: a cat at the door or in someone's arms goes straight into their tub.
@@ -843,12 +908,28 @@ function SpaService.Start()
 				end
 			end)
 	end
+	-- The dirt levels switched on or off: the waiting customers' needs follow at once (their levels stay as rolled).
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. DirtRules.FLAG)
+		:Connect(function()
+			if not LiveFlags.isOn(CUSTOMERS_FLAG) then
+				return
+			end
+			for player, line in queues do
+				queueFor(player)
+				local d, n = dirtFor(player), needsFor(player)
+				for place, kind in line do
+					n[place] = rollNeeds(kind, d[place])
+				end
+				sendQueue(player)
+			end
+		end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		cats[player] = nil
 		nextId[player] = nil
 		lastSeq[player] = nil
 		queues[player] = nil
 		queueNeeds[player] = nil
+		queueDirt[player] = nil
 		handedOut[player] = nil
 		waiting[player] = nil
 		loadDone[player] = nil

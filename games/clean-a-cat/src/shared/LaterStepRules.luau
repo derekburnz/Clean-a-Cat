@@ -8,7 +8,7 @@ local WashDraft = require(script.Parent:WaitForChild("WashDraft"))
 local LaterStepRules = {}
 
 -- The later needs this cat's wash goes through, in the wash's order: each one it needs whose station is built (not
--- in `locked`) and whose switch is on.
+-- in `locked`) and that is on (CatRules.needOn: its switch, or the dirt levels').
 function LaterStepRules.steps(
 	needs: { CatRules.Need },
 	locked: { CatRules.Need },
@@ -19,7 +19,7 @@ function LaterStepRules.steps(
 		if
 			table.find(needs, need) ~= nil
 			and table.find(locked, need) == nil
-			and isOn(WashDraft.NEED_FLAG[need])
+			and CatRules.needOn(need, isOn)
 		then
 			table.insert(out, need)
 		end

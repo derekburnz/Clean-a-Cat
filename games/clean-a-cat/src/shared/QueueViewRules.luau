@@ -4,6 +4,7 @@
 -- (CustomerQueue, front first), the player's Cat Index stamps and which stations are built. The server owns the
 -- line and the picks (SpaService, SpaRules.pickNext); nothing here decides anything.
 local CatRules = require(script.Parent:WaitForChild("CatRules"))
+local DirtRules = require(script.Parent:WaitForChild("DirtRules"))
 local IndexRules = require(script.Parent:WaitForChild("IndexRules"))
 local SpaRules = require(script.Parent:WaitForChild("SpaRules"))
 
@@ -19,9 +20,11 @@ export type Card = {
 	rarity: string,
 	needs: { CatRules.Need },
 	locked: { [string]: boolean }, -- needs whose station is not built yet
-	pays: number, -- the coins for the wash (the tip comes on top, for a clean job)
+	pays: number, -- the coins for the wash (the tip comes on top, for a clean job), times the dirt level's pay
 	isNew: boolean, -- never washed: not in the Cat Index yet
 	vip: boolean,
+	dirt: number?, -- 1 to 4 while the dirt levels are on (DirtRules); nil while they are off
+	steps: number, -- the steps this cat's wash shows (DirtRules.steps), the bow included
 }
 
 -- The line as the server sent it, kept only if it is a list of real cats no longer than the line can be.
@@ -74,6 +77,22 @@ function QueueViewRules.cleanNeeds(raw: unknown): { [number]: { CatRules.Need } 
 	return out
 end
 
+-- Each waiting cat's dirt level, as the server sent it beside the line (switch dirtLevels), place by place; a place
+-- without a level 1 to 4 is left out.
+function QueueViewRules.cleanDirt(raw: unknown): { [number]: number }
+	local out: { [number]: number } = {}
+	if type(raw) ~= "table" then
+		return out
+	end
+	for place = 1, SpaRules.QUEUE_SIZE do
+		local level = DirtRules.clean((raw :: { [number]: unknown })[place])
+		if level then
+			out[place] = level
+		end
+	end
+	return out
+end
+
 function QueueViewRules.isVip(rarity: string): boolean
 	local from = table.find(CatRules.RARITIES, QueueViewRules.VIP_FROM) :: number
 	local at = table.find(CatRules.RARITIES, rarity)
@@ -81,21 +100,26 @@ function QueueViewRules.isVip(rarity: string): boolean
 end
 
 -- One card per customer in `line` (front first). `rolled` is each place's needs as the server rolled them
--- (cleanNeeds); a place without one shows its rarity's needs.
+-- (cleanNeeds); a place without one shows its rarity's needs. `dirt` is each place's dirt level (cleanDirt) while the
+-- dirt levels are on: the card then pays the level's pay and no need is locked.
 function QueueViewRules.cards(
 	line: { string },
 	entries: { [string]: IndexRules.Entry },
 	built: { [string]: boolean },
-	rolled: { [number]: { CatRules.Need } }?
+	rolled: { [number]: { CatRules.Need } }?,
+	dirt: { [number]: number }?
 ): { Card }
 	local out: { Card } = {}
 	for place, cat in line do
 		local rarity = CatRules.rarityOf(cat) or "Common"
 		local given: { CatRules.Need }? = if rolled then rolled[place] else nil
 		local needs = if given then table.clone(given) else CatRules.needs(cat)
+		local level: number? = if dirt then dirt[place] else nil
 		local locked: { [string]: boolean } = {}
-		for _, need in CatRules.lockedNeeds(needs, built) do
-			locked[need] = true
+		if level == nil then
+			for _, need in CatRules.lockedNeeds(needs, built) do
+				locked[need] = true
+			end
 		end
 		local entry: IndexRules.Entry? = entries[cat]
 		table.insert(out, {
@@ -104,9 +128,11 @@ function QueueViewRules.cards(
 			rarity = rarity,
 			needs = needs,
 			locked = locked,
-			pays = CatRules.pay(cat).coins,
+			pays = DirtRules.pay(CatRules.pay(cat), level).coins,
 			isNew = not (entry ~= nil and entry.washed),
 			vip = QueueViewRules.isVip(rarity),
+			dirt = level,
+			steps = DirtRules.steps(needs),
 		})
 	end
 	return out
