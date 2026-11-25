@@ -186,6 +186,21 @@ The owner on 2026-11-25: "rework customers to be much better", and what bothered
 - **Other Attachments and attributes.** `Overhead` over the head, clear of any hat, for a bubble or a timer. `Look` (the name), `WalkSpeed` (6 to 7 studs a second), `LegLength` (hip joint to floor: a step of A degrees each way covers 2 x LegLength x sin A), `Height`.
 - **Rules kept from this.** A customer's face is never covered (hats sit on the hair, glasses are thin frames). Clothes are our pastels with one deeper colour (navy, denim, brown) so a customer stands out from the pastel room. No customer wears the staff's mint smock. Children are not in this set: a child's hand is too low for the carrier, so a child needs a different way to bring a cat.
 
+#### The special customers (#476), a draft
+The owner on 2026-11-25: special customers "that expire that only I can take their cats and have them have the really cool cat designs". These bring the special cats (section 20). `townsfolk.SPECIAL_LOOKS` holds a first three, built exactly like the townsfolk (same joints, `Grip`, `Overhead` and attributes, so the walk in and the carry work unchanged) with one more root attribute, `Special` = true. They are not in the game's townsfolk list, so nothing spawns them until the game wires it.
+
+| Customer | Build | Who |
+|---|---|---|
+| `CleanACat_NPC_Customer_Vivi` | adult | the star visitor of #142 on the new build: a lilac beret with a gold star, gold rimmed violet shades, a lilac coat with gold buttons and pearls |
+| `CleanACat_NPC_Customer_Rex` | tall | a jolly king: a gold crown with three jewels, a silver beard, a berry cape with a pearl collar, a gold star on a lilac tunic |
+| `CleanACat_NPC_Customer_Pearl` | adult | a grand lady: a wide lilac hat with a gold band and a pink plume, pearls, white gloves, a lilac dress with a gold star |
+
+- **One shared cue, so a player learns it once.** Lilac and gold are the game's prize colours (the better tools, the pet crate, the VIP room). Every special customer wears lilac, gold shoes and a gold star, and a hat no townsperson wears. No townsperson wears gold. Bea's lilac cardigan is the nearest thing in the town, and her brown shoes, bun and butter carrier keep her apart.
+- **Their carrier.** `CleanACat_Prop_CarrierRoyal` (`spa_props.py`): the same carrier in lilac on a deeper lilac tray with a gold gate and handle, gold stars on the sides and a little gold crown on the roof. Same size, hinge, Attachments and attributes as the other three. 610 triangles, 63 parts.
+- **The cape** hangs from the collar between the arms and sweeps back 11 degrees, so a leg swinging behind passes under it at a 26 degree step. It is part of the body and does not move.
+- 1,218 to 1,332 triangles and 55 to 74 parts each, inside the customer budget. 5.6 to 6.1 studs to the top of the hat.
+- Staying a draft: working names, three looks, no rules. How a special customer appears, how long they wait and what they pay is the game's design.
+
 The R15 customers below are what the game used before #446 and are still what it shows until `FigureService` switches to the models above.
 
 `customers.py` builds three accessories for Roblox's own R15 customer rig: `CleanACat_NPC_SunHat` (`HatAttachment`), `CleanACat_NPC_Scarf` (`NeckAttachment`) and `CleanACat_NPC_ToteBag` (`LeftShoulderAttachment`). Each Model's biggest part is `Handle` and holds that Attachment; move the parts into an Accessory, weld them to Handle and `Humanoid:AddAccessory` it. The customer itself is `Players:CreateHumanoidModelFromDescription` with body colours only, so nothing waits on an upload:

@@ -14,6 +14,7 @@
   CleanACat_Prop_CarrierSky   the same carrier in two more looks (CARRIERS below), so a line of customers is not
   CleanACat_Prop_CarrierButter  three of one thing: sky with cat ears and stars, butter with a paw badge. The first
                               is cream on a bubblegum tray with a bow and hearts.
+  CleanACat_Prop_CarrierRoyal   the special customers' carrier (#476): lilac and gold with a crown on the roof
   CleanACat_Prop_StrayBox     a soft cardboard box with its flaps folded out and a bubblegum blanket inside;
                               `CatSeat` on the blanket for a sitting cat.
   CleanACat_Prop_ChanceBoard  a standing board on two legs by the entrance. Its face part is named `Screen` (front,
@@ -59,6 +60,9 @@ CARRIERS = {
                                   "star"),
     "CleanACat_Prop_CarrierButter": ("pastel_butter", "spa_mint", "spa_bubblegum", "spa_sky", "spa_cream", "none",
                                      "paw"),
+    # the special customers' carrier (#476): lilac and gold, the game's prize colours, a little crown on the roof
+    "CleanACat_Prop_CarrierRoyal": ("pastel_lilac", "velvet_lilac", "gold_mid", "spa_bubblegum", "gold_mid", "crown",
+                                    "star"),
 }
 ROOF_FROM = 1.36        # where the side walls stop and the roof slopes in
 ROOF_IN = 0.32         # how far each slope comes in by the top
@@ -121,6 +125,13 @@ def _carrier(name, mat):
             tilt = Matrix.Rotation(math.radians(-14 * sx), 3, "Y")
             b.pyramid((sx * 0.34, -ln / 2 + 0.42, h - 0.08), 0.4, 0.44, shell, rot=tilt)
             b.pyramid((sx * 0.34, -ln / 2 + 0.31, h - 0.07), 0.23, 0.28, "spa_bubblegum", rot=tilt)
+    elif roof == "crown":                                                          # a little crown on the roof's front
+        y, z = -ln / 2 + 0.3, h - 0.01
+        b.box_base((0, y, z), (0.5, 0.3, 0.13), accent, bevel=False)
+        for dx, ht in ((-0.17, 0.16), (0.0, 0.24), (0.17, 0.16)):
+            b.pyramid((dx, y, z + 0.13), 0.16, ht, accent)
+        b.box((0, y - 0.155, z + 0.07), (0.09, 0.03, 0.09), "royal_berry", bevel=False,
+              rot=Matrix.Rotation(math.radians(45), 3, "Y"))
     for sx in (1, -1):                                                             # what is on each side
         x, zc = sx * (w / 2 - 0.02 + 0.025), TRAY_H + 0.52
         if side == "heart":
@@ -440,6 +451,7 @@ ASSETS = {
     "CleanACat_Prop_Carrier": (build_carrier, 950),
     "CleanACat_Prop_CarrierSky": (lambda mat: _carrier("CleanACat_Prop_CarrierSky", mat), 950),
     "CleanACat_Prop_CarrierButter": (lambda mat: _carrier("CleanACat_Prop_CarrierButter", mat), 950),
+    "CleanACat_Prop_CarrierRoyal": (lambda mat: _carrier("CleanACat_Prop_CarrierRoyal", mat), 950),
     "CleanACat_Prop_StrayBox": (build_stray_box, 200),
     "CleanACat_Prop_ChanceBoard": (build_chance_board, 400),
     "CleanACat_Prop_QueueMat": (build_queue_mat, 200),
@@ -449,6 +461,7 @@ ASSETS = {
 EXTRAS = {"CleanACat_Prop_Carrier": carrier_rbx_extras,
           "CleanACat_Prop_CarrierSky": lambda: carrier_rbx_extras("CleanACat_Prop_CarrierSky"),
           "CleanACat_Prop_CarrierButter": lambda: carrier_rbx_extras("CleanACat_Prop_CarrierButter"),
+          "CleanACat_Prop_CarrierRoyal": lambda: carrier_rbx_extras("CleanACat_Prop_CarrierRoyal"),
           "CleanACat_Prop_StrayBox": stray_box_rbx_extras,
           "CleanACat_Prop_Cushion": cushion_rbx_extras, "CleanACat_Prop_TipJar": tip_jar_rbx_extras,
           BED: suds_bed_rbx_extras, CAMERA: photo_camera_rbx_extras}
