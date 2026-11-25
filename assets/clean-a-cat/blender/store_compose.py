@@ -8,6 +8,7 @@ FONT for the game's UI font once the ui-designer picks one. Words: the game's na
 contrast, never "free".
 """
 
+import math
 import os
 import sys
 
@@ -213,11 +214,13 @@ def bubble_backdrop(size, seed=4):
     return Image.alpha_composite(bg, layer)
 
 
-def title_block(width):
-    """The stacked title on its own transparent layer, about `width` wide, tilted a little."""
+def title_block(width, lines=None, tilt=5):
+    """The stacked title on its own transparent layer, about `width` wide, tilted a little. `lines` replaces the
+    two stacked lines (the split thumbnail has the name on one line)."""
     path = TITLE_FONT if os.path.exists(TITLE_FONT) else FONT
+    rows = lines or TITLE_LINES
     lines = []
-    for text, top, bottom in TITLE_LINES:
+    for text, top, bottom in rows:
         size = int(width * 0.4)
         while True:
             font = ImageFont.truetype(path, size)
@@ -262,7 +265,7 @@ def title_block(width):
         shine.paste((255, 255, 255, 255), (0, 0), ImageChops.multiply(sm, band))
         out.alpha_composite(shine)
         y += hgt + gap
-    return out.rotate(5, resample=Image.BICUBIC, expand=True)
+    return out.rotate(tilt, resample=Image.BICUBIC, expand=True) if tilt else out
 
 
 def soft_shadow_edges(im, frac=0.3):
@@ -298,6 +301,104 @@ def compose_spa(raw_dir, final=False):
     return bg
 
 
+# The second thumbnail (#500; Derek 2026-11-25: yes to "a half dirty, half clean picture"): one cat, straight on, the
+# picture's left half muddy on a drab backdrop and its right half clean on the bubble backdrop, a thin line between.
+SPLIT_LINE = (255, 250, 240)
+
+
+def mud_backdrop(size, seed=7):
+    """The muddy half's backdrop: a drab brown glow with soft mud splats. No stink wisps (Derek, 2026-11-25)."""
+    import random
+    w, h = size
+    bg = backdrop_plain(size, (196, 176, 150), (124, 102, 80))
+    layer = Image.new("RGBA", size, (0, 0, 0, 0))
+    rnd = random.Random(seed)
+    s = min(w, h)
+    cols, rows = 5, 4                                             # one splat to a cell of the left half (the
+    for cell in range(cols * rows):                               # only half shown), so no corner stays bare
+        if rnd.random() < 0.2:
+            continue
+        r = s * rnd.uniform(0.03, 0.075)
+        cx = (cell % cols + rnd.uniform(0.2, 0.8)) * w / 2 / cols
+        cy = (cell // cols + rnd.uniform(0.2, 0.8)) * h / rows
+        col = (88, 66, 46, rnd.randint(150, 200))
+        blob = Image.new("L", size, 0)                           # one splat: a lumpy blob, drips under it, loose drops
+        bd = ImageDraw.Draw(blob)
+        bd.ellipse((cx - r * 0.75, cy - r * 0.6, cx + r * 0.75, cy + r * 0.6), fill=255)
+        for _k in range(rnd.randint(7, 10)):
+            a, ln, rr = rnd.uniform(0, 6.28), r * rnd.uniform(0.45, 0.85), r * rnd.uniform(0.28, 0.5)
+            bx, by = cx + math.cos(a) * ln, cy + math.sin(a) * ln * 0.75
+            bd.ellipse((bx - rr, by - rr, bx + rr, by + rr), fill=255)
+        for _k in range(rnd.randint(1, 3)):
+            dx, dw, dl = cx + rnd.uniform(-0.6, 0.6) * r, r * rnd.uniform(0.1, 0.17), r * rnd.uniform(1.1, 2.2)
+            bd.rounded_rectangle((dx - dw, cy, dx + dw, cy + dl), radius=dw, fill=255)
+            bd.ellipse((dx - dw * 1.5, cy + dl - dw * 1.5, dx + dw * 1.5, cy + dl + dw * 1.5), fill=255)
+        for _k in range(rnd.randint(2, 4)):
+            a, ln, rr = rnd.uniform(0, 6.28), r * rnd.uniform(1.5, 2.3), r * rnd.uniform(0.07, 0.16)
+            ex, ey = cx + math.cos(a) * ln, cy + math.sin(a) * ln * 0.8
+            bd.ellipse((ex - rr, ey - rr, ex + rr, ey + rr), fill=255)
+        layer.paste(Image.new("RGBA", size, col), (0, 0), blob.point(lambda v, a=col[3]: v * a // 255))
+    layer = layer.filter(ImageFilter.GaussianBlur(s * 0.0025))
+    return Image.alpha_composite(bg, layer)
+
+
+def backdrop_plain(size, inner, outer):
+    """The radial glow of `backdrop` without its bubble rings."""
+    small = Image.new("RGB", (64, 64))
+    px = small.load()
+    for y in range(64):
+        for x in range(64):
+            d = min(1.0, (((x - 32) / 32) ** 2 + ((y - 30) / 32) ** 2) ** 0.5)
+            t = d ** 1.4
+            px[x, y] = tuple(int(inner[i] + (outer[i] - inner[i]) * t) for i in range(3))
+    return small.resize(size, Image.BICUBIC).convert("RGBA")
+
+
+def sparkle(d, cx, cy, r, fill):
+    """A four-point star."""
+    k = r * 0.24
+    d.polygon([(cx, cy - r), (cx + k, cy - k), (cx + r, cy), (cx + k, cy + k), (cx, cy + r), (cx - k, cy + k),
+               (cx - r, cy), (cx - k, cy - k)], fill=fill)
+
+
+def compose_split(raw_dir, final=False):
+    size = (1920, 1080) if final else (1280, 720)
+    w, h = size
+    mid = w // 2
+    bg = bubble_backdrop(size)
+    bg.paste(mud_backdrop(size).crop((0, 0, mid, h)), (0, 0))
+    dirty = Image.open(os.path.join(raw_dir, "raw-split-dirty.png")).convert("RGBA")
+    clean = Image.open(os.path.join(raw_dir, "raw-split-clean.png")).convert("RGBA")
+    rm = dirty.width // 2                                  # both renders share a camera on the cat's middle line
+    art = clean.copy()
+    art.paste(dirty.crop((0, 0, rm, dirty.height)), (0, 0))
+    box = art.getchannel("A").point(lambda a: 255 if a > 60 else 0).getbbox()
+    reach = max(rm - box[0], box[2] - rm)                  # crop evenly about the middle line, so it stays central
+    art = art.crop((rm - reach, box[1], rm + reach, box[3]))
+    solid = dirty.getchannel("A").point(lambda a: 255 if a >= 250 else 0).getbbox()   # the cat without its shadow
+    k = h * 1.1 / (solid[3] - solid[1])                    # close: the head and chest fill about 0.7 of the height
+    art = art.resize((int(art.width * k) // 2 * 2, int(art.height * k)), Image.LANCZOS)   # and the feet drop under
+    top = int(h * 0.025)                                   # the title and out of the frame (Review-QA on #500)
+    bg.alpha_composite(art, (mid - art.width // 2, top))
+    fx = Image.new("RGBA", size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(fx)
+    for fxr, fyr, r in ((0.62, 0.2, 0.034), (0.9, 0.13, 0.05), (0.83, 0.5, 0.03), (0.69, 0.62, 0.022),
+                        (0.95, 0.72, 0.036), (0.78, 0.06, 0.02)):
+        sparkle(d, fxr * w, fyr * h, r * h, (255, 255, 255, 235))
+        sparkle(d, fxr * w, fyr * h, r * h * 0.5, (255, 244, 176, 255))
+    bg.alpha_composite(fx)
+    line = Image.new("RGBA", size, (0, 0, 0, 0))             # the thin line, with a soft shadow so it holds on fur
+    lw = max(3, int(w * 0.0042))
+    ImageDraw.Draw(line).rectangle((mid - lw - 3, 0, mid + lw + 3, h), fill=(40, 30, 60, 90))
+    line = line.filter(ImageFilter.GaussianBlur(lw * 0.8))
+    ImageDraw.Draw(line).rectangle((mid - lw, 0, mid + lw - 1, h), fill=SPLIT_LINE + (255,))
+    bg.alpha_composite(line)
+    title = title_block(int(w * 0.62), lines=(("CLEAN A CAT", (255, 255, 255), (255, 132, 180)),), tilt=0)
+    title = fit(title, w * 0.6, h * 0.24)
+    bg.alpha_composite(title, (mid - title.width // 2, int(h * 0.99 - title.height)))
+    return bg
+
+
 def icon_spa(raw_dir):
     """The matching 512 icon: the bubble backdrop and no words. With the close shot (raw-icon-spa.png) the cat's
     face fills about half the square and the render bleeds off the edges; without it, the whole bath."""
@@ -326,5 +427,7 @@ if __name__ == "__main__":
     if os.path.exists(os.path.join(raw_dir, "raw-thumb-spa.png")):
         compose_spa(raw_dir, final).convert("RGB").save(os.path.join(out_dir, "thumb-spa.png"))
         icon_spa(raw_dir).convert("RGB").save(os.path.join(out_dir, "icon-spa.png"))
+    if os.path.exists(os.path.join(raw_dir, "raw-split-dirty.png")):
+        compose_split(raw_dir, final).convert("RGB").save(os.path.join(out_dir, "thumb-split.png"))
     if len(args) > 2:
         sheet(made, args[2])

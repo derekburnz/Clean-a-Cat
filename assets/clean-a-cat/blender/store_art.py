@@ -473,6 +473,78 @@ def thumb_queue(mat, out, res):
     return render(objs, objs, out, res, az=4, el=12, margin=0.98, lens=45)
 
 
+def _face_mud(mat, cat):
+    """Mud on the muddy half of the face, for the split thumbnail only (Review-QA on #500). In the game mud stays
+    off the face so the cat reads while it is washed; in this picture a clean face weakens the split. Flat stepped
+    splats in the model's two mud shades on the cat's right (-X) half: over the brow, down the temple beside the eye,
+    across the cheek under it, and a smear on the ear. The eye stays clear. No two patches overlap."""
+    part = {k: next(o for o in cat if o.name.endswith(k)) for k in ("_Head", "_Eye2", "_EarR")}
+    (hlo, hhi), (elo, ehi), (rlo, rhi) = (common.bounds([part[k]]) for k in ("_Head", "_Eye2", "_EarR"))
+    y, t = hlo.y - 0.012, 0.035                           # just proud of the face
+    b = Builder()
+
+    def patch(x0, x1, z0, z1, sw="mud", proud=0.0):
+        b.box(((x0 + x1) / 2, y - proud, (z0 + z1) / 2), (x1 - x0, t, z1 - z0), sw, bevel=False)
+
+    xe, top, bot = hlo.x + 0.012, hhi.z - 0.015, hlo.z + 0.02    # the face's outer edge, top and bottom
+    c = 0.07                                               # one step of a splat
+    patch(xe, -0.07, top - c, top)                                         # the brow: three steps in from the corner
+    patch(xe, -0.14, top - 2 * c, top - c)
+    patch(xe, elo.x - 0.03, top - 3 * c, top - 2 * c)
+    patch(-0.21, -0.15, top - 2 * c - 0.09, top - 2 * c)                   # a short drip over the eye
+    patch(xe, elo.x - 0.035, elo.z + 0.03, top - 3 * c)                    # down the temple beside the eye
+    patch(xe, elo.x + 0.02, elo.z - 0.05, elo.z + 0.03)                    # round under its corner
+    patch(xe, ehi.x - 0.05, bot + c, elo.z - 0.05)                         # the cheek: two steps
+    patch(xe + 0.05, ehi.x + 0.02, bot, bot + c)
+    patch(xe + 0.07, xe + 0.22, top - 0.115, top - 0.05, "mud_wet", 0.006)  # wet shine
+    patch(xe + 0.06, xe + 0.18, bot + 0.075, bot + 0.125, "mud_wet", 0.006)
+    ex = (rlo.x + rhi.x) / 2                              # outer edge; its outline stays a cat's ear
+    b.box((ex - 0.075, rlo.y - 0.008, rlo.z + 0.14), (0.1, 0.03, 0.2), "mud", bevel=False)    # a smear up the ear's
+    return _fresh([b.finalize("FaceMud", mat, bevel=0)])
+
+
+def _split(mat, out, res, state):
+    """One half of the split thumbnail (#500): Muffin sitting, seen straight on and close, with the camera on its
+    middle line. `state` 'dirty' is the whole cat muddy, 'clean' the whole cat fluffy with a bow by its ear, lather
+    at its foot and a few bubbles. Both use the same camera (framed on a fixed box round the cat), so
+    `store_compose.py` takes the left half of the picture from one and the right half from the other and they meet on
+    the cat's middle line. Things that belong to one half only are built on that half: the cat's left (+X) is the
+    picture's right."""
+    cat = cat_state("Muffin", mat, "sit", state)
+    body = [o for o in cat if not any(t in o.name for t in ("_Mud", "_Tangle", "_Fluff"))]
+    lo, hi = common.bounds(body)
+    half = max(-lo.x, hi.x) + 0.5
+    focus = (Vector((-half, lo.y, 0.0)), Vector((half, hi.y, hi.z + 0.4)))
+    objs = list(cat)
+    if state == "dirty":
+        objs += _face_mud(mat, cat)
+    if state == "clean":
+        spec = cats.ROSTER["Muffin"]
+        k = cats.scale_of(spec, "sit")
+        at = Vector(cats.joints(spec, "sit")["Head"]) + Vector(cats.bow_at(spec, "sit")) * k
+        at.x += cats.dims(spec, "sit")["head"]["s"][0] * k * 0.27   # by the ear on the clean half: a whole bow, not
+        bow = props.build_bow(list(props.BOWS)[0], mat)             # half of one (tipped out on the corner like a
+        _move(bow, at, 1.0, -8)                                     # special cat's, it stopped reading as a bow)
+        objs += _fresh(bow)
+        fm = Builder()
+        for x, y, r in ((hi.x + 0.12, -0.3, 0.24), (hi.x + 0.3, 0.05, 0.2)):
+            stations.foam_mound(fm, x, y, -0.02, r)
+        stations.foam_bubble(fm, hi.x + 0.16, -0.25, 0.2, 0.14)
+        objs += _fresh([common.shade_smooth(fm.finalize("Foam", mat, bevel=0))])
+        objs += floating(mat, [(hi.x + 0.28, -0.5, 0.62, 0.13), (hi.x + 0.2, -0.4, 1.35, 0.09)])
+    return render(objs, focus, out, res, az=0, el=6, margin=1.0, lens=70)
+
+
+def split_dirty(mat, out, res):
+    """The split thumbnail's muddy half (#500)."""
+    return _split(mat, out, res, "dirty")
+
+
+def split_clean(mat, out, res):
+    """The split thumbnail's clean half (#500)."""
+    return _split(mat, out, res, "clean")
+
+
 SHOTS = {
     "icon-a": (icon_scrub, (512, 512), (1024, 1024)),
     "icon-b": (icon_face, (512, 512), (1024, 1024)),
@@ -482,6 +554,8 @@ SHOTS = {
     "thumb-3": (thumb_queue, (960, 540), (1920, 1080)),
     "thumb-spa": (thumb_spa, (900, 900), (1600, 1600)),
     "icon-spa": (icon_spa, (512, 512), (1024, 1024)),
+    "split-dirty": (split_dirty, (700, 860), (1400, 1720)),
+    "split-clean": (split_clean, (700, 860), (1400, 1720)),
 }
 
 
