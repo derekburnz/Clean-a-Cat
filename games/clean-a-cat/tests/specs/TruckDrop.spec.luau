@@ -107,10 +107,35 @@ return function()
 				expect(TruckDrop.truck(B.slide, false).door > math.rad(60)).to.equal(true)
 				expect(TruckDrop.truck(B.drop, true).door).to.equal(TruckDrop.DOOR.open)
 				local shut = B.drop + TruckDrop.DOOR.hold + TruckDrop.DOOR.closeSeconds
-				-- open for under a second: long enough for the box to fall clear before the door slams down
-				expect(shut - B.frontHit <= 0.95).to.equal(true)
+				-- open for about a second: long enough for the box to fall clear, and for a smooth swing shut (Derek
+				-- asked for a more fluid close, 2026-11-25), without the door hanging open
+				expect(shut - B.frontHit <= 1.05).to.equal(true)
 				expect(TruckDrop.truck(shut + 0.5, false).door).to.equal(0)
 				expect(TruckDrop.truck(shut + 0.01, true).door).to.equal(0)
+			end
+		)
+		it(
+			"swings shut smoothly: no jump between frames, then settles without passing the frame",
+			function()
+				local d = TruckDrop.DOOR
+				local closeAt = B.drop + d.hold - B.frontHit
+				local shut = closeAt + d.closeSeconds
+				local step = 1 / 60
+				local prev = TruckDrop.door(closeAt - step, false)
+				local prevSpeed: number? = nil
+				local t = closeAt
+				while t < shut + d.settleSeconds + 0.1 do
+					local a = TruckDrop.door(t, false)
+					expect(a >= 0).to.equal(true)
+					local speed = a - prev
+					-- before the shut, the speed only builds a little each frame (the old close snapped from rest)
+					if prevSpeed and t < shut then
+						expect(math.abs(speed - prevSpeed) < math.rad(3)).to.equal(true)
+					end
+					prev, prevSpeed = a, speed
+					t += step
+				end
+				expect(TruckDrop.door(closeAt + 0.02, false) > d.open * 0.95).to.equal(true) -- starts from rest
 			end
 		)
 	end)
