@@ -33,6 +33,7 @@ export type Cat = {
 	brushStrokes: number, -- strokes this cat's brushing takes: BRUSH_STROKES, fewer with the Pro Brush (#267)
 	needs: { string }?, -- a customer's cat or stray: what it needs, rolled once (CatRules.rollNeeds, #267)
 	mascot: boolean?, -- the opening's kitten (SudsRules, #285): no bows, and nobody pays for him
+	dirt: number?, -- a customer's cat or stray: its dirt level, 1 to 4 (DirtRules, switch dirtLevels)
 }
 
 function SpaRules.newCat(id: number, now: number): Cat

@@ -28,6 +28,7 @@ local SERVED = "ChanceBoardLit" -- Player attribute SpaService sets once a custo
 local index: any = nil
 local line: { string } = {}
 local lineNeeds: { [number]: { CatRules.Need } } = {} -- each place's needs as the server rolled them (#267)
+local lineDirt: { [number]: number }? = nil -- each place's dirt level while dirtLevels is on (DirtRules)
 
 local function allOn(names: { string }): boolean
 	for _, name in names do
@@ -56,7 +57,7 @@ local function show()
 	end
 	local player = Players.LocalPlayer
 	local entries: { [string]: IndexRules.Entry } = if index then index.entries else {}
-	local cards = QueueViewRules.cards(line, entries, built(), lineNeeds)
+	local cards = QueueViewRules.cards(line, entries, built(), lineNeeds, lineDirt)
 	local pickOn = allOn(PICK_FLAGS)
 	local served = player:GetAttribute(SERVED) == true
 	local pickable: { [number]: boolean } = {}
@@ -72,11 +73,14 @@ function QueueWindowController.Init(controllers: { [string]: any })
 end
 
 function QueueWindowController.Start()
-	Remotes.event("CustomerQueue").OnClientEvent:Connect(function(raw: unknown, rawNeeds: unknown)
-		line = QueueViewRules.clean(raw)
-		lineNeeds = QueueViewRules.cleanNeeds(rawNeeds)
-		show()
-	end)
+	Remotes.event("CustomerQueue").OnClientEvent
+		:Connect(function(raw: unknown, rawNeeds: unknown, rawDirt: unknown)
+			line = QueueViewRules.clean(raw)
+			lineNeeds = QueueViewRules.cleanNeeds(rawNeeds)
+			-- the server sends the levels only while dirtLevels is on
+			lineDirt = if rawDirt == nil then nil else QueueViewRules.cleanDirt(rawDirt)
+			show()
+		end)
 	UI.onQueuePick(function(place: number)
 		if LiveFlags.isOn(FLAG) and allOn(PICK_FLAGS) then
 			Remotes.event("RequestPickCustomer"):FireServer(place)

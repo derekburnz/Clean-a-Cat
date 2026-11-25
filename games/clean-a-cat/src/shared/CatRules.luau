@@ -74,6 +74,17 @@ CatRules.LATER_NEEDS = table.freeze({ "smell", "claws" }) :: { Need }
 
 CatRules.STARTING_STATIONS = table.freeze({ Tub = true, Brush = true }) :: { [string]: boolean }
 
+-- The dirt levels' switch (DirtRules): with it on, every later step is in the wash from the start, with no station to
+-- build first (the owner's `steps` pick, 2026-11-25). Here, not in DirtRules, because DirtRules needs this module.
+CatRules.DIRT_FLAG = "dirtLevels"
+
+-- Whether the later need `need` is in the game: a need with no switch always is; a later need is while its station's
+-- switch or the dirt levels' switch is on.
+function CatRules.needOn(need: Need, isOn: (flag: string) -> boolean): boolean
+	local flag = WashDraft.NEED_FLAG[need]
+	return flag == nil or isOn(flag) or isOn(CatRules.DIRT_FLAG)
+end
+
 -- The rarity of `name`, or nil for a name not on the roster.
 function CatRules.rarityOf(name: string): Rarity?
 	for _, rarity in CatRules.RARITIES do
@@ -164,22 +175,29 @@ function CatRules.rollNeeds(
 	return out
 end
 
--- `needs` without the later needs whose switch is off: a cat rolled with a smell keeps it only while bubbleBath is
--- on, so switching a step off takes it out of the cats already waiting too.
+-- `needs` without the later needs that are off (needOn): a cat rolled with a smell keeps it only while bubbleBath
+-- (or dirtLevels) is on, so switching a step off takes it out of the cats already waiting too.
 function CatRules.liveNeeds(needs: { Need }, isOn: (flag: string) -> boolean): { Need }
 	local out: { Need } = {}
 	for _, need in needs do
-		local flag = WashDraft.NEED_FLAG[need]
-		if flag == nil or isOn(flag) then
+		if CatRules.needOn(need, isOn) then
 			table.insert(out, need)
 		end
 	end
 	return out
 end
 
--- The needs whose station is not in `stations` (built stations plus the starting ones).
-function CatRules.lockedNeeds(needs: { Need }, stations: { [string]: boolean }): { Need }
+-- The needs whose station is not in `stations` (built stations plus the starting ones). None while `isOn` says the
+-- dirt levels are on, since then no step waits on a station.
+function CatRules.lockedNeeds(
+	needs: { Need },
+	stations: { [string]: boolean },
+	isOn: ((flag: string) -> boolean)?
+): { Need }
 	local locked: { Need } = {}
+	if isOn and isOn(CatRules.DIRT_FLAG) then
+		return locked
+	end
 	for _, need in needs do
 		local station = CatRules.NEED_STATION[need]
 		if not (CatRules.STARTING_STATIONS[station] or stations[station]) then

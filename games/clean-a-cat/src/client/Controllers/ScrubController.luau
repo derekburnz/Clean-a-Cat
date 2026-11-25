@@ -34,6 +34,7 @@ local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
+local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local LaterStepRules = require(Shared:WaitForChild("LaterStepRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
@@ -645,9 +646,21 @@ local function findAsset(name: string): Model?
 	return nil
 end
 
--- A fresh copy of the dirty cat, sitting on `seat` (which faces the spawn).
-local function buildCat(asset: Model, parent: Instance, seat: CFrame): Cat
+-- A fresh copy of the dirty cat, sitting on `seat` (which faces the spawn). With a dirt level (switch dirtLevels) the
+-- mud and tangle pieces above that level are taken off first, so a less dirty cat has less to scrub and brush.
+local function buildCat(asset: Model, parent: Instance, seat: CFrame, dirt: number?): Cat
 	local model = asset:Clone() :: Model
+	if dirt then
+		for _, piece in model:GetDescendants() do
+			if
+				piece:IsA("Model")
+				and not DirtRules.keeps(piece:GetAttribute(DirtRules.ATTRIBUTE), dirt)
+			then
+				piece:Destroy()
+			end
+		end
+		model:SetAttribute(DirtRules.ATTRIBUTE, dirt)
+	end
 	model:ScaleTo(CAT_SCALE)
 	model:PivotTo(seat) -- the pivot is the base centre
 	-- A part that ships hidden (the long claws, #100, and anything added later) stays as shipped: it never
@@ -1404,9 +1417,8 @@ end
 local function dropLater(need: string)
 	local v = visit
 	local cat = if v then v.cat else nil
-	local flag = WashDraft.NEED_FLAG[need]
-	if not v or not cat or flag == nil or LiveFlags.isOn(flag) then
-		return
+	if not v or not cat or CatRules.needOn(need, LiveFlags.isOn) then
+		return -- still on: its own switch, or the dirt levels'
 	end
 	local waiting = table.find(v.later, need)
 	if waiting then
@@ -1757,13 +1769,13 @@ local function testFinishStep()
 end
 
 -- A new dirty cat in the tub (the server's cat `catId`): the last cat goes and a fresh copy sits down.
-local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number)
+local function startCat(v: Visit, asset: Model, seat: CFrame, catId: number, dirt: number?)
 	local old = v.cat
 	if old then
 		BrushShine.untrack(old.model)
 		old.model:Destroy()
 	end
-	local cat = buildCat(asset, v.folder, seat)
+	local cat = buildCat(asset, v.folder, seat, dirt)
 	v.cat = cat
 	v.away = false -- a new cat sits in the tub
 	WashView.frame(nil, cat.model)
@@ -1866,7 +1878,8 @@ local function onCatReady(
 	rawNeeds: unknown,
 	rawLocked: unknown,
 	rawStray: unknown,
-	rawStrokes: unknown
+	rawStrokes: unknown,
+	rawDirt: unknown
 )
 	local v = visit
 	if not v or type(rawId) ~= "number" then
@@ -1892,7 +1905,8 @@ local function onCatReady(
 		return
 	end
 	release()
-	startCat(v, asset, seat, rawId)
+	-- the dirt level (switch dirtLevels) trims only a customer's cat or a stray, never the kitten
+	startCat(v, asset, seat, rawId, if kind and not mascot then DirtRules.clean(rawDirt) else nil)
 	-- the server's count; anything odd falls back to the hand brush's
 	v.brushStrokes = if type(rawStrokes) == "number"
 			and rawStrokes == math.floor(rawStrokes)
@@ -2326,6 +2340,17 @@ local function enable()
 			end
 		)
 	end
+	-- the dirt levels switched off: a later step whose own switch is off goes too
+	trove:Connect(
+		ReplicatedStorage:GetAttributeChangedSignal(
+			LiveFlags.ATTRIBUTE_PREFIX .. CatRules.DIRT_FLAG
+		),
+		function()
+			for _, need in CatRules.LATER_NEEDS do
+				dropLater(need)
+			end
+		end
+	)
 	trove:Connect(RunService.Heartbeat, function()
 		local active = activeInput
 		if active and active.KeyCode == GAMEPAD_BUTTON then
