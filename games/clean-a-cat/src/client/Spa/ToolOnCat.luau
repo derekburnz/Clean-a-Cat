@@ -28,7 +28,6 @@ local SCALE = 1.1 -- the tools are drawn about twice real size for a hand; this 
 local LIFT = 0.04 -- studs the tool's bottom floats off the fur, so it never sinks into a curve of the coat
 local GLIDE = 30 -- per second; how fast the tool catches up with the touch point
 local FAINT = 0.6 -- see-through on the kitten's head
-local ASSET_WAIT_SECONDS = 5
 
 -- The tool each wash step shows. A later step (step) wins over the stage it runs in, as in ScrubController.
 -- Owned upgrades show their own model (Bubble Soap's sponge, the Pro Brush's fluffy brush).
@@ -65,7 +64,8 @@ local function copyOf(name: string): Copy?
 	if missing[name] then
 		return nil
 	end
-	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
+	-- never waits: this runs inside a touch (Review-QA's nit on #404); the assets are in long before the first wash
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	local asset = if assets then assets:FindFirstChild(name) else nil
 	if not (asset and asset:IsA("Model")) then
 		missing[name] = true

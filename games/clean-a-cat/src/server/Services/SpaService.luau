@@ -200,7 +200,13 @@ local function sayCarry(player: Player, kind: string?)
 end
 
 local function newCat(player: Player): SpaRules.Cat
-	if carrying[player] then
+	local where = carrying[player]
+	if where then
+		-- a customer still holding a cat that is being replaced hands it over and leaves (Review-QA's nit on #408)
+		local old = cats[player]
+		if where == "door" and old and old.kind then
+			FigureService.served(player, old.kind :: string)
+		end
 		carrying[player] = nil
 		sayCarry(player, nil)
 	end
