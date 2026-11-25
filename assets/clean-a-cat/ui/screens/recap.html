@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="kit.css">
 <style>
 /* After each cat: stars, then the coins and XP breakdown (Derek liked this in My Pet Salon!).
+   Pay rows follow Derek's pick of 2026-11-25: pay = base x speed (stars) x quick bonus x dirt (steps), one line each,
+   the base in coins and each part as a "×" so the sum is plain. The quick bonus line shows only when the cat was taken
+   inside the first 10% of its heart bar; no line ever shows a loss. Numbers here are placeholders for tuning.md.
    full: the card the first times, and for a rare cat. compact: the slim strip for every other cat, so 20 cats a
    session do not mean 20 windows to close. The player taps Next cat (or X); nothing here closes by itself.
    side: the full card as a narrow column at the left with no dim (switch recapSide), so the clean cat stays in view
@@ -140,13 +143,14 @@ body.short .foot .actions .btn { padding: 0 26px 4px; }
         <div>
           <div class="stars-big"><i data-ic="star"></i><i data-ic="star"></i><i data-ic="starEmpty"></i></div>
           <div class="rows">
-            <div class="line"><i data-ic="paw"></i>Washed and dried<span class="v">+40</span></div>
-            <div class="line"><i data-ic="clock"></i>Quick job<span class="v">+10</span></div>
-            <div class="line"><i data-ic="heart"></i>Happy owner tip<span class="v">+8</span></div>
+            <div class="line"><i data-ic="coin"></i>Base pay<span class="v">40</span></div>
+            <div class="line"><i data-ic="star"></i>Speed<span class="v">×1.2</span></div>
+            <div class="line"><i data-ic="sparkle"></i>Quick bonus<span class="v">×2</span></div>
+            <div class="line"><i data-ic="mud"></i>Dirt · 5 steps<span class="v">×1.5</span></div>
           </div>
           <div class="foot">
           <div class="total">
-            <span class="big"><i data-ic="coin"></i>+58</span>
+            <span class="big"><i data-ic="coin"></i>+144</span>
             <div class="xpb"><span class="t">+25 XP</span><div class="bar"><i style="width:74%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
           </div>
           <div class="actions">
@@ -170,13 +174,14 @@ body.short .foot .actions .btn { padding: 0 26px 4px; }
             <span class="tags"><span class="rar common">Common</span><span class="new">New!</span></span></div>
         </div>
         <div class="rows">
-          <div class="line"><i data-ic="paw"></i>Washed and dried<span class="v">+40</span></div>
-          <div class="line"><i data-ic="clock"></i>Quick job<span class="v">+10</span></div>
-          <div class="line"><i data-ic="heart"></i>Happy owner tip<span class="v">+8</span></div>
+          <div class="line"><i data-ic="coin"></i>Base pay<span class="v">40</span></div>
+          <div class="line"><i data-ic="star"></i>Speed<span class="v">×1.2</span></div>
+          <div class="line"><i data-ic="sparkle"></i>Quick bonus<span class="v">×2</span></div>
+          <div class="line"><i data-ic="mud"></i>Dirt · 5 steps<span class="v">×1.5</span></div>
         </div>
         <div class="sfoot">
           <div class="total">
-            <span class="big"><i data-ic="coin"></i>+58</span>
+            <span class="big"><i data-ic="coin"></i>+144</span>
             <div class="xpb"><span class="t">+25 XP</span><div class="bar"><i style="width:74%;background:linear-gradient(#e2c6ff,#a45be6)"></i></div></div>
           </div>
           <button class="btn green" data-tap><span class="lbl">Next cat</span></button>
