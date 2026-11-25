@@ -31,6 +31,20 @@ end
 
 local scrub: Audio.LoopHandle? = nil
 local dryer: Audio.LoopHandle? = nil
+local rinse: Audio.LoopHandle? = nil
+local rinseAt = 0
+local RINSE_HOLD = 0.2 -- seconds the spray sound keeps going after the last RinseSpray
+
+local function at(instance: any): Instance?
+	return if typeof(instance) == "Instance" then instance else nil
+end
+
+local function stopRinse()
+	if rinse then
+		rinse.stop()
+		rinse = nil
+	end
+end
 
 -- Moment name -> handler. Payloads follow Shared.Moments: the cat first, then the moment's values.
 local HANDLERS: { [string]: (...any) -> () } = {
@@ -92,6 +106,46 @@ local HANDLERS: { [string]: (...any) -> () } = {
 			dryer.stop()
 			dryer = nil
 		end
+	end,
+	-- The wash bar (switch washMeter) and the later steps. Each Moment fires only with its own switch on.
+	SudsPopped = function()
+		Audio.play("bubblePop")
+	end,
+	BathFoamy = function(cat: any)
+		Audio.play("foamSwell", { at = at(cat) })
+	end,
+	RinseSpray = function(cat: any)
+		if rinse == nil then
+			rinse = Audio.loop("rinseLoop", at(cat))
+		end
+		local now = os.clock()
+		rinseAt = now
+		task.delay(RINSE_HOLD, function()
+			if rinseAt == now then
+				stopRinse()
+			end
+		end)
+	end,
+	ShakeOff = function(cat: any, step: any)
+		stopRinse()
+		Audio.play("stepChime")
+		Audio.play("catShake", { at = at(cat) })
+		if step == "rinse" then
+			Audio.play("foamDrop", { at = at(cat) })
+		end
+	end,
+	ClawSnipped = function()
+		Audio.play("clawSnip")
+	end,
+	-- Coming with Gameplay's special visitors, the crate and the bow step; bind skips them until they exist.
+	VisitorArrived = function(visitor: any)
+		Audio.play("visitorChime", { at = at(visitor) })
+	end,
+	CrateDropped = function(crate: any)
+		Audio.play("crateDrop", { at = at(crate) })
+	end,
+	BowTied = function(cat: any)
+		Audio.play("bowTie", { at = at(cat) })
 	end,
 }
 
