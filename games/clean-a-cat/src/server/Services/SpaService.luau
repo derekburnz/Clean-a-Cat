@@ -95,11 +95,12 @@ local function nextNumber(): number
 	return random:NextNumber()
 end
 
--- A cat's dirt level (DirtRules): rolled by rarity; level 1 for anyone joining the line before the save's first
--- serve, so the tutorial's first customers are the easy ones.
-local function rollDirt(player: Player, kind: string): number
+-- A cat's dirt level (DirtRules): rolled by rarity. In a new spa's first line (no serve yet), `place` is the
+-- customer's place in it, so the tutorial's first two customers get DirtRules.TUTORIAL's easy levels.
+local function rollDirt(player: Player, kind: string, place: number): number
 	local save = DataService.get(player)
-	return DirtRules.roll(kind, nextNumber, save == nil or save.stars <= 0)
+	local fresh = save == nil or save.stars <= 0
+	return DirtRules.roll(kind, nextNumber, if fresh then place else nil)
 end
 
 -- A cat's needs: with dirt levels on, its rarity's plus its level's; otherwise its rarity's plus the later needs whose
@@ -143,7 +144,7 @@ local function queueFor(player: Player): { string }
 	local n = needsFor(player)
 	-- a line left from before these lists existed, or out of step: roll what is missing, drop what is extra
 	while #d < #q do
-		table.insert(d, rollDirt(player, q[#d + 1]))
+		table.insert(d, rollDirt(player, q[#d + 1], #d + 1))
 	end
 	while #d > #q do
 		table.remove(d)
@@ -156,7 +157,7 @@ local function queueFor(player: Player): { string }
 	end
 	while #q < QUEUE_SIZE do
 		local kind = rollCustomer(player)
-		local dirt = rollDirt(player, kind)
+		local dirt = rollDirt(player, kind, #q + 1)
 		table.insert(q, kind)
 		table.insert(d, dirt)
 		table.insert(n, rollNeeds(kind, dirt))
@@ -307,7 +308,7 @@ local function newCat(player: Player): SpaRules.Cat
 				return random:NextNumber()
 			end, brandNew, CatRules.tierFor(save.stars))
 			cat.stray = true
-			cat.dirt = DirtRules.roll(cat.kind :: string, nextNumber, brandNew)
+			cat.dirt = DirtRules.roll(cat.kind :: string, nextNumber, if brandNew then 1 else nil)
 			cat.needs = rollNeeds(cat.kind :: string, cat.dirt :: number)
 			cats[player] = cat
 			return cat

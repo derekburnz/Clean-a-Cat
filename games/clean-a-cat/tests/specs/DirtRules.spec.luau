@@ -47,14 +47,19 @@ return function()
 			end
 		end)
 
-		it("rolls by the chances, and level 1 for the first customer", function()
-			expect(DirtRules.roll("Cotton", always(0), false)).to.equal(1)
-			expect(DirtRules.roll("Cotton", always(0.56), false)).to.equal(2)
-			expect(DirtRules.roll("Cotton", always(0.999), false)).to.equal(4)
-			expect(DirtRules.roll("Starcoat", always(0), false)).to.equal(2) -- a legendary is never level 1
-			expect(DirtRules.roll("Starcoat", always(0.999), true)).to.equal(1)
-			expect(DirtRules.roll("Nobody", always(0), false)).to.equal(1)
-		end)
+		it(
+			"rolls by the chances, and the tutorial's levels for a new spa's first two customers",
+			function()
+				expect(DirtRules.roll("Cotton", always(0))).to.equal(1)
+				expect(DirtRules.roll("Cotton", always(0.56))).to.equal(2)
+				expect(DirtRules.roll("Cotton", always(0.999))).to.equal(4)
+				expect(DirtRules.roll("Starcoat", always(0))).to.equal(2) -- a legendary is never level 1
+				expect(DirtRules.roll("Starcoat", always(0.999), 1)).to.equal(1)
+				expect(DirtRules.roll("Starcoat", always(0.999), 2)).to.equal(2)
+				expect(DirtRules.roll("Starcoat", always(0.999), 3)).to.equal(4) -- the third rolls as usual
+				expect(DirtRules.roll("Nobody", always(0))).to.equal(1)
+			end
+		)
 
 		it("adds the bath from level 2 and the claws from level 3", function()
 			expect(table.concat(DirtRules.needs("Cotton", 1), ",")).to.equal("mud,tangles")
@@ -74,11 +79,12 @@ return function()
 			expect(one.coins).to.equal(pay.coins)
 			expect(one.tip).to.equal(pay.tip)
 			local four = DirtRules.pay(pay, 4)
-			expect(four.coins).to.equal(pay.coins * 3)
-			expect(four.tip).to.equal(pay.tip * 3)
+			expect(four.coins).to.equal(pay.coins * 2)
+			expect(four.tip).to.equal(pay.tip) -- the tip stays as it is (tuning pay.tip)
 			expect(four.stars).to.equal(pay.stars)
 			expect(DirtRules.pay(pay, nil).coins).to.equal(pay.coins)
-			expect(DirtRules.pay(CatRules.pay("Tux"), 2).coins).to.equal(23) -- 15 x 1.5 rounds up
+			expect(DirtRules.pay(CatRules.pay("Tux"), 2).coins).to.equal(19) -- 15 x 1.25 = 18.75
+			expect(DirtRules.pay(CatRules.pay("Tux"), 3).coins).to.equal(24) -- 15 x 1.6
 		end)
 
 		it("counts the steps with the bow and without the dryer", function()
@@ -135,9 +141,9 @@ return function()
 				dirt
 			)
 			expect(cards[1].dirt).to.equal(2)
-			expect(cards[1].pays).to.equal(15)
+			expect(cards[1].pays).to.equal(13) -- 10 x 1.25 = 12.5 rounds up
 			expect(cards[1].locked.smell).to.equal(nil)
-			expect(cards[3].pays).to.equal(30)
+			expect(cards[3].pays).to.equal(20)
 			expect(cards[1].steps).to.equal(4)
 			expect(cards[2].steps).to.equal(3)
 			expect(cards[3].steps).to.equal(5)

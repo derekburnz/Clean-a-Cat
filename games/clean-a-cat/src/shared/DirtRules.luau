@@ -6,9 +6,10 @@
 --   * the mud and tangles on the cat: Model-Agent's dirty models carry every piece, each child Model with a
 --     DirtLevel attribute, and the client takes away the pieces above the cat's level (trim);
 --   * the later steps: level 2 adds the bath (lather and rinse), level 3 the claws as well, level 4 the most mud;
---   * the pay: coins and tip times PAY[level].
+--   * the pay: the wash's coins times PAY[level] (the tip stays as it is).
 -- With the switch on, every step kind is in the game from the start (the owner's `steps` pick): no step waits on a
--- station. The numbers are drafts for Design-Agent's tuning pass. Pure, so tests/specs/DirtRules.spec.luau covers it.
+-- station. The numbers are Design-Agent's starting values in docs/design/clean-a-cat/tuning.md, section 1 and
+-- pay.dirt; change them there and here together. Pure, so tests/specs/DirtRules.spec.luau covers it.
 local CatRules = require(script.Parent:WaitForChild("CatRules"))
 
 local DirtRules = {}
@@ -20,10 +21,10 @@ DirtRules.LEVELS = 4
 -- Percent per level (1 to 4) for each rarity; each row sums to 100. Rarer cats are more likely dirtier.
 DirtRules.CHANCES = table.freeze({
 	Common = table.freeze({ 55, 30, 12, 3 }),
-	Uncommon = table.freeze({ 30, 40, 22, 8 }),
-	Rare = table.freeze({ 12, 30, 38, 20 }),
-	Epic = table.freeze({ 5, 20, 40, 35 }),
-	Legendary = table.freeze({ 0, 10, 40, 50 }),
+	Uncommon = table.freeze({ 40, 35, 18, 7 }),
+	Rare = table.freeze({ 25, 35, 28, 12 }),
+	Epic = table.freeze({ 10, 30, 35, 25 }),
+	Legendary = table.freeze({ 0, 15, 35, 50 }),
 }) :: { [string]: { number } }
 
 -- The later needs each level adds to the cat's rarity needs (CatRules.needs), in the wash's order.
@@ -37,8 +38,12 @@ DirtRules.EXTRA_NEEDS = table.freeze({
 -- A special visitor's cat (issue 510) is always this dirty.
 DirtRules.SPECIAL_LEVEL = 4
 
--- What the coins and the tip are multiplied by at each level.
-DirtRules.PAY = table.freeze({ 1, 1.5, 2, 3 }) :: { number }
+-- The tutorial's customers, by their place in a new spa's first line (tuning dirt.tutorial): the first is level 1
+-- (3 steps) and the second level 2 (4 steps); anyone after them rolls as usual.
+DirtRules.TUTORIAL = table.freeze({ 1, 2 }) :: { number }
+
+-- What the wash's coins are multiplied by at each level (tuning pay.dirt).
+DirtRules.PAY = table.freeze({ 1, 1.25, 1.6, 2 }) :: { number }
 
 -- A level made safe: a whole number from 1 to LEVELS, else nil. For a value from a remote or an attribute.
 function DirtRules.clean(raw: unknown): number?
@@ -48,11 +53,13 @@ function DirtRules.clean(raw: unknown): number?
 	return raw
 end
 
--- One customer's dirt level. `random()` returns a number in [0, 1). The first customer of a save (`first`), who is
--- the tutorial's, is always level 1. A cat not on the roster rolls like a common one.
-function DirtRules.roll(name: string, random: () -> number, first: boolean): number
-	if first then
-		return 1
+-- One customer's dirt level. `random()` returns a number in [0, 1). `tutorialPlace` is the customer's place in a new
+-- spa's first line (nil once the spa has served anyone): the first two get DirtRules.TUTORIAL's levels. A cat not on
+-- the roster rolls like a common one.
+function DirtRules.roll(name: string, random: () -> number, tutorialPlace: number?): number
+	local fixed = if tutorialPlace then DirtRules.TUTORIAL[tutorialPlace] else nil
+	if fixed then
+		return fixed
 	end
 	local chances = DirtRules.CHANCES[CatRules.rarityOf(name) or "Common"]
 	local pick = random() * 100
@@ -77,12 +84,12 @@ function DirtRules.needs(name: string, level: number): { CatRules.Need }
 	return out
 end
 
--- What `pay` comes to at `level`: coins and tip multiplied and rounded, the stars as they are.
+-- What `pay` comes to at `level`: the coins multiplied and rounded, the tip and the stars as they are.
 function DirtRules.pay(pay: CatRules.Pay, level: number?): CatRules.Pay
 	local times = DirtRules.PAY[DirtRules.clean(level) or 1]
 	return {
 		coins = math.floor(pay.coins * times + 0.5),
-		tip = math.floor(pay.tip * times + 0.5),
+		tip = pay.tip,
 		stars = pay.stars,
 	}
 end
