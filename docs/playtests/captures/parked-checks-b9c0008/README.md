@@ -44,7 +44,7 @@ Local unsaved build of b9c0008 (main on 2026-11-25).
   - Sky: x 152..243, y 265..324
 - All three are on screen, inside the 332 px tall GUI area.
 - Problem: the tap slabs overlap each other by about 20 px vertically (Pink with Mint, Mint with Sky).
-- Tapping Mint worn it on the cat as CleanACat_Bow_Mint, and the bowHearts emitter fired.
+- Tapping Mint put the bow on the cat as CleanACat_Bow_Mint, and the bowHearts emitter fired.
 
 ## Effects for #4, #6 and #7 (pictures 03, 04, 07)
 - Foam (#4): foamTrail on the iPhone frame. The rate followed drag speed from 1 to 8, so the phone cap of 8 holds. It switched on and off 121 times during real scrubbing. Lifetime is 0.5 to 0.8 s and size 0.22.
