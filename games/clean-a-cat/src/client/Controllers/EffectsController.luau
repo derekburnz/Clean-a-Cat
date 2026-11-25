@@ -9,6 +9,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("BrushShine"))
+local CarryShared =
+	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CarryShared"))
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
@@ -20,6 +22,7 @@ local FLUFF_FLAG = "fluffEffects"
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
 local STINK_FLAG = "stinkEffects"
+local SHARED_CARRY_FLAG = "carryShared"
 local SUDS_FLAG = "sudsWash"
 local SUDS_HOP_HEIGHT = 0.7 -- studs
 local SUDS_HOP_SECONDS = 0.32
@@ -59,6 +62,12 @@ function EffectsController.Start()
 	end)
 	Stink.start(function(): boolean
 		return LiveFlags.isOn(STINK_FLAG)
+	end)
+	-- other players' carried cats; the switch counts only once LiveFlags lists it as off by default (an unlisted key
+	-- reads as on)
+	CarryShared.start(function(): boolean
+		return LiveFlags.OFF_BY_DEFAULT[SHARED_CARRY_FLAG] == true
+			and LiveFlags.isOn(SHARED_CARRY_FLAG)
 	end)
 
 	local function scrubOn(): boolean
