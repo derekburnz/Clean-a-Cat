@@ -15,7 +15,16 @@
   "ClawCount": 8,
   "WetDarken": {
    "Float64": 0.3
-  }
+  },
+  "DirtLevels": 4,
+  "MudAtLevel1": 5,
+  "TanglesAtLevel1": 0,
+  "MudAtLevel2": 8,
+  "TanglesAtLevel2": 2,
+  "MudAtLevel3": 13,
+  "TanglesAtLevel3": 4,
+  "MudAtLevel4": 20,
+  "TanglesAtLevel4": 6
  },
  "children": [
   {
@@ -1885,7 +1894,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/11"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/11",
+      "DirtLevel": 2
      },
      "children": [
       {
@@ -2147,7 +2157,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/12"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/12",
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -2200,7 +2211,7 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           -0.0033,
+           -0.0039,
            -0.1389,
            -0.0444
           ],
@@ -2382,7 +2393,7 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.4695,
+           -0.4702,
            1.0283,
            -0.255
           ],
@@ -2406,7 +2417,7 @@
          }
         },
         "Size": [
-         0.1243,
+         0.1256,
          0.1867,
          0.0889
         ],
@@ -2429,7 +2440,7 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.4695,
+         -0.4702,
          1.1694,
          -0.5217
         ],
@@ -2458,7 +2469,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/13"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/13",
+      "DirtLevel": 4
      },
      "children": [
       {
@@ -2512,8 +2524,8 @@
          "CFrame": {
           "position": [
            0.0909,
-           -0.0454,
-           -0.0006
+           -0.0447,
+           -0.0013
           ],
           "orientation": [
            [
@@ -2595,8 +2607,57 @@
         "CFrame": {
          "CFrame": {
           "position": [
+           0.0017,
+           1.4483,
+           -0.8929
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2727,
+         0.0933,
+         0.1202
+        ],
+        "Color": [
+         0.4941,
+         0.451,
+         0.3725
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Patches_Dirty_Mud03",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
            0.0472,
-           1.559,
+           1.5596,
            -0.7884
           ],
           "orientation": [
@@ -2620,7 +2681,7 @@
         },
         "Size": [
          0.1818,
-         0.128,
+         0.1293,
          0.0889
         ],
         "Color": [
@@ -2643,8 +2704,8 @@
        "OptionalCFrame": {
         "position": [
          -0.0892,
-         1.5123,
-         -0.8478
+         1.513,
+         -0.8485
         ],
         "orientation": [
          [
@@ -2671,7 +2732,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/14"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/14",
+      "DirtLevel": 4
      },
      "children": [
       {
@@ -2682,8 +2744,8 @@
          "CFrame": {
           "position": [
            0.0017,
-           1.579,
-           -0.3266
+           1.5796,
+           -0.3259
           ],
           "orientation": [
            [
@@ -2706,8 +2768,8 @@
         },
         "Size": [
          0.2727,
-         0.168,
-         0.4791
+         0.1693,
+         0.4804
         ],
         "Color": [
          0.4196,
@@ -2726,7 +2788,7 @@
           "position": [
            0.0455,
            -0.2333,
-           0.0006
+           0.0
           ],
           "orientation": [
            [
@@ -2761,7 +2823,7 @@
           "position": [
            0.0017,
            1.3083,
-           -0.1481
+           -0.1553
           ],
           "orientation": [
            [
@@ -2785,7 +2847,7 @@
         "Size": [
          0.2727,
          0.3733,
-         0.1249
+         0.1106
         ],
         "Color": [
          0.4196,
@@ -2810,7 +2872,7 @@
           "position": [
            0.1835,
            1.4016,
-           -0.1553
+           -0.1546
           ],
           "orientation": [
            [
@@ -2834,7 +2896,7 @@
         "Size": [
          0.0909,
          0.1867,
-         0.1106
+         0.1119
         ],
         "Color": [
          0.4196,
@@ -2859,7 +2921,7 @@
           "position": [
            0.1835,
            1.1683,
-           -0.1553
+           -0.1546
           ],
           "orientation": [
            [
@@ -2883,7 +2945,7 @@
         "Size": [
          0.0909,
          0.28,
-         0.1106
+         0.1119
         ],
         "Color": [
          0.4196,
@@ -2905,7 +2967,7 @@
        "OptionalCFrame": {
         "position": [
          0.0472,
-         1.3456,
+         1.3463,
          -0.3259
         ],
         "orientation": [
@@ -2933,7 +2995,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/15"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/15",
+      "DirtLevel": 4
      },
      "children": [
       {
@@ -2943,9 +3006,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.328,
-           0.8785,
-           -0.1546
+           -0.3286,
+           0.8779,
+           -0.154
           ],
           "orientation": [
            [
@@ -2967,9 +3030,9 @@
          }
         },
         "Size": [
-         0.3866,
-         0.2996,
-         0.1119
+         0.3879,
+         0.3009,
+         0.1132
         ],
         "Color": [
          0.4196,
@@ -3023,7 +3086,7 @@
           "position": [
            -0.3165,
            1.1683,
-           -0.154
+           -0.1533
           ],
           "orientation": [
            [
@@ -3047,7 +3110,7 @@
         "Size": [
          0.1818,
          0.28,
-         0.1132
+         0.1145
         ],
         "Color": [
          0.4196,
@@ -3068,9 +3131,9 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         -0.328,
-         1.0185,
-         -0.154
+         -0.3286,
+         1.0179,
+         -0.1533
         ],
         "orientation": [
          [
@@ -3097,7 +3160,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/16"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/16",
+      "DirtLevel": 1
      },
      "children": [
       {
@@ -3107,9 +3171,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.4219,
-           1.5078,
-           -0.8439
+           0.4225,
+           1.5084,
+           -0.8446
           ],
           "orientation": [
            [
@@ -3131,9 +3195,9 @@
          }
         },
         "Size": [
-         0.204,
-         0.2123,
-         0.2
+         0.2053,
+         0.2136,
+         0.2013
         ],
         "Color": [
          0.4941,
@@ -3150,7 +3214,7 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0007,
+           0.0006,
            -0.0727,
            0.0444
           ],
@@ -3185,8 +3249,8 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.468,
-           1.4818,
+           0.4686,
+           1.4824,
            -0.6995
           ],
           "orientation": [
@@ -3209,8 +3273,8 @@
          }
         },
         "Size": [
-         0.1144,
-         0.3469,
+         0.1157,
+         0.3482,
          0.0889
         ],
         "Color": [
@@ -3234,7 +3298,7 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.466,
+           0.4667,
            1.3083,
            -0.7884
           ],
@@ -3258,7 +3322,7 @@
          }
         },
         "Size": [
-         0.1105,
+         0.1118,
          0.1867,
          0.0889
         ],
@@ -3281,9 +3345,9 @@
       "WorldPivotData": {
        "OptionalCFrame": {
         "position": [
-         0.4225,
-         1.4351,
-         -0.7995
+         0.4232,
+         1.4357,
+         -0.8001
         ],
         "orientation": [
          [
@@ -3310,7 +3374,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/33"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/33",
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -3523,7 +3588,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/34"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/34",
+      "DirtLevel": 3
      },
      "children": [
       {
@@ -4458,7 +4524,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/29"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/29",
+      "DirtLevel": 2
      },
      "children": [
       {
@@ -4469,8 +4536,8 @@
          "CFrame": {
           "position": [
            0.0,
-           1.2219,
-           0.8698
+           1.2226,
+           0.8699
           ],
           "orientation": [
            [
@@ -4492,9 +4559,9 @@
          }
         },
         "Size": [
-         0.2782,
-         0.2782,
-         0.2108
+         0.2808,
+         0.2808,
+         0.2121
         ],
         "Color": [
          0.4196,
@@ -4545,8 +4612,8 @@
        "OptionalCFrame": {
         "position": [
          0.0,
-         1.2219,
-         0.8698
+         1.2226,
+         0.8699
         ],
         "orientation": [
          [
@@ -4573,7 +4640,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/30"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/30",
+      "DirtLevel": 4
      },
      "children": [
       {
@@ -4584,8 +4652,8 @@
          "CFrame": {
           "position": [
            0.0,
-           0.9623,
-           0.6474
+           0.9629,
+           0.647
           ],
           "orientation": [
            [
@@ -4607,8 +4675,8 @@
          }
         },
         "Size": [
-         0.3008,
-         0.1121,
+         0.3034,
+         0.1134,
          0.18
         ],
         "Color": [
@@ -4660,8 +4728,8 @@
        "OptionalCFrame": {
         "position": [
          0.0,
-         0.9623,
-         0.6474
+         0.9629,
+         0.647
         ],
         "orientation": [
          [
@@ -4688,7 +4756,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/32"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/32",
+      "DirtLevel": 2
      },
      "children": [
       {
@@ -5251,7 +5320,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/25"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/25",
+      "DirtLevel": 1
      },
      "children": [
       {
@@ -5262,7 +5332,7 @@
          "CFrame": {
           "position": [
            -0.22,
-           0.1568,
+           0.1575,
            -0.21
           ],
           "orientation": [
@@ -5285,9 +5355,9 @@
          }
         },
         "Size": [
-         0.3314,
-         0.1529,
-         0.3314
+         0.334,
+         0.1516,
+         0.334
         ],
         "Color": [
          0.4941,
@@ -5340,7 +5410,7 @@
          "CFrame": {
           "position": [
            -0.22,
-           0.0841,
+           0.0854,
            -0.21
           ],
           "orientation": [
@@ -5363,9 +5433,9 @@
          }
         },
         "Size": [
-         0.3282,
+         0.3308,
          0.11,
-         0.3282
+         0.3308
         ],
         "Color": [
          0.4941,
@@ -5388,9 +5458,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.315,
+           -0.3156,
            0.2795,
-           -0.2567
+           -0.2574
           ],
           "orientation": [
            [
@@ -5412,9 +5482,9 @@
          }
         },
         "Size": [
-         0.1134,
+         0.1147,
          0.0925,
-         0.19
+         0.1913
         ],
         "Color": [
          0.4941,
@@ -5436,7 +5506,7 @@
        "OptionalCFrame": {
         "position": [
          -0.22,
-         0.1774,
+         0.1781,
          -0.21
         ],
         "orientation": [
@@ -6096,7 +6166,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/26"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/26",
+      "DirtLevel": 1
      },
      "children": [
       {
@@ -6107,7 +6178,7 @@
          "CFrame": {
           "position": [
            0.22,
-           0.088,
+           0.0893,
            -0.21
           ],
           "orientation": [
@@ -6130,9 +6201,9 @@
          }
         },
         "Size": [
-         0.336,
+         0.3386,
          0.11,
-         0.336
+         0.3386
         ],
         "Color": [
          0.4196,
@@ -6150,7 +6221,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.0452,
+           0.0445,
            0.0
           ],
           "orientation": [
@@ -6185,7 +6256,7 @@
          "CFrame": {
           "position": [
            0.22,
-           0.1125,
+           0.1054,
            -0.21
           ],
           "orientation": [
@@ -6208,9 +6279,9 @@
          }
         },
         "Size": [
-         0.3323,
-         0.0565,
-         0.3323
+         0.3037,
+         0.0708,
+         0.3037
         ],
         "Color": [
          0.4196,
@@ -6233,9 +6304,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.3109,
+           0.3115,
            0.187,
-           -0.2509
+           -0.2515
           ],
           "orientation": [
            [
@@ -6257,9 +6328,9 @@
          }
         },
         "Size": [
-         0.0983,
+         0.0996,
          0.0925,
-         0.1783
+         0.1796
         ],
         "Color": [
          0.4196,
@@ -6281,7 +6352,7 @@
        "OptionalCFrame": {
         "position": [
          0.22,
-         0.1331,
+         0.1338,
          -0.21
         ],
         "orientation": [
@@ -6941,7 +7012,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/27"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/27",
+      "DirtLevel": 1
      },
      "children": [
       {
@@ -6952,7 +7024,7 @@
          "CFrame": {
           "position": [
            -0.22,
-           0.0763,
+           0.0776,
            0.41
           ],
           "orientation": [
@@ -6975,9 +7047,9 @@
          }
         },
         "Size": [
-         0.3126,
+         0.3152,
          0.11,
-         0.3126
+         0.3152
         ],
         "Color": [
          0.4196,
@@ -6995,7 +7067,7 @@
          "CFrame": {
           "position": [
            0.0,
-           0.051,
+           0.0504,
            0.0
           ],
           "orientation": [
@@ -7030,7 +7102,7 @@
          "CFrame": {
           "position": [
            -0.22,
-           0.1067,
+           0.1073,
            0.41
           ],
           "orientation": [
@@ -7053,9 +7125,9 @@
          }
         },
         "Size": [
-         0.3089,
-         0.0682,
-         0.3089
+         0.3115,
+         0.0669,
+         0.3115
         ],
         "Color": [
          0.4196,
@@ -7078,9 +7150,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.3111,
+           -0.3118,
            0.187,
-           0.4711
+           0.4718
           ],
           "orientation": [
            [
@@ -7102,9 +7174,9 @@
          }
         },
         "Size": [
-         0.1056,
+         0.1069,
          0.0925,
-         0.1856
+         0.1869
         ],
         "Color": [
          0.4196,
@@ -7126,7 +7198,7 @@
        "OptionalCFrame": {
         "position": [
          -0.22,
-         0.1273,
+         0.1279,
          0.41
         ],
         "orientation": [
@@ -7318,7 +7390,8 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/28"
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/28",
+      "DirtLevel": 1
      },
      "children": [
       {
@@ -7329,7 +7402,7 @@
          "CFrame": {
           "position": [
            0.22,
-           0.1549,
+           0.1555,
            0.41
           ],
           "orientation": [
@@ -7352,9 +7425,9 @@
          }
         },
         "Size": [
-         0.3236,
-         0.1568,
-         0.3236
+         0.3262,
+         0.1555,
+         0.3262
         ],
         "Color": [
          0.4941,
@@ -7407,7 +7480,7 @@
          "CFrame": {
           "position": [
            0.22,
-           0.0802,
+           0.0815,
            0.41
           ],
           "orientation": [
@@ -7430,9 +7503,9 @@
          }
         },
         "Size": [
-         0.3204,
+         0.323,
          0.11,
-         0.3204
+         0.323
         ],
         "Color": [
          0.4941,
@@ -7455,9 +7528,9 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           0.3148,
+           0.3154,
            0.2795,
-           0.4731
+           0.4737
           ],
           "orientation": [
            [
@@ -7479,9 +7552,9 @@
          }
         },
         "Size": [
-         0.1061,
+         0.1074,
          0.0925,
-         0.1895
+         0.1908
         ],
         "Color": [
          0.4941,
@@ -7503,7 +7576,7 @@
        "OptionalCFrame": {
         "position": [
          0.22,
-         0.1755,
+         0.1761,
          0.41
         ],
         "orientation": [
@@ -7562,7 +7635,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/17"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/17",
+    "DirtLevel": 2
    },
    "children": [
     {
@@ -7573,8 +7647,8 @@
        "CFrame": {
         "position": [
          0.0017,
-         0.5092,
-         -0.3259
+         0.5086,
+         -0.3266
         ],
         "orientation": [
          [
@@ -7597,8 +7671,8 @@
       },
       "Size": [
        0.26,
-       0.4115,
-       0.1112
+       0.4128,
+       0.1125
       ],
       "Color": [
        0.4196,
@@ -7616,7 +7690,7 @@
        "CFrame": {
         "position": [
          0.0,
-         -0.0843,
+         -0.0836,
          -0.0006
         ],
         "orientation": [
@@ -7652,7 +7726,7 @@
         "position": [
          0.0017,
          0.2335,
-         -0.3276
+         -0.3282
         ],
         "orientation": [
          [
@@ -7676,7 +7750,7 @@
       "Size": [
        0.0827,
        0.197,
-       0.1105
+       0.1118
       ],
       "Color": [
        0.4196,
@@ -7699,7 +7773,7 @@
       "position": [
        0.0017,
        0.425,
-       -0.3266
+       -0.3272
       ],
       "orientation": [
        [
@@ -7726,7 +7800,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/18"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/18",
+    "DirtLevel": 4
    },
    "children": [
     {
@@ -7736,8 +7811,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.2454,
-         0.842,
+         -0.246,
+         0.8427,
          0.1183
         ],
         "orientation": [
@@ -7760,8 +7835,8 @@
        }
       },
       "Size": [
-       0.4075,
-       0.2541,
+       0.4088,
+       0.2554,
        0.4318
       ],
       "Color": [
@@ -7814,7 +7889,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.376,
+         -0.3767,
          0.6183,
          0.0751
         ],
@@ -7838,7 +7913,7 @@
        }
       },
       "Size": [
-       0.1488,
+       0.1501,
        0.1933,
        0.1727
       ],
@@ -7863,7 +7938,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3721,
+         -0.3728,
          0.6183,
          -0.0544
         ],
@@ -7887,7 +7962,7 @@
        }
       },
       "Size": [
-       0.141,
+       0.1423,
        0.1933,
        0.0864
       ],
@@ -7910,8 +7985,8 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.246,
-       0.7454,
+       -0.2467,
+       0.746,
        0.1183
       ],
       "orientation": [
@@ -7939,7 +8014,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/19"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/19",
+    "DirtLevel": 4
    },
    "children": [
     {
@@ -7950,8 +8026,8 @@
        "CFrame": {
         "position": [
          0.1317,
-         0.795,
-         0.5236
+         0.7957,
+         0.5243
         ],
         "orientation": [
          [
@@ -7974,8 +8050,8 @@
       },
       "Size": [
        0.3467,
-       0.3534,
-       0.2061
+       0.3547,
+       0.2074
       ],
       "Color": [
        0.4941,
@@ -8029,7 +8105,7 @@
         "position": [
          0.175,
          0.5216,
-         0.5675
+         0.5681
         ],
         "orientation": [
          [
@@ -8053,7 +8129,7 @@
       "Size": [
        0.0867,
        0.1933,
-       0.1211
+       0.1224
       ],
       "Color": [
        0.4941,
@@ -8077,7 +8153,7 @@
        "CFrame": {
         "position": [
          0.175,
-         0.8728,
+         0.8734,
          0.3342
         ],
         "orientation": [
@@ -8101,7 +8177,7 @@
       },
       "Size": [
        0.0867,
-       0.1223,
+       0.1236,
        0.1727
       ],
       "Color": [
@@ -8124,8 +8200,8 @@
      "OptionalCFrame": {
       "position": [
        0.1317,
-       0.6983,
-       0.4379
+       0.699,
+       0.4386
       ],
       "orientation": [
        [
@@ -8152,7 +8228,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/20"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/20",
+    "DirtLevel": 3
    },
    "children": [
     {
@@ -8162,7 +8239,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.3797,
+         0.3725,
          0.57,
          0.0751
         ],
@@ -8186,7 +8263,7 @@
        }
       },
       "Size": [
-       0.1493,
+       0.135,
        0.29,
        0.5182
       ],
@@ -8240,8 +8317,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.2725,
-         0.8858,
+         0.2723,
+         0.8865,
          -0.1832
         ],
         "orientation": [
@@ -8264,8 +8341,8 @@
        }
       },
       "Size": [
-       0.2815,
-       0.1484,
+       0.2812,
+       0.1497,
        0.1743
       ],
       "Color": [
@@ -8289,8 +8366,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.3608,
-         0.3642,
+         0.3614,
+         0.3636,
          -0.1408
         ],
         "orientation": [
@@ -8313,8 +8390,8 @@
        }
       },
       "Size": [
-       0.1115,
-       0.1215,
+       0.1128,
+       0.1228,
        0.0864
       ],
       "Color": [
@@ -8336,7 +8413,7 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.293,
+       0.2859,
        0.6317,
        0.0319
       ],
@@ -8365,7 +8442,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/21"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/21",
+    "DirtLevel": 3
    },
    "children": [
     {
@@ -8375,8 +8453,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.2415,
-         0.4152,
+         -0.2421,
+         0.4145,
          0.291
         ],
         "orientation": [
@@ -8399,8 +8477,8 @@
        }
       },
       "Size": [
-       0.3997,
-       0.2129,
+       0.401,
+       0.2142,
        0.4318
       ],
       "Color": [
@@ -8419,7 +8497,7 @@
        "CFrame": {
         "position": [
          0.0,
-         -0.0869,
+         -0.0862,
          0.0
         ],
         "orientation": [
@@ -8453,7 +8531,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3581,
+         -0.3588,
          0.2335,
          0.2047
         ],
@@ -8477,7 +8555,7 @@
        }
       },
       "Size": [
-       0.109,
+       0.1103,
        0.197,
        0.0824
       ],
@@ -8500,7 +8578,7 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.2415,
+       -0.2421,
        0.3283,
        0.291
       ],
@@ -8529,7 +8607,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/22"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/22",
+    "DirtLevel": 4
    },
    "children": [
     {
@@ -8540,7 +8619,7 @@
        "CFrame": {
         "position": [
          0.175,
-         0.8878,
+         0.8884,
          0.1183
         ],
         "orientation": [
@@ -8564,7 +8643,7 @@
       },
       "Size": [
        0.26,
-       0.1523,
+       0.1536,
        0.2591
       ],
       "Color": [
@@ -8618,7 +8697,7 @@
        "CFrame": {
         "position": [
          0.2617,
-         0.8747,
+         0.8754,
          0.3342
         ],
         "orientation": [
@@ -8642,7 +8721,7 @@
       },
       "Size": [
        0.0867,
-       0.1262,
+       0.1275,
        0.1727
       ],
       "Color": [
@@ -8665,7 +8744,7 @@
      "OptionalCFrame": {
       "position": [
        0.175,
-       0.8878,
+       0.8884,
        0.2047
       ],
       "orientation": [
@@ -8693,7 +8772,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/23"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/23",
+    "DirtLevel": 3
    },
    "children": [
     {
@@ -8703,7 +8783,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3734,
+         -0.3741,
          0.57,
          -0.184
         ],
@@ -8727,7 +8807,7 @@
        }
       },
       "Size": [
-       0.1436,
+       0.1449,
        0.29,
        0.1727
       ],
@@ -8747,7 +8827,7 @@
        "CFrame": {
         "position": [
          0.0,
-         -0.062,
+         -0.0627,
          0.0
         ],
         "orientation": [
@@ -8781,8 +8861,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3604,
-         0.3629,
+         -0.361,
+         0.3623,
          -0.1408
         ],
         "orientation": [
@@ -8805,8 +8885,8 @@
        }
       },
       "Size": [
-       0.1175,
-       0.1241,
+       0.1188,
+       0.1254,
        0.0864
       ],
       "Color": [
@@ -8828,8 +8908,8 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       -0.3734,
-       0.5079,
+       -0.3741,
+       0.5073,
        -0.184
       ],
       "orientation": [
@@ -8857,7 +8937,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/24"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/24",
+    "DirtLevel": 3
    },
    "children": [
     {
@@ -8867,8 +8948,8 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.2308,
-         0.3642,
+         0.2314,
+         0.3636,
          0.3774
         ],
         "orientation": [
@@ -8891,8 +8972,8 @@
        }
       },
       "Size": [
-       0.3715,
-       0.1215,
+       0.3728,
+       0.1228,
        0.2591
       ],
       "Color": [
@@ -8911,7 +8992,7 @@
        "CFrame": {
         "position": [
          0.0006,
-         -0.0843,
+         -0.0836,
          0.0
         ],
         "orientation": [
@@ -8945,7 +9026,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.3624,
+         0.3631,
          0.2335,
          0.3774
         ],
@@ -8969,7 +9050,7 @@
        }
       },
       "Size": [
-       0.1108,
+       0.1121,
        0.197,
        0.0824
       ],
@@ -8992,7 +9073,7 @@
     "WorldPivotData": {
      "OptionalCFrame": {
       "position": [
-       0.2314,
+       0.2321,
        0.28,
        0.3774
       ],
@@ -9021,7 +9102,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/31"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/31",
+    "DirtLevel": 2
    },
    "children": [
     {
@@ -9234,7 +9316,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/35"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/35",
+    "DirtLevel": 4
    },
    "children": [
     {
@@ -9447,7 +9530,8 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/36"
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Patches_Dirty/36",
+    "DirtLevel": 4
    },
    "children": [
     {

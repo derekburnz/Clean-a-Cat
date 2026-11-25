@@ -21,6 +21,10 @@ A dirty model is the clean cat (same pieces, same pivots, same names after the a
                         not extra parts: while the cat is wet, the game darkens every coat part by WetDarken (multiply
                         its Color by 1 - WetDarken) and the dryer tweens it back. No extra parts, no z-fighting.
 
+  dirt levels           one model serves four levels of dirt: every _MudNN and _TangleNN Model carries the attribute
+                        DirtLevel (1 to 4), the lowest level at which it shows, and the root says how many pieces
+                        each level has (DirtLevels, MudAtLevel1 .. 4, TanglesAtLevel1 .. 4). See MUD_LEVEL below.
+
 When the last blob and tangle are gone the model is the clean cat (plus the hidden fluff), so nothing is swapped at
 the reveal.
 
@@ -219,7 +223,8 @@ HEAD_COAT = [
               (0, 0.1, 0.4, 0.875, 1.0, 0.0, 0.375), (0, 0.0, 0.1, 0.125, 0.25, -0.25, 0.0)]),   # a drip off the jaw
     ("Head", [(0, 0.9, 1.0, 0.25, 0.875, 0.5, 0.875), (0, 0.9, 1.0, 0.5, 0.75, 0.25, 0.5),      # the left temple,
               (0, 0.9, 1.0, 0.375, 0.625, 0.875, 1.0), (0, 0.9, 1.0, 0.125, 0.375, 0.0, 0.25)]),
-    ("Head", [(0, 0.5, 0.8, 0.0, 0.25, 0.875, 1.0), (0, 0.6, 0.7, 0.0, 0.125, 0.75, 0.875)]),   # a splat on the brow
+    ("Head", [(0, 0.5, 0.8, 0.0, 0.25, 0.875, 1.0), (0, 0.6, 0.7, 0.0, 0.125, 0.75, 0.875),    # a splat on the brow,
+              (0, 0.4, 0.6, 0.0, 0.125, 0.75, 0.875)]),                                         # smeared down the forehead
     ("Head", [(0, 0.4, 0.6, 0.5, 1.0, 0.875, 1.0), (0, 0.4, 0.6, 0.875, 1.0, 0.5, 0.875),       # the crown, running
               (0, 0.3, 0.4, 0.875, 1.0, 0.625, 0.875)]),                                        # down the back
     ("Head", [(0, 0.6, 1.0, 0.875, 1.0, 0.0, 0.375), (0, 0.7, 0.9, 0.875, 1.0, 0.375, 0.625)]),  # the back, low left
@@ -261,6 +266,41 @@ COAT = {
         ("Tail", [(0, 0, 1, 0.2, 0.7, 0.5, 1.0)]),
     ],
 }
+
+
+# Dirt levels (the owner 2026-11-25: "the cats look dirtier in their pictures the more dirty they are and take more
+# steps to clean"). One dirty model serves every level: each mud piece and tangle has the lowest level at which it
+# shows, in the order of COAT and of the tangles, and its child Model carries that number as the attribute
+# `DirtLevel`. A cat at level L keeps the pieces with DirtLevel <= L; the game destroys the rest when the cat
+# arrives. The levels are chosen for the card picture (head and shoulders, about 96 px), where each must add
+# something on the face: 1 is muddy paws and one smudge on the corner of the brow, 2 adds a cheek, the bib and the
+# first tangles, 3 a splat on the brow, a shoulder and the sides, 4 the whole other side of the face, the crown
+# and the back, with every tangle. What a level means in steps or pay is the game's.
+LEVELS = 4
+LEVEL_NAMES = ("a little muddy", "muddy", "very muddy", "filthy")
+MUD_LEVEL = {
+    #       cheek temple brow crown back corner | the body's fourteen, in COAT's order
+    "sit":  [2, 3, 4, 4, 4, 1,   2, 3, 4, 3, 4, 3, 4, 3, 1, 1, 1, 1, 2, 3],
+    "walk": [2, 3, 4, 4, 4, 1,   2, 4, 4, 3, 3, 4, 3, 3, 1, 1, 1, 1, 2, 4],
+}
+TANGLE_LEVEL = [2, 2, 3, 3, 4, 4]
+assert all(len(v) == MUD for v in MUD_LEVEL.values()) and len(TANGLE_LEVEL) == TANGLES
+MODEL_ATTRS = {}          # asset name -> {child Model suffix: {"DirtLevel": n}}, filled by build_dirty for build_all
+
+
+def level_of(name, body):
+    """The dirt level of a mud piece or a tangle by its object name; None for any other object."""
+    tail = name.rsplit("_", 1)[-1]
+    if tail.startswith("Mud") and tail[3:].isdigit():
+        return MUD_LEVEL[body][int(tail[3:]) - 1]
+    if tail.startswith("Tangle") and tail[6:].isdigit():
+        return TANGLE_LEVEL[int(tail[6:]) - 1]
+    return None
+
+
+def at_level(objs, level, body):
+    """The objects of a dirty cat as it looks at a dirt level: the cat, and the mud and tangles of that level."""
+    return [o for o in objs if (level_of(o.name, body) or 0) <= level]
 
 
 def _boxes(ob):
@@ -595,6 +635,7 @@ def build_dirty(name, mat, body, base=None):
     """The dirty model of a roster cat: (objects, nest map for rbx_export, root attributes). `base` overrides the
     asset name (loaf.py builds the held loaf from the walking stray)."""
     spec = cats.spec_of(name)
+    own = base is None                                 # the held loaf renumbers its mud: it carries no levels
     base = base or f"CleanACat_Cat_{name}_Dirty{cats.SUFFIX[body]}"
     objs = cats.build_cat(name, mat, spec={**spec, "collar": None}, base=base, body=body)   # a stray wears no collar
     bpy.context.view_layer.update()
@@ -650,7 +691,13 @@ def build_dirty(name, mat, body, base=None):
             objs.append(ob)
             nest["_" + part] = "_" + leg
     attributes = {"Dirty": True, "MudCount": MUD, "TangleCount": TANGLES, "FluffCount": FLUFF,
-                  "ClawCount": 2 * CLAWS_PER_PAW, "WetDarken": {"Float64": WET_DARKEN}}
+                  "ClawCount": 2 * CLAWS_PER_PAW, "WetDarken": {"Float64": WET_DARKEN}, "DirtLevels": LEVELS}
+    for lv in range(1, LEVELS + 1):                    # how many pieces a cat of each level arrives with
+        attributes[f"MudAtLevel{lv}"] = sum(1 for n in MUD_LEVEL[body] if n <= lv)
+        attributes[f"TanglesAtLevel{lv}"] = sum(1 for n in TANGLE_LEVEL if n <= lv)
+    if own:
+        MODEL_ATTRS[base] = {o.name[len(base):]: {"DirtLevel": level_of(o.name, body)} for o in objs
+                             if level_of(o.name, body)}
     return objs, nest, attributes
 
 

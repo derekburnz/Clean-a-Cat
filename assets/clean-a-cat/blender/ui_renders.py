@@ -118,13 +118,16 @@ def _clear():
     common.PRIMS.clear()
 
 
-def portrait(name, mat, out, dirty=False):
-    """Head and shoulders: the whole head with its ears, and the chest down to a third of the head's height."""
+def portrait(name, mat, out, dirty=False, level=None):
+    """Head and shoulders: the whole head with its ears, and the chest down to a third of the head's height. With a
+    dirt `level` (1 to dirt.LEVELS) the cat wears that level's mud and tangles (portrait_<Cat>_Dirty<level>.png)."""
     if dirty:
-        objs = [o for o in dirt.build_dirty(name, mat, "sit")[0]
-                if not any(s in o.name for s in ("_Tangle", "_Fluff", "_Claw"))]
+        skip = ("_Fluff", "_Claw") if level else ("_Tangle", "_Fluff", "_Claw")
+        objs = [o for o in dirt.build_dirty(name, mat, "sit")[0] if not any(s in o.name for s in skip)]
+        if level:
+            objs = dirt.at_level(objs, level, "sit")
         for o in bpy.context.scene.objects:
-            if o.type == "MESH" and any(s in o.name for s in ("_Tangle", "_Fluff", "_Claw")):
+            if o.type == "MESH" and o not in objs:
                 o.hide_render = True
     else:
         objs = cats.build_cat(name, mat, body="sit")
@@ -132,7 +135,7 @@ def portrait(name, mat, out, dirty=False):
     head = [o for o in objs if o.name.endswith(("_Head", "_EarL", "_EarR", "_Eye1", "_Eye2"))]
     lo, hi = common.bounds(head)
     lo = Vector((lo.x, lo.y, lo.z - (hi.z - lo.z) * 0.34))
-    path = os.path.join(out, f"portrait_{name}{'_Dirty' if dirty else ''}.png")
+    path = os.path.join(out, f"portrait_{name}{'_Dirty' if dirty else ''}{level or ''}.png")
     shot(objs, path, PORTRAIT_RAW, PORTRAIT_VIEW, focus=(lo, hi), pad=1.1)
     _clear()
     return path
@@ -227,6 +230,10 @@ def main(argv):
         for dirty in (False, True):
             if want(f"portrait_{name}{'_dirty' if dirty else ''}"):
                 print("ui:", portrait(name, mat, out, dirty))
+        if name in cats.ROSTER:                        # a picture per dirt level for the pick menu's cards
+            for level in range(1, dirt.LEVELS + 1):
+                if want(f"portrait_{name}_dirty{level}"):
+                    print("ui:", portrait(name, mat, out, True, level))
     for i, look in enumerate(busy_spa.HELPERS):
         if want("portrait_" + look[0].replace("CleanACat_NPC_", "")):
             print("ui:", helper_portrait(i, mat, out))
