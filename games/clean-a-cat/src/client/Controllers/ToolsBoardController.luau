@@ -1,11 +1,14 @@
 --!strict
--- ToolsBoardController: the Tools board beside the tub, as a placeholder part with one prompt per tool. The
--- player walks up and taps the prompt (a button on touch, a key or gamepad button elsewhere); the server
--- (ToolService) checks and takes the coins. An owned tool's prompt goes away. Nothing opens by itself.
+-- ToolsBoardController: the Tools board beside the tub, Model-Agent's board (Spa/BoardProp; the plain slab when the
+-- model is missing) with one prompt per tool on its shelves. The player walks up and taps the prompt (a button on
+-- touch, a key or gamepad button elsewhere); the server (ToolService) checks and takes the coins. An owned tool's
+-- prompt goes away, and so does its display on the shelf. Nothing opens by itself.
 -- Behind the LiveFlags switch `toolsBoard`.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+
+local BoardProp = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BoardProp"))
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -14,17 +17,18 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 
 local FLAG = "toolsBoard"
-local BOARD_SIZE = Vector3.new(4, 5, 0.4)
+local SPEC: BoardProp.Spec = {
+	asset = "CleanACat_Prop_ToolsBoard",
+	title = "Tools",
+	placeholder = "PH_ToolsBoard",
+	size = Vector3.new(4, 5, 0.4),
+	color = Color3.fromRGB(180, 140, 100),
+}
 
 local ToolsBoardController = {}
 
-local board: Part? = nil
+local board: BoardProp.Board? = nil
 local connections: { RBXScriptConnection } = {}
-
--- Standing on the floor at the Tools spot, its front facing the way the spot faces.
-local function boardCFrame(): CFrame
-	return SpaLayout.spot("Tools") * CFrame.new(0, BOARD_SIZE.Y / 2, 0)
-end
 
 local function owns(id: string): boolean
 	return Players.LocalPlayer:GetAttribute(ToolRules.ATTRIBUTE_PREFIX .. id) == true
@@ -34,20 +38,18 @@ local function enable()
 	if board then
 		return
 	end
-	local part = Instance.new("Part")
-	part.Name = "PH_ToolsBoard"
-	part.Size = BOARD_SIZE
-	part.Color = Color3.fromRGB(180, 140, 100)
-	part.Anchored = true
-	part.CanCollide = true
-	part.CFrame = boardCFrame()
-	for index, id in ToolRules.offered(LiveFlags.isOn) do
+	local offered = ToolRules.offered(LiveFlags.isOn)
+	local made = BoardProp.make(SPEC, SpaLayout.spot("Tools"), #offered)
+	-- a tool on sale shows on its shelf until it is owned; one switched off never shows
+	local function showDisplay(id: string)
+		BoardProp.showDisplay(made, id, table.find(offered, id) ~= nil and not owns(id))
+	end
+	for _, id in ToolRules.IDS do
+		showDisplay(id)
+	end
+	for index, id in offered do
 		local tool = ToolRules.TOOLS[id]
-		local spot = Instance.new("Attachment")
-		spot.Name = id
-		-- Rows down the front of the board (its -Z face).
-		spot.Position = Vector3.new(0, BOARD_SIZE.Y / 2 - index, -BOARD_SIZE.Z / 2)
-		spot.Parent = part
+		local spot = made.rows[index]
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = `Buy {tool.name}`
 		prompt.ObjectText = `{tool.price} coins`
@@ -68,11 +70,12 @@ local function enable()
 				:GetAttributeChangedSignal(ToolRules.ATTRIBUTE_PREFIX .. id)
 				:Connect(function()
 					prompt.Enabled = not owns(id)
+					showDisplay(id)
 				end)
 		)
 	end
-	part.Parent = Workspace
-	board = part
+	made.root.Parent = Workspace
+	board = made
 end
 
 local function disable()
@@ -80,9 +83,10 @@ local function disable()
 		connection:Disconnect()
 	end
 	table.clear(connections)
-	if board then
-		board:Destroy()
-		board = nil
+	local made = board
+	board = nil
+	if made then
+		made.root:Destroy()
 	end
 end
 
@@ -111,9 +115,9 @@ function ToolsBoardController.Start()
 	end
 	-- The plot placed or taken away: the board moves to its spot.
 	SpaLayout.changed(function()
-		local part = board
-		if part then
-			part.CFrame = boardCFrame()
+		local made = board
+		if made then
+			BoardProp.moveTo(made, SpaLayout.spot("Tools"))
 		end
 	end)
 	refresh()
