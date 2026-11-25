@@ -21,17 +21,15 @@ the mascot once he is washed. "should be a random brown box".
                                 pivot's own Z. Open the big two first. Attachments on the Body: `CatSeat` on the box floor (a sitting cat
                                 at scale 1 is hidden under the shut flaps) and `Peek` at the rim, where the cat's
                                 chest rises to when it looks out.
-  CleanACat_Prop_SpeedBump      a striped hump one lane wide (10 by 1.4, 0.35 high) for the road, pivot at the base
-                                centre: the bump the truck jolts over.
   CleanACat_Prop_Pothole        the owner, after his dev test: "speed bump should be changed to pothole". A broken
                                 patch of road about 3.3 by 2.5: a dark hole floor with a muddy puddle, a rim of
                                 cracked road chunks standing up to 0.12 over the road, cracks running out and a few
                                 crumbs. It lies on the road top (the road is one block, so nothing is cut out of
                                 it); the raised rim round the dark middle is what reads as depth. Pivot at the base
-                                centre. It takes the speed bump's place in the opening; the bump stays until no code
-                                clones it.
+                                centre. It took the place of a striped speed bump, which #434 removed once no
+                                code cloned it.
 
-Nothing here collides except the truck's body and the speed bump. The truck and the box stream in whole
+Nothing here collides except the truck's body. The truck and the box stream in whole
 (rbx_export.MODEL_PROPS), because the scene turns their pieces.
 """
 
@@ -42,7 +40,7 @@ from mathutils import Matrix, Vector
 from common import Builder
 from stations import _tris
 
-TRUCK, BOX, BUMP = "CleanACat_Prop_DeliveryTruck", "CleanACat_Prop_DeliveryBox", "CleanACat_Prop_SpeedBump"
+TRUCK, BOX = "CleanACat_Prop_DeliveryTruck", "CleanACat_Prop_DeliveryBox"
 POTHOLE = "CleanACat_Prop_Pothole"
 
 # -- the truck -------------------------------------------------------------------------------------------------------
@@ -232,22 +230,6 @@ def box_rbx_extras():
                             "_FlapB": Matrix.Rotation(math.radians(90), 3, "Y")}}
 
 
-# -- the speed bump --------------------------------------------------------------------------------------------------
-BUMP_W, BUMP_D, BUMP_H = 10.0, 1.4, 0.35
-
-
-def build_bump(mat):
-    b = Builder()
-    n = 5
-    seg = BUMP_W / n
-    for i in range(n):
-        x = -BUMP_W / 2 + seg * (i + 0.5)
-        sw = "pastel_butter" if i % 2 == 0 else "spa_cream"
-        b.box_base((x, 0, 0), (seg - 0.004, BUMP_D, 0.2), sw, bevel=False)
-        b.box_base((x, 0, 0.19), (seg - 0.004, BUMP_D * 0.56, BUMP_H - 0.19), sw)
-    return [b.finalize(BUMP, mat)]
-
-
 # -- the pothole ------------------------------------------------------------------------------------------------------
 # Floor entries: (x, y, base), (wide, deep, high), turn in degrees, swatch. The pieces overlap and are turned, so no
 # two of them share a bottom or a top height (each base is a few thousandths over the last): no face of one lies in
@@ -289,5 +271,5 @@ def build_pothole(mat):
     return [b.finalize(POTHOLE, mat)]
 
 
-ASSETS = {TRUCK: (build_truck, 2500), BOX: (build_box, 300), BUMP: (build_bump, 300), POTHOLE: (build_pothole, 300)}
+ASSETS = {TRUCK: (build_truck, 2500), BOX: (build_box, 300), POTHOLE: (build_pothole, 300)}
 EXTRAS = {TRUCK: truck_rbx_extras, BOX: box_rbx_extras}

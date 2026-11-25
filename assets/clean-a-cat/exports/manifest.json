@@ -9628,47 +9628,6 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_QueueMat.png"
  },
  {
-  "name": "CleanACat_Prop_SpeedBump",
-  "category": "Prop",
-  "module": "opening",
-  "objects": [
-   "CleanACat_Prop_SpeedBump"
-  ],
-  "triangles": 280,
-  "budget": 300,
-  "parts": 10,
-  "size_studs": {
-   "x": 10.0,
-   "y": 1.4,
-   "z": 0.35
-  },
-  "size_roblox": [
-   10.0,
-   0.35,
-   1.4
-  ],
-  "pivot": "base center (floor contact)",
-  "front": "-Z in Roblox, the LookVector (Blender -Y)",
-  "gates": {
-   "pass": true,
-   "failed": [],
-   "warnings": [],
-   "qa_accepted": {},
-   "checks": {
-    "budget": "280/300 tris",
-    "transforms": "scale 1, rotation 0",
-    "material": "one material (CleanACat_Palette)",
-    "uv": "160 faces on swatch centers",
-    "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00",
-    "qa": "blender-asset-qa clean",
-    "qa_warn": "no qa warning outside the accepted kinds"
-   }
-  },
-  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_SpeedBump.png"
- },
- {
   "name": "CleanACat_Prop_Star",
   "category": "Prop",
   "module": "rewards",
