@@ -147,6 +147,34 @@ local HANDLERS: { [string]: (...any) -> () } = {
 	BowTied = function(cat: any)
 		Audio.play("bowTie", { at = at(cat) })
 	end,
+	-- issue 529: Moments still to come from Gameplay; each binds only once it exists
+	HeartLow = function(cat: any)
+		Audio.play("heartLow", { at = at(cat) })
+	end,
+	CatLeft = function(cat: any)
+		Audio.play("catLeave", { at = at(cat) })
+	end,
+	CrateOpened = function()
+		Audio.play("crateOpen")
+	end,
+	PetRevealed = function()
+		Audio.play("petReveal")
+	end,
+	PetStarUp = function()
+		Audio.play("starUp")
+	end,
+	WorkerFinished = function(cat: any)
+		Audio.play("workerDone", { at = at(cat) })
+	end,
+	BuildFinished = function(build: any)
+		Audio.play("buildDone", { at = at(build) })
+	end,
+	QuestDone = function()
+		Audio.play("questDone")
+	end,
+	CheckInClaimed = function()
+		Audio.play("checkIn")
+	end,
 }
 
 local function bind(moments: any)

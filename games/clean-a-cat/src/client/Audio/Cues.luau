@@ -270,6 +270,79 @@ local Cues: { [string]: Cue } = {
 		minGap = 0.3,
 		voices = 1,
 	},
+	-- synth: CleanACat_Sfx_HeartLow; a waiting cat's heart bar gets low (HeartLow)
+	heartLow = {
+		ids = { "rbxassetid://131163326823954" },
+		group = "Sfx",
+		volume = 0.35,
+		minGap = 4,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_CatLeave; a cat gives up and leaves (CatLeft)
+	catLeave = {
+		ids = { "rbxassetid://76629422520057" },
+		group = "Sfx",
+		volume = 0.4,
+		minGap = 1.5,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_CrateOpen; a crate is tapped open, the same for every pet (CrateOpened)
+	crateOpen = {
+		ids = { "rbxassetid://79226161962410" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 0.5,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_PetReveal; the pet is shown, one sound for every rarity (PetRevealed)
+	petReveal = {
+		ids = { "rbxassetid://127482831304110" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 0.8,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_StarUp; three pets fuse into a star up (PetStarUp)
+	starUp = {
+		ids = { "rbxassetid://101245579559480" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 0.8,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_WorkerDone; a worker finishes a cat, quieter since it comes often (WorkerFinished)
+	workerDone = {
+		ids = { "rbxassetid://80163733789302" },
+		group = "Sfx",
+		volume = 0.3,
+		pitch = { 0.97, 1.03 },
+		minGap = 0.6,
+		voices = 1,
+	},
+	-- synth: CleanACat_Sfx_BuildDone; a build is finished (BuildFinished)
+	buildDone = {
+		ids = { "rbxassetid://132182941650686" },
+		group = "Sfx",
+		volume = 0.5,
+		minGap = 1,
+		voices = 1,
+	},
+	-- synth: CleanACat_Ui_QuestDone; a quest is ticked off (QuestDone)
+	questDone = {
+		ids = { "rbxassetid://86675527942579" },
+		group = "Ui",
+		volume = 0.45,
+		minGap = 0.4,
+		voices = 1,
+	},
+	-- synth: CleanACat_Ui_CheckIn; the check in card's reward is taken (CheckInClaimed)
+	checkIn = {
+		ids = { "rbxassetid://105013415580311" },
+		group = "Ui",
+		volume = 0.45,
+		minGap = 0.5,
+		voices = 1,
+	},
 	spaMusicA = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
 	spaMusicB = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
 }

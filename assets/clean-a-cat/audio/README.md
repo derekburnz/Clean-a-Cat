@@ -31,3 +31,20 @@ One row per file or Creator Store id, added the moment it is picked. The asset i
 | sfx/CleanACat_Sfx_BoxRustle.ogg | synth/make_sfx.py (ours) | Original | No | 112949884290830 (Creampuff Games) | 2026-11-24 |
 | sfx/CleanACat_Sfx_CollarJingle.ogg | synth/make_sfx.py (ours) | Original | No | 132945251317866 (Creampuff Games) | 2026-11-24 |
 | sfx/CleanACat_Sfx_CarryPurr.ogg | Derek's Roblox-Asset-Library audio/sfx/CatCafe_Sfx_CarryPurr.ogg (synth.py, his own earlier game) | Original (Derek's) | No | 88268026074287 (Creampuff Games) | 2026-11-24 |
+| sfx/CleanACat_Sfx_FoamSwell.ogg | synth/make_sfx.py (ours) | Original | No | 86501880035340 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_RinseLoop.ogg | synth/make_sfx.py (ours) | Original | No | 127073369403196 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_FoamDrop.ogg | synth/make_sfx.py (ours) | Original | No | 137954820723713 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_StepChime.ogg | synth/make_sfx.py (ours) | Original | No | 92248002357092 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_ClawSnip.ogg | synth/make_sfx.py (ours) | Original | No | 108380936951876 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_VisitorChime.ogg | synth/make_sfx.py (ours) | Original | No | 129234437034334 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_CrateDrop.ogg | synth/make_sfx.py (ours) | Original | No | 80481093417771 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_BowTie.ogg | synth/make_sfx.py (ours) | Original | No | 85030390046657 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_HeartLow.ogg | synth/make_sfx.py (ours) | Original | No | 131163326823954 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_CatLeave.ogg | synth/make_sfx.py (ours) | Original | No | 76629422520057 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_CrateOpen.ogg | synth/make_sfx.py (ours) | Original | No | 79226161962410 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_PetReveal.ogg | synth/make_sfx.py (ours) | Original | No | 127482831304110 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_StarUp.ogg | synth/make_sfx.py (ours) | Original | No | 101245579559480 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_WorkerDone.ogg | synth/make_sfx.py (ours) | Original | No | 80163733789302 (Creampuff Games) | 2026-11-25 |
+| sfx/CleanACat_Sfx_BuildDone.ogg | synth/make_sfx.py (ours) | Original | No | 132182941650686 (Creampuff Games) | 2026-11-25 |
+| ui/CleanACat_Ui_QuestDone.ogg | synth/make_sfx.py (ours) | Original | No | 86675527942579 (Creampuff Games) | 2026-11-25 |
+| ui/CleanACat_Ui_CheckIn.ogg | synth/make_sfx.py (ours) | Original | No | 105013415580311 (Creampuff Games) | 2026-11-25 |
