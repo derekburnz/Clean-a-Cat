@@ -13,9 +13,21 @@
    the next "Speed up" adds), what it is doing right now (washing a named customer with a small progress bar, or
    resting) and one button with a coin price. The one-line explainer sits in the band beside the title, so it costs
    no height on a phone. Nothing here is random and nothing is timed.
-   Wide screens: tall cards with a big portrait. Short phones: the portrait moves beside the name; nothing scrolls. */
+   Wide screens: tall cards with a big portrait. Short phones: the portrait moves beside the name; nothing scrolls. 
+   Agreed design (issue 526 item 3, tuning.md section 7): each hired helper also shows the cat it picks next as a
+   mode button ("Picks: First in line"; a tap steps through about to leave, rarest, dirtiest, first in line, and the
+   words always say the mode, never only an icon) and a pencil to rename them (3 to 16 letters, filtered on the
+   server, issue 487). Levels go to 5 with the coin prices from tuning.md. The third spot is Lou, the paid helper:
+   his price in Robux is on the button before Roblox's own prompt, and nothing on this window is timed. */
 .win.helpers { width: 1040px; display: flex; flex-direction: column; }
 .win.helpers > .band { flex: none; }
+.mode { display: flex; align-items: center; gap: 8px; min-height: max(44px, calc(44px / var(--s))); padding: 0 12px; border-radius: 14px; border: 3px solid var(--ink);
+  background: #fff; box-shadow: 0 3px 0 var(--ink); font-family: var(--font-body); font-weight: 800; font-size: 18px; color: var(--ink); white-space: nowrap; }
+.mode b { font-family: var(--font-head); font-weight: 400; font-size: 19px; }
+.mode .ic { font-size: 22px; }
+.ren { flex: none; width: max(44px, calc(44px / var(--s))); height: max(44px, calc(44px / var(--s))); border-radius: 12px; border: 3px solid var(--ink); background: #fff; box-shadow: 0 3px 0 var(--ink); display: grid; place-items: center; margin-left: auto; }
+.ren svg { width: 24px; height: 24px; }
+.rbx { width: 1em; height: 1em; flex: none; }
 .win.helpers > .body { min-height: 0; border-radius: 0 0 20px 20px; }   /* scrolls only on a screen shorter than any we test */
 .win.helpers > .band .sub { font-size: 20px; opacity: 1; white-space: nowrap; }
 .band .purse { position: relative; z-index: 1; margin-left: auto; margin-right: 62px; display: flex; align-items: center; gap: 8px;
@@ -93,6 +105,17 @@ body.short .slot .btn .ic { font-size: 26px; }
 body.short .slot.empty .say { min-height: 50px; font-size: 18px; line-height: 1.15; padding: 0; }
 body.short .slot .role { text-align: left; font-size: 17px; margin-top: 0; }
 body.short .slot.empty .role { display: none; }
+body.short .slot .role, body.short .slot .spd { display: none; }
+body.short .face, body.short .ghost { width: 56px; height: 56px; }
+body.short .job { min-height: 0; padding: 4px 8px 4px 4px; }
+body.short .job .pic { width: 36px; height: 36px; }
+body.short .job .s { font-size: 17px; }
+body.short .job .d { display: none; }
+body.short .mode { font-size: 15px; padding: 0 8px; }
+body.short .mode b { font-size: 16px; }
+body.short .slot .say { font-size: 15px; }
+body.short .win.helpers > .body { padding: 8px 12px 10px; }
+body.short .slot { gap: 6px; }
 </style>
 </head>
 <body class="no-move">
@@ -116,7 +139,7 @@ body.short .slot.empty .role { display: none; }
             <div class="tile face"><div class="shot"><img src="img/portrait_Staff_Jo_ink.png" alt="">
             </div></div>
             <div class="id">
-              <div class="nm"><span class="name">Jo</span><span class="lv">Lv 3</span></div>
+              <div class="nm"><span class="name">Jo</span><span class="lv">Lv 3</span><button class="ren" data-tap aria-label="Rename Jo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-5L16 4l4 4L9 19z" fill="#ffd84d" stroke="#45226b" stroke-width="2.500" stroke-linejoin="round"/><path d="M14 6l4 4" stroke="#45226b" stroke-width="2.500"/></svg></button></div>
               <div class="role">Washes cats</div>
               <div class="spd" aria-label="Speed 3 of 5. The next level adds 1"><span class="k">Speed</span><div class="bar sky"><i style="width:60%"></i><b style="left:60%;width:20%"></b></div></div>
             </div>
@@ -125,7 +148,8 @@ body.short .slot.empty .role { display: none; }
             <div class="pic"><img src="img/portrait_Muffin_Dirty_ink.png" alt=""></div>
             <div class="t"><span class="s">Washing Muffin</span><div class="bar"><i style="width:64%"></i></div></div>
           </div>
-          <button class="btn off wide" data-tap aria-label="Speed up Jo for 1,600 coins. Not enough coins yet"><span class="lbl">Speed up</span><span class="lbl price"><i data-ic="coin"></i>1,600</span></button>
+          <button class="mode" data-tap aria-label="Jo picks the cat about to leave. Tap to change"><i data-ic="queue"></i>Picks: <b>About to leave</b></button>
+          <button class="btn off wide" data-tap aria-label="Level up Jo for 1,200 coins. Not enough coins yet"><span class="lbl">Level up</span><span class="lbl price"><i data-ic="coin"></i>1,200</span></button>
         </div>
 
         <div class="slot card">
@@ -133,7 +157,7 @@ body.short .slot.empty .role { display: none; }
             <div class="tile face"><div class="shot"><img src="img/portrait_Staff_Sam_ink.png" alt="">
             </div></div>
             <div class="id">
-              <div class="nm"><span class="name">Sam</span><span class="lv">Lv 1</span></div>
+              <div class="nm"><span class="name">Sam</span><span class="lv">Lv 1</span><button class="ren" data-tap aria-label="Rename Sam"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-5L16 4l4 4L9 19z" fill="#ffd84d" stroke="#45226b" stroke-width="2.500" stroke-linejoin="round"/><path d="M14 6l4 4" stroke="#45226b" stroke-width="2.500"/></svg></button></div>
               <div class="role">Washes cats</div>
               <div class="spd" aria-label="Speed 1 of 5. The next level adds 1"><span class="k">Speed</span><div class="bar sky"><i style="width:20%"></i><b style="left:20%;width:20%"></b></div></div>
             </div>
@@ -142,25 +166,27 @@ body.short .slot.empty .role { display: none; }
             <div class="pic zz">Zz</div>
             <div class="t"><span class="s">Resting</span><span class="d">No cats waiting</span></div>
           </div>
-          <button class="btn green wide" data-tap aria-label="Speed up Sam for 300 coins"><span class="lbl">Speed up</span><span class="lbl price"><i data-ic="coin"></i>300</span></button>
+          <button class="mode" data-tap aria-label="Sam picks the first cat in line. Tap to change"><i data-ic="queue"></i>Picks: <b>First in line</b></button>
+          <button class="btn green wide" data-tap aria-label="Level up Sam for 200 coins"><span class="lbl">Level up</span><span class="lbl price"><i data-ic="coin"></i>200</span></button>
         </div>
 
         <div class="slot card empty">
           <div class="top">
             <div class="ghost"><i data-ic="helper"></i><span class="plus"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg></span></div>
             <div class="id">
-              <div class="nm"><span class="name">Empty spot</span></div>
-              <div class="role">Room for one more</div>
+              <div class="nm"><span class="name">Lou</span></div>
+              <div class="role">Extra helper, own tub</div>
             </div>
           </div>
-          <div class="say">A new helper washes one more cat at a time.</div>
-          <button class="btn green wide" data-tap aria-label="Hire a helper for 1,000 coins"><span class="lbl">Hire</span><span class="lbl price"><i data-ic="coin"></i>1,000</span></button>
+          <div class="say">Lou works just like Jo and Sam, with his own tub.</div>
+          <button class="btn sky wide" data-tap aria-label="Hire Lou for 249 Robux"><span class="lbl">Hire</span><span class="lbl price"><svg class="rbx"><use href="#rbx"/></svg>249</span></button>
         </div>
 
       </div>
     </div>
   </div>
 </div></div>
+<svg width="0" height="0" style="position:absolute"><symbol id="rbx" viewBox="0 0 64 64"><path d="M32 4l24 14v28L32 60 8 46V18z" fill="#5fc98b" stroke="#45226b" stroke-width="6" stroke-linejoin="round"/><path d="M32 20l11 6v12l-11 6-11-6V26z" fill="#fff" stroke="#45226b" stroke-width="4" stroke-linejoin="round"/></symbol></svg>
 <script src="kit.js"></script>
 </body>
 </html>

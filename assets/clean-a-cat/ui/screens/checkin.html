@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="states" content="day1,day2">
+<title>Check In</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+/* Check in card (agreed design, "Reason to come back tomorrow"; tuning.md section 12). Seven tiles, one per day
+   PLAYED, not days in a row: missing a day loses nothing and there is no streak, no flame and no "don't lose it".
+   It opens by itself once, at about 3:45 of the first session (first-five-minutes-timeline.md), between washes,
+   and after that only from its HUD button or once on each new day's first join. One tap on Claim takes today's
+   reward and the X closes it. Day 2 is the good crate, drawn bigger with its eye button for the chance list.
+   day1: first view, day 1 ready to claim. day2: next day played, day 1 ticked, the good crate ready. */
+.win.checkin { width: 1040px; }
+.checkin .lead { font-weight: 800; font-size: 19px; color: var(--ink-soft); margin: 0 0 12px; }
+.days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; align-items: stretch; }
+.day { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 6px; padding: 10px 6px 12px; text-align: center; min-height: 170px; }
+.day .n { font-family: var(--font-head); font-size: 20px; color: var(--ink-soft); }
+.day > .ic { font-size: 54px; }
+.day .what { font-family: var(--font-head); font-size: 20px; line-height: 1.05; }
+.day.big { background: linear-gradient(#fff6d6, #fff); border-color: #f0cf6b; }
+.day.big > .ic { font-size: 64px; }
+.day.got { background: #f1fbf4; border-color: #9ed9b2; }
+.day.got > .ic, .day.got .what { opacity: .45; }
+.day .tick { position: absolute; top: 34px; font-size: 52px; }
+.day.today { box-shadow: 0 0 0 4px #4fcf93, 0 4px 0 var(--ink); }
+.day .eye { width: max(46px, calc(44px / var(--s))); height: max(46px, calc(44px / var(--s))); flex: none; border-radius: 12px; border: 3px solid var(--ink); background: #fff; display: grid; place-items: center; font-size: 24px; box-shadow: 0 3px 0 var(--ink); }
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
+.foot .note { font-weight: 800; font-size: 17px; color: var(--ink-soft); }
+body[data-state="day2"] .only-day1, body:not([data-state="day2"]) .only-day2 { display: none !important; }
+
+body.short .win.checkin { width: 900px; }
+body.short .checkin .lead { display: none; }
+body.short .day { min-height: 0; padding: 6px 4px 8px; gap: 2px; }
+body.short .day.big { gap: 6px; }
+body.short .day.big > .ic { font-size: 36px; }
+body.short .day > .ic { font-size: 38px; }
+body.short .day.big > .ic { font-size: 44px; }
+body.short .day .what { font-size: 17px; }
+body.short .day .n { font-size: 17px; }
+body.short .day .tick { top: 22px; font-size: 38px; }
+body.short .foot { margin-top: 8px; }
+body.short .foot .note { font-size: 15px; }
+</style>
+</head>
+<body class="no-move">
+<div id="screen"><div id="stage">
+  <div class="world spa" style="background-image:url(img/world-spa.jpg)"></div>
+  <div class="backdrop"></div>
+
+  <div class="win checkin">
+    <div class="band">
+      <div class="badge"><i data-ic="gift"></i></div>
+      <span class="title outlined">Check in</span>
+    </div>
+    <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+    <div class="body">
+      <p class="lead">A gift for each day you play. Come back any day, nothing is lost if you miss one.</p>
+      <div class="days">
+        <div class="day card d1">
+          <span class="n">Day 1</span><i data-ic="coin"></i><span class="what">50</span>
+          <i data-ic="check" class="tick only-day2"></i>
+        </div>
+        <div class="day card big d2">
+          <span class="n">Day 2</span><i data-ic="gift"></i><span class="what">Good crate</span>
+          <button class="eye" data-tap aria-label="See the chances in the good crate"><i data-ic="eye"></i></button>
+        </div>
+        <div class="day card"><span class="n">Day 3</span><i data-ic="coin"></i><span class="what">100</span></div>
+        <div class="day card"><span class="n">Day 4</span><i data-ic="bow"></i><span class="what">Silk bow</span></div>
+        <div class="day card"><span class="n">Day 5</span><i data-ic="coin"></i><span class="what">200</span></div>
+        <div class="day card"><span class="n">Day 6</span><i data-ic="coin"></i><span class="what">300</span></div>
+        <div class="day card"><span class="n">Day 7</span><i data-ic="gift"></i><span class="what">Crate</span></div>
+      </div>
+      <div class="foot">
+        <span class="note only-day1">Your next gift waits for the next day you play.</span>
+        <span class="note only-day2">Day 3 waits for the next day you play.</span>
+        <button class="btn green" data-tap><span class="lbl only-day1">Claim 50 coins</span><span class="lbl only-day2">Claim the good crate</span></button>
+      </div>
+    </div>
+  </div>
+</div></div>
+<script>
+// today's tile glows; claimed days get a tick
+const st = new URLSearchParams(location.search).get('state') || 'day1';
+if (st === 'day2') { document.querySelector('.d1').classList.add('got'); document.querySelector('.d2').classList.add('today'); }
+else document.querySelector('.d1').classList.add('today');
+</script>
+<script src="kit.js"></script>
+</body>
+</html>
