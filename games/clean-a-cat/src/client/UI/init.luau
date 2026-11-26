@@ -8,6 +8,7 @@
 --   UI.onOpened(fn)           fn(name) each time UI.open shows a window (the funnel's window_opened, FunnelController)
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
+--   UI.setCoinBump(k, n)      the coin pill's bump and the number it counts up through (Effects/CoinBump, #826)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
 --   UI.setWashMeter(f, step) the bar that fills while the player works an area step (UI/HUD/WashMeter, switch
 --                             washMeter); f from 0 to 1, nil hides it
@@ -107,6 +108,8 @@ local toastLabel: TextLabel? = nil
 local revealRecap: RBXScriptConnection? = nil -- shows the recap again when the window over it closes
 local openedListeners: { (name: string) -> () } = {}
 local toastToken = 0
+local washFocus = false -- UI.setWashFocus (issue 856)
+local refitScreen: (() -> ())? = nil -- Init's fitScreen, run again when washFocus changes
 local controlsHidden = false -- true while this module has Roblox's touch controls hidden
 
 local function corner(parent: Instance, radius: number)
@@ -266,9 +269,10 @@ function UI.init()
 		-- for the whole wash: with five or more buttons it reached the step line's title (issue 625, Sync's B5), and
 		-- the windows are for between washes.
 		local listShown = HUD.listShown()
-		SideButtons.setAside(listShown or HUD.washing())
-		menu.Visible = not SideButtons.any() and not listShown
+		SideButtons.setAside(listShown or HUD.washing() or washFocus)
+		menu.Visible = not SideButtons.any() and not listShown and not washFocus
 	end
+	refitScreen = fitScreen
 	fitScreen()
 	Comfort.onTenFootChanged(fitScreen)
 	HUD.onActiveChanged(fitScreen)
@@ -393,6 +397,10 @@ end
 
 function UI.setCoins(coins: unknown)
 	HUD.setCoins(coins)
+end
+
+function UI.setCoinBump(k: number, shown: number?)
+	HUD.setCoinBump(k, shown)
 end
 
 -- Friends in the server for the HUD's friend chip (the Player attribute FriendsHere, switch friendBonus).
@@ -862,7 +870,34 @@ function UI.toast(text: string, kind: ("info" | "warning")?)
 	while #toastQueue > TOAST_QUEUE do
 		table.remove(toastQueue, 1)
 	end
-	if not toastBusy then
+	if not toastBusy and not washFocus then
+		showNextToast()
+	end
+end
+
+-- The wash on its own screen (issue 856, Gameplay-Engineer's WashScreenController, switch washScreen): true hides the
+-- regular HUD (the coin pill and friend tag, the side buttons and starter ad, the waiting faces, Suds's bubble and
+-- toasts, which wait in their queue); the wash's own step line, meter and tool tray stay. False brings them back.
+function UI.setWashFocus(on: boolean)
+	if washFocus == on then
+		return
+	end
+	washFocus = on
+	HUD.setFocus(on)
+	Waiting.setFocus(on)
+	SudsBubble.setFocus(on)
+	local refit = refitScreen -- the side buttons, starter ad and starter Menu step aside (fitScreen reads washFocus)
+	if refit then
+		refit()
+	end
+	local label = toastLabel
+	if on then
+		toastToken += 1 -- the toast on screen stops; the rest wait
+		toastBusy = false
+		if label then
+			label.Visible = false
+		end
+	elseif not toastBusy then
 		showNextToast()
 	end
 end

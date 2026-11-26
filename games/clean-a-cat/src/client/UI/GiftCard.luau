@@ -35,6 +35,7 @@ local TICK_FILL = Color3.fromHex("3FB071")
 local PET_TOP = Color3.fromHex("E9F9F1")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 8
+local FREE_TRIM = 4 -- design px off each free rewards row on a short screen
 local MIN_TAP = 44 -- real px
 
 -- Sizes in design pixels: full, then compact for a short screen (a phone held sideways).
@@ -235,6 +236,13 @@ local function redraw()
 	end
 	local scale, short = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
+	if short and state.free then
+		-- four free rewards rows put Get Starcoat a few px under a small phone's bottom edge (issue 837): the rows
+		-- sit a little closer, the same rows at the same text sizes
+		s = table.clone(s)
+		s.rowH -= FREE_TRIM
+		s.rowGap -= 2
+	end
 	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
 	Window.fit(p.window, width, s.band, s.title, s.badge, if short then SHORT_SHIFT else nil)
 	p.window.title.Text = if state.free then GiftViewRules.FREE_TITLE else GiftViewRules.TITLE

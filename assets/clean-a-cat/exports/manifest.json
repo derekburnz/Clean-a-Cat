@@ -1427,18 +1427,18 @@
    "CleanACat_Cat_Bathtile_Dirty_Prop2_Glass",
    "CleanACat_Cat_Bathtile_Dirty_Bubbles_Glow"
   ],
-  "triangles": 4002,
+  "triangles": 4074,
   "budget": 4300,
-  "parts": 195,
+  "parts": 201,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 2.44
   },
   "size_roblox": [
-   1.39,
+   1.13,
    2.44,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -1593,13 +1593,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "4002/4300 tris",
+    "budget": "4074/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2509 faces on swatch centers",
+    "uv": "2545 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -1671,17 +1671,17 @@
    "CleanACat_Cat_Bathtile_Dirty_Sit_Prop2_Glass",
    "CleanACat_Cat_Bathtile_Dirty_Sit_Bubbles_Glow"
   ],
-  "triangles": 4098,
+  "triangles": 4170,
   "budget": 4300,
-  "parts": 204,
+  "parts": 210,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.3,
-   "z": 2.34
+   "z": 2.35
   },
   "size_roblox": [
-   1.52,
-   2.34,
+   1.3,
+   2.35,
    1.3
   ],
   "pivot": "base center (floor contact)",
@@ -1824,16 +1824,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "4098/4300 tris",
+    "budget": "4170/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2561 faces on swatch centers",
+    "uv": "2597 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=0.01",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -2311,18 +2312,18 @@
    "CleanACat_Cat_Cotton_Dirty_Claw07",
    "CleanACat_Cat_Cotton_Dirty_Claw08"
   ],
-  "triangles": 2702,
+  "triangles": 2774,
   "budget": 3200,
-  "parts": 135,
+  "parts": 141,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.86,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -2461,13 +2462,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2702/3200 tris",
+    "budget": "2774/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1681 faces on swatch centers",
+    "uv": "1717 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -2533,17 +2534,17 @@
    "CleanACat_Cat_Cotton_Dirty_Sit_Claw07",
    "CleanACat_Cat_Cotton_Dirty_Sit_Claw08"
   ],
-  "triangles": 2726,
+  "triangles": 2798,
   "budget": 3200,
-  "parts": 138,
+  "parts": 144,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -2670,16 +2671,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2726/3200 tris",
+    "budget": "2798/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1697 faces on swatch centers",
+    "uv": "1733 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -3015,18 +3017,18 @@
    "CleanACat_Cat_Djinn_Dirty_Glow",
    "CleanACat_Cat_Djinn_Dirty_Prop2"
   ],
-  "triangles": 3702,
+  "triangles": 3774,
   "budget": 4300,
-  "parts": 190,
+  "parts": 196,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.09,
+   "x": 1.13,
+   "y": 2.02,
    "z": 2.37
   },
   "size_roblox": [
-   1.39,
+   1.13,
    2.37,
-   2.09
+   2.02
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -3178,13 +3180,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3702/4300 tris",
+    "budget": "3774/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2332 faces on swatch centers",
+    "uv": "2368 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.05",
+    "centered": "footprint center x=0.00 y=0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -3253,16 +3255,16 @@
    "CleanACat_Cat_Djinn_Dirty_Sit_Glow",
    "CleanACat_Cat_Djinn_Dirty_Sit_Prop2"
   ],
-  "triangles": 3676,
+  "triangles": 3748,
   "budget": 4300,
-  "parts": 197,
+  "parts": 203,
   "size_studs": {
-   "x": 1.46,
+   "x": 1.34,
    "y": 1.24,
    "z": 2.28
   },
   "size_roblox": [
-   1.46,
+   1.34,
    2.28,
    1.24
   ],
@@ -3404,13 +3406,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3676/4300 tris",
+    "budget": "3748/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2313 faces on swatch centers",
+    "uv": "2349 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.11 y=-0.02",
+    "centered": "footprint center x=0.17 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -3876,18 +3878,18 @@
    "CleanACat_Cat_Inky_Dirty_Claw07",
    "CleanACat_Cat_Inky_Dirty_Claw08"
   ],
-  "triangles": 2702,
+  "triangles": 2774,
   "budget": 3200,
-  "parts": 135,
+  "parts": 141,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.86,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -4026,13 +4028,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2702/3200 tris",
+    "budget": "2774/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1681 faces on swatch centers",
+    "uv": "1717 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -4098,17 +4100,17 @@
    "CleanACat_Cat_Inky_Dirty_Sit_Claw07",
    "CleanACat_Cat_Inky_Dirty_Sit_Claw08"
   ],
-  "triangles": 2726,
+  "triangles": 2798,
   "budget": 3200,
-  "parts": 138,
+  "parts": 144,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -4235,16 +4237,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2726/3200 tris",
+    "budget": "2798/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1697 faces on swatch centers",
+    "uv": "1733 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -4587,9 +4590,9 @@
    "CleanACat_Cat_Jade_Dirty_Wings_Glow",
    "CleanACat_Cat_Jade_Dirty_Tail_Pearl_Glow"
   ],
-  "triangles": 3786,
+  "triangles": 3858,
   "budget": 4300,
-  "parts": 236,
+  "parts": 242,
   "size_studs": {
    "x": 1.56,
    "y": 2.03,
@@ -4749,13 +4752,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3786/4300 tris",
+    "budget": "3858/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2367 faces on swatch centers",
+    "uv": "2403 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.02",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -4827,17 +4830,17 @@
    "CleanACat_Cat_Jade_Dirty_Sit_Wings_Glow",
    "CleanACat_Cat_Jade_Dirty_Sit_Tail_Pearl_Glow"
   ],
-  "triangles": 3750,
+  "triangles": 3822,
   "budget": 4300,
-  "parts": 234,
+  "parts": 240,
   "size_studs": {
-   "x": 1.64,
+   "x": 1.55,
    "y": 1.24,
-   "z": 2.2
+   "z": 2.21
   },
   "size_roblox": [
-   1.64,
-   2.2,
+   1.55,
+   2.21,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -4971,21 +4974,20 @@
   "gates": {
    "pass": true,
    "failed": [],
-   "warnings": [
-    "centered"
-   ],
+   "warnings": [],
    "qa_accepted": {
     "shared corners": 9,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "3750/4300 tris",
+    "budget": "3822/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2353 faces on swatch centers",
+    "uv": "2389 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.08 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.03 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -5464,18 +5466,18 @@
    "CleanACat_Cat_LilacCloud_Dirty_Claw07",
    "CleanACat_Cat_LilacCloud_Dirty_Claw08"
   ],
-  "triangles": 2982,
+  "triangles": 3054,
   "budget": 3200,
-  "parts": 145,
+  "parts": 151,
   "size_studs": {
-   "x": 1.53,
-   "y": 2.04,
+   "x": 1.29,
+   "y": 2.05,
    "z": 1.89
   },
   "size_roblox": [
-   1.53,
+   1.29,
    1.89,
-   2.04
+   2.05
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -5622,10 +5624,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2982/3200 tris",
+    "budget": "3054/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1845 faces on swatch centers",
+    "uv": "1881 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=-0.00 y=0.03",
@@ -5694,16 +5696,16 @@
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw07",
    "CleanACat_Cat_LilacCloud_Dirty_Sit_Claw08"
   ],
-  "triangles": 3084,
+  "triangles": 3156,
   "budget": 3200,
-  "parts": 150,
+  "parts": 156,
   "size_studs": {
-   "x": 1.64,
+   "x": 1.43,
    "y": 1.27,
    "z": 1.85
   },
   "size_roblox": [
-   1.64,
+   1.43,
    1.85,
    1.27
   ],
@@ -5842,13 +5844,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3084/3200 tris",
+    "budget": "3156/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1903 faces on swatch centers",
+    "uv": "1939 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.13 y=-0.01",
+    "centered": "footprint center x=0.14 y=-0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -6176,18 +6178,18 @@
    "CleanACat_Cat_Marble_Dirty_Claw07",
    "CleanACat_Cat_Marble_Dirty_Claw08"
   ],
-  "triangles": 2834,
+  "triangles": 2906,
   "budget": 3200,
-  "parts": 151,
+  "parts": 157,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.2,
+   "y": 2.03,
    "z": 1.97
   },
   "size_roblox": [
-   1.39,
+   1.2,
    1.97,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -6330,13 +6332,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2834/3200 tris",
+    "budget": "2906/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1751 faces on swatch centers",
+    "uv": "1787 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.04 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -6402,17 +6404,17 @@
    "CleanACat_Cat_Marble_Dirty_Sit_Claw07",
    "CleanACat_Cat_Marble_Dirty_Sit_Claw08"
   ],
-  "triangles": 2858,
+  "triangles": 2930,
   "budget": 3200,
-  "parts": 154,
+  "parts": 160,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.96
+   "z": 1.97
   },
   "size_roblox": [
-   1.52,
-   1.96,
+   1.3,
+   1.97,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -6543,16 +6545,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2858/3200 tris",
+    "budget": "2930/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1767 faces on swatch centers",
+    "uv": "1803 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -6898,18 +6901,18 @@
    "CleanACat_Cat_Moonstag_Dirty_Prop2",
    "CleanACat_Cat_Moonstag_Dirty_Grove_Glow"
   ],
-  "triangles": 3762,
+  "triangles": 3834,
   "budget": 4300,
-  "parts": 204,
+  "parts": 210,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.36,
+   "y": 2.03,
    "z": 2.37
   },
   "size_roblox": [
-   1.39,
+   1.36,
    2.37,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -7064,13 +7067,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3762/4300 tris",
+    "budget": "3834/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2393 faces on swatch centers",
+    "uv": "2429 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -7140,17 +7143,17 @@
    "CleanACat_Cat_Moonstag_Dirty_Sit_Prop2",
    "CleanACat_Cat_Moonstag_Dirty_Sit_Grove_Glow"
   ],
-  "triangles": 3618,
+  "triangles": 3690,
   "budget": 4300,
-  "parts": 193,
+  "parts": 199,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.4,
    "y": 1.24,
-   "z": 2.28
+   "z": 2.29
   },
   "size_roblox": [
-   1.52,
-   2.28,
+   1.4,
+   2.29,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -7293,16 +7296,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "3618/4300 tris",
+    "budget": "3690/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2325 faces on swatch centers",
+    "uv": "2361 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.11 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -7781,18 +7785,18 @@
    "CleanACat_Cat_Muffin_Dirty_Claw07",
    "CleanACat_Cat_Muffin_Dirty_Claw08"
   ],
-  "triangles": 2798,
+  "triangles": 2870,
   "budget": 3200,
-  "parts": 143,
+  "parts": 149,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.86,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -7935,13 +7939,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2798/3200 tris",
+    "budget": "2870/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1729 faces on swatch centers",
+    "uv": "1765 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -8007,17 +8011,17 @@
    "CleanACat_Cat_Muffin_Dirty_Sit_Claw07",
    "CleanACat_Cat_Muffin_Dirty_Sit_Claw08"
   ],
-  "triangles": 2824,
+  "triangles": 2896,
   "budget": 3200,
-  "parts": 147,
+  "parts": 153,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -8148,16 +8152,17 @@
    ],
    "qa_accepted": {
     "shared corners": 7,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2824/3200 tris",
+    "budget": "2896/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1741 faces on swatch centers",
+    "uv": "1777 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -8481,18 +8486,18 @@
    "CleanACat_Cat_Patches_Dirty_Claw07",
    "CleanACat_Cat_Patches_Dirty_Claw08"
   ],
-  "triangles": 2774,
+  "triangles": 2846,
   "budget": 3200,
-  "parts": 141,
+  "parts": 147,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.86,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -8635,13 +8640,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2774/3200 tris",
+    "budget": "2846/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1717 faces on swatch centers",
+    "uv": "1753 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -8707,17 +8712,17 @@
    "CleanACat_Cat_Patches_Dirty_Sit_Claw07",
    "CleanACat_Cat_Patches_Dirty_Sit_Claw08"
   ],
-  "triangles": 2786,
+  "triangles": 2858,
   "budget": 3200,
-  "parts": 143,
+  "parts": 149,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -8848,16 +8853,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2786/3200 tris",
+    "budget": "2858/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1727 faces on swatch centers",
+    "uv": "1763 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -9197,18 +9203,18 @@
    "CleanACat_Cat_Phoenix_Dirty_Prop2",
    "CleanACat_Cat_Phoenix_Dirty_Wings_Glow"
   ],
-  "triangles": 3314,
+  "triangles": 3386,
   "budget": 4300,
-  "parts": 206,
+  "parts": 212,
   "size_studs": {
    "x": 1.56,
-   "y": 2.09,
+   "y": 2.14,
    "z": 2.34
   },
   "size_roblox": [
    1.56,
    2.34,
-   2.09
+   2.14
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -9360,10 +9366,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3314/4300 tris",
+    "budget": "3386/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2003 faces on swatch centers",
+    "uv": "2039 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.03",
@@ -9436,17 +9442,17 @@
    "CleanACat_Cat_Phoenix_Dirty_Sit_Prop2",
    "CleanACat_Cat_Phoenix_Dirty_Sit_Wings_Glow"
   ],
-  "triangles": 3338,
+  "triangles": 3410,
   "budget": 4300,
-  "parts": 209,
+  "parts": 215,
   "size_studs": {
-   "x": 1.64,
+   "x": 1.55,
    "y": 1.24,
-   "z": 2.26
+   "z": 2.27
   },
   "size_roblox": [
-   1.64,
-   2.26,
+   1.55,
+   2.27,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -9580,21 +9586,20 @@
   "gates": {
    "pass": true,
    "failed": [],
-   "warnings": [
-    "centered"
-   ],
+   "warnings": [],
    "qa_accepted": {
     "shared corners": 7,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "3338/4300 tris",
+    "budget": "3410/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2019 faces on swatch centers",
+    "uv": "2055 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.08 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.03 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -10069,18 +10074,18 @@
    "CleanACat_Cat_Prism_Dirty_Prop2",
    "CleanACat_Cat_Prism_Dirty_Rainbow_Glow"
   ],
-  "triangles": 3562,
+  "triangles": 3634,
   "budget": 4300,
-  "parts": 196,
+  "parts": 202,
   "size_studs": {
    "x": 1.51,
-   "y": 2.18,
+   "y": 2.13,
    "z": 2.21
   },
   "size_roblox": [
    1.51,
    2.21,
-   2.18
+   2.13
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -10226,13 +10231,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3562/4300 tris",
+    "budget": "3634/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2211 faces on swatch centers",
+    "uv": "2247 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.00",
+    "centered": "footprint center x=0.00 y=-0.04",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -10302,9 +10307,9 @@
    "CleanACat_Cat_Prism_Dirty_Sit_Prop2",
    "CleanACat_Cat_Prism_Dirty_Sit_Rainbow_Glow"
   ],
-  "triangles": 3558,
+  "triangles": 3630,
   "budget": 4300,
-  "parts": 199,
+  "parts": 205,
   "size_studs": {
    "x": 1.52,
    "y": 1.24,
@@ -10445,10 +10450,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3558/4300 tris",
+    "budget": "3630/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2213 faces on swatch centers",
+    "uv": "2249 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.08 y=-0.02",
@@ -10929,16 +10934,16 @@
    "CleanACat_Cat_Rosette_Dirty_Fan_Glow",
    "CleanACat_Cat_Rosette_Dirty_Tail_Rose"
   ],
-  "triangles": 3844,
+  "triangles": 3916,
   "budget": 4300,
-  "parts": 244,
+  "parts": 250,
   "size_studs": {
-   "x": 1.39,
+   "x": 1.28,
    "y": 2.15,
    "z": 2.16
   },
   "size_roblox": [
-   1.39,
+   1.28,
    2.16,
    2.15
   ],
@@ -11093,10 +11098,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3844/4300 tris",
+    "budget": "3916/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2410 faces on swatch centers",
+    "uv": "2446 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.08",
@@ -11170,16 +11175,16 @@
    "CleanACat_Cat_Rosette_Dirty_Sit_Fan_Glow",
    "CleanACat_Cat_Rosette_Dirty_Sit_Tail_Rose"
   ],
-  "triangles": 3700,
+  "triangles": 3772,
   "budget": 4300,
-  "parts": 233,
+  "parts": 239,
   "size_studs": {
-   "x": 1.56,
+   "x": 1.45,
    "y": 1.27,
    "z": 2.09
   },
   "size_roblox": [
-   1.56,
+   1.45,
    2.09,
    1.27
   ],
@@ -11322,13 +11327,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3700/4300 tris",
+    "budget": "3772/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2342 faces on swatch centers",
+    "uv": "2378 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.15 y=-0.01",
+    "centered": "footprint center x=0.11 y=-0.01",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -11820,18 +11825,18 @@
    "CleanACat_Cat_Sherbet_Dirty_Prop2",
    "CleanACat_Cat_Sherbet_Dirty_Wings_Glow"
   ],
-  "triangles": 3598,
+  "triangles": 3670,
   "budget": 4300,
-  "parts": 176,
+  "parts": 182,
   "size_studs": {
    "x": 1.48,
-   "y": 2.01,
+   "y": 2.03,
    "z": 2.34
   },
   "size_roblox": [
    1.48,
    2.34,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -11978,13 +11983,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3598/4300 tris",
+    "budget": "3670/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2233 faces on swatch centers",
+    "uv": "2269 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -12054,16 +12059,16 @@
    "CleanACat_Cat_Sherbet_Dirty_Sit_Prop2",
    "CleanACat_Cat_Sherbet_Dirty_Sit_Wings_Glow"
   ],
-  "triangles": 3624,
+  "triangles": 3696,
   "budget": 4300,
-  "parts": 180,
+  "parts": 186,
   "size_studs": {
-   "x": 1.6,
+   "x": 1.51,
    "y": 1.24,
    "z": 2.25
   },
   "size_roblox": [
-   1.6,
+   1.51,
    2.25,
    1.24
   ],
@@ -12199,16 +12204,17 @@
    ],
    "qa_accepted": {
     "shared corners": 7,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "3624/4300 tris",
+    "budget": "3696/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2245 faces on swatch centers",
+    "uv": "2281 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.10 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.05 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -12671,18 +12677,18 @@
    "CleanACat_Cat_Smudge_Dirty_Claw07",
    "CleanACat_Cat_Smudge_Dirty_Claw08"
   ],
-  "triangles": 2798,
+  "triangles": 2870,
   "budget": 3200,
-  "parts": 143,
+  "parts": 149,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.86,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -12825,13 +12831,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2798/3200 tris",
+    "budget": "2870/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1729 faces on swatch centers",
+    "uv": "1765 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -12897,17 +12903,17 @@
    "CleanACat_Cat_Smudge_Dirty_Sit_Claw07",
    "CleanACat_Cat_Smudge_Dirty_Sit_Claw08"
   ],
-  "triangles": 2824,
+  "triangles": 2896,
   "budget": 3200,
-  "parts": 147,
+  "parts": 153,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -13038,16 +13044,17 @@
    ],
    "qa_accepted": {
     "shared corners": 7,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2824/3200 tris",
+    "budget": "2896/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1741 faces on swatch centers",
+    "uv": "1777 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -13375,18 +13382,18 @@
    "CleanACat_Cat_Starcoat_Dirty_Claw07",
    "CleanACat_Cat_Starcoat_Dirty_Claw08"
   ],
-  "triangles": 2786,
+  "triangles": 2858,
   "budget": 3200,
-  "parts": 142,
+  "parts": 148,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.09,
+   "x": 1.23,
+   "y": 2.14,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.23,
    1.86,
-   2.09
+   2.14
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -13529,19 +13536,21 @@
   "gates": {
    "pass": true,
    "failed": [],
-   "warnings": [],
+   "warnings": [
+    "centered"
+   ],
    "qa_accepted": {
     "shared corners": 7,
     "back to back": 20
    },
    "checks": {
-    "budget": "2786/3200 tris",
+    "budget": "2858/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1723 faces on swatch centers",
+    "uv": "1759 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=-0.03",
+    "centered": "footprint center x=-0.05 y=-0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -13607,17 +13616,17 @@
    "CleanACat_Cat_Starcoat_Dirty_Sit_Claw07",
    "CleanACat_Cat_Starcoat_Dirty_Sit_Claw08"
   ],
-  "triangles": 2846,
+  "triangles": 2918,
   "budget": 3200,
-  "parts": 148,
+  "parts": 154,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -13752,16 +13761,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2846/3200 tris",
+    "budget": "2918/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1757 faces on swatch centers",
+    "uv": "1793 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -14101,18 +14111,18 @@
    "CleanACat_Cat_Stardust_Dirty_Tail_Star",
    "CleanACat_Cat_Stardust_Dirty_Tail_Star_Glow"
   ],
-  "triangles": 3246,
+  "triangles": 3318,
   "budget": 4300,
-  "parts": 207,
+  "parts": 213,
   "size_studs": {
    "x": 1.47,
-   "y": 2.01,
+   "y": 2.04,
    "z": 2.38
   },
   "size_roblox": [
    1.47,
    2.38,
-   2.01
+   2.04
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -14255,13 +14265,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3246/4300 tris",
+    "budget": "3318/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1993 faces on swatch centers",
+    "uv": "2029 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -14333,17 +14343,17 @@
    "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star",
    "CleanACat_Cat_Stardust_Dirty_Sit_Tail_Star_Glow"
   ],
-  "triangles": 3330,
+  "triangles": 3402,
   "budget": 4300,
-  "parts": 215,
+  "parts": 221,
   "size_studs": {
-   "x": 1.54,
+   "x": 1.45,
    "y": 1.81,
-   "z": 2.29
+   "z": 2.3
   },
   "size_roblox": [
-   1.54,
-   2.29,
+   1.45,
+   2.3,
    1.81
   ],
   "pivot": "base center (floor contact)",
@@ -14474,16 +14484,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "3330/4300 tris",
+    "budget": "3402/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2039 faces on swatch centers",
+    "uv": "2075 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.13 y=0.25",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.08 y=0.25",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -14945,18 +14956,18 @@
    "CleanACat_Cat_Suds_Dirty_Claw07",
    "CleanACat_Cat_Suds_Dirty_Claw08"
   ],
-  "triangles": 2726,
+  "triangles": 2798,
   "budget": 3200,
-  "parts": 137,
+  "parts": 143,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.86,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -15103,13 +15114,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2726/3200 tris",
+    "budget": "2798/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1693 faces on swatch centers",
+    "uv": "1729 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -15150,16 +15161,16 @@
    "CleanACat_Cat_Suds_Dirty_Loaf_Tail",
    "CleanACat_Cat_Suds_Dirty_Loaf_Mud15"
   ],
-  "triangles": 1306,
+  "triangles": 1366,
   "budget": 2600,
-  "parts": 84,
+  "parts": 89,
   "size_studs": {
-   "x": 1.39,
+   "x": 1.17,
    "y": 2.07,
    "z": 1.28
   },
   "size_roblox": [
-   1.39,
+   1.17,
    1.28,
    2.07
   ],
@@ -15260,13 +15271,13 @@
     "back to back": 17
    },
    "checks": {
-    "budget": "1306/2600 tris",
+    "budget": "1366/2600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "758 faces on swatch centers",
+    "uv": "788 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=-0.23",
+    "centered": "footprint center x=-0.02 y=-0.23",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -15332,17 +15343,17 @@
    "CleanACat_Cat_Suds_Dirty_Sit_Claw07",
    "CleanACat_Cat_Suds_Dirty_Sit_Claw08"
   ],
-  "triangles": 2750,
+  "triangles": 2822,
   "budget": 3200,
-  "parts": 140,
+  "parts": 146,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -15477,16 +15488,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2750/3200 tris",
+    "budget": "2822/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1709 faces on swatch centers",
+    "uv": "1745 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -15937,18 +15949,18 @@
    "CleanACat_Cat_Toffee_Dirty_Claw07",
    "CleanACat_Cat_Toffee_Dirty_Claw08"
   ],
-  "triangles": 2714,
+  "triangles": 2786,
   "budget": 3200,
-  "parts": 141,
+  "parts": 147,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.97
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.97,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -16087,13 +16099,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2714/3200 tris",
+    "budget": "2786/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1691 faces on swatch centers",
+    "uv": "1727 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -16159,17 +16171,17 @@
    "CleanACat_Cat_Toffee_Dirty_Sit_Claw07",
    "CleanACat_Cat_Toffee_Dirty_Sit_Claw08"
   ],
-  "triangles": 2738,
+  "triangles": 2810,
   "budget": 3200,
-  "parts": 144,
+  "parts": 150,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.96
+   "z": 1.97
   },
   "size_roblox": [
-   1.52,
-   1.96,
+   1.3,
+   1.97,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -16296,16 +16308,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2738/3200 tris",
+    "budget": "2810/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1707 faces on swatch centers",
+    "uv": "1743 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -16629,18 +16642,18 @@
    "CleanACat_Cat_Tux_Dirty_Claw07",
    "CleanACat_Cat_Tux_Dirty_Claw08"
   ],
-  "triangles": 2738,
+  "triangles": 2810,
   "budget": 3200,
-  "parts": 138,
+  "parts": 144,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.01,
+   "x": 1.13,
+   "y": 2.03,
    "z": 1.86
   },
   "size_roblox": [
-   1.39,
+   1.13,
    1.86,
-   2.01
+   2.03
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -16787,13 +16800,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "2738/3200 tris",
+    "budget": "2810/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1699 faces on swatch centers",
+    "uv": "1735 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.00 y=0.01",
+    "centered": "footprint center x=0.00 y=0.03",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -16859,17 +16872,17 @@
    "CleanACat_Cat_Tux_Dirty_Sit_Claw07",
    "CleanACat_Cat_Tux_Dirty_Sit_Claw08"
   ],
-  "triangles": 2750,
+  "triangles": 2822,
   "budget": 3200,
-  "parts": 140,
+  "parts": 146,
   "size_studs": {
-   "x": 1.52,
+   "x": 1.3,
    "y": 1.24,
-   "z": 1.85
+   "z": 1.86
   },
   "size_roblox": [
-   1.52,
-   1.85,
+   1.3,
+   1.86,
    1.24
   ],
   "pivot": "base center (floor contact)",
@@ -17004,16 +17017,17 @@
    ],
    "qa_accepted": {
     "shared corners": 8,
-    "back to back": 20
+    "back to back": 20,
+    "pivot off the floor": 1
    },
    "checks": {
-    "budget": "2750/3200 tris",
+    "budget": "2822/3200 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1709 faces on swatch centers",
+    "uv": "1745 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.14 y=-0.02",
+    "pivot": "floor at z=-0.01 (want 0)",
+    "centered": "footprint center x=0.15 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -17347,18 +17361,18 @@
    "CleanACat_Cat_WhiteTiger_Dirty_Prop2",
    "CleanACat_Cat_WhiteTiger_Dirty_Flake_Glow"
   ],
-  "triangles": 3068,
+  "triangles": 3140,
   "budget": 4300,
-  "parts": 176,
+  "parts": 182,
   "size_studs": {
-   "x": 1.39,
-   "y": 2.04,
+   "x": 1.13,
+   "y": 2.05,
    "z": 2.02
   },
   "size_roblox": [
-   1.39,
+   1.13,
    2.02,
-   2.04
+   2.05
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -17497,10 +17511,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3068/4300 tris",
+    "budget": "3140/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1882 faces on swatch centers",
+    "uv": "1918 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.03",
@@ -17573,16 +17587,16 @@
    "CleanACat_Cat_WhiteTiger_Dirty_Sit_Prop2",
    "CleanACat_Cat_WhiteTiger_Dirty_Sit_Flake_Glow"
   ],
-  "triangles": 3094,
+  "triangles": 3166,
   "budget": 4300,
-  "parts": 180,
+  "parts": 186,
   "size_studs": {
-   "x": 1.56,
+   "x": 1.35,
    "y": 1.27,
    "z": 1.94
   },
   "size_roblox": [
-   1.56,
+   1.35,
    1.94,
    1.27
   ],
@@ -17713,13 +17727,13 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3094/4300 tris",
+    "budget": "3166/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1894 faces on swatch centers",
+    "uv": "1930 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.16 y=-0.02",
+    "centered": "footprint center x=0.18 y=-0.02",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }

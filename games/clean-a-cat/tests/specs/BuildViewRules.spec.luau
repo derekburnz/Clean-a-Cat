@@ -107,4 +107,65 @@ return function()
 			end, nil)).to.equal(0)
 		end)
 	end)
+
+	describe("BuildViewRules.sameShape", function()
+		local function row(id: string, say: string, state: string?): BuildViewRules.Row
+			return {
+				kind = "build",
+				id = id,
+				name = id,
+				say = say,
+				state = state or "building",
+				action = nil,
+				icon = "Build",
+			}
+		end
+
+		it("is true when only the words change, as a countdown ticks", function()
+			expect(BuildViewRules.sameShape({ row("tub2", "5m") }, { row("tub2", "4m") })).to.equal(
+				true
+			)
+		end)
+
+		it("is false when a row's state, order or count changes", function()
+			expect(
+				BuildViewRules.sameShape({ row("tub2", "5s") }, { row("tub2", "Built", "done") })
+			).to.equal(false)
+			expect(
+				BuildViewRules.sameShape(
+					{ row("a", "1m"), row("b", "2m") },
+					{ row("b", "2m"), row("a", "1m") }
+				)
+			).to.equal(false)
+			expect(BuildViewRules.sameShape({ row("a", "1m") }, {})).to.equal(false)
+		end)
+	end)
+
+	describe("BuildViewRules.markShort", function()
+		local function buy(id: string, price: number): BuildViewRules.Row
+			return {
+				kind = "tool",
+				id = id,
+				name = id,
+				say = `{price} coins`,
+				state = "buy",
+				action = "Buy",
+				icon = "Tools",
+				price = price,
+			}
+		end
+
+		it("greys a buy row the coins do not cover, and only that one", function()
+			local rows = BuildViewRules.markShort({ buy("cheap", 50), buy("dear", 500) }, 120)
+			expect(rows[1].short).to.equal(nil)
+			expect(rows[2].short).to.equal(true)
+		end)
+
+		it("clears it once the coins reach the price, which changes the shape", function()
+			local before = BuildViewRules.markShort({ buy("dear", 500) }, 120)
+			local after = BuildViewRules.markShort({ buy("dear", 500) }, 500)
+			expect(after[1].short).to.equal(nil)
+			expect(BuildViewRules.sameShape(before, after)).to.equal(false)
+		end)
+	end)
 end

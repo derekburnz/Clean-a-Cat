@@ -8,7 +8,9 @@
 --
 -- Shared, so a client can tell which buttons exist; only the server (PurchaseService) grants anything.
 --
--- Each experience has its own products (Derek, 2026-11-26, q2-wheremake): he makes the dev set now and the live set
+-- Each experience has its own products (Derek, 2026-11-26): the dev set was made with the group key by the
+-- store-setup workflow on 2026-11-26 (issue 850) and the live set is made the same way on promotion day.
+-- Was (q2-wheremake): he makes the dev set now and the live set
 -- when he promotes, so the ids are listed per experience (game.GameId) and IDS is the set of the experience this runs
 -- in. Anywhere else (a place file opened on its own in Studio, GameId 0) every id is 0, so nothing sells.
 
@@ -40,14 +42,14 @@ end
 -- key -> product id, per experience. Finish now tiers (FinishRules.TIERS, issue 515).
 Products.IDS_BY_GAME = table.freeze({
 	[Products.DEV_GAME_ID] = table.freeze({
-		FinishTier1 = 0,
-		FinishTier2 = 0,
-		FinishTier3 = 0,
-		FinishTier4 = 0,
-		FinishTier5 = 0,
-		CrateOne = 0,
-		CrateFive = 0,
-		StarterPack = 0,
+		FinishTier1 = 3736696217,
+		FinishTier2 = 3736696230,
+		FinishTier3 = 3736696237,
+		FinishTier4 = 3736696245,
+		FinishTier5 = 3736696252,
+		CrateOne = 3736696263,
+		CrateFive = 3736696269,
+		StarterPack = 3736696279,
 	}),
 	[Products.LIVE_GAME_ID] = table.freeze({
 		FinishTier1 = 0,

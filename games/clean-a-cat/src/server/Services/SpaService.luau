@@ -44,12 +44,14 @@ local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local VisitRules = require(Shared:WaitForChild("VisitRules"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
+local WashPace = require(Shared:WaitForChild("WashPace"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
+local LikeAskService = require(script.Parent:WaitForChild("LikeAskService"))
 local MascotService = require(script.Parent:WaitForChild("MascotService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
@@ -125,7 +127,7 @@ local function rollCustomer(player: Player): string
 	local first = (save == nil or save.stars <= 0) and (queue == nil or #queue == 0)
 	return CatRules.roll(function()
 		return random:NextNumber()
-	end, first, if save then CatRules.tierFor(save.stars) else 1)
+	end, first, if save then CatRules.tierFor(save.stars, LiveFlags.isOn) else 1)
 end
 
 local function nextNumber(): number
@@ -399,6 +401,7 @@ local function newCat(player: Player): SpaRules.Cat
 	local id = (nextId[player] or 0) + 1
 	nextId[player] = id
 	local cat = SpaRules.newCat(id, os.clock())
+	cat.brushStrokes = WashPace.pace(LiveFlags.isOn).brushStrokes -- the kitten's too (switch washPace)
 	if sudsNext(player) then
 		-- The kitten comes first and is nobody's: he takes no customer from the line and no stray turn.
 		cat.kind = SudsRules.NAME
@@ -413,7 +416,7 @@ local function newCat(player: Player): SpaRules.Cat
 	-- The Pro Brush (switch proBrush, #267) brushes the tangles out in fewer strokes; the save says who owns it.
 	local tools: { [string]: boolean } = if save then save.tools else {}
 	cat.brushStrokes = ToolRules.brushStrokes(
-		SpaRules.BRUSH_STROKES,
+		WashPace.pace(LiveFlags.isOn).brushStrokes, -- 8 with the switch washPace (issue 865), else 3
 		function(toolId: string): boolean
 			return tools[toolId] == true
 		end,
@@ -426,7 +429,7 @@ local function newCat(player: Player): SpaRules.Cat
 			-- A stray waits at the back door; a brand new player's first one is common.
 			cat.kind = CatRules.roll(function()
 				return random:NextNumber()
-			end, brandNew, CatRules.tierFor(save.stars))
+			end, brandNew, CatRules.tierFor(save.stars, LiveFlags.isOn))
 			cat.stray = true
 			cat.dirt = DirtRules.roll(cat.kind :: string, nextNumber, if brandNew then 1 else nil)
 			cat.needs = rollNeeds(cat.kind :: string, cat.dirt :: number)
@@ -973,7 +976,11 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		})
 		-- a slow wash pays less, but the card never shows a minus line: that part comes off the wash's own line
 		local base = formula.base + math.min(formula.speed, 0)
-		pay = { coins = base, tip = formula.tip, stars = formula.stars }
+		-- with gradeStars (issue 868) the wash's 1 to 3 stars are what the spa earns, plus a rarer cat's extra
+		local stars = if LiveFlags.isOn(CatRules.GRADE_STARS_FLAG)
+			then CatRules.gradeStars(formula.stars, formula.grade)
+			else formula.stars
+		pay = { coins = base, tip = formula.tip, stars = stars }
 		local lines: RecapRules.Extra = {
 			speed = math.max(formula.speed, 0),
 			early = formula.early,
@@ -1012,6 +1019,12 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 			"washed",
 			tostring(save.asks[SpecialRules.FIRST_DONE] ~= true),
 		})
+	end
+	-- (likeAsk) a good moment: a special visitor's cat finished, or a three star wash (not the tutorial's own)
+	if cat.special then
+		LikeAskService.moment(player, "special")
+	elseif extra and extra.grade == 3 and not cat.tutorial then
+		LikeAskService.moment(player, "stars")
 	end
 	-- A special visitor's cat may leave a crate (switch specialVisitors): always the first of a save, then rarely.
 	if cat.special and LiveFlags.isOn(SpecialRules.FLAG) then
@@ -1076,10 +1089,18 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	local starsBefore = save.stars
 	save.stars += pay.stars
 	player:SetAttribute(BOARD_LIT, true)
-	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars, LiveFlags.isOn))
 	if LiveFlags.isOn(RECAP_FLAG) then
 		-- The recap card shows the payment line by line (#224), so it replaces the toast.
-		local recap = RecapRules.make(kind, pay, bonus, starsBefore, isNew, extra)
+		-- the full card's FULL_BELOW_STARS counts old-size stars, so the first customers keep it with gradeStars
+		local recap = RecapRules.make(
+			kind,
+			pay,
+			bonus,
+			starsBefore // CatRules.starScale(LiveFlags.isOn),
+			isNew,
+			extra
+		)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins, recap)
 	else
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
@@ -1170,6 +1191,7 @@ local function customerLeaves(player: Player, place: number)
 	if not LiveFlags.isOn(QUIET_FLAG) then
 		NetService.notice(player, `{kind} went home`)
 	end
+	LikeAskService.bad(player) -- (likeAsk) never within two minutes of a lost cat
 end
 
 -- Once a second (switch heartBar): bars drain, a customer whose bar is empty leaves (one a second at most), and each
@@ -1417,7 +1439,7 @@ function SpaService.Start()
 			player:SetAttribute(BOARD_LIT, true)
 		end
 		-- The board shows the chances of the player's star tier, the same table their rolls use.
-		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars, LiveFlags.isOn))
 		-- crates held, for the crates' HUD (issue 511); set here as special visitors are the first to give one
 		player:SetAttribute(
 			SpecialRules.CRATES_ATTRIBUTE,

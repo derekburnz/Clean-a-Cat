@@ -87,6 +87,7 @@ export type Save = {
 	tools: { [string]: boolean }, -- bought tools, for example BubbleSoap = true
 	stations: { [string]: boolean }, -- finished stations and rooms, for example BrushTable = true
 	builds: { [string]: Build }, -- running builds by slot name ("station", "room")
+	oldRefunds: { [string]: boolean }, -- builds whose coins were paid back once a switch took them out (BuildRules.oldRefund)
 	index: { [string]: IndexEntry }, -- Cat Index stamps by coat name
 	indexBonusPaid: boolean, -- the full set bonus, paid once
 	tutorialStep: number, -- the highest first session step reached (0 before the first scrub)
@@ -112,6 +113,9 @@ export type Save = {
 	giftFavourite: boolean, -- the player said they favourited, as the client told it (only for that cosmetic)
 	freeRewards: { play: boolean, like: boolean }, -- the gift card's Free Rewards rows already paid (issue 730)
 	likeAskedAt: number, -- os.time() the card's like ask was first opened, 0 before (FreeRewardRules; never a like)
+	likeNoVisit: number, -- the visit the like ask was last answered "Not now", 0 before (LikeAskRules)
+	likeNos: number, -- how many times the like ask was answered "Not now" (LikeAskRules.MAX_NOS)
+	likeYes: boolean, -- the like ask was once answered "yes": it never comes again
 	visiting: boolean, -- others may visit this spa (issue 520)
 	jarCoins: number, -- the tip jar's coins waiting (issue 517)
 	jarAt: number, -- os.time() the jar was last filled or emptied
@@ -140,6 +144,7 @@ function SaveSchema.template(now: number): Save
 		tools = {},
 		stations = {},
 		builds = {},
+		oldRefunds = {},
 		index = {},
 		indexBonusPaid = false,
 		tutorialStep = 0,
@@ -169,6 +174,9 @@ function SaveSchema.template(now: number): Save
 		giftFavourite = false,
 		freeRewards = { play = false, like = false },
 		likeAskedAt = 0,
+		likeNoVisit = 0,
+		likeNos = 0,
+		likeYes = false,
 		visiting = true,
 		jarCoins = 0,
 		jarAt = 0,

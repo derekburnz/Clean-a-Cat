@@ -29,6 +29,7 @@ local SaveSchema = require(Shared:WaitForChild("SaveSchema"))
 local Signal = require(Shared:WaitForChild("Signal"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local LikeAskService = require(script.Parent:WaitForChild("LikeAskService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
 export type Grant = (player: Player, save: SaveSchema.Save, receipt: { [string]: any }) -> boolean
@@ -114,6 +115,7 @@ local function processReceipt(receipt: { [string]: any }): Enum.ProductPurchaseD
 			table.remove(save.receipts, 1)
 		end
 		Telemetry.event(player, "purchase_step", 1, { key, "granted" })
+		LikeAskService.moment(player, "purchase") -- (likeAsk) two minutes later, off the purchase screen
 	end
 	local stored = DataService.saveAndConfirm(player, function(saved)
 		local receipts = saved.receipts
@@ -163,6 +165,7 @@ function PurchaseService.Start()
 			end
 			if not bought then
 				Telemetry.event(player, "purchase_step", 1, { key, "cancelled" })
+				LikeAskService.bad(player)
 			end
 			PurchaseService.closed:Fire(player, key, bought)
 		end

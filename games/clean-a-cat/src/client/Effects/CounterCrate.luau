@@ -28,10 +28,46 @@
 --                                                 CounterSetAt, for a sequence of `total` seconds
 --   CounterCrate.arcAt(share) -> number          pure: the crate's lift (studs) along its arc
 --   CounterCrate.reachAt(t) -> number            pure: the carrying arm's forward turn (radians) at `t` seconds
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Effects = require(script.Parent)
+
+-- Issue 828 (switch counterSounds): a soft thud as the crate is set down and a small meow as the cat steps out, on the
+-- player's own plot only. Required lazily so the pure specs never load Audio.
+local SOUND_FLAG = "counterSounds"
+local THUD_PITCH = 1.25 -- a small carrier, not a box off a truck
+local soundParts: { LiveFlags: any, SpaLayout: any, Audio: any }? = nil
+local function sounds(): { LiveFlags: any, SpaLayout: any, Audio: any }
+	local loaded = soundParts
+	if loaded == nil then
+		local Shared = ReplicatedStorage:WaitForChild("Shared")
+		loaded = {
+			LiveFlags = require(Shared:WaitForChild("LiveFlags")) :: any,
+			SpaLayout = require(Shared:WaitForChild("SpaLayout")) :: any,
+			Audio = require(script.Parent.Parent:WaitForChild("Audio")) :: any,
+		}
+		soundParts = loaded
+	end
+	return loaded :: { LiveFlags: any, SpaLayout: any, Audio: any }
+end
+
+-- True when the counter sounds are on and `figure` stands in the local player's own plot.
+local function ownSounds(figure: Model): boolean
+	local s = sounds()
+	if not s.LiveFlags.isOn(SOUND_FLAG) then
+		return false
+	end
+	local ok, slot = pcall(s.SpaLayout.slotOf, Players.LocalPlayer)
+	if not ok or type(slot) ~= "number" then
+		return false
+	end
+	local plots = Workspace:FindFirstChild("SpaPlots")
+	local plot = plots and plots:FindFirstChild("Plot" .. slot)
+	return plot ~= nil and figure:IsDescendantOf(plot)
+end
 
 local CounterCrate = {}
 
@@ -133,11 +169,20 @@ local function forget()
 	end
 end
 
-local function fade(root: Instance, seen: number)
+-- The parts and decals a fade writes, collected once when the copy is made (issue 821: no per frame model walks).
+local function fadeParts(root: Instance): { Instance }
+	local list: { Instance } = {}
 	for _, d in root:GetDescendants() do
 		if d:IsA("BasePart") or d:IsA("Decal") then
-			(d :: any).LocalTransparencyModifier = seen
+			table.insert(list, d)
 		end
+	end
+	return list
+end
+
+local function fade(list: { Instance }, seen: number)
+	for _, d in list do
+		(d :: any).LocalTransparencyModifier = seen
 	end
 end
 
@@ -168,6 +213,11 @@ type Entry = {
 	doorAngle: number,
 	landed: boolean,
 	handedOver: boolean,
+	crateParts: { Instance }?, -- the copy's parts for its fade, collected once (issue 821)
+	crateSeen: number?, -- the fade last written, so an unchanged frame writes nothing
+	waitHidden: boolean?, -- the waiting cat is hidden once before CounterSetAt, not every frame
+	ownSounds: boolean?, -- issue 828: this crate plays its thud and meow (own plot, counterSounds on)
+	meowed: boolean?,
 }
 
 local entries: { [Model]: Entry } = {}
@@ -288,7 +338,10 @@ local function begin(entry: Entry, carrier: Model)
 			d:Destroy()
 		end
 	end
-	fade(copy, 0)
+	local parts = fadeParts(copy)
+	fade(parts, 0)
+	entry.crateParts = parts
+	entry.crateSeen = 0
 	local seatFound = copy:FindFirstChild("CatSeat", true)
 	local seat = if seatFound and seatFound:IsA("Attachment") then seatFound :: Attachment else nil
 	entry.crateFrom = carrier:GetPivot()
@@ -308,6 +361,13 @@ local function begin(entry: Entry, carrier: Model)
 		entry.figure:SetAttribute(CounterCrate.REACH_ATTRIBUTE, os.clock())
 	end
 	entry.phase = "playing"
+	if ownSounds(entry.figure) then
+		entry.ownSounds = true
+		sounds().Audio.play("boxThud", {
+			at = copy.PrimaryPart or copy:FindFirstChildWhichIsA("BasePart", true),
+			pitch = THUD_PITCH,
+		})
+	end
 end
 
 local function step()
@@ -329,7 +389,10 @@ local function step()
 			continue
 		end
 		if now < setAt then
-			hide(cat)
+			if not entry.waitHidden then
+				entry.waitHidden = true
+				hide(cat)
+			end
 			continue
 		end
 		if now >= readyAt then
@@ -373,6 +436,13 @@ local function step()
 			local open = smooth(door) * (1 - smooth(math.clamp(fadeShare * 2, 0, 1)))
 			hinge:PivotTo(crate:GetPivot() * closed * CFrame.Angles(0, entry.doorAngle * open, 0))
 		end
+		if walk > 0 and entry.ownSounds and not entry.meowed then
+			entry.meowed = true
+			sounds().Audio.play(
+				"meow",
+				{ at = cat.PrimaryPart or cat:FindFirstChildWhichIsA("BasePart", true) }
+			)
+		end
 		if walk > 0 and not entry.handedOver then
 			local walker = entry.walker
 			if walker == nil then
@@ -405,8 +475,10 @@ local function step()
 				show(cat)
 			end
 		end
-		if fadeShare > 0 then
-			fade(crate, fadeShare)
+		local parts = entry.crateParts
+		if fadeShare > 0 and parts and fadeShare ~= entry.crateSeen then
+			entry.crateSeen = fadeShare
+			fade(parts, fadeShare)
 		end
 	end
 	if next(entries) == nil and stepping then

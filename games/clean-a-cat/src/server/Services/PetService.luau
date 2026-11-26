@@ -18,6 +18,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Passes = require(Shared:WaitForChild("Passes"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local LikeAskService = require(script.Parent:WaitForChild("LikeAskService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
 local StationService = require(script.Parent:WaitForChild("StationService"))
@@ -125,6 +126,7 @@ local function onOpen(player: Player, rawKind: unknown)
 		)}% {where}`
 	)
 	PetService.show(player)
+	LikeAskService.moment(player, "crate")
 end
 
 local function onPlace(player: Player, rawId: unknown, rawSlot: unknown)

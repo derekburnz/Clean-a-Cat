@@ -5,6 +5,8 @@
 --
 --   HUD.build(root)      makes the pieces once, inside the starter HUD's root (so the #209 TV inset applies)
 --   HUD.setCoins(n)      the coin counter, top right: the save's coins as the server mirrored them
+--   HUD.setCoinBump(k, n) the coin pill's bump (its own scale times k) and the number it shows while counting up, or
+--                        nil for the coins (Effects/CoinBump, switch coinBump, issue 826); the friend tag stays still
 --   HUD.setStage(stage)  the wash step bar (top centre) and tool tray (bottom centre) for a ScrubController stage;
 --                        nil, "waiting" or "done" hides them
 --   HUD.setPlan(later)   which later steps ("bath", "claws"; #267) this cat's wash takes: only those join the bar;
@@ -111,10 +113,14 @@ type Pieces = {
 	iconBoxes: { Frame },
 	faded: { boolean },
 	scales: { UIScale },
+	coinsScale: UIScale,
 }
 
 local pieces: Pieces? = nil
 local coins = 0
+local coinBump = 1 -- the pill's bump (issue 826), 1 when still
+local coinShown: number? = nil -- the number shown while it counts up, nil for `coins`
+local focus = false -- the wash screen (issue 856, switch washScreen): the coin pill and friend tag step away
 local friendsHere: unknown = nil -- the Player attribute FriendsHere (switch friendBonus, issue 520)
 local stage: string? = nil
 local plan: { string } = {} -- the later steps this wash takes
@@ -235,8 +241,9 @@ local function redraw()
 	for _, uiScale in p.scales do
 		uiScale.Scale = scale
 	end
+	p.coinsScale.Scale = scale * coinBump
 
-	p.coins.Visible = on()
+	p.coins.Visible = on() and not focus
 	local pill = LiveFlags.isOn(TIDY_FLAG)
 	local lift = if pill then PILL_LIFT * scale else 0
 	p.coins.Position = UDim2.new(1, -EDGE, 0, 8 - lift)
@@ -248,10 +255,10 @@ local function redraw()
 	p.coinPad.PaddingBottom = UDim.new(0, if pill then PILL_PAD.Y else 0)
 	p.coinIcon.Size = UDim2.fromOffset(s.coinIcon, s.coinIcon)
 	p.coinText.TextSize = s.coinText
-	p.coinText.Text = Wallet.format(coins)
+	p.coinText.Text = Wallet.format(coinShown or coins)
 	-- the friend chip under the coins: friends in the server and their bonus, nothing with none
 	local friendText = FriendViewRules.chipText(friendsHere)
-	p.friends.Visible = on() and friendText ~= nil
+	p.friends.Visible = on() and friendText ~= nil and not focus
 	p.friendText.Text = friendText or ""
 	p.friendText.TextSize = FRIEND_TEXT
 	p.friends.Position = UDim2.new(
@@ -528,6 +535,7 @@ function HUD.build(rootFrame: Frame)
 		iconBoxes = iconBoxes,
 		faded = faded,
 		scales = scales,
+		coinsScale = coinsScale,
 	}
 
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HUD.FLAG)
@@ -552,6 +560,26 @@ end
 function HUD.setCoins(value: unknown)
 	coins = if type(value) == "number" then value else 0
 	redraw()
+end
+
+-- Called each frame while the pill bumps: writes only the pill's scale and number, no full redraw.
+function HUD.setCoinBump(k: number, shown: number?)
+	coinBump, coinShown = k, shown
+	local p = pieces
+	if p == nil then
+		return
+	end
+	local scale = screenScale()
+	p.coinsScale.Scale = scale * k
+	p.coinText.Text = Wallet.format(shown or coins)
+end
+
+-- The wash screen (issue 856): true hides the coin pill and the friend tag; the step line, meter and tool tray stay.
+function HUD.setFocus(on: boolean)
+	if focus ~= on then
+		focus = on
+		redraw()
+	end
 end
 
 function HUD.setTip(tip: TipLine.Tip?)

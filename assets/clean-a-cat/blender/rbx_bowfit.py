@@ -1,6 +1,6 @@
 """Does a worn bow cut into a cat's own head piece? Measured on the Part-built models (assets/clean-a-cat/rbx), as the
 game puts them together: the bow's `BowSlot` Attachment on the head's `BowSlot` (Spa/BowFit.luau), the bow at the
-cat's `Scale` attribute, its `_Fan` left off a cat with a head piece.
+cat's `Scale` attribute times its `BowScale` (#845), its `_Fan` left off a cat with a head piece.
 
 A look in Blender is not enough (#782): a loop is an eight sided ball there and a smooth one in Roblox, a sitting cat
 is built at 0.95 while its bow comes at 1.0, and a thin rod can sit whole inside a loop with no two faces crossing.
@@ -12,7 +12,10 @@ lit and glass parts, the ears) twice:
 
 A gap is the widest clear space between the two shapes over 900 directions (both are convex, so that is their
 distance); under zero is how deep they overlap. `head` is the same for the head itself: every bow should touch it
-(at or under zero) and not be buried.
+(at or under zero) and not be buried. `ear` is the cat's ears: since #845 these cats wear the bow on the head's top
+corner like every other cat, in front of the left ear's base, so up to EAR_OK into an ear is the look. On Bathtile
+and Djinn (PINNED) the head piece covers the whole top, so the bow is pinned to its front corner instead: it must
+touch the piece, at most PIN_DEEP into it, and need not touch the head.
 
   python3 rbx_bowfit.py [--only Stardust,Bathtile] [--all]
 
@@ -35,6 +38,9 @@ TIERS = ("", "Double", "Royal", "Golden")
 COLOURS = ("Pink", "Mint", "Sky")
 ON_HEAD = ("_Prop", "_Glow", "_Glass", "_Ear")        # Models under the Head whose parts a bow must clear
 BURIED = -0.09                                        # a bow sunk further than this into the head is lost in it
+EAR_OK = -0.09         # every cat's corner bow stands in front of its left ear's base, about 0.08 into it (#845)
+PINNED = {"Bathtile", "Djinn"}   # the cap and the turban cover the whole top: the bow is pinned to the piece's front
+PIN_DEEP = -0.065      # corner (#845), touching it and at most this far into it
 
 
 def _cframe(props):
@@ -111,16 +117,18 @@ def worn(cat_parts, bow_parts, scale):
     pieces = [p for p in cat_parts if p is not head and any(k in p["path"] for k in ON_HEAD) and "_Prop2" not in p["path"]]
     out = {}
     for mode in ("seen", "query"):
-        worst, where, on_head = 9.0, "", 9.0
+        worst, where, on_head, ear = 9.0, "", 9.0, 9.0
         for b in bow_parts:
             bb = dict(b, size=b["size"] * scale)
             mb = fit @ _scaled(b["m"], scale, own[:3, 3])
             on_head = min(on_head, gap(bb, mb, head, head["m"], mode))
             for c in pieces:
                 g = gap(bb, mb, c, c["m"], mode)
-                if g < worst:
+                if "_Ear" in c["path"]:
+                    ear = min(ear, g)
+                elif g < worst:
                     worst, where = g, c["path"].rsplit("_", 1)[-1] + " " + "x".join(f"{s:.2f}" for s in c["size"])
-        out[mode] = (worst, where, on_head)
+        out[mode] = (worst, where, on_head, ear)
     return out
 
 
@@ -149,6 +157,8 @@ def main():
             continue
         scale = attrs.get("Scale", 1.0)
         scale = scale.get("Float64", 1.0) if isinstance(scale, dict) else float(scale)
+        own = attrs.get("BowScale", 1.0)               # a head piece cat wears a smaller bow (#845, BowFit.luau)
+        scale *= own.get("Float64", 1.0) if isinstance(own, dict) else float(own)
         cat_parts = parts(tree)
         cells, key = [], [attrs.get("Cat")]
         for tier in TIERS:
@@ -160,13 +170,18 @@ def main():
             s = min(res, key=lambda r: r["seen"][0])["seen"]
             q = min(res, key=lambda r: r["query"][0])["query"]
             flag = ""
-            if s[0] < 0:
+            pinned = attrs.get("Cat") in PINNED
+            if pinned and not PIN_DEEP <= s[0] <= 0.004:
+                flag, bad = " NOT PINNED " + s[1], bad + 1
+            elif not pinned and s[0] < 0:
                 flag, bad = " CUTS " + s[1], bad + 1
-            elif s[2] > 0.004:
+            elif s[3] < EAR_OK:
+                flag, bad = " CUTS THE EAR", bad + 1
+            elif not pinned and s[2] > 0.004:
                 flag, bad = " OFF THE HEAD", bad + 1
             elif s[2] < BURIED:
                 flag, bad = " BURIED", bad + 1
-            cells.append(f"{tier or 'Plain'} seen {s[0]:+.3f} query {q[0]:+.3f} head {s[2]:+.3f}{flag}")
+            cells.append(f"{tier or 'Plain'} seen {s[0]:+.3f} query {q[0]:+.3f} head {s[2]:+.3f} ear {s[3]:+.3f}{flag}")
             key.append((round(s[0], 3), round(q[0], 3), round(s[2], 3)))
         rows += 1
         if not args.all and tuple(key) in seen_rows:
@@ -174,7 +189,7 @@ def main():
         seen_rows.add(tuple(key))
         print(f"{name[len('CleanACat_Cat_'):]:<22} " + " | ".join(cells))
     print(f"{rows} cat models with a head piece, {len(TIERS)} tiers in {len(COLOURS)} colours: "
-          + ("every bow clears the head piece and touches the head" if not bad else f"{bad} to fix"))
+          + ("every bow clears the head piece (Bathtile and Djinn: pinned to it) and touches the head" if not bad else f"{bad} to fix"))
     return 1 if bad else 0
 
 

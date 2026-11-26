@@ -30,8 +30,13 @@ type Shown = {
 }
 
 local shown: { [Model]: Shown } = {} -- by counter cat
+-- Cats whose card has grown in once (switch counterCardFx, issue 803): a redraw, or CounterPlace arriving late and
+-- the card being made again, never grows twice. Cleared when the cat is destroyed.
+local grown: { [Model]: boolean } = {}
+local FX_FLAG = "counterCardFx"
 local matColors: { [BasePart]: Color3 } = {} -- each tinted mat's own colour, to put back
 local guiParent: Instance? = nil
+local RETRY_SECONDS = { 0.25, 1, 3 } -- timed tries for a newcomer's card that could not show at once (issue 853)
 
 local function on(): boolean
 	return CounterCardRules.on(LiveFlags.isOn)
@@ -133,8 +138,23 @@ local function add(cat: Instance, figure: Model)
 	if adornee == nil then
 		return
 	end
+	local motion: CounterCard.Motion? = nil
+	if LiveFlags.isOn(FX_FLAG) then
+		for old in grown do
+			if not old:IsDescendantOf(game) then
+				grown[old] = nil -- packed away or gone without Destroying
+			end
+		end
+		motion = if grown[model] then "ease" else "grow"
+		if not grown[model] then
+			grown[model] = true
+			model.Destroying:Once(function()
+				grown[model] = nil
+			end)
+		end
+	end
 	local entry: Shown = {
-		card = CounterCard.new(adornee :: BasePart, guiParent :: Instance),
+		card = CounterCard.new(adornee :: BasePart, guiParent :: Instance, motion),
 		figure = figure,
 		connections = {},
 	}
@@ -167,22 +187,67 @@ end
 
 local watched: { [Model]: RBXScriptConnection } = {}
 
+local waiting: { [Instance]: { RBXScriptConnection } } = {} -- figure children that could not take a card yet
+
+local function stopWaiting(child: Instance)
+	local connections = waiting[child]
+	if connections then
+		waiting[child] = nil
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+	end
+end
+
+-- Adds the card, or keeps trying until it sticks (issue 853): a newcomer's cat can reach this device before its
+-- parts, its name or its place, or before its figure is in the plot, and no CounterPlace change may follow for a
+-- long while. Every try is cheap, and the waiting ends once the card shows or the child leaves the figure.
+local function addOrWait(child: Instance, figure: Model)
+	add(child, figure)
+	if shown[child :: Model] ~= nil or not child:IsA("Model") or waiting[child] then
+		return
+	end
+	local function retry()
+		if child.Parent ~= figure then
+			stopWaiting(child)
+			return
+		end
+		add(child, figure)
+		if shown[child :: Model] ~= nil then
+			stopWaiting(child)
+		end
+	end
+	waiting[child] = {
+		child:GetAttributeChangedSignal(CounterRules.PLACE_ATTRIBUTE):Connect(retry),
+		child:GetPropertyChangedSignal("Name"):Connect(retry),
+		child.DescendantAdded:Connect(function(descendant: Instance)
+			if descendant:IsA("BasePart") then
+				retry()
+			end
+		end),
+		child.AncestryChanged:Connect(retry),
+		figure.AncestryChanged:Connect(retry),
+	}
+	-- and a few timed tries, for what has no signal here (the plot slot, a switch read late)
+	for _, delay in RETRY_SECONDS do
+		task.delay(delay, function()
+			if waiting[child] then
+				retry()
+			end
+		end)
+	end
+end
+
 local function watch(instance: Instance)
 	if not instance:IsA("Model") or watched[instance :: Model] then
 		return
 	end
 	local figure = instance :: Model
 	watched[figure] = figure.ChildAdded:Connect(function(child: Instance)
-		add(child, figure)
-		-- FigureService parents a newcomer's cat first and gives it its place a moment later: try again then.
-		if shown[child :: Model] == nil and child:IsA("Model") then
-			child:GetAttributeChangedSignal(CounterRules.PLACE_ATTRIBUTE):Once(function()
-				add(child, figure)
-			end)
-		end
+		addOrWait(child, figure)
 	end)
 	for _, child in figure:GetChildren() do
-		add(child, figure)
+		addOrWait(child, figure)
 	end
 end
 

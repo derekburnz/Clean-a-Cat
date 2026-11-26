@@ -37,6 +37,21 @@ LiveFlags.KEYS = {
 	"revealEffects", -- sparkles and water droplets when a cat comes clean (Controllers/EffectsController); off by default
 	"fluffEffects", -- fur puffs, the fluffed glow and bow hearts (Controllers/EffectsController); off by default
 	"spaMusic", -- the two spa songs on the spa floor (Audio, AudioController, issue 529); off by default
+	"uiSounds", -- soft open and close sounds for windows and the More tray (Audio/UiSounds, issue 800); off by default
+	"helperPopFx", -- the helper pay popup pops in with one soft coin sound (UI/HelperPopup, issue 801); off by default
+	"counterCardFx", -- the counter cards grow and fade in, fade out and ease their heart bar (UI/CounterCard, issue 803); off by default
+	"joPrice", -- Jo costs 300 coins, not 150, so the first helper still comes near cat 15 (WorkerRules.JO_PRICE, issue 841); off by default
+	"washPace", -- each wash step takes about 4 to 5 seconds: more brush strokes, more lather, a narrower rinse, a longer claw hold (WashPace, issue 865); off by default
+	"gradeStars", -- a wash earns its grade in spa stars (1 to 3, plus a rarer cat's extra) and the star tiers start 3 times higher (CatRules.gradeStars, issue 868); off by default
+	"sudsVoice", -- one soft meow when Suds's speech bubble appears (Audio/SudsVoice, issue 827); off by default
+	"trailBold", -- the guide line in gold with a dark outline so it reads on the spa floor (Effects/TrailLine, Derek 2026-11-26); off by default
+	"tubLife", -- the tub's foam settles and breathes, bubbles rise and pop, the tap runs with a ripple (Effects/TubLife, issue 879); off by default
+	"catWalkStand", -- a washed cat walks out on its standing model with a leg trot, not sitting (Effects/CatWalkOut); off by default
+	"pillPointer", -- a gold hand bobs over the prompt pill at the end of a guided walk (Controllers/PillPointerController); off by default
+	"boxGuide", -- the guide line back to the closed box when the player walks away before opening it (Controllers/BoxGuideController); off by default
+	"coinBump", -- the HUD coin pill bumps, counts up and gives one coinPop on a gain (Effects/CoinBump, issue 826); off by default
+	"counterSounds", -- a soft thud as a crate is set down and a meow as the cat steps out, own plot (Effects/CounterCrate, issue 828); off by default
+	"claimFx", -- a claim sound and three sparkles when a Free Reward or the gift pet is claimed (Effects/ClaimFx, issue 802); off by default
 	"catMotion", -- cat idle, blink, ear twitch, shake-off and happy wiggle (Effects/CatMotion); off by default
 	"dryEffects", -- warm air wisps from the dryer nozzle (Controllers/EffectsController); off by default
 	"toolsBoard", -- the Tools board and Bubble Soap (ToolService, Controllers/ToolsBoardController); off by default
@@ -85,6 +100,7 @@ LiveFlags.KEYS = {
 	"customerCarry", -- the player takes a customer's cat from them at the door and carries it to the tub; the wash starts once it is in (SpaService, CarryController, CarryRules); off by default
 	"carryShared", -- a cat in someone's arms shows for every other player too, arms and all (Effects, Motion-FX; the server marks the character, CarryRules); off by default
 	"washScene", -- the wash's close-up as its own scene: a tighter shot, a narrower view and the room softly blurred (Effects/WashCamera, Motion-FX #407); off by default
+	"washScreen", -- the wash minigame on its own screen: a clean room around the shot, no Walk button, prompt pills, player list or regular HUD, a bubbly wipe in and out (WashScreenController, issue 856); off by default
 	"smallPrompts", -- every tap prompt (pick him up, open the box, the boards) drawn as a small pill beside its thing instead of Roblox's big black button (Controllers/PromptController); off by default
 	"worldBackdrop", -- the draft world behind the street: hills, houses and trees the road runs into (Model-Agent's CleanACat_Area_Backdrop, BackdropController), this player's own copy; off by default
 	"skyDraft", -- the draft sky and light: pastel haze, soft clouds, warm tint and gentle bloom (Effects/Sky), this player's own; off by default
@@ -133,12 +149,17 @@ LiveFlags.KEYS = {
 	"leaveLines", -- while Roblox's menu is open, two big friendly lines above and below its leave screen, each true for this player now (the tip jar with a helper hired, tomorrow's check in gift) or left out; no guilt or hurry (UI/LeaveLines, LeaveLineRules, issue 726); off by default
 	"spawnSide", -- with spawnView on, the player spawns on the same spot turned a quarter to face the door line's side of the room, so the camera behind them starts in open room and not on the back wall's art (SpaLayout.spawnSpot, PlotService, issue 670); off by default
 	"freeRewards", -- the gift card's Free Rewards rows: like the game (asked, never checked: Claim 10 s after the ask, 150 coins either way) and 30 minutes of play (one normal crate), each paid once per save by the server, beside the favourite plus group row for Starcoat; needs giftStand and pets on too (FreeRewardRules, FreeRewardService, UI/GiftCard, issue 730); off by default
+	"likeAsk", -- with askQueue: after a good moment (a special visitor's cat finished, a crate opened, a three star card, a helper hired, or two minutes after a completed purchase) the server sets LikeAskDue and Design's small card asks for a like, once a visit, none for three visits after a no, never within two minutes of a lost cat or a cancelled purchase, never once the like row is paid (LikeAskRules, LikeAskService, LikeAskController); off by default
+	"likeAskPurchase", -- with likeAsk: the like ask may also come two minutes after a completed purchase, never on the buy screen (Derek, 2026-11-26, q2-purchaseask; LikeAskRules.PURCHASE_FLAG, issue 813); off by default
+	"notifyAsk", -- with askQueue, sudsBubble and longBuildOffer: from 1:45 of play Suds asks once a save, in his bubble, whether to be told when a build is done; only a tap on Sure! opens Roblox's opt-in prompt, and players Roblox would not prompt (under 13, already opted in) never see it (NotifyAskRules, NotifyAskService, NotifyAskController, issue 814); off by default
+	"favouriteAsk", -- with askQueue, sudsBubble, giftStand and pets: a player whose favourite the gift stand does not have gets one reminder in Suds's bubble on the second visit or after 10 hand washes in a visit; only a tap on Favourite opens Roblox's favourite prompt, no reward named, once a save (FavouriteAskRules, FavouriteAskService, FavouriteAskController, issue 815); off by default
 	"helperPopups", -- a helper finishing a cat sends HelperPaid to the owner (a popup over their stand, Design's) instead of the "+N coins: NAME washed CAT" toast, and the per cat toasts that repeat the screen ("+N coins", "+N coins, +S stars", "CAT went home") are left out; one-off toasts stay (WorkerService, SpaService, issue 743); off by default
 	"counterLine", -- waiting customers stand at an open counter window by the desk with their cat on the counter in front of them (their carrier empty), and the player takes any cat from its counter place, no walk to the back of the line; another place than the front works as a pick, the front customer's cat going back on the counter; a leaving customer packs their cat back up (CounterRules, SpaService, FigureService, CarryController, issue 746); needs customers and customerCarry; off by default
 	"counterCards", -- with counterLine and heartBar: a small card over each cat on the counter, a round chip in its owner's shirt colour and its heart bar, and that cat's mat washed in the same colour, so it is plain whose cat it is; client only, the Take prompt stays the tap (CounterCardRules, UI/CounterCard, CounterCardController, issue 745); off by default
 	"bigSpa", -- Model-Agent's bigger spa: a roomier building (stations, helpers and doors moved back and out, the residents' seat left of the entrance) with the open counter window by the desk, on a wider street (56 studs a plot) with its own backdrop; read when the street is placed, so it takes effect on the next server start (SpaLayout.BIG_SPOTS, PlotService, BackdropController, issue 746); a missing big asset keeps the small spa; off by default
 	"counterCrate", -- with counterLine: a new customer walks up with their cat in its crate and sets it on the counter; the server times it (CounterSetAt when they arrive, CounterReadyAt 2.4 s later) and the cat can be taken only once it sits, while Motion-FX's Effects walk it out of the crate and fade the crate (CounterRules, FigureService, SpaService, CarryController); off by default
 	"respawnCamera", -- for 2 s after a respawn, while the player stands still and has not moved the camera, a camera looking more than 30 degrees from the new character's facing is made Scriptable for one frame behind the character, then Custom again, so Roblox's camera module drops its stale last transform and carries on from there (on a respawn the module's own turn is lost and the camera keeps its old yaw) (RespawnCameraController, issue 670); off by default
+	"catWalkOut", -- a customer's washed cat hops out of the tub and trots out, fading (Effects/CatWalkOut, CatReturned); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -148,6 +169,21 @@ LiveFlags.OFF_BY_DEFAULT = {
 	revealEffects = true,
 	fluffEffects = true,
 	spaMusic = true,
+	uiSounds = true,
+	claimFx = true,
+	counterSounds = true,
+	coinBump = true,
+	trailBold = true,
+	boxGuide = true,
+	pillPointer = true,
+	catWalkStand = true,
+	tubLife = true,
+	sudsVoice = true,
+	joPrice = true,
+	washPace = true,
+	gradeStars = true,
+	counterCardFx = true,
+	helperPopFx = true,
 	catMotion = true,
 	dryEffects = true,
 	toolsBoard = true,
@@ -194,6 +230,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	toolOnCat = true,
 	customerCarry = true,
 	washScene = true,
+	washScreen = true,
 	carryShared = true,
 	openingReplay = true,
 	sudsBubble = true,
@@ -243,6 +280,10 @@ LiveFlags.OFF_BY_DEFAULT = {
 	buildWindow = true,
 	fewerPills = true,
 	freeRewards = true,
+	likeAsk = true,
+	likeAskPurchase = true,
+	notifyAsk = true,
+	favouriteAsk = true,
 	spawnSide = true,
 	respawnCamera = true,
 	helperPopups = true,
@@ -250,6 +291,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	counterCards = true,
 	bigSpa = true,
 	counterCrate = true,
+	catWalkOut = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

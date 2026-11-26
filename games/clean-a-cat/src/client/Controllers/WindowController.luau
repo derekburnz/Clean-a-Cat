@@ -3,11 +3,13 @@
 -- window seat at SpotWindow1 to 4, or on four placeholder cushions in the placeholder room. It only draws what the server sends (Residents);
 -- WindowService owns the residents and the tips. The real window comes with Model-Agent's #17. Behind the
 -- LiveFlags switch `strays`.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local BowRules = require(Shared:WaitForChild("BowRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
@@ -133,7 +135,14 @@ local function onResidents(rawList: unknown)
 				end
 				cat:SetAttribute("Resident", true)
 				if type(bowId) == "string" and table.find(SpaRules.BOWS, bowId) then
-					BowFit.wear(cat, bowId, scale)
+					-- (switch bowTiers) the tier in use, as at the tub; the plain bow while its model is not in the place
+					local tier = Players.LocalPlayer:GetAttribute(BowRules.ATTRIBUTE)
+					local look = if LiveFlags.isOn(BowRules.FLAG)
+						then BowRules.lookId(bowId, BowRules.clean(tier))
+						else bowId
+					if not (look ~= bowId and BowFit.wear(cat, look, scale)) then
+						BowFit.wear(cat, bowId, scale)
+					end
 				end
 				cat.Parent = line
 			end

@@ -22,6 +22,12 @@ How to read a row: **key** is the config name the engineer uses, **value** is th
 | `dirt.chance.Legendary` | L1 0, L2 15, L3 35, L4 50 | The rarest are a real job | 2026-11-25 |
 | `dirt.chance.Special` | L4 100 | Special visitors are always very dirty | 2026-11-25 |
 | `dirt.tutorial` | Suds L1 (3 steps), first customer L1 Common (3 steps), second customer L2 (4 steps) | The tutorial uses only the simple 3 or 4 | 2026-11-25 |
+| `wash.paceSeconds` | 4 to 5 per hand step (switch `washPace`, issue 865) | Derek's playtest of 2026-11-26: "the brushing fur minigame goes way too fast they should take around 4-5 seconds each minigame". The scrub comes into the range too (Derek's "each minigame"; the coordinator's check) | 2026-11-26 |
+| `wash.scrubRub` | 2 studs of sponge a mud patch (was 3.6, with scrubFeel) | Old about 8 s once learned, new about 4.5 s. The first tutorial scrub still takes longer while the player learns the drag, which is fine | 2026-11-26 |
+| `wash.brushStrokes` | 8 strokes, 0.45 s apart at least (was 3 and 0.2); Pro Brush 6 (was 2) | Old: about 1 s. New: a 3.2 s floor no fast finger beats, about 4.5 s at a normal stroke. The Pro Brush keeps its share, 2 of 3 is 6 of 8 | 2026-11-26 |
+| `wash.latherTravel` | 26 studs of rubbing (was 12) | Old about 2 s, new about 4.5 s | 2026-11-26 |
+| `wash.rinseReach` | 1.0 sponge reach (was 1.6) | The spray pops a narrower ring, so the rinse is a sweep, about 4 s (was about 2) | 2026-11-26 |
+| `wash.clawHold` | 0.8 s a paw (was 0.5) | Four paws with the moves between, about 4.5 s (was about 3) | 2026-11-26 |
 
 Each row of chances adds up to 100.
 
@@ -30,6 +36,8 @@ Each row of chances adds up to 100.
 | key | value | why | changed |
 |---|---|---|---|
 | `rarity.chance` | Common 60, Uncommon 25, Rare 11, Epic 3.5, Legendary 0.5 | Unchanged from the current `CatRules.CHANCES`; the star tiers stay as they are | 2026-11-25 |
+| `stars.perCustomer` | the wash's grade, 1 to 3, plus the rarity's stars over 1 (Common and Uncommon 1 to 3, Rare 2 to 4, Epic 3 to 5, Legendary and special 5 to 7); switch `gradeStars`, issue 868. Off: the rarity's stars (1, 1, 2, 3, 5, 5) | Derek 2026-11-26: "it should be +3 stars if I got a 3 star". The card said +1 star under a 3 star wash | 2026-11-26 |
+| `stars.tiers` | rarer customers from 45 and 120 spa stars with `gradeStars` (15 and 40 off) | About three times the stars, so the tiers start three times higher and still land near the 15th and 40th customer. The full recap card still covers the first three customers | 2026-11-26 |
 | `bench.size` | 3 at the start, plus one per built tub (`build.tub.effect`), at most 6 | "Three or four cats wait" | 2026-11-25 |
 | `bench.refillSeconds` | 6 | A new customer walks in about 6 s after one is taken | 2026-11-25 |
 | `bench.tutorialSize` | 1, then 2 at 2:00 | Matches the first session timeline | 2026-11-25 |
@@ -101,7 +109,7 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 
 | key | value | why | changed |
 |---|---|---|---|
-| `worker.Jo.price` | 150 coins, station included | First worker after about 15 cats | 2026-11-25 |
+| `worker.Jo.price` | 150 coins, station included; 300 with the switch `joPrice` (issue 841) | First worker after about 15 cats. The early gifts (check in 50 at 3:45, like reward 150 from about 4:40, quests from 6:00) put a 150 coin Jo at about cat 6; 300 puts him at cat 10 to 15 | 2026-11-26 |
 | `worker.Sam.price` | 1,200 coins, station included | | 2026-11-25 |
 | `worker.Lou` | game pass 249 Robux, station included | Works exactly like Jo and Sam | 2026-11-25 |
 | `worker.washSeconds` | L1 50, L2 75, L3 110, L4 150 | About twice the player's time at the 8 s step target | 2026-11-25 |
@@ -215,7 +223,7 @@ Cats washed to afford the next purchase. Re-time on the iPhone 12 once dirt leve
 |---|---|---|
 | Sponge level 2 (45) | after 3 cats | The three tutorial cats pay about 16 each, so 48 after cat 3 |
 | Second Tub (60) | after about 5 cats, about 5:30 | Measured on 6fcbac1 (issue 660): early cats pay about 16 each, Bubble Soap (30) is often bought first |
-| Jo (150) | after about 15 cats | At 16 a cat (18 with the Second Tub's +2) Jo lands nearer cat 15 to 16; re-time on the iPhone 12 |
+| Jo (150; 300 with `joPrice`) | after about 15 cats | Modelled 2026-11-26 (issue 841) with the check in, quests and the like reward: at 150 he lands at cat 6 to 10 (4:45 to 7:25); at 300 at cat 10 to 15 (7:25 to 10:45). Re-time on the iPhone 12 |
 | Third Tub (1,000) | offered about minute 15, bought in the second session | |
 
 Average early cat (no friends, plain ribbon): base 14.3 across rarities × dirt 1.18 × stars 1.1 (1 to 1.2) + tip 3 + bow 2 ≈ 23.6 coins on paper. Measured 2026-11-26 (Sync, fresh save): about 16, as early stars sit near 1, the tutorial cats are cheap and early dirt is mostly level 1. Plan on 16 for the first ten cats.

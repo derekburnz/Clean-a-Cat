@@ -7,6 +7,7 @@
 --   FloorTrail.show(spot)   points the way to `spot` (a world position) until hidden
 --   FloorTrail.hide()
 --   FloorTrail.isShown()
+--   FloorTrail.target()     the spot it leads to while shown, else nil
 --
 -- With the switch trailLine on, it draws Design-Agent's guide line instead (#451): one see-through green band from
 -- the player's feet to the spot with an arrowhead at the end, drawn by Motion-FX's Effects/TrailLine, hidden while
@@ -178,6 +179,11 @@ local function drawLine(_dt: number)
 	else
 		line = TrailLine.show(a, b)
 	end
+end
+
+-- Where the trail leads now, or nil (Controllers/PillPointerController points at the prompt there, issue 861)
+function FloorTrail.target(): Vector3?
+	return if FloorTrail.isShown() then spot else nil
 end
 
 function FloorTrail.isShown(): boolean

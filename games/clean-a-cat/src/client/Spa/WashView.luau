@@ -37,6 +37,18 @@ local hiddenParts: { BasePart } = {}
 local hiddenDecals: { Decal } = {}
 local hideConnection: RBXScriptConnection? = nil
 local releaseTurn = 0 -- bumped whenever a waiting release is called off or replaced
+local listeners: { () -> () } = {} -- WashView.onChanged: the view came up, went down or was framed elsewhere
+
+-- WashView.setTransition: while set (the wash screen, switch washScreen), the view comes up and goes down under a
+-- cover that this function plays; it calls swap once, while the screen is covered, and the camera cuts there.
+local transition: ((swap: () -> ()) -> ())? = nil
+local entering = false -- a way in is waiting for its cover
+
+local function changed()
+	for _, listener in listeners do
+		task.spawn(listener)
+	end
+end
 
 -- The player's own avatar is hidden on their screen while the view is up: it stands by the tub, so it would sit
 -- between the camera and the cat. Only on this device; everyone else still sees it. Set every frame after the camera,
@@ -85,6 +97,22 @@ end
 local function release(onDone: (() -> ())?)
 	local view = wash
 	wash = nil
+	local cover = transition
+	if view and cover then
+		-- the wash screen: everything comes back at once under the cover, the camera cut back with it
+		cover(function()
+			view.destroy()
+			hideCharacter(false)
+			if wash == nil and not entering then
+				ControlHold.set(HOLD_REASON, false)
+			end
+			changed()
+			if onDone then
+				task.defer(onDone)
+			end
+		end)
+		return
+	end
 	if view then
 		view.exit(onDone)
 	elseif onDone then
@@ -92,6 +120,9 @@ local function release(onDone: (() -> ())?)
 	end
 	hideCharacter(false)
 	ControlHold.set(HOLD_REASON, false)
+	if view then
+		changed()
+	end
 end
 
 local function apply()
@@ -101,9 +132,33 @@ local function apply()
 		return
 	end
 	if want then
+		if entering then
+			return -- its cover is already on the way
+		end
 		ControlHold.set(HOLD_REASON, true)
-		wash = WashCamera.enter(WashCamera.shot(spot or SpaLayout.tubSpot(), framed))
-		hideCharacter(true)
+		local cover = transition
+		local function swapIn()
+			entering = false
+			if wash ~= nil or next(held) == nil then
+				if wash == nil then
+					ControlHold.set(HOLD_REASON, false)
+				end
+				return
+			end
+			wash = WashCamera.enter(
+				WashCamera.shot(spot or SpaLayout.tubSpot(), framed),
+				nil,
+				cover ~= nil
+			)
+			hideCharacter(true)
+			changed()
+		end
+		if cover then
+			entering = true
+			cover(swapIn)
+		else
+			swapIn()
+		end
 	else
 		local turn = releaseTurn
 		task.delay(RELEASE_GRACE, function()
@@ -146,7 +201,25 @@ function WashView.frame(where: CFrame?, cat: Model?)
 	local view = wash
 	if view then
 		view.moveTo(WashCamera.shot(where or SpaLayout.tubSpot(), cat))
+		changed()
 	end
+end
+
+-- Sets (or clears, with nil) the cover the view comes up and goes down under: cover(swap) plays it and calls swap
+-- exactly once while the screen is covered (WashScreenController, switch washScreen: Motion-FX's bubble wipe).
+function WashView.setTransition(cover: ((swap: () -> ()) -> ())?)
+	transition = cover
+end
+
+-- The spot the shot frames now (a later step's station, else the tub) and the cat it fits, if any.
+function WashView.framing(): (CFrame, Model?)
+	return spot or SpaLayout.tubSpot(), framed
+end
+
+-- fn() runs (spawned) each time the view comes up, goes down, or is framed on another spot while up. Read
+-- WashView.active() and WashView.framing() in it. WashScreenController (switch washScreen) builds its room from it.
+function WashView.onChanged(fn: () -> ())
+	table.insert(listeners, fn)
 end
 
 -- Is the view held for `reason`?
@@ -162,6 +235,7 @@ end
 -- A new character (a reset) starts with no view: the camera goes back at once and nothing holds it.
 player.CharacterAdded:Connect(function()
 	releaseTurn += 1
+	entering = false
 	table.clear(held)
 	local view = wash
 	wash = nil
@@ -170,6 +244,9 @@ player.CharacterAdded:Connect(function()
 	end
 	hideCharacter(false)
 	ControlHold.set(HOLD_REASON, false)
+	if view then
+		changed()
+	end
 end)
 
 return WashView

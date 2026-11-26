@@ -135,6 +135,9 @@ return function()
 			expect(old.freeRewards.play).to.equal(false)
 			expect(old.freeRewards.like).to.equal(false)
 			expect(old.likeAskedAt).to.equal(0)
+			expect(old.likeNoVisit).to.equal(0)
+			expect(old.likeNos).to.equal(0)
+			expect(old.likeYes).to.equal(false)
 			local paid = SaveSchema.migrate(
 				{ version = 1, freeRewards = { like = true }, likeAskedAt = 50 },
 				100

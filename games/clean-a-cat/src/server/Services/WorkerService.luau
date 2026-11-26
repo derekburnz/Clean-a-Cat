@@ -21,6 +21,7 @@ local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
+local LikeAskService = require(script.Parent:WaitForChild("LikeAskService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
@@ -260,7 +261,7 @@ function WorkerService.refresh(player: Player)
 				copy.Parent = station
 			end
 		else
-			label(station, `Hire {info.name}`, `{info.price} coins`)
+			label(station, `Hire {info.name}`, `{WorkerRules.priceOf(id, LiveFlags.isOn)} coins`)
 		end
 		station.Parent = folder
 	end
@@ -306,12 +307,12 @@ local function onHire(player: Player, rawId: unknown)
 	if id == nil then
 		return
 	end
-	local ok, reason = WorkerRules.canHire(save, id)
+	local ok, reason = WorkerRules.canHire(save, id, LiveFlags.isOn)
 	if not ok then
 		NetService.notice(player, reason or "Can't hire yet", "warning")
 		return
 	end
-	local spent = WorkerRules.hire(save, id, os.time())
+	local spent = WorkerRules.hire(save, id, os.time(), LiveFlags.isOn)
 	if spent <= 0 then
 		return
 	end
@@ -327,6 +328,7 @@ local function onHire(player: Player, rawId: unknown)
 		Telemetry.sessionSeconds(player) // 60,
 		{ string.lower(id) }
 	)
+	LikeAskService.moment(player, "helper")
 end
 
 local function onMode(player: Player, rawId: unknown, rawMode: unknown)
@@ -532,6 +534,10 @@ function WorkerService.Start()
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(refreshAll)
 	end
+	-- Jo's pad label shows his price (switch joPrice, issue 841)
+	ReplicatedStorage
+		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.PRICE_FLAG)
+		:Connect(refreshAll)
 	task.spawn(function()
 		while true do
 			task.wait(TICK_SECONDS)
