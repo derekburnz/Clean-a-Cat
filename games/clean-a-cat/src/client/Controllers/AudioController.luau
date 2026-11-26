@@ -253,6 +253,12 @@ function AudioController.Start()
 	UiSounds.start(UI, function(): boolean
 		return LiveFlags.isOn(UI_SOUNDS_FLAG)
 	end)
+	-- issue 827: one soft meow when Suds's bubble appears
+	local SudsVoice =
+		require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild("SudsVoice")) :: any
+	SudsVoice.start(function(): boolean
+		return LiveFlags.isOn("sudsVoice")
+	end)
 	local existing = shared:FindFirstChild("Moments")
 	if existing then
 		tryBind(existing)
