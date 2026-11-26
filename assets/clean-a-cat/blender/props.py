@@ -726,26 +726,36 @@ def head_top(name, spec, body, d):
     return top
 
 
-BOW_TIP = 75.0      # degrees a bow leans out on a cat with a head piece (60 until #782)
-BOW_OUT = 0.015     # how far past the head's side its knot sits, and
-BOW_DOWN = 0.12     # how far under the head's top: it was 0.03 inside the side and 0.03 under the top, where a wide
-                    # bow's upper loop reached into Rosette's crown and Stardust's stalks (Sync-Agent in Studio, #773)
-# Three cats whose head piece reaches where that spot puts a wide bow, each with its own (out, down, tip), found by
-# rbx_bowfit.py on the Roblox parts (Sync-Agent's second look, #782): Bathtile's cap frill is as wide as the head, so
-# the bow stands straight up beside it; Stardust's corner stalk and its gem lean out over the side, so the bow stands
-# straight and lower, under the gem; Djinn's ear ring is just under the spot, so the bow sits further out, over it.
-BOW_OWN = {"Bathtile": (0.035, 0.12, 90.0), "Stardust": (0.035, 0.27, 90.0), "Djinn": (0.05, 0.12, 75.0)}
+# A cat with a head piece wears a smaller bow on the head's top corner, like every other cat (#845, the owner
+# 2026-11-26 5:17 PM ET: "Those bows are wayyyy too big and should be on top right corner not on side"; from #486 to
+# #845 it hung down the side of the head at full size). The model carries the size as the root attribute BowScale,
+# which Spa/BowFit.luau multiplies into the bow's scale.
+BOW_SCALE = 0.6
+# Cats whose head piece reaches the corner spot, each with its own (in, forward, down, tip) from cats.bow_side's spot:
+# studs towards the head's middle, towards the face, under the top, and the tip in degrees. Found by rbx_bowfit.py
+# on the Roblox parts.
+BOW_OWN = {
+    "Bathtile": (-0.04, 0.04, -0.15, 30.0),   # the cap covers the whole top: the bow is pinned to its front corner
+    "Djinn": (-0.028, 0.12, 0.0, 30.0),       # the turban too: pinned to its front corner
+    "Prism": (0.0, 0.2, 0.0, 30.0),           # in front of the horn's lit gem, at the front edge
+    "Rosette": (-0.04, 0.08, 0.0, 30.0),      # in front of the crown's corner point
+    "Stardust": (-0.04, 0.04, -0.03, 30.0),   # under the corner stalk's gem
+    "Jade": (-0.04, 0.0, 0.0, 60.0),          # leaned out past the lotus horn
+    "Sherbet": (-0.04, 0.0, -0.03, 60.0),     # leaned out past the sundae's rim
+    "WhiteTiger": (-0.04, 0.0, 0.0, 60.0),    # leaned out past the circlet's spike
+    "Phoenix": (-0.04, 0.0, 0.0, 30.0),
+    "Moonstag": (-0.04, 0.0, 0.0, 30.0),
+}
 
 
 def bow_corner(spec, body, cat=None):
-    """Where a bow sits on a cat whose crown is taken by a head piece (#486, #782): on the side of the head at the
-    cat's left, just under the top front corner, tipped BOW_TIP degrees out so it hangs down the side like a hair
-    clip and its upper loop stands beside the head piece. `cat` is the cat's name, for the three in BOW_OWN.
+    """Where the bow sits on a cat whose crown is taken by a head piece (#845): the head's top corner at the cat's
+    left, the spot every cat wears it on (cats.bow_side), moved for the cats in BOW_OWN so it clears the piece.
     Relative to the neck and unscaled, with the turn the Attachment carries. `rbx_bowfit.py` checks every bow on
     every such cat after a build."""
-    out, down, tip = BOW_OWN.get(cat, (BOW_OUT, BOW_DOWN, BOW_TIP))
-    h = cats.dims(spec, body)["head"]
-    return ((round(h["s"][0] / 2 + out, 4), round(h["fy"] + 0.13, 4), round(h["top"] - down, 4)), _ry(tip))
+    (x, y, z), tip = cats.bow_side(spec, body)
+    din, dfwd, down, tip = BOW_OWN.get(cat, (0.0, 0.0, 0.0, tip))
+    return (round(x - din, 4), round(y - dfwd, 4), round(z - down, 4)), _ry(tip)
 
 
 def slot(name):
