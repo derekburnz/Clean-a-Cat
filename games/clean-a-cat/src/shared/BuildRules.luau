@@ -388,4 +388,21 @@ function BuildRules.jar(stations: { [string]: boolean }, isOn: IsOn): (number, n
 	return 8, 1
 end
 
+-- A running build's time left for a sign (issue 679): "2h 15m left" from an hour up, "15m left" from a minute up,
+-- "40s left" under a minute and "Done" at 0. Minutes are rounded up, so a sign never reads 0m while time is left.
+function BuildRules.leftText(seconds: number): string
+	local left = math.max(math.ceil(seconds), 0)
+	if left <= 0 then
+		return "Done"
+	end
+	if left < 60 then
+		return `{left}s left`
+	end
+	local minutes = math.ceil(left / 60)
+	if minutes < 60 then
+		return `{minutes}m left`
+	end
+	return `{minutes // 60}h {minutes % 60}m left`
+end
+
 return table.freeze(BuildRules)
