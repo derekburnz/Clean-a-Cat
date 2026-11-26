@@ -63,6 +63,7 @@ function ToastCard.style(label: TextLabel, text: string, kind: ("info" | "warnin
 		label.BackgroundColor3 = if kind == "warning" then DARK_WARNING else DARK
 		label.TextColor3 = Kit.WHITE
 		label.Font = Enum.Font.GothamMedium
+		label.TextSize = 18
 		label.TextXAlignment = Enum.TextXAlignment.Center
 		stroke.Enabled = false
 		tab.Visible = false
@@ -83,17 +84,18 @@ function ToastCard.style(label: TextLabel, text: string, kind: ("info" | "warnin
 	stroke.Thickness = 2.5
 	stroke.Enabled = true
 	-- as wide as the words on one line, wrapping past MAX_W
-	local words = TextService:GetTextSize(text, TEXT_SIZE, Kit.FONT, Vector2.new(MAX_W, 1000))
-	local width = math.min(words.X + TAB_W + SIDE + 12, MAX_W)
+	local room = MAX_W - TAB_W - 10 - SIDE -- the words' own width inside the card's padding
+	local words = TextService:GetTextSize(text, TEXT_SIZE, Kit.FONT, Vector2.new(room, 1000))
+	local width = math.min(words.X + 2, room) + TAB_W + 10 + SIDE
 	label.AnchorPoint = Vector2.new(1, 0)
 	label.Position = UDim2.new(1, -EDGE, 0, TOP)
-	label.Size = UDim2.new(0, width, 0, label.Size.Y.Offset)
+	label.Size = UDim2.fromOffset(width, label.Size.Y.Offset)
 	pad.PaddingLeft = UDim.new(0, TAB_W + 10)
 	pad.PaddingRight = UDim.new(0, SIDE)
 	tab.Visible = true
 	tab.BackgroundColor3 = TAB[look]
 	tab.BorderSizePixel = 0
-	tab.Position = UDim2.new(0, -(TAB_W + 10), 0, 0)
+	tab.Position = UDim2.fromOffset(-(TAB_W + 10), 0)
 	tab.Size = UDim2.new(0, TAB_W, 1, 0)
 	local corner = label:FindFirstChildOfClass("UICorner")
 	local round = child(tab, "Round", "UICorner") :: UICorner
