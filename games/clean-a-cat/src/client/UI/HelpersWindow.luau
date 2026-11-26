@@ -254,18 +254,18 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 			paw.Size = UDim2.fromScale(0.6, 0.6)
 			Icons.draw("Paw", paw, true)
 		end
-		local tap = Instance.new("TextButton")
-		tap.Name = "Tap"
-		tap.Text = ""
-		tap.BackgroundTransparency = 1
-		tap.Size = UDim2.fromScale(1, 1)
-		tap.ZIndex = 4
-		tap:SetAttribute(
+		local petTap = Instance.new("TextButton")
+		petTap.Name = "Tap"
+		petTap.Text = ""
+		petTap.BackgroundTransparency = 1
+		petTap.Size = UDim2.fromScale(1, 1)
+		petTap.ZIndex = 4
+		petTap:SetAttribute(
 			"Says",
 			if pet then `{row.name}'s pet {pet.kind}. Tap to change` else `Give {row.name} a pet`
 		)
-		tap.Parent = box
-		tap.Activated:Connect(function()
+		petTap.Parent = box
+		petTap.Activated:Connect(function()
 			tell(petListeners, id)
 		end)
 		used += buttonH + BUTTON_GAP

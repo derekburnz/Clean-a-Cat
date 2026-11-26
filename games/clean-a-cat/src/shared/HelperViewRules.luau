@@ -95,9 +95,9 @@ function HelperViewRules.levelText(row: Row): string?
 end
 
 -- The pet beside helper `id` (in their first slot, else their second), or nil: the pet box on their row.
-export type Pet = { kind: string, star: number, slot: string? }
-function HelperViewRules.petOf<P>(id: string, pets: { P & Pet }): (P & Pet)?
-	local second: (P & Pet)? = nil
+export type Pet = { id: number, kind: string, star: number, slot: string? } -- the shape of CrateRules.Pet
+function HelperViewRules.petOf(id: string, pets: { Pet }): Pet?
+	local second: Pet? = nil
 	for _, pet in pets do
 		if pet.slot == `{id}1` then
 			return pet
