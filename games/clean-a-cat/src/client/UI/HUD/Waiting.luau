@@ -45,6 +45,8 @@ local function allOn(): boolean
 	return not LiveFlags.isOn(TIDY_FLAG)
 end
 
+local focus = false -- the wash screen (issue 856)
+
 local function redraw()
 	local p = parts
 	if p == nil then
@@ -52,7 +54,7 @@ local function redraw()
 	end
 	local scale, short = Kit.screenScale()
 	p.scale.Scale = scale
-	p.holder.Visible = allOn() and #cards > 0
+	p.holder.Visible = allOn() and #cards > 0 and not focus
 	if short then
 		p.holder.AnchorPoint = Vector2.new(1, 0)
 		p.holder.Position = UDim2.new(1, -EDGE, 0, SHORT_TOP * scale)
@@ -119,6 +121,14 @@ local function redraw()
 	for index, face in faces do
 		face.NextSelectionUp = faces[index - 1]
 		face.NextSelectionDown = faces[index + 1]
+	end
+end
+
+-- The wash screen (issue 856): true hides the waiting faces until it ends.
+function Waiting.setFocus(on: boolean)
+	if focus ~= on then
+		focus = on
+		redraw()
 	end
 end
 

@@ -120,6 +120,7 @@ local pieces: Pieces? = nil
 local coins = 0
 local coinBump = 1 -- the pill's bump (issue 826), 1 when still
 local coinShown: number? = nil -- the number shown while it counts up, nil for `coins`
+local focus = false -- the wash screen (issue 856, switch washScreen): the coin pill and friend tag step away
 local friendsHere: unknown = nil -- the Player attribute FriendsHere (switch friendBonus, issue 520)
 local stage: string? = nil
 local plan: { string } = {} -- the later steps this wash takes
@@ -242,7 +243,7 @@ local function redraw()
 	end
 	p.coinsScale.Scale = scale * coinBump
 
-	p.coins.Visible = on()
+	p.coins.Visible = on() and not focus
 	local pill = LiveFlags.isOn(TIDY_FLAG)
 	local lift = if pill then PILL_LIFT * scale else 0
 	p.coins.Position = UDim2.new(1, -EDGE, 0, 8 - lift)
@@ -257,7 +258,7 @@ local function redraw()
 	p.coinText.Text = Wallet.format(coinShown or coins)
 	-- the friend chip under the coins: friends in the server and their bonus, nothing with none
 	local friendText = FriendViewRules.chipText(friendsHere)
-	p.friends.Visible = on() and friendText ~= nil
+	p.friends.Visible = on() and friendText ~= nil and not focus
 	p.friendText.Text = friendText or ""
 	p.friendText.TextSize = FRIEND_TEXT
 	p.friends.Position = UDim2.new(
@@ -571,6 +572,14 @@ function HUD.setCoinBump(k: number, shown: number?)
 	local scale = screenScale()
 	p.coinsScale.Scale = scale * k
 	p.coinText.Text = Wallet.format(shown or coins)
+end
+
+-- The wash screen (issue 856): true hides the coin pill and the friend tag; the step line, meter and tool tray stay.
+function HUD.setFocus(on: boolean)
+	if focus ~= on then
+		focus = on
+		redraw()
+	end
 end
 
 function HUD.setTip(tip: TipLine.Tip?)

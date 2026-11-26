@@ -4,6 +4,7 @@
 -- reads the owned tools on the client. Prices are draft tuning from the first session plan.
 
 local WashDraft = require(script.Parent:WaitForChild("WashDraft"))
+local WashPace = require(script.Parent:WaitForChild("WashPace"))
 
 local ToolRules = {}
 
@@ -74,7 +75,9 @@ function ToolRules.offered(isOn: (flag: string) -> boolean): { string }
 end
 
 -- The brush strokes for a player who owns the tools for which `owns(id)` is true: the fewest, `base` without one.
--- A tool whose switch is off (`isOn`) does not count, so turning it off puts the hand brush back.
+-- A tool whose switch is off (`isOn`) does not count, so turning it off puts the hand brush back. A tool's strokes
+-- are of the old hand brush's 3; with a longer brushing (`base` more, switch washPace) they keep the same share.
+
 function ToolRules.brushStrokes(
 	base: number,
 	owns: (id: string) -> boolean,
@@ -82,7 +85,9 @@ function ToolRules.brushStrokes(
 ): number
 	local strokes = base
 	for id, tool in ToolRules.TOOLS do
-		local fewer = tool.brushStrokes
+		local fewer = if tool.brushStrokes
+			then WashPace.toolStrokes(tool.brushStrokes, base)
+			else nil
 		local flag = tool.flag
 		if fewer and fewer < strokes and owns(id) and (flag == nil or isOn(flag)) then
 			strokes = fewer

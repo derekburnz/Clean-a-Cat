@@ -117,6 +117,7 @@ local function span(screen: Vector2, scale: number): (number, number)
 	return centre, width
 end
 
+local focus = false -- the wash screen (issue 856): a bubble that is up waits out of sight and comes back after
 local lift = 0 -- real px the card sits higher, over the compact recap strip (issue 626)
 
 local function redraw()
@@ -125,7 +126,7 @@ local function redraw()
 		return
 	end
 	local current = shown
-	local on = current ~= nil and LiveFlags.isOn(SudsBubble.FLAG)
+	local on = current ~= nil and LiveFlags.isOn(SudsBubble.FLAG) and not focus
 	p.card.Visible = on
 	if not on or current == nil then
 		return
@@ -175,6 +176,15 @@ local function takeAway(closed: boolean)
 	redraw()
 	if after then
 		after(closed)
+	end
+end
+
+-- The wash screen (issue 856): true keeps the card out of sight. Its bubble stays current, so its callbacks still run
+-- once, and it shows again when the screen ends.
+function SudsBubble.setFocus(on: boolean)
+	if focus ~= on then
+		focus = on
+		redraw()
 	end
 end
 
