@@ -52,7 +52,7 @@ RZ90 = Matrix(((0, -1, 0), (1, 0, 0), (0, 0, 1)))   # Roblox local X (cylinder a
 # the gift stand is a present as big as a station: nobody walks through it (#502)
 COLLIDE_PREFIXES = ("CleanACat_Station_", "CleanACat_Area_", "CleanACat_Street_", "CleanACat_Prop_GiftStand")
 NO_COLLIDE_OBJECTS = ("_Bulb", "_Bulbs", "_Tube", "_Water", "_Foam", "_Decor", "_Glow", "_Flowers", "_Canopy",
-                      "_Bubbles", "_Stream", "_Balloon")
+                      "_Bubbles", "_Stream", "_Balloon", "_Balloon_Heart")
 INVISIBLE_OBJECTS = ("_Barrier",)     # volumes never drawn: walls that keep players out of a spot
 BARRIER_OBJECTS = ("_Barrier",)       # invisible and always solid
 NO_QUERY_BARRIERS = ("CleanACat_Station_", "CleanACat_Area_Vip", "CleanACat_Area_Street", "CleanACat_Area_Garden")   # barriers the camera and clicks pass through (#18: under a

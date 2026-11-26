@@ -16463,19 +16463,20 @@
    "CleanACat_Prop_GiftStand",
    "CleanACat_Prop_GiftStand_Decor",
    "CleanACat_Prop_GiftStand_Lamp",
-   "CleanACat_Prop_GiftStand_Balloon"
+   "CleanACat_Prop_GiftStand_Balloon",
+   "CleanACat_Prop_GiftStand_Balloon_Heart"
   ],
   "triangles": 1948,
   "budget": 2100,
   "parts": 53,
   "size_studs": {
-   "x": 3.53,
+   "x": 3.73,
    "y": 2.78,
-   "z": 7.28
+   "z": 7.65
   },
   "size_roblox": [
-   3.53,
-   7.28,
+   3.73,
+   7.65,
    2.78
   ],
   "pivot": "base center (floor contact)",
@@ -16496,7 +16497,7 @@
     "uv": "1370 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.23 y=-0.14",
+    "centered": "footprint center x=0.33 y=-0.14",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
