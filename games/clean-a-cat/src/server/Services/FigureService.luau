@@ -406,13 +406,29 @@ local function townsfolkFor(
 	figure:PivotTo(spot)
 	setAll(figure, true)
 	local grip = figure:FindFirstChild("Grip", true)
+	-- Model-Agent's rebuilt customers (ArmsStraight, #874) hang both arms straight: the carrying arm turns out by the
+	-- figure's CarryArmDegrees about the shoulder before the carrier is hung, so its Grip lands clear of the leg and
+	-- the carrier hangs right on every client; CarryArmOut tells Motion-FX's CustomerMotion how far to turn it back
+	-- in while the carrier is hidden (#871). Today's prebuilt arms are already turned out, so they are left alone.
+	local arm = if grip then grip:FindFirstAncestorWhichIsA("Model") else nil
+	local degrees = figure:GetAttribute("CarryArmDegrees")
+	if
+		arm
+		and arm ~= (figure :: Instance)
+		and figure:GetAttribute("ArmsStraight") == true
+		and type(degrees) == "number"
+		and degrees ~= 0
+	then
+		local armModel = arm :: Model
+		armModel:PivotTo(armModel:GetPivot() * CFrame.Angles(0, 0, math.rad(degrees)))
+		figure:SetAttribute("CarryArmOut", degrees)
+	end
 	local onCounter = counterOn() and place ~= nil and slot ~= nil
 	-- (switch counterCrate) the cat rides in the carrier up to the counter; Motion-FX hides one of the two
 	local carrier =
 		carrierFor(figure, grip, kind, lookNumber, #TOWNSFOLK, onCounter and not crateOn())
 	if carrier then
 		-- under the arm's joint Model, so the carrier sways with the arm Motion-FX turns
-		local arm = if grip then grip:FindFirstAncestorWhichIsA("Model") else nil
 		carrier.Parent = if arm and arm ~= (figure :: Instance) then arm else figure
 	end
 	if onCounter then
