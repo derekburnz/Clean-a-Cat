@@ -29,6 +29,10 @@ ToolRules.TOOLS = table.freeze({
 ToolRules.IDS = table.freeze({ "BubbleSoap", "ProBrush" }) -- board order; every id is a key of TOOLS
 ToolRules.ATTRIBUTE_PREFIX = "Tool_" -- the server sets Player attribute Tool_<id> = true for each owned tool
 ToolRules.PROMPT_REACH = 10 -- studs; the board's prompt shows within this distance
+-- A buy on the board is a short hold, never a tap (issue 908: in the big spa one E press at the counter took the cat
+-- and bought Bubble Soap off the board 9.6 studs away). A quick E for another prompt starts and ends the hold before it
+-- buys anything; a pill tap holds the full time (PromptController), so phones still buy with one tap.
+ToolRules.BUY_HOLD = 0.4
 ToolRules.SERVER_REACH = 16 -- studs; the server's distance check, with room for lag
 
 export type Wallet = {

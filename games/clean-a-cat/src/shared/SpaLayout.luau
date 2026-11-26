@@ -201,6 +201,7 @@ SpaLayout.BIG_SPOTS = table.freeze({
 	SpotSign = at(-17.7, 8.7, -17, 0),
 	SpotGift = at(-22.4, 0.5, -9.5, -math.pi / 2),
 	SpotBoard = at(-23.1, 0.5, -3.5, -math.pi / 2), -- against the side wall, facing across the room
+	Tools = at(-1, 0.5, -1, 0), -- left of the tub, 14.6 studs from the counter's first cat (Model-Agent, issue 908)
 	-- the counter window (CounterRules, switch counterLine): customers outside facing in, their cats on the counter
 	SpotCounter1 = at(3.4, 0.5, -19.4, TURNED),
 	SpotCounter2 = at(6.6, 0.5, -19.4, TURNED),

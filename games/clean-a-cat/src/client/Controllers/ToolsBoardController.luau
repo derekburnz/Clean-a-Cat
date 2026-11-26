@@ -61,7 +61,7 @@ local function enable()
 		BoardProp.rowKeys(prompt, row)
 		prompt.ActionText = `Buy {tool.name}`
 		prompt.ObjectText = `{tool.price} coins`
-		prompt.HoldDuration = 0
+		prompt.HoldDuration = ToolRules.BUY_HOLD
 		prompt.MaxActivationDistance = ToolRules.PROMPT_REACH
 		prompt.RequiresLineOfSight = false
 		prompt.Enabled = not owns(id)
@@ -85,7 +85,7 @@ local function enable()
 	if sellsBows then
 		local prompt = Instance.new("ProximityPrompt")
 		BoardProp.rowKeys(prompt, #ToolRules.IDS + 1)
-		prompt.HoldDuration = 0
+		prompt.HoldDuration = ToolRules.BUY_HOLD
 		prompt.MaxActivationDistance = ToolRules.PROMPT_REACH
 		prompt.RequiresLineOfSight = false
 		prompt.Parent = made.rows[#ToolRules.IDS + 1]
