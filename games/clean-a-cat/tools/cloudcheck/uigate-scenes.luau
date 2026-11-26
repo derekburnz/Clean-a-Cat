@@ -504,6 +504,52 @@ local SCENES = {
 			UI.open("Helpers")
 		end,
 	},
+	-- The free gifts card (issue 730, switch freeRewards): the like asked and counting down, favourite done, play
+	-- time to go; then the like and play gifts ready to claim.
+	{
+		"FreeGifts",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			UI.setGift({
+				lit = true,
+				favourite = true,
+				group = false,
+				claimed = false,
+				free = {
+					likeAsked = true,
+					likeIn = 8,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
+	{
+		"FreeGiftsReady",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = false,
+				claimed = false,
+				free = {
+					likeAsked = true,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 4000,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
 	-- The leave lines (issue 726, switch leaveLines) at their longest, as Roblox's menu opens over the HUD.
 	{
 		"LeaveLines",
@@ -917,6 +963,7 @@ function Scenes.close()
 	flag("petsWindow", false)
 	flag("helpersWindow", false)
 	UI.showLeaveLines(false)
+	flag("freeRewards", false)
 	flag("workers", false)
 	flag("checkinCard", false)
 	flag("quests", false)

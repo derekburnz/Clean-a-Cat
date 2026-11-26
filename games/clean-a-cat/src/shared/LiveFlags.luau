@@ -229,9 +229,9 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helpersWindow = true,
 	buttonArrive = true,
 	leaveLines = true,
+	freeRewards = true,
 	spawnSide = true,
 	respawnCamera = true,
-	freeRewards = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
