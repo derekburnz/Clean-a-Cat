@@ -19,6 +19,8 @@ local CustomerMotion =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerMotion"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 local FoamDrop = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("FoamDrop"))
+local GardenAmbience =
+	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("GardenAmbience"))
 local GiftStand = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("GiftStand"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
 local VisitorArrival =
@@ -311,6 +313,9 @@ function EffectsController.Start()
 	-- The gift stand's light (issue #528): from the stand's Lit attribute, which GiftService sets at 7:00 of the
 	-- owner's play (giftStand, #521). Nothing shows until a stand is lit.
 	GiftStand.start()
+
+	-- The built Garden (#515): petals drift from the blossom tree and its clouds breathe, only near the camera.
+	GardenAmbience.start()
 
 	-- A cat's heart bar ran out (issue #528): the customer turns and walks off with it, head low, and fades. The
 	-- Moment comes with Gameplay's heart bar (#543, townsfolk on) and passes the customer's figure.
