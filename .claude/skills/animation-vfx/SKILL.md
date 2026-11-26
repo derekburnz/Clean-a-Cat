@@ -138,6 +138,10 @@ Measure, do not guess: a Studio playtest with the device emulator on a phone pro
 - **Climbable invisible parts:** a model's hidden TrussPart ladders are real gameplay. Before changing Humanoid states or character physics globally, search the models for the classes it would affect.
 - **Effects high above the camera** cannot be judged in a normal playtest. Give such an effect a test height or a test command.
 - **Never say "live"** until a publish run that contains the merge has succeeded.
+- **Hiding a customer, crate or cat locally:** save and restore each part's own `Transparency`. CustomerWalkController writes `LocalTransparencyModifier` on every part at walk start and finish and would undo yours.
+- **A table keyed by instances** that only clears when you show them again leaks when the model is destroyed while hidden. Sweep keys that are no longer `IsDescendantOf(game)` whenever an entry is removed.
+- **No `Workspace:GetDescendants()` per event** on phones. Collect the spots or parts you need in a `DescendantAdded` watcher once.
+- **A server-timed sequence** (CounterSetAt and CounterReadyAt on the counter cat) plays the same on every device and lets a late joiner land on the right step: drive it by `Workspace:GetServerTimeNow()`, never `os.clock()`.
 
 ## 10. Studio tools
 Allowed: dropping a test emitter or a rigged model into the dev place and tuning numbers live, playtests and screen captures for evidence, console output for errors. Then copy the tuned numbers into `Presets.luau`; nothing tuned in Studio survives unless it is in a file. Never edit a Rojo-managed script in Studio and never save the test place.

@@ -69,6 +69,8 @@ It needs `ffmpeg` and `ffprobe` on PATH. FAIL means a Roblox limit, the name, mo
 - **Quota.** Roblox limits audio uploads per month, and the limit is low on an unverified account. Batch uploads, and do not burn quota on drafts: get the owner's pick first. A sound sheet (several short sounds in one file) stretches the quota.
 - **Moderation.** Every upload is reviewed. Upload only files that have a log row with a clean license.
 - **After upload.** Put the id in `Cues.luau` and the log row in the same commit.
+- **The upload-asset workflow** (Actions, `upload-asset.yml`, type Audio, paths separated by spaces) uploads under the group and prints each id and its moderation state. A track still "Reviewing" does not play until it is approved.
+- **Music behind a switch.** Music starts as soon as a cue has an id, so new music ships behind `spaMusic` through `Audio.allowMusic`. A switch only allows or stops music; it never calls `applySettings`, which belongs to the player's own settings.
 
 ## 7. Wiring in the game
 ```
