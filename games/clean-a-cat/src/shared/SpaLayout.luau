@@ -93,6 +93,8 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	WorkerJo = at(-2.5, 0.5, 6.5, 0),
 	WorkerSam = at(2.5, 0.5, 6.5, 0),
 	WorkerLou = at(7.5, 0.5, 6.5, 0),
+	-- Not in the model: where a crate the player holds waits, on the floor between the spawn and the Tools board.
+	Crate = at(1.5, 0.5, -7, 0),
 }) :: { [string]: Spot }
 
 -- Model-Agent's fixed props, placed with the plot (PlotService) into its PROPS_FOLDER, each with its pivot (its
