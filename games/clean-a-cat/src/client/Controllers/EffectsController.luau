@@ -22,6 +22,7 @@ local FoamDrop = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChi
 local GardenAmbience =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("GardenAmbience"))
 local GiftStand = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("GiftStand"))
+local Hop = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Hop"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
 local VisitorArrival =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("VisitorArrival"))
@@ -104,7 +105,10 @@ function EffectsController.Start()
 				then "shakeFlecks"
 				elseif step == "rinse" then "shakeDroplets"
 				else "revealSparkle"
-			for _, at in SHAKE_BEATS do
+			-- flecks and drops fly with each swing; sparkles burst once, so with the brush's own sparkle there are
+			-- never more than 3 flashes a second (#6; Sync's pass on dc51ecb counted 4 in 0.36 s at the fluff)
+			local beats: { number } = if preset == "revealSparkle" then { 0 } else SHAKE_BEATS
+			for _, at in beats do
 				task.delay(at, function()
 					if cat:IsDescendantOf(workspace) then
 						Effects.burst(preset, coatPoint(cat))
@@ -146,6 +150,14 @@ function EffectsController.Start()
 			end
 		end
 	)
+	-- A stray going to the window seat (#7): a happy little hop where it sits, with a soft puff as it lands.
+	if Moments.CatToWindow then
+		Moments.CatToWindow:Connect(function(cat: Model)
+			if LiveFlags.isOn(FLUFF_FLAG) and cat:IsDescendantOf(workspace) then
+				Hop.hop(cat)
+			end
+		end)
+	end
 	Moments.ScrubStop:Connect(function()
 		Effects.stopStream(foamPreset)
 	end)
