@@ -9,8 +9,15 @@
 --   w.close      the X button; the caller connects it
 --   Window.fit(w, width, band, title, badge)   sizes in design pixels for the current screen, then w.scale.Scale
 --
+-- A window never runs off a short screen (bug hunt B8: the crate window with its Robux rows was 360 px tall on a
+-- 332 px phone screen under Roblox's top bar): whenever the card's height changes, a card taller than the room under
+-- the top bar is scaled down to fit (to at most MIN_FIT of its size) and moved up to sit just under the bar.
+--
 -- The screen scale sits on a see-through holder the size of the layer, so Motion.popIn can use its own UIScale on
 -- the layer (one UIScale per object).
+local GuiService = game:GetService("GuiService")
+local Workspace = game:GetService("Workspace")
+
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local Motion = require(script.Parent:WaitForChild("Motion"))
@@ -22,6 +29,12 @@ local RED_TOP, RED_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")
 -- Design px (the holder's UIScale scales it): the window sits a little below the middle, clear of Roblox's top bar.
 local TOPBAR_SHIFT = 33
 local CLOSE = 64 -- design px
+local OVERHANG = 20 -- design px the X stands above the card
+local EDGE = 2 -- real px kept clear above and below a window that had to shrink
+local MIN_FIT = 0.8 -- a tall window shrinks to at most this share of its size
+
+-- What Window.fit last asked for, per card: the screen scale and the shift below the middle.
+local asked: { [Frame]: { scale: number, shift: number } } = {}
 
 export type Window = {
 	layer: Frame,
@@ -75,6 +88,37 @@ function Window.button(
 	b.Parent = parent
 	Motion.press(b) -- trial springs, switch springUi (#183)
 	return b
+end
+
+-- Shrinks and lifts `w` when its card is taller than the room under the top bar; otherwise as Window.fit asked.
+local function keepOnScreen(w: Window)
+	local want = asked[w.card]
+	local camera = Workspace.CurrentCamera
+	if want == nil or camera == nil or w.scale.Scale <= 0 then
+		return
+	end
+	-- in screen px: AbsolutePosition counts from under the top bar, as GuiService's inset says
+	local inset = GuiService:GetGuiInset().Y
+	local layerTop = w.layer.AbsolutePosition.Y + inset
+	local layerH = w.layer.AbsoluteSize.Y
+	local top = math.max(inset, layerTop) + EDGE
+	local bottom = math.min(camera.ViewportSize.Y, layerTop + layerH) - EDGE
+	local designH = w.card.AbsoluteSize.Y / w.scale.Scale + OVERHANG
+	local room = bottom - top
+	local scale, shift = want.scale, want.shift
+	if designH * scale > room and designH > 0 and room > 0 then
+		scale = math.max(room / designH, want.scale * MIN_FIT)
+		-- the card's middle, so its X sits EDGE under the top bar
+		local middle = top + (OVERHANG + (designH - OVERHANG) / 2) * scale
+		shift = (middle - (layerTop + layerH / 2)) / scale
+	end
+	if math.abs(w.scale.Scale - scale) > 0.001 then
+		w.scale.Scale = scale
+	end
+	local position = UDim2.new(0.5, 0, 0.5, shift)
+	if w.card.Position ~= position then
+		w.card.Position = position
+	end
 end
 
 function Window.new(name: string, title: string, badgeIcon: string, root: Instance): Window
@@ -154,7 +198,7 @@ function Window.new(name: string, title: string, badgeIcon: string, root: Instan
 	close.TextSize = 34
 	close.ZIndex = 3
 
-	return {
+	local w: Window = {
 		layer = layer,
 		scale = scale,
 		card = card,
@@ -164,6 +208,10 @@ function Window.new(name: string, title: string, badgeIcon: string, root: Instan
 		close = close,
 		body = body,
 	}
+	card:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		keepOnScreen(w)
+	end)
+	return w
 end
 
 -- Sizes in design pixels for the current screen. `shift` moves the card below the middle (TOPBAR_SHIFT by default);
@@ -180,10 +228,12 @@ function Window.fit(
 	w.scale.Scale = scale
 	w.card.Size = UDim2.fromOffset(width, 0)
 	w.card.Position = UDim2.new(0.5, 0, 0.5, shift or TOPBAR_SHIFT)
+	asked[w.card] = { scale = scale, shift = shift or TOPBAR_SHIFT }
 	w.band.Size = UDim2.new(1, 0, 0, band)
 	w.title.TextSize = title
 	w.title.Position = UDim2.new(0, badge + 4, 0.5, 0)
 	w.badge.Size = UDim2.fromOffset(badge, badge)
+	keepOnScreen(w)
 end
 
 return Window

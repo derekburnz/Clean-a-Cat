@@ -18,6 +18,7 @@
 -- the world; a buy leaves it open, so the count goes up in front of them. UI never fires remotes:
 -- CrateWindowController sends the open and the buy, and the server rolls.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TextService = game:GetService("TextService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -78,8 +79,8 @@ local SIZES = {
 		have = 19,
 		open = 60,
 		openText = 24,
-		rowH = 68,
-		rowGap = 6,
+		rowH = 64, -- the picture's own height: the short window fits a 332 px phone screen (issue 658)
+		rowGap = 4,
 		pic = 64,
 		name = 21,
 		chip = 24,
@@ -157,24 +158,10 @@ local function screenWidth(scale: number): number
 end
 
 -- The rarity tag beside a pet's name.
-local function rarityChip(parent: Instance, rarity: string, height: number, order: number)
-	local c = frame("Rarity", parent)
-	c.LayoutOrder = order
-	c.BackgroundTransparency = 0
-	c.BackgroundColor3 = Kit.RARITY[rarity] or Kit.RARITY.Common
-	c.AutomaticSize = Enum.AutomaticSize.X
-	c.Size = UDim2.fromOffset(0, height)
-	Kit.corner(c, UDim.new(0.5, 0))
-	Kit.stroke(c, 2)
-	Kit.rim(c, rarity, Kit.INK)
-	local pad = Instance.new("UIPadding")
-	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 9), UDim.new(0, 9)
-	pad.Parent = c
-	local label = Kit.outlined("Text", c)
-	label.AnchorPoint = Vector2.new(0, 0.5)
-	label.Position = UDim2.fromScale(0, 0.5)
-	label.TextSize = 19
-	label.Text = rarity
+-- Width in design px of `text` drawn in Kit.FONT at `size` (never under the text floor, which Kit.minText keeps).
+local function measure(text: string, size: number): number
+	local drawn = math.max(size, TEXT_FLOOR)
+	return math.ceil(TextService:GetTextSize(text, drawn, Kit.FONT, Vector2.new(10000, 1000)).X)
 end
 
 local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: Sizes, cellW: number)
@@ -214,7 +201,7 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 	chance.Text = row.chance
 
 	local whoX = s.pic + 10
-	local whoW = cellW - inset - 12 - whoX - 78
+	local whoW = cellW - inset - 12 - whoX - measure(row.chance, s.chance) - 10
 	local who = frame("Who", card)
 	who.Position = UDim2.fromOffset(whoX, 0)
 	who.Size = UDim2.new(0, whoW, 1, 0)
@@ -230,13 +217,33 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 	name.AutomaticSize = Enum.AutomaticSize.X
 	name.Size = UDim2.fromOffset(0, s.name + 4)
 	name.Text = row.pet
-	rarityChip(top, row.rarity, s.chip, 2)
-	local boost = words("Boost", who, s.boost)
+	-- the pill goes beside the name when both fit, else under it beside the boost, so it never reaches the chance
+	local besideName = measure(row.pet, s.name) + 8 + Kit.chipWidth(row.rarity) <= whoW
+	local second: Frame = who
+	if not besideName then
+		second = frame("Bottom", who)
+		second.LayoutOrder = 2
+		second.Size = UDim2.new(1, 0, 0, math.max(s.boost + 4, s.chip))
+		list(second, true, 6).VerticalAlignment = Enum.VerticalAlignment.Center
+		top.Size = UDim2.new(1, 0, 0, s.name + 4)
+	end
+	Kit.rarityChip(
+		if besideName then top else second,
+		row.rarity,
+		s.chip,
+		if besideName then 2 else 1
+	)
+	local boost = words("Boost", second, s.boost)
 	boost.LayoutOrder = 2
 	boost.FontFace = Kit.BODY_FACE
 	boost.TextColor3 = Kit.INK_SOFT
 	boost.TextXAlignment = Enum.TextXAlignment.Left
-	boost.Size = UDim2.new(1, 0, 0, s.boost + 4)
+	if besideName then
+		boost.Size = UDim2.new(1, 0, 0, s.boost + 4)
+	else
+		boost.AutomaticSize = Enum.AutomaticSize.X
+		boost.Size = UDim2.fromOffset(0, s.boost + 4)
+	end
 	boost.Text = `{row.boost} boost`
 end
 
@@ -300,6 +307,9 @@ local function redraw()
 	p.box.Size = UDim2.fromOffset(s.boxW, 0)
 	p.boxList.Padding = UDim.new(0, if short then 6 else 10)
 	p.gift.Size = UDim2.fromOffset(s.gift, s.gift)
+	-- on a short screen the Robux rows take the crate picture's place, so the window stays on screen (bug hunt B8,
+	-- issue 658: with Open crate and both rows it was 360 px tall on a 332 px phone screen)
+	p.gift.Visible = not (short and #shopRows > 0)
 	p.have.TextSize = s.have
 	p.have.Size = UDim2.new(1, 0, 0, s.have + 6) -- AutomaticSize grows it when larger text wraps
 	p.have.Text = CrateViewRules.haveLine(shownKind, held)
@@ -316,6 +326,7 @@ local function redraw()
 	p.shop.Visible = #shopRows > 0
 	p.shopTitle.TextSize = s.have
 	p.shopTitle.Size = UDim2.new(1, 0, 0, s.have + 6)
+	p.shopTitle.Visible = not short -- the rows' own "1 crate" and "5 crates" say it on a short screen (issue 658)
 	for index, row in shopRows do
 		drawBuy(row, index + 1, s, scale, p.shop)
 	end

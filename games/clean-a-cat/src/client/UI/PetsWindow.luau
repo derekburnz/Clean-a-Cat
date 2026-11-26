@@ -180,26 +180,6 @@ local function tapArea(parent: GuiObject, label: string): TextButton
 	return b
 end
 
-local function rarityChip(parent: Instance, rarity: string, height: number, order: number)
-	local c = frame("Rarity", parent)
-	c.LayoutOrder = order
-	c.BackgroundTransparency = 0
-	c.BackgroundColor3 = Kit.RARITY[rarity] or Kit.RARITY.Common
-	c.AutomaticSize = Enum.AutomaticSize.X
-	c.Size = UDim2.fromOffset(0, height)
-	Kit.corner(c, UDim.new(0.5, 0))
-	Kit.stroke(c, 2)
-	Kit.rim(c, rarity, Kit.INK)
-	local pad = Instance.new("UIPadding")
-	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 9), UDim.new(0, 9)
-	pad.Parent = c
-	local label = Kit.outlined("Text", c)
-	label.AnchorPoint = Vector2.new(0, 0.5)
-	label.Position = UDim2.fromScale(0, 0.5)
-	label.TextSize = 19
-	label.Text = rarity
-end
-
 local function stars(parent: Instance, count: number, size: number, order: number)
 	local row = frame("Stars", parent)
 	row.LayoutOrder = order
@@ -224,7 +204,13 @@ local function tileHeight(s: Sizes): number
 	return s.tileH - s.fuse + fuseHeight(s)
 end
 
-local function drawTile(group: CrateViewRules.Group, order: number, s: Sizes, container: Instance)
+local function drawTile(
+	group: CrateViewRules.Group,
+	order: number,
+	s: Sizes,
+	container: Instance,
+	cellW: number
+)
 	local tile = frame(`Pet{order}`, container)
 	tile.LayoutOrder = order
 	tile.BackgroundTransparency = 0
@@ -257,7 +243,7 @@ local function drawTile(group: CrateViewRules.Group, order: number, s: Sizes, co
 	line.Size = UDim2.new(1, 0, 0, s.chip)
 	local lineList = list(line, true, 6)
 	lineList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	rarityChip(line, group.rarity, s.chip, 1)
+	Kit.rarityChip(line, group.rarity, s.chip, 1, cellW - 8) -- never past the tile (issue 609)
 	-- the stars sit across the bottom of the picture, so a Legendary chip and three stars never crowd one line
 	local starRow = frame("StarRow", pic)
 	starRow.AnchorPoint = Vector2.new(0.5, 0.8)
@@ -503,7 +489,7 @@ function PetsWindow.redraw()
 	p.scroll.CanvasSize =
 		UDim2.fromOffset(0, lines * s.tileH + math.max(lines - 1, 0) * s.tileGap + 4)
 	for index, group in groups do
-		drawTile(group, index, s, p.scroll)
+		drawTile(group, index, s, p.scroll, cellW)
 	end
 	p.empty.Visible = #groups == 0
 	p.scroll.Visible = #groups > 0

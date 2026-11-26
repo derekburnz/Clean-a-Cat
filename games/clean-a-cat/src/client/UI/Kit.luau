@@ -11,6 +11,7 @@
 --   Kit.stroke(parent, thickness)               an ink UIStroke
 --   Kit.outlined(name, parent)                  white words with an ink outline and no box (the screens' .outlined)
 --   Kit.minText(label)                          the 14 real px floor at the smallest scale
+local TextService = game:GetService("TextService")
 local Workspace = game:GetService("Workspace")
 
 local Kit = {}
@@ -116,6 +117,51 @@ function Kit.outlined(name: string, parent: Instance): TextLabel
 	Kit.minText(label)
 	label.Parent = parent
 	return label
+end
+
+local CHIP_TEXT = 19 -- design px: the floor, so the words never shrink
+local CHIP_PAD = 9 -- design px each side inside the pill
+local CHIP_PAD_TIGHT = 3 -- when the room is short
+local CHIP_OUTLINE = 3 -- the words' own ink outline (Kit.outlined), each side
+
+-- The rarity pill's width in design px: its words as drawn, their outline and the padding. Issue 609: an automatic
+-- width left out the outline, so "Uncommon" ran 7 px past its pill on a phone.
+function Kit.chipWidth(rarity: string, room: number?): number
+	local words =
+		math.ceil(TextService:GetTextSize(rarity, CHIP_TEXT, Kit.FONT, Vector2.new(10000, 1000)).X)
+	local full = words + 2 * (CHIP_PAD + CHIP_OUTLINE)
+	if room and full > room then
+		return math.max(room, words + 2 * (CHIP_PAD_TIGHT + CHIP_OUTLINE))
+	end
+	return full
+end
+
+-- A rarity pill ("Uncommon" on green), sized by Kit.chipWidth to fit `room` design px when given.
+function Kit.rarityChip(
+	parent: Instance,
+	rarity: string,
+	height: number,
+	order: number,
+	room: number?
+): Frame
+	local c = Instance.new("Frame")
+	c.Name = "Rarity"
+	c.BorderSizePixel = 0
+	c.LayoutOrder = order
+	c.BackgroundColor3 = Kit.RARITY[rarity] or Kit.RARITY.Common
+	c.Size = UDim2.fromOffset(Kit.chipWidth(rarity, room), height)
+	Kit.corner(c, UDim.new(0.5, 0))
+	Kit.stroke(c, 2)
+	Kit.rim(c, rarity, Kit.INK)
+	local label = Kit.outlined("Text", c)
+	label.AutomaticSize = Enum.AutomaticSize.None
+	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	label.Position = UDim2.fromScale(0.5, 0.5)
+	label.Size = UDim2.fromScale(1, 1)
+	label.TextSize = CHIP_TEXT
+	label.Text = rarity
+	c.Parent = parent
+	return c
 end
 
 return Kit
