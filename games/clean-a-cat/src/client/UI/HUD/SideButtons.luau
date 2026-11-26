@@ -19,6 +19,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 
+local Arrive = require(script.Parent.Parent.Parent:WaitForChild("Effects"):WaitForChild("Arrive"))
 local Icons = require(script.Parent:WaitForChild("Icons"))
 local Kit = require(script.Parent.Parent:WaitForChild("Kit"))
 local Motion = require(script.Parent.Parent:WaitForChild("Motion"))
@@ -26,6 +27,7 @@ local Motion = require(script.Parent.Parent:WaitForChild("Motion"))
 local SideButtons = {}
 
 local HUD_FLAG = "gameHud"
+local ARRIVE_FLAG = "buttonArrive"
 
 type Spec = {
 	window: string,
@@ -128,6 +130,11 @@ local rowScale: UIScale? = nil
 local captionRoom: UIPadding? = nil
 local buttons: { Button } = {}
 local aside = false
+-- Motion-FX's arrive motion (issue 528) for a button that unlocks while the player is here: buttons already there
+-- when the row first shows arrive quietly; a later one plays once, as soon as the row is on screen.
+local seen: { [string]: boolean } = {}
+local settled = false
+local pending: { [string]: TextButton } = {}
 
 local function shown(spec: Spec): boolean
 	local attribute = spec.attribute
@@ -212,8 +219,16 @@ local function redraw()
 		entry.iconBox.Size = UDim2.fromOffset(math.min(ICON, size - 10), math.min(ICON, size - 10))
 		if on then
 			table.insert(visible, entry.button)
+			local window = entry.spec.window
+			if not seen[window] then
+				seen[window] = true
+				if settled then
+					pending[window] = entry.button
+				end
+			end
 		end
 	end
+	settled = settled or #visible > 0
 	for index, button in visible do
 		button.NextSelectionLeft = visible[index - 1]
 		button.NextSelectionRight = visible[index + 1]
@@ -227,6 +242,14 @@ local function redraw()
 		room.PaddingBottom = UDim.new(0, if noted then NOTE_ROOM else CAPTION_ROOM)
 	end
 	r.Visible = #visible > 0 and not aside
+	if r.Visible then
+		for window, button in pending do
+			pending[window] = nil
+			if button.Visible and LiveFlags.isOn(ARRIVE_FLAG) then
+				Arrive.play(button)
+			end
+		end
+	end
 end
 
 -- A small chip under button `window`'s caption, or none with nil (the starter pack's time left; no seconds).
