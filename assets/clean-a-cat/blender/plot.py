@@ -67,6 +67,9 @@ from common import Builder
 from stations import _tris
 
 PLOT_W, PLOT_D = 44.0, 48.0
+PLOT_X = (-PLOT_W / 2, PLOT_W / 2)   # the plot's edges; the pivot is the middle of the small plot
+PLOT_Y = (-PLOT_D / 2, PLOT_D / 2)   # front edge (the pavement side) and back edge
+NAME = "CleanACat_Area_SpaPlot"
 FLOOR = 0.5                       # top of the floor slab (thick enough to collide: rbx_export.MIN_COLLIDE)
 ROOM_X = (-18.0, 18.0)            # inner faces of the side walls
 ROOM_Y = (-16.0, 10.0)            # front wall line and back wall line
@@ -74,7 +77,13 @@ WALL_H, WALL_T = 12.0, 1.0
 ENTRANCE = (1.0, 9.0)             # x span of the open entrance
 WINDOW = (-16.0, -1.0)            # x span of the display window
 WINDOW_SEAT = 2.5                 # the seat's top above the floor
+WINDOW_TOP = 10.0                 # the top of the window's opening above the floor
 SEAT_DEPTH = 3.5
+COUNTER = False                   # the bigger plot (#746): WINDOW is an open counter window, no glass (see BIG)
+DISPLAY = None                    # the bigger plot: x span of a second, glazed display window right of the entrance
+DISPLAY_SEAT, DISPLAY_TOP = 2.5, 6.6
+TOWELS_Y = -7.0                   # where the towel rail hangs along the right wall
+FRAME_SHIFT = 0.0                 # how far back the left wall's three frames move with the stray box
 BACK_DOOR = (-15.0, -9.0)         # x span of the open back door
 VIP_DOOR = (3.0, 11.0)            # x span of the VIP Room door
 DOOR_H = 9.0                      # opening height for both doors and the entrance
@@ -153,11 +162,17 @@ def _walls(b):
     # front: corner piece, window (sill under, header over), pillar, entrance (header), the right wall
     pink = "spa_bubblegum"                             # the shop front
     span(yf, x0, WINDOW[0], 0, h, pink)
-    span(yf, WINDOW[0], WINDOW[1], 0, WINDOW_SEAT, pink)
-    span(yf, WINDOW[0], WINDOW[1], 10.0, h, pink)
+    span(yf, WINDOW[0], WINDOW[1], 0, WINDOW_SEAT - (0.2 if COUNTER else 0.0), pink)   # under the counter's top
+    span(yf, WINDOW[0], WINDOW[1], WINDOW_TOP, h, pink)
     span(yf, WINDOW[1], ENTRANCE[0], 0, h, pink)
     span(yf, ENTRANCE[0], ENTRANCE[1], DOOR_H, h, pink)
-    span(yf, ENTRANCE[1], x1, 0, h, pink)
+    if DISPLAY:                                        # the bigger plot's display window, right of the entrance
+        span(yf, ENTRANCE[1], DISPLAY[0], 0, h, pink)
+        span(yf, DISPLAY[0], DISPLAY[1], 0, DISPLAY_SEAT, pink)
+        span(yf, DISPLAY[0], DISPLAY[1], DISPLAY_TOP, h, pink)
+        span(yf, DISPLAY[1], x1, 0, h, pink)
+    else:
+        span(yf, ENTRANCE[1], x1, 0, h, pink)
     # back: wall, back door (header), wall, VIP door (header), wall
     span(yb, x0, BACK_DOOR[0], 0, h)
     span(yb, BACK_DOOR[0], BACK_DOOR[1], DOOR_H, h)
@@ -167,7 +182,8 @@ def _walls(b):
 
 
 def _floor(b):
-    b.box_base((0, 0, 0), (PLOT_W, PLOT_D, FLOOR), "paving_light", bevel=False)
+    b.box_base(((PLOT_X[0] + PLOT_X[1]) / 2, (PLOT_Y[0] + PLOT_Y[1]) / 2, 0),
+               (PLOT_X[1] - PLOT_X[0], PLOT_Y[1] - PLOT_Y[0], FLOOR), "paving_light", bevel=False)
     x0, x1 = ROOM_X
     y0, y1 = ROOM_Y
     b.box_base(((x0 + x1) / 2, (y0 + y1) / 2, FLOOR - 0.03), (x1 - x0 - 0.03, y1 - y0 - 0.03, 0.05), "spa_tile",
@@ -175,20 +191,86 @@ def _floor(b):
 
 
 def _window_seat(b):
+    a, c = DISPLAY if DISPLAY else WINDOW
+    seat = DISPLAY_SEAT if DISPLAY else WINDOW_SEAT
+    y0 = ROOM_Y[0]
+    b.box_base(((a + c) / 2, y0 + SEAT_DEPTH / 2 - 0.02, FLOOR - 0.02), (c - a - 0.04, SEAT_DEPTH, seat + 0.05),
+               "spa_cream", bevel=False)
+
+
+# -- the counter window of the bigger plot (#746) ------------------------------------------------------------------
+COUNTER_Y = (-17.7, -13.6)        # the counter top: 0.7 out over the pavement, 2.4 into the room
+COUNTER_T = 0.36                  # the top's thickness: thick enough to collide (rbx_export.MIN_COLLIDE)
+PLACES = 6                        # waiting places along the counter (the line's longest, SpaRules MAX_QUEUE)
+PLACE_PITCH = 3.2
+PLACE_X1 = -3.4                   # place 1, nearest the entrance; the others go away from it
+CAT_Y = -15.6                     # where a waiting cat sits, in the wall's line
+STAND_Y = -19.4                   # where its customer stands on the pavement, 3.8 behind it
+MAT = (1.9, 1.7, 0.09)            # a place's mat; its top is 0.08 over the counter
+
+
+def place_x(i):
+    """Blender x of counter place `i` (1 is nearest the entrance)."""
+    return PLACE_X1 - PLACE_PITCH * (i - 1)
+
+
+def _counter(b):
+    """The counter in the open window: a cream body inside the room under a mint top that goes through the wall
+    and out over the pavement, so a customer outside sets a cat down on it and the player inside takes it. All of
+    it is solid."""
     a, c = WINDOW
     y0 = ROOM_Y[0]
-    b.box_base(((a + c) / 2, y0 + SEAT_DEPTH / 2 - 0.02, FLOOR - 0.02), (c - a - 0.04, SEAT_DEPTH, WINDOW_SEAT + 0.05),
-               "spa_cream", bevel=False)
+    top = FLOOR + WINDOW_SEAT
+    b.box_base(((a + c) / 2, (y0 - 0.02 + COUNTER_Y[1] - 0.3) / 2, FLOOR - 0.02),
+               (c - a - 0.04, COUNTER_Y[1] - 0.3 - y0 + 0.02, WINDOW_SEAT - 0.28), "spa_cream", bevel=False)
+    b.box_base(((a + c) / 2, (COUNTER_Y[0] + COUNTER_Y[1]) / 2, top - COUNTER_T),
+               (c - a - 0.03, COUNTER_Y[1] - COUNTER_Y[0], COUNTER_T), "spa_mint", bevel=False)
+
+
+def _counter_decor(b):
+    """The counter's bubblegum front panel inside the room and a desk bell at its far end. Walk-through."""
+    a, c = WINDOW
+    b.box(((a + c) / 2, COUNTER_Y[1] - 0.3 + 0.0, FLOOR + 1.2), (c - a - 1.6, 0.09, 1.5), "spa_bubblegum", bevel=False)
+    bx, by, bz = a + 0.75, -14.5, FLOOR + WINDOW_SEAT
+    b.cyl_base((bx, by, bz - 0.01), 0.32, 0.07, "gold_dark", segments=12, bevel=False)
+    b.sphere((bx, by, bz + 0.06), 0.27, "gold_mid", segments=10, rings=6, scale=(1, 1, 0.8))
+    b.cyl_base((bx, by, bz + 0.24), 0.06, 0.1, "gold_light", segments=8, bevel=False)
+
+
+def _counter_mat(i):
+    def build(b):
+        b.box_base((place_x(i), CAT_Y, FLOOR + WINDOW_SEAT - 0.01), MAT, "spa_cream", bevel=False)
+    return build
+
+
+def _counter_barrier(b):
+    """An invisible solid block over the whole counter top, up to the ceiling (an invisible blocker stands 12 studs
+    off the floor or reaches a ceiling, #741), so nobody hops onto the counter or out through the window. CanQuery
+    is off (rbx_export.NO_QUERY_BARRIERS): the camera, taps and prompts pass, and the waiting cats sit inside it."""
+    a, c = WINDOW
+    z0 = FLOOR + WINDOW_SEAT + 0.02
+    b.box_base(((a + c) / 2, (COUNTER_Y[0] + COUNTER_Y[1]) / 2 + 0.005, z0),
+               (c - a - 0.06, COUNTER_Y[1] - COUNTER_Y[0] - 0.02, FLOOR + WALL_H + 0.4 - z0), "metal", bevel=False)
 
 
 def _trim(b):
     """A mint frame round the display window and the entrance, on the outside of the front wall."""
     y = ROOM_Y[0] - WALL_T - 0.1
     a, c = WINDOW
-    for x0, x1, z0, z1 in ((a - 0.4, c + 0.4, WINDOW_SEAT - 0.4, WINDOW_SEAT), (a - 0.4, c + 0.4, 10.0, 10.4),
-                           (a - 0.4, a, WINDOW_SEAT - 0.39, 10.39), (c, c + 0.4, WINDOW_SEAT - 0.39, 10.39),
-                           (ENTRANCE[0] - 0.4, ENTRANCE[1] + 0.4, DOOR_H, DOOR_H + 0.4),
-                           (ENTRANCE[0] - 0.4, ENTRANCE[0], 0.0, DOOR_H - 0.01), (ENTRANCE[1], ENTRANCE[1] + 0.4, 0.0, DOOR_H - 0.01)):
+    wt = WINDOW_TOP
+    rails = [(a - 0.4, c + 0.4, WINDOW_SEAT - 0.4, WINDOW_SEAT), (a - 0.4, c + 0.4, wt, wt + 0.4),
+             (a - 0.4, a, WINDOW_SEAT - 0.39, wt + 0.39), (c, c + 0.4, WINDOW_SEAT - 0.39, wt + 0.39),
+             (ENTRANCE[0] - 0.4, ENTRANCE[1] + 0.4, DOOR_H, DOOR_H + 0.4),
+             (ENTRANCE[0] - 0.4, ENTRANCE[0], 0.0, DOOR_H - 0.01), (ENTRANCE[1], ENTRANCE[1] + 0.4, 0.0, DOOR_H - 0.01)]
+    if COUNTER:                                        # the counter's top is the sill: no rail under the opening,
+        rails[0] = (a - 0.4, c + 0.4, WINDOW_SEAT - 0.8, WINDOW_SEAT - 0.4)   # one under the top's outer edge
+        rails[2] = (a - 0.4, a, WINDOW_SEAT - 0.79, wt + 0.39)
+        rails[3] = (c, c + 0.4, WINDOW_SEAT - 0.79, wt + 0.39)
+    if DISPLAY:
+        d0, d1 = DISPLAY
+        rails += [(d0 - 0.4, d1 + 0.4, DISPLAY_SEAT - 0.4, DISPLAY_SEAT), (d0 - 0.4, d1 + 0.4, DISPLAY_TOP, DISPLAY_TOP + 0.4),
+                  (d0 - 0.4, d0, DISPLAY_SEAT - 0.39, DISPLAY_TOP + 0.39), (d1, d1 + 0.4, DISPLAY_SEAT - 0.39, DISPLAY_TOP + 0.39)]
+    for x0, x1, z0, z1 in rails:
         side = (z1 - z0) > 1.0                         # the uprights sit a hair proud of the rails: no shared face
         if side:
             x0, x1 = x0 + 0.01, x1 - 0.01
@@ -197,8 +279,9 @@ def _trim(b):
 
 
 def _glass(b):
-    a, c = WINDOW
-    b.box_base(((a + c) / 2, ROOM_Y[0] - WALL_T / 2, FLOOR + WINDOW_SEAT - 0.02), (c - a - 0.02, 0.3, 10.0 - WINDOW_SEAT + 0.04),
+    a, c = DISPLAY if DISPLAY else WINDOW              # the counter window has none
+    seat, top = (DISPLAY_SEAT, DISPLAY_TOP) if DISPLAY else (WINDOW_SEAT, WINDOW_TOP)
+    b.box_base(((a + c) / 2, ROOM_Y[0] - WALL_T / 2, FLOOR + seat - 0.02), (c - a - 0.02, 0.3, top - seat + 0.04),
                "glass", bevel=False)
 
 
@@ -220,7 +303,7 @@ def _canopy(b):
     """A striped awning over the whole shop front, out over the apron."""
     x0, x1 = ROOM_X
     y = ROOM_Y[0] - WALL_T
-    n = 12
+    n = 2 * round((x1 - x0 + 2 * WALL_T) / 6.3)        # stripes about 3.2 wide: 12 on the small plot
     w = (x1 - x0 + 2 * WALL_T) / n
     for i in range(n):
         x = x0 - WALL_T + w * (i + 0.5)
@@ -232,8 +315,9 @@ def _canopy(b):
 def _yard(b):
     """Grass in the back yard, from just behind the back wall to the plot's back edge, inside the side alleys."""
     y0 = ROOM_Y[1] + WALL_T + 0.02
-    y1 = PLOT_D / 2 - 0.1
-    b.box_base((0, (y0 + y1) / 2, FLOOR - 0.03), (PLOT_W - 0.2, y1 - y0, 0.07), "leaf_green", bevel=False)
+    y1 = PLOT_Y[1] - 0.1
+    b.box_base(((PLOT_X[0] + PLOT_X[1]) / 2, (y0 + y1) / 2, FLOOR - 0.03), (PLOT_X[1] - PLOT_X[0] - 0.2, y1 - y0, 0.07),
+               "leaf_green", bevel=False)
 
 
 def _bands(b):
@@ -270,7 +354,7 @@ def _tiles(b):
     round the room. The tiles stand 0.02 over the shop floor and the border 0.02 over the tiles."""
     x0, x1 = ROOM_X
     y0, y1 = ROOM_Y
-    nx, ny = 9, 6
+    nx, ny = round((x1 - x0) / 4.0), round((y1 - y0) / 4.4)      # 9 by 6 on the small plot
     w, d = (x1 - x0) / nx, (y1 - y0) / ny
     for i in range(nx):
         for j in range(ny):
@@ -342,6 +426,7 @@ def _wall_art(b):
     _wall_box(b, "back", 14.5, F + 5.9, (5.0, 3.0), rim, "wood_light", bevel=False)              # the tool board
     _wall_box(b, "back", 14.5, F + 5.9, (4.6, 2.6), PLATE, "spa_cream", k=1, bevel=False)        # and its cream face
     for k, (y, sw) in enumerate(zip(FRAMES_Y, FRAME_CARDS)):                                     # three frames
+        y += FRAME_SHIFT
         z = F + 6.9 + (0.25 if k == 1 else 0.0)
         _wall_box(b, "left", y, z, (2.2, 2.6), rim, "wood_light", bevel=False)
         _wall_box(b, "left", y, z, (1.8, 2.2), PLATE, sw, k=1, bevel=False)                      # and their cards
@@ -352,8 +437,8 @@ def _wall_art(b):
     _wall_box(b, "back", bx, F + DOOR_H + 1.3, (3.6, 1.4), PLATE, "cardboard", bevel=False)      # the strays sign
     # a rail of three towels on the right wall, between the chance board and the stations: the towels are their
     # own plates and hang over the rail
-    _wall_box(b, "right", -7.0, F + 6.6, (5.2, 0.24), PLATE - 0.04, "wood_light", bevel=False)
-    for y, sw in ((-8.7, "spa_bubblegum"), (-7.0, "spa_sky"), (-5.3, "spa_mint")):
+    _wall_box(b, "right", TOWELS_Y, F + 6.6, (5.2, 0.24), PLATE - 0.04, "wood_light", bevel=False)
+    for y, sw in ((TOWELS_Y - 1.7, "spa_bubblegum"), (TOWELS_Y, "spa_sky"), (TOWELS_Y + 1.7, "spa_mint")):
         _wall_box(b, "right", y, F + 5.45, (1.55, 2.3), PLATE, sw, k=1)   # 0.15 apart: no room for a camera between
 
 
@@ -406,6 +491,7 @@ def _wall_decor(b):
     turn = Matrix.Rotation(math.radians(45), 3, "X")
     lens = PLATE - 0.01
     for k, (y, coat) in enumerate(zip(FRAMES_Y, ("fur_orange", "fur_charcoal", "fur_grey"))):
+        y += FRAME_SHIFT
         z = F + 6.9 + (0.25 if k == 1 else 0.0)
         b.sphere((x0 + lens, y, z - 0.25), 0.62, coat, segments=8, rings=5, scale=((top - lens) / 0.62, 1, 0.9))
         for j, sy in enumerate((-1, 1)):
@@ -450,7 +536,10 @@ def _decor(b):
     # Plants in two corners: the back right one, and a smaller one in the front right corner beside the chance board.
     # The front one stood by the left wall in front of the window seat until the Studio playtest (#298): there it
     # filled the follow camera on the walk back from the Bubble Bath.
-    for x, y, k in ((x1 - 1.4, y1 - 1.4, 1.0), (x1 - 1.25, ROOM_Y[0] + 1.25, 0.85)):
+    plants = [(x1 - 1.4, y1 - 1.4, 1.0), (x1 - 1.25, ROOM_Y[0] + 1.25, 0.85)]
+    if DISPLAY:                                        # the display window's seat fills the front right corner
+        plants.pop()
+    for x, y, k in plants:
         b.cyl_base((x, y, F - 0.006), 0.7 * k, 1.4 * k, "terracotta", segments=10, bevel=False, radius2=0.85 * k)
         b.sphere((x, y, F + 2.2 * k), 1.1 * k, "leaf_green", segments=8, rings=6)
         b.sphere((x + 0.3 * k, y - 0.2 * k, F + 3.0 * k), 0.7 * k, "leaf_dark", segments=8, rings=5)
@@ -460,25 +549,28 @@ def _decor(b):
         b.cyl_base((x, y, F + WALL_H - 2.6), 0.9, 0.6, "spa_mint", segments=12, bevel=False, radius2=0.35)
     # outside: the flower box under the window, pots by the entrance, lamp posts on the apron
     yo = y0 - WALL_T
-    a, c = WINDOW
-    b.box_base(((a + c) / 2, yo - 0.7, F - 0.01), (c - a - 1.0, 1.2, 1.3), "wood_light", bevel=False)
-    for x in (ENTRANCE[0] - 1.4, ENTRANCE[1] + 1.4):
+    a, c = DISPLAY if DISPLAY else WINDOW              # the flower box: under the glazed window, never where
+    if not COUNTER or DISPLAY:                         # customers stand at the counter
+        b.box_base(((a + c) / 2, yo - 0.7, F - 0.01), (c - a - 1.0, 1.2, 1.3), "wood_light", bevel=False)
+    # the pots: one each side of the entrance; with a counter the left one stands past the counter's far end
+    for x in ((WINDOW[0] - 1.7) if COUNTER else (ENTRANCE[0] - 1.4), ENTRANCE[1] + 1.4):
         b.cyl_base((x, yo - 1.2, F - 0.01), 0.75, 1.5, "terracotta", segments=10, bevel=False, radius2=0.9)
         b.sphere((x, yo - 1.2, F + 2.3), 1.15, "leaf_green", segments=8, rings=6)
-    for x in (-PLOT_W / 2 + 1.6, PLOT_W / 2 - 1.6):
-        b.cyl_base((x, -PLOT_D / 2 + 1.6, F - 0.01), 0.22, 7.0, "fur_charcoal", segments=8, bevel=False)
-        b.box((x, -PLOT_D / 2 + 1.6, F + 7.1), (0.9, 0.9, 0.25), "fur_charcoal", bevel=False)
+    for x in (PLOT_X[0] + 1.6, PLOT_X[1] - 1.6):
+        b.cyl_base((x, PLOT_Y[0] + 1.6, F - 0.01), 0.22, 7.0, "fur_charcoal", segments=8, bevel=False)
+        b.box((x, PLOT_Y[0] + 1.6, F + 7.1), (0.9, 0.9, 0.25), "fur_charcoal", bevel=False)
     # a low white fence round the yard: posts and two rails, inside the plot edge so neighbours never overlap
-    fy0, fy1 = y1 + WALL_T + 0.6, PLOT_D / 2 - 0.5
-    fx = PLOT_W / 2 - 0.5
+    fy0, fy1 = y1 + WALL_T + 0.6, PLOT_Y[1] - 0.5
+    fx = PLOT_X[1] - 0.5
     for x in (-fx, fx):
         for k in range(4):
             y = fy0 + (fy1 - fy0) * k / 3
             b.box_base((x, y, F - 0.01), (0.3, 0.3, 2.4), "offwhite", bevel=False)
         for z in (0.9, 1.9):
             b.box((x, (fy0 + fy1) / 2, F + z), (0.12, fy1 - fy0, 0.22), "offwhite", bevel=False)
-    for k in range(1, 8):
-        x = -fx + 2 * fx * k / 8
+    posts = round(2 * fx / 5.4)                        # 8 gaps on the small plot
+    for k in range(1, posts):
+        x = -fx + 2 * fx * k / posts
         b.box_base((x, fy1, F - 0.01), (0.3, 0.3, 2.4), "offwhite", bevel=False)
     for z in (0.92, 1.92):
         b.box((0, fy1, F + z), (2 * fx - 0.02, 0.12, 0.22), "offwhite", bevel=False)
@@ -492,13 +584,15 @@ def _glow(b):
     F = FLOOR
     for x, y in LAMPS:
         b.sphere((x, y, F + WALL_H - 2.65), 0.32, "lamp_warm", segments=8, rings=5)
-    for x in (-PLOT_W / 2 + 1.6, PLOT_W / 2 - 1.6):
-        b.box((x, -PLOT_D / 2 + 1.6, F + 7.6), (0.6, 0.6, 0.75), "lamp_warm", bevel=False)
+    for x in (PLOT_X[0] + 1.6, PLOT_X[1] - 1.6):
+        b.box((x, PLOT_Y[0] + 1.6, F + 7.6), (0.6, 0.6, 0.75), "lamp_warm", bevel=False)
 
 
 def _flowers(b):
     """Flowers in the window box."""
-    a, c = WINDOW
+    if COUNTER and not DISPLAY:
+        return
+    a, c = DISPLAY if DISPLAY else WINDOW
     yo = ROOM_Y[0] - WALL_T - 0.7
     for k in range(7):
         x = a + 1.0 + (c - a - 2.0) * k / 6
@@ -514,15 +608,20 @@ def _pads(b):
 
 
 def build_plot(mat):
-    name = "CleanACat_Area_SpaPlot"
+    name = NAME
     parts = [("", lambda b: (_floor(b), _yard(b))), ("_Wall", _walls), ("_WindowSeat", _window_seat),
              ("_Glass", _glass), ("_Roof", _roof), ("_Canopy", _canopy), ("_Trim", _trim), ("_Bands", _bands),
              ("_Tiles", _tiles), ("_Decor", _decor), ("_WallArt", _wall_art), ("_Glow", _glow), ("_Flowers", _flowers)]
+    if COUNTER:
+        parts += [("_Counter", _counter), ("_Counter_Decor", _counter_decor), ("_Counter_Barrier", _counter_barrier)]
+        parts += [("_CounterMat%d" % i, _counter_mat(i)) for i in range(1, PLACES + 1)]
     objs = []
     for suffix, fn in parts:
         b = Builder()
         fn(b)
-        objs.append(_tris(b.finalize(name + suffix, mat, bevel=0)))
+        ob = _tris(b.finalize(name + suffix, mat, bevel=0))
+        ob.hide_render = suffix.endswith("_Barrier")
+        objs.append(ob)
     return objs
 
 
@@ -530,9 +629,96 @@ def plot_rbx_extras():
     atts = []
     for spot, (x, y, z, turn) in SPOTS.items():
         M = Matrix.Translation((x, y, FLOOR + z)) @ Matrix.Rotation(math.radians(turn), 4, "Z")
-        atts.append(("CleanACat_Area_SpaPlot", spot, M))
+        atts.append((NAME, spot, M))
     return {"attachments": atts, "attributes": {"FloorHeight": {"Float64": FLOOR}}}
 
 
-ASSETS = {"CleanACat_Area_SpaPlot": (build_plot, 25000)}
-EXTRAS = {"CleanACat_Area_SpaPlot": plot_rbx_extras}
+# -- the bigger plot (#746) ----------------------------------------------------------------------------------------
+# The owner, 2026-11-26: make the base spa building bigger, and give customers "an open window from desk where they
+# put their cats on the table while waiting so grabbing them is easy". CleanACat_Area_SpaPlotBig is that plot, a
+# second model beside the small one so the game's switch (bigSpa) picks which stands on the street:
+#
+#   the room   48 by 32 studs inside (36 by 26), walls 12 tall as before. The plot is 56 wide and 54 deep: the front
+#              edge stays 24 in front of the pivot, the back edge is 30 behind it, and the pivot is still the middle
+#              of the front edge's length. Plots stand 56 apart (street.py's StreetBig).
+#   unchanged  the front wall's line, the entrance and everything in front of the building: the queue mats, the
+#              opening scene's spots, the spawn, the first tub and stations 2 and 3 keep their numbers.
+#   moved      what stands on the back wall is 6 further back, what stands on a side wall 6 further out.
+#   the counter  the display window left of the entrance (Roblox: on the tub's side, right behind the spawn) is an
+#              open window with a counter through the wall, PLACES places PLACE_PITCH apart, place 1 nearest the
+#              entrance. SpotCounterCat<i> is on the counter top (the cat faces the player inside), SpotCounter<i>
+#              on the pavement straight behind it (the customer faces in). Each place has a mat, its own part
+#              `_CounterMat<i>`, so the game can tint it to match its customer. `_Counter_Barrier` keeps players
+#              off the counter and from hopping out through the window.
+#   the display window  the residents' cushions (SpotWindow1 to 4) move to a new, lower glazed window right of the
+#              entrance, with the spa's sign on the wall over it. The chance board and the gift stand move along
+#              the right wall to make room for its seat; the tip jar stands on the counter's entrance end.
+BIG_NAME = "CleanACat_Area_SpaPlotBig"
+BIG_ROOM_X, BIG_ROOM_Y = (-24.0, 24.0), (-16.0, 16.0)
+BIG_WINDOW = (-21.6, -0.8)
+BIG_DISPLAY = (12.4, 23.0)
+BIG_SEAT = 2.8                    # the counter top above the floor
+
+
+def _big_spots():
+    s = dict(SPOTS)
+    grow_x, grow_y = BIG_ROOM_X[1] - ROOM_X[1], BIG_ROOM_Y[1] - ROOM_Y[1]
+
+    def move(name, dx=0.0, dy=0.0):
+        x, y, z, turn = s[name]
+        s[name] = (x + dx, y + dy, z, turn)
+
+    for name in ("SpotVipDoor", "SpotGardenDoor", "SpotWorkerJo", "SpotWorkerSam", "SpotWorkerLou", "SpotBuilder"):
+        move(name, dy=grow_y)
+    move("SpotStray", -grow_x, grow_y)
+    move("SpotStation4", -grow_x)
+    move("SpotStation5", -grow_x)
+    # along the right wall, both facing across the room: the gift stand clear of the display seat, the chance board
+    # behind it (it stood by the entrance, where the seat is now)
+    s["SpotGift"] = (BIG_ROOM_X[1] - 1.6, -9.5, 0.0, 270.0)
+    s["SpotBoard"] = (BIG_ROOM_X[1] - 0.9, -3.5, 0.0, 270.0)
+    d0, d1 = BIG_DISPLAY
+    s["SpotSign"] = ((d0 + d1) / 2, ROOM_Y[0] - WALL_T, 8.2, 0.0)     # on the wall over the display window
+    for i in range(4):                                # the cushions, 1 furthest from the entrance as before
+        s["SpotWindow%d" % (i + 1)] = (d1 - 1.3 - 2.6 * i, -14.2, DISPLAY_SEAT + 0.03, 0.0)
+    s["SpotTipJar"] = (-1.5, -15.0, BIG_SEAT, 0.0)                    # the counter's entrance end
+    for i in range(1, PLACES + 1):
+        s["SpotCounter%d" % i] = (place_x(i), STAND_Y, 0.0, 180.0)
+        s["SpotCounterCat%d" % i] = (place_x(i), CAT_Y, BIG_SEAT + MAT[2] - 0.01, 180.0)
+    return s
+
+
+BIG = {
+    "NAME": BIG_NAME, "ROOM_X": BIG_ROOM_X, "ROOM_Y": BIG_ROOM_Y, "PLOT_X": (-28.0, 28.0), "PLOT_Y": (-24.0, 30.0),
+    "WINDOW": BIG_WINDOW, "WINDOW_SEAT": BIG_SEAT, "WINDOW_TOP": 9.0, "COUNTER": True, "DISPLAY": BIG_DISPLAY,
+    "TOWELS_Y": 8.0, "FRAME_SHIFT": 6.0, "SPOTS": _big_spots(),
+    # pendant lamps: the tub, the stations, the counter's far end and two over the deeper back of the room
+    "LAMPS": ((-5.0, -2.0), (10.0, -1.0), (-15.0, -8.0), (-14.0, 9.0), (15.0, 9.0)),
+}
+
+
+class big_layout:
+    """`with big_layout():` builds with the bigger plot's numbers: every builder above reads the module's names
+    when it runs, so swapping them for the length of a build is the whole change. Other modules that imported the
+    small plot's numbers keep them."""
+
+    def __enter__(self):
+        self.old = {k: globals()[k] for k in BIG}
+        globals().update(BIG)
+
+    def __exit__(self, *exc):
+        globals().update(self.old)
+
+
+def build_plot_big(mat):
+    with big_layout():
+        return build_plot(mat)
+
+
+def plot_big_rbx_extras():
+    with big_layout():
+        return plot_rbx_extras()
+
+
+ASSETS = {"CleanACat_Area_SpaPlot": (build_plot, 25000), BIG_NAME: (build_plot_big, 25000)}
+EXTRAS = {"CleanACat_Area_SpaPlot": plot_rbx_extras, BIG_NAME: plot_big_rbx_extras}

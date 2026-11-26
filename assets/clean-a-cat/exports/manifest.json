@@ -72,11 +72,11 @@
   "size_studs": {
    "x": 19.15,
    "y": 13.95,
-   "z": 10.9
+   "z": 12.33
   },
   "size_roblox": [
    19.15,
-   10.9,
+   12.33,
    13.95
   ],
   "pivot": "base center (floor contact)",
@@ -265,6 +265,73 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_SpaPlot.png"
+ },
+ {
+  "name": "CleanACat_Area_SpaPlotBig",
+  "category": "Area",
+  "module": "plot",
+  "objects": [
+   "CleanACat_Area_SpaPlotBig",
+   "CleanACat_Area_SpaPlotBig_Wall",
+   "CleanACat_Area_SpaPlotBig_WindowSeat",
+   "CleanACat_Area_SpaPlotBig_Glass",
+   "CleanACat_Area_SpaPlotBig_Roof",
+   "CleanACat_Area_SpaPlotBig_Canopy",
+   "CleanACat_Area_SpaPlotBig_Trim",
+   "CleanACat_Area_SpaPlotBig_Bands",
+   "CleanACat_Area_SpaPlotBig_Tiles",
+   "CleanACat_Area_SpaPlotBig_Decor",
+   "CleanACat_Area_SpaPlotBig_WallArt",
+   "CleanACat_Area_SpaPlotBig_Glow",
+   "CleanACat_Area_SpaPlotBig_Flowers",
+   "CleanACat_Area_SpaPlotBig_Counter",
+   "CleanACat_Area_SpaPlotBig_Counter_Decor",
+   "CleanACat_Area_SpaPlotBig_Counter_Barrier",
+   "CleanACat_Area_SpaPlotBig_CounterMat1",
+   "CleanACat_Area_SpaPlotBig_CounterMat2",
+   "CleanACat_Area_SpaPlotBig_CounterMat3",
+   "CleanACat_Area_SpaPlotBig_CounterMat4",
+   "CleanACat_Area_SpaPlotBig_CounterMat5",
+   "CleanACat_Area_SpaPlotBig_CounterMat6"
+  ],
+  "triangles": 5192,
+  "budget": 25000,
+  "parts": 270,
+  "size_studs": {
+   "x": 56.0,
+   "y": 54.0,
+   "z": 14.25
+  },
+  "size_roblox": [
+   56.0,
+   14.25,
+   54.0
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 5
+   },
+   "checks": {
+    "budget": "5192/25000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "3044 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=3.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_SpaPlotBig.png"
  },
  {
   "name": "CleanACat_Area_Street",
