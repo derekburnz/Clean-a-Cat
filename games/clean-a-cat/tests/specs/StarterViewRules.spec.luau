@@ -46,11 +46,12 @@ return function()
 			expect(StarterViewRules.hudText(20)).to.equal("1m")
 		end)
 
-		it("ticks seconds only in the window", function()
+		it("says when the offer ends in the window, never in seconds", function()
 			expect(StarterViewRules.windowText(86400 + 20 * 3600 + 14 * 60 + 36)).to.equal(
-				"1d 20:14:36"
+				"Ends in 1d 20h"
 			)
-			expect(StarterViewRules.windowText(3 * 3600 + 5)).to.equal("03:00:05")
+			expect(StarterViewRules.windowText(5 * 3600 + 12 * 60 + 9)).to.equal("Ends in 5h 12m")
+			expect(StarterViewRules.windowText(3 * 3600 + 5)).to.equal("Ends in 3h 0m")
 			expect(StarterViewRules.left(100, 40)).to.equal(60)
 			expect(StarterViewRules.left(100, 400)).to.equal(0)
 			expect(StarterViewRules.left(nil, 1)).to.equal(0)

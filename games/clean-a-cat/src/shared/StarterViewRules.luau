@@ -29,7 +29,7 @@ local LOOK: { [string]: { name: string, what: string, icon: string, badge: strin
 		icon = "Sponge",
 	},
 	SecondPetSlot = {
-		name = "Pet Slot",
+		name = "Second pet slot",
 		what = "One more pet for you and each helper",
 		icon = "Paw",
 		badge = "+1",
@@ -121,16 +121,10 @@ function StarterViewRules.hudText(seconds: number): string
 	return `{math.max(1, minutes)}m`
 end
 
--- The window's clock: "1d 20:14:36", or "20:14:36" under a day.
+-- The window's line: "Ends in 1d 20h", "Ends in 5h 12m", "Ends in 12m". Minutes at most, like the HUD chip, so
+-- nothing ticks in front of the player (Review-QA on PR 620).
 function StarterViewRules.windowText(seconds: number): string
-	local days = seconds // 86400
-	local clock = string.format(
-		"%02d:%02d:%02d",
-		(seconds % 86400) // 3600,
-		(seconds % 3600) // 60,
-		seconds % 60
-	)
-	return if days > 0 then `{days}d {clock}` else clock
+	return `Ends in {StarterViewRules.hudText(seconds)}`
 end
 
 -- How many times the HUD button bobs as it appears this visit: 3 on the first visit, 1 on the next two, and never

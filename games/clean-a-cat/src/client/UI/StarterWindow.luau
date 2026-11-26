@@ -10,9 +10,9 @@
 --
 -- Three item cards joined by plus signs, each with its own shop price; the total struck through and the saving, both
 -- from the live prices and left out if any price is missing; one green Get pack button with the pack's price, shown
--- before Roblox's own prompt; "Nothing random. All three are yours to keep." The clock in the title band ticks
--- seconds only while the window is open, and nothing changes near the end: no red, no flash. UI never fires remotes:
--- StarterController asks the server, which opens Roblox's prompt.
+-- before Roblox's own prompt; "Nothing random. All three are yours to keep." The title band says when the offer
+-- ends in days, hours and minutes (never seconds), and nothing changes near the end: no red, no flash. UI never
+-- fires remotes: StarterController asks the server, which opens Roblox's prompt.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -41,6 +41,7 @@ local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 8
 local CLOSE_ROOM = 84 -- design px at the band's right for the X
 local MIN_TAP = 44 -- real px
+local TICK_SECONDS = 20 -- the line shows minutes at most, so this only keeps it fresh
 
 -- Sizes in design pixels: full, then compact for a short screen (a phone held sideways).
 local SIZES = {
@@ -350,7 +351,7 @@ function StarterWindow.build(root: Instance): Frame
 		window.layer.Visible = false
 	end)
 
-	-- the clock in the title band, right of the title: seconds tick only while the window is open
+	-- "Ends in 1d 20h" in the title band, right of the title: never seconds
 	local timer = words("Timer", window.band, 20)
 	timer.AnchorPoint = Vector2.new(1, 0.5)
 	timer.AutomaticSize = Enum.AutomaticSize.X
@@ -440,11 +441,11 @@ function StarterWindow.build(root: Instance): Frame
 	window.layer:GetPropertyChangedSignal("Visible"):Connect(function()
 		if window.layer.Visible then
 			redraw()
-			-- the window's clock ticks each second while it is open, and stops when it closes
+			-- the window's "Ends in" line changes once a minute at most while it is open, and stops when it closes
 			task.spawn(function()
 				while window.layer.Visible do
 					tick()
-					task.wait(1)
+					task.wait(TICK_SECONDS)
 				end
 			end)
 		end
