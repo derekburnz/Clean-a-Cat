@@ -109,7 +109,9 @@ local function show(prompt: ProximityPrompt, input: Enum.ProximityPromptInputTyp
 	gui.ResetOnSpawn = false
 	gui.Size = UDim2.fromOffset(width, HEIGHT)
 	gui.ExtentsOffset = Vector3.new(1, 0, 0) -- at the thing's right edge, as the camera sees it
-	gui.SizeOffset = Vector2.new(SIDE, 0) -- and then clear of it
+	-- and then clear of it; a board row's pill also steps up or down by its PillStep (BoardProp, issue 574)
+	local step = prompt:GetAttribute("PillStep")
+	gui.SizeOffset = Vector2.new(SIDE, if type(step) == "number" and step == step then step else 0)
 
 	local pill = Instance.new("TextButton")
 	pill.Name = "Pill"

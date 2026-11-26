@@ -31,6 +31,9 @@ local LineLooks = require(script.Parent.Parent.Util.LineLooks)
 local FLAG = "customerFigures"
 local TOWNSFOLK_FLAG = "townsfolk"
 local SWAP_FLAG = "lineSwap" -- issue 571
+local REUSE_FLAG = "lineReuse" -- issues 571 and 570: the line is redrawn in place, each customer kept
+local LOOK_ATTRIBUTE = "LineLook" -- the customer's look number on their townsfolk figure, so a redraw finds them
+local STEP_UP_DELAY = 0.8 -- seconds a customer waits before stepping up into a leaver's place (issue 570)
 -- Model-Agent's townsfolk (#446), CleanACat_NPC_Customer_<name>. A look number n is TOWNSFOLK[n % #TOWNSFOLK + 1].
 local TOWNSFOLK = { "Sunny", "Mo", "Pip", "Rae", "Juno", "Bea", "Theo", "Kit" }
 local CUSTOMERS_FLAG = "customers"
@@ -332,20 +335,26 @@ local function buildTownsfolk(
 		local mat = queueSpot(index, slot)
 		local was = if from then from[index] else index
 		local start = mat
+		local newcomer = false
 		local setOff = now
 		if was == 0 then
 			start = lineSpotOf(WalkRules.STREET_PLACE, slot) -- on the pavement, whatever the bench
 			setOff = now + arrivals * WalkRules.FILE_GAP -- new customers come in single file
 			arrivals += 1
+			newcomer = true
 		elseif was ~= nil and was ~= index then
 			start = queueSpot(was, slot)
 		end
 		local figure = townsfolkFor(lookNumbers[index] or index, kinds[index], start)
 		if figure then
 			figure:SetAttribute(PLACE_ATTRIBUTE, index)
+			figure:SetAttribute(LOOK_ATTRIBUTE, lookNumbers[index] or index)
 			if start ~= mat then
 				figure:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
 				figure:SetAttribute(WalkRules.AT_ATTRIBUTE, setOff)
+				if newcomer then
+					figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, true)
+				end
 			end
 			figure.Parent = folder
 		end
@@ -401,6 +410,57 @@ local function buildFolder(
 	return folder
 end
 
+-- (switch lineReuse) Redraws a drawn townsfolk line in place (issues 571 and 570): a customer still in the line keeps
+-- their figure and, when their place changed, walks there from where they stand after STEP_UP_DELAY, so they never
+-- step into a leaver's spot while the leaver walks off; a new customer is added on the pavement and walks in; one
+-- who left is taken away. Nothing else is rebuilt, so no other figure blinks or arrives late on any screen.
+local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line, folder: Instance)
+	local drawn = table.move(line.looks, 1, math.min(#line.looks, maxShown()), 1, {})
+	local byLook: { [number]: Model } = {}
+	for _, child in folder:GetChildren() do
+		local look = child:GetAttribute(LOOK_ATTRIBUTE)
+		if child:IsA("Model") and type(look) == "number" then
+			byLook[look] = child :: Model
+		end
+	end
+	local now = Workspace:GetServerTimeNow()
+	local arrivals = 0
+	local kept: { [Instance]: boolean } = {}
+	for index, look in drawn do
+		local mat = queueSpot(index, slot)
+		local kind = line.kinds[index]
+		local figure = byLook[look]
+		if figure and figure:GetAttribute("CatKind") == kind then
+			kept[figure] = true
+			if figure:GetAttribute(PLACE_ATTRIBUTE) ~= index then
+				figure:SetAttribute(PLACE_ATTRIBUTE, index)
+				figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, nil)
+				figure:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
+				-- set last: a client starts the walk when the start time changes
+				figure:SetAttribute(WalkRules.AT_ATTRIBUTE, now + STEP_UP_DELAY)
+			end
+			continue
+		end
+		local made = townsfolkFor(look, kind, lineSpotOf(WalkRules.STREET_PLACE, slot))
+		if made then
+			made:SetAttribute(PLACE_ATTRIBUTE, index)
+			made:SetAttribute(LOOK_ATTRIBUTE, look)
+			made:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
+			made:SetAttribute(WalkRules.AT_ATTRIBUTE, now + arrivals * WalkRules.FILE_GAP)
+			made:SetAttribute(WalkRules.FILE_ATTRIBUTE, true)
+			arrivals += 1
+			kept[made] = true
+			made.Parent = folder
+		end
+	end
+	for _, child in folder:GetChildren() do
+		if not kept[child] then
+			child:Destroy()
+		end
+	end
+	shown[player] = drawn
+end
+
 local function draw(player: Player)
 	-- (switch lineSwap) the old line stays until the new one is built, so it never blinks empty (issue 571)
 	local swap = LiveFlags.isOn(SWAP_FLAG)
@@ -419,6 +479,11 @@ local function draw(player: Player)
 	then
 		clear(player)
 		shown[player] = nil
+		return
+	end
+	local _, current = folderOf(player)
+	if current and LiveFlags.isOn(REUSE_FLAG) and LiveFlags.isOn(TOWNSFOLK_FLAG) then
+		redrawInPlace(player, slot, line, current)
 		return
 	end
 	local drawn = table.move(line.looks, 1, math.min(#line.looks, maxShown()), 1, {})

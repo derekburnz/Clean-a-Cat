@@ -124,6 +124,22 @@ local function finishText(left: number): string?
 	return `Finish now for {price} Robux`
 end
 
+-- Whether `item` could be started now as far as the board knows (the server checks again): its first build done and
+-- its slot free, or under tubBuilds no build at all running (one builder). Coins are left to the server's notice, so
+-- the price still shows. With boardKeys on, the rest of the board's pills are hidden, so the few left never crowd.
+local function startable(item: BuildRules.Item): boolean
+	if not LiveFlags.isOn(BoardProp.KEYS_FLAG) then
+		return true
+	end
+	if item.requires and not built[item.requires] then
+		return false
+	end
+	if LiveFlags.isOn(BuildRules.TUBS_FLAG) then
+		return next(builds) == nil
+	end
+	return builds[item.slot] == nil
+end
+
 local function refreshPrompts()
 	local now = os.time() + clockOffset
 	refreshBell(now)
@@ -145,6 +161,8 @@ local function refreshPrompts()
 				prompt.ActionText = `Building {item.name}`
 				prompt.ObjectText = countdown(running.endsAt - now)
 			end
+		elseif not startable(item) then
+			prompt.Enabled = false -- its slot is busy or its first build is missing: one pill fewer (issue 574)
 		else
 			prompt.Enabled = true
 			prompt.ActionText = `Build {item.name}`

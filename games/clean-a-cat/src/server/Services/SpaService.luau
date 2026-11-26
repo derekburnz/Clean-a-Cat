@@ -194,6 +194,15 @@ local function benchSize(player: Player): number
 	return BuildRules.benchSize(save.stations, LiveFlags.isOn)
 end
 
+-- How many customers may wait now: benchSize less the customer still at the door holding their cat (switch
+-- customerCarry), who stands on the first mat. So every waiting customer has a place of their own and is drawn: one
+-- past the last mat would wait unseen with their heart bar running down (bug hunt B3, issue 595). The bench's size
+-- the player sees (BenchSize) stays benchSize.
+local function waitingSize(player: Player): number
+	local size = benchSize(player)
+	return if carrying[player] == "door" then math.max(size - 1, 0) else size
+end
+
 -- (switch benchGrow) Whether a customer may join now: always when the line is empty, else one each
 -- bench.refillSeconds (6 less one per built tub) after the line came up short.
 local function mayJoin(player: Player, length: number): boolean
@@ -229,7 +238,7 @@ local function queueFor(player: Player): { string }
 	while #o > #q do
 		table.remove(o)
 	end
-	local size = benchSize(player)
+	local size = waitingSize(player)
 	while #q < size and mayJoin(player, #q) do
 		local visitor = visitorPending[player]
 		if visitor then
@@ -1168,7 +1177,7 @@ function SpaService.Start()
 						if player:GetAttribute(SpaRules.BENCH_ATTRIBUTE) ~= size then
 							player:SetAttribute(SpaRules.BENCH_ATTRIBUTE, size)
 						end
-						if before < size and #queueFor(player) ~= before then
+						if before < waitingSize(player) and #queueFor(player) ~= before then
 							sendQueue(player)
 						end
 					end
