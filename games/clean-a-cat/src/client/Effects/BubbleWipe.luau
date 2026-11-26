@@ -71,7 +71,9 @@ function BubbleWipe.covered(t: number): boolean
 end
 
 local function call(onCovered: () -> ())
-	local ok, problem = pcall(onCovered)
+	local ok, problem = pcall(function()
+		onCovered()
+	end)
 	if not ok then
 		warn("[BubbleWipe] onCovered failed: " .. tostring(problem))
 	end
@@ -196,17 +198,25 @@ function BubbleWipe.play(onCovered: () -> ())
 	local player = Players.LocalPlayer
 	local gui, fill = makeGui()
 	gui.Parent = player:WaitForChild("PlayerGui")
+	local called = false
+	local function once()
+		if not called then
+			called = true
+			call(onCovered)
+		end
+	end
 	task.spawn(function()
 		local ok, problem = pcall(function()
 			if reducedMotion() then
-				fadeWipe(gui, fill, onCovered)
+				fadeWipe(gui, fill, once)
 			else
-				bubbleWipe(gui, fill, onCovered)
+				bubbleWipe(gui, fill, once)
 			end
 		end)
 		if not ok then
 			warn("[BubbleWipe] " .. tostring(problem))
 			gui:Destroy()
+			once() -- the screen still changes, even if the wipe broke before covering (Review-QA, PR 860)
 		end
 	end)
 end
