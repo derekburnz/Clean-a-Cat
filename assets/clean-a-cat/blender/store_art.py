@@ -412,6 +412,17 @@ def spa_scene(mat, name="Muffin"):
     return objs, cat, wz
 
 
+def thumb_spa_close(mat, out, res, name="Prism"):
+    """The bath close, the whole frame (#106): the cat on the right two thirds up the frame, the tub's rim, tap, duck
+    and lather round it and the tub running out of the frame's foot and right edge. The title goes on the left."""
+    objs, cat, wz = spa_scene(mat, name)
+    lo, hi = common.bounds(cat)
+    cx = (lo.x + hi.x) / 2
+    top = hi.z + 0.15
+    focus = (Vector((cx - 5.0, lo.y, top - 4.2)), Vector((cx + 2.4, lo.y + 0.4, top)))
+    return render(objs, focus, out, res, az=14, el=13, margin=0.9, lens=55)
+
+
 def thumb_spa(mat, out, res, name="Muffin"):
     """The store thumbnail: the whole bath, blown up."""
     objs, _cat, _wz = spa_scene(mat, name)
@@ -565,9 +576,10 @@ SHOTS = {
 
 
 # ------------------------------------------------------------------ the second set (#106)
-def box_scene(mat):
+def box_scene(mat, lift=0.72):
     """The opening's hook: the muddy stray (Suds, before his wash) looking out of the plain brown box that fell off
-    the truck, its flaps open. Returns (objects, the cat, the box's rim height)."""
+    the truck, its flaps open. `lift` is how far over the box's floor he is held. Returns (objects, the cat, the
+    box's rim height)."""
     import opening
     box = opening.build_box(mat)
     bpy.context.view_layer.update()
@@ -575,16 +587,18 @@ def box_scene(mat):
         for kind, (axis, sign) in opening.FLAP_TURN.items():
             if o.name.endswith("_Flap" + kind):
                 o.matrix_world = o.matrix_world @ Matrix.Rotation(math.radians(sign * opening.FLAP_OPEN), 4, axis)
-    cat = cat_state("Suds", mat, "sit", "dirty", (0, 0.1, opening.BOX_SEAT + 0.72))
+    cat = cat_state("Suds", mat, "sit", "dirty", (0, 0.1, opening.BOX_SEAT + lift))
     return _fresh(box) + cat, cat, opening.RIM
 
 
 def icon_box(mat, out, res):
-    """Icon: the muddy stray's face over the rim of his box."""
-    objs, cat, rim = box_scene(mat)
+    """Icon: the muddy stray's face over the rim of his box. He stands higher than in the thumbnail and the camera
+    is low, so his dark head is against the backdrop and not the box's shaded inside, and the face is about half the
+    square (Review-QA on #106)."""
+    objs, cat, rim = box_scene(mat, lift=1.12)
     lo, hi = common.bounds([o for o in cat if "_Mud" not in o.name and "_Tangle" not in o.name])
-    focus = (Vector((lo.x - 0.35, lo.y, rim - 0.55)), Vector((hi.x + 0.35, lo.y + 0.4, hi.z + 0.08)))
-    return render(objs, focus, out, res, az=14, el=16, margin=1.0, lens=60)
+    focus = (Vector((lo.x - 0.08, lo.y, rim - 0.22)), Vector((hi.x + 0.08, lo.y + 0.4, hi.z + 0.06)))
+    return render(objs, focus, out, res, az=12, el=7, margin=1.0, lens=60)
 
 
 def thumb_box(mat, out, res):
@@ -618,8 +632,10 @@ BUSY = (("Lou", "Cotton", "dirty"), ("Sam", "Muffin", "half"), ("Jo", "Sherbet",
 
 
 def thumb_busy(mat, out, res):
-    """Thumbnail: the busy spa. The three workers at their own wash stands, each with a cat a step further along:
-    a muddy one, one half washed and a special visitor's cat clean. The staff turn half to the camera."""
+    """Thumbnail: the busy spa. The three wash stands in front, each with a cat a step further along: a muddy one,
+    one half washed and a special visitor's cat clean. The workers stand behind and between the stands, facing the
+    camera, so the cats are the biggest things in the frame (Review-QA on #106: with the staff beside the cats it
+    read as a game about people)."""
     import spa_staff
     import worker_stations as ws
     objs = []
@@ -630,12 +646,13 @@ def thumb_busy(mat, out, res):
         objs += _fresh(stand)
         objs += cat_state(cat, mat, "sit", state, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
         staff = spa_staff.build_staff(who, mat)
-        _move(staff, (x + ws.WX + 0.1, ws.WY + 0.25, 0), 1.0, -40)
+        _move(staff, (x + 2.25, 3.4, 0), 1.0, -6 * (i - 1))
         objs += _fresh(staff)
     lo, hi = common.bounds(objs)
-    drift = floating(mat, [(-6.4, -1.4, 3.6, 0.22), (-1.6, -1.6, 4.4, 0.18), (3.0, -1.5, 4.7, 0.2),
-                           (7.3, -1.2, 2.2, 0.2), (-2.6, -2.0, 1.0, 0.16), (2.2, -2.0, 0.8, 0.15)])
-    return render(objs + drift, objs, out, res, az=6, el=13, margin=1.0, lens=60)
+    drift = floating(mat, [(-6.6, -1.6, 3.4, 0.22), (-2.4, -2.2, 3.9, 0.18), (2.3, -2.2, 4.2, 0.2),
+                           (6.6, -1.4, 1.6, 0.2), (-2.5, -2.4, 0.9, 0.16), (2.2, -2.4, 0.8, 0.15)])
+    focus = (Vector((lo.x + 0.2, -2.0, 0.0)), Vector((hi.x - 0.9, 1.0, hi.z - 0.15)))
+    return render(objs + drift, focus, out, res, az=4, el=11, margin=1.0, lens=38)
 
 
 SHOTS.update({
@@ -648,6 +665,8 @@ SHOTS.update({
 for _name in cats.SPECIAL_CATS:
     SHOTS[f"icon-spa-{_name}"] = (lambda mat, out, res, n=_name: icon_spa(mat, out, res, n), (512, 512), (1024, 1024))
     SHOTS[f"thumb-spa-{_name}"] = (lambda mat, out, res, n=_name: thumb_spa(mat, out, res, n), (900, 900), (1600, 1600))
+    SHOTS[f"thumb-close-{_name}"] = (lambda mat, out, res, n=_name: thumb_spa_close(mat, out, res, n), (1280, 720),
+                                     (1920, 1080))
 
 
 if __name__ == "__main__":
