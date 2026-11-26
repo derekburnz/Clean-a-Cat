@@ -50,6 +50,7 @@ local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 local ShopViewRules = require(Shared:WaitForChild("ShopViewRules"))
+local StarterViewRules = require(Shared:WaitForChild("StarterViewRules"))
 
 local CatIndex = require(script:WaitForChild("CatIndex"))
 local CheckinCard = require(script:WaitForChild("CheckinCard"))
@@ -66,6 +67,7 @@ local SettingsCard = require(script:WaitForChild("Settings"))
 local ShopWindow = require(script:WaitForChild("ShopWindow"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
 local Spotlight = require(script:WaitForChild("Spotlight"))
+local StarterWindow = require(script:WaitForChild("StarterWindow"))
 local SudsBubble = require(script:WaitForChild("SudsBubble"))
 local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
 local WalkButton = require(script:WaitForChild("HUD"):WaitForChild("WalkButton"))
@@ -276,6 +278,7 @@ function UI.init()
 	windows.Checkin = CheckinCard.build(root) -- the seven day check in card (switch checkinCard, issue 517)
 	windows.Quests = QuestBook.build(root) -- the quest book (switch quests, issue 516)
 	windows.Shop = ShopWindow.build(root) -- the shop's game passes (switch passes, issues 518 and 526)
+	windows.Starter = StarterWindow.build(root) -- the Spa Starter Pack (switch starterPack with passes, issue 519)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -497,6 +500,26 @@ function UI.onShopBuy(fn: (key: string) -> ())
 	ShopWindow.onBuy(fn)
 end
 
+-- The starter pack window (StarterController): its three cards, the pack's price or nil, and the offer's end time.
+function UI.setStarter(items: { StarterViewRules.Item }, pack: number?, endsAt: number?)
+	StarterWindow.set(items, pack, endsAt)
+end
+
+-- fn() when Get pack is pressed.
+function UI.onStarterBuy(fn: () -> ())
+	StarterWindow.onBuy(fn)
+end
+
+-- The HUD side button that opens `window`, or nil while it is not drawn.
+function UI.sideButton(window: string): TextButton?
+	return SideButtons.find(window)
+end
+
+-- A short chip under a HUD side button's caption, or nil to clear it.
+function UI.setSideNote(window: string, text: string?)
+	SideButtons.setNote(window, text)
+end
+
 -- True while window `name` shows.
 function UI.isOpen(name: string): boolean
 	local frame: Frame? = windows[name]
@@ -560,6 +583,14 @@ function UI.open(name: string)
 		end
 	end)
 	Motion.popIn(frame) -- trial springs, switch springUi (#183)
+end
+
+-- Closes one window if it is open; a recap card hidden behind it shows again.
+function UI.close(name: string)
+	local frame: Frame? = windows[name]
+	if frame and frame.Visible then
+		frame.Visible = false
+	end
 end
 
 -- Closes every window and the recap card or strip (calling its onClose).

@@ -7,6 +7,7 @@
 --   SideButtons.any()               true while the HUD is on and at least one button shows
 --   SideButtons.onChanged(fn)       fn() when a switch that shows or hides a button flips
 --   SideButtons.find(window)        the button that opens `window`, or nil
+--   SideButtons.setNote(window, t)  a small chip under that button's caption (nil hides it)
 --   SideButtons.setAside(on)        hides the row while the wash's tick list has its place (HUD/StepList); the
 --                                   windows are for between washes. SideButtons.isAside()
 --
@@ -33,7 +34,8 @@ type Spec = {
 	caption: string,
 	top: Color3,
 	bottom: Color3,
-	attribute: string?, -- also waits for this Player attribute to be true (the Quests button's 6:00, QuestsOpen)
+	attribute: string?, -- also waits for this Player attribute to be set and not false (QuestsOpen, StarterEndsAt)
+	also: string?, -- a second switch it needs (the starter pack gives passes, so it needs passes too)
 }
 
 -- In order, left to right. Tools, Helpers and Build join when their windows exist.
@@ -87,23 +89,44 @@ SideButtons.BUTTONS = {
 		top = Color3.fromHex("ECE2FB"),
 		bottom = Color3.fromHex("D9C7F5"),
 	},
+	{
+		-- last in the row, so it never crowds the first minutes (starterpack.html "hud")
+		window = "Starter",
+		flag = "starterPack",
+		also = "passes",
+		attribute = "StarterEndsAt", -- StarterRules.ENDS_ATTRIBUTE: set only while the pack is offered
+		icon = "Gift",
+		caption = "Starter",
+		top = Color3.fromHex("FFE98F"),
+		bottom = Color3.fromHex("FFC94D"),
+	},
 } :: { Spec }
 
 local SIZE_FULL, SIZE_SHORT = 76, 66 -- design px
 local ICON = 52 -- design px: model icons are never drawn under 48
 local GAP = 16
+local CAPTION_ROOM = 22 -- design px under the buttons for their captions
+local NOTE_ROOM = 46 -- and with a note chip under a caption
 local EDGE = Vector2.new(16, 14) -- real px from the root's top left (the root starts under Roblox's top bar)
 
-type Button = { spec: Spec, button: TextButton, iconBox: Frame }
+type Button = { spec: Spec, button: TextButton, iconBox: Frame, note: TextLabel }
 
 local row: Frame? = nil
 local rowScale: UIScale? = nil
+local captionRoom: UIPadding? = nil
 local buttons: { Button } = {}
 local aside = false
 
 local function shown(spec: Spec): boolean
 	local attribute = spec.attribute
-	if attribute and Players.LocalPlayer:GetAttribute(attribute) ~= true then
+	if attribute then
+		local value = Players.LocalPlayer:GetAttribute(attribute)
+		if value == nil or value == false then
+			return false
+		end
+	end
+	local also = spec.also
+	if also and not LiveFlags.isOn(also) then
 		return false
 	end
 	return LiveFlags.isOn(HUD_FLAG) and LiveFlags.isOn(spec.flag)
@@ -131,6 +154,10 @@ function SideButtons.onChanged(fn: () -> ())
 	local names = { HUD_FLAG }
 	for _, spec in SideButtons.BUTTONS do
 		table.insert(names, spec.flag)
+		local also = spec.also
+		if also and not table.find(names, also) then
+			table.insert(names, also)
+		end
 	end
 	for _, name in names do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name):Connect(fn)
@@ -165,7 +192,26 @@ local function redraw()
 		button.NextSelectionLeft = visible[index - 1]
 		button.NextSelectionRight = visible[index + 1]
 	end
+	local noted = false
+	for _, entry in buttons do
+		noted = noted or (entry.button.Visible and entry.note.Visible)
+	end
+	local room = captionRoom
+	if room then
+		room.PaddingBottom = UDim.new(0, if noted then NOTE_ROOM else CAPTION_ROOM)
+	end
 	r.Visible = #visible > 0 and not aside
+end
+
+-- A small chip under button `window`'s caption, or none with nil (the starter pack's time left; no seconds).
+function SideButtons.setNote(window: string, text: string?)
+	for _, entry in buttons do
+		if entry.spec.window == window then
+			entry.note.Visible = text ~= nil
+			entry.note.Text = text or ""
+		end
+	end
+	redraw()
 end
 
 function SideButtons.setAside(on: boolean)
@@ -197,8 +243,10 @@ function SideButtons.build(root: Instance, open: (window: string) -> ())
 	list.Parent = frame
 	-- room under the buttons for their captions
 	local pad = Instance.new("UIPadding")
-	pad.PaddingBottom = UDim.new(0, 22)
+	pad.Name = "CaptionRoom"
+	pad.PaddingBottom = UDim.new(0, CAPTION_ROOM)
 	pad.Parent = frame
+	captionRoom = pad
 	frame.Parent = root
 
 	for index, spec in SideButtons.BUTTONS do
@@ -228,12 +276,32 @@ function SideButtons.build(root: Instance, open: (window: string) -> ())
 		caption.Position = UDim2.new(0.5, 0, 1, -6)
 		caption.TextSize = 19
 		caption.Text = spec.caption
+		-- a small chip under the caption (SideButtons.setNote): the starter pack's time left
+		local note = Instance.new("TextLabel")
+		note.Name = "Note"
+		note.AnchorPoint = Vector2.new(0.5, 0)
+		note.Position = UDim2.new(0.5, 0, 1, 18)
+		note.AutomaticSize = Enum.AutomaticSize.X
+		note.Size = UDim2.fromOffset(0, 22)
+		note.BackgroundColor3 = Kit.WHITE
+		note.Font = Kit.FONT
+		note.TextColor3 = Kit.INK
+		note.TextSize = 17
+		note.Visible = false
+		Kit.minText(note)
+		Kit.corner(note, UDim.new(0, 10))
+		local noteEdge = Kit.stroke(note, 2)
+		noteEdge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		local notePad = Instance.new("UIPadding")
+		notePad.PaddingLeft, notePad.PaddingRight = UDim.new(0, 6), UDim.new(0, 6)
+		notePad.Parent = note
+		note.Parent = button
 		button.Parent = frame
 		Motion.press(button) -- trial springs, switch springUi (#183)
 		button.Activated:Connect(function()
 			open(spec.window)
 		end)
-		table.insert(buttons, { spec = spec, button = button, iconBox = iconBox })
+		table.insert(buttons, { spec = spec, button = button, iconBox = iconBox, note = note })
 	end
 
 	row, rowScale = frame, scale
