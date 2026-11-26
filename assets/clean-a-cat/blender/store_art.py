@@ -521,13 +521,20 @@ def _face_mud(mat, cat):
 
 def _split(mat, out, res, state):
     """One half of the split thumbnail (#500): Muffin sitting, seen straight on and close, with the camera on its
-    middle line. `state` 'dirty' is the whole cat muddy, 'clean' the whole cat fluffy with a bow by its ear, lather
+    middle line. `state` 'dirty' is the whole cat muddy, 'clean' the whole cat clean with a bow by its ear, lather
     at its foot and a few bubbles. Both use the same camera (framed on a fixed box round the cat), so
     `store_compose.py` takes the left half of the picture from one and the right half from the other and they meet on
     the cat's middle line. Things that belong to one half only are built on that half: the cat's left (+X) is the
     picture's right."""
     cat = cat_state("Muffin", mat, "sit", state)
-    body = [o for o in cat if not any(t in o.name for t in ("_Mud", "_Tangle", "_Fluff"))]
+    # The owner, 2026-11-26, on the icon made from these halves: "fix the sides of E having orange sticking out the
+    # side of the model". Those were the tufts: the matted tangles on the muddy half and the fluff on the clean half
+    # stand out past the head's outline and read as stray orange lumps at this crop. The split shows the cat's own
+    # outline only; mud, the bow, lather and bubbles tell the two halves apart.
+    for o in [o for o in cat if "_Tangle" in o.name or "_Fluff" in o.name]:
+        cat.remove(o)
+        _remove(o)
+    body = [o for o in cat if "_Mud" not in o.name]
     lo, hi = common.bounds(body)
     half = max(-lo.x, hi.x) + 0.5
     focus = (Vector((-half, lo.y, 0.0)), Vector((half, hi.y, hi.z + 0.4)))
