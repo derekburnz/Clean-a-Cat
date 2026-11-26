@@ -602,20 +602,23 @@ def staff_apron(mat):
     the yellow sponge and the sky brush standing in it."""
     b = Builder()
     up = Matrix.Rotation(math.radians(90), 3, "X")
-    b.box((0, 0, 1.9), (1.24, 0.22, 1.0), "spa_cream")                                  # the bib
-    b.prism((0, 0, 0.78), [(-1.12, -0.72), (1.12, -0.72), (0.98, 0.72), (-0.98, 0.72)], 0.24, "spa_cream", bevel=True,
+    b.box((0, 0, 1.94), (0.9, 0.22, 0.96), "spa_cream")                                 # the bib, narrow: a T
+    b.prism((0, 0, 0.78), [(-1.18, -0.72), (1.18, -0.72), (1.0, 0.72), (-1.0, 0.72)], 0.24, "spa_cream", bevel=True,
             rot=X)                                                                      # the skirt, flared
-    b.box((0, 0, 1.46), (2.06, 0.32, 0.24), "nose_bubblegum")                           # the waistband
-    b.box((0, 0, 0.1), (2.3, 0.3, 0.2), "nose_bubblegum")                               # the hem
+    b.box((0, 0, 1.46), (2.06, 0.32, 0.22), "nose_bubblegum")                           # the waistband
+    b.box((0, 0, 0.1), (2.42, 0.3, 0.2), "nose_bubblegum")                              # the hem
     for sx in (-1, 1):
-        b.box((sx * 1.12, 0.02, 1.16), (0.17, 0.17, 0.62), "nose_bubblegum", rot=(math.radians(sx * -22), "Y"))  # ties
-        b.box((sx * 0.4, 0.0, 2.62), (0.18, 0.16, 0.58), "nose_bubblegum", rot=(math.radians(sx * -26), "Y"))  # loop
-    b.box((0, 0.0, 2.86), (0.56, 0.16, 0.18), "nose_bubblegum")
-    _paw(b, 0, -0.13, 1.88, 0.17, "nose_bubblegum", rot=up, depth=0.05)
-    b.box((0.42, -0.15, 0.66), (0.96, 0.1, 0.74), "spa_mint")                           # the pocket
-    b.box((0.22, -0.12, 1.06), (0.44, 0.12, 0.42), "pastel_butter")                     # the sponge in it
-    b.box((0.64, -0.12, 1.14), (0.15, 0.1, 0.62), "spa_sky")                            # and the brush
-    b.box((0.64, -0.12, 1.5), (0.38, 0.14, 0.2), "spa_sky")
+        b.box((sx * 1.38, 0.02, 1.3), (0.78, 0.15, 0.15), "nose_bubblegum", rot=(math.radians(sx * 34), "Y"))  # ties
+        b.box((sx * 1.72, 0.02, 1.02), (0.22, 0.17, 0.22), "nose_bubblegum")                # and their ends
+        b.box((sx * 0.38, 0.0, 2.68), (0.09, 0.1, 0.6), "nose_bubblegum", rot=(math.radians(sx * -24), "Y"))  # neck cord
+    b.box((0, 0.0, 2.95), (0.42, 0.1, 0.09), "nose_bubblegum")
+    _paw(b, 0, -0.13, 1.9, 0.16, "nose_bubblegum", rot=up, depth=0.05)
+    b.box((0.42, -0.15, 0.62), (0.96, 0.1, 0.7), "spa_mint")                            # the pocket
+    b.box((0.16, -0.12, 1.06), (0.5, 0.12, 0.5), "pastel_butter")                       # a big sponge in it
+    b.box((0.66, -0.12, 1.2), (0.17, 0.1, 0.78), "spa_sky")                             # and a brush
+    b.box((0.66, -0.12, 1.66), (0.46, 0.16, 0.26), "spa_sky")
+    for dx in (-0.12, 0.0, 0.12):
+        b.box((0.66 + dx, -0.12, 1.86), (0.06, 0.08, 0.16), "foam", bevel=False)       # its bristles
     return _fin(b, "Staff", mat)
 
 
