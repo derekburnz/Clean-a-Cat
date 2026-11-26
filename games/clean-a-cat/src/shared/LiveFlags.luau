@@ -51,6 +51,7 @@ LiveFlags.KEYS = {
 	"photoFx", -- the photo camera's LED blinks faster, the flash fires and a printed card slides out the back (Effects/PhotoFx, issue 862); off by default
 	"carryBlink", -- a cat scaled after its rig was built (carried Suds) blinks with eyes at its own size (Effects/CatMotion, issue 903); off by default
 	"washPops", -- little words and a combo count pop over the cat during the wash, with soft chimes (Effects/WashPops, issue 902); off by default
+	"joArrive", -- Jo walks in to his hire pad with a short camera shot when the first helper card starts its trail (Effects/JoArrive, issue 913); off by default
 	"tubLife", -- the tub's foam settles and breathes, bubbles rise and pop, the tap runs with a ripple (Effects/TubLife, issue 879); off by default
 	"catWalkStand", -- a washed cat walks out on its standing model with a leg trot, not sitting (Effects/CatWalkOut); off by default
 	"pillPointer", -- a gold hand bobs over the prompt pill at the end of a guided walk (Controllers/PillPointerController); off by default
@@ -185,6 +186,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	pillPointer = true,
 	catWalkStand = true,
 	tubLife = true,
+	joArrive = true,
 	washPops = true,
 	carryBlink = true,
 	photoFx = true,

@@ -140,18 +140,21 @@ return function()
 			end
 		end)
 
-		it("keeps the Tools board's buy prompts out of reach of every counter place (issue 908)", function()
-			local ToolRules = require(game:GetService("ReplicatedStorage").Shared.ToolRules)
-			local tools = SpaLayout.plotSpotFor("Tools", true)
-			expect(tools).to.be.ok()
-			for index = 1, 6 do
-				for _, name in { `SpotCounter{index}`, `SpotCounterCat{index}` } do
-					local spot = SpaLayout.BIG_SPOTS[name]
-					local d = (spot.position - (tools :: any).position) * Vector3.new(1, 0, 1)
-					expect(d.Magnitude > ToolRules.PROMPT_REACH + 4).to.equal(true)
+		it(
+			"keeps the Tools board's buy prompts out of reach of every counter place (issue 908)",
+			function()
+				local ToolRules = require(game:GetService("ReplicatedStorage").Shared.ToolRules)
+				local tools = SpaLayout.plotSpotFor("Tools", true)
+				expect(tools).to.be.ok()
+				for index = 1, 6 do
+					for _, name in { `SpotCounter{index}`, `SpotCounterCat{index}` } do
+						local spot = SpaLayout.BIG_SPOTS[name]
+						local d = (spot.position - (tools :: any).position) * Vector3.new(1, 0, 1)
+						expect(d.Magnitude > ToolRules.PROMPT_REACH + 4).to.equal(true)
+					end
 				end
 			end
-		end)
+		)
 
 		it("keeps a window cushion for every resident and every prop's spot", function()
 			for index = 1, 4 do
