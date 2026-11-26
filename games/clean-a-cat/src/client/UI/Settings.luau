@@ -272,7 +272,7 @@ local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
 
 	local line = frame("Line", holder)
 	line.BackgroundTransparency = 0
-	line.BackgroundColor3 = Kit.LINE
+	line.BackgroundColor3 = Kit.line()
 	line.Size = UDim2.new(1, 0, 0, 3)
 
 	local iconBox = frame("IconBox", holder)

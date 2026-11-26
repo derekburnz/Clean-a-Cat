@@ -163,7 +163,7 @@ local function card(
 	c.BackgroundColor3 = Kit.WHITE
 	Kit.corner(c, UDim.new(0, 16))
 	local edge = Kit.stroke(c, 3)
-	edge.Color = Kit.LINE
+	edge.Color = Kit.line()
 	return c, edge
 end
 
