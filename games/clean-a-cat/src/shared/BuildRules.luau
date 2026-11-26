@@ -94,7 +94,7 @@ BuildRules.ITEMS = table.freeze({
 		requires = "Dryer",
 		payBonus = 0,
 	}) :: Item,
-	SecondTub = tub("Second Tub", 90, 15), -- must stay 15 s or less: Finish now hides under 15 s left (issue 531)
+	SecondTub = tub("Second Tub", 60, 15), -- 60 coins, about cat 5 (Design, #660); must stay 15 s or less: Finish now hides under 15 s left (issue 531)
 	ThirdTub = tub("Third Tub", 1000, 30 * 60, "SecondTub"),
 	FourthTub = tub("Fourth Tub", 5000, 4 * 3600, "ThirdTub"),
 	Garden = table.freeze({
