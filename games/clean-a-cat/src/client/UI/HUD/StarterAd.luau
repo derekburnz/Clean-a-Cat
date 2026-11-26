@@ -343,7 +343,7 @@ function StarterAd.build(root: Instance, open: () -> ())
 	local note = Instance.new("TextLabel")
 	note.Name = "Note"
 	note.AnchorPoint = Vector2.new(0.5, 0.5)
-	note.Position = UDim2.new(0.5, 0, 1, 0)
+	note.Position = UDim2.fromScale(0.5, 1)
 	note.AutomaticSize = Enum.AutomaticSize.X
 	note.Size = UDim2.fromOffset(0, 26)
 	note.BackgroundColor3 = Kit.WHITE
