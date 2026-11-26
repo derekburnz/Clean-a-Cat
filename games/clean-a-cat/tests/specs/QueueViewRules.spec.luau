@@ -161,11 +161,18 @@ return function()
 			expect(SpaRules.benchSize(0 / 0, true)).to.equal(SpaRules.QUEUE_SIZE)
 		end)
 
-		it("holds 1 customer in the tutorial until 2:00 of play, then 2 (tutorialBench)", function()
-			expect(SpaRules.tutorialBench(0)).to.equal(1)
-			expect(SpaRules.tutorialBench(119)).to.equal(1)
-			expect(SpaRules.tutorialBench(120)).to.equal(2)
-			expect(SpaRules.tutorialBench(9999)).to.equal(2)
-		end)
+		it(
+			"holds 1 customer in the tutorial until 2:00 of play, then 2, until 2:45 (tutorialBench)",
+			function()
+				expect(SpaRules.tutorialBench(0)).to.equal(1)
+				-- the first customer is served at about 1:00: play time decides, so the line stays at 1
+				expect(SpaRules.tutorialBench(60)).to.equal(1)
+				expect(SpaRules.tutorialBench(119)).to.equal(1)
+				expect(SpaRules.tutorialBench(120)).to.equal(2)
+				expect(SpaRules.tutorialBench(164)).to.equal(2)
+				expect(SpaRules.tutorialBench(165)).to.equal(nil) -- the tutorial is over: the bench's own size
+				expect(SpaRules.tutorialBench(9999)).to.equal(nil)
+			end
+		)
 	end)
 end

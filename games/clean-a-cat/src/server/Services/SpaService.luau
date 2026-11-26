@@ -178,12 +178,15 @@ local function newOrder(player: Player, kind: string, place: number, orders: { O
 end
 
 -- How many customers wait on the player's bench now: QUEUE_SIZE, or with benchGrow once the spa has served its first
--- customer, 3 plus one per built tub (BuildRules.benchSize, issue 515). Before the first serve, with tutorialBench,
--- 1 and then 2 (SpaRules.tutorialBench).
+-- customer, 3 plus one per built tub (BuildRules.benchSize, issue 515). Until the tutorial ends (2:45 of play), with
+-- tutorialBench, 1 and then 2 (SpaRules.tutorialBench), whether or not a customer was served.
 local function benchSize(player: Player): number
 	local save = DataService.get(player)
-	if save and save.stars <= 0 and LiveFlags.isOn(SpaRules.TUTORIAL_BENCH_FLAG) then
-		return SpaRules.tutorialBench(played(player)) -- bench.tutorialSize: 1, then 2 at 2:00
+	local tutorial = if LiveFlags.isOn(SpaRules.TUTORIAL_BENCH_FLAG) and save
+		then SpaRules.tutorialBench(played(player))
+		else nil
+	if tutorial then
+		return tutorial -- bench.tutorialSize: 1, then 2 at 2:00, until the tutorial ends at 2:45
 	end
 	if not LiveFlags.isOn(SpaRules.BENCH_FLAG) or save == nil or save.stars <= 0 then
 		return QUEUE_SIZE
