@@ -327,6 +327,8 @@ function PlotService.Start()
 		:Connect(refresh)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. VIEW_FLAG)
 		:Connect(placeSpawnLocation)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SpaLayout.SIDE_FLAG)
+		:Connect(placeSpawnLocation)
 	refresh()
 end
 

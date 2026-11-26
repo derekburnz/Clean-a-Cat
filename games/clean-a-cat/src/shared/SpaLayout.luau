@@ -311,6 +311,11 @@ end
 -- line from the camera to the cat.
 SpaLayout.SPAWN_FROM_TUB = 5
 SpaLayout.SPAWN_SIDE = 5 -- 4 left the avatar over exactly a quarter of the tub on an iPhone 14 (#169)
+-- (switch spawnSide, #670) Facing the street, the camera 12.5 studs behind lands on the back wall only 7 studs back,
+-- where the wall art sits at camera height: a returning join or a respawn could start with a picture filling the
+-- screen. Turned a quarter to face the door line's side (-X in the plot), the camera rests in open room on the tub's
+-- side, more than 12.5 studs from the side wall, with the tub beside the avatar and the door line ahead and left.
+SpaLayout.SIDE_FLAG = "spawnSide"
 
 -- Where a character in plot `slot` spawns: the base of its feet and the way it faces. PlotService moves characters
 -- here; the client points the camera from it (#188).
@@ -318,9 +323,11 @@ function SpaLayout.spawnSpot(slot: number): CFrame
 	if LiveFlags.isOn(SpaLayout.VIEW_FLAG) then
 		-- The turned tub's front (-Z) faces into the spa: stand in front of it and to its right (+X, the door
 		-- line's side of the plot), turned back to face the street.
+		-- (switch spawnSide, #670) on the same spot, a quarter turn to face the door line's side of the room instead
+		local turn = if LiveFlags.isOn(SpaLayout.SIDE_FLAG) then -math.pi / 2 else math.pi
 		return SpaLayout.slotTubSpot(slot)
 			* CFrame.new(SpaLayout.SPAWN_SIDE, 0, -SpaLayout.SPAWN_FROM_TUB)
-			* CFrame.Angles(0, math.pi, 0)
+			* CFrame.Angles(0, turn, 0)
 	end
 	return spotIn("SpotSpawn", slot)
 end
