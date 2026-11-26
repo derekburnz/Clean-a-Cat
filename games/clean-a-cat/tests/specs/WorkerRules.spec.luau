@@ -174,6 +174,29 @@ return function()
 			end
 		end)
 
+		it("drops the Give a pet prompt only while the Pets menu is on too (issue 930)", function()
+			local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+			expect(table.find(LiveFlags.KEYS, WorkerRules.PET_MENU_FLAG)).to.be.ok()
+			expect(LiveFlags.OFF_BY_DEFAULT[WorkerRules.PET_MENU_FLAG]).to.equal(true)
+			local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
+			expect(WorkerRules.PETS_WINDOW_FLAG).to.equal(CrateViewRules.PETS_FLAG)
+			local function only(...: string): (string) -> boolean
+				local set: { [string]: boolean } = {}
+				for _, flag in { ... } do
+					set[flag] = true
+				end
+				return function(flag: string): boolean
+					return set[flag] == true
+				end
+			end
+			expect(WorkerRules.givePrompt(only())).to.equal(true)
+			expect(WorkerRules.givePrompt(only(WorkerRules.PET_MENU_FLAG))).to.equal(true)
+			expect(WorkerRules.givePrompt(only(WorkerRules.PETS_WINDOW_FLAG))).to.equal(true)
+			expect(WorkerRules.givePrompt(only(WorkerRules.PET_MENU_FLAG, WorkerRules.PETS_WINDOW_FLAG))).to.equal(
+				false
+			)
+		end)
+
 		it("tops the first customer's pay up to Jo's price with the Grand opening gift", function()
 			local function on(flag: string): boolean
 				return flag == WorkerRules.PRICE_FLAG
