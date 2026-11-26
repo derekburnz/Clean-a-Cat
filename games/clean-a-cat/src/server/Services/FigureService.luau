@@ -66,6 +66,11 @@ local function counterOn(): boolean
 	return LiveFlags.isOn(CounterRules.FLAG) and LiveFlags.isOn(CarryRules.FLAG)
 end
 
+-- (switch counterCrate) A new customer brings their cat to the counter in its crate (CounterRules).
+local function crateOn(): boolean
+	return counterOn() and LiveFlags.isOn(CounterRules.CRATE_FLAG)
+end
+
 type Look = {
 	name: string,
 	skin: Color3,
@@ -400,7 +405,9 @@ local function townsfolkFor(
 	setAll(figure, true)
 	local grip = figure:FindFirstChild("Grip", true)
 	local onCounter = counterOn() and place ~= nil and slot ~= nil
-	local carrier = carrierFor(figure, grip, kind, lookNumber, #TOWNSFOLK, onCounter)
+	-- (switch counterCrate) the cat rides in the carrier up to the counter; Motion-FX hides one of the two
+	local carrier =
+		carrierFor(figure, grip, kind, lookNumber, #TOWNSFOLK, onCounter and not crateOn())
 	if carrier then
 		-- under the arm's joint Model, so the carrier sways with the arm Motion-FX turns
 		local arm = if grip then grip:FindFirstAncestorWhichIsA("Model") else nil
@@ -422,6 +429,27 @@ local function townsfolkFor(
 	end
 	CollectionService:AddTag(figure, WalkRules.TAG)
 	return figure
+end
+
+-- (switch counterCrate) Times the crate of `figure`'s cat on the counter (CounterRules.settleTimes): it goes down when
+-- the figure, setting off from where it stands now at `walkAt`, reaches `mat` (the walk CustomerWalkController plays);
+-- with no `walkAt` the cat already sits there.
+local function settleCat(figure: Model, mat: CFrame, walkAt: number?)
+	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
+	if cat == nil or not crateOn() then
+		return
+	end
+	local arriveAt: number? = nil
+	if walkAt then
+		local from = figure:GetPivot()
+		local speed = figure:GetAttribute("WalkSpeed")
+		local distance = Vector3.new(mat.X - from.X, 0, mat.Z - from.Z).Magnitude
+		arriveAt = walkAt
+			+ WalkRules.duration(distance, if type(speed) == "number" then speed else nil)
+	end
+	local setAt, readyAt = CounterRules.settleTimes(arriveAt, Workspace:GetServerTimeNow())
+	cat:SetAttribute(CounterRules.SET_ATTRIBUTE, setAt)
+	cat:SetAttribute(CounterRules.READY_ATTRIBUTE, readyAt)
 end
 
 -- The townsfolk for `kinds` in plot `slot`, front first. `from[index]` is where that customer stood as last drawn
@@ -461,6 +489,7 @@ local function buildTownsfolk(
 					figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, true)
 				end
 			end
+			settleCat(figure, mat, if newcomer then setOff else nil)
 			figure.Parent = folder
 		end
 	end
@@ -592,6 +621,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			made:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
 			made:SetAttribute(WalkRules.AT_ATTRIBUTE, walkIn + arrivals * WalkRules.FILE_GAP)
 			made:SetAttribute(WalkRules.FILE_ATTRIBUTE, true)
+			settleCat(made, mat, walkIn + arrivals * WalkRules.FILE_GAP)
 			arrivals += 1
 			kept[made] = true
 			table.insert(newcomers, made)
@@ -817,6 +847,28 @@ function FigureService.counterCatSpot(index: number, slot: number): CFrame
 	return catSpot(index, slot)
 end
 
+-- (switch counterCrate) Whether the cat at shown counter place `place` of `player`'s line sits on the counter yet, so
+-- it can be taken. True with no such cat drawn (counterCrate off, or the figures not drawn): SpaService's own checks
+-- decide then.
+function FigureService.counterSettled(player: Player, place: number): boolean
+	local _, folder = folderOf(player)
+	if folder == nil then
+		return true
+	end
+	for _, item in folder:GetDescendants() do
+		if
+			item.Name == CounterRules.CAT_NAME
+			and item:GetAttribute(CounterRules.PLACE_ATTRIBUTE) == place
+		then
+			return CounterRules.settled(
+				item:GetAttribute(CounterRules.READY_ATTRIBUTE),
+				Workspace:GetServerTimeNow()
+			)
+		end
+	end
+	return true
+end
+
 function FigureService.Init(_services: { [string]: any }) end
 
 function FigureService.Start()
@@ -833,7 +885,7 @@ function FigureService.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. TOWNSFOLK_FLAG)
 		:Connect(drawAll)
 	-- the counter on or off changes how every figure is dressed: those lines are built again, not redrawn in place
-	for _, flag in { CounterRules.FLAG, CarryRules.FLAG } do
+	for _, flag in { CounterRules.FLAG, CarryRules.FLAG, CounterRules.CRATE_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do

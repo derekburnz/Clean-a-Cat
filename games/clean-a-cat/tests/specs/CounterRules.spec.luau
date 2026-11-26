@@ -9,6 +9,31 @@ return function()
 			expect(LiveFlags.OFF_BY_DEFAULT[CounterRules.FLAG]).to.equal(true)
 		end)
 
+		it("ships the crate behind its own switch that starts off", function()
+			expect(table.find(LiveFlags.KEYS, CounterRules.CRATE_FLAG)).to.be.ok()
+			expect(LiveFlags.OFF_BY_DEFAULT[CounterRules.CRATE_FLAG]).to.equal(true)
+		end)
+
+		it("times the crate from when the customer reaches the counter", function()
+			local setAt, readyAt = CounterRules.settleTimes(110, 100)
+			expect(setAt).to.equal(110)
+			expect(readyAt).to.equal(110 + CounterRules.SETTLE_SECONDS)
+			-- already there: the cat sits at once, with no crate
+			local nowSet, nowReady = CounterRules.settleTimes(nil, 100)
+			expect(nowSet).to.equal(100)
+			expect(nowReady).to.equal(100)
+			local pastSet, pastReady = CounterRules.settleTimes(90, 100)
+			expect(pastSet).to.equal(100)
+			expect(pastReady).to.equal(100)
+		end)
+
+		it("lets a cat be taken only once it sits", function()
+			expect(CounterRules.settled(112.4, 112)).to.equal(false)
+			expect(CounterRules.settled(112.4, 112.4)).to.equal(true)
+			expect(CounterRules.settled(nil, 0)).to.equal(true)
+			expect(CounterRules.settled("soon", 0)).to.equal(true)
+		end)
+
 		it("maps a shown place to the server's line, with or without a cat at the door", function()
 			-- the door cat is shown first: place 1 is it, place 2 the line's first
 			expect(CounterRules.entryFor(1, true, 3)).to.equal(0)

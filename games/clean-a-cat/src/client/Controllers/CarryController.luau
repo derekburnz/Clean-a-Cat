@@ -238,6 +238,13 @@ end
 local function syncCounter()
 	local served = player:GetAttribute(SERVED_ATTRIBUTE) == true
 	local wanted = counterCats()
+	local now = Workspace:GetServerTimeNow()
+	-- (switch counterCrate) a cat still coming out of its crate is not offered yet; the scan offers it once it sits
+	for cat in wanted do
+		if not CounterRules.settled(cat:GetAttribute(CounterRules.READY_ATTRIBUTE), now) then
+			wanted[cat] = nil
+		end
+	end
 	for cat, counterPrompt in counterPrompts do
 		local place = wanted[cat]
 		if place == nil or (place > 1 and not served) or counterPrompt.Parent == nil then

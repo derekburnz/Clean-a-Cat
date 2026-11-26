@@ -780,6 +780,10 @@ local function onTakeCat(player: Player, rawPlace: unknown)
 	if not standsNear(player, spot, CarryRules.TAKE_REACH) then
 		return
 	end
+	-- (switch counterCrate) not while its crate is still being set down and the cat walks out
+	if counter and not FigureService.counterSettled(player, place) then
+		return
+	end
 	if place > 1 and not takeFromCounter(player, cat, place) then
 		return
 	end

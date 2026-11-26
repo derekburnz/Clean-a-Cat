@@ -28,6 +28,16 @@ CounterRules.PLACE_ATTRIBUTE = "CounterPlace" -- its place at the counter, the s
 CounterRules.LOOK_ATTRIBUTE = "LineLook" -- its customer's look number (the figure carries the same one)
 CounterRules.KIND_ATTRIBUTE = "CatKind"
 
+-- (switch counterCrate, with counterLine) Derek, 2026-11-26: a customer walks up with their cat in its crate, sets the
+-- crate on the counter, the cat walks out and sits, and the crate fades. The server only times it: on the CounterCat,
+-- SET_ATTRIBUTE is when its customer reaches their counter place (the crate goes down) and READY_ATTRIBUTE that plus
+-- SETTLE_SECONDS (the cat sits, the crate is gone), both Workspace:GetServerTimeNow(). Before READY_ATTRIBUTE the cat
+-- cannot be taken. Motion-FX's Effects play the crate and the cat from these times; the carrier holds the cat again.
+CounterRules.CRATE_FLAG = "counterCrate"
+CounterRules.SET_ATTRIBUTE = "CounterSetAt"
+CounterRules.READY_ATTRIBUTE = "CounterReadyAt"
+CounterRules.SETTLE_SECONDS = 2.4 -- about 0.5 s the crate down, 1.1 s the cat out and sitting, the crate fading 0.8 s
+
 -- Which entry of the server's line the shown `place` is: with a cat at the door (`door`), place 1 is that cat (0)
 -- and place p is entry p - 1; else place p is entry p. Nil past the line or for a place under 1.
 function CounterRules.entryFor(place: number, door: boolean, length: number): number?
@@ -58,6 +68,21 @@ function CounterRules.swapIn<K, O>(
 		table.insert(orders, 1, back.order)
 	end
 	return kind, order
+end
+
+-- When a cat's crate goes down and when it can be taken: `arriveAt` is when its customer reaches their counter place,
+-- nil when they stand there already (then both are `now`, so the cat already sits there and no crate shows).
+function CounterRules.settleTimes(arriveAt: number?, now: number): (number, number)
+	if arriveAt == nil or arriveAt <= now then
+		return now, now
+	end
+	return arriveAt, arriveAt + CounterRules.SETTLE_SECONDS
+end
+
+-- Whether a cat whose READY_ATTRIBUTE is `readyAt` can be taken at `now`. A cat with none (counterCrate off, or drawn
+-- before it) can.
+function CounterRules.settled(readyAt: unknown, now: number): boolean
+	return type(readyAt) ~= "number" or now >= readyAt
 end
 
 return table.freeze(CounterRules)
