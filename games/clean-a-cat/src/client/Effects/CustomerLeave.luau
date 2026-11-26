@@ -5,13 +5,17 @@
 -- HeartFill stays 0, so the cat in the carrier keeps the leaving pose (CatPose.applyMood) and the customer's head
 -- hangs (CustomerPose.mood). Kind to young players: no sad face or cloud, just a short calm exit.
 --
+-- The way out (#570): a quarter turn to their right and straight out sideways, off the line, as they set off. The
+-- line is redrawn at once and the next customer steps up into the spot from behind, so the copy never walks back
+-- down the line through them; it starts moving on the first frame and is a body's width clear in about half a second.
+--
 -- Client only and cosmetic: the copy has no tags and nothing on it collides, catches a ray or touches. Gone in
 -- LEAVE_SECONDS. With Reduced Motion it fades where it stands.
 --
 -- API
 --   CustomerLeave.leave(figure)          walks a copy of `figure` away
---   CustomerLeave.at(t) -> (turn, walked, seen)   pure: at `t` seconds, how far round (0 to 1), how far walked
---                                                 (studs) and how see-through (0 to 1)
+--   CustomerLeave.at(t) -> (turn, walked, seen)   pure: at `t` seconds, how far round (0 to 1 of the quarter
+--                                                 turn), how far walked sideways (studs) and how see-through (0 to 1)
 local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
@@ -20,8 +24,10 @@ local Effects = require(script.Parent)
 
 local CustomerLeave = {}
 
-CustomerLeave.TURN_SECONDS = 0.45
-CustomerLeave.WALK_SPEED = 2.8 -- studs a second, a calm walk (CustomerPose swings fully from 2.5)
+CustomerLeave.TURN_SECONDS = 0.3
+CustomerLeave.RAMP_SECONDS = 0.3 -- from standing to walking pace, while turning
+CustomerLeave.WALK_SPEED = 3.2 -- studs a second, a calm walk (CustomerPose swings fully from 2.5)
+CustomerLeave.SIDE = -1 -- the turn: -1 a quarter to their right (away from the window seats), 1 to their left
 CustomerLeave.LEAVE_SECONDS = 2.6
 CustomerLeave.FADE_SECONDS = 0.7 -- the last part of the walk
 CustomerLeave.STILL_FADE = 0.5 -- Reduced Motion: fades in place over this
@@ -31,7 +37,12 @@ function CustomerLeave.at(t: number): (number, number, number)
 	local turnFor = CustomerLeave.TURN_SECONDS
 	local u = math.clamp(t / turnFor, 0, 1)
 	local turn = u * u * (3 - 2 * u)
-	local walked = math.max(0, t - turnFor * 0.6) * CustomerLeave.WALK_SPEED -- the first step starts as the turn ends
+	-- they set off as they turn, speeding up over RAMP_SECONDS, so the spot is clear for the next customer at once
+	local ramp = CustomerLeave.RAMP_SECONDS
+	local walked = if t <= 0
+		then 0
+		elseif t < ramp then CustomerLeave.WALK_SPEED * t * t / (2 * ramp)
+		else CustomerLeave.WALK_SPEED * (t - ramp / 2)
 	local fadeFrom = CustomerLeave.LEAVE_SECONDS - CustomerLeave.FADE_SECONDS
 	local seen = math.clamp((t - fadeFrom) / CustomerLeave.FADE_SECONDS, 0, 1)
 	return turn, walked, seen
@@ -129,9 +140,10 @@ function CustomerLeave.leave(figure: Model)
 			return
 		end
 		local turn, walked, seen = CustomerLeave.at(t)
-		-- turn round on the spot, then walk the way they now face (back the way they came, away from the door)
-		local facing = start * CFrame.Angles(0, math.pi * turn, 0)
-		copy:PivotTo(facing + facing.LookVector * walked)
+		-- a quarter turn and straight out sideways, off the line (never back down it: #570)
+		local out = start * CFrame.Angles(0, CustomerLeave.SIDE * math.pi / 2, 0)
+		local facing = start * CFrame.Angles(0, CustomerLeave.SIDE * math.pi / 2 * turn, 0)
+		copy:PivotTo(facing + out.LookVector * walked)
 		fade(parts, seen)
 	end)
 end
