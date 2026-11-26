@@ -15,14 +15,14 @@ local LikeAskViewRules = {}
 
 LikeAskViewRules.FLAG = "likeAsk"
 LikeAskViewRules.BUTTON = "Sure!"
-LikeAskViewRules.LINE = "If you enjoy the spa, a like helps it grow!"
+LikeAskViewRules.LINE = "If you enjoy the spa, a like helps other players find it!"
 
 -- Suds's opener for each good moment the server names (LikeAskDue).
 LikeAskViewRules.TITLES = table.freeze({
 	special = "What a special visitor!",
 	crate = "A new pet, how cute!",
 	stars = "Three stars, wow!",
-	helper = "The spa is growing!",
+	helper = "A new helper, hooray!",
 	purchase = "Hope you love it!",
 }) :: { [string]: string }
 LikeAskViewRules.DEFAULT_TITLE = "Having fun?"

@@ -20,8 +20,16 @@ return function()
 					expect(string.find(string.lower(words), "coin", 1, true)).to.equal(nil)
 					expect(string.find(string.lower(words), "gift", 1, true)).to.equal(nil)
 					expect(string.find(string.lower(words), "free", 1, true)).to.equal(nil)
+					-- "helps it grow" read as the player's own spa growing: a hidden reward (Review-QA on PR 774)
+					expect(string.find(string.lower(words), "grow", 1, true)).to.equal(nil)
 				end
 			end
+		end)
+
+		it("says a like helps other players find the game", function()
+			expect(LikeAskViewRules.LINE).to.equal(
+				"If you enjoy the spa, a like helps other players find it!"
+			)
 		end)
 
 		it("sends yes for the button, no for the X, closed when it went by itself", function()
