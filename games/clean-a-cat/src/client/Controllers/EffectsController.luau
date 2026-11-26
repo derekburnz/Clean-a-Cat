@@ -36,6 +36,7 @@ local SCRUB_FLAG = "scrubEffects"
 local REVEAL_FLAG = "revealEffects"
 local FLUFF_FLAG = "fluffEffects"
 local WALK_OUT_FLAG = "catWalkOut"
+local CLAIM_FLAG = "claimFx" -- issue 802: claim sound and sparkles
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
 local SHARED_CARRY_FLAG = "carryShared"
@@ -178,6 +179,15 @@ function EffectsController.Start()
 					CatWalkOut.play(cat, way)
 				end
 			end
+		end)
+	end
+	-- A Free Reward or the gift pet claimed: one sound and three sparkles where the player tapped (switch claimFx)
+	do
+		local ClaimFx =
+			require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("ClaimFx")) :: any
+		local UI = require(script.Parent.Parent:WaitForChild("UI")) :: any
+		ClaimFx.start(UI, function(): boolean
+			return LiveFlags.isOn(CLAIM_FLAG)
 		end)
 	end
 	Moments.ScrubStop:Connect(function()
