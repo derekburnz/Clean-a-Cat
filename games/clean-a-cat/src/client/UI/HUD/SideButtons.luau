@@ -189,7 +189,8 @@ function SideButtons.onChanged(fn: () -> ())
 		if attribute then
 			Players.LocalPlayer:GetAttributeChangedSignal(attribute):Connect(fn)
 		end
-		for _, name in spec.anyOf or {} do
+		local anyOf: { string } = spec.anyOf or {}
+		for _, name in anyOf do
 			Players.LocalPlayer:GetAttributeChangedSignal(name):Connect(fn)
 		end
 	end
