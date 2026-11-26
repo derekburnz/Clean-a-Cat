@@ -64,6 +64,9 @@ Most of these folders do not exist yet. Create one when its first file arrives. 
 ## Naming
 Files: `PascalCase.luau`. Server entry points end in `.server.luau`, client ones in `.client.luau`. Instances in Studio: `PascalCase`. Assets: `CleanACat_<Category>_<Name>` (see `asset-pipeline`). Placeholder parts: `PH_<Thing>`.
 
+## Before every push
+Run `bash games/clean-a-cat/tools/prepush.sh` and push only when it ends with "Pre-push check passed". It merges the newest main into your branch, then runs exactly what GitHub runs (check.sh with the rokit.toml tool versions, which it fetches on a cloud thread, plus the cloudcheck types, tests and UI gate). Push straight after it passes. Hot shared files (`src/shared/LiveFlags.luau`, `src/shared/Remotes.luau`, the toast and HUD modules under `src/client/UI/`) change in small pull requests of their own; never stack a second edit of one on an open pull request that also edits it. Reason: a red check run emails the owner, and on 2026-11-26 every one came from a push that skipped a local step or was tested against an old main.
+
 ## Known traps
 - **Luau allows 200 local variables per function,** and a file's top level counts as one function. A big module with many `local X = require(...)` lines stops compiling with "Out of local registers". Group requires into one table or require inside the function that uses them.
 - **Run StyLua from `games/clean-a-cat`** with `--respect-ignores`, never from the repo root. Otherwise it reformats vendored files under `src/server/Vendor/`, which must stay exactly as shipped.

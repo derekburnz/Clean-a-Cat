@@ -19,7 +19,10 @@ permissions:
 
 concurrency:
   group: ${{ github.event_name == 'push' && 'check-main' || format('check-{0}', github.event.pull_request.number || github.run_id) }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # Only a new push to the PR cancels a run in progress. Arming auto-merge (auto_merge_enabled) queues behind the
+  # running check instead of cancelling it: every cancelled run shows as a red X and a failure email to the owner,
+  # though nothing failed (2026-11-26, about 50 a day).
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
 
 env:
   GAME_DIR: games/clean-a-cat
