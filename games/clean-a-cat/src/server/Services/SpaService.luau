@@ -1000,11 +1000,12 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		lines.bowTier = tier
 		extra = lines
 	end
-	-- (issue 530) the events of a finished wash, and a special visitor's
-	Telemetry.event(player, "wash_done", 1, {
+	-- (issue 530) the events of a finished wash, and a special visitor's. The wash's seconds are the event's value,
+	-- not a field, so the Creator Hub can average them and the fields stay small fixed sets.
+	local washSeconds = math.floor(cat.washSeconds or (os.clock() - (cat.washFrom or os.clock())))
+	Telemetry.event(player, "wash_done", math.max(washSeconds, 0), {
 		tostring(if dirtOn then cat.dirt or 0 else 0),
 		tostring(#(cat.needs or {})),
-		tostring(math.floor(cat.washSeconds or (os.clock() - (cat.washFrom or os.clock())))),
 	})
 	if cat.special then
 		Telemetry.event(player, "visitor_result", 1, {
