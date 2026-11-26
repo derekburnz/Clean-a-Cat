@@ -124,6 +124,13 @@ return function()
 				expect(cat).to.be.ok()
 				expect(cat.position.X).to.equal(stand.position.X)
 				expect(cat.position.Z > stand.position.Z).to.equal(true) -- inside, toward the room
+				-- (counterCrate) the set-down carrier between them, its gate clear of the sitting cat
+				local crate = SpaLayout.BIG_SPOTS[`SpotCounterCrate{index}`]
+				expect(crate).to.be.ok()
+				expect(crate.position.X).to.equal(stand.position.X)
+				expect(crate.position.Z > stand.position.Z and crate.position.Z < cat.position.Z).to.equal(
+					true
+				)
 				if index > 1 then
 					local before = SpaLayout.BIG_SPOTS[`SpotCounter{index - 1}`]
 					expect(math.abs(stand.position.X - before.position.X - 3.2) < 1e-6).to.equal(

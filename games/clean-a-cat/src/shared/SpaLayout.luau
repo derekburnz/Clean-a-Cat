@@ -208,12 +208,18 @@ SpaLayout.BIG_SPOTS = table.freeze({
 	SpotCounter4 = at(13, 0.5, -19.4, TURNED),
 	SpotCounter5 = at(16.2, 0.5, -19.4, TURNED),
 	SpotCounter6 = at(19.4, 0.5, -19.4, TURNED),
-	SpotCounterCat1 = at(3.4, 3.38, -15.6, TURNED),
-	SpotCounterCat2 = at(6.6, 3.38, -15.6, TURNED),
-	SpotCounterCat3 = at(9.8, 3.38, -15.6, TURNED),
-	SpotCounterCat4 = at(13, 3.38, -15.6, TURNED),
-	SpotCounterCat5 = at(16.2, 3.38, -15.6, TURNED),
-	SpotCounterCat6 = at(19.4, 3.38, -15.6, TURNED),
+	SpotCounterCat1 = at(3.4, 3.38, -14.9, TURNED),
+	SpotCounterCat2 = at(6.6, 3.38, -14.9, TURNED),
+	SpotCounterCat3 = at(9.8, 3.38, -14.9, TURNED),
+	SpotCounterCat4 = at(13, 3.38, -14.9, TURNED),
+	SpotCounterCat5 = at(16.2, 3.38, -14.9, TURNED),
+	SpotCounterCat6 = at(19.4, 3.38, -14.9, TURNED),
+	SpotCounterCrate1 = at(3.4, 3.3, -16.62, TURNED), -- (counterCrate) where the set-down carrier's pivot goes
+	SpotCounterCrate2 = at(6.6, 3.3, -16.62, TURNED),
+	SpotCounterCrate3 = at(9.8, 3.3, -16.62, TURNED),
+	SpotCounterCrate4 = at(13, 3.3, -16.62, TURNED),
+	SpotCounterCrate5 = at(16.2, 3.3, -16.62, TURNED),
+	SpotCounterCrate6 = at(19.4, 3.3, -16.62, TURNED),
 }) :: { [string]: Spot }
 
 -- Are the big plots the placed ones (switch bigSpa, as PlotService placed them)?
