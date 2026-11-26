@@ -87,8 +87,16 @@ done
 
 # The gate job, as CI runs it. Selene alone may be skipped when Roblox's API list cannot be fetched.
 cd "$GAME"
+# a cloud thread cannot generate Selene's Roblox list itself: take the one main's last check run kept
+if ! [ -f roblox.yml ] && command -v gh >/dev/null 2>&1; then
+	RUN=$(gh run list -R derekburnz/Clean-a-Cat --workflow check --branch main --event push --status success -L 1 \
+		--json databaseId -q '.[0].databaseId' 2>/dev/null || true)
+	if [ -n "$RUN" ]; then
+		gh run download "$RUN" -R derekburnz/Clean-a-Cat -n selene-roblox-std -D . >/dev/null 2>&1 || true
+	fi
+fi
 if ! [ -f roblox.yml ] && ! selene generate-roblox-std >/dev/null 2>&1; then
-	echo "WARNING: Selene skipped (Roblox's API list is blocked here); GitHub runs it, so a lint error can still go red."
+	echo "WARNING: Selene skipped (no Roblox list: blocked here and none kept on main yet); GitHub runs it, so a lint error can still go red."
 	TMP_CHECK=$(mktemp)
 	trap 'rm -f "$TMP_CHECK"' EXIT
 	sed -e 's/^step "selene" selene src$/echo "== selene skipped"/' -e "s|^cd \"\$(dirname \"\$0\")\"\$|cd \"$GAME\"|" check.sh >"$TMP_CHECK"
