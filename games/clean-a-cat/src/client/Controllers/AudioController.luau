@@ -138,7 +138,10 @@ local HANDLERS: { [string]: (...any) -> () } = {
 		Audio.play("clawSnip")
 	end,
 	-- Coming with Gameplay's special visitors, the crate and the bow step; bind skips them until they exist.
-	VisitorArrived = function(visitor: any)
+	VisitorArrived = function(visitor: any, again: any)
+		if again == true then
+			return -- the line was redrawn: the same visitor, already announced
+		end
 		Audio.play("visitorChime", { at = at(visitor) })
 	end,
 	CrateDropped = function(crate: any)

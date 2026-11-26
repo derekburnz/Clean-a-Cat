@@ -274,9 +274,10 @@ function EffectsController.Start()
 	-- A special visitor walks in (issue #528): glow, gold sparkles at the feet and a star over their head while they
 	-- are in the spa. The Moment comes with Gameplay's special visitors (#510), behind its own switch.
 	if Moments.VisitorArrived then
-		Moments.VisitorArrived:Connect(function(visitor: any)
+		-- `again`: the line was redrawn and this is a new figure for a visitor already seen (Gameplay, #566)
+		Moments.VisitorArrived:Connect(function(visitor: any, again: any)
 			if typeof(visitor) == "Instance" and visitor:IsA("Model") then
-				VisitorArrival.arrive(visitor)
+				VisitorArrival.arrive(visitor, again == true)
 			end
 		end)
 	end

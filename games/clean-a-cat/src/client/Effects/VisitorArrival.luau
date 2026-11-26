@@ -13,7 +13,9 @@
 -- STAR_FAR studs of the camera and lets go when the visitor leaves.
 --
 -- API
---   VisitorArrival.arrive(visitor)   plays it; a second call for the same visitor does nothing
+--   VisitorArrival.arrive(visitor, again?)   plays it; a second call for the same figure does nothing. With
+--                                    `again` (the line was redrawn: a new figure for a visitor already seen this
+--                                    visit) only the star comes back, already in place: no glow, sparkles or pop
 --   VisitorArrival.glowAt(t) -> number           pure: the outline's see-through (0 to 1) at `t` seconds
 --   VisitorArrival.star(t, seed) -> (lift, degrees, scale)   pure: the star's bob at `t` seconds
 local RunService = game:GetService("RunService")
@@ -125,7 +127,7 @@ local function glow(visitor: Model)
 	end)
 end
 
-function VisitorArrival.arrive(visitor: Model)
+function VisitorArrival.arrive(visitor: Model, again: boolean?)
 	if playing[visitor] or not visitor:IsDescendantOf(Workspace) then
 		return
 	end
@@ -133,8 +135,13 @@ function VisitorArrival.arrive(visitor: Model)
 	local box, size = visitor:GetBoundingBox()
 	local feet = box.Position - Vector3.new(0, size.Y / 2 - 0.2, 0)
 
-	glow(visitor)
-	local beats: { number } = if Effects.lessSparkle() then { 0 } else VisitorArrival.SPARKLE_BEATS
+	local beats: { number } = if again
+		then {}
+		elseif Effects.lessSparkle() then { 0 }
+		else VisitorArrival.SPARKLE_BEATS
+	if not again then
+		glow(visitor)
+	end
 	for _, at in beats do
 		task.delay(at, function()
 			if visitor.Parent then
@@ -166,14 +173,16 @@ function VisitorArrival.arrive(visitor: Model)
 			gui:Destroy()
 		end
 	end
-	-- the star pops in once (unless still), then bobs
+	-- the star pops in once (unless still, or back after a redraw), then bobs
 	if not still then
-		star.Size = UDim2.fromScale(0.05, 0.05)
-		TweenService:Create(
-			star,
-			TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-			{ Size = UDim2.fromScale(1, 1) }
-		):Play()
+		if not again then
+			star.Size = UDim2.fromScale(0.05, 0.05)
+			TweenService:Create(
+				star,
+				TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+				{ Size = UDim2.fromScale(1, 1) }
+			):Play()
+		end
 		connection = RunService.RenderStepped:Connect(function()
 			if visitor.Parent == nil or part.Parent == nil or gui.Parent == nil then
 				finish()
