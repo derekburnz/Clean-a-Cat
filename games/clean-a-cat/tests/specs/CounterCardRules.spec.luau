@@ -48,8 +48,16 @@ return function()
 			)
 		end)
 
-		it("keeps two cards apart at the counter's 3.2 stud pitch", function()
-			expect(CounterCardRules.WIDTH < 3.2).to.equal(true)
-		end)
+		it(
+			"puts every second place's card a row up, so neighbours never cover each other",
+			function()
+				expect(CounterCardRules.up(1)).to.equal(CounterCardRules.UP)
+				expect(CounterCardRules.up(2)).to.equal(
+					CounterCardRules.UP + CounterCardRules.STAGGER
+				)
+				expect(CounterCardRules.up(3)).to.equal(CounterCardRules.UP)
+				expect(CounterCardRules.up(nil)).to.equal(CounterCardRules.UP)
+			end
+		)
 	end)
 end

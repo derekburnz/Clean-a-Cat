@@ -8,7 +8,8 @@
 -- The owner stands right behind their cat, and the mat under the cat (CounterMat<place>) takes a pale wash of that
 -- same shirt colour, so the cat, its mat, its card and its owner read as one. The bar is drawn from the HeartFill the
 -- server already puts on the owner's figure (HeartRules), so it shows nothing new and costs nothing on the server.
--- The card is not a button: the Take prompt on the cat stays the one tap. It is quiet further than FAR studs off.
+-- Its size is fixed on screen and every second card sits a row up, so neighbours never cover each other. The card
+-- is not a button: the Take prompt on the cat stays the one tap. It is quiet further than FAR studs off.
 -- Pure, so tests/specs/CounterCardRules.spec.luau covers it; CounterCardController and UI/CounterCard use it.
 local HeartRules = require(script.Parent:WaitForChild("HeartRules"))
 
@@ -17,10 +18,13 @@ local CounterCardRules = {}
 CounterCardRules.FLAG = "counterCards"
 CounterCardRules.NEEDS = table.freeze({ "counterLine", "heartBar" })
 CounterCardRules.MAT_PREFIX = "CleanACat_Area_SpaPlotBig_CounterMat" -- Model-Agent's tintable mats, one per place
-CounterCardRules.FAR = 40 -- studs: the cards are not drawn further off
+CounterCardRules.FAR = 32 -- studs: the cards are not drawn further off
 CounterCardRules.UP = 2.3 -- studs over the cat's pivot
-CounterCardRules.WIDTH = 2.7 -- studs: the places are 3.2 apart, so two cards never touch
-CounterCardRules.HEIGHT = 0.8 -- studs
+-- A fixed screen size, so the card reads on a phone from where the player stands (Sync-Agent's Studio run
+-- 2026-11-26: sized in studs it drew at 43 x 13 px there). Neighbours 3.2 studs apart are nearer than a card is wide
+-- from there, so every second place's card sits STAGGER studs higher: two cards in one row are 6.4 studs apart.
+CounterCardRules.SIZE = Vector2.new(84, 26) -- px
+CounterCardRules.STAGGER = 1.9 -- studs: about 30 px from the player's spot on a phone, over the card's 26
 CounterCardRules.MAT_WASH = 0.45 -- the mat is the shirt colour this far towards cream, so the cat stays the hero
 CounterCardRules.LOW_AT = HeartRules.GRUMPY_AT -- the bar turns coral here, as the cat turns grumpy
 CounterCardRules.MID_AT = 0.6
@@ -59,6 +63,12 @@ function CounterCardRules.barColor(fill: number): Color3
 		return CounterCardRules.MID
 	end
 	return CounterCardRules.FULL
+end
+
+-- Studs over the cat's pivot for the card at counter `place`: even places one row up.
+function CounterCardRules.up(place: unknown): number
+	local even = type(place) == "number" and place % 2 == 0
+	return CounterCardRules.UP + if even then CounterCardRules.STAGGER else 0
 end
 
 -- The mat's tint under the cat of an owner in `shirt`.

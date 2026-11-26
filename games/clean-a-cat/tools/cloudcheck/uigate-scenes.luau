@@ -926,6 +926,17 @@ local SCENES = {
 			UI.showBubble(BubbleRules.get("longBuild"))
 		end,
 	},
+	-- Suds's like ask after a special visitor (switch likeAsk, q2-likeask): his own "Sure!" button, no reward named.
+	{
+		"LikeAsk",
+		function()
+			hud(true)
+			flag("sudsBubble", true)
+			UI.setCoins(1240)
+			UI.setWashStage(nil)
+			UI.showLikeAsk("special", function() end)
+		end,
+	},
 	-- The gift stand's card (issue 521, switch giftStand): nothing done yet, then the favourite done, then both.
 	{
 		"Gift",

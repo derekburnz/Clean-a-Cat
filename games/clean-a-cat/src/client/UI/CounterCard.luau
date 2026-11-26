@@ -1,11 +1,12 @@
 --!strict
 -- CounterCard: the small card over a cat waiting on the counter (issue 745 part 2, switch counterCards; the rules and
 -- why are in shared/CounterCardRules). A round chip in the owner's shirt colour, then the heart bar with a heart at
--- its start. Sized in studs, so cards 3.2 studs apart never touch and a near card is never huge on a phone; drawn on
--- top, but only within CounterCardRules.FAR. Nothing on it is pressable: the Take prompt on the cat is the tap.
+-- its start. A fixed screen size (CounterCardRules.SIZE), so it reads on a phone, with every second place's card a row
+-- up so neighbours never cover each other; drawn on top, but only within CounterCardRules.FAR. Nothing on it is pressable: the Take prompt on the cat is the tap.
 --
 --   local card = CounterCard.new(adornee, parent)
 --   card.set(fill, shirt)   fill 0 to 1 (nil hides the bar), shirt the owner's colour (nil leaves the chip cream)
+--   card.place(place)      its counter place, for its row
 --   card.destroy()
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -19,13 +20,14 @@ local CounterCard = {}
 
 export type Card = {
 	set: (fill: number?, shirt: Color3?) -> (),
+	place: (place: unknown) -> (), -- its counter place: every second card sits a row up
 	destroy: () -> (),
 }
 
 function CounterCard.new(adornee: BasePart, parent: Instance): Card
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "CounterCard"
-	gui.Size = UDim2.fromScale(CounterCardRules.WIDTH, CounterCardRules.HEIGHT) -- studs
+	gui.Size = UDim2.fromOffset(CounterCardRules.SIZE.X, CounterCardRules.SIZE.Y) -- px, the same near and far
 	gui.StudsOffsetWorldSpace = Vector3.new(0, CounterCardRules.UP, 0)
 	gui.AlwaysOnTop = true
 	gui.LightInfluence = 0
@@ -90,6 +92,9 @@ function CounterCard.new(adornee: BasePart, parent: Instance): Card
 			fillFrame.Visible = fill > 0
 			fillFrame.BackgroundColor3 = CounterCardRules.barColor(fill)
 		end
+	end
+	function card.place(place: unknown)
+		gui.StudsOffsetWorldSpace = Vector3.new(0, CounterCardRules.up(place), 0)
 	end
 	function card.destroy()
 		gui:Destroy()

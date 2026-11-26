@@ -21,6 +21,7 @@
 --                             tutorialTip)
 --   UI.pointAt(window, say, done)  the tutorial's dim step on the HUD button that opens `window` (UI/Spotlight, switch
 --                             tutorialDim); done() once the player presses it. UI.clearPointer() takes it away
+--   UI.showLikeAsk(moment, answer)  (switch likeAsk) Suds's like ask; "Sure!" opens the gift card (LikeAskViewRules)
 --   UI.showBubble(bubble, fn, gone)  Suds's help bubble at the bottom (UI/SudsBubble, switch sudsBubble); fn runs
 --                             when the player presses its button, gone(closed) once the card goes for any reason
 --                             (closed: the player's X). UI.hideBubble() takes it away; UI.busy() is true while a
@@ -48,6 +49,7 @@ local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
 local HelperViewRules = require(Shared:WaitForChild("HelperViewRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
+local LikeAskViewRules = require(Shared:WaitForChild("LikeAskViewRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
 local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
@@ -494,6 +496,18 @@ end
 
 function UI.hideBubble()
 	SudsBubble.hide()
+end
+
+-- (switch likeAsk) Suds's like ask for the good `moment` the server named (LikeAskViewRules). "Sure!" opens the gift
+-- card, whose first row is the like; `answer` gets "yes", "no" (the player's X) or "closed" (it went by itself), once.
+function UI.showLikeAsk(moment: string, answer: (LikeAskViewRules.Answer) -> ())
+	local pressed = false
+	SudsBubble.show(LikeAskViewRules.bubble(moment), function()
+		pressed = true
+		UI.open(GiftViewRules.WINDOW)
+	end, function(closed: boolean)
+		answer(LikeAskViewRules.answer(pressed, closed))
+	end)
 end
 
 function UI.bubbleShown(): boolean
