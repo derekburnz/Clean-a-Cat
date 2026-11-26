@@ -259,6 +259,12 @@ function AudioController.Start()
 	SudsVoice.start(function(): boolean
 		return LiveFlags.isOn("sudsVoice")
 	end)
+	-- issue 826: the coin pill bumps, counts up and gives one coinPop on a gain
+	local CoinBump =
+		require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CoinBump")) :: any
+	CoinBump.start(UI, function(): boolean
+		return LiveFlags.isOn("coinBump")
+	end)
 	local existing = shared:FindFirstChild("Moments")
 	if existing then
 		tryBind(existing)

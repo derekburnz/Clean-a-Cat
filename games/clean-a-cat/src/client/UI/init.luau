@@ -8,6 +8,7 @@
 --   UI.onOpened(fn)           fn(name) each time UI.open shows a window (the funnel's window_opened, FunnelController)
 --   UI.toast(text, kind)      a short line at the top of the screen for a few seconds
 --   UI.setCoins(n)            the HUD coin counter (UI/HUD, switch gameHud, #210)
+--   UI.setCoinBump(k, n)      the coin pill's bump and the number it counts up through (Effects/CoinBump, #826)
 --   UI.setWashStage(stage)    the HUD wash step bar and tool tray for a ScrubController stage; nil hides them
 --   UI.setWashMeter(f, step) the bar that fills while the player works an area step (UI/HUD/WashMeter, switch
 --                             washMeter); f from 0 to 1, nil hides it
@@ -393,6 +394,10 @@ end
 
 function UI.setCoins(coins: unknown)
 	HUD.setCoins(coins)
+end
+
+function UI.setCoinBump(k: number, shown: number?)
+	HUD.setCoinBump(k, shown)
 end
 
 -- Friends in the server for the HUD's friend chip (the Player attribute FriendsHere, switch friendBonus).
