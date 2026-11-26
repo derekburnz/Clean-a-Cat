@@ -5,10 +5,13 @@
 -- When the player taps Model-Agent's photo camera (switch photoCamera), ScrubController takes the camera away at once
 -- while the server pays. This module keeps a look-alike copy standing in its place for the beat, then lets it go:
 --
---   0.00 to 0.62 s  a small red light on the camera's top blinks three times, each gap shorter, a soft tick each
---   0.70 s          the flash: a soft white light at the lens and a mild brighten of the screen (never full white),
+--   0.00 to 0.46 s  a small red light on the camera's top blinks three times, each gap shorter, a soft tick each
+--   0.55 s          the flash: a soft white light at the lens and a mild brighten of the screen (never full white),
 --                   with the camera's shutter sound
---   0.80 to 1.30 s  a photo card slides out of the back of the camera, then tips and drops, fading by DONE
+--   0.62 to 1.07 s  a photo card slides out of the back of the camera, then tips and drops, fading by DONE
+--
+-- The wash's bubble wipe back to the spa waits for the card to be out (BubbleWipe asks PhotoFx.left), since in the
+-- first build it covered the screen before the flash (Sync's capture, 2026-11-26).
 --
 -- Comfort: Reduced Motion or Less sparkle (UI/Comfort) skip the screen brighten; the light at the lens stays soft.
 -- It only listens: the copy is made when the camera model leaves within PRESS_WINDOW of a tap, and is dropped at once
@@ -17,6 +20,7 @@
 --
 --   PhotoFx.at(t) -> Beat         pure: the beat's state at t seconds
 --   PhotoFx.playing() -> boolean  a beat is running now
+--   PhotoFx.left() -> number      seconds until the running beat's card is all the way out (0 when none plays)
 --   PhotoFx.start(isOn)           binds once; isOn() is read at each tap
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -27,14 +31,14 @@ local PhotoFx = {}
 
 PhotoFx.CAMERA_NAME = "PhotoCamera" -- ScrubController's copy of CleanACat_Prop_PhotoCamera
 PhotoFx.PRESS_WINDOW = 0.4 -- seconds: the camera leaving this soon after a tap is the photo being taken
-PhotoFx.BLINKS = { 0, 0.28, 0.48 } :: { number } -- blink starts: each gap shorter (0.28, then 0.2)
-PhotoFx.BLINK_ON = 0.12
-PhotoFx.FLASH_AT = 0.7
+PhotoFx.BLINKS = { 0, 0.2, 0.34 } :: { number } -- blink starts: each gap shorter (0.2, then 0.14)
+PhotoFx.BLINK_ON = 0.1
+PhotoFx.FLASH_AT = 0.55
 PhotoFx.FLASH_SECONDS = 0.25
 PhotoFx.FLASH_LIGHT = 4 -- PointLight brightness at the peak
 PhotoFx.SCREEN_PEAK = 0.3 -- the screen brighten at its peak: 1 minus this is the white frame's transparency
-PhotoFx.PRINT_AT = 0.8
-PhotoFx.PRINT_SECONDS = 0.5
+PhotoFx.PRINT_AT = 0.62
+PhotoFx.PRINT_SECONDS = 0.45
 PhotoFx.DROP_SECONDS = 0.35
 PhotoFx.DONE = PhotoFx.PRINT_AT + PhotoFx.PRINT_SECONDS + PhotoFx.DROP_SECONDS
 PhotoFx.LED = Color3.fromHex("FF3B4E")
@@ -64,9 +68,17 @@ function PhotoFx.at(t: number): Beat
 end
 
 local running = 0
+local latestBegan = -math.huge
 
 function PhotoFx.playing(): boolean
 	return running > 0
+end
+
+function PhotoFx.left(): number
+	if running <= 0 then
+		return 0
+	end
+	return math.max(0, PhotoFx.PRINT_AT + PhotoFx.PRINT_SECONDS - (os.clock() - latestBegan))
 end
 
 local function quiet(part: BasePart)
@@ -171,6 +183,7 @@ local function play(source: Model, still: boolean, sameBack: () -> boolean)
 
 	running += 1
 	local began = os.clock()
+	latestBegan = began
 	local ticked = 0
 	local flashed = false
 	local printed = false
