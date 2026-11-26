@@ -118,5 +118,30 @@ return function()
 				expect(workerRate < playerRate).to.equal(true)
 			end
 		)
+
+		it(
+			"shows a pad hire's mode and level at once, and nothing for workers not hired",
+			function()
+				local save = newSave(1000)
+				local function value(list: { any }, name: string): any
+					for _, attribute in list do
+						if attribute.name == name then
+							return attribute.value
+						end
+					end
+					return "missing"
+				end
+				local before = WorkerRules.shown(save)
+				expect(#before).to.equal(2 * #WorkerRules.IDS)
+				expect(value(before, "WorkerMode_Jo")).to.equal(nil)
+				expect(value(before, "WorkerLevel_Jo")).to.equal(nil)
+				WorkerRules.hire(save, "Jo", 5)
+				local after = WorkerRules.shown(save)
+				expect(value(after, "WorkerMode_Jo")).to.equal(WorkerRules.DEFAULT_MODE)
+				expect(value(after, "WorkerLevel_Jo")).to.equal(1)
+				expect(value(after, "WorkerMode_Sam")).to.equal(nil)
+				expect(value(after, "WorkerLevel_Sam")).to.equal(nil)
+			end
+		)
 	end)
 end

@@ -223,4 +223,25 @@ function WorkerRules.levelUp(save: Save, id: string): (number, string?)
 	return cost, nil
 end
 
+export type Shown = { name: string, value: any }
+
+-- The Player attributes that show `save`'s workers to the client (the stand's Takes and Level prompts, the Helpers
+-- button and window): WorkerMode_<id> and WorkerLevel_<id> for every worker id, nil for one not hired. Set after a
+-- join, a pass hire and a pad hire (issue 696: a pad hire set none, so nothing showed until a rejoin).
+function WorkerRules.shown(save: Save): { Shown }
+	local out: { Shown } = {}
+	for _, id in WorkerRules.IDS do
+		local worker: any = save.workers[id]
+		table.insert(out, {
+			name = `WorkerMode_{id}`,
+			value = if worker then WorkerRules.cleanMode(worker.mode) else nil,
+		})
+		table.insert(out, {
+			name = `WorkerLevel_{id}`,
+			value = if worker then WorkerRules.cleanLevel(worker.level) else nil,
+		})
+	end
+	return out
+end
+
 return table.freeze(WorkerRules)
