@@ -160,8 +160,8 @@ local function clear(plot: Model)
 end
 
 -- Draws stations, pads, the kitten and the VIP door in plot `slot` from a save's `stations` and `builds`.
--- A resident: the special cat's sitting model (its plain one if it has none), with no scripts, anchored and not in
--- the way, on seat `seat` at `scale`.
+-- A resident: the special cat's light sitting twin, else its sitting model, else its plain one (VipRules.residentModel),
+-- with no scripts, anchored and not in the way, on seat `seat` at `scale`.
 local function seatResident(
 	area: Model,
 	assets: Instance,
@@ -170,8 +170,11 @@ local function seatResident(
 	scale: number
 )
 	local spot = attachmentIn(area, `{VipRules.SEAT_PREFIX}{seat}`)
-	local base = assets:FindFirstChild(`CleanACat_Cat_{kind}_Sit`)
-		or assets:FindFirstChild(`CleanACat_Cat_{kind}`)
+	local name = VipRules.residentModel(kind, function(asset: string): boolean
+		local found = assets:FindFirstChild(asset)
+		return found ~= nil and found:IsA("Model")
+	end)
+	local base = if name then assets:FindFirstChild(name) else nil
 	if spot == nil or base == nil or not base:IsA("Model") then
 		return
 	end

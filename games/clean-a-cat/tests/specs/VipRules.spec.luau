@@ -37,5 +37,27 @@ return function()
 			expect(VipRules.scale(-1)).to.equal(VipRules.DEFAULT_SCALE)
 			expect(VipRules.scale("big")).to.equal(VipRules.DEFAULT_SCALE)
 		end)
+
+		it(
+			"seats a resident on its light twin first, then its sitting model, then its plain one",
+			function()
+				local present: { [string]: boolean } = {
+					CleanACat_Cat_Prism_Sit_Lite = true,
+					CleanACat_Cat_Prism_Sit = true,
+					CleanACat_Cat_Jade_Sit = true,
+					CleanACat_Cat_Jade = true,
+					CleanACat_Cat_Rosette = true,
+				}
+				local function has(name: string): boolean
+					return present[name] == true
+				end
+				expect(VipRules.residentModel("Prism", has)).to.equal(
+					"CleanACat_Cat_Prism_Sit_Lite"
+				)
+				expect(VipRules.residentModel("Jade", has)).to.equal("CleanACat_Cat_Jade_Sit")
+				expect(VipRules.residentModel("Rosette", has)).to.equal("CleanACat_Cat_Rosette")
+				expect(VipRules.residentModel("Nobody", has)).to.equal(nil)
+			end
+		)
 	end)
 end
