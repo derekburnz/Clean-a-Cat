@@ -64,7 +64,7 @@ Rules for the whole session: one ask at a time and at least a minute apart, noth
 - The tip jar has filled from the workers, up to a cap.
 - A couple of daily quests reset each day. A couple of weekly quests give a crate when all are done.
 - Empty slots in the Cat Index and a different visitor cat each day.
-- Players of 13 and over who said yes get a notification when the jar is full.
+- Players of 13 and over who said yes get one notification when their long build finishes while they are away (at most one a day, Roblox's limit).
 
 **Social**
 - Six spas stand side by side on one street, with six players in a server.
