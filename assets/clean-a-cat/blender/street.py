@@ -19,30 +19,38 @@ from mathutils import Matrix
 from common import Builder
 from stations import _tris
 
-PITCH = 44.0                      # plot pivot to plot pivot (plot.PLOT_W)
-PLOT_D = 48.0                     # plot.PLOT_D
+NAME = "CleanACat_Area_Street"
 TOP = 0.5                         # pavement top, level with the plots' floor slab (plot.FLOOR)
 SLOTS = 6
-
-
-def slot_x(slot):
-    """Blender x of plot `slot`'s pivot (SpaLayout.slotPivot: Roblox +X is Blender -X)."""
-    steps = slot // 2
-    side = 1 if slot % 2 == 0 else -1
-    return -side * steps * PITCH
-
-
-XS = [slot_x(s) for s in range(1, SLOTS + 1)]
-X0 = min(XS) - PITCH / 2 - 8.0    # the street's ends, a little past the outer plots
-X1 = max(XS) + PITCH / 2 + 8.0
-FRONT = -PLOT_D / 2               # the plots' front edge
 PAVE = 8.0                        # pavement depth in front of the plots
 ROAD = 20.0
 FAR = 6.0                         # far pavement
-Y_ROAD0 = FRONT - PAVE - 0.6      # past the curb
-Y_ROAD1 = Y_ROAD0 - ROAD
-Y_FAR = Y_ROAD1 - 0.6 - FAR
-BACK = PLOT_D / 2
+GRID0 = 0.0                       # the houses' 30 stud grid starts this far in from the street's end
+
+
+def slot_x(slot, pitch=None):
+    """Blender x of plot `slot`'s pivot (SpaLayout.slotPivot: Roblox +X is Blender -X)."""
+    steps = slot // 2
+    side = 1 if slot % 2 == 0 else -1
+    return -side * steps * (PITCH if pitch is None else pitch)
+
+
+def _numbers(pitch, front, back):
+    """The street's measures for plots `pitch` apart pivot to pivot whose ground runs from y `front` to `back`."""
+    xs = [slot_x(s, pitch) for s in range(1, SLOTS + 1)]
+    y_road0 = front - PAVE - 0.6                        # past the curb
+    y_road1 = y_road0 - ROAD
+    return {"PITCH": pitch, "XS": xs,
+            "X0": min(xs) - pitch / 2 - 8.0,            # the street's ends, a little past the outer plots
+            "X1": max(xs) + pitch / 2 + 8.0,
+            "FRONT": front, "BACK": back,               # the plots' front and back edges
+            "Y_ROAD0": y_road0, "Y_ROAD1": y_road1, "Y_FAR": y_road1 - 0.6 - FAR}
+
+
+PLOT_D = 48.0                     # plot.PLOT_D
+PITCH = 44.0                      # plot pivot to plot pivot (plot.PLOT_W)
+XS = X0 = X1 = FRONT = BACK = Y_ROAD0 = Y_ROAD1 = Y_FAR = None
+globals().update(_numbers(PITCH, -PLOT_D / 2, PLOT_D / 2))
 
 
 def _ground(b):
@@ -58,7 +66,7 @@ def _ground(b):
                bevel=False)                                                                    # the road, top 0.22
     # the paving beyond the outer plots, so the near pavement's back edge is never open grass by a plot
     for x in (min(XS) - PITCH / 2 - 4.0, max(XS) + PITCH / 2 + 4.0):
-        b.box_base((x, 0.0, -0.04), (8.0, PLOT_D, TOP + 0.04), "paving_light", bevel=False)
+        b.box_base((x, (FRONT + BACK) / 2, -0.04), (8.0, BACK - FRONT, TOP + 0.04), "paving_light", bevel=False)
 
 
 def _dashes(b):
@@ -120,7 +128,7 @@ def _houses(b):
     y = Y_FAR - 9.0
     n = int((X1 - X0) // 30)
     for i in range(n):
-        x = X0 + 15.0 + 30.0 * i
+        x = X0 + GRID0 + 15.0 + 30.0 * i
         kind = i % 3
         w, d = 22.0, 14.0
         h = (9.0, 10.5, 13.0)[kind] + (i % 2)
@@ -163,7 +171,7 @@ def _far_pavement(b):
     n = int((X1 - X0) // 30)
     yh = Y_FAR - 4.0
     for i in range(n + 1):                                      # the gaps between the houses
-        x = X0 + 30.0 * i
+        x = X0 + GRID0 + 30.0 * i
         if 0 < i < n:
             b.box_base((x, yh, -0.05), (7.4, 1.6, 2.4), "leaf_dark", bevel=False)
         h = 6.0 + 1.5 * (i % 3)
@@ -171,20 +179,20 @@ def _far_pavement(b):
         b.sphere((x, yh - 5.0, h + 2.4), 3.6, ("leaf_green", "leaf_dark", "spa_mint")[i % 3], segments=8, rings=5)
     yl = Y_ROAD1 - 2.0
     for i in range(n):                                          # a lamp in front of every house's corner
-        x = X0 + 4.0 + 30.0 * i
+        x = X0 + GRID0 + 4.0 + 30.0 * i
         b.cyl_base((x, yl, TOP - 0.02), 0.5, 0.5, "fur_slate", segments=8, bevel=False)
         b.cyl_base((x, yl, TOP + 0.4), 0.2, 9.0, "fur_slate", segments=6, bevel=False)
         b.box_base((x, yl + 0.7, TOP + 9.2), (0.5, 1.9, 0.3), "fur_slate", bevel=False)
         b.box_base((x, yl + 1.3, TOP + 8.55), (0.9, 0.9, 0.66), "lamp_warm", bevel=False)
     for i in range(1, n, 3):                                    # a bench by every third house
-        x = X0 + 15.0 + 30.0 * i + 8.5
+        x = X0 + GRID0 + 15.0 + 30.0 * i + 8.5
         yb = Y_FAR + 1.2
         b.box_base((x, yb, TOP + 1.2), (4.6, 1.3, 0.24), "wood_light", bevel=False)
         b.box_base((x, yb - 0.6, TOP + 1.42), (4.6, 0.24, 1.3), "wood_light", bevel=False)
         for sx in (-1.9, 1.9):
             b.box_base((x + sx, yb, TOP - 0.02), (0.3, 1.1, 1.24), "fur_slate", bevel=False)
     for i in range(0, n, 3):                                    # a post box and a hydrant, turn about
-        x = X0 + 15.0 + 30.0 * i - 9.0
+        x = X0 + GRID0 + 15.0 + 30.0 * i - 9.0
         b.box_base((x, Y_FAR + 1.0, TOP - 0.02), (1.2, 1.2, 3.2), "nose_brick", bevel=False)
         b.box_base((x, Y_FAR + 1.0, TOP + 3.16), (1.5, 1.5, 0.4), "spa_cream", bevel=False)
         xh = x + 21.0
@@ -222,7 +230,7 @@ def _barrier(name, mat):
 
 
 def build_street(mat):
-    name = "CleanACat_Area_Street"
+    name = NAME
     objs = []
     for suffix, fn in (("", _ground), ("_Dashes", _dashes), ("_Houses", _houses), ("_Greenery", _greenery),
                        ("_Pavement", _far_pavement)):
@@ -234,10 +242,42 @@ def build_street(mat):
 
 
 def street_rbx_extras():
-    atts = [("CleanACat_Area_Street", f"PlotSlot{s}", Matrix.Translation((slot_x(s), 0.0, 0.0)))
+    atts = [(NAME, f"PlotSlot{s}", Matrix.Translation((slot_x(s), 0.0, 0.0)))
             for s in range(1, SLOTS + 1)]
     return {"attachments": atts, "attributes": {"PlotSpacing": {"Float64": PITCH}, "PlotCount": {"Float64": SLOTS}}}
 
 
-ASSETS = {"CleanACat_Area_Street": (build_street, 20000)}
-EXTRAS = {"CleanACat_Area_Street": street_rbx_extras}
+# -- the street for the bigger plots (#746) ------------------------------------------------------------------------------
+# CleanACat_Area_SpaPlotBig is 56 studs wide and its ground runs 6 studs further back, so six of them need a longer,
+# deeper street: `CleanACat_Area_StreetBig`, the same street at a 56 stud pitch. Its front edge, pavement, road and
+# houses stand where the small street's do; the hedge, the trees and the wall behind the plots stand 6 studs further
+# back. Eleven houses instead of nine, set in 11 studs so the row is centred. The pivot is still slot 1's plot pivot,
+# no turn, and PlotSlot1 to PlotSlot6 and PlotSpacing (56) say where the plots go.
+BIG_NAME = "CleanACat_Area_StreetBig"
+BIG_PITCH, BIG_FRONT, BIG_BACK = 56.0, -24.0, 30.0     # plot.BIG's PLOT_X width and PLOT_Y
+BIG = dict(_numbers(BIG_PITCH, BIG_FRONT, BIG_BACK), NAME=BIG_NAME, GRID0=11.0)
+
+
+class big_layout:
+    """`with big_layout():` builds with the bigger street's numbers (plot.big_layout does the same for the plot)."""
+
+    def __enter__(self):
+        self.old = {k: globals()[k] for k in BIG}
+        globals().update(BIG)
+
+    def __exit__(self, *exc):
+        globals().update(self.old)
+
+
+def build_street_big(mat):
+    with big_layout():
+        return build_street(mat)
+
+
+def street_big_rbx_extras():
+    with big_layout():
+        return street_rbx_extras()
+
+
+ASSETS = {"CleanACat_Area_Street": (build_street, 20000), BIG_NAME: (build_street_big, 24000)}
+EXTRAS = {"CleanACat_Area_Street": street_rbx_extras, BIG_NAME: street_big_rbx_extras}

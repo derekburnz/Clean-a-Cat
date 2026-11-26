@@ -52,6 +52,58 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_Backdrop.png"
  },
  {
+  "name": "CleanACat_Area_BackdropBig",
+  "category": "Area",
+  "module": "backdrop",
+  "objects": [
+   "CleanACat_Area_BackdropBig",
+   "CleanACat_Area_BackdropBig_Ground",
+   "CleanACat_Area_BackdropBig_Dashes",
+   "CleanACat_Area_BackdropBig_Hills",
+   "CleanACat_Area_BackdropBig_HillsFar"
+  ],
+  "triangles": 15228,
+  "budget": 40000,
+  "parts": 505,
+  "size_studs": {
+   "x": 1252.0,
+   "y": 755.67,
+   "z": 326.53
+  },
+  "size_roblox": [
+   1252.0,
+   326.53,
+   755.67
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 2,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "15228/40000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "9996 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-243.68 (want 0)",
+    "centered": "footprint center x=-28.00 y=-15.55",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_BackdropBig.png"
+ },
+ {
   "name": "CleanACat_Area_Garden",
   "category": "Area",
   "module": "garden",
@@ -385,6 +437,59 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_Street.png"
+ },
+ {
+  "name": "CleanACat_Area_StreetBig",
+  "category": "Area",
+  "module": "street",
+  "objects": [
+   "CleanACat_Area_StreetBig",
+   "CleanACat_Area_StreetBig_Dashes",
+   "CleanACat_Area_StreetBig_Houses",
+   "CleanACat_Area_StreetBig_Greenery",
+   "CleanACat_Area_StreetBig_Pavement",
+   "CleanACat_Area_StreetBig_Barrier"
+  ],
+  "triangles": 9548,
+  "budget": 24000,
+  "parts": 460,
+  "size_studs": {
+   "x": 392.0,
+   "y": 159.2,
+   "z": 40.93
+  },
+  "size_roblox": [
+   392.0,
+   40.93,
+   159.2
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 3,
+    "back to back": 7,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "9548/24000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "5691 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-1.03 (want 0)",
+    "centered": "footprint center x=-28.00 y=-20.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_StreetBig.png"
  },
  {
   "name": "CleanACat_Area_VipBuilding",

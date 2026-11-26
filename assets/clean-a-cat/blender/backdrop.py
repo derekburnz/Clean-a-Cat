@@ -79,24 +79,33 @@ def hill_top(x, y, hills):
     return best
 
 
-X0, X1 = street.X0, street.X1
-CX = (X0 + X1) / 2
-Y_ROAD = (street.Y_ROAD0 + street.Y_ROAD1) / 2
-Y_BEHIND = street.Y_FAR - 18.0                         # the back of the street's own houses
-# (x, y, along, across, rise, turn): the near ring. The two on the road's line swallow the road's ends.
-NEAR = (
-    (X1 + REACH + 26, Y_ROAD - 4, 62, 44, 15, 80), (X0 - REACH - 26, Y_ROAD + 4, 62, 44, 16, 100),
-    (X1 + 120, Y_BEHIND - 62, 70, 40, 17, 20), (CX + 70, Y_BEHIND - 84, 80, 42, 21, -8), (CX - 40, Y_BEHIND - 92, 86, 44, 19, 6),
-    (X0 + 20, Y_BEHIND - 80, 78, 42, 22, -10), (X0 - 110, Y_BEHIND - 58, 70, 40, 18, -24),
-    (X1 + 130, street.BACK + 76, 72, 40, 16, -18), (CX + 60, street.BACK + 96, 84, 42, 20, 5), (CX - 60, street.BACK + 102, 84, 42, 18, -6),
-    (X0 - 10, street.BACK + 92, 76, 40, 21, 10), (X0 - 130, street.BACK + 70, 70, 40, 17, 22),
-)
-FAR = (
-    (X1 + 280, Y_ROAD - 30, 120, 80, 44, 85), (X0 - 280, Y_ROAD + 20, 120, 80, 48, 95),
-    (X1 + 150, Y_BEHIND - 190, 130, 70, 46, 24), (CX + 40, Y_BEHIND - 220, 150, 76, 58, -4), (X0 - 40, Y_BEHIND - 205, 140, 72, 50, 8),
-    (X0 - 220, Y_BEHIND - 150, 120, 70, 42, -30),
-    (X1 + 170, street.BACK + 210, 130, 70, 44, -22), (CX, street.BACK + 236, 150, 76, 54, 3), (X0 - 150, street.BACK + 200, 130, 70, 46, 20),
-)
+def _derive():
+    """The measures taken from the street, and the two rings of hills laid round it. Run again inside
+    street.big_layout() for the bigger street's backdrop."""
+    x0, x1 = street.X0, street.X1
+    cx = (x0 + x1) / 2
+    y_road = (street.Y_ROAD0 + street.Y_ROAD1) / 2
+    y_behind = street.Y_FAR - 18.0                     # the back of the street's own houses
+    back = street.BACK
+    # (x, y, along, across, rise, turn): the near ring. The two on the road's line swallow the road's ends.
+    near = (
+        (x1 + REACH + 26, y_road - 4, 62, 44, 15, 80), (x0 - REACH - 26, y_road + 4, 62, 44, 16, 100),
+        (x1 + 120, y_behind - 62, 70, 40, 17, 20), (cx + 70, y_behind - 84, 80, 42, 21, -8), (cx - 40, y_behind - 92, 86, 44, 19, 6),
+        (x0 + 20, y_behind - 80, 78, 42, 22, -10), (x0 - 110, y_behind - 58, 70, 40, 18, -24),
+        (x1 + 130, back + 76, 72, 40, 16, -18), (cx + 60, back + 96, 84, 42, 20, 5), (cx - 60, back + 102, 84, 42, 18, -6),
+        (x0 - 10, back + 92, 76, 40, 21, 10), (x0 - 130, back + 70, 70, 40, 17, 22),
+    )
+    far = (
+        (x1 + 280, y_road - 30, 120, 80, 44, 85), (x0 - 280, y_road + 20, 120, 80, 48, 95),
+        (x1 + 150, y_behind - 190, 130, 70, 46, 24), (cx + 40, y_behind - 220, 150, 76, 58, -4), (x0 - 40, y_behind - 205, 140, 72, 50, 8),
+        (x0 - 220, y_behind - 150, 120, 70, 42, -30),
+        (x1 + 170, back + 210, 130, 70, 44, -22), (cx, back + 236, 150, 76, 54, 3), (x0 - 150, back + 200, 130, 70, 46, 20),
+    )
+    return {"X0": x0, "X1": x1, "CX": cx, "Y_ROAD": y_road, "Y_BEHIND": y_behind, "NEAR": near, "FAR": far}
+
+
+X0 = X1 = CX = Y_ROAD = Y_BEHIND = NEAR = FAR = None
+globals().update(_derive())
 
 
 # -- trees, bushes, cottages --------------------------------------------------------------------------------------------
@@ -234,5 +243,23 @@ def build_backdrop(mat):
             _tris(far.finalize(N + "_HillsFar", mat, bevel=0))]
 
 
-ASSETS = {N: (build_backdrop, 40000)}
+# -- the backdrop for the bigger plots' street (#746) -------------------------------------------------------------------
+# `CleanACat_Area_BackdropBig` goes with CleanACat_Area_StreetBig the way the backdrop goes with the street: the same
+# pieces laid round the longer, deeper street, so the road still carries on from the street's ends and nothing of the
+# backdrop stands inside the street's own model.
+BIG_N = "CleanACat_Area_BackdropBig"
+rbx_export.LOOKS[BIG_N + "_HillsFar"] = rbx_export.LOOKS[N + "_HillsFar"]
+
+
+def build_backdrop_big(mat):
+    old = {k: globals()[k] for k in ("N", "X0", "X1", "CX", "Y_ROAD", "Y_BEHIND", "NEAR", "FAR")}
+    with street.big_layout():
+        globals().update(_derive(), N=BIG_N)
+        try:
+            return build_backdrop(mat)
+        finally:
+            globals().update(old)
+
+
+ASSETS = {N: (build_backdrop, 40000), BIG_N: (build_backdrop_big, 40000)}
 EXTRAS = {}
