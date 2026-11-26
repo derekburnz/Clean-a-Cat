@@ -431,28 +431,50 @@ local function townsfolkFor(
 	return figure
 end
 
+-- (switch counterCrate) Where the carrier of the customer at `place` is set down: the plot's SpotCounterCrate<place>,
+-- else halfway from the customer to their cat at the counter top.
+local function crateSpot(place: number, slot: number): CFrame
+	local sits = catSpot(place, slot)
+	local stands = queueSpot(place, slot)
+	local halfway = stands.Position:Lerp(sits.Position, 0.5)
+	return SpaLayout.counterSpot(CounterRules.CRATE_SPOT_PREFIX, place, slot)
+		or CFrame.new(halfway.X, sits.Y, halfway.Z) * sits.Rotation
+end
+
 -- (switch counterCrate) Times the crate of `figure`'s cat on the counter (CounterRules.settleTimes): it goes down when
 -- the figure, setting off from where it stands now at `walkAt`, reaches `mat` (the walk CustomerWalkController plays);
 -- with no `walkAt` the cat already sits there.
-local function settleCat(figure: Model, mat: CFrame, walkAt: number?, slot: number)
+-- Where each customer's current walk starts, once a step-up has given it a walk from part way (the drawn pivot stays
+-- where the figure was first put; CustomerWalkController starts each new walk from where the figure stands).
+-- A strong table, cleared when the figure is destroyed (Instance keys in weak tables are not reliably kept, #679).
+local walkFrom: { [Model]: Vector3 } = {}
+
+-- Where `figure` stands at server time `now`, along the walk its WalkTo and WalkAt describe.
+local function standsAt(figure: Model, now: number): Vector3
+	local from = walkFrom[figure] or figure:GetPivot().Position
+	local to = figure:GetAttribute(WalkRules.TO_ATTRIBUTE)
+	local at = figure:GetAttribute(WalkRules.AT_ATTRIBUTE)
+	if typeof(to) ~= "CFrame" or type(at) ~= "number" then
+		return from
+	end
+	local mat = to :: CFrame
+	local speed = figure:GetAttribute("WalkSpeed")
+	local distance = Vector3.new(mat.X - from.X, 0, mat.Z - from.Z).Magnitude
+	local duration = WalkRules.duration(distance, if type(speed) == "number" then speed else nil)
+	local progress = WalkRules.progress(now - at, duration) or 0
+	return from:Lerp(mat.Position, progress)
+end
+
+local function settleCat(figure: Model, mat: CFrame, walkAt: number?, slot: number, start: Vector3?)
 	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
 	local place = if cat then cat:GetAttribute(CounterRules.PLACE_ATTRIBUTE) else nil
 	if cat == nil or type(place) ~= "number" or not crateOn() then
 		return
 	end
-	-- where the carrier is set down: the plot's SpotCounterCrate<place>, else halfway from the customer to their cat
-	-- at the counter top
-	local sits = catSpot(place, slot)
-	local stands = queueSpot(place, slot)
-	local halfway = stands.Position:Lerp(sits.Position, 0.5)
-	cat:SetAttribute(
-		CounterRules.CRATE_SPOT_ATTRIBUTE,
-		SpaLayout.counterSpot(CounterRules.CRATE_SPOT_PREFIX, place, slot)
-			or CFrame.new(halfway.X, sits.Y, halfway.Z) * sits.Rotation
-	)
+	cat:SetAttribute(CounterRules.CRATE_SPOT_ATTRIBUTE, crateSpot(place, slot))
 	local arriveAt: number? = nil
 	if walkAt then
-		local from = figure:GetPivot()
+		local from = start or figure:GetPivot().Position
 		local speed = figure:GetAttribute("WalkSpeed")
 		local distance = Vector3.new(mat.X - from.X, 0, mat.Z - from.Z).Magnitude
 		arriveAt = walkAt
@@ -661,7 +683,28 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 		end
 	end
 	for _, step in stepUps do
+		-- read before WalkTo and WalkAt change: where the new walk starts
+		local here = standsAt(step.figure, now)
+		local known: Vector3? = walkFrom[step.figure]
+		if known == nil then
+			local figure = step.figure
+			figure.Destroying:Once(function()
+				walkFrom[figure] = nil
+			end)
+		end
+		walkFrom[step.figure] = here
 		setPlace(step.figure, step.index)
+		-- (switch counterCrate) the crate follows the customer to their new place (Sync's QA of PR 762: it stayed at
+		-- the place they came in at). Still walking in with it: it goes down when they reach the new mat instead.
+		local cat = step.figure:FindFirstChild(CounterRules.CAT_NAME)
+		if cat and crateOn() then
+			local setAt = cat:GetAttribute(CounterRules.SET_ATTRIBUTE)
+			if type(setAt) == "number" and now < setAt then
+				settleCat(step.figure, step.mat, now + STEP_UP_DELAY, slot, here)
+			else
+				cat:SetAttribute(CounterRules.CRATE_SPOT_ATTRIBUTE, crateSpot(step.index, slot))
+			end
+		end
 		step.figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, nil)
 		step.figure:SetAttribute(WalkRules.TO_ATTRIBUTE, step.mat)
 		-- set last: a client starts the walk when the start time changes
