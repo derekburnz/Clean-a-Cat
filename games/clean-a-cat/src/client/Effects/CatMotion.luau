@@ -17,11 +17,13 @@
 -- Cats are found by the `Cat` attribute the generator sets on each cat Model, once it is inside Workspace.
 -- A waiting cat's mood follows the HeartFill number attribute (0 to 1) that Gameplay sets on the cat or on the
 -- customer holding its carrier (issue #528); a cat with none in reach has no mood.
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local CatPose = require(script.Parent:WaitForChild("CatPose"))
 local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
+local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 
 type EyePart = { part: BasePart, offset: CFrame, size: Vector3 }
 
@@ -44,6 +46,7 @@ type Rig = {
 	moved: boolean,
 	moodFrom: Instance?, -- the cat or the ancestor that carries HeartFill
 	moodLookAt: number, -- when to look for one again, while there is none
+	scale: number, -- the model's GetScale() the rest offsets and eye sizes are measured at
 }
 
 local CatMotion = {}
@@ -181,6 +184,7 @@ local function attach(model: Model)
 		moved = false,
 		moodFrom = moodSource(model),
 		moodLookAt = now + 1,
+		scale = model:GetScale(),
 	}
 end
 
@@ -190,7 +194,50 @@ local function pivotTo(instance: PVInstance?, target: CFrame)
 	end
 end
 
+-- A rest offset measured at one model scale, moved to another: the turn stays, the distance grows by `ratio`.
+function CatMotion.scaled(rest: CFrame, ratio: number): CFrame
+	return CFrame.new(rest.Position * ratio) * rest.Rotation
+end
+
+-- Something ScaleTo'd the cat after its rig was built (Carry.hold's CarryScale, issue 903: a carried Suds blinked
+-- with eyes sized and placed for scale 1, hidden inside the bigger head). The rest offsets and eye sizes follow the
+-- new scale, so a blink and the head turns stay true. Measured, not rebuilt, so a cat scaled mid blink keeps its
+-- full eyes.
+-- How much the rig's measurements grow from scale `from` to scale `to`, or nil when the scale has not changed.
+function CatMotion.scaleRatio(from: number, to: number): number?
+	if from <= 0 or math.abs(to - from) < 1e-4 then
+		return nil
+	end
+	return to / from
+end
+
+CatMotion.SCALE_FLAG = "carryBlink" -- issue 903, off by default (Suds's carry is the first session)
+
+local function followScale(rig: Rig)
+	if not LiveFlags.isOn(CatMotion.SCALE_FLAG) then
+		return
+	end
+	local now = rig.model:GetScale()
+	local ratio = CatMotion.scaleRatio(rig.scale, now)
+	if ratio == nil then
+		return
+	end
+	rig.scale = now
+	rig.headRest = CatMotion.scaled(rig.headRest, ratio)
+	rig.tailRest = CatMotion.scaled(rig.tailRest, ratio)
+	rig.earLRest = CatMotion.scaled(rig.earLRest, ratio)
+	rig.earRRest = CatMotion.scaled(rig.earRRest, ratio)
+	for _, eye in rig.eyes do
+		eye.rest = CatMotion.scaled(eye.rest, ratio)
+		for _, entry in eye.parts do
+			entry.offset = CatMotion.scaled(entry.offset, ratio)
+			entry.size *= ratio
+		end
+	end
+end
+
 local function apply(rig: Rig, pose: CatPose.Pose)
+	followScale(rig)
 	local bodyCF = rig.body.CFrame
 	local headCF = bodyCF
 		* rig.headRest
