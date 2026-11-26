@@ -56,7 +56,30 @@ type Rig = {
 	moved: boolean,
 	staff: boolean,
 	wash: number, -- the wash pose's blend, 0 to 1 (staff only)
+	armIn: number, -- radians the carrying arm is turned back in from the server's CarryArmOut (empty hand)
 }
+
+-- Gameplay turns the carrying arm out by the figure's CarryArmOut degrees on the server so the carrier hangs clear of
+-- the body (issues 871 and 874). While the carrier is hidden (CounterCrate's CarrierHidden, after the reach that sets
+-- the crate down) the arm turns back in by as much, so an empty hand hangs straight; when the PackedCat shows for the
+-- leave it turns out again.
+function CustomerMotion.armIn(hidden: boolean, outDegrees: unknown, reaching: boolean): number
+	if not hidden or reaching or type(outDegrees) ~= "number" then
+		return 0
+	end
+	return math.rad(outDegrees :: number)
+end
+
+function CustomerMotion.armInFor(model: Model, now: number): number
+	local reachAt = model:GetAttribute(CounterCrate.REACH_ATTRIBUTE)
+	local reaching = type(reachAt) == "number"
+		and now - (reachAt :: number) < CounterCrate.REACH_SECONDS
+	return CustomerMotion.armIn(
+		model:GetAttribute(CounterCrate.EMPTY_HAND_ATTRIBUTE) == true,
+		model:GetAttribute("CarryArmOut"),
+		reaching
+	)
+end
 
 local rigs: { [Model]: Rig } = {}
 local started = false
@@ -128,6 +151,7 @@ local function attach(model: Model)
 		moved = false,
 		staff = isStaff(model.Name),
 		wash = 0,
+		armIn = 0,
 	}
 end
 
@@ -144,7 +168,7 @@ local function apply(rig: Rig, pose: CustomerPose.Pose)
 	turn(rig, "LegL", bodyCF, CFrame.Angles(pose.legL, 0, 0))
 	turn(rig, "LegR", bodyCF, CFrame.Angles(pose.legR, 0, 0))
 	turn(rig, "ArmL", bodyCF, CFrame.Angles(pose.armL, 0, 0))
-	turn(rig, "ArmR", bodyCF, CFrame.Angles(pose.armR, 0, 0))
+	turn(rig, "ArmR", bodyCF, CFrame.Angles(0, 0, -rig.armIn) * CFrame.Angles(pose.armR, 0, 0))
 	turn(
 		rig,
 		"Head",
@@ -204,6 +228,7 @@ local function update(rig: Rig, now: number)
 	if type(reachAt) == "number" and not still then
 		rig.pose.armR += CounterCrate.reachAt(now - reachAt)
 	end
+	rig.armIn = CustomerPose.approach(rig.armIn, CustomerMotion.armInFor(rig.model, now), 8, dt)
 	apply(rig, rig.pose)
 	rig.moved = true
 end

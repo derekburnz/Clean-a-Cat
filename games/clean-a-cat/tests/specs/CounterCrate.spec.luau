@@ -43,4 +43,21 @@ return function()
 			expect(mid > 0 and mid <= CounterCrate.REACH + 1e-9).to.equal(true)
 		end)
 	end)
+	describe("CustomerMotion.armIn", function()
+		local Client = game:GetService("StarterPlayer")
+			:WaitForChild("StarterPlayerScripts")
+			:WaitForChild("Client")
+		local Motion = require(Client:WaitForChild("Effects"):WaitForChild("CustomerMotion")) :: any
+		it(
+			"turns the empty hand back in by CarryArmOut, only while the carrier is hidden",
+			function()
+				expect(math.abs(Motion.armIn(true, 20, false) - math.rad(20)) < 1e-6).to.equal(true)
+				expect(Motion.armIn(false, 20, false)).to.equal(0)
+				expect(Motion.armIn(true, nil, false)).to.equal(0)
+			end
+		)
+		it("waits for the reach that sets the crate down", function()
+			expect(Motion.armIn(true, 20, true)).to.equal(0)
+		end)
+	end)
 end
