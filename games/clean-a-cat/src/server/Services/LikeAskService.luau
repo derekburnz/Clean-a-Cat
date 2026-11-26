@@ -153,8 +153,12 @@ function LikeAskService.Start()
 				local pending = visit.pending
 				if pending and now >= pending.at then
 					visit.pending = nil
+					-- a purchase's ask waiting while likeAskPurchase went off is dropped (Review-QA on 818)
 					if
 						on()
+						and (pending.moment ~= "purchase" or LiveFlags.isOn(
+							LikeAskRules.PURCHASE_FLAG
+						))
 						and not blocked(player, visit)
 						and player:GetAttribute(LikeAskRules.ATTRIBUTE) == nil
 					then
