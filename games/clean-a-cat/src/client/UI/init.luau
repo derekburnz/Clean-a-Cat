@@ -371,6 +371,21 @@ function UI.setCoins(coins: unknown)
 	HUD.setCoins(coins)
 end
 
+-- Friends in the server for the HUD's friend chip (the Player attribute FriendsHere, switch friendBonus).
+function UI.setFriends(friends: unknown)
+	HUD.setFriends(friends)
+end
+
+-- The Settings card's "Visitors can come in" from the server (VisitorsAllowed; nil hides the row).
+function UI.setVisitors(allowed: boolean?)
+	SettingsCard.setVisitors(allowed)
+end
+
+-- fn(allowed) when the visitors switch is pressed.
+function UI.onVisitors(fn: (allowed: boolean) -> ())
+	SettingsCard.onVisitors(fn)
+end
+
 function UI.setWashStage(stage: string?)
 	HUD.setStage(stage)
 end

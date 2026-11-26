@@ -158,6 +158,24 @@ local SCENES = {
 			UI.open("Settings")
 		end,
 	},
+	-- Settings with visiting on (issue 520): the "Visitors can come in" row shows; then the HUD's friend chip.
+	{
+		"SettingsVisitors",
+		function()
+			flag("settingsCard", true)
+			UI.setVisitors(true)
+			UI.open("Settings")
+		end,
+	},
+	{
+		"HudFriends",
+		function()
+			hud(true)
+			UI.setCoins(1240)
+			UI.setWashStage(nil)
+			UI.setFriends(2)
+		end,
+	},
 	{
 		"SettingsChanged",
 		function()
