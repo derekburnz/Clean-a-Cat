@@ -53,7 +53,8 @@ local function make(kind: string, star: number): Model?
 	local pet = (asset :: Model):Clone() :: Model
 	for _, piece in pet:GetDescendants() do
 		local level = piece:GetAttribute("StarLevel")
-		if piece:IsA("Model") and type(level) == "number" and level > star then
+		local aboveStar = piece:IsA("Model") and type(level) == "number" and level > star
+		if aboveStar or piece:IsA("Script") or piece:IsA("LocalScript") then
 			piece:Destroy()
 		elseif piece:IsA("BasePart") then
 			local part = piece :: BasePart
@@ -61,8 +62,6 @@ local function make(kind: string, star: number): Model?
 			part.CanCollide = false
 			part.CanQuery = false
 			part.CanTouch = false
-		elseif piece:IsA("Script") or piece:IsA("LocalScript") then
-			piece:Destroy()
 		end
 	end
 	local scale = pet:GetAttribute("PetScale")
