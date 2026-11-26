@@ -35,7 +35,7 @@ Icons.IMAGES = {
 	Smell = "", -- the Bubble Bath's need (#267)
 	Claws = "", -- the Pawdicure's need (#267)
 	Pointer = "rbxassetid://86511050552339",
-	Helper = "rbxassetid://112634017426563", -- placeholder staff head
+	Helper = "rbxassetid://73988627805858", -- CleanACat_Icon_Hud_Helper, round cheeks (#784)
 	Tools = "rbxassetid://100929090324662",
 	Build = "rbxassetid://84861881998122",
 	-- the HUD buttons' own pictures (Model-Agent, PR 706, group uploads 2026-11-26)
@@ -43,7 +43,7 @@ Icons.IMAGES = {
 	Shop = "rbxassetid://75206569453389", -- a shopfront with a striped awning; soft below 48 px, so keep it 48+
 	Pets = "rbxassetid://112809586144557", -- a lilac cat's head in a collar with a bell
 	Crate = "rbxassetid://79856687835511", -- the pet crate with cat ears and a paw latch
-	Helpers = "rbxassetid://115493249688079", -- Jo's head with the headband
+	Helpers = "rbxassetid://86032284297873", -- Jo's head with the headband, round cheeks (#784)
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
