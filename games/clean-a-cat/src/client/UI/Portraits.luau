@@ -36,7 +36,13 @@ end
 -- Puts `cat`'s portrait inside `parent` on a tile framed in the rarity's colour, filling it, and returns the tile.
 -- `round` draws a round face with no frame of its own (the HUD's waiting faces, whose button has the outline).
 -- `dirt` shows the cat at that dirt level when its picture exists (the bench card, switch dirtLevels).
-function Portraits.draw(cat: string, rarity: string, parent: GuiObject, round: boolean?, dirt: number?): Frame
+function Portraits.draw(
+	cat: string,
+	rarity: string,
+	parent: GuiObject,
+	round: boolean?,
+	dirt: number?
+): Frame
 	local old = parent:FindFirstChild("Portrait")
 	if old then
 		old:Destroy()
