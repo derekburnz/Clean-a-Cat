@@ -104,6 +104,7 @@ LiveFlags.KEYS = {
 	"barSpacing", -- each waiting customer's heart bar ends at least heart.releaseStagger after the one ahead, so customers who joined together never leave together (HeartRules.spacedSince, SpaService, issue 573); off by default
 	"boardKeys", -- each row of the Tools and Build boards has its own key and gamepad button, and on a touch screen every row's pill shows, so every row can be bought from where the player stands (BoardProp.rowKeys, issue 574); off by default
 	"lineSwap", -- the door line is redrawn new first and old after, and a leaving customer's figure goes as their walk off starts, so the line never blinks empty or shows the leaver twice (FigureService, issue 571); off by default
+	"benchGrow", -- once the spa has served its first customer the bench holds 3 plus one per built tub, at most 6 (places 4 to 6 on SpotBench4 to 6), and a short line takes its next customer every 6 s less one per tub (BuildRules.benchSize and refillSeconds, SpaService, issue 515); off by default
 	"tubBuilds", -- the Build board sells the Second, Third and Fourth Tub, the VIP Room at its new price and the Garden; one builder; a built tub pays +2 on every hand wash and the VIP Room brings special visitors more often; with dirtLevels on, the old stations leave (BuildRules, issue 515); off by default
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 }
@@ -183,6 +184,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	lineSwap = true,
 	pets = true,
 	tubBuilds = true,
+	benchGrow = true,
 	crateWindow = true,
 } :: { [string]: boolean }
 

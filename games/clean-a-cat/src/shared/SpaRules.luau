@@ -139,6 +139,18 @@ end
 
 -- Customers waiting at the door (SpaService keeps the line this long).
 SpaRules.QUEUE_SIZE = 3
+-- The longest the line can be (bench.size with every tub built, switch benchGrow): what a client takes from the server.
+SpaRules.MAX_QUEUE = 6
+SpaRules.BENCH_FLAG = "benchGrow"
+SpaRules.BENCH_ATTRIBUTE = "BenchSize" -- Player attribute: the player's bench places now (switch benchGrow)
+
+-- The bench's places as a client sees them: the server's BenchSize while benchGrow is on, else QUEUE_SIZE.
+function SpaRules.benchSize(raw: unknown, benchOn: boolean): number
+	if not benchOn or type(raw) ~= "number" or raw ~= raw then
+		return SpaRules.QUEUE_SIZE
+	end
+	return math.clamp(math.floor(raw), 1, SpaRules.MAX_QUEUE)
+end
 
 -- Moves the customer at `index` to the front of the door line, keeping the others in order (switch queuePick).
 -- Only a reorder: no customer is added, removed or rerolled. False for the front or an index outside the line.

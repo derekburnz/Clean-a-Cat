@@ -51,8 +51,10 @@ local function refresh()
 	end
 	local folder: Folder = trove:Add(Instance.new("Folder"))
 	folder.Name = "QueuePick"
-	-- The front customer (place 1) is already next, so only places 2 and up get a prompt.
-	for index = 2, SpaRules.QUEUE_SIZE do
+	-- The front customer (place 1) is already next, so only places 2 and up get a prompt; with benchGrow, one for each
+	-- bench place, 4 to 6 on SpotBench<index>.
+	local benchOn = LiveFlags.isOn(SpaRules.BENCH_FLAG)
+	for index = 2, SpaRules.benchSize(player:GetAttribute(SpaRules.BENCH_ATTRIBUTE), benchOn) do
 		local anchor = Instance.new("Part")
 		anchor.Name = `Pick{index}`
 		anchor.Anchored = true
@@ -61,7 +63,9 @@ local function refresh()
 		anchor.CanTouch = false
 		anchor.Transparency = 1
 		anchor.Size = Vector3.new(1, 1, 1)
-		anchor.CFrame = SpaLayout.lineSpot("SpotQueue", index) * CFrame.new(0, PROMPT_HEIGHT, 0)
+		anchor.CFrame = (
+			if benchOn then SpaLayout.benchSpot(index) else SpaLayout.lineSpot("SpotQueue", index)
+		) * CFrame.new(0, PROMPT_HEIGHT, 0)
 		anchor.Parent = folder
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "Wash next"
@@ -84,6 +88,9 @@ function QueuePickController.Start()
 			:Connect(refresh)
 	end
 	Players.LocalPlayer:GetAttributeChangedSignal(SERVED):Connect(refresh)
+	Players.LocalPlayer:GetAttributeChangedSignal(SpaRules.BENCH_ATTRIBUTE):Connect(refresh)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SpaRules.BENCH_FLAG)
+		:Connect(refresh)
 	Players.LocalPlayer:GetAttributeChangedSignal(CarryRules.ATTRIBUTE):Connect(refresh)
 	-- The plot came or went: the line's spots moved.
 	SpaLayout.changed(function()
