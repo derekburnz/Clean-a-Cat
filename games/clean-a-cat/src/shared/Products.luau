@@ -19,6 +19,8 @@ Products.IDS = table.freeze({
 	FinishTier3 = 0, -- 2 hours or less (35)
 	FinishTier4 = 0, -- 8 hours or less (75)
 	FinishTier5 = 0, -- more than 8 hours (99)
+	CrateOne = 0, -- one normal crate (CrateRules.SHOP, issue 514; 49 Robux): a paid random item, odds shown first
+	CrateFive = 0, -- five normal crates (199)
 	StarterPack = 0, -- the starter pack: Golden Sponge, Second pet slot and 2x Coins (StarterRules, issue 519; 299)
 }) :: { [string]: number }
 

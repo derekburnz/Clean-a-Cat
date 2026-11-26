@@ -50,6 +50,16 @@ CrateRules.FUSE_COUNT = 3
 CrateRules.PET_CAP = 0.3 -- worker.petCap: a worker's pets together boost their pay at most this much
 CrateRules.PLAYER_SLOT = "player"
 
+-- The Robux crate (issue 514, switch crateShop; tuning crate.price): a developer product per row, each giving that many
+-- normal crates, the very crate that is earned, with the same chance list. A paid random item: the chances show before
+-- any buy, and a player whose PolicyService info restricts paid random items never sees it (the Player attribute
+-- SHOP_ATTRIBUTE stays nil for them) and keeps the earned crates.
+CrateRules.SHOP_FLAG = "crateShop"
+CrateRules.SHOP_KIND = "normal"
+CrateRules.SHOP_ATTRIBUTE = "CrateShop" -- Player attribute: true while this player may buy crates for Robux
+CrateRules.SHOP = table.freeze({ CrateOne = 1, CrateFive = 5 }) :: { [string]: number } -- Products key -> crates
+CrateRules.SHOP_KEYS = table.freeze({ "CrateOne", "CrateFive" }) :: { string } -- the shop's order
+
 export type Odds = { pet: string, rarity: string, percent: number, boost: number }
 export type Pet = { id: number, kind: string, star: number, slot: string? }
 

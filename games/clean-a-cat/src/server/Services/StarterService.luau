@@ -24,6 +24,7 @@ local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
 local CHECK_SECONDS = 15 -- how often the offer is looked at again (the tutorial's end, the clock's zero)
 local EXPIRED_ASK = "starterExpired" -- save.asks key: pack_expired was logged
+local SHOWN_ASK = "starterShown" -- save.asks key: pack_offer_shown was logged (the button's first show)
 
 local StarterService = {}
 
@@ -49,6 +50,10 @@ local function show(player: Player)
 	end
 	local open = on() and offered(player, save)
 	local ends = if open then save.starterEndsAt else nil
+	if open and save.asks[SHOWN_ASK] ~= true then
+		save.asks[SHOWN_ASK] = true
+		Telemetry.event(player, "pack_offer_shown", 1) -- the button's first show, once per save (Review-QA on #615)
+	end
 	if player:GetAttribute(StarterRules.ENDS_ATTRIBUTE) ~= ends then
 		player:SetAttribute(StarterRules.ENDS_ATTRIBUTE, ends)
 	end
@@ -78,12 +83,11 @@ local function show(player: Player)
 end
 
 -- Starts the 72 hours once, the first join with the switch on.
-local function stamp(player: Player, save: SaveSchema.Save)
+local function stamp(_player: Player, save: SaveSchema.Save)
 	if not on() or save.starterEndsAt ~= 0 then
 		return
 	end
 	SaveSchema.stampStarter(save, os.time())
-	Telemetry.event(player, "pack_offer_shown", 1)
 end
 
 local function onRequest(player: Player)

@@ -120,5 +120,13 @@ return function()
 			)
 			expect(CrateRules.boostOf(pets, { CrateRules.PLAYER_SLOT })).to.equal(0.05)
 		end)
+
+		it("sells only the normal crate, the earned one, in ones and fives", function()
+			expect(CrateRules.SHOP_KIND).to.equal("normal")
+			expect(CrateRules.CHANCES[CrateRules.SHOP_KIND]).to.be.ok()
+			expect(#CrateRules.SHOP_KEYS).to.equal(2)
+			expect(CrateRules.SHOP.CrateOne).to.equal(1)
+			expect(CrateRules.SHOP.CrateFive).to.equal(5)
+		end)
 	end)
 end
