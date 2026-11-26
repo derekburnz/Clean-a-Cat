@@ -325,6 +325,22 @@ local function offerTake()
 			end
 		end)
 	end)
+	-- (switch counterLine) on a join the counter's figures, or their CounterPlace, can reach this device after the
+	-- first try (issue 872, Sync-Agent's dev run): look again while the cat waits at the door, and swap the front
+	-- prompt for the counter's once they are there
+	if LiveFlags.isOn(CounterRules.FLAG) then
+		local mine = turn
+		task.spawn(function()
+			while turn == mine and where() == CarryRules.DOOR do
+				task.wait(COUNTER_SCAN_SECONDS)
+				if turn == mine and where() == CarryRules.DOOR and next(counterCats()) ~= nil then
+					clearPrompt()
+					offerCounter()
+					return
+				end
+			end
+		end)
+	end
 end
 
 -- A client-only copy of the cat of `kind`, posed to sit, that never collides, catches a ray or touches anything.
