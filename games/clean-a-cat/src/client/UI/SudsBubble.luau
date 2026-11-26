@@ -155,7 +155,7 @@ local function redraw()
 	p.button.Size = UDim2.fromOffset(s.buttonWidth, s.button)
 	p.button.Position =
 		UDim2.fromOffset(designWidth - PAD - s.buttonWidth, s.height - PAD - s.button)
-	p.button.Text = if current.showMe then BubbleRules.SHOW_ME else BubbleRules.OK
+	p.button.Text = current.button or if current.showMe then BubbleRules.SHOW_ME else BubbleRules.OK
 	p.button.TextSize = if short then 24 else 26
 end
 

@@ -21,6 +21,7 @@ export type Bubble = {
 	title: string,
 	line: string,
 	showMe: boolean, -- true: the button says "Show me" and points the way; false: "OK!" and just closes
+	button: string?, -- a bubble's own button word in place of both (the like ask's "Sure!", LikeAskViewRules)
 }
 
 local function bubble(id: string, title: string, line: string, showMe: boolean): Bubble
