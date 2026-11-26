@@ -168,13 +168,19 @@ local function list(parent: Instance, horizontal: boolean, gap: number): UIListL
 	return layout
 end
 
--- A rounded chip with outlined words: the rarity tag and New!.
+local CHIP_TEXT = 19
+local CHIP_PAD = 10
+local CHIP_CHAR = 0.62 -- Fredoka One's mean letter width per px of text size, a little generous
+
+-- A rounded chip with outlined words: the rarity tag and New!. With `maxWidth` the words shrink (to the 14 px
+-- floor) so the chip stays inside it: "Uncommon" on a narrow card (issue 609).
 local function chip(
 	name: string,
 	parent: Instance,
 	fill: Color3,
 	text: string,
-	height: number
+	height: number,
+	maxWidth: number?
 ): Frame
 	local c = frame(name, parent)
 	c.BackgroundTransparency = 0
@@ -184,12 +190,22 @@ local function chip(
 	Kit.corner(c, UDim.new(0.5, 0))
 	Kit.stroke(c, 2)
 	local pad = Instance.new("UIPadding")
-	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
+	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, CHIP_PAD), UDim.new(0, CHIP_PAD)
 	pad.Parent = c
 	local label = Kit.outlined("Text", c)
 	label.AnchorPoint = Vector2.new(0, 0.5)
 	label.Position = UDim2.fromScale(0, 0.5)
-	label.TextSize = 19
+	label.TextSize = CHIP_TEXT
+	if maxWidth then
+		local room = maxWidth - 2 * CHIP_PAD - 4
+		local wants = math.ceil(#text * CHIP_CHAR * CHIP_TEXT)
+		if wants > room then
+			label.TextSize = math.max(14, math.floor(room / (#text * CHIP_CHAR)))
+		end
+		local cap = Instance.new("UISizeConstraint")
+		cap.MaxSize = Vector2.new(maxWidth, math.huge)
+		cap.Parent = c
+	end
 	label.Text = text
 	return c
 end
@@ -452,7 +468,7 @@ local function drawCard(
 		whoList.HorizontalAlignment = Enum.HorizontalAlignment.Left
 	end
 	local rarityChip =
-		chip("Rarity", who, Kit.RARITY[card.rarity] or Kit.RARITY.Common, card.rarity, s.chip)
+		chip("Rarity", who, Kit.RARITY[card.rarity] or Kit.RARITY.Common, card.rarity, s.chip, whoW)
 	rarityChip.LayoutOrder = if short then 2 else 1
 	local name = words("Name", who, s.nameText)
 	name.LayoutOrder = if short then 1 else 2
