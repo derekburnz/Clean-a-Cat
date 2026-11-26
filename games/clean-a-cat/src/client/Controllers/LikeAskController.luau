@@ -1,29 +1,29 @@
 --!strict
--- LikeAskController: the like ask on the client (LikeAskRules, switch likeAsk with askQueue). The server decides when
--- it is due (the Player attribute LikeAskDue, the moment's name); this puts "like" in the ask queue, so it shows only
--- when the screen is free, and sends the answer back. Design's card plugs in:
---
---   LikeAskController.onShow(show, hide?)   show(moment) puts the card up when its turn comes; hide() takes it down
---   LikeAskController.answer(kind)          "yes" (Like the game: the card then opens the gift card's like row),
---                                           "no" (Not now: not asked again for three visits) or "closed" (X or back)
---
--- Until a card is plugged in nothing is queued, so the switch shows nothing.
+-- LikeAskController: the like ask on the client (LikeAskRules, switch likeAsk with askQueue and sudsBubble). The
+-- server decides when it is due (the Player attribute LikeAskDue, the moment's name); this puts it in the ask queue,
+-- so it shows only when the screen is free, as Design's card UI.showLikeAsk (Suds's bubble, PR 774), and sends the
+-- answer back with RequestLikeAnswer: "yes" (Sure!, which opens the gift card), "no" (the player's X) or "closed"
+-- (the bubble went by itself).
+-- The queue id is likeAskPurchase for the ask after a purchase and likeAsk for every other moment, so the
+-- ask_shown and ask_answered events split the two (Growth's events spec, 2026-11-26 update).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local AskRules = require(Shared:WaitForChild("AskRules"))
+local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local LikeAskRules = require(Shared:WaitForChild("LikeAskRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 
-local ID = "like"
+local Client = script.Parent.Parent
+local UI = require(Client:WaitForChild("UI"))
 
 local LikeAskController = {}
 
 local player = Players.LocalPlayer
 local ask: any = nil -- AskController
-local showCard: ((moment: string) -> ())? = nil
-local hideCard: (() -> ())? = nil
+local wanted: string? = nil -- the queue id waiting or up now
 local up = false
 
 local function due(): string?
@@ -31,58 +31,64 @@ local function due(): string?
 	return if type(moment) == "string" then moment else nil
 end
 
+local function idFor(moment: string): string
+	return if moment == "purchase" then "likeAskPurchase" else "likeAsk"
+end
+
+local function on(): boolean
+	return LiveFlags.isOn(LikeAskRules.FLAG) and LiveFlags.isOn(BubbleRules.FLAG) and ask.on()
+end
+
+local function answer(id: string, kind: AskRules.Answer)
+	if not up or wanted ~= id then
+		return -- this card already went (the queue or a switch took it down)
+	end
+	up = false
+	wanted = nil
+	if due() ~= nil then
+		Remotes.event("RequestLikeAnswer"):FireServer(kind)
+	end
+	ask.done(id, kind)
+end
+
 local function sync()
 	local moment = due()
-	if
-		moment == nil
-		or not LiveFlags.isOn(LikeAskRules.FLAG)
-		or showCard == nil
-		or not ask.on()
-	then
-		ask.drop(ID)
+	if moment == nil or not on() then
+		local id = wanted
+		if id == nil then
+			return
+		end
+		wanted = nil
+		ask.drop(id)
 		if up then
 			up = false
-			if hideCard then
-				hideCard()
-			end
-			ask.done(ID, "closed")
+			UI.hideBubble()
+			ask.done(id, "closed")
 		end
 		return
 	end
-	if up then
+	local id = idFor(moment)
+	if wanted == id then
 		return
 	end
-	ask.want(ID, function()
+	if wanted ~= nil then
+		ask.drop(wanted)
+	end
+	wanted = id
+	ask.want(id, function()
 		local now = due()
-		local show = showCard
-		if now == nil or show == nil then
-			ask.skip(ID) -- it went away while it waited
+		if now == nil or wanted ~= id then
+			ask.skip(id) -- it went away while it waited
 			return
 		end
 		up = true
-		show(now)
+		UI.showLikeAsk(now, function(kind)
+			answer(id, kind)
+		end)
 	end, function()
-		up = false
-		if hideCard then
-			hideCard()
-		end
+		-- the queue took it down (MAX_SHOWN or a clear): the bubble's gone callback answers "closed"
+		UI.hideBubble()
 	end)
-end
-
-function LikeAskController.onShow(show: (moment: string) -> (), hide: (() -> ())?)
-	showCard = show
-	hideCard = hide
-	sync()
-end
-
-function LikeAskController.answer(kind: string)
-	local answer = LikeAskRules.cleanAnswer(kind)
-	if answer == nil or due() == nil then
-		return
-	end
-	Remotes.event("RequestLikeAnswer"):FireServer(answer)
-	up = false
-	ask.done(ID, answer)
 end
 
 function LikeAskController.Init(controllers: { [string]: any })
@@ -91,8 +97,10 @@ end
 
 function LikeAskController.Start()
 	player:GetAttributeChangedSignal(LikeAskRules.ATTRIBUTE):Connect(sync)
-	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. LikeAskRules.FLAG)
-		:Connect(sync)
+	for _, flag in { LikeAskRules.FLAG, BubbleRules.FLAG, AskRules.FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(sync)
+	end
 	sync()
 end
 

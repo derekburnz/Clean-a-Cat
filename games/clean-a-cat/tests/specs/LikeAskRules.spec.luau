@@ -24,11 +24,14 @@ return function()
 			function()
 				expect(table.find(LiveFlags.KEYS, LikeAskRules.FLAG)).to.be.ok()
 				expect(LiveFlags.OFF_BY_DEFAULT[LikeAskRules.FLAG]).to.equal(true)
-				local like = table.find(AskRules.IDS, "like")
-				expect(like).to.be.ok()
-				expect((like :: number) > (table.find(AskRules.IDS, "favourite") :: number)).to.equal(
-					true
-				)
+				local favourite = table.find(AskRules.IDS, "favourite") :: number
+				-- two ids, so ask_shown and ask_answered split the purchase ask from the good moments (Growth)
+				for _, id in { "likeAsk", "likeAskPurchase" } do
+					local at = table.find(AskRules.IDS, id)
+					expect(at).to.be.ok()
+					expect((at :: number) > favourite).to.equal(true)
+					expect(AskRules.QUIET[id]).to.equal(nil)
+				end
 			end
 		)
 

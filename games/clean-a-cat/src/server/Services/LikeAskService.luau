@@ -12,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local AskRules = require(Shared:WaitForChild("AskRules"))
+local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local LikeAskRules = require(Shared:WaitForChild("LikeAskRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
@@ -33,7 +34,10 @@ type Visit = {
 local visits: { [Player]: Visit } = {}
 
 local function on(): boolean
-	return LiveFlags.isOn(LikeAskRules.FLAG) and LiveFlags.isOn(AskRules.FLAG)
+	-- the card is Suds's bubble, so with sudsBubble off it cannot show and no visit's ask is spent on it
+	return LiveFlags.isOn(LikeAskRules.FLAG)
+		and LiveFlags.isOn(AskRules.FLAG)
+		and LiveFlags.isOn(BubbleRules.FLAG)
 end
 
 local function visitOf(player: Player): Visit
@@ -126,7 +130,7 @@ function LikeAskService.Start()
 	Players.PlayerRemoving:Connect(function(player: Player)
 		visits[player] = nil
 	end)
-	for _, flag in { LikeAskRules.FLAG, AskRules.FLAG } do
+	for _, flag in { LikeAskRules.FLAG, AskRules.FLAG, BubbleRules.FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				if on() then
