@@ -27,8 +27,14 @@ local function overlaps<K>(a: Pill<K>, b: Pill<K>): boolean
 	return math.abs(gap.X) < reach.X and math.abs(gap.Y) < reach.Y
 end
 
--- Which pills show: { [key] = true } for each kept, the others overlap one that ranks above them.
-function PillLayout.keep<K>(pills: { Pill<K> }): { [K]: boolean }
+-- With the switch fewerPills (issue 745, Derek 2026-11-26: "too many white bubbles for popups around spa"): at most
+-- FEW pills at once, and only those within NEAR studs of the player. A winning pill shows at any distance.
+PillLayout.FEW = 2
+PillLayout.NEAR = 10 -- studs
+
+-- Which pills show: { [key] = true } for each kept, the others overlap one that ranks above them. With `limit`, at
+-- most that many show; with `near`, a pill that does not win shows only within that many studs.
+function PillLayout.keep<K>(pills: { Pill<K> }, limit: number?, near: number?): { [K]: boolean }
 	local order = table.clone(pills)
 	table.sort(order, function(a: Pill<K>, b: Pill<K>): boolean
 		if a.wins ~= b.wins then
@@ -39,7 +45,8 @@ function PillLayout.keep<K>(pills: { Pill<K> }): { [K]: boolean }
 	local kept: { Pill<K> } = {}
 	local out: { [K]: boolean } = {}
 	for _, pill in order do
-		local clear = true
+		local clear = (limit == nil or #kept < limit)
+			and (near == nil or pill.wins or pill.distance <= near)
 		for _, other in kept do
 			if overlaps(pill, other) then
 				clear = false

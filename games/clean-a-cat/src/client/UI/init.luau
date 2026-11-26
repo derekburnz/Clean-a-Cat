@@ -42,6 +42,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
+local BuildViewRules = require(Shared:WaitForChild("BuildViewRules"))
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
@@ -55,6 +56,7 @@ local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 local ShopViewRules = require(Shared:WaitForChild("ShopViewRules"))
 local StarterViewRules = require(Shared:WaitForChild("StarterViewRules"))
 
+local BuildWindow = require(script:WaitForChild("BuildWindow"))
 local CatIndex = require(script:WaitForChild("CatIndex"))
 local CheckinCard = require(script:WaitForChild("CheckinCard"))
 local Comfort = require(script:WaitForChild("Comfort"))
@@ -74,6 +76,7 @@ local SettingsCard = require(script:WaitForChild("Settings"))
 local ShopWindow = require(script:WaitForChild("ShopWindow"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
 local Spotlight = require(script:WaitForChild("Spotlight"))
+local StarterAd = require(script:WaitForChild("HUD"):WaitForChild("StarterAd"))
 local StarterWindow = require(script:WaitForChild("StarterWindow"))
 local SudsBubble = require(script:WaitForChild("SudsBubble"))
 local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
@@ -274,6 +277,11 @@ function UI.init()
 	SideButtons.build(root, function(name: string)
 		UI.open(name)
 	end)
+	-- the starter pack's side ad (switch hudTidy, issue 739) stands in for the Starter button
+	StarterAd.build(root, function()
+		UI.open(StarterViewRules.WINDOW)
+	end)
+	SideButtons.useAd(StarterAd)
 	Waiting.build(
 		root,
 		function() -- the waiting faces open "Who's next?" (switch queueWindow, #246)
@@ -321,6 +329,7 @@ function UI.init()
 	windows.Starter = StarterWindow.build(root) -- the Spa Starter Pack (switch starterPack with passes, issue 519)
 	windows.Gift = GiftCard.build(root) -- the gift stand's free pet (switch giftStand with pets, issue 521)
 	windows.Rename = RenameCard.build(root) -- name a hired helper, from their row in Pets (switch staffRename, #487)
+	windows.Build = BuildWindow.build(root) -- builds and upgrades from the HUD (switch buildWindow, issue 751)
 	windows.Helpers = HelpersWindow.build(root) -- the helpers' levels, modes and names (switch helpersWindow, 526)
 	HelpersWindow.onPass(function()
 		UI.open("Shop") -- Lou's pass is one of the Shop's cards
@@ -574,6 +583,16 @@ function UI.setHelpers(rows: { HelperViewRules.Row }, rename: boolean, shop: boo
 	HelpersWindow.set(rows, rename, shop)
 end
 
+-- The Build window's rows (BuildWindowController, BuildViewRules.builds and .upgrades).
+function UI.setBuild(builds: { BuildViewRules.Row }, upgrades: { BuildViewRules.Row })
+	BuildWindow.set(builds, upgrades)
+end
+
+-- fn(kind, id) when a row's Build or Buy is pressed in the Build window.
+function UI.onBuildPress(fn: (kind: string, id: string) -> ())
+	BuildWindow.onPress(fn)
+end
+
 -- The two lines shown around Roblox's leave screen (LeaveLinesController, LeaveLineRules); nil leaves one out.
 function UI.setLeaveLines(top: string?, bottom: string?)
 	LeaveLines.set(top, bottom)
@@ -647,6 +666,7 @@ end
 -- The starter pack window (StarterController): its three cards, the pack's price or nil, and the offer's end time.
 function UI.setStarter(items: { StarterViewRules.Item }, pack: number?, endsAt: number?)
 	StarterWindow.set(items, pack, endsAt)
+	StarterAd.set(items, pack)
 end
 
 -- The gift stand's card (GiftCardController): GiftController.state().
@@ -722,6 +742,7 @@ function UI.open(name: string)
 	end
 	local frame: Frame? = windows[name]
 	assert(frame ~= nil, `UI.open: no window {name}`)
+	SideButtons.closeTray()
 	Recap.setHidden(true)
 	frame.Visible = true
 	for _, listener in openedListeners do

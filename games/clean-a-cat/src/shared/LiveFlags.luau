@@ -126,11 +126,13 @@ LiveFlags.KEYS = {
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 	"helpersWindow", -- a Helpers button on the HUD, shown once a helper is hired, opens one row per helper: their name, level with Level up and its price, the line they wash first (tap to change) and Rename; a helper not hired yet shows their price at their pad, and Lou his pass in the Shop (UI/HelpersWindow, HelperViewRules, issue 526 item 3); off by default
 	"buttonArrive", -- a HUD button that unlocks while the player is in the game arrives with Motion-FX's small pop, tilt and twinkle, once (Effects/Arrive from UI/HUD/SideButtons, issue 528); buttons already there on join simply show; off by default
+	"fewerPills", -- with smallPrompts: at most two prompt pills show at once, the nearest within 10 studs (a winning one such as the door's Take cat at any distance); every key still works (Spa/PillLayout, issue 745); off by default
+	"buildWindow", -- with hudTidy: a Build button in the HUD grid opens "Build and upgrades", every build with its price and time (or its countdown, what it waits for, or Built) and every tool and the next bow with Buy; the server takes these asks away from the boards (BuildViewRules, UI/BuildWindow, BuildWindowController, issue 751); off by default
+	"hudTidy", -- the phone-friendly HUD: the side buttons become a 2 by 2 grid (Shop, Build, Helpers once one is hired, More) with the rest in a More tray, the coins sit on a solid pill, the waiting faces leave the HUD, the starter pack becomes a side ad with its struck shop total and saving, and the helper stand's Level up prompt leaves the world since the Helpers window has it (HUD/SideButtons, HUD/StarterAd, WorkerController, issues 738 and 739); off by default
 	"leaveLines", -- while Roblox's menu is open, two big friendly lines above and below its leave screen, each true for this player now (the tip jar with a helper hired, tomorrow's check in gift) or left out; no guilt or hurry (UI/LeaveLines, LeaveLineRules, issue 726); off by default
 	"spawnSide", -- with spawnView on, the player spawns on the same spot turned a quarter to face the door line's side of the room, so the camera behind them starts in open room and not on the back wall's art (SpaLayout.spawnSpot, PlotService, issue 670); off by default
 	"freeRewards", -- the gift card's Free Rewards rows: like the game (asked, never checked: Claim 10 s after the ask, 150 coins either way) and 30 minutes of play (one normal crate), each paid once per save by the server, beside the favourite plus group row for Starcoat; needs giftStand and pets on too (FreeRewardRules, FreeRewardService, UI/GiftCard, issue 730); off by default
 	"helperPopups", -- a helper finishing a cat sends HelperPaid to the owner (a popup over their stand, Design's) instead of the "+N coins: NAME washed CAT" toast, and the per cat toasts that repeat the screen ("+N coins", "+N coins, +S stars", "CAT went home") are left out; one-off toasts stay (WorkerService, SpaService, issue 743); off by default
-	"hudTidy", -- the phone HUD tidy (Design's HUD, issue 738); on the server's side of it, the helper stand's Level up prompt leaves the world, since the Helpers window has Level up (WorkerController); off by default
 	"counterLine", -- waiting customers stand at an open counter window by the desk with their cat on the counter in front of them (their carrier empty), and the player takes any cat from its counter place, no walk to the back of the line; another place than the front works as a pick, the front customer's cat going back on the counter; a leaving customer packs their cat back up (CounterRules, SpaService, FigureService, CarryController, issue 746); needs customers and customerCarry; off by default
 	"respawnCamera", -- for 2 s after a respawn, while the player stands still and has not moved the camera, a camera looking more than 30 degrees from the new character's facing is made Scriptable for one frame behind the character, then Custom again, so Roblox's camera module drops its stale last transform and carries on from there (on a respawn the module's own turn is lost and the camera keeps its old yaw) (RespawnCameraController, issue 670); off by default
 }
@@ -232,11 +234,13 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helpersWindow = true,
 	buttonArrive = true,
 	leaveLines = true,
+	hudTidy = true,
+	buildWindow = true,
+	fewerPills = true,
 	freeRewards = true,
 	spawnSide = true,
 	respawnCamera = true,
 	helperPopups = true,
-	hudTidy = true,
 	counterLine = true,
 } :: { [string]: boolean }
 
