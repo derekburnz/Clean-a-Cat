@@ -117,6 +117,19 @@ local Cues: { [string]: Cue } = {
 		minGap = 0.05,
 		voices = 2,
 	},
+	-- the meow files again, quieter, for Suds's speech bubble (Audio/SudsVoice, switch sudsVoice, #827)
+	sudsMeow = {
+		ids = {
+			"rbxassetid://100957394631396",
+			"rbxassetid://89957276276636",
+			"rbxassetid://70877155078126",
+		},
+		group = "Sfx",
+		volume = 0.28,
+		pitch = { 1.0, 1.15 },
+		minGap = 60, -- Design-Agent: never twice in a minute
+		voices = 1,
+	},
 	-- owner's Cat Cafe CatCafe_Ui_Open as CleanACat_Ui_Open: a window or the More tray opens (Audio/UiSounds, #800)
 	uiOpen = {
 		ids = { "rbxassetid://120566856629637" },
