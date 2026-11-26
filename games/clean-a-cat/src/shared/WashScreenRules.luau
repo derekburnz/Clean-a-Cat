@@ -27,7 +27,7 @@ WashScreenRules.WALL = 1 -- the placeholder walls' thickness
 WashScreenRules.FLOOR_LIFT = 0.05 -- the placeholder floor sits this far over the spot, clear of the plot's floor
 -- Parts whose middle is within KEEP studs of the spot along the floor stay: the tub or station, the cat in it and its
 -- bubbles. The Tools board and the next tub stand further out than that.
-WashScreenRules.KEEP = 3.5
+WashScreenRules.KEEP = 4.5 -- the 1.3x tub (issue 878) is 3 studs from its middle to its rim
 WashScreenRules.REFRESH = 0.5 -- seconds between looks for new parts in the room (a passer by, a new prop)
 
 -- The placeholder's look: Bubble Pastel teal walls, a lighter floor.
