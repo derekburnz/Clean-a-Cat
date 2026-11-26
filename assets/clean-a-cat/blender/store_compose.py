@@ -411,13 +411,18 @@ def _split_art(raw_dir):
     return art, rm, dirty.getchannel("A").point(lambda a: 255 if a >= 250 else 0).getbbox()
 
 
+ICON_GLOW = {"icon-spa-Prism": (0.5, 0.42, 0.4), "icon-box": (0.5, 0.4, 0.42)}     # dark cats: light behind the head
+
+
 def icon_split(raw_dir, size=512):
     """An icon from the split thumbnail's renders (#106): the cat's face filling the square, its left half muddy on
     the drab backdrop and its right half clean on the bubbles, the thin line between. No words."""
     art, rm, solid = _split_art(raw_dir)
     bg = bubble_backdrop((size, size), seed=9)
     mid = size // 2
-    bg.paste(mud_backdrop((size * 2, size), seed=7).crop((0, 0, mid, size)), (0, 0))
+    # a pale dusty backdrop with no splats on the muddy half: at 48 px splats and a dark brown made the half one
+    # brown smear, and the mud on the fur has to be the darkest thing there (Review-QA on #106)
+    bg.paste(backdrop_plain((size * 2, size), (238, 228, 210), (196, 180, 156)).crop((0, 0, mid, size)), (0, 0))
     k = size * 1.3 / (solid[3] - solid[1])                 # the head fills the square, the chest runs out under it
     art = art.resize((int(art.width * k), int(art.height * k)), Image.LANCZOS)
     bg.alpha_composite(art, (int(mid - rm * k), int(size * 0.1 - solid[1] * k)))
@@ -428,22 +433,33 @@ def icon_split(raw_dir, size=512):
         sparkle(d, fxr * size, fyr * size, r * size * 0.5, (255, 244, 176, 255))
     bg.alpha_composite(fx)
     line = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    lw = max(2, int(size * 0.006))
-    ImageDraw.Draw(line).rectangle((mid - lw - 2, 0, mid + lw + 2, size), fill=(40, 30, 60, 90))
-    line = line.filter(ImageFilter.GaussianBlur(lw * 0.8))
-    ImageDraw.Draw(line).rectangle((mid - lw, 0, mid + lw - 1, size), fill=SPLIT_LINE + (255,))
+    lw = max(2, int(size * 0.014))                          # a wide white divider: about 1.5 px at 48
+    ImageDraw.Draw(line).rectangle((mid - lw - 3, 0, mid + lw + 3, size), fill=(40, 30, 60, 120))
+    line = line.filter(ImageFilter.GaussianBlur(lw * 0.6))
+    ImageDraw.Draw(line).rectangle((mid - lw, 0, mid + lw - 1, size), fill=(255, 255, 255, 255))
     bg.alpha_composite(line)
     return bg
 
 
-def icon_plain(raw_dir, key, seed=9, shadow=1.0):
+def icon_plain(raw_dir, key, seed=9, shadow=1.0, glow=None):
     """A 512 icon from a close square render: the bubble backdrop and no words. `shadow` under 1 thins the floor's
-    see-through shadow (the box's flap throws a dark wedge into the corner)."""
+    see-through shadow (the box's flap throws a dark wedge into the corner). `glow` (x, y, radius as shares of the
+    square) puts a soft white light on the backdrop behind a dark cat's head, and a thin light rim goes round the
+    render, so a dark coat holds its outline at 48 px (Review-QA on #106)."""
     bg = bubble_backdrop((512, 512), seed=seed)
     art = Image.open(os.path.join(raw_dir, f"raw-{key}.png")).convert("RGBA")
     if shadow < 1.0:
         art.putalpha(art.getchannel("A").point(lambda v: v if v >= 250 else int(v * shadow)))
     art = art.resize((512, 512), Image.LANCZOS)
+    if glow:
+        gx, gy, gr = (v * 512 for v in glow)
+        light = Image.new("L", (512, 512), 0)
+        ImageDraw.Draw(light).ellipse((gx - gr, gy - gr, gx + gr, gy + gr), fill=215)
+        light = light.filter(ImageFilter.GaussianBlur(gr * 0.42))
+        bg.paste(Image.new("RGBA", (512, 512), (255, 255, 255, 255)), (0, 0), light)
+        solid = art.getchannel("A").point(lambda v: 255 if v >= 250 else 0)
+        rim = solid.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(2.2))
+        bg.paste(Image.new("RGBA", (512, 512), (255, 255, 255, 255)), (0, 0), rim.point(lambda v: int(v * 0.8)))
     bg.alpha_composite(art, (0, 0))
     return bg
 
@@ -469,13 +485,14 @@ def compose_lineup(raw_dir, final=False, key="thumb-lineup"):
     return bg
 
 
-def compose_box(raw_dir, final=False):
-    """The stray in his box (#106): the title on the left, the box close on the right and running out of the frame's
-    foot."""
+def compose_box(raw_dir, final=False, key="thumb-box"):
+    """A render that is the whole frame with the stacked title on its left (#106): the stray in his box
+    (`thumb-box`), the box close on the right and running out of the frame's foot, or the bath close with a special
+    cat in it (`thumb-close-<Name>`)."""
     size = (1920, 1080) if final else (1280, 720)
     w, h = size
     bg = bubble_backdrop(size, seed=5)
-    art = Image.open(os.path.join(raw_dir, "raw-thumb-box.png")).convert("RGBA").resize(size, Image.LANCZOS)
+    art = Image.open(os.path.join(raw_dir, f"raw-{key}.png")).convert("RGBA").resize(size, Image.LANCZOS)
     bg.alpha_composite(art, (0, 0))                       # the render is the whole frame
     title = title_block(int(w * 0.4))
     title = fit(title, w * 0.42, h * 0.8)
@@ -516,12 +533,12 @@ if __name__ == "__main__":
     for name in sorted(os.listdir(raw_dir)):                 # the second set (#106)
         key = name[4:-4]
         if name.startswith("raw-icon-spa-") or key == "icon-box":
-            icon_plain(raw_dir, key, shadow=0.3 if key == "icon-box" else 1.0).convert("RGB").save(
-                os.path.join(out_dir, f"{key}.png"))
+            icon_plain(raw_dir, key, shadow=0.3 if key == "icon-box" else 1.0,
+                       glow=ICON_GLOW.get(key)).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
         elif name.startswith("raw-thumb-spa-"):
             compose_spa(raw_dir, final, key).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
-        elif key == "thumb-box":
-            compose_box(raw_dir, final).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
+        elif key == "thumb-box" or name.startswith("raw-thumb-close-"):
+            compose_box(raw_dir, final, key).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
         elif key == "thumb-busy":
             compose_lineup(raw_dir, final, key).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
     if os.path.exists(os.path.join(raw_dir, "raw-split-dirty.png")):
