@@ -25,6 +25,7 @@ faces there (the Attachment's LookVector), all at floor height:
   SpotStation4, 5      two more station pads on the tub's side of the room, against the left wall (#267): the Bubble
                        Bath beside the tub and a little behind it, and the Pawdicure in front of the bath
   SpotVipDoor          the middle of the VIP Room door, facing into the room
+  SpotGardenDoor       the middle of the back door, facing into the room: the Garden's three looks (garden.py)
   SpotWorkerJo, Sam, Lou   the three workers' wash stands (worker_stations.py, #527), in a row along the back wall
                        between the back door and the VIP Room door, 4 apart, facing the entrance side
   SpotBoard            the chance board (CleanACat_Prop_ChanceBoard stands here), beside the entrance, facing in
@@ -110,6 +111,9 @@ SPOTS = {
     # The gift stand (#502): against the right wall near the front, between the towel rail and the corner plant, facing
     # across the room. Clear of the door, the queue, station 3 and the walk from the door to the stations.
     "SpotGift": (16.4, -11.8, 0.0, 270.0),
+    # The Garden (#579): the middle of the back door's opening, as SpotVipDoor is the VIP door's. The three garden
+    # looks (garden.py) pivot here and fill the yard behind.
+    "SpotGardenDoor": ((BACK_DOOR[0] + BACK_DOOR[1]) / 2, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
 }
 # Floor pads that show each spot in the graybox: (spot, size x, size y, swatch)
 PADS = [("SpotTub", 5.4, 4.6, "spa_sky"), ("SpotSpawn", 2.4, 2.4, "shirt_green"),
