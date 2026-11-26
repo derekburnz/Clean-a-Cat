@@ -12,6 +12,8 @@ local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForC
 local CarryShared =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CarryShared"))
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
+local CounterCrate =
+	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CounterCrate"))
 local Crate = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Crate"))
 local CustomerLeave =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerLeave"))
@@ -328,6 +330,8 @@ function EffectsController.Start()
 
 	-- The built Garden (#515): petals drift from the blossom tree and its clouds breathe, only near the camera.
 	GardenAmbience.start()
+	-- a customer's cat comes to the counter in its crate, steps out and sits, then the crate fades (#757)
+	CounterCrate.start()
 
 	-- A cat's heart bar ran out (issue #528): the customer turns and walks off with it, head low, and fades. The
 	-- Moment comes with Gameplay's heart bar (#543, townsfolk on) and passes the customer's figure.

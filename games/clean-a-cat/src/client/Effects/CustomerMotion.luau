@@ -23,6 +23,7 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
+local CounterCrate = require(script.Parent:WaitForChild("CounterCrate"))
 local CustomerPose = require(script.Parent:WaitForChild("CustomerPose"))
 local StaffPose = require(script.Parent:WaitForChild("StaffPose"))
 
@@ -197,6 +198,11 @@ local function update(rig: Rig, now: number)
 		local washing = rig.model:GetAttribute("Washing") == true
 		rig.wash = CustomerPose.approach(rig.wash, if washing then 1 else 0, StaffPose.BLEND, dt)
 		StaffPose.scrub(rig.pose, now, rig.seed, rig.wash * (1 - rig.amount), still)
+	end
+	-- a customer setting their cat's crate down on the counter reaches the carrying arm forward (issue #757)
+	local reachAt = rig.model:GetAttribute(CounterCrate.REACH_ATTRIBUTE)
+	if type(reachAt) == "number" and not still then
+		rig.pose.armR += CounterCrate.reachAt(now - reachAt)
 	end
 	apply(rig, rig.pose)
 	rig.moved = true
