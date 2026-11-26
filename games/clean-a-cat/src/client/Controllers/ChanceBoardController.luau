@@ -86,7 +86,7 @@ local function build(tier: number): Instance
 		label.LayoutOrder = index
 		label.Parent = gui
 	end
-	local nextStars = CatRules.nextTierStars(tier)
+	local nextStars = CatRules.nextTierStars(tier, LiveFlags.isOn)
 	local footer = Instance.new("TextLabel")
 	footer.Name = "NextTier"
 	footer.Size = UDim2.fromScale(1, 0.14)

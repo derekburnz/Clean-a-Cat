@@ -36,6 +36,8 @@ Each row of chances adds up to 100.
 | key | value | why | changed |
 |---|---|---|---|
 | `rarity.chance` | Common 60, Uncommon 25, Rare 11, Epic 3.5, Legendary 0.5 | Unchanged from the current `CatRules.CHANCES`; the star tiers stay as they are | 2026-11-25 |
+| `stars.perCustomer` | the wash's grade, 1 to 3, plus the rarity's stars over 1 (Common and Uncommon 1 to 3, Rare 2 to 4, Epic 3 to 5, Legendary and special 5 to 7); switch `gradeStars`, issue 868. Off: the rarity's stars (1, 1, 2, 3, 5, 5) | Derek 2026-11-26: "it should be +3 stars if I got a 3 star". The card said +1 star under a 3 star wash | 2026-11-26 |
+| `stars.tiers` | rarer customers from 45 and 120 spa stars with `gradeStars` (15 and 40 off) | About three times the stars, so the tiers start three times higher and still land near the 15th and 40th customer. The full recap card still covers the first three customers | 2026-11-26 |
 | `bench.size` | 3 at the start, plus one per built tub (`build.tub.effect`), at most 6 | "Three or four cats wait" | 2026-11-25 |
 | `bench.refillSeconds` | 6 | A new customer walks in about 6 s after one is taken | 2026-11-25 |
 | `bench.tutorialSize` | 1, then 2 at 2:00 | Matches the first session timeline | 2026-11-25 |

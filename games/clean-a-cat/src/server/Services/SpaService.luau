@@ -127,7 +127,7 @@ local function rollCustomer(player: Player): string
 	local first = (save == nil or save.stars <= 0) and (queue == nil or #queue == 0)
 	return CatRules.roll(function()
 		return random:NextNumber()
-	end, first, if save then CatRules.tierFor(save.stars) else 1)
+	end, first, if save then CatRules.tierFor(save.stars, LiveFlags.isOn) else 1)
 end
 
 local function nextNumber(): number
@@ -429,7 +429,7 @@ local function newCat(player: Player): SpaRules.Cat
 			-- A stray waits at the back door; a brand new player's first one is common.
 			cat.kind = CatRules.roll(function()
 				return random:NextNumber()
-			end, brandNew, CatRules.tierFor(save.stars))
+			end, brandNew, CatRules.tierFor(save.stars, LiveFlags.isOn))
 			cat.stray = true
 			cat.dirt = DirtRules.roll(cat.kind :: string, nextNumber, if brandNew then 1 else nil)
 			cat.needs = rollNeeds(cat.kind :: string, cat.dirt :: number)
@@ -976,7 +976,11 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		})
 		-- a slow wash pays less, but the card never shows a minus line: that part comes off the wash's own line
 		local base = formula.base + math.min(formula.speed, 0)
-		pay = { coins = base, tip = formula.tip, stars = formula.stars }
+		-- with gradeStars (issue 868) the wash's 1 to 3 stars are what the spa earns, plus a rarer cat's extra
+		local stars = if LiveFlags.isOn(CatRules.GRADE_STARS_FLAG)
+			then CatRules.gradeStars(formula.stars, formula.grade)
+			else formula.stars
+		pay = { coins = base, tip = formula.tip, stars = stars }
 		local lines: RecapRules.Extra = {
 			speed = math.max(formula.speed, 0),
 			early = formula.early,
@@ -1085,10 +1089,18 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	local starsBefore = save.stars
 	save.stars += pay.stars
 	player:SetAttribute(BOARD_LIT, true)
-	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+	player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars, LiveFlags.isOn))
 	if LiveFlags.isOn(RECAP_FLAG) then
 		-- The recap card shows the payment line by line (#224), so it replaces the toast.
-		local recap = RecapRules.make(kind, pay, bonus, starsBefore, isNew, extra)
+		-- the full card's FULL_BELOW_STARS counts old-size stars, so the first customers keep it with gradeStars
+		local recap = RecapRules.make(
+			kind,
+			pay,
+			bonus,
+			starsBefore // CatRules.starScale(LiveFlags.isOn),
+			isNew,
+			extra
+		)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins, recap)
 	else
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
@@ -1427,7 +1439,7 @@ function SpaService.Start()
 			player:SetAttribute(BOARD_LIT, true)
 		end
 		-- The board shows the chances of the player's star tier, the same table their rolls use.
-		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars, LiveFlags.isOn))
 		-- crates held, for the crates' HUD (issue 511); set here as special visitors are the first to give one
 		player:SetAttribute(
 			SpecialRules.CRATES_ATTRIBUTE,
