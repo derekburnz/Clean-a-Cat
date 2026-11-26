@@ -13,7 +13,7 @@ GiftRules.FLAG = "giftStand"
 GiftRules.PET = "Starcoat" -- CrateRules.GIFT_PETS: Model-Agent's CleanACat_Pet_Starcoat
 GiftRules.STAND_ASSET = "CleanACat_Prop_GiftStand" -- with parts PetSeat, Prompt, Glow and Lamp (Model-Agent, #502)
 GiftRules.STAND_NAME = "GiftStand" -- the stand's name in the plot's Props folder
-GiftRules.STAND_SPOT = "GiftStand" -- SpaLayout.PLOT_SPOTS
+GiftRules.STAND_SPOT = "SpotGift" -- Model-Agent's plot Attachment, SpaLayout.PLOT_SPOTS
 GiftRules.LIGHT_AT = 420 -- seconds of play before the stand lights (7:00)
 -- The game's Roblox group, whose members get the pet. Group ids are public on Roblox.
 GiftRules.GROUP_ID = 107520049
