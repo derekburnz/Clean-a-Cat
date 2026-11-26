@@ -18,9 +18,15 @@ within half a stud of the eye, belongs to a part players walk through. Two count
   beside                     the camera rests in the open next to a walk-through piece (a shelf, a door leaf, a
                              plant) and sees it close up, as it would see solid furniture. Reported, never a fail.
 
+  the side of a solid piece  the camera rests on a wall within half a stud of a solid piece that stands off it (a
+                             door frame, a picture) and sees that piece's side, or the wall beside it, close up
+                             as a band at the edge of the screen. Reported, never a fail: making the frame
+                             thinner (0.14 to 0.38 studs deep) left it at a third of the screen, and Sync's Studio
+                             look at the Garden door measured the same 35% this count gives.
+
 Limits: a wedge, ball or cylinder counts as its box, so round pieces read a little worse than they are. Every part
-with CanCollide stops the camera here, see-through ones too. Roblox's own camera module decides that in the game,
-so a Studio look is still the last word.
+with CanCollide stops the camera here, glass too; only the invisible barriers with CanQuery off do not. Roblox's
+own camera module decides that in the game, so a Studio look is still the last word.
 """
 import argparse
 import collections
@@ -50,13 +56,16 @@ def _file(name):
 
 
 def parts(node, offset=Vector((0, 0, 0)), out=None):
-    """Every Part and WedgePart under `node`: (name, middle, turn, size, collides, transparency)."""
+    """Every Part and WedgePart under `node`: (name, middle, turn, size, stops the camera, transparency). An
+    invisible `_Barrier` (CanQuery off) does not stop the camera: its rays pass through."""
     out = [] if out is None else out
     if node.get("className") in ("Part", "WedgePart"):
         p = node["properties"]
         cf = p["CFrame"]["CFrame"]
+        clear = float(p.get("Transparency", 0.0))
+        stops = bool(p.get("CanCollide", True)) and p.get("CanQuery", True) is not False and clear < 0.99
         out.append((node.get("name", ""), Vector(cf["position"]) + offset, Matrix(cf["orientation"]),
-                    Vector(p["Size"]), bool(p.get("CanCollide", True)), float(p.get("Transparency", 0.0))))
+                    Vector(p["Size"]), stops, clear))
     for child in node.get("children", ()):
         parts(child, offset, out)
     return out
@@ -83,6 +92,17 @@ class Scene:
         self.solid = BVHTree.FromPolygons(solid_v, solid_p, epsilon=0.0)
         self.boxes = [(pos, rot.transposed(), size / 2) for _n, pos, rot, size, collide, _c in ps if collide]
 
+    def near_piece(self, eye):
+        """True when a solid part thinner than a wall (under 0.45 studs) is within CLOSE of the eye: a piece on a
+        wall, not the corner of two walls."""
+        for pos, inv, half in self.boxes:
+            if min(half) * 2 >= 0.45:
+                continue
+            q = inv @ (eye - pos)
+            if all(abs(q[i]) < half[i] + CLOSE + NEAR for i in range(3)):
+                return True
+        return False
+
     def in_solid(self, point):
         for pos, inv, half in self.boxes:
             q = inv @ (point - pos)
@@ -91,8 +111,9 @@ class Scene:
         return False
 
     def covered(self, eye, look, right, up, nx, ny):
-        """Screen cells whose first drawn face is a close walk-through part: all, those seen from inside a solid."""
-        count, inside, what = 0, 0, collections.Counter()
+        """Screen cells whose first drawn face is a close walk-through part: all, those seen from inside a solid.
+        And, third, cells whose first drawn face is a close solid part other than a floor or a ceiling: its edge."""
+        count, inside, edge, what = 0, 0, 0, collections.Counter()
         for i in range(nx):
             for j in range(ny):
                 d = (look + right * ((i + 0.5) / nx - 0.5) * PROJ_X + up * ((j + 0.5) / ny - 0.5) * PROJ_Y).normalized()
@@ -107,18 +128,22 @@ class Scene:
                     t += hit[3]
                     if hit[1].dot(d) < 0:                          # turned to the eye: this is what is drawn
                         name, pos, _rot, size, collide, _clear = self.ps[self.owner[hit[2]]]
+                        label = "%s at (%.1f, %.1f, %.1f) size (%.2f, %.2f, %.2f)" % (
+                            name.replace("CleanACat_Area_", ""), *pos, *size)
                         if not collide:
                             count += 1
                             inside += self.in_solid(start)
-                            what["%s at (%.1f, %.1f, %.1f) size (%.2f, %.2f, %.2f)" % (
-                                name.replace("CleanACat_Area_", ""), *pos, *size)] += 1
+                            what[label] += 1
+                        elif abs(hit[1].y) < 0.7 and not self.in_solid(start):
+                            edge += 1
+                            what["solid " + label] += 1
                         break
                     origin = hit[0] + d * 1e-4
                     t += 1e-4
-        return count / (nx * ny), inside / (nx * ny), what
+        return count / (nx * ny), inside / (nx * ny), edge / (nx * ny), what
 
     def run(self, box, floor, step=0.75, heights=(4.5, 5.6), tilts=(0, -20)):
-        tested, beside, wall = 0, [], []
+        tested, beside, wall, edges = 0, [], [], []
         x = box[0] + HEAD_GAP
         while x <= box[1] - HEAD_GAP + 1e-6:
             z = box[2] + HEAD_GAP
@@ -148,19 +173,23 @@ class Scene:
                                 continue
                             tested += 1
                             eye = focus - look * (limit + NEAR)
-                            if self.covered(eye, look, right, up, 8, 4)[0] == 0:
+                            quick = self.covered(eye, look, right, up, 8, 4)
+                            if quick[0] == 0 and quick[2] == 0:
                                 continue
-                            share, inside, what = self.covered(eye, look, right, up, 24, 12)
+                            share, inside, edge, what = self.covered(eye, look, right, up, 24, 12)
                             row = (round(x, 2), round(z, 2), height, k * 30, tilt, what.most_common(2))
                             if share > 0.02:
                                 beside.append((share,) + row)
                             if inside > 0.02:
                                 wall.append((inside,) + row)
+                            if edge > 0.02 and self.near_piece(eye):
+                                edges.append((edge,) + row)
                 z += step
             x += step
         beside.sort(key=lambda f: -f[0])
         wall.sort(key=lambda f: -f[0])
-        return tested, beside, wall
+        edges.sort(key=lambda f: -f[0])
+        return tested, beside, wall, edges
 
 
 def load(model, adds=()):
@@ -170,7 +199,7 @@ def load(model, adds=()):
     return ps
 
 
-def report(label, tested, beside, wall, top=3):
+def report(label, tested, beside, wall, edges, top=3):
     def over(rows, share):
         return len([f for f in rows if f[0] > share])
     print("%s: %d camera rests" % (label, tested))
@@ -181,6 +210,10 @@ def report(label, tested, beside, wall, top=3):
     print("   close walk-through parts of any kind: over a quarter %d, over half %d, worst %.0f%%" % (
         over(beside, 0.25), over(beside, 0.5), 100 * max([f[0] for f in beside] or [0])))
     for f in beside[:top]:
+        print("      %.0f%% head at x %s z %s, height %s, yaw %s, tilt %s: %s" % (f[0] * 100, *f[1:]))
+    print("   the side of a solid piece standing off a wall (a door frame): over a quarter %d, over half %d, "
+          "worst %.0f%%" % (over(edges, 0.25), over(edges, 0.5), 100 * max([f[0] for f in edges] or [0])))
+    for f in edges[:top]:
         print("      %.0f%% head at x %s z %s, height %s, yaw %s, tilt %s: %s" % (f[0] * 100, *f[1:]))
     return over(wall, 0.5) == 0
 
