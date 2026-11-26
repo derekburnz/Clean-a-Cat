@@ -639,11 +639,67 @@ def _coat(objs, base, body, k, eyes, mat):
     return out
 
 
-def _tangle(k, swatch, swatch2):
+def _lab(name):
+    r, g, b = (palette.srgb_to_linear(c) for c in palette.hex_to_rgb(palette.SWATCHES[palette.idx(name)][1]))
+    xyz = (0.4124 * r + 0.3576 * g + 0.1805 * b) / 0.9505, 0.2126 * r + 0.7152 * g + 0.0722 * b, \
+        (0.0193 * r + 0.1192 * g + 0.9505 * b) / 1.089
+    f = [t ** (1 / 3) if t > 0.008856 else 7.787 * t + 16 / 116 for t in xyz]
+    return 116 * f[1] - 16, 500 * (f[0] - f[1]), 200 * (f[1] - f[2])
+
+
+TANGLE_SHADE = (8.0, 20.0)   # L* a solid coat's tangle stands off its fur: darker on light fur, lighter on dark
+
+
+def tangle_colours(look):
+    """The tangle's patch and teeth colours (#791): the patch is a shade of the fur, so it reads as ruffled fur and
+    not as a marking, and the brush still has something to find. A coat whose second colour is such a shade (stripes,
+    points) uses it; any other coat gets the swatch nearest the fur in hue, a little darker on light fur and a little
+    lighter on dark fur."""
+    fur, second = look["fur"], look["second"]
+    lf, ls = _lab(fur), _lab(second)
+    if TANGLE_SHADE[0] <= abs(ls[0] - lf[0]) <= 35 and math.hypot(ls[1] - lf[1], ls[2] - lf[2]) < 25:
+        return second, fur                             # a darker or lighter shade of the fur already: stripes, points
+    sign = -1 if lf[0] > 45 else 1
+    best = None
+    for name, _ in palette.SWATCHES:
+        if name in palette.METAL_SWATCHES or name in palette.CLEAR_SWATCHES or name.startswith(("mud", "gold")):
+            continue
+        lc = _lab(name)
+        dl = (lc[0] - lf[0]) * sign
+        if not TANGLE_SHADE[0] <= dl <= TANGLE_SHADE[1]:
+            continue
+        d = math.hypot(lc[1] - lf[1], lc[2] - lf[2]) + 0.3 * abs(dl - TANGLE_SHADE[0])
+        if best is None or d < best[0]:
+            best = (d, name)
+    return (best[1] if best else second), fur
+
+
+def _tangle(k, swatch, swatch2, j=0):
+    """A mat of tangled fur lying on the coat (#791: the old spiky clump stood out past the cat's sides like a flap).
+    In the tangle's own frame +Z is out of the fur: a low patch in a shade of the fur (tangle_colours), half sunk in it,
+    and along its lower edge three teeth, squares turned 45 degrees about the normal so the halves past the patch's
+    edge read as a ragged fringe of fur. Every piece is tipped a few degrees off the fur so no face lies flat on a
+    fur face or a mud face. Nothing stands more than about 0.06 studs (before the cat's scale) off the fur."""
     b = Builder()
-    for j, (ax, tilt) in enumerate(((0.3, 25), (2.4, -30), (4.5, 20))):   # turned off square so no side lies on a fur face
-        rot = Matrix.Rotation(ax, 3, "Z") @ Matrix.Rotation(math.radians(tilt), 3, "X")
-        b.box((0, 0, 0.06 * k), (0.08 * k, 0.08 * k, 0.26 * k), swatch if j != 1 else swatch2, bevel=False, rot=rot)
+    # turned and tipped so every face of every piece is at least 6.8 degrees off the fur's faces (the qa gate's
+    # z-fight test flags faces within 2.6 degrees and 1 mm of each other)
+    lean = (Matrix.Rotation(math.radians(14 + 11 * (j % 3)), 3, "Z") @ Matrix.Rotation(math.radians(7 + 3 * (j % 3)), 3, "X")
+            @ Matrix.Rotation(math.radians((6 + 2 * (j % 2)) * (-1) ** j), 3, "Y"))
+    b.box((0, 0.025 * k, 0.0), (0.26 * k, 0.15 * k, 0.07 * k), swatch2, bevel=False, rot=lean)
+    for i, x in enumerate((-0.085, 0.0, 0.085)):
+        rot = lean @ Matrix.Rotation(math.radians(45 + 8 * (i - 1)), 3, "Z") @ Matrix.Rotation(math.radians(10), 3, "X")   # tip sunk
+        b.box((x * k, -0.045 * k, 0.012 * k), (0.085 * k, 0.085 * k, 0.06 * k), swatch, bevel=False, rot=rot)
+    return b
+
+
+def _fluff(r, swatch):
+    """A fluffed puff (#791): a low soft cushion lying on the coat, wider than it is high, and a smaller one beside
+    it, so a brushed cat's outline grows softer and rounder without lumps standing off its sides. In the puff's own
+    frame +Z is out of the fur; the centres sit in the fur so only the top of each cushion shows. Roblox draws them
+    as smooth Sphere meshes filling their boxes."""
+    b = Builder()
+    b.sphere((0, 0, -0.1 * r), 1.0, swatch, segments=8, rings=4, scale=(r * 1.15, r, r * 0.42))
+    b.sphere((0.7 * r, 0.3 * r, -0.12 * r), 1.0, swatch, segments=6, rings=3, scale=(r * 0.75, r * 0.65, r * 0.34))
     return b
 
 
@@ -673,7 +729,7 @@ def build_dirty(name, mat, body, base=None):
         raise RuntimeError(f"{base}: only {len(tspots)} tangle spots found, need {TANGLES}")
     for i, (p, nrm, piece) in enumerate(tspots):
         part = f"Tangle{i + 1:02d}"
-        ob = _tangle(k, look["fur"], look["second"]).finalize(f"{base}_{part}", mat, location=tuple(p))
+        ob = _tangle(k, *tangle_colours(look)[::-1], i).finalize(f"{base}_{part}", mat, location=tuple(p))
         ob.matrix_world = Matrix.Translation(ob.location) @ _align(nrm).to_4x4()
         _apply_rotation(ob)
         objs.append(ob)
@@ -687,14 +743,12 @@ def build_dirty(name, mat, body, base=None):
         part = f"Fluff{i + 1:02d}"
         r = _F[j][2] * k
         sw = _swatch_at([o for o in clean if _piece(o, base) == piece][0], p) or look["fur"]
-        b = Builder()                                  # a cloud: a big puff and a smaller one beside it, a little up
-        b.sphere((0, 0, 0), 1.0, sw, segments=8, rings=4, scale=(r, r * 0.9, r * 0.62))
-        b.sphere((0.62 * r, 0.25 * r, 0.12 * r), 1.0, sw, segments=6, rings=3, scale=(r * 0.68, r * 0.62, r * 0.5))
-        ob = b.finalize(f"{base}_{part}", mat, location=tuple(p + nrm * 0.4 * r))
+        ob = _fluff(r, sw).finalize(f"{base}_{part}", mat, location=tuple(p))
         # turned about the normal, a different way each; a cat's `fluff_twist` turns all of its puffs a little more
         # when the gate finds one of them lying flat on a mud face
         twist = Matrix.Rotation(math.radians(17 + 31 * i + spec.get("fluff_twist", 0)), 4, "Z")
-        ob.matrix_world = Matrix.Translation(ob.location) @ _align(nrm).to_4x4() @ twist   # time: no face lies flat on fur
+        tip = Matrix.Rotation(math.radians(7), 4, "X") @ Matrix.Rotation(math.radians(5), 4, "Y")   # #791: no facet
+        ob.matrix_world = Matrix.Translation(ob.location) @ _align(nrm).to_4x4() @ twist @ tip    # lies on a fur face   # time: no face lies flat on fur
         _apply_rotation(ob)
         ob.hide_render = True                          # the previews show the cat as it arrives
         objs.append(ob)
