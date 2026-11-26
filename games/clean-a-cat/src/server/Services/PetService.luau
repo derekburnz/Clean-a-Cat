@@ -21,6 +21,7 @@ local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
 local StationService = require(script.Parent:WaitForChild("StationService"))
+local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
 local SECOND_PASS = "SecondPetSlot" -- Passes key: a second slot for the player and every worker (issue 518)
 
@@ -113,6 +114,7 @@ local function onOpen(player: Player, rawKind: unknown)
 	end
 	NetService.fire(player, "CrateOpened", kind, { id = pet.id, kind = pet.kind, star = pet.star })
 	local rarity = CrateRules.rarityOf(pet.kind) or "Common"
+	Telemetry.event(player, "crate_opened", 1, { kind :: string, rarity :: string }) -- (issue 530)
 	local where = if pet.slot == CrateRules.PLAYER_SLOT
 		then "on your tips"
 		else "when it sits beside you or a helper"

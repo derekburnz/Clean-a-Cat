@@ -22,6 +22,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local AskRules = require(Shared:WaitForChild("AskRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Remotes = require(Shared:WaitForChild("Remotes"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
 
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
@@ -75,7 +76,18 @@ function AskController.want(id: string, show: () -> (), hide: (() -> ())?): bool
 	return true
 end
 
+-- For the ask_shown and ask_answered events (issue 530): the server checks the id and logs it.
+local function report(id: string, answer: AskRules.Answer?)
+	if AskRules.QUIET[id] then
+		return
+	end
+	Remotes.event("ReportAsk"):FireServer(id, answer)
+end
+
 function AskController.done(id: string, answer: AskRules.Answer)
+	if queue.shown == id then
+		report(id, answer)
+	end
 	AskRules.done(queue, id, answer, os.clock())
 	if queue.shown ~= id and queue.waiting[id] == nil then
 		entries[id] = nil
@@ -93,7 +105,11 @@ function AskController.takeNow(id: string): boolean
 	if not AskController.on() then
 		return false
 	end
-	return AskRules.takeNow(queue, id, os.clock())
+	local taken = AskRules.takeNow(queue, id, os.clock())
+	if taken then
+		report(id, nil)
+	end
+	return taken
 end
 
 function AskController.skip(id: string)
@@ -153,6 +169,9 @@ local function tick()
 	local entry = entries[id]
 	if AskRules.QUIET[id] then
 		entries[id] = nil
+	end
+	if not AskRules.QUIET[id] then
+		report(id, nil)
 	end
 	if entry then
 		local show = entry.show

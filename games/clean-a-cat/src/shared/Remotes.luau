@@ -77,6 +77,8 @@ Remotes.ClientToServer = {
 	"RequestGiftClaim", -- ()  1 every 2 s; switches on, save loaded, the stand lit for this player, the favourite saved
 	-- and the player in the group (asked again on the server): gives Starcoat once and writes the save
 	-- Free Rewards rows on the gift card (FreeRewardService, behind freeRewards, giftStand and pets).
+	"ReportAsk", -- (id: string, answer: "yes" | "no" | "closed" | nil)  2 a second; an AskRules id the queue showed
+	-- (answer nil) or that was answered: logged as ask_shown / ask_answered, at most 60 a visit (AskReportService)
 	"RequestLikeAsk", -- ()  1 a second; switches on, save loaded, never asked and not paid: stamps likeAskedAt once
 	-- (server os.time()); FreeLikeReadyAt shows when Claim unlocks. The like itself is never read or needed
 	"RequestFreeReward", -- (key: "like" | "play")  1 a second; switches on, save loaded, that row not paid yet; like:
