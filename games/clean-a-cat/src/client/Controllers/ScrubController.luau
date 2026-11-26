@@ -24,6 +24,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
+local BowDrag = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowDrag"))
 local BowFit = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("BowFit"))
 local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("BrushShine"))
 local ControlHold = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ControlHold"))
@@ -868,6 +869,7 @@ end
 
 -- The press on the cat is let go as if the finger lifted: the next touch is a new press.
 local function dropPress()
+	BowDrag.cancel() -- (bowDrag) a held bow goes home
 	if activeInput ~= nil then
 		ScrubController.pointerMoved:Fire(nil, nil, nil)
 	end
@@ -1187,6 +1189,11 @@ local function showBows(v: Visit, cat: Cat)
 		end
 		local tub = SpaLayout.tubSpot()
 		for index, button in v.bowButtons do
+			-- (bowDrag, #889) each button shows the bow itself, in the player's best tier
+			local bowId = button:GetAttribute("BowId")
+			if BowDrag.on() and type(bowId) == "string" then
+				BowDrag.dress(button, bowId)
+			end
 			placeBow(button, tub * bowSpot(index)) -- the switch is read as they show
 			show(button, true)
 		end
@@ -1567,6 +1574,10 @@ local function pointerAt(input: InputObject, cat: Cat)
 end
 
 local function onPointer(input: InputObject)
+	if BowDrag.active() then
+		BowDrag.move(pointerRay(input)) -- (bowDrag) the held bow follows the pointer
+		return
+	end
 	local v = visit
 	local cat = if v then v.cat else nil
 	if not v or not cat or (v.stage ~= "dirty" and v.stage ~= "clean" and v.step == nil) then
@@ -1645,6 +1656,45 @@ local function onPointer(input: InputObject)
 	end
 end
 
+-- The bow `bowId` goes on the cat (a tap on its button, or with bowDrag a drop on the cat).
+local function chooseBow(v: Visit, cat: Cat, bowId: string)
+	if v.stage ~= "fluffed" then
+		return
+	end
+	setStage(v, "styled")
+	-- the tier in use decides the look (switch bowTiers); the plain bow while that tier's model is not in the place
+	local tier = Players.LocalPlayer:GetAttribute(BowRules.ATTRIBUTE)
+	local look = if LiveFlags.isOn(BowRules.FLAG)
+		then BowRules.lookId(bowId, BowRules.clean(tier))
+		else bowId
+	if
+		not (look ~= bowId and BowFit.wear(cat.model, look, CAT_SCALE))
+		and not BowFit.wear(cat.model, bowId, CAT_SCALE)
+	then
+		cat.bow.Color = BOW_COLORS[bowId] or BUTTON_COLOR
+		show(cat.bow, true)
+		cat.bow.CanQuery = false
+	end
+	for _, button in v.bowButtons do
+		show(button, false)
+	end
+	showCamera(v, true)
+	Moments.BowChosen:Fire(cat.model, bowId)
+	report("RequestPickBow", v, bowId)
+end
+
+-- (bowDrag) Is a bow let go along `ray` over the cat: the ray hits him, or passes within his box's half width.
+local function overCat(v: Visit, cat: Cat, ray: Ray): boolean
+	if cast(ray, v.catParams) then
+		return true
+	end
+	local box, size = cat.model:GetBoundingBox()
+	local toBox = box.Position - ray.Origin
+	local along = math.max(toBox:Dot(ray.Direction.Unit), 0)
+	local miss = (toBox - ray.Direction.Unit * along).Magnitude
+	return miss <= math.max(size.X, size.Y, size.Z) / 2
+end
+
 -- A tap on a bow or the camera. True when the press landed on one, so it does not also start a stroke.
 local function tapButton(v: Visit, input: InputObject): boolean
 	local cat = v.cat
@@ -1655,27 +1705,23 @@ local function tapButton(v: Visit, input: InputObject): boolean
 	end
 	local part = result.Instance
 	local bowId = part:GetAttribute("BowId")
-	if v.stage == "fluffed" and type(bowId) == "string" then
-		setStage(v, "styled")
-		-- the tier in use decides the look (switch bowTiers); the plain bow while that tier's model is not in the place
-		local tier = Players.LocalPlayer:GetAttribute(BowRules.ATTRIBUTE)
-		local look = if LiveFlags.isOn(BowRules.FLAG)
-			then BowRules.lookId(bowId, BowRules.clean(tier))
-			else bowId
-		if
-			not (look ~= bowId and BowFit.wear(cat.model, look, CAT_SCALE))
-			and not BowFit.wear(cat.model, bowId, CAT_SCALE)
-		then
-			cat.bow.Color = BOW_COLORS[bowId] or BUTTON_COLOR
-			show(cat.bow, true)
-			cat.bow.CanQuery = false
-		end
-		for _, button in v.bowButtons do
-			show(button, false)
-		end
-		showCamera(v, true)
-		Moments.BowChosen:Fire(cat.model, bowId)
-		report("RequestPickBow", v, bowId)
+	if
+		v.stage == "fluffed"
+		and type(bowId) == "string"
+		and BowDrag.on()
+		and ray
+		and (
+			input.UserInputType == Enum.UserInputType.Touch
+			or input.UserInputType == Enum.UserInputType.MouseButton1
+		)
+	then
+		-- (bowDrag, #889) a finger or the mouse picks the bow up; it is chosen when let go over the cat
+		BowDrag.begin(part, bowId, ray, placeBow)
+		activeInput = input
+		holdCamera(input.UserInputType == Enum.UserInputType.Touch)
+		holdControls(input.UserInputType == Enum.UserInputType.Touch)
+	elseif v.stage == "fluffed" and type(bowId) == "string" then
+		chooseBow(v, cat, bowId)
 	elseif v.stage == "styled" and part == v.camera then
 		-- The camera hides while the photo develops; the server pays once the visit is long enough, or hands the
 		-- camera back (CatStage) when it could not pay.
@@ -2342,6 +2388,19 @@ local function enable()
 	end)
 	trove:Connect(UserInputService.InputEnded, function(input: InputObject)
 		if input == activeInput then
+			local dropped = visit
+			local droppedCat = if dropped then dropped.cat else nil
+			if BowDrag.active() then
+				-- (bowDrag) let go: on the cat the bow is chosen, anywhere else it flies home
+				local bowId = BowDrag.finish(function(ray: Ray): boolean
+					return dropped ~= nil
+						and droppedCat ~= nil
+						and overCat(dropped, droppedCat, ray)
+				end)
+				if bowId and dropped and droppedCat then
+					chooseBow(dropped, droppedCat, bowId)
+				end
+			end
 			release()
 			local v = visit
 			local cat = if v then v.cat else nil
