@@ -23,6 +23,7 @@ AskRules.IDS = table.freeze({
 	"checkin", -- the check in card
 	"gift", -- the gift stand's ask
 	"favourite", -- the favourite ask
+	"like", -- the like ask after a good moment (LikeAskRules, switch likeAsk)
 	"bubble", -- Suds's help bubble, except the opening's own (BubbleRules.OPENING)
 	"menu_index", -- each new HUD button with its tip
 	"menu_quests",

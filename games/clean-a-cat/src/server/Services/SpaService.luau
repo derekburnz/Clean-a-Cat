@@ -50,6 +50,7 @@ local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
+local LikeAskService = require(script.Parent:WaitForChild("LikeAskService"))
 local MascotService = require(script.Parent:WaitForChild("MascotService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
@@ -1013,6 +1014,12 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 			tostring(save.asks[SpecialRules.FIRST_DONE] ~= true),
 		})
 	end
+	-- (likeAsk) a good moment: a special visitor's cat finished, or a three star wash (not the tutorial's own)
+	if cat.special then
+		LikeAskService.moment(player, "special")
+	elseif extra and extra.grade == 3 and not cat.tutorial then
+		LikeAskService.moment(player, "stars")
+	end
 	-- A special visitor's cat may leave a crate (switch specialVisitors): always the first of a save, then rarely.
 	if cat.special and LiveFlags.isOn(SpecialRules.FLAG) then
 		local firstDone = save.asks[SpecialRules.FIRST_DONE] == true
@@ -1170,6 +1177,7 @@ local function customerLeaves(player: Player, place: number)
 	if not LiveFlags.isOn(QUIET_FLAG) then
 		NetService.notice(player, `{kind} went home`)
 	end
+	LikeAskService.bad(player) -- (likeAsk) never within two minutes of a lost cat
 end
 
 -- Once a second (switch heartBar): bars drain, a customer whose bar is empty leaves (one a second at most), and each

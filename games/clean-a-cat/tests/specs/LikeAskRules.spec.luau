@@ -1,0 +1,69 @@
+--!strict
+return function()
+	local LikeAskRules = require(game:GetService("ReplicatedStorage").Shared.LikeAskRules)
+	local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+	local AskRules = require(game:GetService("ReplicatedStorage").Shared.AskRules)
+
+	local function state(fields: { [string]: any }): any
+		return {
+			visit = fields.visit or 1,
+			noVisit = fields.noVisit or 0,
+			likePaid = fields.likePaid == true,
+			askedThisVisit = fields.askedThisVisit == true,
+			lastBadAt = fields.lastBadAt or -math.huge,
+			now = fields.now or 1000,
+		}
+	end
+
+	describe("LikeAskRules", function()
+		it(
+			"ships behind a switch that starts off, in the ask queue after the favourite ask",
+			function()
+				expect(table.find(LiveFlags.KEYS, LikeAskRules.FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[LikeAskRules.FLAG]).to.equal(true)
+				local like = table.find(AskRules.IDS, "like")
+				expect(like).to.be.ok()
+				expect((like :: number) > (table.find(AskRules.IDS, "favourite") :: number)).to.equal(
+					true
+				)
+			end
+		)
+
+		it("takes only the good moments and the three answers", function()
+			for _, moment in LikeAskRules.MOMENTS do
+				expect(LikeAskRules.cleanMoment(moment)).to.equal(moment)
+			end
+			expect(LikeAskRules.cleanMoment("lost")).to.equal(nil)
+			expect(LikeAskRules.cleanMoment(1)).to.equal(nil)
+			expect(LikeAskRules.cleanAnswer("no")).to.equal("no")
+			expect(LikeAskRules.cleanAnswer("closed")).to.equal("closed")
+			expect(LikeAskRules.cleanAnswer("maybe")).to.equal(nil)
+		end)
+
+		it("asks once a visit, never once the like row is paid", function()
+			expect(LikeAskRules.blocked(state({}))).to.equal(false)
+			expect(LikeAskRules.blocked(state({ askedThisVisit = true }))).to.equal(true)
+			expect(LikeAskRules.blocked(state({ likePaid = true }))).to.equal(true)
+		end)
+
+		it("waits three visits after a no", function()
+			expect(LikeAskRules.blocked(state({ visit = 5, noVisit = 5 }))).to.equal(true)
+			expect(LikeAskRules.blocked(state({ visit = 8, noVisit = 5 }))).to.equal(true)
+			expect(LikeAskRules.blocked(state({ visit = 9, noVisit = 5 }))).to.equal(false)
+		end)
+
+		it("never asks within two minutes of a lost cat or a cancelled purchase", function()
+			expect(LikeAskRules.blocked(state({ lastBadAt = 900, now = 1000 }))).to.equal(true)
+			expect(LikeAskRules.blocked(state({ lastBadAt = 880, now = 1000 }))).to.equal(false)
+		end)
+
+		it("asks at once after a good moment, two minutes after a purchase", function()
+			expect(LikeAskRules.dueAt("special", 50)).to.equal(50)
+			expect(LikeAskRules.dueAt("stars", 50)).to.equal(50)
+			expect(LikeAskRules.dueAt("purchase", 50)).to.equal(
+				if LikeAskRules.AFTER_PURCHASE then 50 + LikeAskRules.PURCHASE_DELAY else nil
+			)
+			expect(LikeAskRules.PURCHASE_DELAY >= 120).to.equal(true)
+		end)
+	end)
+end
