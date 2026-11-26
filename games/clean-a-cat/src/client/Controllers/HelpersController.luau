@@ -49,7 +49,7 @@ local function refresh()
 	-- Lou's row points to the Shop only while his card shows there: the shop is on and his real price is known
 	local price = ReplicatedStorage:GetAttribute(Passes.PRICE_PREFIX .. "Lou")
 	local shop = LiveFlags.isOn(Passes.FLAG) and type(price) == "number" and price > 0
-	UI.setHelpers(HelperViewRules.rows(attribute, names), renaming, shop)
+	UI.setHelpers(HelperViewRules.rows(attribute, names, LiveFlags.isOn), renaming, shop)
 end
 
 function HelpersController.Init(_controllers: { [string]: any }) end

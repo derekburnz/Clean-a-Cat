@@ -261,7 +261,7 @@ function WorkerService.refresh(player: Player)
 				copy.Parent = station
 			end
 		else
-			label(station, `Hire {info.name}`, `{info.price} coins`)
+			label(station, `Hire {info.name}`, `{WorkerRules.priceOf(id, LiveFlags.isOn)} coins`)
 		end
 		station.Parent = folder
 	end
@@ -307,12 +307,12 @@ local function onHire(player: Player, rawId: unknown)
 	if id == nil then
 		return
 	end
-	local ok, reason = WorkerRules.canHire(save, id)
+	local ok, reason = WorkerRules.canHire(save, id, LiveFlags.isOn)
 	if not ok then
 		NetService.notice(player, reason or "Can't hire yet", "warning")
 		return
 	end
-	local spent = WorkerRules.hire(save, id, os.time())
+	local spent = WorkerRules.hire(save, id, os.time(), LiveFlags.isOn)
 	if spent <= 0 then
 		return
 	end

@@ -93,7 +93,7 @@ local function build(id: string)
 		if not hired then
 			main.Enabled = not info.pass
 			main.ActionText = `Hire {info.name}`
-			main.ObjectText = `{info.price or 0} coins`
+			main.ObjectText = `{WorkerRules.priceOf(id, LiveFlags.isOn) or 0} coins`
 			level.Enabled = false
 			return
 		end

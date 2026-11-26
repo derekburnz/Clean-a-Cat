@@ -62,6 +62,24 @@ WorkerRules.WORKERS = table.freeze({
 	Lou = table.freeze(LOU),
 }) :: { [string]: Info }
 
+-- Jo's price with the switch joPrice on (issue 841): today's early gifts (the check in's 50 at 3:45, the like
+-- reward's 150 from the first special visitor, quests from 6:00) put a 150 coin Jo at about cat 6; at 300 he lands
+-- at about cat 10 to 15, near the tenth minute (tuning worker.Jo.price).
+WorkerRules.PRICE_FLAG = "joPrice"
+WorkerRules.JO_PRICE = 300
+
+-- The coins worker `id` costs as the switches `isOn` make it; nil for a pass worker or an unknown id.
+function WorkerRules.priceOf(id: string, isOn: ((flag: string) -> boolean)?): number?
+	local info = WorkerRules.WORKERS[id]
+	if info == nil or info.price == nil then
+		return nil
+	end
+	if id == "Jo" and isOn ~= nil and isOn(WorkerRules.PRICE_FLAG) then
+		return WorkerRules.JO_PRICE
+	end
+	return info.price
+end
+
 -- The modes, the default first, with the words the station shows.
 WorkerRules.MODES = table.freeze({ "first", "leaving", "rarest", "dirtiest" }) :: { string }
 WorkerRules.MODE_NAMES = table.freeze({
@@ -161,16 +179,21 @@ end
 type Save = { coins: number, workers: { [string]: any } }
 
 -- Whether `save` may hire worker `id` for coins now, and the words to show when not.
-function WorkerRules.canHire(save: Save, id: string): (boolean, string?)
+function WorkerRules.canHire(
+	save: Save,
+	id: string,
+	isOn: ((flag: string) -> boolean)?
+): (boolean, string?)
 	local info = WorkerRules.WORKERS[id]
-	if info == nil or info.pass or info.price == nil then
+	local price = WorkerRules.priceOf(id, isOn)
+	if info == nil or info.pass or price == nil then
 		return false, "That helper can't be hired with coins"
 	end
 	if save.workers[id] ~= nil then
 		return false, `{info.name} already works here`
 	end
-	if save.coins < info.price then
-		return false, `{info.price - save.coins} more coins to hire {info.name}`
+	if save.coins < price then
+		return false, `{price - save.coins} more coins to hire {info.name}`
 	end
 	return true, nil
 end
@@ -181,11 +204,16 @@ function WorkerRules.newWorker(now: number): { mode: string, level: number, hire
 end
 
 -- Hires worker `id` for `save`. Returns the coins spent, 0 when they could not be hired.
-function WorkerRules.hire(save: Save, id: string, now: number): number
-	if not WorkerRules.canHire(save, id) then
+function WorkerRules.hire(
+	save: Save,
+	id: string,
+	now: number,
+	isOn: ((flag: string) -> boolean)?
+): number
+	if not WorkerRules.canHire(save, id, isOn) then
 		return 0
 	end
-	local price = WorkerRules.WORKERS[id].price :: number
+	local price = WorkerRules.priceOf(id, isOn) :: number
 	save.coins -= price
 	save.workers[id] = WorkerRules.newWorker(now)
 	return price
