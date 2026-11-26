@@ -204,8 +204,13 @@ COUNTER_T = 0.36                  # the top's thickness: thick enough to collide
 PLACES = 6                        # waiting places along the counter (the line's longest, SpaRules MAX_QUEUE)
 PLACE_PITCH = 3.2
 PLACE_X1 = -3.4                   # place 1, nearest the entrance; the others go away from it
-CAT_Y = -15.6                     # where a waiting cat sits, in the wall's line
-STAND_Y = -19.4                   # where its customer stands on the pavement, 3.8 behind it
+# The owner, 2026-11-26, after the counter: customers "walk up with the cats in their cat crate place them [on] the
+# table and have the cats walk out and sit then the crate dissapear slowly". The carrier (spa_props, 2.0 long) is set
+# down on the counter's outer part, its back just inside the counter's outer edge and its gate toward the room; the
+# cat walks out of the gate onto its mat, which lies clear of the gate (a sitting cat at 0.8 is 0.48 behind its pivot).
+CRATE_Y = -16.62                  # where a set down carrier's pivot goes: its back at -17.62, its gate at -15.62
+CAT_Y = -14.9                     # where a waiting cat sits: 0.24 clear of that gate (it was -15.6, in the wall's line)
+STAND_Y = -19.4                   # where its customer stands on the pavement, straight behind both
 MAT = (1.9, 1.7, 0.09)            # a place's mat; its top is 0.08 over the counter
 
 
@@ -647,7 +652,9 @@ def plot_rbx_extras():
 #   the counter  the display window left of the entrance (Roblox: on the tub's side, right behind the spawn) is an
 #              open window with a counter through the wall, PLACES places PLACE_PITCH apart, place 1 nearest the
 #              entrance. SpotCounterCat<i> is on the counter top (the cat faces the player inside), SpotCounter<i>
-#              on the pavement straight behind it (the customer faces in). Each place has a mat, its own part
+#              on the pavement straight behind it (the customer faces in). SpotCounterCrate<i> is on the counter
+#              top between them, where a customer sets their carrier down with its gate toward the room, so the
+#              cat walks out of it onto its mat. Each place has a mat, its own part
 #              `_CounterMat<i>`, so the game can tint it to match its customer. `_Counter_Barrier` keeps players
 #              off the counter and from hopping out through the window.
 #   the display window  the residents' cushions (SpotWindow1 to 4) move to a new, lower glazed window right of the
@@ -685,6 +692,7 @@ def _big_spots():
     for i in range(1, PLACES + 1):
         s["SpotCounter%d" % i] = (place_x(i), STAND_Y, 0.0, 180.0)
         s["SpotCounterCat%d" % i] = (place_x(i), CAT_Y, BIG_SEAT + MAT[2] - 0.01, 180.0)
+        s["SpotCounterCrate%d" % i] = (place_x(i), CRATE_Y, BIG_SEAT, 180.0)
     return s
 
 
