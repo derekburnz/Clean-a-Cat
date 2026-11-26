@@ -19,6 +19,7 @@ Products.IDS = table.freeze({
 	FinishTier3 = 0, -- 2 hours or less (35)
 	FinishTier4 = 0, -- 8 hours or less (75)
 	FinishTier5 = 0, -- more than 8 hours (99)
+	StarterPack = 0, -- the starter pack: Golden Sponge, Second pet slot and 2x Coins (StarterRules, issue 519; 299)
 }) :: { [string]: number }
 
 -- The product id for `key`, or nil while it is not created (0) or unknown.

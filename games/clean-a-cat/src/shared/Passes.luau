@@ -45,7 +45,10 @@ Passes.INFO = table.freeze({
 		name = "2x Coins",
 		text = "Every cat you wash by hand pays double",
 	}) :: Info,
-	SecondBuilder = table.freeze({ name = "Second Builder", text = "Build two things at once" }) :: Info,
+	SecondBuilder = table.freeze({
+		name = "Second Builder",
+		text = "Build a tub or station and a room at the same time",
+	}) :: Info,
 	GoldenSponge = table.freeze({
 		name = "Golden Sponge",
 		text = "The best sponge with gold bubbles, and +20% on every cat you wash by hand",
