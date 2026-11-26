@@ -305,6 +305,49 @@ local SCENES = {
 			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
 		end,
 	},
+	-- The shop's passes (issues 518 and 526, switch passes): four priced, Lou owned; then a phone-wide second pet
+	-- slot in the pets window.
+	{
+		"Shop",
+		function()
+			flag("passes", true)
+			local ShopViewRules = UIShim.require("ReplicatedStorage.Shared.ShopViewRules")
+			local prices: { [string]: number } = {
+				DoubleCoins = 199,
+				SecondBuilder = 299,
+				GoldenSponge = 99,
+				Lou = 249,
+				SecondPetSlot = 249,
+			}
+			UI.setShop(ShopViewRules.cards(function(key: string): unknown
+				return prices[key]
+			end, function(key: string): boolean
+				return key == "Lou"
+			end))
+			UI.open("Shop")
+		end,
+	},
+	{
+		"ShopEmpty",
+		function()
+			flag("passes", true)
+			UI.setShop({})
+			UI.open("Shop")
+		end,
+	},
+	{
+		"PetsSecond",
+		function()
+			flag("petsWindow", true)
+			UI.setPets({
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 2, kind = "Koi", star = 2, slot = "player2" },
+				{ id = 3, kind = "Nimbus", star = 1, slot = "Jo1" },
+				{ id = 4, kind = "Pebble", star = 1 },
+			}, { Jo = true, Sam = true }, true)
+			UI.open("Pets")
+		end,
+	},
 	-- The quest book (issue 516, switch quests): one daily done, the weekly crate one of three, then a short week.
 	{
 		"Quests",

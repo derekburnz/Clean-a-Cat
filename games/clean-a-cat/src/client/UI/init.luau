@@ -49,6 +49,7 @@ local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
 local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
+local ShopViewRules = require(Shared:WaitForChild("ShopViewRules"))
 
 local CatIndex = require(script:WaitForChild("CatIndex"))
 local CheckinCard = require(script:WaitForChild("CheckinCard"))
@@ -62,6 +63,7 @@ local QuestBook = require(script:WaitForChild("QuestBook"))
 local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
+local ShopWindow = require(script:WaitForChild("ShopWindow"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
 local Spotlight = require(script:WaitForChild("Spotlight"))
 local SudsBubble = require(script:WaitForChild("SudsBubble"))
@@ -273,6 +275,7 @@ function UI.init()
 	windows.Crate = CrateWindow.build(root) -- the crate's chance list and Open crate (switch crateWindow, issue 526)
 	windows.Checkin = CheckinCard.build(root) -- the seven day check in card (switch checkinCard, issue 517)
 	windows.Quests = QuestBook.build(root) -- the quest book (switch quests, issue 516)
+	windows.Shop = ShopWindow.build(root) -- the shop's game passes (switch passes, issues 518 and 526)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -449,8 +452,8 @@ function UI.onCrateOpen(fn: (kind: string) -> ())
 end
 
 -- The pets window's pets and which helpers are hired (PetsWindowController).
-function UI.setPets(pets: { CrateRules.Pet }, hired: { [string]: boolean })
-	PetsWindow.set(pets, hired)
+function UI.setPets(pets: { CrateRules.Pet }, hired: { [string]: boolean }, second: boolean?)
+	PetsWindow.set(pets, hired, second)
 end
 
 function UI.onPetPlace(fn: (id: number, slot: string?) -> ())
@@ -483,6 +486,15 @@ end
 
 function UI.onQuestChances(fn: (kind: string) -> ())
 	QuestBook.onChances(fn)
+end
+
+-- The shop's pass cards (ShopController, ShopViewRules.cards).
+function UI.setShop(cards: { ShopViewRules.Card })
+	ShopWindow.set(cards)
+end
+
+function UI.onShopBuy(fn: (key: string) -> ())
+	ShopWindow.onBuy(fn)
 end
 
 -- True while window `name` shows.

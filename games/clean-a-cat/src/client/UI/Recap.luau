@@ -55,6 +55,7 @@ local ROW_ICONS = {
 	early = "Sparkle",
 	dirt = "Mud",
 	bow = "Bow",
+	pass = "Coins", -- 2x Coins and the Golden Sponge (switch passes)
 } :: { [string]: string }
 local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
 local RED_TOP, RED_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")

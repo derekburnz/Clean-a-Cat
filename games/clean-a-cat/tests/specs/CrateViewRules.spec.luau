@@ -96,6 +96,25 @@ return function()
 			expect(rows[3].say).to.equal("Comes when Sam is hired")
 		end)
 
+		it("gives each row a second slot with the Second pet slot pass", function()
+			local two: { CrateRules.Pet } = {
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 2, kind = "Koi", star = 2, slot = "player2" },
+				{ id = 3, kind = "Nimbus", star = 1, slot = "Jo2" },
+			}
+			local rows = CrateViewRules.slotRows(two, { Jo = true }, true)
+			expect(rows[1].slot2).to.equal("player2")
+			expect((rows[1].pet2 :: CrateRules.Pet).id).to.equal(2)
+			expect(rows[1].say).to.equal("Cozy +5%, Koi +18%")
+			expect(rows[2].slot2).to.equal("Jo2")
+			expect(rows[2].say).to.equal("Nimbus +20%")
+			expect(rows[3].say).to.equal("Comes when Sam is hired")
+			expect(rows[3].pet2).to.equal(nil)
+			local one = CrateViewRules.slotRows(two, { Jo = true })
+			expect(one[1].slot2).to.equal(nil)
+			expect(one[1].pet2).to.equal(nil)
+		end)
+
 		it("takes a pet off its slot on a second tap, else puts a free one in", function()
 			local groups = CrateViewRules.groups(pets)
 			local cozy = groups[3]

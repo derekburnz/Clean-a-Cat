@@ -3,7 +3,8 @@
 -- petsWindow, off by default; the HUD's Pets button opens it (HUD/SideButtons).
 --
 --   PetsWindow.build(root)           makes the window once and returns its layer (UI registers "Pets")
---   PetsWindow.set(pets, hired)      draws the player's pets (CrateRules.Pet list) and slots (hired helpers' ids)
+--   PetsWindow.set(pets, hired, second)   draws the player's pets (CrateRules.Pet list) and slots (hired helpers'
+--                                    ids); `second` with the Second pet slot pass: two slots on each row
 --   PetsWindow.onPlace(fn)           fn(petId, slot?) when a pet tile is tapped: into the picked slot, or off it
 --   PetsWindow.onFuse(fn)            fn(ids) when Fuse is pressed on three of the same
 --
@@ -109,6 +110,7 @@ local parts: Parts? = nil
 local pets: { CrateRules.Pet } = {}
 local hired: { [string]: boolean } = {}
 local picked = CrateRules.PLAYER_SLOT
+local secondSlot = false -- the Second pet slot pass (Pass_SecondPetSlot): two slots a row
 local placeListeners: { (id: number, slot: string?) -> () } = {}
 local fuseListeners: { (ids: { number }) -> () } = {}
 
@@ -321,8 +323,9 @@ local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, co
 	card.BackgroundTransparency = if row.locked then 0.45 else 0
 	card.BackgroundColor3 = Kit.WHITE
 	Kit.corner(card, UDim.new(0, 18))
-	local edge = Kit.stroke(card, if row.slot == picked then 4 else 3)
-	edge.Color = if row.slot == picked and not row.locked then PICKED else Kit.LINE
+	local mineNow = row.slot == picked or row.slot2 == picked
+	local edge = Kit.stroke(card, if mineNow then 4 else 3)
+	edge.Color = if mineNow and not row.locked then PICKED else Kit.LINE
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
 	pad.Parent = card
@@ -358,33 +361,62 @@ local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, co
 	d.Text = row.say
 	Kit.shrinkToFit(d, s.say)
 
-	local petIn = frame("PetIn", card)
-	petIn.AnchorPoint = Vector2.new(1, 0.5)
-	petIn.Position = UDim2.fromScale(1, 0.5)
-	petIn.Size = UDim2.fromOffset(s.who, s.who)
-	petIn.BackgroundTransparency = 0
-	petIn.BackgroundColor3 = Kit.WHITE
-	Kit.corner(petIn, UDim.new(0, 16))
-	local petEdge = Kit.stroke(petIn, 3)
-	petEdge.Color = if row.pet then Kit.INK else Kit.INK_SOFT
-	local pet = row.pet
-	if pet then
-		Portraits.draw(pet.kind, CrateRules.rarityOf(pet.kind) or "Common", petIn, true)
-	else
-		local icon = frame("Icon", petIn)
-		icon.AnchorPoint = Vector2.new(0.5, 0.5)
-		icon.Position = UDim2.fromScale(0.5, 0.5)
-		icon.Size = UDim2.fromScale(0.6, 0.6)
-		Icons.draw(if row.locked then "Lock" else "Paw", icon, true)
+	-- the pet in the slot; with the Second pet slot pass a second box beside it. Each box picks its own slot.
+	local function petBox(name: string, slot: string, pet: CrateRules.Pet?, right: number)
+		local box = frame(name, card)
+		box.AnchorPoint = Vector2.new(1, 0.5)
+		box.Position = UDim2.new(1, -right, 0.5, 0)
+		box.Size = UDim2.fromOffset(s.who, s.who)
+		box.BackgroundTransparency = 0
+		box.BackgroundColor3 = Kit.WHITE
+		Kit.corner(box, UDim.new(0, 16))
+		local boxEdge = Kit.stroke(box, if slot == picked and not row.locked then 4 else 3)
+		boxEdge.Color = if slot == picked and not row.locked
+			then PICKED
+			elseif pet then Kit.INK
+			else Kit.INK_SOFT
+		if pet then
+			Portraits.draw(pet.kind, CrateRules.rarityOf(pet.kind) or "Common", box, true)
+		else
+			local icon = frame("Icon", box)
+			icon.AnchorPoint = Vector2.new(0.5, 0.5)
+			icon.Position = UDim2.fromScale(0.5, 0.5)
+			icon.Size = UDim2.fromScale(0.6, 0.6)
+			Icons.draw(if row.locked then "Lock" else "Paw", icon, true)
+		end
+		return box
 	end
-
+	local slot2 = if row.locked then nil else row.slot2 -- a locked helper shows one box, so its line has room
+	local boxes = if slot2 then 2 else 1
+	text.Size = UDim2.new(1, -(s.who + 12 + boxes * s.who + (boxes - 1) * 8 + 12), 1, 0)
+	local mine = if row.helper then `{row.who}'s` else "your"
 	if not row.locked then
-		local tap =
-			tapArea(card, if row.helper then `Pick {row.who}'s pet slot` else "Pick your pet slot")
+		-- made before the boxes, so a box's own tap (a later sibling's child) sits over it
+		local tap = tapArea(card, `Pick {mine} pet slot`)
 		tap.Activated:Connect(function()
 			picked = row.slot
 			PetsWindow.redraw()
 		end)
+	end
+	local first = petBox("PetIn", row.slot, row.pet, if slot2 then s.who + 8 else 0)
+	local second: Frame? = if slot2 then petBox("PetIn2", slot2, row.pet2, 0) else nil
+
+	if not row.locked then
+		if second and slot2 then
+			-- the second box takes its own taps, over the card's
+			local tap2 = tapArea(second, `Pick {mine} second pet slot`)
+			tap2.ZIndex = 4
+			tap2.Activated:Connect(function()
+				picked = slot2
+				PetsWindow.redraw()
+			end)
+			local tap1 = tapArea(first, `Pick {mine} pet slot`)
+			tap1.ZIndex = 4
+			tap1.Activated:Connect(function()
+				picked = row.slot
+				PetsWindow.redraw()
+			end)
+		end
 	end
 end
 
@@ -449,10 +481,10 @@ function PetsWindow.redraw()
 	p.empty.TextSize = s.say
 
 	-- the slots
-	local rows = CrateViewRules.slotRows(pets, hired)
+	local rows = CrateViewRules.slotRows(pets, hired, secondSlot)
 	local pickedOk = false
 	for _, row in rows do
-		pickedOk = pickedOk or (row.slot == picked and not row.locked)
+		pickedOk = pickedOk or ((row.slot == picked or row.slot2 == picked) and not row.locked)
 	end
 	if not pickedOk then
 		picked = CrateRules.PLAYER_SLOT
@@ -464,8 +496,12 @@ function PetsWindow.redraw()
 	end
 end
 
-function PetsWindow.set(newPets: { CrateRules.Pet }, newHired: { [string]: boolean })
-	pets, hired = newPets, newHired
+function PetsWindow.set(
+	newPets: { CrateRules.Pet },
+	newHired: { [string]: boolean },
+	second: boolean?
+)
+	pets, hired, secondSlot = newPets, newHired, second == true
 	local p = parts
 	if p and p.window.layer.Visible then
 		PetsWindow.redraw()
