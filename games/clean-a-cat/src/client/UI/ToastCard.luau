@@ -6,7 +6,9 @@
 --     wash's meter and step line in the middle or the prompts in the world;
 --   * cream with the ink outline and ink words, and a coloured tab at its left by type: mint for a reward (a notice
 --     that starts with "+" or says "is yours" or "is ready"), peach for a "not yet" (warning), lilac for news;
---   * the cat's round portrait in the tab when the notice is about a cat (a special visitor).
+--   * the cat's round portrait in the tab when the notice is about a cat (a special visitor);
+--   * left of anything else at the top right in its band (the coin pill, the friend tag, the starter pack ad), so it
+--     never covers them (issue 925).
 -- Off, it is the old dark bar. Design-Agent, 2026-11-26.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextService = game:GetService("TextService")
@@ -34,6 +36,7 @@ local ICON = 30
 local SIDE = 14 -- px of room right of the words
 local EDGE = 16 -- px from the screen's right edge
 local TOP = 64 -- px from the top: under Roblox's top bar row
+local GAP = 10 -- px between the card and a piece it moves left of
 
 -- The card's type for a notice (ToastRules, pure and covered by its spec).
 ToastCard.lookOf = ToastRules.lookOf
@@ -49,8 +52,39 @@ local function child<T>(parent: Instance, name: string, class: string): T
 	return (made :: any) :: T
 end
 
--- Sets `label` (the toast) for one notice of `kind`, about the cat named `icon` when given.
-function ToastCard.style(label: TextLabel, text: string, kind: ("info" | "warning")?, icon: string?)
+-- Px from the screen's right edge the card's right edge sits at: EDGE, or left of the furthest left of `around` (the
+-- pieces at the top right) that shares the card's rows from `top` to `bottom` (px within `root`).
+local function rightGap(
+	root: GuiObject?,
+	around: { GuiObject },
+	top: number,
+	bottom: number
+): number
+	local gap = EDGE
+	if root == nil then
+		return gap
+	end
+	local rootX, rootY = root.AbsolutePosition.X, root.AbsolutePosition.Y
+	local rootRight = rootX + root.AbsoluteSize.X
+	for _, piece in around do
+		local y0 = piece.AbsolutePosition.Y - rootY
+		local y1 = y0 + piece.AbsoluteSize.Y
+		if piece.Visible and piece.AbsoluteSize.X > 0 and y0 < bottom and y1 > top then
+			gap = math.max(gap, rootRight - piece.AbsolutePosition.X + GAP)
+		end
+	end
+	return gap
+end
+
+-- Sets `label` (the toast) for one notice of `kind`, about the cat named `icon` when given; `around` are the pieces at
+-- the top right it keeps clear of.
+function ToastCard.style(
+	label: TextLabel,
+	text: string,
+	kind: ("info" | "warning")?,
+	icon: string?,
+	around: { GuiObject }?
+)
 	local on = LiveFlags.isOn(ToastRules.FLAG)
 	local stroke = child(label, "Outline", "UIStroke") :: UIStroke
 	local pad = child(label, "Room", "UIPadding") :: UIPadding
@@ -87,8 +121,11 @@ function ToastCard.style(label: TextLabel, text: string, kind: ("info" | "warnin
 	local room = MAX_W - TAB_W - 10 - SIDE -- the words' own width inside the card's padding
 	local words = TextService:GetTextSize(text, TEXT_SIZE, Kit.FONT, Vector2.new(room, 1000))
 	local width = math.min(words.X + 2, room) + TAB_W + 10 + SIDE
+	local parent = label.Parent
+	local root: GuiObject? = if parent and parent:IsA("GuiObject") then parent else nil
+	local right = rightGap(root, around or {}, TOP, TOP + math.max(label.Size.Y.Offset, 40))
 	label.AnchorPoint = Vector2.new(1, 0)
-	label.Position = UDim2.new(1, -EDGE, 0, TOP)
+	label.Position = UDim2.new(1, -right, 0, TOP)
 	label.Size = UDim2.fromOffset(width, label.Size.Y.Offset)
 	pad.PaddingLeft = UDim.new(0, TAB_W + 10)
 	pad.PaddingRight = UDim.new(0, SIDE)

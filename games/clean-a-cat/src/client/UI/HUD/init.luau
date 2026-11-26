@@ -614,6 +614,22 @@ function HUD.listShown(): boolean
 	return StepList.isShown()
 end
 
+-- The pieces at the top right (the coin pill and the friend tag), so a notice card can sit clear of them
+-- (ToastCard, issue 925). Hidden ones are left out.
+function HUD.topRight(): { GuiObject }
+	local p = pieces
+	local out: { GuiObject } = {}
+	if p == nil then
+		return out
+	end
+	for _, piece in { p.coins, p.friends } do
+		if piece.Visible then
+			table.insert(out, piece)
+		end
+	end
+	return out
+end
+
 -- True while a wash is under way and the HUD is on: the step line has the top of the screen.
 function HUD.washing(): boolean
 	return washWas
