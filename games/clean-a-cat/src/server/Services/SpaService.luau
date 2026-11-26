@@ -44,6 +44,7 @@ local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local VisitRules = require(Shared:WaitForChild("VisitRules"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
+local WashPace = require(Shared:WaitForChild("WashPace"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
@@ -400,6 +401,7 @@ local function newCat(player: Player): SpaRules.Cat
 	local id = (nextId[player] or 0) + 1
 	nextId[player] = id
 	local cat = SpaRules.newCat(id, os.clock())
+	cat.brushStrokes = WashPace.pace(LiveFlags.isOn).brushStrokes -- the kitten's too (switch washPace)
 	if sudsNext(player) then
 		-- The kitten comes first and is nobody's: he takes no customer from the line and no stray turn.
 		cat.kind = SudsRules.NAME
@@ -414,7 +416,7 @@ local function newCat(player: Player): SpaRules.Cat
 	-- The Pro Brush (switch proBrush, #267) brushes the tangles out in fewer strokes; the save says who owns it.
 	local tools: { [string]: boolean } = if save then save.tools else {}
 	cat.brushStrokes = ToolRules.brushStrokes(
-		SpaRules.BRUSH_STROKES,
+		WashPace.pace(LiveFlags.isOn).brushStrokes, -- 8 with the switch washPace (issue 865), else 3
 		function(toolId: string): boolean
 			return tools[toolId] == true
 		end,
