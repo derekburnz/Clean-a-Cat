@@ -53,6 +53,14 @@ SideButtons.BUTTONS = {
 		bottom = Color3.fromHex("FFC4D8"),
 	},
 	{
+		window = "Checkin",
+		flag = "checkinCard",
+		icon = "Gift",
+		caption = "Gifts",
+		top = Color3.fromHex("FFF1C2"),
+		bottom = Color3.fromHex("FFD97A"),
+	},
+	{
 		window = "Settings",
 		flag = "settingsCard",
 		icon = "Settings",

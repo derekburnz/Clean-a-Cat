@@ -57,16 +57,22 @@ local function cleanPets(raw: unknown): { CrateRules.Pet }
 	return out
 end
 
+-- Opens the window on crate `kind` (the check in card's chance button for the good crate). False with the switches off.
+function CrateWindowController.show(raw: string): boolean
+	local kind = CrateRules.cleanKind(raw)
+	if kind == nil or not on() then
+		return false
+	end
+	shownKind = kind
+	UI.showCrate(kind, count(kind), CrateViewRules.rows(kind, owned))
+	return true
+end
+
 function CrateWindowController.Init(controllers: { [string]: any })
 	local crates = controllers.CrateController
 	if crates and crates.lookInside then
 		crates.lookInside:Connect(function(raw: string)
-			local kind = CrateRules.cleanKind(raw)
-			if kind == nil or not on() then
-				return
-			end
-			shownKind = kind
-			UI.showCrate(kind, count(kind), CrateViewRules.rows(kind, owned))
+			CrateWindowController.show(raw)
 		end)
 	end
 end
