@@ -22,6 +22,7 @@
 --   WashPops.chain(state, now) -> number               pure: counts a hit; the combo count after it
 --   WashPops.cheer(text, at, kind)                     shows a word over world point `at` ("cheer" or "done")
 --   WashPops.combo(count, at)                          shows the combo count at world point `at`
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
@@ -158,7 +159,14 @@ local function hudFloor(): number
 			local g = piece :: GuiObject
 			local layer = g:FindFirstAncestorOfClass("ScreenGui")
 			if g.Visible and (layer == nil or layer.Enabled) and g.AbsoluteSize.Y > 0 then
-				floor = math.max(floor, g.AbsolutePosition.Y + g.AbsoluteSize.Y + WashPops.HUD_GAP)
+				-- a ScreenGui that keeps the top bar inset measures from under it; the words use the whole viewport
+				local inset = if layer and not layer.IgnoreGuiInset
+					then GuiService:GetGuiInset().Y
+					else 0
+				floor = math.max(
+					floor,
+					g.AbsolutePosition.Y + g.AbsoluteSize.Y + inset + WashPops.HUD_GAP
+				)
 			end
 		end
 	end
