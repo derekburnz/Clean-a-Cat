@@ -147,9 +147,11 @@ local function refreshPrompts()
 	for id, prompt in prompts do
 		local item = BuildRules.item(id, LiveFlags.isOn) :: BuildRules.Item
 		local running: BuildRules.Build? = builds[item.slot]
-		if built[id] then
+		local mine = running ~= nil and running.item == id
+		-- built, or (issue 574) its slot busy or its first build missing: one pill fewer
+		if built[id] or not (mine or startable(item)) then
 			prompt.Enabled = false
-		elseif running and running.item == id then
+		elseif running and mine then
 			prompt.Enabled = true
 			local finish = finishText(running.endsAt - now)
 			prompt.HoldDuration = if finish then FinishRules.HOLD_SECONDS else 0
@@ -161,8 +163,6 @@ local function refreshPrompts()
 				prompt.ActionText = `Building {item.name}`
 				prompt.ObjectText = countdown(running.endsAt - now)
 			end
-		elseif not startable(item) then
-			prompt.Enabled = false -- its slot is busy or its first build is missing: one pill fewer (issue 574)
 		else
 			prompt.Enabled = true
 			prompt.ActionText = `Build {item.name}`
