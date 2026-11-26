@@ -61,6 +61,11 @@ local PILL_LIFT = 12 -- design px the pill and the friend tag sit higher than th
 -- One wash step per stage the player acts in, in order (ScrubController and SpaRules). A `later` step (#267) shows
 -- only for a cat whose wash takes it (setPlan).
 type Step = { stage: string, icon: string, say: string, later: boolean? }
+
+-- A step's words now: the Bubble Bath reads "Foam up the cat" with switch foamStep (WashDraft.bathSay, issue 888).
+local function sayOf(step: Step): string
+	return if step.stage == "bath" then WashDraft.bathSay(LiveFlags.isOn).bath else step.say
+end
 HUD.STEPS = {
 	{ stage = "dirty", icon = "Sponge", say = "Scrub the mud" },
 	{ stage = "clean", icon = "Brush", say = "Brush the fur" },
@@ -292,7 +297,7 @@ local function redraw()
 	local listSteps: { StepList.Step } = {}
 	if washing then
 		for _, index in shown do
-			table.insert(listSteps, { icon = HUD.STEPS[index].icon, say = HUD.STEPS[index].say })
+			table.insert(listSteps, { icon = HUD.STEPS[index].icon, say = sayOf(HUD.STEPS[index]) })
 		end
 	end
 	StepList.set(listSteps, current or 0)
@@ -316,7 +321,7 @@ local function redraw()
 	end
 	local step = HUD.STEPS[shown[current]]
 	p.stepText.TextSize = s.stepText
-	p.stepText.Text = `Step {current} of {#shown} · {step.say}`
+	p.stepText.Text = `Step {current} of {#shown} · {sayOf(step)}`
 	-- each step's place among the shown ones; a later step this wash skips is hidden
 	local placeOf: { [number]: number } = {}
 	for place, index in shown do
