@@ -47,6 +47,7 @@ LiveFlags.KEYS = {
 	"trailBold", -- the guide line in gold with a dark outline so it reads on the spa floor (Effects/TrailLine, Derek 2026-11-26); off by default
 	"zoomCap", -- the camera zooms out at most CameraZoomController.MAX_ZOOM studs so the map ends stay hidden (issue 895); off by default
 	"photoFx", -- the photo camera's LED blinks faster, the flash fires and a printed card slides out the back (Effects/PhotoFx, issue 862); off by default
+	"carryBlink", -- a cat scaled after its rig was built (carried Suds) blinks with eyes at its own size (Effects/CatMotion, issue 903); off by default
 	"tubLife", -- the tub's foam settles and breathes, bubbles rise and pop, the tap runs with a ripple (Effects/TubLife, issue 879); off by default
 	"catWalkStand", -- a washed cat walks out on its standing model with a leg trot, not sitting (Effects/CatWalkOut); off by default
 	"pillPointer", -- a gold hand bobs over the prompt pill at the end of a guided walk (Controllers/PillPointerController); off by default
@@ -180,6 +181,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	pillPointer = true,
 	catWalkStand = true,
 	tubLife = true,
+	carryBlink = true,
 	photoFx = true,
 	zoomCap = true,
 	sudsVoice = true,
