@@ -17,9 +17,9 @@ on:
         options: [dev, live]
         default: dev
       action:
-        description: "list: what passes and products exist. passes, products: make the missing ones. server-size: set 6. store-art: upload the icon and 4 thumbnails and set them on the page"
+        description: "list: what passes and products exist. passes, products: make the missing ones. server-size: set 6. store-art: upload the icon and 4 thumbnails and set them on the page. description: set the game page text from assets/clean-a-cat/store/description-2026-11-26.txt and read it back"
         type: choice
-        options: [list, passes, products, server-size, store-art]
+        options: [list, passes, products, server-size, store-art, description]
         default: list
       confirm:
         description: "yes to make or change anything; anything else only prints the plan"
@@ -53,4 +53,5 @@ jobs:
           CONFIRM: ${{ inputs.confirm }}
           GROUP_ID: ${{ vars.ROBLOX_GROUP_ID || '107520049' }}
           ART_DIR: assets/clean-a-cat/store/picked-2026-11-26
+          DESCRIPTION_FILE: assets/clean-a-cat/store/description-2026-11-26.txt
         run: python3 games/clean-a-cat/tools/opencloud/store-setup.py
