@@ -55,7 +55,7 @@ export type Extra = {
 export type Row = { key: string, say: string, value: number }
 
 local function rank(rarity: string): number?
-	return table.find(CatRules.RARITIES, rarity)
+	return CatRules.rank(rarity) -- a special visitor's cat (SPECIAL) is rarest, so always the full card
 end
 
 -- Whether a customer gets the full card: the spa's stars before this customer paid, and the cat's rarity.

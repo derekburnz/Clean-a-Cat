@@ -49,6 +49,15 @@ CatRules.ROSTER = table.freeze({
 	Legendary = table.freeze({ "Starcoat" }),
 }) :: { [string]: { string } }
 
+-- The special visitors' cats (issue 510, switch specialVisitors): never rolled for the line and never in the main Cat
+-- Index; a special visitor brings one now and then, and only the player can wash it. Their rarity is SPECIAL, which is
+-- not one of RARITIES (so the rolls, the chance board and the index never see it) but is in ALL_RARITIES, rarest.
+CatRules.SPECIAL = "Special"
+CatRules.SPECIAL_CATS =
+	table.freeze({ "Bathtile", "Sherbet", "Stardust", "Rosette", "Prism", "Jade" }) :: { string }
+CatRules.ALL_RARITIES =
+	table.freeze({ "Common", "Uncommon", "Rare", "Epic", "Legendary", "Special" }) :: { Rarity }
+
 export type Pay = { coins: number, tip: number, stars: number }
 
 -- What a customer pays when the cat goes back clean: coins, a tip for a clean job and stars for the spa.
@@ -58,6 +67,7 @@ CatRules.PAY = table.freeze({
 	Rare = table.freeze({ coins = 25, tip = 5, stars = 2 }),
 	Epic = table.freeze({ coins = 40, tip = 8, stars = 3 }),
 	Legendary = table.freeze({ coins = 80, tip = 15, stars = 5 }),
+	Special = table.freeze({ coins = 120, tip = 20, stars = 5 }), -- tuning pay.base.Special and pay.tip
 }) :: { [string]: Pay }
 
 -- Station that each need takes; a need whose station is not built shows locked.
@@ -85,14 +95,27 @@ function CatRules.needOn(need: Need, isOn: (flag: string) -> boolean): boolean
 	return flag == nil or isOn(flag) or isOn(CatRules.DIRT_FLAG)
 end
 
--- The rarity of `name`, or nil for a name not on the roster.
+-- The rarity of `name`, or nil for a name not on the roster. A special visitor's cat is SPECIAL.
 function CatRules.rarityOf(name: string): Rarity?
 	for _, rarity in CatRules.RARITIES do
 		if table.find(CatRules.ROSTER[rarity], name) then
 			return rarity
 		end
 	end
+	if table.find(CatRules.SPECIAL_CATS, name) then
+		return CatRules.SPECIAL
+	end
 	return nil
+end
+
+-- Whether `name` is a special visitor's cat.
+function CatRules.isSpecial(name: string): boolean
+	return table.find(CatRules.SPECIAL_CATS, name) ~= nil
+end
+
+-- How rare `rarity` is, 1 for Common up to SPECIAL; nil for anything else.
+function CatRules.rank(rarity: string): number?
+	return table.find(CatRules.ALL_RARITIES, rarity)
 end
 
 -- The star tier (an index into TIERS) for a spa with `stars` stars.

@@ -27,6 +27,7 @@ export type Card = {
 	dirt: number?, -- 1 to 4 while the dirt levels are on (DirtRules); nil while they are off
 	steps: number, -- the steps this cat's wash shows (DirtRules.steps), the bow included
 	heart: HeartRules.Heart?, -- the heart bar while heartBar is on (HeartRules.fill draws it); nil while it is off
+	special: boolean, -- a special visitor's cat (CatRules.SPECIAL_CATS): only the player can wash it
 }
 
 -- The line as the server sent it, kept only if it is a list of real cats no longer than the line can be.
@@ -152,6 +153,7 @@ function QueueViewRules.cards(
 			dirt = level,
 			steps = DirtRules.steps(needs),
 			heart = if hearts then hearts[place] else nil,
+			special = CatRules.isSpecial(cat),
 		})
 	end
 	return out
@@ -160,6 +162,11 @@ end
 -- The window's line under the title: how often the rarest VIP in the line visits, with the chance board's own
 -- numbers at the player's star tier (CatRules.boardLines, the same source as the board), or the plain ask.
 function QueueViewRules.headline(cards: { Card }, tier: number?): string
+	for _, card in cards do
+		if card.special then
+			return "A special visitor is here · only you can wash their cat"
+		end
+	end
 	local rarest: string? = nil
 	for _, card in cards do
 		if

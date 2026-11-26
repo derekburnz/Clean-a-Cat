@@ -28,7 +28,9 @@ HeartRules.SECONDS = table.freeze({
 	Rare = 120,
 	Epic = 100,
 	Legendary = 90,
+	Special = 240, -- heart.seconds.special
 }) :: { [string]: number }
+HeartRules.FIRST_SPECIAL_SECONDS = 600 -- heart.seconds.firstSpecial: the scripted first visitor, "so nobody rushes"
 HeartRules.FIRST_MINUTES_SECONDS = 240 -- every bar while the save has played less than FIRST_MINUTES
 HeartRules.FIRST_MINUTES = 10 * 60 -- seconds of play
 -- Before NO_LEAVE_BEFORE seconds of play a bar stops at SLIVER: the cat stays grumpy but never leaves (heart.noLeaveBefore).
