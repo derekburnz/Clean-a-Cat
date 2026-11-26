@@ -685,7 +685,8 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 	for _, step in stepUps do
 		-- read before WalkTo and WalkAt change: where the new walk starts
 		local here = standsAt(step.figure, now)
-		if walkFrom[step.figure] == nil then
+		local known: Vector3? = walkFrom[step.figure]
+		if known == nil then
 			local figure = step.figure
 			figure.Destroying:Once(function()
 				walkFrom[figure] = nil
