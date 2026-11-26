@@ -902,8 +902,15 @@ local function ownsUpgrade(id: string): boolean
 	return LiveFlags.isOn(TOOLS_FLAG) and ownsTool(id)
 end
 
--- How far the sponge reaches: wider with Bubble Soap. The server sets the owned-tool attributes.
+-- How far the sponge reaches: wider with Bubble Soap. The server sets the owned-tool attributes. The Golden Sponge
+-- pass (issue 518; the server sets Pass_GoldenSponge only while the switch passes is on) is the best sponge there is.
 local function spongeRadius(): number
+	local Passes = require(Shared:WaitForChild("Passes")) -- here, not at the top: this file is near Luau's 200 locals
+	if Players.LocalPlayer:GetAttribute(Passes.ATTRIBUTE_PREFIX .. "GoldenSponge") == true then
+		return ToolRules.spongeRadius(ScrubRules.SPONGE_RADIUS, function()
+			return true
+		end)
+	end
 	if not LiveFlags.isOn(TOOLS_FLAG) then
 		return ScrubRules.SPONGE_RADIUS
 	end

@@ -170,6 +170,17 @@ function WorkerRules.hire(save: Save, id: string, now: number): number
 	return price
 end
 
+-- Hires pass worker `id` (Lou) for `save` once his pass is owned (PassService, issue 518): no coins, the same record
+-- as any hire, and never twice. True when he was hired now.
+function WorkerRules.hirePass(save: Save, id: string, now: number): boolean
+	local info = WorkerRules.WORKERS[id]
+	if info == nil or not info.pass or save.workers[id] ~= nil then
+		return false
+	end
+	save.workers[id] = WorkerRules.newWorker(now)
+	return true
+end
+
 -- The coins to take worker record `worker` up a level, or nil at the top.
 function WorkerRules.levelCost(worker: { level: number }): number?
 	return WorkerRules.LEVEL_COST[WorkerRules.cleanLevel(worker.level) + 1]

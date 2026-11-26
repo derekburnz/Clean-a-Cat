@@ -14,6 +14,7 @@
 --   BuildBoardController.finished:Connect(fn)  fn(id) when a build finishes (also one that finished while away),
 --                                              for the celebration effects and the builder panel
 local ExperienceNotificationService = game:GetService("ExperienceNotificationService")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -24,6 +25,7 @@ local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local FinishRules = require(Shared:WaitForChild("FinishRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local NotifyRules = require(Shared:WaitForChild("NotifyRules"))
+local Passes = require(Shared:WaitForChild("Passes"))
 local Products = require(Shared:WaitForChild("Products"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local Signal = require(Shared:WaitForChild("Signal"))
@@ -125,7 +127,8 @@ local function finishText(left: number): string?
 end
 
 -- Whether `item` could be started now as far as the board knows (the server checks again): its first build done and
--- its slot free, or under tubBuilds no build at all running (one builder). Coins are left to the server's notice, so
+-- its slot free, or under tubBuilds no build at all running (one builder; with the Second Builder pass, just its own
+-- slot free). Coins are left to the server's notice, so
 -- the price still shows. With boardKeys on, the rest of the board's pills are hidden, so the few left never crowd.
 local function startable(item: BuildRules.Item): boolean
 	if not LiveFlags.isOn(BoardProp.KEYS_FLAG) then
@@ -134,7 +137,9 @@ local function startable(item: BuildRules.Item): boolean
 	if item.requires and not built[item.requires] then
 		return false
 	end
-	if LiveFlags.isOn(BuildRules.TUBS_FLAG) then
+	local second = Players.LocalPlayer:GetAttribute(Passes.ATTRIBUTE_PREFIX .. "SecondBuilder")
+		== true
+	if LiveFlags.isOn(BuildRules.TUBS_FLAG) and not second then
 		return next(builds) == nil
 	end
 	return builds[item.slot] == nil

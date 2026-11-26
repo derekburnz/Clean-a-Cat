@@ -117,6 +117,8 @@ export type Save = {
 	reopens: number, -- Grand Reopenings done (none at launch; see reopen)
 	finishCredits: { [string]: number }, -- Finish now bought with nothing left to finish, by tier "1" to "5": the next
 	-- one it covers is free (FinishRules, issue 515)
+	passes: { [string]: boolean }, -- game passes this save knows the player owns, by Passes key (issue 518): set when a
+	-- purchase completes or Roblox says so on a join, and never taken back, so a slow ownership check loses nothing
 }
 
 local SaveSchema = {}
@@ -169,6 +171,7 @@ function SaveSchema.template(now: number): Save
 		bench = {},
 		reopens = 0,
 		finishCredits = {},
+		passes = {},
 	}
 end
 
@@ -215,10 +218,12 @@ end
 -- How long the starter pack offer lasts from first join (tuning: starter pack, 72 hours).
 SaveSchema.STARTER_SECONDS = 72 * 60 * 60
 
--- Stamps the starter pack's end once, from first join; a save stamped already keeps its end. Returns the end.
-function SaveSchema.stampStarter(save: Save): number
+-- Stamps the starter pack's end once, from first join; a save stamped already keeps its end. With `now`, a save from
+-- before the pack existed starts its 72 hours at this join instead (Growth-Agent's rule), never earlier than its
+-- first join. Returns the end.
+function SaveSchema.stampStarter(save: Save, now: number?): number
 	if save.starterEndsAt == 0 then
-		save.starterEndsAt = save.createdAt + SaveSchema.STARTER_SECONDS
+		save.starterEndsAt = math.max(save.createdAt, now or 0) + SaveSchema.STARTER_SECONDS
 	end
 	return save.starterEndsAt
 end

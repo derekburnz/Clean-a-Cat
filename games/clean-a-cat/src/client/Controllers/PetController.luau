@@ -21,6 +21,9 @@ local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 local FOLDER_NAME = "CleanACat_Pets"
 local BESIDE = CFrame.new(2.4, 0, 1.2) -- from the player's feet: a little behind and to the right
 local BESIDE_STATION = CFrame.new(2.4, 0, -1.6) -- from a worker's station spot, in front to the right
+-- A second slot's pet (the Second pet slot pass, issue 518) stands on the other side.
+local BESIDE_SECOND = CFrame.new(-2.4, 0, 1.2)
+local BESIDE_STATION_SECOND = CFrame.new(-2.4, 0, -1.6)
 local FOLLOW_RATE = 8 -- how fast a pet catches up, per second
 local FAR = 90 -- studs: a follower past this from the camera is not moved
 local HIP = 3 -- studs from a character's root down to its feet
@@ -71,22 +74,24 @@ end
 
 -- Where the pet in `slot` of `owner` should stand now, or nil when there is nowhere.
 local function target(owner: Player, slot: string): CFrame?
-	if slot == CrateRules.PLAYER_SLOT then
+	if slot == CrateRules.PLAYER_SLOT or slot == CrateRules.PLAYER_SLOT .. "2" then
 		local character = owner.Character
 		local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
 		if root and root:IsA("BasePart") then
 			local at = (root :: BasePart).CFrame
-			return CFrame.new(at.Position - Vector3.new(0, HIP, 0)) * at.Rotation * BESIDE
+			local beside = if slot == CrateRules.PLAYER_SLOT then BESIDE else BESIDE_SECOND
+			return CFrame.new(at.Position - Vector3.new(0, HIP, 0)) * at.Rotation * beside
 		end
 		return nil
 	end
-	local id = string.match(slot, "^(%a+)%d$")
+	local id, number = string.match(slot, "^(%a+)(%d)$")
 	local info = if id then WorkerRules.WORKERS[id] else nil
 	local plot = SpaLayout.slotOf(owner)
 	if info == nil or plot == nil then
 		return nil
 	end
-	return SpaLayout.slotSpot(info.spot, plot) * BESIDE_STATION
+	return SpaLayout.slotSpot(info.spot, plot)
+		* (if number == "2" then BESIDE_STATION_SECOND else BESIDE_STATION)
 end
 
 local function drop(key: string)

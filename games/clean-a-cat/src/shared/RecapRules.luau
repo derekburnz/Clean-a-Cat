@@ -8,6 +8,7 @@
 -- XP, a 3-star wash grade and a quick-job bonus are not in the game yet, so the card has no rows for them.
 local BowRules = require(script.Parent:WaitForChild("BowRules"))
 local CatRules = require(script.Parent:WaitForChild("CatRules"))
+local Passes = require(script.Parent:WaitForChild("Passes"))
 
 local RecapRules = {}
 
@@ -40,6 +41,8 @@ export type Recap = {
 	grade: number?, -- the wash's stars, 1 to 3; 0 when there is no grade
 	bow: number?, -- the bow tier's coins (switch bowTiers, BowRules); 0 or nil when off
 	bowTier: string?, -- the tier that earned them, one of BowRules.TIERS, for the line's words
+	pass: number?, -- what 2x Coins and the Golden Sponge added (switch passes, Passes.handExtra); 0 or nil without
+	passLine: string?, -- the line's words, one of Passes.LINES
 }
 
 -- The pay formula's lines for make; each 0 when not given.
@@ -50,6 +53,8 @@ export type Extra = {
 	grade: number?,
 	bow: number?,
 	bowTier: string?,
+	pass: number?,
+	passLine: string?,
 }
 
 export type Row = { key: string, say: string, value: number }
@@ -94,6 +99,8 @@ function RecapRules.make(
 		grade = more.grade or 0,
 		bow = more.bow or 0,
 		bowTier = more.bowTier,
+		pass = more.pass or 0,
+		passLine = more.passLine,
 	}
 end
 
@@ -125,6 +132,7 @@ function RecapRules.total(recap: Recap): number
 		+ (recap.early or 0)
 		+ (recap.dirt or 0)
 		+ (recap.bow or 0)
+		+ (recap.pass or 0)
 		+ recap.tip
 		+ recap.bonus
 end
@@ -145,6 +153,7 @@ function RecapRules.rows(recap: Recap): { Row }
 	add("bow", `{BowRules.TIER[recap.bowTier or BowRules.FIRST].name} bow`, recap.bow or 0)
 	add("tip", "Happy owner tip", recap.tip)
 	add("bonus", "Spa stations bonus", recap.bonus)
+	add("pass", recap.passLine or "Pass bonus", recap.pass or 0)
 	return rows
 end
 
@@ -186,7 +195,15 @@ function RecapRules.clean(raw: unknown): Recap?
 		optional(t.speed, MAX_AMOUNT), optional(t.early, MAX_AMOUNT), optional(t.dirt, MAX_AMOUNT)
 	local grade = optional(t.grade, 3)
 	local bow = optional(t.bow, MAX_AMOUNT)
-	if speed == nil or early == nil or dirt == nil or grade == nil or bow == nil then
+	local pass = optional(t.pass, MAX_AMOUNT)
+	if speed == nil or early == nil or dirt == nil or grade == nil or bow == nil or pass == nil then
+		return nil
+	end
+	local passLine: unknown = t.passLine
+	if
+		passLine ~= nil
+		and (type(passLine) ~= "string" or table.find(Passes.LINES, passLine) == nil)
+	then
 		return nil
 	end
 	local bowTier: unknown = t.bowTier
@@ -209,6 +226,8 @@ function RecapRules.clean(raw: unknown): Recap?
 		grade = grade,
 		bow = bow,
 		bowTier = BowRules.clean(bowTier),
+		pass = pass,
+		passLine = if type(passLine) == "string" then passLine else nil,
 	}
 end
 

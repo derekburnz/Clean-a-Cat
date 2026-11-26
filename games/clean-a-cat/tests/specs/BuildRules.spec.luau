@@ -183,6 +183,17 @@ return function()
 			expect(BuildRules.canStart(s, "ThirdTub", off)).to.equal(true)
 		end)
 
+		it("builds a room and a tub at once with the Second Builder", function()
+			local s = state(100000)
+			expect(BuildRules.start(s, "SecondTub", 0, all, 2)).to.equal(90)
+			expect(BuildRules.start(s, "Garden", 0, all, 2)).to.equal(25000)
+			-- each slot still builds one thing: the Third Tub waits for the Second
+			BuildRules.finish(s, 15)
+			expect(BuildRules.canStart(s, "ThirdTub", all, 2)).to.equal(true)
+			expect(BuildRules.start(s, "ThirdTub", 15, all, 2)).to.equal(1000)
+			expect(BuildRules.canStart(s, "FourthTub", all, 2)).to.equal(false)
+		end)
+
 		it(
 			"gives the VIP Room its new price and time and no first build under tubBuilds",
 			function()

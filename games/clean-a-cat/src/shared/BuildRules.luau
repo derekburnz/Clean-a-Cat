@@ -219,8 +219,14 @@ function BuildRules.shown(id: string, isOn: IsOn): boolean
 end
 
 -- Can `state` start building `id`? False plus a short reason the player can read. Under tubBuilds (with `isOn`)
--- there is one builder, so one build at a time whatever its slot.
-function BuildRules.canStart(state: State, id: string, isOn: IsOn?): (boolean, string?)
+-- there is one builder, so one build at a time whatever its slot; with `builders` 2 (the Second Builder pass, issue
+-- 518) each slot builds on its own again, so a room and a station (a tub) can build at once.
+function BuildRules.canStart(
+	state: State,
+	id: string,
+	isOn: IsOn?,
+	builders: number?
+): (boolean, string?)
 	local item = BuildRules.item(id, isOn)
 	if item == nil then
 		return false, "Unknown build"
@@ -229,7 +235,7 @@ function BuildRules.canStart(state: State, id: string, isOn: IsOn?): (boolean, s
 		return false, `{item.name} is already built`
 	end
 	local running = state.builds[item.slot]
-	if running == nil and isOn and isOn(BuildRules.TUBS_FLAG) then
+	if running == nil and isOn and isOn(BuildRules.TUBS_FLAG) and (builders or 1) < 2 then
 		for _, slot in BuildRules.SLOTS do
 			running = running or state.builds[slot]
 		end
@@ -251,8 +257,14 @@ end
 
 -- Starts `id` at `now` when canStart allows it: takes the price and sets the slot's end time. Returns the
 -- coins spent (0 when refused).
-function BuildRules.start(state: State, id: string, now: number, isOn: IsOn?): number
-	if not BuildRules.canStart(state, id, isOn) then
+function BuildRules.start(
+	state: State,
+	id: string,
+	now: number,
+	isOn: IsOn?,
+	builders: number?
+): number
+	if not BuildRules.canStart(state, id, isOn, builders) then
 		return 0
 	end
 	local item = BuildRules.item(id, isOn) :: Item

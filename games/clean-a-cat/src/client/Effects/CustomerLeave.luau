@@ -113,12 +113,10 @@ function CustomerLeave.leave(figure: Model)
 	local start = figure:GetPivot()
 	copy:PivotTo(start)
 	copy.Parent = folder()
-	-- the real figure stays until the server redraws the line; hide it now so there is only one
-	for _, d in figure:GetDescendants() do
-		if d:IsA("BasePart") then
-			(d :: BasePart).LocalTransparencyModifier = 1
-		end
-	end
+	-- the real figure stays until the server's Destroy reaches this client; take it out of this client's world in the
+	-- same frame so there is only one (B4 on #571: a hide by LocalTransparencyModifier can be undone for a frame by
+	-- the walk-in's own show). The server's Destroy still follows; nothing else holds the figure.
+	figure.Parent = nil
 
 	local still = Effects.reducedMotion()
 	local began = os.clock()

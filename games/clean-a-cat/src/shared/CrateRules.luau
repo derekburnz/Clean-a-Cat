@@ -50,6 +50,16 @@ CrateRules.FUSE_COUNT = 3
 CrateRules.PET_CAP = 0.3 -- worker.petCap: a worker's pets together boost their pay at most this much
 CrateRules.PLAYER_SLOT = "player"
 
+-- The Robux crate (issue 514, switch crateShop; tuning crate.price): a developer product per row, each giving that many
+-- normal crates, the very crate that is earned, with the same chance list. A paid random item: the chances show before
+-- any buy, and a player whose PolicyService info restricts paid random items never sees it (the Player attribute
+-- SHOP_ATTRIBUTE stays nil for them) and keeps the earned crates.
+CrateRules.SHOP_FLAG = "crateShop"
+CrateRules.SHOP_KIND = "normal"
+CrateRules.SHOP_ATTRIBUTE = "CrateShop" -- Player attribute: true while this player may buy crates for Robux
+CrateRules.SHOP = table.freeze({ CrateOne = 1, CrateFive = 5 }) :: { [string]: number } -- Products key -> crates
+CrateRules.SHOP_KEYS = table.freeze({ "CrateOne", "CrateFive" }) :: { string } -- the shop's order
+
 export type Odds = { pet: string, rarity: string, percent: number, boost: number }
 export type Pet = { id: number, kind: string, star: number, slot: string? }
 
@@ -123,11 +133,26 @@ function CrateRules.boostOf(pets: { Pet }, slots: { string }, cap: number?): num
 	return if cap then math.min(total, cap) else total
 end
 
--- The slots a save has: the player's, and one beside each hired worker ("<id>1").
-function CrateRules.slots(save: { workers: { [string]: any } }): { string }
-	local out = { CrateRules.PLAYER_SLOT }
+-- The player's own slots: "player", and "player2" with the Second pet slot pass (`second`, issue 518).
+function CrateRules.playerSlots(second: boolean?): { string }
+	return if second
+		then { CrateRules.PLAYER_SLOT, CrateRules.PLAYER_SLOT .. "2" }
+		else { CrateRules.PLAYER_SLOT }
+end
+
+-- Worker `id`'s slots: "<id>1", and "<id>2" with the Second pet slot pass.
+function CrateRules.workerSlots(id: string, second: boolean?): { string }
+	return if second then { `{id}1`, `{id}2` } else { `{id}1` }
+end
+
+-- The slots a save has: the player's, and one beside each hired worker ("<id>1"); with `second` (the Second pet slot
+-- pass, tuning pet.slots) two each. A pet left in a second slot once the pass no longer counts boosts nothing.
+function CrateRules.slots(save: { workers: { [string]: any } }, second: boolean?): { string }
+	local out = CrateRules.playerSlots(second)
 	for id in save.workers do
-		table.insert(out, `{id}1`)
+		for _, slot in CrateRules.workerSlots(id, second) do
+			table.insert(out, slot)
+		end
 	end
 	table.sort(out)
 	return out
@@ -174,10 +199,10 @@ function CrateRules.open(save: Save, kind: string, random: () -> number): Pet?
 end
 
 -- Puts pet `id` in `slot` (nil sends it to the pen). A pet already there goes to the pen. False when the pet or the
--- slot is not the save's.
-function CrateRules.place(save: Save, id: number, slot: string?): boolean
+-- slot is not the save's (`second`: the Second pet slot pass counts).
+function CrateRules.place(save: Save, id: number, slot: string?, second: boolean?): boolean
 	local pet = find(save, id)
-	if pet == nil or (slot ~= nil and table.find(CrateRules.slots(save), slot) == nil) then
+	if pet == nil or (slot ~= nil and table.find(CrateRules.slots(save, second), slot) == nil) then
 		return false
 	end
 	if slot ~= nil then

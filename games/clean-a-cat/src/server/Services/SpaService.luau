@@ -32,6 +32,7 @@ local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Passes = require(Shared:WaitForChild("Passes"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
@@ -47,6 +48,7 @@ local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local MascotService = require(script.Parent:WaitForChild("MascotService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
 local PlotService = require(script.Parent:WaitForChild("PlotService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
@@ -226,8 +228,11 @@ local function mayJoin(player: Player, length: number): boolean
 	return true
 end
 
--- The player's door queue, filled to its bench size (benchSize), so there is always a customer waiting.
-local function queueFor(player: Player): { string }
+-- The player's door queue, filled to its bench size (benchSize), so there is always a customer waiting. With
+-- `keepOnly` it only keeps the orders in step and lets nobody join: a newcomer must always go out with sendQueue, so
+-- a caller that does not send (the heart bars, the workers' look at the line) never fills the line unseen (bug hunt
+-- B4, issue 595: the line filled in tickHearts, then the bench loop saw it full and never sent it).
+local function queueFor(player: Player, keepOnly: boolean?): { string }
 	local queue = queues[player]
 	if queue == nil then
 		queue = {}
@@ -242,7 +247,7 @@ local function queueFor(player: Player): { string }
 	while #o > #q do
 		table.remove(o)
 	end
-	local size = waitingSize(player)
+	local size = if keepOnly then 0 else waitingSize(player)
 	while #q < size and mayJoin(player, #q) do
 		local visitor = visitorPending[player]
 		if visitor then
@@ -911,6 +916,17 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		+ (more.bow or 0)
 		+ pay.tip
 		+ bonus
+	-- 2x Coins and the Golden Sponge (switch passes, issue 518): on top of this hand wash's whole pay, its own line
+	local function owns(key: string): boolean
+		return PassService.owns(player, key)
+	end
+	local passExtra = Passes.handExtra(coins, owns)
+	if passExtra > 0 then
+		more.pass = passExtra
+		more.passLine = Passes.handLine(owns)
+		extra = more
+		coins += passExtra
+	end
 	save.coins += coins
 	WalletService.show(player)
 	local dirt = if dirtOn then cat.dirt else nil
@@ -1006,7 +1022,7 @@ local function tickHearts()
 		if save == nil or player.Parent ~= Players then
 			continue
 		end
-		queueFor(player) -- keeps the orders in step with the line
+		queueFor(player, true) -- keeps the orders in step with the line
 		local orders = ordersFor(player)
 		local playTime = played(player)
 		local paused = save.stars <= 0
@@ -1110,7 +1126,7 @@ function SpaService.lineForWorkers(player: Player): { WorkerRules.Entry }
 	if save == nil or save.stars <= 0 or line == nil then
 		return {}
 	end
-	queueFor(player) -- keeps the orders in step with the line
+	queueFor(player, true) -- keeps the orders in step with the line
 	local now = Workspace:GetServerTimeNow()
 	local out: { WorkerRules.Entry } = {}
 	for place, order in ordersFor(player) do
