@@ -71,6 +71,9 @@ Remotes.ClientToServer = {
 	"RequestGiftCheck", -- ()  1 every 2 s; switches on: asks Roblox whether the player is in the group, shown as GiftGroup
 	"RequestGiftClaim", -- ()  1 every 2 s; switches on, save loaded, the stand lit for this player, the favourite saved
 	-- and the player in the group (asked again on the server): gives Starcoat once and writes the save
+	-- Visiting (VisitService, behind visiting).
+	"RequestVisiting", -- (allowed: boolean)  1 a second; switch on, save loaded: the owner lets other players into
+	-- their spa or not (save.visiting); while not, visitors inside are moved out
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side

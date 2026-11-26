@@ -41,6 +41,7 @@ local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local SpecialRules = require(Shared:WaitForChild("SpecialRules"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
+local VisitRules = require(Shared:WaitForChild("VisitRules"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
@@ -54,6 +55,7 @@ local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
 local PlotService = require(script.Parent:WaitForChild("PlotService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
+local VisitService = require(script.Parent:WaitForChild("VisitService"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
 local WindowService = require(script.Parent:WaitForChild("WindowService"))
 
@@ -954,6 +956,13 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		+ (more.bow or 0)
 		+ pay.tip
 		+ bonus
+	-- Friends in the server (switch friendBonus, issue 520; tuning pay.friend): on the hand wash's total, its own line
+	local friendExtra = VisitRules.friendExtra(coins, VisitService.friends(player))
+	if friendExtra > 0 then
+		more.friends = friendExtra
+		extra = more
+		coins += friendExtra
+	end
 	-- 2x Coins and the Golden Sponge (switch passes, issue 518): on top of this hand wash's whole pay, its own line
 	local function owns(key: string): boolean
 		return PassService.owns(player, key)
