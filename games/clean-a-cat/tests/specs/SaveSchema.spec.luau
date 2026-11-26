@@ -166,6 +166,27 @@ return function()
 			expect(table.find(save.receipts, "a")).to.equal(nil)
 		end)
 
+		it("stamps the starter pack's end once from first join and never moves it", function()
+			local save = SaveSchema.template(1000)
+			expect(save.starterEndsAt).to.equal(0)
+			expect(SaveSchema.stampStarter(save)).to.equal(1000 + SaveSchema.STARTER_SECONDS)
+			save.createdAt = 5000 -- even a changed join time leaves a stamped end alone
+			expect(SaveSchema.stampStarter(save)).to.equal(1000 + SaveSchema.STARTER_SECONDS)
+			local back = SaveSchema.migrate(SaveSchema.template(1) :: any, 2) :: SaveSchema.Save
+			back.starterEndsAt = 777
+			local again = SaveSchema.migrate(back :: any, 99999) :: SaveSchema.Save
+			expect(again.starterEndsAt).to.equal(777)
+		end)
+
+		it("counts days in the player's own time zone for quests and the check in card", function()
+			local save = SaveSchema.template(1)
+			expect(SaveSchema.day(save, 86400 - 1)).to.equal(0)
+			save.quests.tz = 1
+			expect(SaveSchema.day(save, 86400 - 1)).to.equal(1)
+			save.quests.tz = -5
+			expect(SaveSchema.day(save, 86400 + 3600)).to.equal(0)
+		end)
+
 		it("resets the spa and keeps what the player owns on a Grand Reopening", function()
 			local save = SaveSchema.template(1)
 			save.coins = 500

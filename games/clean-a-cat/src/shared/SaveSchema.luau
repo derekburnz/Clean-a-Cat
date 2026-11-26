@@ -63,7 +63,8 @@ export type Quests = {
 -- The check in card (issue 517): days played, not days in a row.
 export type CheckIn = {
 	days: number, -- rewards taken on this card, 0 to 7; the card starts again after 7
-	lastDay: number, -- the day number (os.time() // 86400) of the last reward, so one a day
+	lastDay: number, -- the day number (SaveSchema.day, the player's own time zone as quests use) of the last reward,
+	-- so one a day
 }
 
 -- A cat waiting on the bench, so the bench survives a rejoin (issue 523).
@@ -102,7 +103,8 @@ export type Save = {
 	checkin: CheckIn,
 	receipts: { string }, -- the newest PurchaseIds already granted (at most RECEIPTS_KEPT), so a product is never
 	-- granted twice
-	starterEndsAt: number, -- os.time() the starter pack offer ends (72 hours from its first showing); 0 before
+	starterEndsAt: number, -- os.time() the starter pack offer ends: stamped once by SaveSchema.stampStarter as
+	-- createdAt + 72 hours (the owner's call: 72 hours from first join) while it is 0, and never moved after
 	starterOpened: boolean, -- the player opened the starter pack window once: its button never bobs again (issue 528)
 	visits: number, -- joins of this save, the first included (the starter pack button bobs on visits 2 to 4)
 	asks: { [string]: boolean }, -- first session asks and HUD unlocks already shown, by ask id (issue 522)
@@ -172,7 +174,9 @@ SaveSchema.RECEIPTS_KEPT = 100
 
 -- What a Grand Reopening would reset: the spa's layout and progress. Everything else is what the player owns for good
 -- (pets, crates, the Cat Index, passes, the quest book, the check in card, settings) and is kept. Not at launch; the
--- owner has not decided it, so this list is a draft to change when he does.
+-- owner has not decided it, so this list is a draft to change when he does. Two paid things sit in reset fields and
+-- need care before this is ever used: Lou is a paid helper (a pass) in `workers`, so the reopen must grant him again
+-- from the pass, and a build finished with Robux (Finish now, issue 515) is in `builds`, so it would be lost.
 SaveSchema.REOPEN_RESETS = table.freeze({
 	"coins",
 	"stars",
@@ -203,6 +207,23 @@ function SaveSchema.reopen(save: Save, now: number): Save
 	end
 	save.reopens += 1
 	return save
+end
+
+-- How long the starter pack offer lasts from first join (tuning: starter pack, 72 hours).
+SaveSchema.STARTER_SECONDS = 72 * 60 * 60
+
+-- Stamps the starter pack's end once, from first join; a save stamped already keeps its end. Returns the end.
+function SaveSchema.stampStarter(save: Save): number
+	if save.starterEndsAt == 0 then
+		save.starterEndsAt = save.createdAt + SaveSchema.STARTER_SECONDS
+	end
+	return save.starterEndsAt
+end
+
+-- The day number at `now` in the player's own time zone (quests.tz, UTC until it is saved), for the quest book and
+-- the check in card alike.
+function SaveSchema.day(save: Save, now: number): number
+	return (now + (save.quests.tz or 0) * 60 * 60) // 86400
 end
 
 -- Records `id` as granted; false when it was granted already. Keeps the newest RECEIPTS_KEPT.
