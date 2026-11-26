@@ -10,6 +10,10 @@
 --           "Put in tub" prompt lead to the tub. A tap there hops it into the tub and asks RequestPlaceCat; the close-up
 --           wash view starts at once (WashView, reason "carry") and the wash takes over when CatReady comes.
 --   nil     in the tub (or no carry): the copy goes; ScrubController's own cat is in the tub by then.
+-- With counterLine on (issue 746), "door" puts a "Take cat" prompt on every waiting cat on the counter instead
+-- (FigureService's CounterCat models, CounterRules); a tap walks the player up to that cat and asks
+-- RequestTakeCat(place), so any cat can be taken from where it sits. Before the first customer is served only the
+-- front one can (the server checks it too).
 -- A copy that hopped in but was never taken (the server refused or never heard) is lifted back up after a few tries,
 -- so the player is never left with a cat stuck in the tub and no wash. Nothing here decides anything.
 local Players = game:GetService("Players")
@@ -18,6 +22,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
+local CounterRules = require(Shared:WaitForChild("CounterRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -45,6 +50,9 @@ local WASH_FLAG = "washView"
 local BODY_WAIT_SECONDS = 5 -- a new character's root and humanoid, after a reset while carrying
 local BODY_TRIES = 6 -- waits of BODY_WAIT_SECONDS for that root: a slow phone can take longer than one (Review-QA, #414)
 local BODY_SETTLE_SECONDS = 0.3
+local COUNTER_SCAN_SECONDS = 0.5 -- how often the counter's prompts follow the line while a cat is at the door
+local SERVED_ATTRIBUTE = "ChanceBoardLit" -- SpaService: true once a customer has been served (takes past the front open)
+local CUSTOMERS_FOLDER = "Customers" -- FigureService's figures in the plot
 
 local player = Players.LocalPlayer
 local scrub: any = nil -- ScrubController: where the tub's seat is and the size a cat sits at there
@@ -56,13 +64,23 @@ local trailShown = false -- the floor trail is this controller's (the opening us
 local walking = false
 local placing = false -- the copy is hopping in or in the tub, waiting for the server
 local turn = 0 -- bumped on every change of where the cat is, so a stale walk or resend stops
+local counterPrompts: { [Model]: ProximityPrompt } = {} -- (switch counterLine) a prompt on each cat on the counter
+local takenFrom: CFrame? = nil -- (switch counterLine) where the cat asked for sat, for the lift
 
 local function where(): string?
 	local value = player:GetAttribute(CarryRules.ATTRIBUTE)
 	return if type(value) == "string" then value else nil
 end
 
+local function clearCounter()
+	for _, counterPrompt in counterPrompts do
+		counterPrompt:Destroy()
+	end
+	table.clear(counterPrompts)
+end
+
 local function clearPrompt()
+	clearCounter()
 	local anchor = prompt
 	prompt = nil
 	if anchor then
@@ -129,16 +147,16 @@ end
 
 -- Sends `name` now and again every RESEND_SECONDS while the cat is still `from` in this turn; `onGiveUp` when the
 -- server never moved it.
-local function ask(name: string, from: string, onGiveUp: (() -> ())?)
+local function ask(name: string, from: string, onGiveUp: (() -> ())?, place: number?)
 	local mine = turn
-	Remotes.event(name):FireServer()
+	Remotes.event(name):FireServer(place)
 	task.spawn(function()
 		for _ = 1, RESENDS do
 			task.wait(RESEND_SECONDS)
 			if turn ~= mine or where() ~= from then
 				return
 			end
-			Remotes.event(name):FireServer()
+			Remotes.event(name):FireServer(place)
 		end
 		task.wait(RESEND_SECONDS)
 		if turn == mine and where() == from and onGiveUp then
@@ -198,10 +216,96 @@ local function frontSpot(): CFrame
 	return SpaLayout.lineSpot("SpotQueue", 1)
 end
 
+-- (switch counterLine) The cats on the counter of the player's own plot, each with its place.
+local function counterCats(): { [Model]: number }
+	local found: { [Model]: number } = {}
+	local slot = SpaLayout.slotOf(player)
+	local plot = if slot then SpaLayout.plotModel(slot) else nil
+	local folder = if plot then plot:FindFirstChild(CUSTOMERS_FOLDER) else nil
+	if folder == nil then
+		return found
+	end
+	for _, item in folder:GetDescendants() do
+		local place = item:GetAttribute(CounterRules.PLACE_ATTRIBUTE)
+		if item:IsA("Model") and item.Name == CounterRules.CAT_NAME and type(place) == "number" then
+			found[item :: Model] = place
+		end
+	end
+	return found
+end
+
+-- (switch counterLine) A "Take cat" prompt on each cat on the counter, following the line as it changes.
+local function syncCounter()
+	local served = player:GetAttribute(SERVED_ATTRIBUTE) == true
+	local wanted = counterCats()
+	for cat, counterPrompt in counterPrompts do
+		local place = wanted[cat]
+		if place == nil or (place > 1 and not served) or counterPrompt.Parent == nil then
+			counterPrompt:Destroy()
+			counterPrompts[cat] = nil
+		end
+	end
+	for cat, place in wanted do
+		if counterPrompts[cat] or (place > 1 and not served) then
+			continue
+		end
+		local holder = cat.PrimaryPart or cat:FindFirstChildWhichIsA("BasePart", true)
+		if holder == nil then
+			continue
+		end
+		local p = Instance.new("ProximityPrompt")
+		p.Name = "CleanACat_CounterTake"
+		p.ActionText = "Take cat"
+		p.HoldDuration = 0
+		p.RequiresLineOfSight = false
+		p.MaxActivationDistance = PROMPT_REACH
+		p.Triggered:Connect(function(_who: Player)
+			local now = cat:GetAttribute(CounterRules.PLACE_ATTRIBUTE)
+			if walking or where() ~= CarryRules.DOOR or type(now) ~= "number" then
+				return
+			end
+			local mine = turn
+			local at = cat:GetPivot()
+			walkUpTo(at.Position, function()
+				local still = cat:GetAttribute(CounterRules.PLACE_ATTRIBUTE)
+				if turn == mine and where() == CarryRules.DOOR and type(still) == "number" then
+					takenFrom = cat:GetPivot()
+					ask("RequestTakeCat", CarryRules.DOOR, nil, still)
+				end
+			end)
+		end)
+		p.Parent = holder
+		counterPrompts[cat] = p
+	end
+end
+
+-- (switch counterLine) Offers every cat on the counter while the next cat is at the door. False when there is none to
+-- offer (the figures are not drawn), so the front customer's own prompt is used.
+local function offerCounter(): boolean
+	if not LiveFlags.isOn(CounterRules.FLAG) or next(counterCats()) == nil then
+		return false
+	end
+	syncCounter()
+	local mine = turn
+	task.spawn(function()
+		while turn == mine and where() == CarryRules.DOOR do
+			task.wait(COUNTER_SCAN_SECONDS)
+			if turn == mine and where() == CarryRules.DOOR then
+				syncCounter()
+			end
+		end
+	end)
+	return true
+end
+
 -- "door": the front customer holds the cat; "Take" walks the player up and asks for it.
 local function offerTake()
 	letGo()
 	hideTrail()
+	takenFrom = nil
+	if offerCounter() then
+		return
+	end
 	local front = frontSpot()
 	promptAt(front * CFrame.new(0, PROMPT_HEIGHT, 0), Vector3.new(2, 2, 2), "Take cat", function()
 		if walking or where() ~= CarryRules.DOOR then
@@ -354,8 +458,9 @@ local function update()
 			clearPrompt()
 			local kind = player:GetAttribute(CarryRules.KIND_ATTRIBUTE)
 			if type(kind) == "string" then
-				local front = frontSpot()
-				lift(kind, front * CFrame.new(0, CAT_HEIGHT, 0), true)
+				local from = takenFrom or frontSpot() * CFrame.new(0, CAT_HEIGHT, 0)
+				takenFrom = nil
+				lift(kind, from, true)
 			end
 		end
 	else
