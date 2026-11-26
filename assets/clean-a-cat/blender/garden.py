@@ -21,8 +21,9 @@ opening on the floor, front -Y in Blender (-Z in Roblox) into the spa room, the 
 
 The site is 18 studs wide and 11.2 deep. Its left and back edges are the plot's own yard fence; every look adds
 one fence run down the right, between the garden and the VIP Room's site. The locked and building looks carry an
-invisible `_Barrier` (solid, CanQuery off) over the site, as the VIP looks do. The finished garden has none: players
-walk in. Its lawn, path, pond rim, bench, arbour posts, fence and gate posts collide; `_Decor` (toys, stones' trim),
+invisible `_Barrier` (solid, CanQuery off) over the site, as the VIP looks do. The finished garden has none over the
+site: players walk in. It has one invisible slab along each open gate leaf (`_Gate_Barrier`), so nobody walks
+through the pickets. Its lawn, path, pond rim, bench, arbour posts, fence and gate posts collide; `_Decor` (toys, stones' trim),
 `_Flowers`, `_Canopy` and `_Bulbs` do not.
 
 Attachments in the finished garden's first part, on the lawn unless noted and each turned to face the middle:
@@ -139,6 +140,22 @@ def _gate(b, open_):
     for sx in (1, -1):
         hinge = (sx * (DOOR_W / 2 - 0.2), 0.95)
         _leaf(b, hinge, (-sx * 100 if open_ else 0), sx)
+
+
+def _leaf_barrier(name, mat):
+    """An invisible solid slab along each open gate leaf, so a player walks round the leaf and not through its thin
+    pickets (which stay walk-through: thin solid rails read as ladder rungs to a Roblox character). CanQuery is
+    off, as on every `_Barrier` here, so the camera and taps pass through it."""
+    b = Builder()
+    for sx in (1, -1):
+        turn = -sx * 100
+        c, s = math.cos(math.radians(turn)), math.sin(math.radians(turn))
+        hx, hy = sx * (DOOR_W / 2 - 0.2), 0.95
+        b.box_base((hx - sx * 1.48 * c, hy - sx * 1.48 * s, -0.01), (2.75, 0.34, 3.27 + 0.01 * (sx > 0)), "metal",
+                   bevel=False, rot=_RZ(turn))                    # no face shares a plane with a picket or a rail
+    ob = b.finalize(name + "_Gate_Barrier", mat, bevel=0)
+    ob.hide_render = True
+    return ob
 
 
 def _fence(b):
@@ -410,7 +427,8 @@ def build_garden(mat):
     bulbs = _lanterns(b, NAME, mat)
     return ([_tris(b.finalize(NAME, mat)), _tris(d.finalize(NAME + "_Decor", mat)),
              _tris(f.finalize(NAME + "_Flowers", mat)), _tris(c.finalize(NAME + "_Canopy", mat)),
-             _tris(w.finalize(NAME + "_Pond", mat)), bulbs] + _sign(NAME, mat, False))
+             _tris(w.finalize(NAME + "_Pond", mat)), bulbs] + _sign(NAME, mat, False)
+            + [_leaf_barrier(NAME, mat)])
 
 
 def garden_rbx_extras():
