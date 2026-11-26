@@ -118,6 +118,12 @@ local meterStep: string? = nil
 local root: Frame? = nil
 local listListeners: { () -> () } = {}
 local washWas = false -- a wash under way when last drawn (the side buttons step aside for it, issue 625)
+-- Between two steps the stage passes through a moment with no shown step. The wash's look holds through it for up
+-- to GAP_HOLD seconds, so the side buttons never pop in over the step line and the meter never jumps (issue 698).
+local GAP_HOLD = 1.2
+local heldStep: number? = nil
+local heldUntil = 0
+local holdCheck = false
 
 -- The steps this wash shows, as indexes into HUD.STEPS, in order.
 local function shownSteps(): { number }
@@ -237,6 +243,21 @@ local function redraw()
 
 	local shown = shownSteps()
 	local current = stepIndex(stage, shown)
+	local held = heldStep
+	if current ~= nil then
+		heldStep, heldUntil = current, os.clock() + GAP_HOLD
+	elseif held ~= nil and on() and os.clock() < heldUntil then
+		current = held
+		if not holdCheck then
+			holdCheck = true
+			task.delay(heldUntil - os.clock() + 0.05, function()
+				holdCheck = false
+				redraw()
+			end)
+		end
+	else
+		heldStep = nil
+	end
 	local washing = on() and current ~= nil
 	p.steps.Visible = washing and not TipLine.isShown() -- one line at the top centre: a tutorial tip wins
 	-- The tick list (switch washChecklist) shows this cat's steps at the left and takes the pips' place; the top line

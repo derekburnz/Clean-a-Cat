@@ -79,15 +79,23 @@ function StaffNameController.Start()
 			Remotes.event("RequestRenameStaff"):FireServer(id, text)
 		end
 	end)
+	-- Opening the card closes every other window first, which reads as "all windows closed" for a moment. Checked a
+	-- frame later, so the window it came from opens again only once the card itself has gone, never under or over it
+	-- while it shows (issue 697: Helpers came back over the card).
 	UI.onWindowsChanged(function(open: boolean)
-		local window = backTo
-		if open or window == nil then
+		if open or backTo == nil then
 			return
 		end
-		backTo = nil
-		if on() and not UI.isOpen(RENAME_WINDOW) then
-			UI.open(window)
-		end
+		task.defer(function()
+			local window = backTo
+			if window == nil or UI.isOpen(RENAME_WINDOW) then
+				return
+			end
+			backTo = nil
+			if on() and not UI.anyWindowOpen() then
+				UI.open(window)
+			end
+		end)
 	end)
 	for _, id in WorkerRules.IDS do
 		player:GetAttributeChangedSignal(StaffNameRules.NAME_PREFIX .. id):Connect(refresh)
