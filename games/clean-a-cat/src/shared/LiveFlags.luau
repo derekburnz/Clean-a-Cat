@@ -100,6 +100,7 @@ LiveFlags.KEYS = {
 	"bowTiers", -- bow tiers bought with coins at the Tools board (Silk, Satin, Golden after the free Ribbon), each paying more on every hand washed customer's cat (BowRules, issue 508); off by default
 	"workers", -- Jo and Sam are hired with coins, each with a station on the back wall; a worker takes a waiting cat by the mode the player sets, washes it with a progress bar over it, and pays a small share (WorkerRules, WorkerService, issue 509); off by default
 	"specialVisitors", -- now and then a special visitor joins the line with one of the six special cats (always dirt level 4, pays the most, workers never take it); the first of a save comes at about 4:00 and its wash always leaves a crate, later ones rarely (SpecialRules, issue 510); off by default
+	"crateWindow", -- a tap on the crate by the tub opens the crate window: every pet with its chance and boost, how many crates the player holds and Open crate, in place of the list over the crate (UI/CrateWindow, CrateWindowController, issue 526); off by default
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 }
 
@@ -174,6 +175,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	workers = true,
 	specialVisitors = true,
 	pets = true,
+	crateWindow = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

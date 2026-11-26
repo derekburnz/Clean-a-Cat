@@ -25,6 +25,8 @@
 --                             when the player presses its button, gone(closed) once the card goes for any reason
 --                             (closed: the player's X). UI.hideBubble() takes it away; UI.busy() is true while a
 --                             window, the recap or the dim step is up, when no bubble should start
+--   UI.showCrate(kind, count, rows)  opens the crate window (UI/CrateWindow, switch crateWindow, issue 526): every pet
+--                             with its chance, then Open crate; UI.onCrateOpen(fn) gets fn(kind) on Open crate
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
@@ -37,6 +39,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
+local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
@@ -45,6 +48,7 @@ local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 
 local CatIndex = require(script:WaitForChild("CatIndex"))
 local Comfort = require(script:WaitForChild("Comfort"))
+local CrateWindow = require(script:WaitForChild("CrateWindow"))
 local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
 local Motion = require(script:WaitForChild("Motion"))
@@ -258,6 +262,7 @@ function UI.init()
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
+	windows.Crate = CrateWindow.build(root) -- the crate's chance list and Open crate (switch crateWindow, issue 526)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -414,6 +419,23 @@ function UI.busy(): boolean
 		end
 	end
 	return Recap.isOpen() or Spotlight.isOn()
+end
+
+-- Opens the crate window on crate `kind`, `count` of them held, with its chance list (CrateViewRules.rows).
+function UI.showCrate(kind: string, count: number, rows: { CrateViewRules.Row })
+	CrateWindow.set(kind, count, rows)
+	if not windows.Crate.Visible then
+		UI.open("Crate")
+	end
+end
+
+-- Draws the crate window again (a crate came or went) without opening it.
+function UI.setCrate(kind: string, count: number, rows: { CrateViewRules.Row })
+	CrateWindow.set(kind, count, rows)
+end
+
+function UI.onCrateOpen(fn: (kind: string) -> ())
+	CrateWindow.onOpen(fn)
 end
 
 function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)
