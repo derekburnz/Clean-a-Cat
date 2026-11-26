@@ -17,6 +17,7 @@
 -- glows), then a pet to put in it; tap the pet in that slot again to take it off. You are picked when the window
 -- opens. Nothing is timed. UI never fires remotes: PetsWindowController sends the place and the fuse.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TextService = game:GetService("TextService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -38,6 +39,8 @@ local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 4 -- design px below the middle on a short screen (Window's default is 33)
 local TOPBAR = 58 -- real px of Roblox's top bar
 local ROOM = 40 -- design px kept clear above and below the window, so both lists fit the screen (#834)
+local SLOTS_EDGE = 16 -- design px of the helpers' list taken by its padding (4 each side) and scroll bar (8)
+local TEXT_FLOOR = 19 -- Kit's MIN_TEXT: no text is drawn smaller
 
 -- Sizes in design pixels: full, then compact for a short screen (a phone held sideways).
 local SIZES = {
@@ -143,6 +146,12 @@ local function words(name: string, parent: Instance, size: number): TextLabel
 	Kit.minText(label)
 	label.Parent = parent
 	return label
+end
+
+-- Width in design px of `text` at `size` (never under the text floor).
+local function measure(text: string, size: number): number
+	local drawn = math.max(size, TEXT_FLOOR)
+	return math.ceil(TextService:GetTextSize(text, drawn, Kit.FONT, Vector2.new(10000, 1000)).X)
 end
 
 local function soft(name: string, parent: Instance, size: number): TextLabel
@@ -322,7 +331,13 @@ local function drawTile(
 	end
 end
 
-local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, container: GuiObject)
+local function drawSlot(
+	row: CrateViewRules.SlotRow,
+	order: number,
+	s: Sizes,
+	container: GuiObject,
+	rowW: number
+)
 	local card = frame(`Slot{order}`, container)
 	card.LayoutOrder = order
 	card.Size = UDim2.new(1, 0, 0, s.slotH)
@@ -381,12 +396,6 @@ local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, co
 		Kit.stroke(pencil, 2)
 		Icons.draw("Pencil", pencil)
 	end
-	local d = soft("Says", text, s.say)
-	d.LayoutOrder = 2
-	d.TextXAlignment = Enum.TextXAlignment.Left
-	d.Size = UDim2.new(1, 0, 0, s.say + 4)
-	d.Text = row.say
-	Kit.shrinkToFit(d, s.say)
 
 	-- the pet in the slot; with the Second pet slot pass a second box beside it. Each box picks its own slot.
 	local function petBox(name: string, slot: string, pet: CrateRules.Pet?, right: number)
@@ -416,6 +425,16 @@ local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, co
 	local slot2 = if row.locked then nil else row.slot2 -- a locked helper shows one box, so its line has room
 	local boxes = if slot2 then 2 else 1
 	text.Size = UDim2.new(1, -(s.who + 12 + boxes * s.who + (boxes - 1) * 8 + 12), 1, 0)
+	-- the helper's line takes a second row when one row is too narrow, before it ever shrinks or ends in "..." (#838)
+	local d = soft("Says", text, s.say)
+	d.LayoutOrder = 2
+	d.TextXAlignment = Enum.TextXAlignment.Left
+	d.Text = row.say
+	local textW = rowW - 20 - (s.who + 12 + boxes * s.who + (boxes - 1) * 8 + 12)
+	local twoRows = measure(row.say, s.say) > textW
+	d.Size = UDim2.new(1, 0, 0, if twoRows then 2 * s.say + 6 else s.say + 4)
+	Kit.shrinkToFit(d, s.say)
+	d.TextWrapped = twoRows -- after shrinkToFit, which sets one row
 	local mine = if row.helper then `{t.Text}'s` else "your"
 	if not row.locked then
 		-- made before the boxes, so a box's own tap (a later sibling's child) sits over it
@@ -525,7 +544,7 @@ function PetsWindow.redraw()
 	clear(p.slots)
 	p.slotList.Padding = UDim.new(0, s.slotGap)
 	for index, row in rows do
-		drawSlot(row, index, s, p.slots)
+		drawSlot(row, index, s, p.slots, rightW - SLOTS_EDGE)
 	end
 	local slotsH = #rows * s.slotH + math.max(#rows - 1, 0) * s.slotGap + 8
 	local shownH = math.max(s.slotH + 8, math.min(slotsH, room))
