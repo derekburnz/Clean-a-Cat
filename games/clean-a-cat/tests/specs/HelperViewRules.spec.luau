@@ -70,7 +70,7 @@ return function()
 		end)
 
 		it("finds the pet beside a helper, first slot first", function()
-			local pets = {
+			local pets: { HelperViewRules.Pet } = {
 				{ id = 1, kind = "Pebble", star = 1, slot = "Jo2" },
 				{ id = 2, kind = "Koi", star = 2, slot = "Jo1" },
 				{ id = 3, kind = "Coral", star = 1, slot = "Sam2" },
