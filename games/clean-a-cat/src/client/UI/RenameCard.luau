@@ -114,7 +114,7 @@ local function redraw()
 	p.reset.TextSize = s.text
 	p.reset.Text = `Use {defaultName}`
 	p.note.TextSize = s.note
-	p.note.Size = UDim2.new(1, 0, 0, s.note * 2 + 12)
+	p.note.Size = UDim2.fromScale(1, 0) -- as tall as its wrapped lines: the floor draws 16 as 19 (issue 669)
 end
 
 -- Keeps what is typed to the letters, numbers and spaces a name may have, at most MAX_LENGTH of them.
@@ -211,6 +211,7 @@ function RenameCard.build(root: Instance): Frame
 	note.FontFace = Kit.BODY_FACE
 	note.TextColor3 = Kit.INK_SOFT
 	note.TextWrapped = true
+	note.AutomaticSize = Enum.AutomaticSize.Y
 	note.Text =
 		`Up to {StaffNameRules.MAX_LENGTH} letters, numbers and spaces. Names are checked before anyone sees them.`
 

@@ -54,6 +54,7 @@ end
 
 local DESIGN = Vector2.new(1280, 720)
 local SCALE_MIN, SCALE_MAX = 0.75, 1.3
+Kit.SCALE_MIN = SCALE_MIN -- below it the 14 px text floor no longer holds
 local SHORT_BELOW = 560 -- design pixels of height
 local MIN_TEXT = 19 -- design pixels: 14 real px at the smallest scale (0.75), the screens' floor
 
@@ -123,15 +124,16 @@ local CHIP_TEXT = 19 -- design px: the floor, so the words never shrink
 local CHIP_PAD = 9 -- design px each side inside the pill
 local CHIP_PAD_TIGHT = 3 -- when the room is short
 local CHIP_OUTLINE = 3 -- the words' own ink outline (Kit.outlined), each side
+local CHIP_SLACK = 4 -- design px for the font's own side bearings
 
 -- The rarity pill's width in design px: its words as drawn, their outline and the padding. Issue 609: an automatic
 -- width left out the outline, so "Uncommon" ran 7 px past its pill on a phone.
 function Kit.chipWidth(rarity: string, room: number?): number
 	local words =
 		math.ceil(TextService:GetTextSize(rarity, CHIP_TEXT, Kit.FONT, Vector2.new(10000, 1000)).X)
-	local full = words + 2 * (CHIP_PAD + CHIP_OUTLINE)
+	local full = words + 2 * (CHIP_PAD + CHIP_OUTLINE) + CHIP_SLACK
 	if room and full > room then
-		return math.max(room, words + 2 * (CHIP_PAD_TIGHT + CHIP_OUTLINE))
+		return math.max(room, words + 2 * (CHIP_PAD_TIGHT + CHIP_OUTLINE) + CHIP_SLACK)
 	end
 	return full
 end
