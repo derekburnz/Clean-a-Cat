@@ -15,7 +15,7 @@ faces there (the Attachment's LookVector), all at floor height:
   SpotTub              the tub's pivot (put CleanACat_Station_Tub here); the tub's front faces the entrance side
   SpotSpawn            where the player spawns, in front of the tub, facing it
   SpotQueue1..3        the customer queue: 1 just inside the entrance, 2 in the doorway, 3 on the apron
-  SpotStray            the stray box, inside the back door
+  SpotStray            the stray box, in the back left corner beside the back door, facing the room
   SpotWindow1..4       the four cushions on the window seat (CleanACat_Prop_Cushion's pivot, on the seat top)
   SpotTipJar           the tip jar, at the right end of the window seat
   SpotSign             the spa's name sign, flat on the outside of the front wall right of the entrance, facing
@@ -86,7 +86,10 @@ SPOTS = {
     "SpotQueue1": (5.0, -13.0, 0.0, 180.0),
     "SpotQueue2": (5.0, -17.5, 0.0, 180.0),
     "SpotQueue3": (5.0, -21.5, 0.0, 180.0),
-    "SpotStray": (-12.0, 7.0, 0.0, 0.0),
+    # Beside the back door, against the left wall and turned to face the room like the two stations on that wall.
+    # It stood at (-12, 7), 3 studs in front of the door, until the Garden went in behind it (#579): there it sat in
+    # the walking line to the Garden's gate.
+    "SpotStray": (-16.4, 7.6, 0.0, 90.0),
     "SpotWindow1": (-14.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
     "SpotWindow2": (-11.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
     "SpotWindow3": (-8.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
