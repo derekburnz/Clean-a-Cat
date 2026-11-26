@@ -446,7 +446,8 @@ end
 -- with no `walkAt` the cat already sits there.
 -- Where each customer's current walk starts, once a step-up has given it a walk from part way (the drawn pivot stays
 -- where the figure was first put; CustomerWalkController starts each new walk from where the figure stands).
-local walkFrom = setmetatable({} :: { [Model]: Vector3 }, { __mode = "k" })
+-- A strong table, cleared when the figure is destroyed (Instance keys in weak tables are not reliably kept, #679).
+local walkFrom: { [Model]: Vector3 } = {}
 
 -- Where `figure` stands at server time `now`, along the walk its WalkTo and WalkAt describe.
 local function standsAt(figure: Model, now: number): Vector3
@@ -684,6 +685,12 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 	for _, step in stepUps do
 		-- read before WalkTo and WalkAt change: where the new walk starts
 		local here = standsAt(step.figure, now)
+		if walkFrom[step.figure] == nil then
+			local figure = step.figure
+			figure.Destroying:Once(function()
+				walkFrom[figure] = nil
+			end)
+		end
 		walkFrom[step.figure] = here
 		setPlace(step.figure, step.index)
 		-- (switch counterCrate) the crate follows the customer to their new place (Sync's QA of PR 762: it stayed at
