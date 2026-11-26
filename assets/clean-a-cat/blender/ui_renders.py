@@ -53,6 +53,8 @@ ICONS = {
     "CleanACat_Tool_Tweezers": None, "CleanACat_Tool_Towel": None, "CleanACat_Tool_Clipper": (-55, 18),
     "CleanACat_Tool_Dryer": (-50, 16), "CleanACat_Tool_Shampoo": (20, 14), "CleanACat_Station_BubbleBath": (28, 26),
     "CleanACat_Station_Tub": (28, 26), "CleanACat_Station_Pawdicure": (28, 26),
+    "CleanACat_Station_WashStandJo": (-24, 26), "CleanACat_Station_WashStandSam": (-24, 26),
+    "CleanACat_Station_WashStandLou": (-24, 26),
     "CleanACat_Station_BrushTable": (28, 26), "CleanACat_Station_BrushTableUp": (28, 26),
     "CleanACat_Station_Dryer": (60, 10), "CleanACat_Prop_Carrier": None,
     "CleanACat_Bow_Pink": (0, 20), "CleanACat_Bow_Mint": (0, 20), "CleanACat_Bow_Sky": (0, 20),

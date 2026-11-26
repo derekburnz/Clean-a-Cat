@@ -6,7 +6,7 @@ return function()
 		require(Client:WaitForChild("Effects"):WaitForChild("CustomerLeave")) :: any
 
 	describe("CustomerLeave.at", function()
-		it("turns round first, then walks, then fades out by the end", function()
+		it("turns a quarter, walks off and fades out by the end", function()
 			local turn, walked, seen = CustomerLeave.at(0)
 			expect(turn).to.equal(0)
 			expect(walked).to.equal(0)
@@ -24,6 +24,24 @@ return function()
 			local _, a = CustomerLeave.at(1)
 			local _, b = CustomerLeave.at(1.5)
 			expect(math.abs((b - a) - CustomerLeave.WALK_SPEED * 0.5) < 1e-6).to.equal(true)
+		end)
+		it(
+			"sets off at once and is a body's width clear of the spot in about half a second (#570)",
+			function()
+				local _, early = CustomerLeave.at(0.15)
+				expect(early > 0).to.equal(true)
+				local _, clear = CustomerLeave.at(0.6)
+				expect(clear > 1.2).to.equal(true)
+				local last = 0
+				for i = 1, 100 do
+					local _, w = CustomerLeave.at(i * CustomerLeave.LEAVE_SECONDS / 100)
+					expect(w >= last).to.equal(true)
+					last = w
+				end
+			end
+		)
+		it("turns a quarter to one side, never round and back down the line", function()
+			expect(math.abs(CustomerLeave.SIDE)).to.equal(1)
 		end)
 	end)
 end

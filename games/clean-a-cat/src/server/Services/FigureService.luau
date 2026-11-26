@@ -29,6 +29,7 @@ local LineLooks = require(script.Parent.Parent.Util.LineLooks)
 
 local FLAG = "customerFigures"
 local TOWNSFOLK_FLAG = "townsfolk"
+local SWAP_FLAG = "lineSwap" -- issue 571
 -- Model-Agent's townsfolk (#446), CleanACat_NPC_Customer_<name>. A look number n is TOWNSFOLK[n % #TOWNSFOLK + 1].
 local TOWNSFOLK = { "Sunny", "Mo", "Pip", "Rae", "Juno", "Bea", "Theo", "Kit" }
 local CUSTOMERS_FLAG = "customers"
@@ -384,7 +385,11 @@ local function buildFolder(
 end
 
 local function draw(player: Player)
-	clear(player)
+	-- (switch lineSwap) the old line stays until the new one is built, so it never blinks empty (issue 571)
+	local swap = LiveFlags.isOn(SWAP_FLAG)
+	if not swap then
+		clear(player)
+	end
 	local line = lines[player]
 	local plot = folderOf(player)
 	local slot = SpaLayout.slotOf(player)
@@ -395,6 +400,7 @@ local function draw(player: Player)
 		or not LiveFlags.isOn(FLAG)
 		or not LiveFlags.isOn(CUSTOMERS_FLAG)
 	then
+		clear(player)
 		shown[player] = nil
 		return
 	end
@@ -405,6 +411,9 @@ local function draw(player: Player)
 	if lines[player] ~= line or folderOf(player) ~= plot then
 		folder:Destroy()
 		return
+	end
+	if swap then
+		clear(player) -- the old line goes in the same frame the new one comes
 	end
 	folder.Parent = plot
 	shown[player] = drawn
@@ -457,6 +466,16 @@ end
 -- Called by SpaService when the customer at `index` of the line as shown leaves without being served (switch
 -- heartBar), before it resends the line: they and their look go, and everyone behind moves up.
 function FigureService.left(player: Player, index: number)
+	local _, folder = folderOf(player)
+	if folder and LiveFlags.isOn(SWAP_FLAG) then
+		-- (switch lineSwap) the leaver's figure goes now: CustomerLeft went first, so their device already made the
+		-- walk off copy, and the real figure is not shown beside it until the line is redrawn (issue 571)
+		for _, figure in folder:GetChildren() do
+			if figure:GetAttribute(PLACE_ATTRIBUTE) == index then
+				figure:Destroy()
+			end
+		end
+	end
 	local line = LineLooks.left(lines[player], index)
 	if line then
 		lines[player] = line

@@ -141,6 +141,7 @@ local function enable()
 	for index, id in offered do
 		local spot = made.rows[index]
 		local prompt = Instance.new("ProximityPrompt")
+		BoardProp.rowKeys(prompt, index)
 		prompt.HoldDuration = 0
 		prompt.MaxActivationDistance = BuildRules.PROMPT_REACH
 		prompt.RequiresLineOfSight = false
@@ -156,6 +157,7 @@ local function enable()
 	-- The bell and the come back line, by the model's bell (at the slab's foot).
 	local foot = made.bell
 	local bellPrompt = Instance.new("ProximityPrompt")
+	BoardProp.rowKeys(bellPrompt, #offered + 1)
 	bellPrompt.ActionText = "Tell me when it's done"
 	bellPrompt.HoldDuration = 0
 	bellPrompt.MaxActivationDistance = BuildRules.PROMPT_REACH
