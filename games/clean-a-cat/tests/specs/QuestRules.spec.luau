@@ -79,6 +79,12 @@ return function()
 			end
 		)
 
+		it("opens the book at 6:00 of play, for good", function()
+			expect(QuestRules.isOpen(359)).to.equal(false)
+			expect(QuestRules.isOpen(360)).to.equal(true)
+			expect(QuestRules.isOpen(100000)).to.equal(true)
+		end)
+
 		it("has the tuning's pool and weekly list", function()
 			expect(#QuestRules.DAILY).to.equal(5)
 			expect(#QuestRules.WEEKLY).to.equal(3)

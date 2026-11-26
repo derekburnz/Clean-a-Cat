@@ -11,6 +11,8 @@ local QuestRules = {}
 QuestRules.FLAG = "quests"
 QuestRules.DAILY_COUNT = 2
 QuestRules.WEEK_CRATE = "normal" -- quest.weeklyCrate
+QuestRules.OPEN_AT = 360 -- seconds of play before the book opens (the Quests button at about 6:00 of the first session)
+QuestRules.OPEN_ATTRIBUTE = "QuestsOpen" -- Player attribute: true once the book is open (QuestViewRules.OPEN_ATTRIBUTE)
 
 -- What one hand wash of a customer's cat did, by quest kind: 1 when it counts.
 export type Facts = { [string]: number }
@@ -82,6 +84,11 @@ export type Book = {
 type IsOn = (flag: string) -> boolean
 
 -- The week number at `now` (os.time()), counted from Monday 00:00 UTC.
+-- Whether the book is open after `played` seconds of play: from OPEN_AT on, and for good.
+function QuestRules.isOpen(played: number): boolean
+	return played >= QuestRules.OPEN_AT
+end
+
 function QuestRules.week(now: number): number
 	return (now // 86400 + 3) // 7 -- 1 January 1970 was a Thursday
 end

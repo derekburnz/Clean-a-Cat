@@ -3,6 +3,8 @@
 -- and the week on load and every minute; each customer's cat they wash by hand (SpaService.washed) moves the open
 -- quests on, and a quest done pays its coins at once with a notice. All three weekly quests done gives one normal
 -- crate, once a week. The book goes to the client as Quests for Design's quest book.
+-- The book opens at 6:00 of play (QuestRules.OPEN_AT): from then on the Player attribute QuestsOpen is true, which
+-- shows Design's Quests button; before it, washes count nothing, so no quest is done before the player has seen it.
 -- Behind the LiveFlags switch quests.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -20,6 +22,7 @@ local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
 local CHECK_SECONDS = 60 -- how often a new day or week is looked for
+local OPEN_CHECK_SECONDS = 5 -- how often a closed book looks at the play time again
 
 local QuestService = {}
 
@@ -60,12 +63,26 @@ local function refresh(player: Player, save: SaveSchema.Save, always: boolean)
 	end
 end
 
+-- Whether the player's book is open, keeping QuestsOpen up to date (nil while closed or while quests is off).
+local function opened(player: Player, save: SaveSchema.Save): boolean
+	local open = LiveFlags.isOn(QuestRules.FLAG)
+		and QuestRules.isOpen(Telemetry.played(player) or save.playSeconds)
+	local shown = if open then true else nil
+	if player:GetAttribute(QuestRules.OPEN_ATTRIBUTE) ~= shown then
+		player:SetAttribute(QuestRules.OPEN_ATTRIBUTE, shown)
+		if open then
+			refresh(player, save, true) -- the book's first look, as it opens
+		end
+	end
+	return open
+end
+
 local function onWashed(player: Player, facts: QuestRules.Facts)
 	if not LiveFlags.isOn(QuestRules.FLAG) then
 		return
 	end
 	local save = DataService.get(player)
-	if save == nil then
+	if save == nil or not opened(player, save) then
 		return
 	end
 	refresh(player, save, false)
@@ -104,28 +121,37 @@ function QuestService.Init(_services: { [string]: any }) end
 function QuestService.Start()
 	SpaService.washed:Connect(onWashed)
 	DataService.onLoaded:Connect(function(player: Player, save)
-		if LiveFlags.isOn(QuestRules.FLAG) then
-			refresh(player, save, true)
-		end
+		opened(player, save)
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. QuestRules.FLAG)
 		:Connect(function()
-			if LiveFlags.isOn(QuestRules.FLAG) then
-				for _, player in Players:GetPlayers() do
-					local save = DataService.get(player)
-					if save then
-						refresh(player, save, true)
-					end
+			for _, player in Players:GetPlayers() do
+				local save = DataService.get(player)
+				if save then
+					opened(player, save)
 				end
 			end
 		end)
+	task.spawn(function()
+		while true do
+			task.wait(OPEN_CHECK_SECONDS)
+			if LiveFlags.isOn(QuestRules.FLAG) then
+				for _, player in Players:GetPlayers() do
+					local save = DataService.get(player)
+					if save and player:GetAttribute(QuestRules.OPEN_ATTRIBUTE) == nil then
+						opened(player, save)
+					end
+				end
+			end
+		end
+	end)
 	task.spawn(function()
 		while true do
 			task.wait(CHECK_SECONDS)
 			if LiveFlags.isOn(QuestRules.FLAG) then
 				for _, player in Players:GetPlayers() do
 					local save = DataService.get(player)
-					if save then
+					if save and player:GetAttribute(QuestRules.OPEN_ATTRIBUTE) == true then
 						refresh(player, save, false)
 					end
 				end
