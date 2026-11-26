@@ -18,6 +18,11 @@
 -- the player; they still walk there and tap the thing themselves. The trail goes once they arrive, start a scrub, or
 -- after TRAIL_SECONDS.
 --
+-- With askQueue on (issue 522), every bubble but the opening's own (BubbleRules.OPENING) is the ask "bubble"
+-- (AskController): between washes it waits its turn in the line and goes by itself after ASK_UP_SECONDS; as a recap
+-- card closes it shows only if the line lets it now (else the next cat comes and it waits for a later turn), so it
+-- never comes within a minute of the check in card or another ask, and never holds one back for long.
+--
 -- It tells the server each bubble it shows (ReportBubbleSeen), so a rejoin never shows it again.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -45,6 +50,8 @@ local CHAIN = 2 -- at most this many bubbles one after another as a recap card c
 local WAIT_SECONDS = 6 -- a bubble left up this long as the next cat waits goes, and the next cat comes
 local ARRIVE = 8 -- studs from the spot where the trail is done
 local TRAIL_SECONDS = 30
+local ASK = "bubble" -- AskRules.IDS
+local ASK_UP_SECONDS = 20 -- with askQueue on, a bubble shown between washes goes by itself after this
 local SOAP = "BubbleSoap"
 local TOOLS_SPOT = "Tools"
 local TOOLS_FLAG = "toolsBoard"
@@ -58,6 +65,7 @@ local BubbleController = {}
 local player = Players.LocalPlayer
 local happened = { firstCustomer = false, wetCat = false, stationReady = false } -- this session's sightings
 local scrub: any = nil
+local ask: any = nil -- AskController
 local told: { [string]: boolean } = {} -- shown here, before the server's list catches up
 local haveBuilds = false
 local builds: { [string]: BuildRules.Build } = {}
@@ -246,8 +254,16 @@ function BubbleController.afterRecap(nextCat: () -> ())
 			finish()
 			return
 		end
+		local asked = ask ~= nil and ask.on() and not BubbleRules.OPENING[bubble.id]
+		if asked and not ask.takeNow(ASK) then
+			finish() -- the line says wait: the next cat comes, and the bubble waits its turn between washes
+			return
+		end
 		left -= 1
 		show(bubble, function(closed: boolean)
+			if asked then
+				ask.done(ASK, "closed")
+			end
 			if closed then
 				left = 0 -- the player's X ends the row (Review-QA on #300)
 			end
@@ -261,6 +277,23 @@ function BubbleController.afterRecap(nextCat: () -> ())
 		end)
 	end
 	guarded()
+end
+
+-- The ask's turn came (askQueue): the bubble due now, if one still is, up for at most ASK_UP_SECONDS.
+local function showAsked()
+	local bubble = if chaining or UI.bubbleShown() then nil else due()
+	if bubble == nil or BubbleRules.OPENING[bubble.id] then
+		ask.skip(ASK)
+		return
+	end
+	show(bubble, function()
+		ask.done(ASK, "closed")
+	end)
+	task.delay(ASK_UP_SECONDS, function()
+		if UI.shownBubble() == bubble then
+			UI.hideBubble()
+		end
+	end)
 end
 
 local function check()
@@ -282,9 +315,16 @@ local function check()
 		return
 	end
 	local bubble = due()
-	if bubble then
-		show(bubble, nil)
+	if bubble == nil then
+		return
 	end
+	if ask ~= nil and ask.on() and not BubbleRules.OPENING[bubble.id] then
+		if ask.shown() ~= ASK then
+			ask.want(ASK, showAsked, UI.hideBubble)
+		end
+		return
+	end
+	show(bubble, nil)
 end
 
 -- A cat landed in the tub: any bubble still up goes, and the first that needs a dryer not built makes "Wet cat!" due
@@ -318,6 +358,7 @@ end
 
 function BubbleController.Init(controllers: { [string]: any })
 	scrub = controllers.ScrubController
+	ask = controllers.AskController
 end
 
 function BubbleController.Start()
