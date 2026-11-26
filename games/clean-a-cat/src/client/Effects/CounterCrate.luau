@@ -28,10 +28,46 @@
 --                                                 CounterSetAt, for a sequence of `total` seconds
 --   CounterCrate.arcAt(share) -> number          pure: the crate's lift (studs) along its arc
 --   CounterCrate.reachAt(t) -> number            pure: the carrying arm's forward turn (radians) at `t` seconds
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Effects = require(script.Parent)
+
+-- Issue 828 (switch counterSounds): a soft thud as the crate is set down and a small meow as the cat steps out, on the
+-- player's own plot only. Required lazily so the pure specs never load Audio.
+local SOUND_FLAG = "counterSounds"
+local THUD_PITCH = 1.25 -- a small carrier, not a box off a truck
+local soundParts: { LiveFlags: any, SpaLayout: any, Audio: any }? = nil
+local function sounds(): { LiveFlags: any, SpaLayout: any, Audio: any }
+	local loaded = soundParts
+	if loaded == nil then
+		local Shared = ReplicatedStorage:WaitForChild("Shared")
+		loaded = {
+			LiveFlags = require(Shared:WaitForChild("LiveFlags")) :: any,
+			SpaLayout = require(Shared:WaitForChild("SpaLayout")) :: any,
+			Audio = require(script.Parent.Parent:WaitForChild("Audio")) :: any,
+		}
+		soundParts = loaded
+	end
+	return loaded :: { LiveFlags: any, SpaLayout: any, Audio: any }
+end
+
+-- True when the counter sounds are on and `figure` stands in the local player's own plot.
+local function ownSounds(figure: Model): boolean
+	local s = sounds()
+	if not s.LiveFlags.isOn(SOUND_FLAG) then
+		return false
+	end
+	local ok, slot = pcall(s.SpaLayout.slotOf, Players.LocalPlayer)
+	if not ok or type(slot) ~= "number" then
+		return false
+	end
+	local plots = Workspace:FindFirstChild("SpaPlots")
+	local plot = plots and plots:FindFirstChild("Plot" .. slot)
+	return plot ~= nil and figure:IsDescendantOf(plot)
+end
 
 local CounterCrate = {}
 
@@ -180,6 +216,8 @@ type Entry = {
 	crateParts: { Instance }?, -- the copy's parts for its fade, collected once (issue 821)
 	crateSeen: number?, -- the fade last written, so an unchanged frame writes nothing
 	waitHidden: boolean?, -- the waiting cat is hidden once before CounterSetAt, not every frame
+	ownSounds: boolean?, -- issue 828: this crate plays its thud and meow (own plot, counterSounds on)
+	meowed: boolean?,
 }
 
 local entries: { [Model]: Entry } = {}
@@ -323,6 +361,13 @@ local function begin(entry: Entry, carrier: Model)
 		entry.figure:SetAttribute(CounterCrate.REACH_ATTRIBUTE, os.clock())
 	end
 	entry.phase = "playing"
+	if ownSounds(entry.figure) then
+		entry.ownSounds = true
+		sounds().Audio.play("boxThud", {
+			at = copy.PrimaryPart or copy:FindFirstChildWhichIsA("BasePart", true),
+			pitch = THUD_PITCH,
+		})
+	end
 end
 
 local function step()
@@ -390,6 +435,13 @@ local function step()
 			-- lies by the sitting cat's tail (Model-Agent)
 			local open = smooth(door) * (1 - smooth(math.clamp(fadeShare * 2, 0, 1)))
 			hinge:PivotTo(crate:GetPivot() * closed * CFrame.Angles(0, entry.doorAngle * open, 0))
+		end
+		if walk > 0 and entry.ownSounds and not entry.meowed then
+			entry.meowed = true
+			sounds().Audio.play(
+				"meow",
+				{ at = cat.PrimaryPart or cat:FindFirstChildWhichIsA("BasePart", true) }
+			)
 		end
 		if walk > 0 and not entry.handedOver then
 			local walker = entry.walker
