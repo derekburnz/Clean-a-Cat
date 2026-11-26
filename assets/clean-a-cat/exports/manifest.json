@@ -356,6 +356,100 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Mint.png"
  },
  {
+  "name": "CleanACat_Bow_MintDouble",
+  "category": "Bow",
+  "module": "props",
+  "objects": [
+   "CleanACat_Bow_MintDouble"
+  ],
+  "triangles": 296,
+  "budget": 520,
+  "parts": 10,
+  "size_studs": {
+   "x": 0.85,
+   "y": 0.47,
+   "z": 0.38
+  },
+  "size_roblox": [
+   0.85,
+   0.38,
+   0.47
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "296/520 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "184 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.03 (want 0)",
+    "centered": "footprint center x=0.00 y=0.13",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_MintDouble.png"
+ },
+ {
+  "name": "CleanACat_Bow_MintRoyal",
+  "category": "Bow",
+  "module": "props",
+  "objects": [
+   "CleanACat_Bow_MintRoyal",
+   "CleanACat_Bow_MintRoyal_Gem_Glow"
+  ],
+  "triangles": 428,
+  "budget": 520,
+  "parts": 15,
+  "size_studs": {
+   "x": 1.03,
+   "y": 0.52,
+   "z": 0.45
+  },
+  "size_roblox": [
+   1.03,
+   0.45,
+   0.52
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "428/520 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "266 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.06 (want 0)",
+    "centered": "footprint center x=0.00 y=0.15",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_MintRoyal.png"
+ },
+ {
   "name": "CleanACat_Bow_Pink",
   "category": "Bow",
   "module": "props",
@@ -402,6 +496,100 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Pink.png"
  },
  {
+  "name": "CleanACat_Bow_PinkDouble",
+  "category": "Bow",
+  "module": "props",
+  "objects": [
+   "CleanACat_Bow_PinkDouble"
+  ],
+  "triangles": 296,
+  "budget": 520,
+  "parts": 10,
+  "size_studs": {
+   "x": 0.85,
+   "y": 0.47,
+   "z": 0.38
+  },
+  "size_roblox": [
+   0.85,
+   0.38,
+   0.47
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "296/520 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "184 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.03 (want 0)",
+    "centered": "footprint center x=0.00 y=0.13",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_PinkDouble.png"
+ },
+ {
+  "name": "CleanACat_Bow_PinkRoyal",
+  "category": "Bow",
+  "module": "props",
+  "objects": [
+   "CleanACat_Bow_PinkRoyal",
+   "CleanACat_Bow_PinkRoyal_Gem_Glow"
+  ],
+  "triangles": 428,
+  "budget": 520,
+  "parts": 15,
+  "size_studs": {
+   "x": 1.03,
+   "y": 0.52,
+   "z": 0.45
+  },
+  "size_roblox": [
+   1.03,
+   0.45,
+   0.52
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "428/520 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "266 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.06 (want 0)",
+    "centered": "footprint center x=0.00 y=0.15",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_PinkRoyal.png"
+ },
+ {
   "name": "CleanACat_Bow_Sky",
   "category": "Bow",
   "module": "props",
@@ -446,6 +634,100 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_Sky.png"
+ },
+ {
+  "name": "CleanACat_Bow_SkyDouble",
+  "category": "Bow",
+  "module": "props",
+  "objects": [
+   "CleanACat_Bow_SkyDouble"
+  ],
+  "triangles": 296,
+  "budget": 520,
+  "parts": 10,
+  "size_studs": {
+   "x": 0.85,
+   "y": 0.47,
+   "z": 0.38
+  },
+  "size_roblox": [
+   0.85,
+   0.38,
+   0.47
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "296/520 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "184 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.03 (want 0)",
+    "centered": "footprint center x=0.00 y=0.13",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_SkyDouble.png"
+ },
+ {
+  "name": "CleanACat_Bow_SkyRoyal",
+  "category": "Bow",
+  "module": "props",
+  "objects": [
+   "CleanACat_Bow_SkyRoyal",
+   "CleanACat_Bow_SkyRoyal_Gem_Glow"
+  ],
+  "triangles": 428,
+  "budget": 520,
+  "parts": 15,
+  "size_studs": {
+   "x": 1.03,
+   "y": 0.52,
+   "z": 0.45
+  },
+  "size_roblox": [
+   1.03,
+   0.45,
+   0.52
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "428/520 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "266 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.06 (want 0)",
+    "centered": "footprint center x=0.00 y=0.15",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Bow_SkyRoyal.png"
  },
  {
   "name": "CleanACat_Cat_Bathtile",
@@ -14107,6 +14389,100 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonMint.png"
  },
  {
+  "name": "CleanACat_Prop_BowButtonMintDouble",
+  "category": "Prop",
+  "module": "props",
+  "objects": [
+   "CleanACat_Prop_BowButtonMintDouble"
+  ],
+  "triangles": 544,
+  "budget": 970,
+  "parts": 12,
+  "size_studs": {
+   "x": 1.08,
+   "y": 0.38,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.08,
+   1.08,
+   0.38
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "544/970 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "352 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.54 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.08",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonMintDouble.png"
+ },
+ {
+  "name": "CleanACat_Prop_BowButtonMintRoyal",
+  "category": "Prop",
+  "module": "props",
+  "objects": [
+   "CleanACat_Prop_BowButtonMintRoyal",
+   "CleanACat_Prop_BowButtonMintRoyal_Gem_Glow"
+  ],
+  "triangles": 676,
+  "budget": 970,
+  "parts": 17,
+  "size_studs": {
+   "x": 1.08,
+   "y": 0.38,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.08,
+   1.08,
+   0.38
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "676/970 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "434 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.54 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.08",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonMintRoyal.png"
+ },
+ {
   "name": "CleanACat_Prop_BowButtonPink",
   "category": "Prop",
   "module": "props",
@@ -14153,6 +14529,100 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonPink.png"
  },
  {
+  "name": "CleanACat_Prop_BowButtonPinkDouble",
+  "category": "Prop",
+  "module": "props",
+  "objects": [
+   "CleanACat_Prop_BowButtonPinkDouble"
+  ],
+  "triangles": 544,
+  "budget": 970,
+  "parts": 12,
+  "size_studs": {
+   "x": 1.08,
+   "y": 0.38,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.08,
+   1.08,
+   0.38
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "544/970 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "352 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.54 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.08",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonPinkDouble.png"
+ },
+ {
+  "name": "CleanACat_Prop_BowButtonPinkRoyal",
+  "category": "Prop",
+  "module": "props",
+  "objects": [
+   "CleanACat_Prop_BowButtonPinkRoyal",
+   "CleanACat_Prop_BowButtonPinkRoyal_Gem_Glow"
+  ],
+  "triangles": 676,
+  "budget": 970,
+  "parts": 17,
+  "size_studs": {
+   "x": 1.08,
+   "y": 0.38,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.08,
+   1.08,
+   0.38
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "676/970 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "434 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.54 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.08",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonPinkRoyal.png"
+ },
+ {
   "name": "CleanACat_Prop_BowButtonSky",
   "category": "Prop",
   "module": "props",
@@ -14197,6 +14667,100 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonSky.png"
+ },
+ {
+  "name": "CleanACat_Prop_BowButtonSkyDouble",
+  "category": "Prop",
+  "module": "props",
+  "objects": [
+   "CleanACat_Prop_BowButtonSkyDouble"
+  ],
+  "triangles": 544,
+  "budget": 970,
+  "parts": 12,
+  "size_studs": {
+   "x": 1.08,
+   "y": 0.38,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.08,
+   1.08,
+   0.38
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "544/970 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "352 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.54 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.08",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonSkyDouble.png"
+ },
+ {
+  "name": "CleanACat_Prop_BowButtonSkyRoyal",
+  "category": "Prop",
+  "module": "props",
+  "objects": [
+   "CleanACat_Prop_BowButtonSkyRoyal",
+   "CleanACat_Prop_BowButtonSkyRoyal_Gem_Glow"
+  ],
+  "triangles": 676,
+  "budget": 970,
+  "parts": 17,
+  "size_studs": {
+   "x": 1.08,
+   "y": 0.38,
+   "z": 1.08
+  },
+  "size_roblox": [
+   1.08,
+   1.08,
+   0.38
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "676/970 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "434 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.54 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.08",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_BowButtonSkyRoyal.png"
  },
  {
   "name": "CleanACat_Prop_BuildBoard",
