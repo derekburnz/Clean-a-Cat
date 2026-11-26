@@ -87,7 +87,7 @@ local function allButtons(priced: boolean)
 		StarterViewRules.items(function(key: string): unknown
 			return prices[key]
 		end),
-		299,
+		199,
 		os.time() + 44 * 3600
 	)
 	UI.setSideNote("Starter", "1d 20h")
@@ -441,7 +441,7 @@ local SCENES = {
 				StarterViewRules.items(function(key: string): unknown
 					return prices[key]
 				end),
-				299,
+				199,
 				os.time() + 44 * 3600 + 14 * 60 + 36
 			)
 			UI.open("Starter")
@@ -458,7 +458,7 @@ local SCENES = {
 				StarterViewRules.items(function(key: string): unknown
 					return prices[key]
 				end),
-				299,
+				199,
 				os.time() + 3 * 3600 + 5
 			)
 			UI.open("Starter")
