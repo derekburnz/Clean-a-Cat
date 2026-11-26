@@ -56,6 +56,12 @@ local function show(player: Player, id: string)
 		local default = WorkerRules.WORKERS[id].name
 		local shown = StaffNameRules.shown(name, filter(player, name), default)
 		value = if shown ~= default then shown else nil
+		-- the filter yields: a newer rename may have come in meanwhile, and its own show sets the name (Review-QA on #641)
+		local now = DataService.get(player)
+		local current = if now then now.workers[id] else nil
+		if current == nil or current.name ~= name then
+			return
+		end
 	end
 	if player.Parent == Players and player:GetAttribute(attributeOf(id)) ~= value then
 		player:SetAttribute(attributeOf(id), value)
