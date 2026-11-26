@@ -9,8 +9,9 @@
 --   fade    it fades away over the last FADE seconds of the walk, as if out of the door
 --   comfort Reduced Motion: no hop or walk; the cat fades where it is
 --
--- Client only and cosmetic. The real cat stays hidden (by each part's own Transparency, put back exactly) until the
--- server removes it; if it is somehow still there after KEEP_HIDDEN seconds it shows again.
+-- Client only and cosmetic. The real cat stays hidden (by each part's own Transparency) for the rest of its life:
+-- ScrubController keeps the done tub cat until the next cat is seated or picked up, which can be minutes later with
+-- the recap card open, so it never shows again (Review-QA on #792). Its saved values clear on Destroying.
 --
 -- API
 --   CatWalkOut.play(cat, to)                     plays it towards the CFrame `to` (its position; the floor height)
@@ -32,7 +33,6 @@ CatWalkOut.MAX_WALK = 4
 CatWalkOut.FADE = 0.7
 CatWalkOut.BOB = 0.12
 CatWalkOut.STEP_HZ = 3.2
-CatWalkOut.KEEP_HIDDEN = 15
 
 function CatWalkOut.walkSeconds(distance: number): number
 	return math.clamp(distance / CatWalkOut.SPEED, CatWalkOut.MIN_WALK, CatWalkOut.MAX_WALK)
@@ -64,13 +64,9 @@ local function hide(root: Instance)
 	end
 end
 
-local function show(root: Instance)
+local function release(root: Instance)
 	for _, d in root:GetDescendants() do
-		local was = saved[d]
-		if was ~= nil then
-			saved[d] = nil
-			(d :: any).Transparency = was
-		end
+		saved[d] = nil
 	end
 end
 
@@ -108,9 +104,18 @@ function CatWalkOut.play(cat: Model, to: CFrame)
 	if playing[cat] or cat.Parent == nil then
 		return
 	end
+	local cloned: Model? = cat:Clone()
+	if cloned == nil then
+		return -- not Archivable: leave the cat as it is
+	end
+	local copy: Model = cloned
 	playing[cat] = true
+	cat.Destroying:Once(function()
+		release(cat)
+		playing[cat] = nil
+		forget()
+	end)
 	local still = Effects.reducedMotion()
-	local copy = cat:Clone() :: Model
 	for _, d in copy:GetDescendants() do
 		if d:IsA("BasePart") then
 			local p = d :: BasePart
@@ -154,13 +159,7 @@ function CatWalkOut.play(cat: Model, to: CFrame)
 			connection = nil
 		end
 		copy:Destroy()
-		task.delay(CatWalkOut.KEEP_HIDDEN, function()
-			playing[cat] = nil
-			if cat.Parent then
-				show(cat)
-			end
-			forget()
-		end)
+		forget()
 	end
 	connection = RunService.RenderStepped:Connect(function()
 		local t = os.clock() - began
