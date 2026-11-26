@@ -175,7 +175,7 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 	whoIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	whoIcon.Position = UDim2.fromScale(0.5, 0.5)
 	whoIcon.Size = UDim2.fromScale(0.7, 0.7)
-	Icons.draw(if row.hired then "Helper" elseif row.pass then "Star" else "Coins", whoIcon)
+	Icons.draw(if row.hired then "Helpers" elseif row.pass then "Star" else "Coins", whoIcon)
 	local id = row.id
 	if row.hired and canRename then
 		-- the round picture is the Rename button, with a pencil on it, as in the Pets window (issue 487)
@@ -330,7 +330,7 @@ function HelpersWindow.onPass(fn: () -> ())
 end
 
 function HelpersWindow.build(root: Instance): Frame
-	local window = Window.new(HelperViewRules.WINDOW, "Helpers", "Helper", root)
+	local window = Window.new(HelperViewRules.WINDOW, "Helpers", "Helpers", root)
 	window.close.Activated:Connect(function()
 		window.layer.Visible = false
 	end)
