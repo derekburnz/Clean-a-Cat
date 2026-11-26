@@ -47,6 +47,7 @@ local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local MascotService = require(script.Parent:WaitForChild("MascotService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PetService = require(script.Parent:WaitForChild("PetService"))
 local PlotService = require(script.Parent:WaitForChild("PlotService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
@@ -823,8 +824,18 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 			local kind = SpecialRules.CRATE_KIND
 			save.crates[kind] = (save.crates[kind] or 0) + 1
 			player:SetAttribute(SpecialRules.CRATES_ATTRIBUTE, save.crates[kind])
+			PetService.show(player)
 			NetService.notice(player, `{cat.kind} left you a crate!`)
 		end
+	end
+	-- The player's own pet adds to their tips (switch pets, tuning pet.boost)
+	local tipBoost = PetService.playerBoost(player)
+	if tipBoost > 0 then
+		pay = {
+			coins = pay.coins,
+			tip = math.floor(pay.tip * (1 + tipBoost) + 0.5),
+			stars = pay.stars,
+		}
 	end
 	local more: RecapRules.Extra = extra or {}
 	coins = pay.coins

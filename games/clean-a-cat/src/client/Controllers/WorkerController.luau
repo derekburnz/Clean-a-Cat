@@ -4,6 +4,7 @@
 -- they take next (a tap steps through the modes) and another takes them up a level. The server checks everything and
 -- shows the result on the Player attributes WorkerMode_<id> and WorkerLevel_<id>; the prompts only follow them.
 -- Lou comes with a game pass, so he has no hire prompt. Nothing opens by itself.
+-- With `pets` on, a third prompt gives the worker the best pet from the player's pen (until Design's Pets window).
 -- It also fires Moments.WorkerFinished(cat) when a worker's clean cat sits down in their tub, on any plot.
 -- Behind the LiveFlags switch `workers`.
 local Players = game:GetService("Players")
@@ -11,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
@@ -25,6 +27,23 @@ local WorkerController = {}
 local folder: Folder? = nil
 local anchors: { [string]: BasePart } = {}
 local connections: { RBXScriptConnection } = {}
+-- The player's pets as the server last sent them (Pets), and each station's refresh for when they change.
+local pets: { CrateRules.Pet } = {}
+local shows: { () -> () } = {}
+
+-- The pen's best pet (the highest boost, then the newest), or nil.
+local function bestInPen(): CrateRules.Pet?
+	local best: CrateRules.Pet? = nil
+	for _, pet in pets do
+		if pet.slot == nil then
+			local boost = CrateRules.boost(pet.kind, pet.star)
+			if best == nil or boost >= CrateRules.boost(best.kind, best.star) then
+				best = pet
+			end
+		end
+	end
+	return best
+end
 
 local function attribute(kind: string, id: string): unknown
 	return Players.LocalPlayer:GetAttribute(`{kind}_{id}`)
@@ -55,8 +74,13 @@ local function build(id: string)
 	anchors[id] = anchor
 	local main = prompt(anchor, Enum.KeyCode.E, Enum.KeyCode.ButtonX)
 	local level = prompt(anchor, Enum.KeyCode.F, Enum.KeyCode.ButtonY)
+	local give = prompt(anchor, Enum.KeyCode.G, Enum.KeyCode.ButtonL1)
 	local function show()
 		local hired = attribute("WorkerLevel", id) ~= nil
+		local best = if hired and LiveFlags.isOn(CrateRules.FLAG) then bestInPen() else nil
+		give.Enabled = best ~= nil
+		give.ActionText = "Give a pet"
+		give.ObjectText = if best then `{best.kind} to {info.name}` else ""
 		if not hired then
 			main.Enabled = not info.pass
 			main.ActionText = `Hire {info.name}`
@@ -92,6 +116,16 @@ local function build(id: string)
 			Remotes.event("RequestWorkerLevel"):FireServer(id)
 		end)
 	)
+	table.insert(
+		connections,
+		give.Triggered:Connect(function()
+			local best = bestInPen()
+			if best then
+				Remotes.event("RequestPlacePet"):FireServer(best.id, `{id}1`)
+			end
+		end)
+	)
+	table.insert(shows, show)
 	for _, kind in { "WorkerLevel", "WorkerMode" } do
 		table.insert(
 			connections,
@@ -120,6 +154,7 @@ local function disable()
 	end
 	table.clear(connections)
 	table.clear(anchors)
+	table.clear(shows)
 	local made = folder
 	folder = nil
 	if made then
@@ -160,6 +195,30 @@ function WorkerController.Start()
 		end
 	end)
 	Workspace.DescendantAdded:Connect(watchFinished)
+	Remotes.event("Pets").OnClientEvent:Connect(function(raw: unknown)
+		local list: { CrateRules.Pet } = {}
+		if type(raw) == "table" then
+			for _, entry in raw :: { any } do
+				if
+					type(entry) == "table"
+					and type(entry.id) == "number"
+					and type(entry.kind) == "string"
+					and type(entry.star) == "number"
+				then
+					table.insert(list, {
+						id = entry.id,
+						kind = entry.kind,
+						star = entry.star,
+						slot = if type(entry.slot) == "string" then entry.slot else nil,
+					})
+				end
+			end
+		end
+		pets = list
+		for _, show in shows do
+			show()
+		end
+	end)
 	refresh()
 end
 

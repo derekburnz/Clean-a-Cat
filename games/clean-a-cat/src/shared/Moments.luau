@@ -77,6 +77,14 @@ local workerFinished: Signal<Model> = Signal.new()
 -- false the first time in a visit, and true when the line was redrawn and this is a new figure for the same visitor
 -- (so the star can go back over their head without the arrival playing twice).
 local visitorArrived: Signal<Model, boolean> = Signal.new()
+-- (crate): (switch pets) a crate the player holds has landed by their tub (CleanACat_Prop_PetCrate, where it stays).
+local crateDropped: Signal<Model> = Signal.new()
+-- (crate): (switch pets) the player tapped Open and the server rolled the pet: the lid opens, the same every time.
+local crateOpened: Signal<Model> = Signal.new()
+-- (pet): (switch pets) the pet from the crate, just placed on the crate's PetSeat.
+local petRevealed: Signal<Model> = Signal.new()
+-- (pet): (switch pets) three pets fused: the pet beside the player or worker, now a star higher.
+local petStarUp: Signal<Model> = Signal.new()
 
 local Moments = {
 	ScrubStart = scrubStart,
@@ -109,6 +117,10 @@ local Moments = {
 	CatLeft = catLeft,
 	WorkerFinished = workerFinished,
 	VisitorArrived = visitorArrived,
+	CrateDropped = crateDropped,
+	CrateOpened = crateOpened,
+	PetRevealed = petRevealed,
+	PetStarUp = petStarUp,
 
 	-- Every moment name, in the order they happen in a first session. Tests and tools read this list.
 	NAMES = table.freeze({
@@ -142,6 +154,10 @@ local Moments = {
 		"CatLeft",
 		"WorkerFinished",
 		"VisitorArrived",
+		"CrateDropped",
+		"CrateOpened",
+		"PetRevealed",
+		"PetStarUp",
 	}),
 }
 

@@ -21,6 +21,7 @@ local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PetService = require(script.Parent:WaitForChild("PetService"))
 local SpaService = require(script.Parent:WaitForChild("SpaService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
@@ -283,6 +284,7 @@ local function onHire(player: Player, rawId: unknown)
 	end
 	WalletService.show(player)
 	WorkerService.refresh(player)
+	PetService.show(player) -- the worker brings a pet slot
 	NetService.notice(player, `{WorkerRules.WORKERS[id].name} works here now`)
 	Telemetry.economy(player, "coins", "sink", spent, save.coins, "Shop", `Worker{id}`)
 end
@@ -340,7 +342,9 @@ local function finish(player: Player, id: string, job: Job)
 	if save == nil or player.Parent ~= Players then
 		return
 	end
-	local coins = WorkerRules.pay(job.kind, job.dirt, job.level)
+	-- the worker's pets add to their pay, all together at most +30% (switch pets, tuning worker.petCap)
+	local boost = PetService.workerBoost(player, id)
+	local coins = math.floor(WorkerRules.pay(job.kind, job.dirt, job.level) * (1 + boost) + 0.5)
 	save.coins += coins
 	WalletService.show(player)
 	IndexService.stamp(player, job.kind, "washed")
