@@ -151,7 +151,7 @@ local function send(text: string)
 end
 
 function RenameCard.build(root: Instance): Frame
-	local window = Window.new(RenameCard.WINDOW, "Name your helper", "Helper", root)
+	local window = Window.new(RenameCard.WINDOW, "Name your helper", "Helpers", root)
 	window.close.Activated:Connect(function()
 		window.layer.Visible = false
 	end)

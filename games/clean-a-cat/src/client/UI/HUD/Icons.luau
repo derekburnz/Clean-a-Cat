@@ -13,7 +13,7 @@ Icons.IMAGES = {
 	Settings = "rbxassetid://118282050361608",
 	Sponge = "",
 	Brush = "",
-	Bow = "",
+	Bow = "rbxassetid://134446077497785", -- a pink bow (2026-11-26, PR 706)
 	Camera = "rbxassetid://81858835488207",
 	Star = "rbxassetid://79608175953496",
 	Paw = "rbxassetid://107223055953057",
@@ -38,6 +38,12 @@ Icons.IMAGES = {
 	Helper = "rbxassetid://112634017426563", -- placeholder staff head
 	Tools = "rbxassetid://100929090324662",
 	Build = "rbxassetid://84861881998122",
+	-- the HUD buttons' own pictures (Model-Agent, PR 706, group uploads 2026-11-26)
+	Quests = "rbxassetid://80864490324180", -- a clipboard with a tick
+	Shop = "rbxassetid://75206569453389", -- a shopfront with a striped awning; soft below 48 px, so keep it 48+
+	Pets = "rbxassetid://112809586144557", -- a lilac cat's head in a collar with a bell
+	Crate = "rbxassetid://79856687835511", -- the pet crate with cat ears and a paw latch
+	Helpers = "rbxassetid://115493249688079", -- Jo's head with the headband
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
@@ -73,6 +79,11 @@ local STAND_INS: { [string]: StandIn } = {
 	Smell = { glyph = "🧼", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Claws = { glyph = "💅", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Pencil = { glyph = "✏️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- rename a helper
+	Quests = { glyph = "📋", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Shop = { glyph = "🏪", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Pets = { glyph = "🐱", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Crate = { glyph = "📦", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Helpers = { glyph = "🧑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
 }
 
