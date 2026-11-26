@@ -7,6 +7,9 @@
 --                                    ids); `second` with the Second pet slot pass: two slots on each row
 --   PetsWindow.onPlace(fn)           fn(petId, slot?) when a pet tile is tapped: into the picked slot, or off it
 --   PetsWindow.onFuse(fn)            fn(ids) when Fuse is pressed on three of the same
+--   PetsWindow.setNames(names, on)   the helpers' shown names ({ [id] = name }, from the server's filtered
+--                                    StaffName_<id>) and whether a hired helper's row offers Rename (switch staffRename)
+--   PetsWindow.onRename(fn)          fn(helperId) when a hired helper's picture (with its pencil) is tapped
 --
 -- Left, "Your pets": one tile per pet and star with its rarity, stars and how many (x3); a tick when one is in a slot;
 -- Fuse under three of the same below the top star (free, the result is fixed: a star up). Right, "Who has a pet": you
@@ -56,6 +59,7 @@ local SIZES = {
 		star = 24,
 		fuse = 48,
 		slotH = 84,
+		pencil = 28, -- the pencil on a helper's picture: tap it to rename them
 		slotGap = 10,
 		who = 64,
 		say = 19,
@@ -80,6 +84,7 @@ local SIZES = {
 		star = 22,
 		fuse = 46,
 		slotH = 76,
+		pencil = 26,
 		slotGap = 6,
 		who = 64,
 		say = 19,
@@ -112,6 +117,9 @@ local hired: { [string]: boolean } = {}
 local picked = CrateRules.PLAYER_SLOT
 local secondSlot = false -- the Second pet slot pass (Pass_SecondPetSlot): two slots a row
 local placeListeners: { (id: number, slot: string?) -> () } = {}
+local names: { [string]: string } = {} -- helper id -> the name the server showed; the default when missing
+local renamable = false
+local renameListeners: { (id: string) -> () } = {}
 local fuseListeners: { (ids: { number }) -> () } = {}
 
 local function frame(name: string, parent: Instance): Frame
@@ -353,7 +361,28 @@ local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, co
 	t.LayoutOrder = 1
 	t.TextXAlignment = Enum.TextXAlignment.Left
 	t.Size = UDim2.new(1, 0, 0, 26)
-	t.Text = row.who
+	local helper = row.helper
+	t.Text = if helper then names[helper] or row.who else row.who
+	if helper and renamable and not row.locked then
+		-- the helper's round picture is the Rename button, with a pencil on it (issue 487); over the card's own tap
+		who.ZIndex = 5 -- the card's own tap is a later sibling
+		local tap = tapArea(who, `Rename {t.Text}`)
+		tap.Activated:Connect(function()
+			for _, listener in renameListeners do
+				task.spawn(listener, helper)
+			end
+		end)
+		local pencil = frame("Pencil", who)
+		pencil.AnchorPoint = Vector2.new(0.5, 0.5)
+		pencil.Position = UDim2.fromScale(0.86, 0.86)
+		pencil.Size = UDim2.fromOffset(s.pencil, s.pencil)
+		pencil.BackgroundTransparency = 0
+		pencil.BackgroundColor3 = Kit.WHITE
+		pencil.ZIndex = 4
+		Kit.corner(pencil, UDim.new(0.5, 0))
+		Kit.stroke(pencil, 2)
+		Icons.draw("Pencil", pencil)
+	end
 	local d = soft("Says", text, s.say)
 	d.LayoutOrder = 2
 	d.TextXAlignment = Enum.TextXAlignment.Left
@@ -389,7 +418,7 @@ local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, co
 	local slot2 = if row.locked then nil else row.slot2 -- a locked helper shows one box, so its line has room
 	local boxes = if slot2 then 2 else 1
 	text.Size = UDim2.new(1, -(s.who + 12 + boxes * s.who + (boxes - 1) * 8 + 12), 1, 0)
-	local mine = if row.helper then `{row.who}'s` else "your"
+	local mine = if row.helper then `{t.Text}'s` else "your"
 	if not row.locked then
 		-- made before the boxes, so a box's own tap (a later sibling's child) sits over it
 		local tap = tapArea(card, `Pick {mine} pet slot`)
@@ -506,6 +535,18 @@ function PetsWindow.set(
 	if p and p.window.layer.Visible then
 		PetsWindow.redraw()
 	end
+end
+
+function PetsWindow.setNames(newNames: { [string]: string }, on: boolean)
+	names, renamable = newNames, on
+	local p = parts
+	if p and p.window.layer.Visible then
+		PetsWindow.redraw()
+	end
+end
+
+function PetsWindow.onRename(fn: (id: string) -> ())
+	table.insert(renameListeners, fn)
 end
 
 function PetsWindow.onPlace(fn: (id: number, slot: string?) -> ())

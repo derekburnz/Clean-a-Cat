@@ -418,6 +418,36 @@ local SCENES = {
 			UI.open("Pets")
 		end,
 	},
+	-- Staff names (issue 487, switch staffRename): Jo renamed to the longest name, Sam with the default, both with
+	-- Rename, Lou locked; then the Rename card for Jo.
+	{
+		"PetsNames",
+		function()
+			flag("petsWindow", true)
+			flag("staffRename", true)
+			UI.setStaffNames({ Jo = "Captain Bubbles" }, true)
+			UI.setPets({
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+			}, { Jo = true, Sam = true }, true)
+			UI.open("Pets")
+		end,
+	},
+	{
+		"Rename",
+		function()
+			flag("staffRename", true)
+			UI.showRename("Jo", "Captain Bubbles", "Jo")
+		end,
+	},
+	{
+		"RenameEmpty",
+		function()
+			flag("staffRename", true)
+			UI.showRename("Sam", "Sam", "Sam")
+			UI.setStaffNames({}, false)
+		end,
+	},
 	-- The quest book (issue 516, switch quests): one daily done, the weekly crate one of three, then a short week.
 	{
 		"Quests",
