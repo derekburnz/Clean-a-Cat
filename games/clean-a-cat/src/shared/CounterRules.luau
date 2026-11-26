@@ -36,6 +36,8 @@ CounterRules.KIND_ATTRIBUTE = "CatKind"
 CounterRules.CRATE_FLAG = "counterCrate"
 CounterRules.SET_ATTRIBUTE = "CounterSetAt"
 CounterRules.READY_ATTRIBUTE = "CounterReadyAt"
+CounterRules.CRATE_SPOT_PREFIX = "SpotCounterCrate" -- the plot's spot for the set-down carrier's pivot at <place>
+CounterRules.CRATE_SPOT_ATTRIBUTE = "CounterCrateSpot" -- CFrame on the CounterCat: where its carrier is set down
 CounterRules.SETTLE_SECONDS = 2.4 -- about 0.5 s the crate down, 1.1 s the cat out and sitting, the crate fading 0.8 s
 
 -- Which entry of the server's line the shown `place` is: with a cat at the door (`door`), place 1 is that cat (0)

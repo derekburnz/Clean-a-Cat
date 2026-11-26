@@ -434,11 +434,22 @@ end
 -- (switch counterCrate) Times the crate of `figure`'s cat on the counter (CounterRules.settleTimes): it goes down when
 -- the figure, setting off from where it stands now at `walkAt`, reaches `mat` (the walk CustomerWalkController plays);
 -- with no `walkAt` the cat already sits there.
-local function settleCat(figure: Model, mat: CFrame, walkAt: number?)
+local function settleCat(figure: Model, mat: CFrame, walkAt: number?, slot: number)
 	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
-	if cat == nil or not crateOn() then
+	local place = if cat then cat:GetAttribute(CounterRules.PLACE_ATTRIBUTE) else nil
+	if cat == nil or type(place) ~= "number" or not crateOn() then
 		return
 	end
+	-- where the carrier is set down: the plot's SpotCounterCrate<place>, else halfway from the customer to their cat
+	-- at the counter top
+	local sits = catSpot(place, slot)
+	local stands = queueSpot(place, slot)
+	local halfway = stands.Position:Lerp(sits.Position, 0.5)
+	cat:SetAttribute(
+		CounterRules.CRATE_SPOT_ATTRIBUTE,
+		SpaLayout.counterSpot(CounterRules.CRATE_SPOT_PREFIX, place, slot)
+			or CFrame.new(halfway.X, sits.Y, halfway.Z) * sits.Rotation
+	)
 	local arriveAt: number? = nil
 	if walkAt then
 		local from = figure:GetPivot()
@@ -489,7 +500,7 @@ local function buildTownsfolk(
 					figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, true)
 				end
 			end
-			settleCat(figure, mat, if newcomer then setOff else nil)
+			settleCat(figure, mat, if newcomer then setOff else nil, slot)
 			figure.Parent = folder
 		end
 	end
@@ -621,7 +632,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			made:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
 			made:SetAttribute(WalkRules.AT_ATTRIBUTE, walkIn + arrivals * WalkRules.FILE_GAP)
 			made:SetAttribute(WalkRules.FILE_ATTRIBUTE, true)
-			settleCat(made, mat, walkIn + arrivals * WalkRules.FILE_GAP)
+			settleCat(made, mat, walkIn + arrivals * WalkRules.FILE_GAP, slot)
 			arrivals += 1
 			kept[made] = true
 			table.insert(newcomers, made)
