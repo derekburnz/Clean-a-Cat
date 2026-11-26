@@ -21,6 +21,7 @@ local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
+local LikeAskService = require(script.Parent:WaitForChild("LikeAskService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
@@ -327,6 +328,7 @@ local function onHire(player: Player, rawId: unknown)
 		Telemetry.sessionSeconds(player) // 60,
 		{ string.lower(id) }
 	)
+	LikeAskService.moment(player, "helper")
 end
 
 local function onMode(player: Player, rawId: unknown, rawMode: unknown)
