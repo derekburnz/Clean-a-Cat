@@ -490,8 +490,13 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			table.insert(newcomers, made)
 		end
 	end
-	-- One pass with no yield (issue 571): who went is taken away, the newcomers come and the rest step up, so every
-	-- device gets the whole change in the same frame and the line never counts one short or one over.
+	-- One pass with no yield (issue 571): the newcomers come, who went is taken away and the rest step up, so every
+	-- device gets the whole change in the same frame and the line never counts one short or one over. The newcomers are
+	-- parented first: a device applies the changes in the order they were made, and a new figure is many parts, so a
+	-- removal sent ahead of it showed the line one short for a frame on a worker take (Review-QA's recheck on 2a34a8e).
+	for _, made in newcomers do
+		made.Parent = folder
+	end
 	for _, child in folder:GetChildren() do
 		if kept[child] then
 			continue
@@ -506,9 +511,6 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 		else
 			child:Destroy()
 		end
-	end
-	for _, made in newcomers do
-		made.Parent = folder
 	end
 	for _, step in stepUps do
 		step.figure:SetAttribute(PLACE_ATTRIBUTE, step.index)
