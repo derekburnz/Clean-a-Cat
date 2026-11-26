@@ -4,7 +4,10 @@
 -- washed CAT" toast. Behind the switch helperPopups. Only the owner sees it (the server sends HelperPaid to them
 -- alone), nothing is pressable, and two helpers finishing together each get their own over their own stand.
 --
---   HelperPopup.show(at, coins)   at: the world spot over the stand; rises RISE studs and fades over SECONDS
+--   HelperPopup.show(at, coins, pop?)   at: the world spot over the stand; rises RISE studs and fades over SECONDS.
+--                                       pop (switch helperPopFx, issue 801): it first grows from 0.6 to 1.08 and
+--                                       settles at 1 within 0.2 s (Effects/Pop), on one UIScale (agreed with
+--                                       Design-Agent)
 --
 -- Reduced Motion (UI/Comfort): it does not rise, it only fades. Phone budget: one BillboardGui of three pieces for
 -- SECONDS, then it is destroyed.
@@ -14,6 +17,7 @@ local Workspace = game:GetService("Workspace")
 local Comfort = require(script.Parent:WaitForChild("Comfort"))
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
+local Pop = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Pop"))
 
 local HelperPopup = {}
 
@@ -34,7 +38,7 @@ function HelperPopup.at(t: number, reduced: boolean): (number, number)
 	return rise, fade
 end
 
-function HelperPopup.show(at: Vector3, coins: number)
+function HelperPopup.show(at: Vector3, coins: number, pop: boolean?)
 	local anchor = Instance.new("Part")
 	anchor.Name = "HelperPopupAnchor"
 	anchor.Anchored = true
@@ -87,6 +91,13 @@ function HelperPopup.show(at: Vector3, coins: number)
 	anchor.Parent = Workspace
 
 	local reduced = Comfort.reducedMotion()
+	local scale: UIScale? = nil
+	if pop == true and not reduced then
+		local made = Instance.new("UIScale")
+		made.Scale = Pop.FROM
+		made.Parent = row
+		scale = made
+	end
 	local started = os.clock()
 	local connection: RBXScriptConnection? = nil
 	connection = RunService.RenderStepped:Connect(function()
@@ -97,6 +108,10 @@ function HelperPopup.show(at: Vector3, coins: number)
 			end
 			anchor:Destroy()
 			return
+		end
+		local grow = scale
+		if grow then
+			grow.Scale = Pop.scale(t)
 		end
 		local rise, fade = HelperPopup.at(t, reduced)
 		gui.StudsOffsetWorldSpace = Vector3.new(0, rise, 0)
