@@ -8,6 +8,10 @@ small; `--final` renders the picked options at 1024 (icon, scaled to 512) and 19
 
 Rules from the issue: show the action of the first minute (a muddy cat turning clean and fluffy under a sponge), only
 Common cats a new player meets early, the cat never cropped, nothing uploaded. Nothing here is exported.
+
+The second set (#106, after the design was locked on 2026-11-25): drafts for the owner to pick alternates from. These
+also show what the locked design added: the special visitors' cats, the three workers at their wash stands and the
+stray in his box from the opening. No crate, price or Robux item is in any picture.
 """
 
 import math
@@ -382,14 +386,14 @@ def clawfoot_bath(mat):
     return _fresh(objs), BATH_WATER * BATH_K
 
 
-def spa_scene(mat):
+def spa_scene(mat, name="Muffin"):
     """The store art's scene (Derek 2026-11-23): the bath of his ad picture with a clean Muffin sitting in it: the
     claw-foot tub, the striped towel over the rim, towels on a rail, the duck, lather and soap bubbles. The cat is
-    plain (no fluff, no bow), so its ears and face read at a glance. No mud. Returns (objects, the cat, the water's
-    height)."""
+    plain (no fluff, no bow), so its ears and face read at a glance. No mud. `name` puts another cat in the bath
+    (#106: a special visitor's cat). Returns (objects, the cat, the water's height)."""
     tub, wz = clawfoot_bath(mat)
     cx = -0.3                                             # the cat sits left of the middle, as in the ad picture
-    cat = cat_state("Muffin", mat, "sit", "plain", (cx, 0.12, wz - 0.48), TUB_K)
+    cat = cat_state(name, mat, "sit", "plain", (cx, 0.12, wz - 0.48), TUB_K)
     objs = tub + cat
     lo, hi = common.bounds(cat)
     fm = Builder()                                        # lather round the cat, the water open in front of it
@@ -408,20 +412,21 @@ def spa_scene(mat):
     return objs, cat, wz
 
 
-def thumb_spa(mat, out, res):
+def thumb_spa(mat, out, res, name="Muffin"):
     """The store thumbnail: the whole bath, blown up."""
-    objs, _cat, _wz = spa_scene(mat)
+    objs, _cat, _wz = spa_scene(mat, name)
     focus = [o for o in objs if "Bubbles" not in o.name]     # the drifting bubbles may leave the frame
     return render(objs, focus, out, res, az=20, el=20, margin=1.06, lens=55)
 
 
-def icon_spa(mat, out, res):
+def icon_spa(mat, out, res, name="Muffin"):
     """The store icon: the same scene, close on the cat, so its face fills about half the square at search size
     (Review-QA on #116: icons win clicks on a face, not on a scene). The tub's rim, the lather and the bubbles
-    frame it."""
-    objs, cat, wz = spa_scene(mat)
+    frame it. A special cat's head piece makes it taller, so its picture starts higher, at the lather (#106)."""
+    objs, cat, wz = spa_scene(mat, name)
     lo, hi = common.bounds(cat)
-    focus = (Vector((lo.x - 0.3, lo.y, wz - 0.5)), Vector((hi.x + 0.3, lo.y + 0.4, hi.z + 0.05)))
+    low = wz - 0.5 if name in cats.ROSTER else wz + 0.15
+    focus = (Vector((lo.x - 0.3, lo.y, low)), Vector((hi.x + 0.3, lo.y + 0.4, hi.z + 0.05)))
     return render(objs, focus, out, res, az=12, el=14, margin=1.0, lens=60)
 
 
@@ -557,6 +562,92 @@ SHOTS = {
     "split-dirty": (split_dirty, (700, 860), (1400, 1720)),
     "split-clean": (split_clean, (700, 860), (1400, 1720)),
 }
+
+
+# ------------------------------------------------------------------ the second set (#106)
+def box_scene(mat):
+    """The opening's hook: the muddy stray (Suds, before his wash) looking out of the plain brown box that fell off
+    the truck, its flaps open. Returns (objects, the cat, the box's rim height)."""
+    import opening
+    box = opening.build_box(mat)
+    bpy.context.view_layer.update()
+    for o in box:
+        for kind, (axis, sign) in opening.FLAP_TURN.items():
+            if o.name.endswith("_Flap" + kind):
+                o.matrix_world = o.matrix_world @ Matrix.Rotation(math.radians(sign * opening.FLAP_OPEN), 4, axis)
+    cat = cat_state("Suds", mat, "sit", "dirty", (0, 0.1, opening.BOX_SEAT + 0.72))
+    return _fresh(box) + cat, cat, opening.RIM
+
+
+def icon_box(mat, out, res):
+    """Icon: the muddy stray's face over the rim of his box."""
+    objs, cat, rim = box_scene(mat)
+    lo, hi = common.bounds([o for o in cat if "_Mud" not in o.name and "_Tangle" not in o.name])
+    focus = (Vector((lo.x - 0.35, lo.y, rim - 0.55)), Vector((hi.x + 0.35, lo.y + 0.4, hi.z + 0.08)))
+    return render(objs, focus, out, res, az=14, el=16, margin=1.0, lens=60)
+
+
+def thumb_box(mat, out, res):
+    """Thumbnail: the stray in his box, close and to the right, the whole frame: the box runs out of the frame's
+    foot and its left flap lies under the title."""
+    objs, cat, rim = box_scene(mat)
+    lo, hi = common.bounds([o for o in cat if "_Mud" not in o.name and "_Tangle" not in o.name])
+    focus = (Vector((-3.3, -1.2, rim - 0.6)), Vector((1.35, 1.2, hi.z + 0.15)))
+    return render(objs, focus, out, res, az=16, el=17, margin=0.86, lens=55)
+
+
+LINEUP = ("Rosette", "Prism", "Phoenix", "Sherbet", "Bathtile")
+LINEUP_AT = ((-3.25, 1.3, 1.0), (-1.72, 0.55, 1.14), (0.0, -0.35, 1.34), (1.72, 0.55, 1.14), (3.25, 1.3, 1.0))   # x, y, scale
+
+
+def thumb_lineup(mat, out, res):
+    """Thumbnail: five special visitors' cats in a wedge, the middle one in front and biggest, each a step back and
+    smaller to the sides, bubbles drifting over them. The collection, at a glance."""
+    objs = []
+    for name, (x, y, k) in zip(LINEUP, LINEUP_AT):
+        objs += cat_state(name, mat, "sit", "plain", (x, y, 0), k, rot_z=-5 * x)
+    lo, hi = common.bounds(objs)
+    drift = floating(mat, [(-4.4, 0.4, 2.3, 0.2), (4.5, 0.5, 2.6, 0.18), (-2.5, -0.4, 0.35, 0.14),
+                           (2.55, -0.4, 0.3, 0.15), (4.7, 0.2, 0.5, 0.17), (-4.75, 0.2, 0.7, 0.15),
+                           (-0.95, -1.0, 0.22, 0.12), (1.0, -1.0, 0.2, 0.11)])
+    focus = (Vector((lo.x - 0.3, lo.y, 0.0)), Vector((hi.x + 0.3, hi.y, hi.z + 0.1)))
+    return render(objs + drift, focus, out, res, az=0, el=8, margin=1.0, lens=70)
+
+
+BUSY = (("Lou", "Cotton", "dirty"), ("Sam", "Muffin", "half"), ("Jo", "Sherbet", "plain"))
+
+
+def thumb_busy(mat, out, res):
+    """Thumbnail: the busy spa. The three workers at their own wash stands, each with a cat a step further along:
+    a muddy one, one half washed and a special visitor's cat clean. The staff turn half to the camera."""
+    import spa_staff
+    import worker_stations as ws
+    objs = []
+    for i, (who, cat, state) in enumerate(BUSY):
+        x = (i - 1) * 4.7
+        stand = [o for o in ws.build_stand(who, mat) if not o.name.endswith("_Barrier")]
+        _move(stand, (x, 0, 0))
+        objs += _fresh(stand)
+        objs += cat_state(cat, mat, "sit", state, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
+        staff = spa_staff.build_staff(who, mat)
+        _move(staff, (x + ws.WX + 0.1, ws.WY + 0.25, 0), 1.0, -40)
+        objs += _fresh(staff)
+    lo, hi = common.bounds(objs)
+    drift = floating(mat, [(-6.4, -1.4, 3.6, 0.22), (-1.6, -1.6, 4.4, 0.18), (3.0, -1.5, 4.7, 0.2),
+                           (7.3, -1.2, 2.2, 0.2), (-2.6, -2.0, 1.0, 0.16), (2.2, -2.0, 0.8, 0.15)])
+    return render(objs + drift, objs, out, res, az=6, el=13, margin=1.0, lens=60)
+
+
+SHOTS.update({
+    "icon-box": (icon_box, (512, 512), (1024, 1024)),
+    "thumb-box": (thumb_box, (1280, 720), (1920, 1080)),
+    "thumb-lineup": (thumb_lineup, (1500, 620), (3000, 1240)),
+    "thumb-busy": (thumb_busy, (1500, 700), (3000, 1400)),
+})
+# the same bath with a special visitor's cat in it, one icon and one thumbnail a cat
+for _name in cats.SPECIAL_CATS:
+    SHOTS[f"icon-spa-{_name}"] = (lambda mat, out, res, n=_name: icon_spa(mat, out, res, n), (512, 512), (1024, 1024))
+    SHOTS[f"thumb-spa-{_name}"] = (lambda mat, out, res, n=_name: thumb_spa(mat, out, res, n), (900, 900), (1600, 1600))
 
 
 if __name__ == "__main__":
