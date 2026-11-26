@@ -126,4 +126,36 @@ return function()
 			expect(slot).to.equal("Jo1")
 		end)
 	end)
+	describe("CrateViewRules.shopRows", function()
+		local prices: { [string]: number } = { CrateOne = 49, CrateFive = 199 }
+		local function price(key: string): unknown
+			return prices[key]
+		end
+
+		it("lists the Robux rows in the shop's order with their real prices", function()
+			local rows = CrateViewRules.shopRows("normal", true, price)
+			expect(#rows).to.equal(2)
+			expect(rows[1].key).to.equal("CrateOne")
+			expect(rows[1].label).to.equal("1 crate")
+			expect(rows[1].price).to.equal(49)
+			expect(rows[2].label).to.equal("5 crates")
+			expect(rows[2].price).to.equal(199)
+		end)
+
+		it("shows nothing when the player may not buy, or on the good crate", function()
+			expect(#CrateViewRules.shopRows("normal", false, price)).to.equal(0)
+			expect(#CrateViewRules.shopRows("good", true, price)).to.equal(0)
+		end)
+
+		it("leaves out a row whose price is missing or not real", function()
+			local rows = CrateViewRules.shopRows("normal", true, function(key: string): unknown
+				return if key == "CrateFive" then 199 elseif key == "CrateOne" then 0 / 0 else nil
+			end)
+			expect(#rows).to.equal(1)
+			expect(rows[1].key).to.equal("CrateFive")
+			expect(#CrateViewRules.shopRows("normal", true, function(): unknown
+				return -5
+			end)).to.equal(0)
+		end)
+	end)
 end

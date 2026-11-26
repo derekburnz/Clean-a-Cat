@@ -486,6 +486,16 @@ function UI.onCrateOpen(fn: (kind: string) -> ())
 	CrateWindow.onOpen(fn)
 end
 
+-- The crate window's Robux rows (CrateViewRules.shopRows), {} for none.
+function UI.setCrateShop(rows: { CrateViewRules.ShopRow })
+	CrateWindow.setShop(rows)
+end
+
+-- fn(key) when a Robux row's price button is pressed.
+function UI.onCrateBuy(fn: (key: string) -> ())
+	CrateWindow.onBuy(fn)
+end
+
 -- The pets window's pets and which helpers are hired (PetsWindowController).
 function UI.setPets(pets: { CrateRules.Pet }, hired: { [string]: boolean }, second: boolean?)
 	PetsWindow.set(pets, hired, second)
