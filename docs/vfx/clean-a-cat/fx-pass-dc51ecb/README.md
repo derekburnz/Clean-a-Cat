@@ -63,3 +63,19 @@
 - Reveal: 6 sparkles, 6 drops and 8 flecks three times.
 - Fluff and bow: 3 hearts.
 - Garden: about 5 petals.
+
+## Recheck on 4954d9c (PR 722)
+- Place: the same local place, with every file that changed between dc51ecb and 4954d9c copied in: EffectsController, Effects/init, Crate, Hop (new), WorkerService and WorkerRules. A fresh save with 14 crates. Switches as above. iPhone 13 frame. The first stray's wash started with the E key, and the later steps were finished with the Studio test step. The bow and photo were real taps.
+- Effects.stream was hooked again, this time keeping every call with its drag speed, the raw rate and the rate set.
+
+| Check | Result |
+|---|---|
+| Foam, slow rub | PLAYS. 14 calls at drag speeds 0.17 to 2.29. The raw rate rounded to 0 on 13 of them, so on dc51ecb the foam was called but stayed at 0. With PR 722's floor the rate set was 3 on every call |
+| Foam, fast rub | PLAYS. 1,031 calls at speeds 0.02 to 158. Rate set 3 to 8 (8 is the low-tier cap), 3.05 on average |
+| Fluff flashes | PASS. At the fluff, 2 sparkle bursts of 6 at the same moment (the shake's one burst and the brush's sparkle), then nothing until the photo 21 s later. Before: 4 in 0.36 s |
+| Reveal | 1 sparkle burst (6), 6 drops and 8 flecks three times, 0.18 s apart |
+| Stray hop | PLAYS. 1.6 s after the photo the stray rose 0.60 studs in the tub and landed with a dust puff of 5. It then shows on the window seat (a separate window copy). The hop happens in the tub, not onto the cushion |
+| Pet reveal wiggle | PLAYS. After the pop (scale 0.78 to 0.70), the pet turns side to side from 0.51 s to 0.71 s, -4.6 to +7.6 degrees. The head and ears turn with the body and stay on it |
+| Console | Only the known lines |
+
+Peak particle counts (low tier): foam 3 a second on a slow rub, up to 8 on a fast one; 12 sparkles at the fluff; 5 dust at the hop; 6 sparkles twice at the pet reveal.
