@@ -128,8 +128,14 @@ local function seatPet(stand: Model, show: boolean)
 			piece:Destroy()
 		end
 	end
-	local scale = pet:GetAttribute("PetScale")
-	pet:ScaleTo(if type(scale) == "number" and scale > 0 then scale else 0.7)
+	-- on the stand the pet takes the stand's CatScale (Model-Agent: PetScale is for the one that follows the player)
+	local standScale = stand:GetAttribute("CatScale")
+	local petScale = pet:GetAttribute("PetScale")
+	local scale = if type(standScale) == "number" and standScale > 0
+		then standScale
+		elseif type(petScale) == "number" and petScale > 0 then petScale
+		else 0.7
+	pet:ScaleTo(scale)
 	pet:PivotTo(top :: CFrame)
 	anchor(pet)
 	pet.Parent = stand
