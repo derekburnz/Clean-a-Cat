@@ -428,6 +428,20 @@ def bow_at(spec, body="walk"):
     return (0.0, round(h["fy"] + 0.16, 4), round(h["top"] - 0.01, 4))
 
 
+BOW_OUT = 0.37      # how far along the head's width from its middle a bow sits (the edge is 0.5)
+BOW_TIP = 30.0      # degrees it leans out over that edge
+
+
+def bow_side(spec, body="walk"):
+    """Where a bow sits since #764: on the head's top corner at the cat's left (+X, the right of the picture when the
+    cat faces you), tipped BOW_TIP degrees so its outer loop drops past the corner. The owner, 2026-11-26, on the
+    store icon: "angle the bow to the top right of head", then "make the bows in game to also look like that".
+    Returns the spot relative to the neck and unscaled, and the tip in degrees about the cat's front to back line.
+    `bow_at` is the crown spot bows had before; cats with a head piece use props.bow_corner."""
+    h = dims(spec, body)["head"]
+    return (round(h["s"][0] * BOW_OUT, 4), round(h["fy"] + 0.16, 4), round(h["top"] - 0.03, 4)), BOW_TIP
+
+
 def back_rise(spec):
     """How far the coat's extras stand above the top of A's body box (_body_a, _coat_extras): a mane 0.09, star specks
     0.07, sprinkles 0.045, stripes, patches, spots and petals 0.03. The walking back pieces cover it."""

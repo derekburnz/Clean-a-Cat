@@ -384,7 +384,7 @@ def compose_split(raw_dir, final=False):
     bg.alpha_composite(art, (mid - art.width // 2, top))
     fx = Image.new("RGBA", size, (0, 0, 0, 0))
     d = ImageDraw.Draw(fx)
-    for fxr, fyr, r in ((0.62, 0.2, 0.034), (0.9, 0.13, 0.05), (0.83, 0.5, 0.03), (0.69, 0.62, 0.022),
+    for fxr, fyr, r in ((0.72, 0.33, 0.034), (0.9, 0.13, 0.05),     # the first stood where the bow is now (0.83, 0.5, 0.03), (0.69, 0.62, 0.022),
                         (0.95, 0.72, 0.036), (0.78, 0.06, 0.02)):
         sparkle(d, fxr * w, fyr * h, r * h, (255, 255, 255, 235))
         sparkle(d, fxr * w, fyr * h, r * h * 0.5, (255, 244, 176, 255))
