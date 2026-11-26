@@ -75,6 +75,17 @@ return function()
 			expect(WorkerRules.pick("leaving", tied)).to.equal(1)
 		end)
 
+		it("never takes a customer the player picked to go next", function()
+			local line: { WorkerRules.Entry } = {
+				{ kind = CatRules.ROSTER.Rare[1], dirt = 4, left = 0.1, reserved = true },
+				{ kind = CatRules.ROSTER.Common[1], dirt = 1, left = 0.9 },
+			}
+			for _, mode in WorkerRules.MODES do
+				expect(WorkerRules.pick(mode, line)).to.equal(2)
+			end
+			expect(WorkerRules.pick("first", { line[1] })).to.equal(nil)
+		end)
+
 		it("steps through the modes and refuses a made up one", function()
 			expect(WorkerRules.nextMode("first")).to.equal("leaving")
 			expect(WorkerRules.nextMode("dirtiest")).to.equal("first")

@@ -62,12 +62,16 @@ WorkerRules.SHARE = 0.25 -- of base x dirt at level 1
 WorkerRules.SHARE_STEP = 0.03 -- more for each level above 1
 -- Seconds the clean cat stays at the station after the bar fills, before it goes home and the worker pays.
 WorkerRules.SHOW_DONE_SECONDS = 1.5
+-- Seconds a customer the player picked to go next is kept from the workers (tuning worker.reserve); it is theirs
+-- for good once it reaches the tub, as it leaves the line then.
+WorkerRules.RESERVE_SECONDS = 15
 
 -- A waiting customer as a worker sees the line.
 export type Entry = {
 	kind: string,
 	dirt: number,
 	left: number, -- the heart bar left, 0 to 1 (1 while bars are off)
+	reserved: boolean?, -- the player picked it to go next (RESERVE_SECONDS): never taken
 }
 
 function WorkerRules.cleanMode(raw: unknown): string?
@@ -111,13 +115,16 @@ local function rank(kind: string): number
 	return table.find(CatRules.RARITIES, CatRules.rarityOf(kind) or "Common") or 1
 end
 
--- Which waiting customer (their place in `line`) a worker in `mode` takes next, or nil for an empty line. Ties go to
--- the one nearer the front.
+-- Which waiting customer (their place in `line`) a worker in `mode` takes next, or nil when nobody can be taken. A
+-- reserved customer is skipped. Ties go to the one nearer the front.
 function WorkerRules.pick(mode: string?, line: { Entry }): number?
 	local chosen = WorkerRules.cleanMode(mode) or WorkerRules.DEFAULT_MODE
 	local best: number? = nil
 	local bestScore = -math.huge
 	for place, entry in line do
+		if entry.reserved then
+			continue
+		end
 		local score = if chosen == "leaving"
 			then -entry.left
 			elseif chosen == "rarest" then rank(entry.kind)

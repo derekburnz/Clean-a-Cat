@@ -253,20 +253,22 @@ local function stands(player: Player, id: string): boolean
 	return ((root :: BasePart).Position - spot.Position).Magnitude <= WorkerRules.SERVER_REACH
 end
 
-local function forRequest(player: Player, rawId: unknown): (string?, any)
+-- The worker id and the save for a request, or nil. Hiring needs the player at the pad; the mode and the level come
+-- from the Helpers window on the HUD as well (tuning worker.windowFromHud), so they skip the distance check.
+local function forRequest(player: Player, rawId: unknown, atStation: boolean): (string?, any)
 	if not isOn() then
 		return nil, nil
 	end
 	local id = Guard.oneOf(rawId, WorkerRules.IDS)
 	local save = DataService.get(player)
-	if id == nil or save == nil or not stands(player, id) then
+	if id == nil or save == nil or (atStation and not stands(player, id)) then
 		return nil, nil
 	end
 	return id, save
 end
 
 local function onHire(player: Player, rawId: unknown)
-	local id, save = forRequest(player, rawId)
+	local id, save = forRequest(player, rawId, true)
 	if id == nil then
 		return
 	end
@@ -286,7 +288,7 @@ local function onHire(player: Player, rawId: unknown)
 end
 
 local function onMode(player: Player, rawId: unknown, rawMode: unknown)
-	local id, save = forRequest(player, rawId)
+	local id, save = forRequest(player, rawId, false)
 	local mode = WorkerRules.cleanMode(rawMode)
 	local worker: any = if id then save.workers[id] else nil
 	if id == nil or mode == nil or worker == nil then
@@ -297,7 +299,7 @@ local function onMode(player: Player, rawId: unknown, rawMode: unknown)
 end
 
 local function onLevel(player: Player, rawId: unknown)
-	local id, save = forRequest(player, rawId)
+	local id, save = forRequest(player, rawId, false)
 	if id == nil or save.workers[id] == nil then
 		return
 	end
