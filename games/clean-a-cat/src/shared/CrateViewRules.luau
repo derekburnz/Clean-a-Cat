@@ -65,6 +65,41 @@ function CrateViewRules.haveLine(kind: string, count: number): string
 	return if count == 1 then "You have 1 crate" else `You have {count} crates`
 end
 
+-- The Robux crate rows (issue 514, switch crateShop): the same normal crate that is earned, for Robux. Shown only
+-- on that crate's window, only while the server allows this player to buy (the Player attribute CrateShop, which
+-- PolicyService gates), and only for a key whose real price is known. The chance list sits beside them on the same
+-- screen, so it is seen before any buy. Plain words: no "best value", no hurry.
+CrateViewRules.SHOP_TITLE = "More crates"
+
+export type ShopRow = {
+	key: string, -- the Products key (CrateRules.SHOP_KEYS)
+	label: string, -- "1 crate", "5 crates"
+	price: number, -- Robux
+}
+
+function CrateViewRules.shopRows(
+	kind: string,
+	allowed: boolean,
+	price: (key: string) -> unknown
+): { ShopRow }
+	local out: { ShopRow } = {}
+	if not allowed or kind ~= CrateRules.SHOP_KIND then
+		return out
+	end
+	for _, key in CrateRules.SHOP_KEYS do
+		local raw = price(key)
+		local crates = CrateRules.SHOP[key]
+		if type(raw) == "number" and raw == raw and raw > 0 and raw < math.huge and crates then
+			table.insert(out, {
+				key = key,
+				label = if crates == 1 then "1 crate" else `{crates} crates`,
+				price = math.floor(raw),
+			})
+		end
+	end
+	return out
+end
+
 -- The kinds of every pet in a Pets list (the server's Pets remote), for `rows`.
 function CrateViewRules.ownedKinds(pets: { CrateRules.Pet }): { [string]: boolean }
 	local out: { [string]: boolean } = {}

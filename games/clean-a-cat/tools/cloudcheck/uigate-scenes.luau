@@ -297,6 +297,20 @@ local SCENES = {
 			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
 		end,
 	},
+	-- The Robux crate rows (issue 514, switch crateShop): under Open crate, with the chance list beside them.
+	{
+		"CrateShop",
+		function()
+			flag("crateWindow", true)
+			flag("crateShop", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			local prices: { [string]: number } = { CrateOne = 49, CrateFive = 199 }
+			UI.setCrateShop(CrateViewRules.shopRows("normal", true, function(key: string): unknown
+				return prices[key]
+			end))
+			UI.showCrate("normal", 0, CrateViewRules.rows("normal", { Cozy = true }))
+		end,
+	},
 	{
 		"CrateGood",
 		function()

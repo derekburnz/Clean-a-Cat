@@ -6,13 +6,17 @@
 --   CrateWindow.build(root)                makes the window once and returns its layer (UI registers "Crate")
 --   CrateWindow.set(kind, count, rows)     draws crate `kind` (CrateViewRules.rows), `count` of them held
 --   CrateWindow.onOpen(fn)                 fn(kind) when Open crate is pressed
+--   CrateWindow.setShop(rows)              the Robux rows (CrateViewRules.shopRows), {} for none
+--   CrateWindow.onBuy(fn)                  fn(key) when a Robux row's price button is pressed
 --
 -- Every pet in the crate with its chance and its boost, before anything is opened: the same list the server rolls
 -- from (CrateRules.odds), adding to 100. A pet the player has not got yet draws as a shadow. The good crate (the day
--- 2 gift) has its own title and its own chances, so it is never mixed up with the normal one. There are no Robux
--- buttons here yet: bought crates (issue 514) come with PolicyService, and where paid random items are not allowed
--- that row is never drawn. Open crate closes the window, so the player sees the lid open in the world. Only the X
--- or Open crate closes it. UI never fires remotes: CrateWindowController sends the open and the server rolls.
+-- 2 gift) has its own title and its own chances, so it is never mixed up with the normal one. Bought crates (issue
+-- 514, switch crateShop) sit under Open crate as plain rows ("5 crates", "199 Robux"), on the normal crate only and
+-- only where PolicyService allows paid random items; the chance list is beside them on the same screen, seen before
+-- any tap, and Roblox's own prompt is the confirm. Open crate closes the window, so the player sees the lid open in
+-- the world; a buy leaves it open, so the count goes up in front of them. UI never fires remotes:
+-- CrateWindowController sends the open and the buy, and the server rolls.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -29,6 +33,8 @@ local CrateWindow = {}
 
 local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
 local BOX_TOP, BOX_EDGE = Color3.fromHex("FFF6D6"), Color3.fromHex("F0CF6B")
+local BUY_TOP, BUY_BOTTOM = Color3.fromHex("8FD8FF"), Color3.fromHex("4FB3F0") -- quieter than Open crate's green
+local MIN_TAP = 44 -- real px
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 4 -- design px below the middle on a short screen (Window's default is 33)
 
@@ -54,6 +60,9 @@ local SIZES = {
 		boost = 19,
 		chance = 30,
 		sum = 19,
+		buyH = 52,
+		buyText = 20,
+		buyLabel = 20,
 	},
 	short = {
 		width = 980,
@@ -75,6 +84,9 @@ local SIZES = {
 		boost = 19,
 		chance = 26,
 		sum = 19,
+		buyH = 46,
+		buyText = 17,
+		buyLabel = 18,
 	},
 }
 type Sizes = typeof(SIZES.full)
@@ -88,6 +100,8 @@ type Parts = {
 	gift: Frame,
 	have: TextLabel,
 	open: TextButton,
+	shop: Frame,
+	shopTitle: TextLabel,
 	right: Frame,
 	grid: Frame,
 	gridLayout: UIGridLayout,
@@ -99,6 +113,8 @@ local shownKind = "normal"
 local held = 0
 local rows: { CrateViewRules.Row } = {}
 local openListeners: { (kind: string) -> () } = {}
+local shopRows: { CrateViewRules.ShopRow } = {}
+local buyListeners: { (key: string) -> () } = {}
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -222,6 +238,38 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 	boost.Text = `{row.boost} boost`
 end
 
+-- One Robux row: "5 crates" on the left, its price on a button filling the rest.
+local function drawBuy(
+	row: CrateViewRules.ShopRow,
+	order: number,
+	s: Sizes,
+	scale: number,
+	parent: Frame
+)
+	local line = frame(row.key, parent)
+	line.LayoutOrder = order
+	local height = math.max(s.buyH, math.ceil(MIN_TAP / scale))
+	line.Size = UDim2.new(1, 0, 0, height)
+	local label = words("Label", line, s.buyLabel)
+	label.AnchorPoint = Vector2.new(0, 0.5)
+	label.Position = UDim2.fromScale(0, 0.5)
+	label.Size = UDim2.new(0.46, -4, 1, 0)
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	Kit.shrinkToFit(label, s.buyLabel)
+	label.Text = row.label
+	local button = Window.button("Buy", `{row.price} Robux`, line, BUY_TOP, BUY_BOTTOM)
+	button.AnchorPoint = Vector2.new(1, 0.5)
+	button.Position = UDim2.fromScale(1, 0.5)
+	button.Size = UDim2.new(0.54, 0, 1, 0)
+	button.TextSize = s.buyText
+	local key = row.key
+	button.Activated:Connect(function()
+		for _, listener in buyListeners do
+			task.spawn(listener, key)
+		end
+	end)
+end
+
 local function clearGrid(grid: Frame)
 	for _, child in grid:GetChildren() do
 		if child:IsA("GuiObject") then
@@ -256,6 +304,19 @@ local function redraw()
 	p.open.Size = UDim2.new(1, 0, 0, s.open)
 	p.open.TextSize = s.openText
 
+	-- the Robux rows, only when the controller passed some (normal crate, allowed, priced)
+	for _, child in p.shop:GetChildren() do
+		if child:IsA("Frame") then -- the rows; the title is a TextLabel and stays
+			child:Destroy()
+		end
+	end
+	p.shop.Visible = #shopRows > 0
+	p.shopTitle.TextSize = s.have
+	p.shopTitle.Size = UDim2.new(1, 0, 0, s.have + 6)
+	for index, row in shopRows do
+		drawBuy(row, index + 1, s, scale, p.shop)
+	end
+
 	-- every pet with its chance, two to a line
 	local rightW = width - 2 * s.pad - s.boxW - s.gap
 	p.right.Size = UDim2.fromOffset(rightW, 0)
@@ -282,6 +343,18 @@ end
 
 function CrateWindow.onOpen(fn: (kind: string) -> ())
 	table.insert(openListeners, fn)
+end
+
+function CrateWindow.setShop(newRows: { CrateViewRules.ShopRow })
+	shopRows = newRows
+	local p = parts
+	if p and p.window.layer.Visible then
+		redraw()
+	end
+end
+
+function CrateWindow.onBuy(fn: (key: string) -> ())
+	table.insert(buyListeners, fn)
 end
 
 function CrateWindow.build(root: Instance): Frame
@@ -343,6 +416,16 @@ function CrateWindow.build(root: Instance): Frame
 		end
 	end)
 
+	local shop = frame("Shop", box)
+	shop.LayoutOrder = 4
+	shop.Size = UDim2.fromScale(1, 0)
+	shop.AutomaticSize = Enum.AutomaticSize.Y
+	shop.Visible = false
+	list(shop, false, 6)
+	local shopTitle = words("Title", shop, 20)
+	shopTitle.LayoutOrder = 1
+	shopTitle.Text = CrateViewRules.SHOP_TITLE
+
 	local right = frame("Chances", row)
 	right.LayoutOrder = 2
 	right.AutomaticSize = Enum.AutomaticSize.Y
@@ -374,6 +457,8 @@ function CrateWindow.build(root: Instance): Frame
 		gift = gift,
 		have = have,
 		open = open,
+		shop = shop,
+		shopTitle = shopTitle,
 		right = right,
 		grid = grid,
 		gridLayout = gridLayout,
