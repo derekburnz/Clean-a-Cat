@@ -27,17 +27,18 @@ function LaterStepRules.steps(
 	return out
 end
 
--- How many of `count` suds puffs a swirl of `travel` studs has cleared: all of them at WashDraft.SWIRL_TRAVEL.
-function LaterStepRules.sudsGone(travel: number, count: number): number
+-- How many of `count` suds puffs a swirl of `travel` studs has cleared: all of them at `full` studs
+-- (WashDraft.SWIRL_TRAVEL when nil; WashPace's with the switch washPace).
+function LaterStepRules.sudsGone(travel: number, count: number, full: number?): number
 	if count <= 0 then
 		return 0
 	end
-	return math.clamp(math.floor(travel / WashDraft.SWIRL_TRAVEL * count), 0, count)
+	return math.clamp(math.floor(travel / (full or WashDraft.SWIRL_TRAVEL) * count), 0, count)
 end
 
--- True once a press held from `since` has lasted WashDraft.CLAW_HOLD at `now`.
-function LaterStepRules.held(since: number, now: number): boolean
-	return now - since >= WashDraft.CLAW_HOLD
+-- True once a press held from `since` has lasted `hold` seconds (WashDraft.CLAW_HOLD when nil) at `now`.
+function LaterStepRules.held(since: number, now: number, hold: number?): boolean
+	return now - since >= (hold or WashDraft.CLAW_HOLD)
 end
 
 return table.freeze(LaterStepRules)

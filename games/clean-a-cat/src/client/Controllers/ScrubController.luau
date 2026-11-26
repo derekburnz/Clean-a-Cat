@@ -50,6 +50,7 @@ local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local Trove = require(Shared:WaitForChild("Vendor"):WaitForChild("Trove"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WashMeter = require(Shared:WaitForChild("WashMeter"))
+local WashPace = require(Shared:WaitForChild("WashPace"))
 
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
@@ -1266,7 +1267,7 @@ local function rinseAt(v: Visit, cat: Cat, point: Vector3, normal: Vector3)
 		return
 	end
 	Moments.RinseSpray:Fire(cat.model, point, normal)
-	local reach = spongeRadius() * WashDraft.RINSE_REACH
+	local reach = spongeRadius() * WashPace.pace(LiveFlags.isOn).rinseReach
 	local count = #v.suds
 	for _, puff in v.suds do
 		if
@@ -1306,8 +1307,11 @@ local function latherAt(v: Visit, cat: Cat, point: Vector3, normal: Vector3, tra
 		return
 	end
 	v.swirl += travel
-	local want =
-		math.clamp(math.floor(v.swirl / WashDraft.SWIRL_TRAVEL * LATHER.count), 0, LATHER.count)
+	local want = math.clamp(
+		math.floor(v.swirl / WashPace.pace(LiveFlags.isOn).swirlTravel * LATHER.count),
+		0,
+		LATHER.count
+	)
 	if #v.suds < want then
 		local size = cat.model:GetExtentsSize()
 		local reach = math.max(size.X, size.Z) * LATHER.size
@@ -1345,9 +1349,10 @@ end
 -- Swirl travel on the cat in the Bubble Bath: the puffs pop in order, the last one ends the bath.
 local function swirlAt(v: Visit, cat: Cat, travel: number)
 	local count = #v.suds
-	local before = LaterStepRules.sudsGone(v.swirl, count)
+	local full = WashPace.pace(LiveFlags.isOn).swirlTravel
+	local before = LaterStepRules.sudsGone(v.swirl, count, full)
 	v.swirl += travel
-	local gone = LaterStepRules.sudsGone(v.swirl, count)
+	local gone = LaterStepRules.sudsGone(v.swirl, count, full)
 	for index = before + 1, gone do
 		local puff = v.suds[index]
 		local at = puff:GetBoundingBox().Position
@@ -1493,7 +1498,10 @@ end
 local function brushAt(v: Visit, cat: Cat, travel: number)
 	v.strokeTravel += travel
 	local now = os.clock()
-	if v.strokeTravel < STROKE_TRAVEL or now - v.lastStrokeAt < SpaRules.MIN_STROKE_GAP then
+	if
+		v.strokeTravel < STROKE_TRAVEL
+		or now - v.lastStrokeAt < WashPace.pace(LiveFlags.isOn).strokeGap
+	then
 		return
 	end
 	v.strokeTravel = 0
@@ -1764,7 +1772,7 @@ local function testFinishStep()
 			end
 		end
 	elseif v.step == "smell" then
-		swirlAt(v, cat, WashDraft.SWIRL_TRAVEL * 2)
+		swirlAt(v, cat, WashPace.pace(LiveFlags.isOn).swirlTravel * 2)
 	elseif v.stage == "dirty" then
 		turningCat = nil
 		for _ = 1, 100 do
@@ -1929,7 +1937,7 @@ local function onCatReady(
 	v.brushStrokes = if type(rawStrokes) == "number"
 			and rawStrokes == math.floor(rawStrokes)
 			and rawStrokes >= 1
-			and rawStrokes <= SpaRules.BRUSH_STROKES
+			and rawStrokes <= WashPace.MAX_STROKES
 		then rawStrokes
 		else SpaRules.BRUSH_STROKES
 	local cat = v.cat
@@ -2384,7 +2392,7 @@ local function enable()
 			and paw
 			and active
 			and v.step == "claws"
-			and LaterStepRules.held(v.holdSince, os.clock())
+			and LaterStepRules.held(v.holdSince, os.clock(), WashPace.pace(LiveFlags.isOn).clawHold)
 		then
 			clipPaw(v, cat, paw)
 		end

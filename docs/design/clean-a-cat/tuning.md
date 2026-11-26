@@ -22,6 +22,11 @@ How to read a row: **key** is the config name the engineer uses, **value** is th
 | `dirt.chance.Legendary` | L1 0, L2 15, L3 35, L4 50 | The rarest are a real job | 2026-11-25 |
 | `dirt.chance.Special` | L4 100 | Special visitors are always very dirty | 2026-11-25 |
 | `dirt.tutorial` | Suds L1 (3 steps), first customer L1 Common (3 steps), second customer L2 (4 steps) | The tutorial uses only the simple 3 or 4 | 2026-11-25 |
+| `wash.paceSeconds` | 4 to 5 per hand step (switch `washPace`, issue 865) | Derek's playtest of 2026-11-26: "the brushing fur minigame goes way too fast they should take around 4-5 seconds each minigame". The scrub stays at its 8 s target; it is the one with the most to clear | 2026-11-26 |
+| `wash.brushStrokes` | 8 strokes, 0.45 s apart at least (was 3 and 0.2); Pro Brush 6 (was 2) | Old: about 1 s. New: a 3.2 s floor no fast finger beats, about 4.5 s at a normal stroke. The Pro Brush keeps its share, 2 of 3 is 6 of 8 | 2026-11-26 |
+| `wash.latherTravel` | 26 studs of rubbing (was 12) | Old about 2 s, new about 4.5 s | 2026-11-26 |
+| `wash.rinseReach` | 1.0 sponge reach (was 1.6) | The spray pops a narrower ring, so the rinse is a sweep, about 4 s (was about 2) | 2026-11-26 |
+| `wash.clawHold` | 0.8 s a paw (was 0.5) | Four paws with the moves between, about 4.5 s (was about 3) | 2026-11-26 |
 
 Each row of chances adds up to 100.
 
