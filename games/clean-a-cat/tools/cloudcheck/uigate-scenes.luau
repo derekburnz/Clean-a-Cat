@@ -504,6 +504,19 @@ local SCENES = {
 			UI.open("Helpers")
 		end,
 	},
+	-- The leave lines (issue 726, switch leaveLines) at their longest, as Roblox's menu opens over the HUD.
+	{
+		"LeaveLines",
+		function()
+			hud(true)
+			UI.setCoins(1240)
+			UI.setLeaveLines(
+				"Your helpers fill the tip jar while you're away!",
+				"Come back tomorrow for day 2: Good crate!"
+			)
+			UI.showLeaveLines(true)
+		end,
+	},
 	-- Every HUD button at once, Helpers among them, at its widest: the row must stay on the screen.
 	{
 		"HudAllButtons",
@@ -903,6 +916,7 @@ function Scenes.close()
 	flag("crateWindow", false)
 	flag("petsWindow", false)
 	flag("helpersWindow", false)
+	UI.showLeaveLines(false)
 	flag("workers", false)
 	flag("checkinCard", false)
 	flag("quests", false)

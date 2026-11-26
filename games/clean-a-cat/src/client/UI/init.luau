@@ -63,6 +63,7 @@ local GiftCard = require(script:WaitForChild("GiftCard"))
 local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
 local HelpersWindow = require(script:WaitForChild("HelpersWindow"))
+local LeaveLines = require(script:WaitForChild("LeaveLines"))
 local Motion = require(script:WaitForChild("Motion"))
 local PetsWindow = require(script:WaitForChild("PetsWindow"))
 local QuestBook = require(script:WaitForChild("QuestBook"))
@@ -303,6 +304,7 @@ function UI.init()
 			listener()
 		end
 	end)
+	LeaveLines.build(playerGui, hud) -- two lines around Roblox's leave screen (switch leaveLines, issue 726)
 	HeldTool.build(playerGui) -- the step's tool under the finger (switch toolCursor), its own layer in GUI space
 	Spotlight.build(root, HUD.tipShown) -- the tutorial's dim step (switch tutorialDim), over the HUD and under the
 	-- windows; its words keep clear of the step pill
@@ -570,6 +572,16 @@ end
 -- staffRename) and whether Lou's row points to his pass in the Shop (switch passes, his price known).
 function UI.setHelpers(rows: { HelperViewRules.Row }, rename: boolean, shop: boolean)
 	HelpersWindow.set(rows, rename, shop)
+end
+
+-- The two lines shown around Roblox's leave screen (LeaveLinesController, LeaveLineRules); nil leaves one out.
+function UI.setLeaveLines(top: string?, bottom: string?)
+	LeaveLines.set(top, bottom)
+end
+
+-- Shows the leave lines while Roblox's menu is open.
+function UI.showLeaveLines(on: boolean)
+	LeaveLines.setShown(on)
 end
 
 -- fn(helperId) when a helper's Takes button is pressed in the Helpers window.
