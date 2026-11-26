@@ -3,8 +3,8 @@
 -- and the bow pays a little more on top of the pay formula ("then + bow + tip", tuning pay). The plain Ribbon is
 -- everyone's from the start; the better tiers are bought with coins, one after another, and kept for good. The tier
 -- in use is always the best one bought (save.bow), so there is nothing to equip. The colour (pink, mint, sky) stays
--- the player's pick at the tub; the tier decides the look: Model-Agent's plain bow, its Double or its Royal model
--- (PR 556), with the plain look when a tier's model is not in the place yet.
+-- the player's pick at the tub; the tier decides the look: Model-Agent's plain bow, its Double, its Royal (PR 556) or
+-- its Golden model (PR 597), with the plain look when a tier's model is not in the place yet.
 -- Workers tie no bow (tuning bow.workers), so this bonus is only ever on a hand wash.
 -- The numbers are Design-Agent's in docs/design/clean-a-cat/tuning.md, section 5; change them there and here
 -- together. Pure, so tests/specs/BowRules.spec.luau covers it.
@@ -28,8 +28,8 @@ BowRules.TIER = table.freeze({
 	Ribbon = table.freeze({ name = "Ribbon", price = 0, bonus = 2, look = "" }),
 	Silk = table.freeze({ name = "Silk", price = 150, bonus = 4, look = "Double" }),
 	Satin = table.freeze({ name = "Satin", price = 600, bonus = 7, look = "Royal" }),
-	-- no Golden model yet (Model-Agent's PR 556 has three looks), so it wears the Royal one until it has its own
-	Golden = table.freeze({ name = "Golden", price = 2000, bonus = 12, look = "Royal" }),
+	-- Model-Agent's Golden look (PR 597): CleanACat_Bow_PinkGolden, MintGolden and SkyGolden
+	Golden = table.freeze({ name = "Golden", price = 2000, bonus = 12, look = "Golden" }),
 }) :: { [string]: Tier }
 
 -- A tier name made safe, else nil. For an attribute or a remote's argument.

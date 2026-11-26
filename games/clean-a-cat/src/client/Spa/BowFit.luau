@@ -34,6 +34,8 @@ local function headModel(cat: Model): Model?
 end
 
 -- Takes off the bow the cat wears, if any (it sits in the head Model).
+local FAN_NAME = "_Fan"
+
 function BowFit.remove(cat: Model)
 	local old = cat:FindFirstChild(NAME, true)
 	while old do
@@ -73,6 +75,15 @@ function BowFit.wear(cat: Model, bowId: string, scale: number): Model?
 			p.CanCollide = false
 			p.CanQuery = false
 			p.CanTouch = false
+		end
+	end
+	-- A cat with a head piece of its own (Rosette's crown, Stardust's star: the model's HeadPiece attribute) wears the
+	-- bow without its tall fan (a child named _Fan, the Golden bow's), so the two never push through each other.
+	if cat:GetAttribute("HeadPiece") then
+		for _, descendant in bow:GetDescendants() do
+			if descendant.Name == FAN_NAME then
+				descendant:Destroy()
+			end
 		end
 	end
 	bow.Name = NAME
