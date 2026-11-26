@@ -55,6 +55,9 @@ Remotes.ClientToServer = {
 	"RequestCheckin", -- ()  1 a second; switch on, save loaded, today's day not taken yet (and for a save that never
 	-- took one, 3:45 of play): gives that day's reward once
 	"ReportTimeZone", -- (hours: int -12..14)  1 a second; switch on, save loaded, no time zone saved yet: saves it once
+	-- Game passes (PassService, behind passes).
+	"RequestPass", -- (key: one of Passes.KEYS)  1 a second; switch on, save loaded, the pass created and priced, not
+	-- owned yet: opens Roblox's purchase prompt for it (the only way one opens)
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side

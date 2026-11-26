@@ -23,6 +23,7 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PassService = require(script.Parent:WaitForChild("PassService"))
 local PurchaseService = require(script.Parent:WaitForChild("PurchaseService"))
 local StationService = require(script.Parent:WaitForChild("StationService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
@@ -143,12 +144,13 @@ local function onBuild(player: Player, rawId: unknown)
 		return
 	end
 	local state = stateOf(save)
-	local ok, reason = BuildRules.canStart(state, id, LiveFlags.isOn)
+	local builders = if PassService.owns(player, "SecondBuilder") then 2 else 1
+	local ok, reason = BuildRules.canStart(state, id, LiveFlags.isOn, builders)
 	if not ok then
 		NetService.notice(player, reason or "Can't build that yet", "warning")
 		return
 	end
-	local spent = BuildRules.start(state, id, os.time(), LiveFlags.isOn)
+	local spent = BuildRules.start(state, id, os.time(), LiveFlags.isOn, builders)
 	if spent <= 0 then
 		return
 	end

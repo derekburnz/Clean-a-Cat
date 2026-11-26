@@ -32,6 +32,7 @@ local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Passes = require(Shared:WaitForChild("Passes"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
@@ -47,6 +48,7 @@ local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local MascotService = require(script.Parent:WaitForChild("MascotService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
 local PlotService = require(script.Parent:WaitForChild("PlotService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
@@ -914,6 +916,17 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		+ (more.bow or 0)
 		+ pay.tip
 		+ bonus
+	-- 2x Coins and the Golden Sponge (switch passes, issue 518): on top of this hand wash's whole pay, its own line
+	local function owns(key: string): boolean
+		return PassService.owns(player, key)
+	end
+	local passExtra = Passes.handExtra(coins, owns)
+	if passExtra > 0 then
+		more.pass = passExtra
+		more.passLine = Passes.handLine(owns)
+		extra = more
+		coins += passExtra
+	end
 	save.coins += coins
 	WalletService.show(player)
 	local dirt = if dirtOn then cat.dirt else nil

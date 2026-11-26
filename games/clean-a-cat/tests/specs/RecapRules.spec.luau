@@ -86,6 +86,24 @@ return function()
 			expect(c.isNew).to.equal(true)
 		end)
 
+		it("keeps the pass line and refuses words it does not know", function()
+			local cat = CatRules.ROSTER.Common[1]
+			local recap = RecapRules.make(cat, CatRules.pay(cat), 0, 0, false, {
+				pass = 12,
+				passLine = "2x Coins",
+			})
+			local c = RecapRules.clean(recap) :: RecapRules.Recap
+			expect(c.pass).to.equal(12)
+			expect(c.passLine).to.equal("2x Coins")
+			expect(RecapRules.total(c)).to.equal(RecapRules.total(recap))
+			local rows = RecapRules.rows(c)
+			expect(rows[#rows].key).to.equal("pass")
+			expect(rows[#rows].say).to.equal("2x Coins")
+			local bad = table.clone(recap) :: any
+			bad.passLine = "Free coins"
+			expect(RecapRules.clean(bad)).to.equal(nil)
+		end)
+
 		it("refuses anything malformed", function()
 			local good =
 				{ cat = "Muffin", rarity = "Common", coins = 10, tip = 2, bonus = 0, stars = 1 }

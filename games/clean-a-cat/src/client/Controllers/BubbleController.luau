@@ -27,6 +27,7 @@ local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
+local Passes = require(Shared:WaitForChild("Passes"))
 local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -82,7 +83,8 @@ local function canBuild(id: string): boolean
 		BuildRules.canStart(
 			{ coins = coins(), stations = built, builds = builds },
 			id,
-			LiveFlags.isOn
+			LiveFlags.isOn,
+			if player:GetAttribute(Passes.ATTRIBUTE_PREFIX .. "SecondBuilder") == true then 2 else 1
 		)
 	)
 end
