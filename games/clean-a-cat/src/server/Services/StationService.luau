@@ -7,6 +7,9 @@
 -- Motion-FX and the countdown. Redrawn when the save loads, when a build starts or finishes (BuildService calls
 -- StationService.refresh), when the street is placed again and when the switch changes. Cleared when the owner
 -- leaves, so the next player in that slot starts empty.
+-- With tubBuilds on (issue 515, tuning build.VipRoom.effect), the built VIP Room itself (VipRules.AREA_ASSET) stands at
+-- the door's spot, and the special cats the player has washed sit on its seats as residents (VipRules.residents);
+-- SpaService calls StationService.refresh when a special cat is washed for the first time.
 -- Behind the LiveFlags switch `stations`, off by default. Stations change nothing on the server: the pay bonus
 -- is BuildRules', and the client's dry step (ScrubController) only reads the Blow Dryer model placed here.
 local Players = game:GetService("Players")
@@ -16,6 +19,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local VipRules = require(Shared:WaitForChild("VipRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 
@@ -134,11 +138,70 @@ local function clear(plot: Model)
 end
 
 -- Draws stations, pads, the kitten and the VIP door in plot `slot` from a save's `stations` and `builds`.
+-- A resident: the special cat's sitting model (its plain one if it has none), with no scripts, anchored and not in
+-- the way, on seat `seat` at `scale`.
+local function seatResident(
+	area: Model,
+	assets: Instance,
+	kind: string,
+	seat: number,
+	scale: number
+)
+	local spot = attachmentIn(area, `{VipRules.SEAT_PREFIX}{seat}`)
+	local base = assets:FindFirstChild(`CleanACat_Cat_{kind}_Sit`)
+		or assets:FindFirstChild(`CleanACat_Cat_{kind}`)
+	if spot == nil or base == nil or not base:IsA("Model") then
+		return
+	end
+	local cat = (base :: Model):Clone() :: Model
+	cat.Name = `Resident_{kind}`
+	for _, piece in cat:GetDescendants() do
+		if piece:IsA("Script") or piece:IsA("LocalScript") then
+			piece:Destroy()
+		elseif piece:IsA("BasePart") then
+			local part = piece :: BasePart
+			part.Anchored = true
+			part.CanCollide = false
+			part.CanTouch = false
+		end
+	end
+	cat:SetAttribute(VipRules.RESIDENT_ATTRIBUTE, seat)
+	cat:SetAttribute("Cat", kind)
+	cat:ScaleTo(scale)
+	cat:PivotTo((spot :: Attachment).WorldCFrame)
+	cat.Parent = area
+end
+
+-- The built VIP Room at the door's spot, with the player's washed special cats on its seats.
+local function drawVipRoom(folder: Folder, assets: Instance, slot: number, index: any?)
+	local asset = assets:FindFirstChild(VipRules.AREA_ASSET)
+	if asset == nil or not asset:IsA("Model") then
+		if not warned[VipRules.AREA_ASSET] then
+			warned[VipRules.AREA_ASSET] = true
+			warn(`[StationService] {VipRules.AREA_ASSET} is missing from ReplicatedStorage.Assets`)
+		end
+		return
+	end
+	local area = (asset :: Model):Clone() :: Model
+	area.Name = VipRules.AREA_NAME
+	area:SetAttribute("Built", true)
+	area:PivotTo(SpaLayout.slotSpot(SpaLayout.VIP_SPOT, slot))
+	anchorAll(area)
+	if type(index) == "table" then
+		local seats = VipRules.seatCount(area:GetAttribute(VipRules.SEATS_ATTRIBUTE))
+		local scale = VipRules.scale(area:GetAttribute(VipRules.SCALE_ATTRIBUTE))
+		for seat, kind in VipRules.residents(index, seats) do
+			seatResident(area, assets, kind, seat, scale)
+		end
+	end
+	area.Parent = folder
+end
+
 local function drawInto(
 	plot: Model,
 	slot: number,
 	assets: Instance,
-	save: { stations: any, builds: any },
+	save: { stations: any, builds: any, index: any? },
 	isOn: (flag: string) -> boolean
 )
 	local folder = Instance.new("Folder")
@@ -202,6 +265,8 @@ local function drawInto(
 			warned[doorName] = true
 			warn(`[StationService] {doorName} is missing from ReplicatedStorage.Assets`)
 		end
+	elseif isOn(BuildRules.TUBS_FLAG) then
+		drawVipRoom(folder, assets :: Instance, slot, save.index)
 	end
 	folder.Parent = plot
 end
