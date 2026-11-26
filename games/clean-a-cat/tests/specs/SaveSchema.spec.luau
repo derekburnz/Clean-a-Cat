@@ -172,6 +172,13 @@ return function()
 			expect(SaveSchema.stampStarter(save)).to.equal(1000 + SaveSchema.STARTER_SECONDS)
 			save.createdAt = 5000 -- even a changed join time leaves a stamped end alone
 			expect(SaveSchema.stampStarter(save)).to.equal(1000 + SaveSchema.STARTER_SECONDS)
+			-- a save from before the pack starts its 72 hours at the join that stamps it
+			local old = SaveSchema.template(10)
+			expect(SaveSchema.stampStarter(old, 50000)).to.equal(50000 + SaveSchema.STARTER_SECONDS)
+			local fresh = SaveSchema.template(70000)
+			expect(SaveSchema.stampStarter(fresh, 70000)).to.equal(
+				70000 + SaveSchema.STARTER_SECONDS
+			)
 			local back = SaveSchema.migrate(SaveSchema.template(1) :: any, 2) :: SaveSchema.Save
 			back.starterEndsAt = 777
 			local again = SaveSchema.migrate(back :: any, 99999) :: SaveSchema.Save
