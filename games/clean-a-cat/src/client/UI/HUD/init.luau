@@ -62,9 +62,15 @@ local PILL_LIFT = 12 -- design px the pill and the friend tag sit higher than th
 -- only for a cat whose wash takes it (setPlan).
 type Step = { stage: string, icon: string, say: string, later: boolean? }
 
--- A step's words now: the Bubble Bath reads "Foam up the cat" with switch foamStep (WashDraft.bathSay, issue 888).
+-- A step's words now: the Bubble Bath reads "Foam up the cat" with switch foamStep (WashDraft.bathSay, issue 888), and
+-- the bow step "Drag a bow onto the cat" with bowDrag (issue 889).
 local function sayOf(step: Step): string
-	return if step.stage == "bath" then WashDraft.bathSay(LiveFlags.isOn).bath else step.say
+	if step.stage == "bath" then
+		return WashDraft.bathSay(LiveFlags.isOn).bath
+	elseif step.stage == "fluffed" and LiveFlags.isOn("bowDrag") then
+		return "Drag a bow onto the cat"
+	end
+	return step.say
 end
 HUD.STEPS = {
 	{ stage = "dirty", icon = "Sponge", say = "Scrub the mud" },
