@@ -14,9 +14,13 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Passes = require(Shared:WaitForChild("Passes"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PassService = require(script.Parent:WaitForChild("PassService"))
+
+local SECOND_PASS = "SecondPetSlot" -- Passes key: a second slot for the player and every worker (issue 518)
 
 local PetService = {}
 
@@ -26,6 +30,10 @@ local SLOT_PATTERN = "^%a+%d?$" -- "player" or a worker id plus its slot number
 
 local function nextNumber(): number
 	return random:NextNumber()
+end
+
+local function second(player: Player): boolean
+	return PassService.owns(player, SECOND_PASS)
 end
 
 -- Every crate count, every slot's pet, and the pen for the owner.
@@ -43,8 +51,11 @@ function PetService.show(player: Player)
 			inSlot[pet.slot] = `{pet.kind}:{pet.star}`
 		end
 	end
-	for _, slot in CrateRules.slots(save) do
-		player:SetAttribute(CrateRules.PET_ATTRIBUTE_PREFIX .. slot, inSlot[slot])
+	-- every slot the save could have, so a second slot's pet goes from view when the pass no longer counts
+	local counts = CrateRules.slots(save, second(player))
+	for _, slot in CrateRules.slots(save, true) do
+		local value = if table.find(counts, slot) then inSlot[slot] else nil
+		player:SetAttribute(CrateRules.PET_ATTRIBUTE_PREFIX .. slot, value)
 	end
 	if LiveFlags.isOn(CrateRules.FLAG) then
 		NetService.fire(player, "Pets", save.pets)
@@ -69,7 +80,7 @@ function PetService.playerBoost(player: Player): number
 	if save == nil or not LiveFlags.isOn(CrateRules.FLAG) then
 		return 0
 	end
-	return CrateRules.boostOf(save.pets, { CrateRules.PLAYER_SLOT })
+	return CrateRules.boostOf(save.pets, CrateRules.playerSlots(second(player)))
 end
 
 -- How much worker `id`'s pets add to their pay (switch pets), capped at CrateRules.PET_CAP.
@@ -78,7 +89,11 @@ function PetService.workerBoost(player: Player, id: string): number
 	if save == nil or not LiveFlags.isOn(CrateRules.FLAG) then
 		return 0
 	end
-	return CrateRules.boostOf(save.pets, { `{id}1` }, CrateRules.PET_CAP)
+	return CrateRules.boostOf(
+		save.pets,
+		CrateRules.workerSlots(id, second(player)),
+		CrateRules.PET_CAP
+	)
 end
 
 local function onOpen(player: Player, rawKind: unknown)
@@ -120,7 +135,7 @@ local function onPlace(player: Player, rawId: unknown, rawSlot: unknown)
 		end
 		slot = text
 	end
-	if CrateRules.place(save, id, slot) then
+	if CrateRules.place(save, id, slot, second(player)) then
 		PetService.show(player)
 	end
 end
@@ -153,6 +168,18 @@ function PetService.Start()
 	DataService.onLoaded:Connect(function(player: Player)
 		PetService.show(player)
 	end)
+	-- the Second pet slot bought, found on join, or the passes switch turned either way: the slots follow
+	PassService.changed:Connect(function(player: Player, key: string)
+		if key == SECOND_PASS then
+			PetService.show(player)
+		end
+	end)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. Passes.FLAG)
+		:Connect(function()
+			for _, player in Players:GetPlayers() do
+				PetService.show(player)
+			end
+		end)
 	for _, player in Players:GetPlayers() do
 		PetService.show(player)
 	end

@@ -117,6 +117,8 @@ export type Save = {
 	reopens: number, -- Grand Reopenings done (none at launch; see reopen)
 	finishCredits: { [string]: number }, -- Finish now bought with nothing left to finish, by tier "1" to "5": the next
 	-- one it covers is free (FinishRules, issue 515)
+	passes: { [string]: boolean }, -- game passes this save knows the player owns, by Passes key (issue 518): set when a
+	-- purchase completes or Roblox says so on a join, and never taken back, so a slow ownership check loses nothing
 }
 
 local SaveSchema = {}
@@ -169,6 +171,7 @@ function SaveSchema.template(now: number): Save
 		bench = {},
 		reopens = 0,
 		finishCredits = {},
+		passes = {},
 	}
 end
 
