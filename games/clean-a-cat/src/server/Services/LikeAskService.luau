@@ -4,8 +4,9 @@
 --   LikeAskService.moment(player, kind)   a good moment ("special", "crate", "stars", "helper", "purchase")
 --   LikeAskService.bad(player)            a lost cat or a cancelled purchase: no ask for two minutes
 -- When the ask is due the Player attribute LikeAskDue holds the moment's name; the client's ask queue shows Design's
--- card when the screen is free and answers with RequestLikeAnswer. A "no" is saved (likeNoVisit), so the ask waits
--- three visits; "closed" is no answer. Nothing here pays anything: the like row's coins stay FreeRewardService's.
+-- card when the screen is free and answers with RequestLikeAnswer. A "no" is saved (likeNoVisit, likeNos), so the
+-- ask waits three visits and stops after two; a "yes" is saved (likeYes) and it never comes again; "closed" is no
+-- answer. None while the first session's tutorial runs. Nothing here pays anything: the like row's coins stay FreeRewardService's.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -13,6 +14,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local AskRules = require(Shared:WaitForChild("AskRules"))
 local LikeAskRules = require(Shared:WaitForChild("LikeAskRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local SpaRules = require(Shared:WaitForChild("SpaRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
@@ -52,6 +54,9 @@ local function blocked(player: Player, visit: Visit): boolean
 	return LikeAskRules.blocked({
 		visit = save.visits,
 		noVisit = save.likeNoVisit,
+		nos = save.likeNos,
+		saidYes = save.likeYes,
+		inTutorial = (Telemetry.played(player) or save.playSeconds) < SpaRules.TUTORIAL_ENDS_AT,
 		likePaid = save.freeRewards.like,
 		askedThisVisit = visit.asked,
 		lastBadAt = visit.lastBadAt,
@@ -107,6 +112,9 @@ local function onAnswer(player: Player, raw: unknown)
 	local save = DataService.get(player)
 	if answer == "no" and save then
 		save.likeNoVisit = save.visits
+		save.likeNos += 1
+	elseif answer == "yes" and save then
+		save.likeYes = true
 	end
 	Telemetry.event(player, "like_ask_answered", 1, { answer :: string, tostring(due) })
 end

@@ -6,6 +6,8 @@
 --     helper hired, and (his "maybe", AFTER_PURCHASE) a completed purchase, PURCHASE_DELAY seconds later;
 --   - one ask a visit; after a "no", none for NO_VISITS visits; never once the like row is paid;
 --   - never within GUARD_SECONDS of a lost cat or a cancelled purchase.
+-- Review-QA's pressure limits on top (review of Design PR 774): never again after a "yes" or after MAX_NOS "no"s, and
+-- never while the first session's tutorial runs (SpaRules.TUTORIAL_ENDS_AT seconds of play).
 -- Pure, so tests/specs/LikeAskRules.spec.luau covers it; LikeAskService uses it.
 
 local LikeAskRules = {}
@@ -18,12 +20,16 @@ LikeAskRules.AFTER_PURCHASE = true -- Derek's "maybe also after a purchase just 
 LikeAskRules.PURCHASE_DELAY = 120 -- seconds from a completed purchase to its ask, so it is never on the purchase screen
 LikeAskRules.GUARD_SECONDS = 120 -- no ask this long after a lost cat or a cancelled purchase
 LikeAskRules.NO_VISITS = 3 -- visits with no ask after a "no"
+LikeAskRules.MAX_NOS = 2 -- after this many "no"s the ask never comes again
 
 export type Moment = "special" | "crate" | "stars" | "helper" | "purchase"
 export type Answer = "yes" | "no" | "closed"
 export type State = {
 	visit: number, -- this visit's number (the save's visits, the first is 1)
 	noVisit: number, -- the visit of the last "no", 0 for none
+	nos: number, -- how many times the ask was answered "no"
+	saidYes: boolean, -- the ask was once answered "yes"
+	inTutorial: boolean, -- the first session's tutorial is still running
 	likePaid: boolean, -- the gift card's like row is paid
 	askedThisVisit: boolean,
 	lastBadAt: number, -- when a cat was last lost or a purchase cancelled, -math.huge for never
@@ -46,7 +52,10 @@ end
 
 -- Whether no ask may come due now, whatever the moment.
 function LikeAskRules.blocked(state: State): boolean
-	if state.likePaid or state.askedThisVisit then
+	if state.likePaid or state.askedThisVisit or state.saidYes or state.inTutorial then
+		return true
+	end
+	if state.nos >= LikeAskRules.MAX_NOS then
 		return true
 	end
 	if state.noVisit > 0 and state.visit - state.noVisit <= LikeAskRules.NO_VISITS then

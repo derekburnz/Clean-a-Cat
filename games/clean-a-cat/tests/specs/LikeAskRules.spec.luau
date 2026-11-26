@@ -8,6 +8,9 @@ return function()
 		return {
 			visit = fields.visit or 1,
 			noVisit = fields.noVisit or 0,
+			nos = fields.nos or 0,
+			saidYes = fields.saidYes == true,
+			inTutorial = fields.inTutorial == true,
 			likePaid = fields.likePaid == true,
 			askedThisVisit = fields.askedThisVisit == true,
 			lastBadAt = fields.lastBadAt or -math.huge,
@@ -26,6 +29,23 @@ return function()
 				expect((like :: number) > (table.find(AskRules.IDS, "favourite") :: number)).to.equal(
 					true
 				)
+			end
+		)
+
+		it(
+			"never asks again after a yes or two nos, and never in the tutorial (Review-QA)",
+			function()
+				expect(LikeAskRules.blocked(state({ visit = 9, saidYes = true }))).to.equal(true)
+				expect(LikeAskRules.blocked(state({ visit = 9, nos = 1, noVisit = 2 }))).to.equal(
+					false
+				)
+				expect(
+					LikeAskRules.blocked(
+						state({ visit = 99, nos = LikeAskRules.MAX_NOS, noVisit = 2 })
+					)
+				).to.equal(true)
+				expect(LikeAskRules.blocked(state({ inTutorial = true }))).to.equal(true)
+				expect(LikeAskRules.blocked(state({}))).to.equal(false)
 			end
 		)
 
