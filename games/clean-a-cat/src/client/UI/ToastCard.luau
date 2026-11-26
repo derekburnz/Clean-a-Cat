@@ -122,7 +122,7 @@ function ToastCard.style(
 	local words = TextService:GetTextSize(text, TEXT_SIZE, Kit.FONT, Vector2.new(room, 1000))
 	local width = math.min(words.X + 2, room) + TAB_W + 10 + SIDE
 	local parent = label.Parent
-	local root: GuiObject? = if parent and parent:IsA("GuiObject") then parent else nil
+	local root: GuiObject? = if parent and parent:IsA("GuiObject") then parent :: GuiObject else nil
 	local right = rightGap(root, around or {}, TOP, TOP + math.max(label.Size.Y.Offset, 40))
 	label.AnchorPoint = Vector2.new(1, 0)
 	label.Position = UDim2.new(1, -right, 0, TOP)
