@@ -171,7 +171,7 @@ return function()
 		it("builds the tubs in order, one build at a time", function()
 			local s = state(100000)
 			expect(BuildRules.start(s, "ThirdTub", 0, all)).to.equal(0) -- the Second Tub first
-			expect(BuildRules.start(s, "SecondTub", 0, all)).to.equal(90)
+			expect(BuildRules.start(s, "SecondTub", 0, all)).to.equal(60)
 			expect(s.builds.station.endsAt).to.equal(15)
 			-- one builder: the Garden waits though it is a room
 			local ok = BuildRules.canStart(s, "Garden", all)
@@ -185,7 +185,7 @@ return function()
 
 		it("builds a room and a tub at once with the Second Builder", function()
 			local s = state(100000)
-			expect(BuildRules.start(s, "SecondTub", 0, all, 2)).to.equal(90)
+			expect(BuildRules.start(s, "SecondTub", 0, all, 2)).to.equal(60)
 			expect(BuildRules.start(s, "Garden", 0, all, 2)).to.equal(25000)
 			-- each slot still builds one thing: the Third Tub waits for the Second
 			BuildRules.finish(s, 15)
