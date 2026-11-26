@@ -605,6 +605,78 @@ def build_bow(name, mat):
     return [b.finalize(name, mat)]
 
 
+# Bow tiers (#501; the owner on 2026-11-25: "make better bow upgrades that add money"). A better bow is bought with
+# coins and worn by every cat the player washes by hand from then on. Each tier changes shape and size as well as
+# trim, like the tool tiers (Review-QA, #142): tier 2 `Double` is wider with a second, cream bow layered behind and above the first, tier 3
+# `Royal` is that and wider again, with gold rims, a gold knot with a small lit gem and a crown of three gold points. Each
+# comes in the three colours, so the player keeps the colour pick. Same pivot and `BowSlot` as the plain bow.
+TIERS = ("Double", "Royal")
+BOW_TIERS = {f"{n}{t}": (sw, t) for n, sw in BOWS.items() for t in TIERS}
+BOW_GEM = {"bow_pink": "eye_sky", "bow_mint": "neon_pink", "bow_sky": "neon_pink"}   # deep colours only (#491)
+TIER_BUDGET = 520
+
+
+def _ry_deg(a):
+    return Matrix.Rotation(math.radians(a), 3, "Y")
+
+
+def _tier_bow(b, g, sw, tier, c=(0.0, 0.0, 0.0), k=1.0, face=False):
+    """Draw a tier bow with its knot's base at `c`, scaled by `k`. `face` False is the bow as worn: loops up, tails
+    lying back over the crown. `face` True is the bow stood on a button's face: the same loops, tails hanging down
+    and everything flat to the front. `g` is the builder for the lit gem (None: no gem)."""
+    royal = tier == "Royal"
+    cx, cy, cz = c
+    r = (0.23 if royal else 0.2) * k                       # the big loops: wider than the plain bow's 0.18
+    off = (0.27 if royal else 0.235) * k
+    lz = cz + (0.13 if royal else 0.115) * k
+    for sx in (1, -1):
+        tip = _ry_deg(-18 * sx)
+        if royal:                                          # a gold rim: the same loop, bigger and thinner, behind it
+            b.sphere((cx + sx * off, cy + 0.035 * k, lz), r * 1.13, GOLD, segments=8, rings=4, scale=(1.0, 0.3, 0.74),
+                     rot=tip)
+        b.sphere((cx + sx * off, cy, lz), r, sw, segments=8, rings=4, scale=(1.0, 0.5, 0.72), rot=tip)
+        b.sphere((cx + sx * (off - 0.01 * k), cy + 0.08 * k, lz + 0.085 * k), r * 1.04, "spa_cream", segments=8,
+                 rings=4, scale=(1.0, 0.4, 0.74), rot=_ry_deg(-24 * sx))    # a second, cream loop behind and above
+    kn = (0.17 * k, 0.15 * k, 0.15 * k)
+    b.box_base((cx, cy, cz), kn, GOLD if royal else sw)                                    # the knot
+    if not royal:
+        b.box((cx, cy - kn[1] / 2 - 0.004 * k, cz + kn[2] / 2), (0.075 * k, 0.03 * k, 0.075 * k), "spa_cream",
+              bevel=False, rot=_ry_deg(45))                                                # a cream button on it
+    if royal:
+        for dx, up, w in ((0.0, 0.05, 0.085), (-0.07, 0.015, 0.065), (0.07, 0.015, 0.065)):   # a crown of three
+            b.box((cx + dx * k, cy + (0.01 + abs(dx) * 0.1) * k, cz + kn[2] + up * k), (w * k, 0.05 * k, w * k), GOLD,
+                  bevel=False, rot=_ry_deg(45))                                             # points: boxes on edge
+        if g is not None:                                                                  # the gem, proud of the knot
+            g.box((cx, cy - kn[1] / 2 - 0.012 * k, cz + kn[2] / 2), (0.075 * k, 0.04 * k, 0.075 * k), BOW_GEM[sw],
+                  bevel=False, rot=_ry_deg(45))
+    ln = (0.34 if royal else 0.3) * k                      # the tails, longer than the plain bow's 0.24
+    for sx in (1, -1):
+        if face:
+            rot = _ry_deg(-34 * sx)
+            d = rot @ Vector((0, 0, -1))
+            at = Vector((cx + sx * 0.06 * k, cy + (0.02 + 0.006 * sx) * k, cz + 0.04 * k))    # no shared planes
+            b.box(tuple(at + d * ln / 2), (0.11 * k, 0.05 * k, ln), sw, bevel=False, rot=rot)
+            b.box(tuple(at + d * (ln + 0.03 * k)), (0.12 * k, 0.056 * k, 0.07 * k), GOLD if royal else "spa_cream",
+                  bevel=False, rot=rot)
+        else:
+            rot = Matrix.Rotation(math.radians(22 * sx), 3, "Z")
+            d = rot @ Vector((0, 1, 0))
+            at = Vector((cx + sx * 0.075 * k, cy + 0.02 * k, cz + (0.03 + 0.005 * sx) * k))   # no shared planes
+            b.box(tuple(at + d * ln / 2), (0.1 * k, ln, 0.035 * k), sw, bevel=False, rot=rot)
+            b.box(tuple(at + d * (ln + 0.025 * k)), (0.11 * k, 0.06 * k, 0.041 * k), GOLD if royal else "spa_cream",
+                  bevel=False, rot=rot)                                                     # a tip in the trim colour
+
+
+def build_tier_bow(name, mat):
+    sw, tier = BOW_TIERS[name]
+    b, g = Builder(), Builder()
+    _tier_bow(b, g, sw, tier)
+    objs = [b.finalize(name, mat)]
+    if tier == "Royal":
+        objs.append(g.finalize(name + "_Gem_Glow", mat))
+    return objs
+
+
 def bow_rbx_extras(name):
     return lambda: {"attachments": [(name, "BowSlot", Matrix.Identity(4))]}
 
@@ -612,6 +684,26 @@ def bow_rbx_extras(name):
 BUTTONS = {"CleanACat_Prop_BowButton" + n.rsplit("_", 1)[1]: sw for n, sw in BOWS.items()}
 BUTTON_R = 0.55          # the rim's radius: 1.1 across
 _FACING = (math.radians(90), "X")           # a disc stood up, its face to the front
+
+
+TIER_BUTTONS = {"CleanACat_Prop_BowButton" + n[len("CleanACat_Bow_"):]: v for n, v in BOW_TIERS.items()}
+TIER_FIT = {"Double": 1.0, "Royal": 0.86}        # the bow's size on the button, so each fills the face alike
+TIER_FACE = {"Double": "pastel_lilac", "Royal": "velvet_lilac"}   # lilac faces (tier 2 is lilac on the tools too): the
+                                                                  # bow's cream layer would vanish on a cream face
+
+
+def build_tier_bow_button(name, mat):
+    """A tier bow's button (#501): the plain button's disc with that tier's bow stood on its face. A Royal button has
+    a gold rim and the faces are lilac, pale then deep, so the three tiers' buttons differ at a glance as well."""
+    sw, tier = TIER_BUTTONS[name]
+    b, g = Builder(), Builder()
+    b.cyl((0, 0.03, 0), BUTTON_R, 0.16, GOLD if tier == "Royal" else sw, segments=16, rot=_FACING)   # the rim
+    b.cyl((0, -0.06, 0), BUTTON_R - 0.09, 0.06, TIER_FACE[tier], segments=16, rot=_FACING, bevel=False)  # the face
+    _tier_bow(b, g, sw, tier, c=(0.0, -0.17, -0.04), k=TIER_FIT[tier], face=True)
+    objs = [_tris(b.finalize(name, mat))]
+    if tier == "Royal":
+        objs.append(g.finalize(name + "_Gem_Glow", mat))
+    return objs
 
 
 def build_bow_button(name, mat):
@@ -635,6 +727,8 @@ def bow_button_rbx_extras(name):
 
 
 ASSETS = {n: (lambda mat, n=n: build_bow(n, mat), 200) for n in BOWS}
+ASSETS.update({n: (lambda mat, n=n: build_tier_bow(n, mat), TIER_BUDGET) for n in BOW_TIERS})
 ASSETS.update({n: (lambda mat, n=n: build_bow_button(n, mat), 450) for n in BUTTONS})
-EXTRAS = {n: bow_rbx_extras(n) for n in BOWS}
-EXTRAS.update({n: bow_button_rbx_extras(n) for n in BUTTONS})
+ASSETS.update({n: (lambda mat, n=n: build_tier_bow_button(n, mat), 450 + TIER_BUDGET) for n in TIER_BUTTONS})
+EXTRAS = {n: bow_rbx_extras(n) for n in list(BOWS) + list(BOW_TIERS)}
+EXTRAS.update({n: bow_button_rbx_extras(n) for n in list(BUTTONS) + list(TIER_BUTTONS)})
