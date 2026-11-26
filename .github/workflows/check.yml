@@ -56,6 +56,7 @@ jobs:
       # proxy's certificate), so main's copy is kept for tools/prepush.sh to download with `gh run download`.
       - name: Write Selene's Roblox list into the game folder
         if: github.event_name == 'push'
+        continue-on-error: true # a helper file: a failed fetch must never turn main red or hold the dev publish
         working-directory: ${{ env.GAME_DIR }}
         run: selene generate-roblox-std
 
