@@ -212,7 +212,7 @@ def clear(mat):
 # ------------------------------------------------------------------ the shots
 def tub_scene(mat, name="Smudge", state="half", with_sponge=True, foam=True):
     """The wash tub with a 1.5 scale cat in it, a sponge on its clean cheek and foam on the clean side."""
-    tub = _fresh(stations.build_tub(mat))
+    tub = _fresh(stations.build_tub(mat, grow=False))
     cat = cat_state(name, mat, "sit", state, (0, 0, stations.SEAT_Z), TUB_K)
     objs = tub + cat
     lo, hi = common.bounds(cat)
@@ -667,7 +667,7 @@ def thumb_busy(mat, out, res):
     objs = []
     for i, (who, cat, state) in enumerate(BUSY):
         x = (i - 1) * 4.7
-        stand = [o for o in ws.build_stand(who, mat) if not o.name.endswith("_Barrier")]
+        stand = [o for o in ws.build_stand(who, mat, grow=False) if not o.name.endswith("_Barrier")]
         _move(stand, (x, 0, 0))
         objs += _fresh(stand)
         objs += cat_state(cat, mat, "sit", state, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
