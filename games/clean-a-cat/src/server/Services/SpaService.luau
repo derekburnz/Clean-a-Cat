@@ -65,6 +65,10 @@ local OWNER_WAIT_SECONDS = 3 -- the opening replay's owner check, at most this l
 
 local SpaService = {}
 
+-- Fired once for each customer's cat the player washed by hand and was paid for: (player, facts), the facts by quest
+-- kind (QuestRules.Facts) for the quest book (QuestService, issue 516).
+SpaService.washed = (require(Shared:WaitForChild("Signal")) :: any).new()
+
 local cats: { [Player]: SpaRules.Cat } = {}
 local nextId: { [Player]: number } = {}
 local lastSeq: { [Player]: number } = {} -- the newest report number each client sent
@@ -909,6 +913,16 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		+ bonus
 	save.coins += coins
 	WalletService.show(player)
+	local dirt = if dirtOn then cat.dirt else nil
+	SpaService.washed:Fire(player, {
+		wash = 1,
+		bow = if LiveFlags.isOn(BowRules.FLAG) and cat.bow ~= nil then 1 else 0,
+		dirty = if dirt and dirt >= 3 then 1 else 0,
+		dirt4 = if dirt == 4 then 1 else 0,
+		threeStars = if more.grade == 3 then 1 else 0,
+		early = if cat.early == true then 1 else 0,
+		special = if cat.special then 1 else 0,
+	})
 	local starsBefore = save.stars
 	save.stars += pay.stars
 	player:SetAttribute(BOARD_LIT, true)

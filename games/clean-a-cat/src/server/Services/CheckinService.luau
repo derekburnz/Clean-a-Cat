@@ -23,6 +23,7 @@ local PetService = require(script.Parent:WaitForChild("PetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
+local QUESTS_FLAG = "quests" -- QuestRules.FLAG: the quest book counts days from the same time zone
 local CHECK_SECONDS = 5 -- how often the waiting day is looked at again (the first card's 3:45, midnight)
 
 local CheckinService = {}
@@ -93,7 +94,7 @@ local function onClaim(player: Player)
 end
 
 local function onTimeZone(player: Player, rawHours: unknown)
-	if not LiveFlags.isOn(CheckinRules.FLAG) then
+	if not (LiveFlags.isOn(CheckinRules.FLAG) or LiveFlags.isOn(QUESTS_FLAG)) then
 		return
 	end
 	local hours = Guard.int(rawHours, -12, 14)

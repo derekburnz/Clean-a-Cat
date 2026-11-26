@@ -83,6 +83,8 @@ Remotes.ServerToClient = {
 	-- board and countdowns; credits are the Finish now credits by tier "1" to "5" (empty while finishNow is off)
 	"BuildFinished", -- (id: string)  a build just finished, or finished while the player was away: celebrate (switch builds)
 	"PhotoPaid", -- (catId: number, coins: number, total: number, recap: RecapRules.Recap?)  the photo paid; total is the save's coins; recap for a customer, or the kitten's score card (mascot), while recapCard is on
+	"Quests", -- (quests: { { id, text, goal, progress, coins, weekly: boolean, done: boolean } }, weeklyCrate: boolean)  the open
+	-- quests, today's daily ones first, and whether this week's crate is taken (switch quests)
 	"CrateOpened", -- (kind: string, pet: { id, kind, star })  the crate the player tapped and the pet in it (switch pets)
 	"PetFused", -- (pet: { id, kind, star })  three pets fused into this one, a star higher (switch pets)
 	"Pets", -- (pets: { { id, kind, star, slot? } })  every pet the player owns, after each change (switch pets)
