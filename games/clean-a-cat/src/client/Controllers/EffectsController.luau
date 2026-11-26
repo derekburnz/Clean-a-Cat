@@ -5,6 +5,7 @@
 -- default, because they change the first session. Dryer air is behind `dryEffects`. There is no stink smoke
 -- (Derek, 2026-11-25: mud on the coat shows a dirty cat). The opening truck and box scene (Effects/OpeningScene) is
 -- started by Controllers/OpeningController.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
@@ -12,6 +13,7 @@ local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForC
 local CarryShared =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CarryShared"))
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
+local CatWalkOut = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatWalkOut"))
 local CounterCrate =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CounterCrate"))
 local Crate = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Crate"))
@@ -33,6 +35,7 @@ local WorkerBar = require(script.Parent.Parent:WaitForChild("Effects"):WaitForCh
 local SCRUB_FLAG = "scrubEffects"
 local REVEAL_FLAG = "revealEffects"
 local FLUFF_FLAG = "fluffEffects"
+local WALK_OUT_FLAG = "catWalkOut"
 local MOTION_FLAG = "catMotion"
 local DRY_FLAG = "dryEffects"
 local SHARED_CARRY_FLAG = "carryShared"
@@ -157,6 +160,23 @@ function EffectsController.Start()
 		Moments.CatToWindow:Connect(function(cat: Model)
 			if LiveFlags.isOn(FLUFF_FLAG) and cat:IsDescendantOf(workspace) then
 				Hop.hop(cat)
+			end
+		end)
+	end
+	-- A customer's washed cat goes home: it hops out of the tub and trots to the front of the line, fading as it
+	-- goes out (switch catWalkOut; Sync's issue 773 run found nothing carried it out).
+	if Moments.CatReturned then
+		local SpaLayout = require(shared:WaitForChild("SpaLayout")) :: any
+		Moments.CatReturned:Connect(function(cat: Model)
+			if
+				LiveFlags.OFF_BY_DEFAULT[WALK_OUT_FLAG] == true
+				and LiveFlags.isOn(WALK_OUT_FLAG)
+				and cat:IsDescendantOf(workspace)
+			then
+				local ok, way = pcall(SpaLayout.spot, "SpotQueue1", Players.LocalPlayer)
+				if ok and typeof(way) == "CFrame" then
+					CatWalkOut.play(cat, way)
+				end
 			end
 		end)
 	end

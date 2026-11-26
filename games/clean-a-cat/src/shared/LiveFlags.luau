@@ -139,6 +139,7 @@ LiveFlags.KEYS = {
 	"bigSpa", -- Model-Agent's bigger spa: a roomier building (stations, helpers and doors moved back and out, the residents' seat left of the entrance) with the open counter window by the desk, on a wider street (56 studs a plot) with its own backdrop; read when the street is placed, so it takes effect on the next server start (SpaLayout.BIG_SPOTS, PlotService, BackdropController, issue 746); a missing big asset keeps the small spa; off by default
 	"counterCrate", -- with counterLine: a new customer walks up with their cat in its crate and sets it on the counter; the server times it (CounterSetAt when they arrive, CounterReadyAt 2.4 s later) and the cat can be taken only once it sits, while Motion-FX's Effects walk it out of the crate and fade the crate (CounterRules, FigureService, SpaService, CarryController); off by default
 	"respawnCamera", -- for 2 s after a respawn, while the player stands still and has not moved the camera, a camera looking more than 30 degrees from the new character's facing is made Scriptable for one frame behind the character, then Custom again, so Roblox's camera module drops its stale last transform and carries on from there (on a respawn the module's own turn is lost and the camera keeps its old yaw) (RespawnCameraController, issue 670); off by default
+	"catWalkOut", -- a customer's washed cat hops out of the tub and trots out, fading (Effects/CatWalkOut, CatReturned); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -250,6 +251,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	counterCards = true,
 	bigSpa = true,
 	counterCrate = true,
+	catWalkOut = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
