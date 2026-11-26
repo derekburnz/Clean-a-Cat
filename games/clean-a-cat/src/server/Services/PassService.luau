@@ -12,8 +12,9 @@
 --   PassService.changed:Connect(fn)        fn(player, key) when a pass starts to count for a player (bought, found on
 --                                          join, or the switch turned on); each feature applies it there
 --
--- Every effect reads owns(), so turning the switch passes off takes all of them away at once (and back on gives
--- them back): the rollback. Coins are never sold. Behind the LiveFlags switch passes.
+-- Every effect but Lou reads owns(), so turning the switch passes off takes them away at once (and back on gives them
+-- back): the rollback. Lou is hired into the save the moment his pass counts and stays like any hire, with his level.
+-- Coins are never sold. Behind the LiveFlags switch passes.
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

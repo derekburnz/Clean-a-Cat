@@ -73,6 +73,25 @@ return function()
 			expect(CrateRules.place(save, 999, CrateRules.PLAYER_SLOT)).to.equal(false)
 		end)
 
+		it(
+			"gives the player and every worker a second slot with the Second pet slot pass",
+			function()
+				local save = newSave()
+				save.crates.normal = 1
+				local pet = CrateRules.open(save, "normal", always(0)) :: CrateRules.Pet
+				save.workers.Jo = { mode = "first", level = 1, hiredAt = 0 }
+				expect(#CrateRules.slots(save)).to.equal(2)
+				expect(#CrateRules.slots(save, true)).to.equal(4)
+				expect(CrateRules.place(save, pet.id, "player2")).to.equal(false) -- no pass
+				expect(CrateRules.place(save, pet.id, "player2", true)).to.equal(true)
+				expect(CrateRules.place(save, pet.id, "Jo2", true)).to.equal(true)
+				expect(CrateRules.boostOf(save.pets, CrateRules.workerSlots("Jo"))).to.equal(0) -- slot 2 needs the pass
+				expect(CrateRules.boostOf(save.pets, CrateRules.workerSlots("Jo", true)) > 0).to.equal(
+					true
+				)
+			end
+		)
+
 		it("fuses three of the same pet at the same star into a fixed star up", function()
 			local save = newSave()
 			save.crates.normal = 4

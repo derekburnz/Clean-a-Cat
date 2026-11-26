@@ -54,6 +54,12 @@ function Telemetry.played(player: Player): number?
 	return playedSeconds(player)
 end
 
+-- Seconds of this session so far; 0 before the save loaded.
+function Telemetry.sessionSeconds(player: Player): number
+	local session = sessions[player]
+	return if session then math.max(0, os.time() - session.at) else 0
+end
+
 local function remember(line: string)
 	if not RunService:IsStudio() then
 		return

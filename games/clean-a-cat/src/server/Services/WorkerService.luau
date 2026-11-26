@@ -1,5 +1,6 @@
 --!strict
--- WorkerService: the spa's helpers Jo and Sam (WorkerRules, issue 509), with Lou to come from a game pass. One
+-- WorkerService: the spa's helpers Jo and Sam (WorkerRules, issue 509), and Lou, who comes with his game pass
+-- (PassService.changed, issue 518) and then works exactly like them. One
 -- purchase hires a worker with their own station on the back wall of the player's plot. Every few seconds an idle
 -- worker takes a waiting customer's cat from the line by the mode the player set, sits it in their tub, and washes it
 -- for WorkerRules.washSeconds (longer the dirtier). The cat carries the attribute WorkerProgress, 0 to 1, which
@@ -21,6 +22,7 @@ local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
 local SpaService = require(script.Parent:WaitForChild("SpaService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
@@ -287,6 +289,12 @@ local function onHire(player: Player, rawId: unknown)
 	PetService.show(player) -- the worker brings a pet slot
 	NetService.notice(player, `{WorkerRules.WORKERS[id].name} works here now`)
 	Telemetry.economy(player, "coins", "sink", spent, save.coins, "Shop", `Worker{id}`)
+	Telemetry.event(
+		player,
+		"worker_hired",
+		Telemetry.sessionSeconds(player) // 60,
+		{ string.lower(id) }
+	)
 end
 
 local function onMode(player: Player, rawId: unknown, rawMode: unknown)
@@ -432,12 +440,38 @@ local function refreshAll()
 	end
 end
 
+-- Lou comes with his pass (issue 518): bought, found on join or the passes switch turned on, he is hired with his
+-- station the same moment, once, and then works exactly like Jo and Sam. He stays in the save as any hire.
+local function onPass(player: Player, key: string)
+	local save = DataService.get(player)
+	local info = WorkerRules.WORKERS[key]
+	if save == nil or info == nil or not info.pass then
+		return
+	end
+	if not WorkerRules.hirePass(save, key, os.time()) then
+		return
+	end
+	showWorkers(player, save)
+	WorkerService.refresh(player)
+	PetService.show(player)
+	if isOn() then
+		NetService.notice(player, `{info.name} works here now, with his own wash stand`)
+	end
+	Telemetry.event(
+		player,
+		"worker_hired",
+		Telemetry.sessionSeconds(player) // 60,
+		{ string.lower(key) }
+	)
+end
+
 function WorkerService.Init(_services: { [string]: any }) end
 
 function WorkerService.Start()
 	NetService.on("RequestHireWorker", { perSecond = 1, burst = 2 }, onHire)
 	NetService.on("RequestWorkerMode", { perSecond = 2, burst = 4 }, onMode)
 	NetService.on("RequestWorkerLevel", { perSecond = 1, burst = 2 }, onLevel)
+	PassService.changed:Connect(onPass)
 	DataService.onLoaded:Connect(function(player: Player, save)
 		showWorkers(player, save)
 		WorkerService.refresh(player)

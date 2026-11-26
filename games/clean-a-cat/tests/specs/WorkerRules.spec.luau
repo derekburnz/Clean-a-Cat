@@ -43,6 +43,17 @@ return function()
 			expect(save.coins).to.equal(850)
 		end)
 
+		it("hires Lou with his pass, free and once, and nobody else that way", function()
+			local save = newSave(10)
+			expect(WorkerRules.hirePass(save, "Jo", 5)).to.equal(false)
+			expect(WorkerRules.hirePass(save, "Lou", 5)).to.equal(true)
+			expect(save.workers.Lou.level).to.equal(1)
+			expect(save.coins).to.equal(10)
+			save.workers.Lou.level = 3
+			expect(WorkerRules.hirePass(save, "Lou", 6)).to.equal(false)
+			expect(save.workers.Lou.level).to.equal(3)
+		end)
+
 		it("levels a worker up to the top and stops there", function()
 			local save = newSave(10_000)
 			WorkerRules.hire(save, "Jo", 1)
