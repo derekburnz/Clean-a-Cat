@@ -26,6 +26,8 @@ export type Row = {
 	state: string,
 	action: string?, -- the button's words while state is "buy"
 	icon: string, -- an Icons name
+	price: number?, -- the coin price while state is "buy"
+	short: boolean?, -- true while the player has fewer coins than the price: the button shows grey (markShort, #825)
 }
 
 type IsOn = (flag: string) -> boolean
@@ -45,6 +47,7 @@ function BuildViewRules.sameShape(a: { Row }, b: { Row }): boolean
 			or row.state ~= other.state
 			or row.action ~= other.action
 			or row.icon ~= other.icon
+			or row.short ~= other.short
 		then
 			return false
 		end
@@ -119,6 +122,7 @@ function BuildViewRules.builds(
 			else
 				row.say = `{item.price} coins · {BuildViewRules.time(item.seconds)}`
 				row.action = "Build"
+				row.price = item.price
 			end
 			table.insert(out, row)
 		end
@@ -147,6 +151,7 @@ function BuildViewRules.upgrades(
 			state = if mine then "done" else "buy",
 			action = if mine then nil else "Buy",
 			icon = "Tools",
+			price = if mine then nil else tool.price,
 		})
 	end
 	if isOn(BowRules.FLAG) then
@@ -169,6 +174,7 @@ function BuildViewRules.upgrades(
 				state = "buy",
 				action = "Buy",
 				icon = "Bow",
+				price = info.price,
 			})
 		else
 			local best = BowRules.TIER[tier]
@@ -184,6 +190,16 @@ function BuildViewRules.upgrades(
 		end
 	end
 	return out
+end
+
+-- Marks each "buy" row the player cannot afford with `coins` (short = true, shown grey; the server still says why on
+-- a press) and returns the same list. Issue 825: anything the player cannot afford is grey (ui-review).
+function BuildViewRules.markShort(rows: { Row }, coins: number): { Row }
+	for _, row in rows do
+		local price: number? = row.price
+		row.short = if row.state == "buy" and price ~= nil and coins < price then true else nil
+	end
+	return rows
 end
 
 return BuildViewRules

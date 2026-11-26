@@ -140,4 +140,32 @@ return function()
 			expect(BuildViewRules.sameShape({ row("a", "1m") }, {})).to.equal(false)
 		end)
 	end)
+
+	describe("BuildViewRules.markShort", function()
+		local function buy(id: string, price: number): BuildViewRules.Row
+			return {
+				kind = "tool",
+				id = id,
+				name = id,
+				say = `{price} coins`,
+				state = "buy",
+				action = "Buy",
+				icon = "Tools",
+				price = price,
+			}
+		end
+
+		it("greys a buy row the coins do not cover, and only that one", function()
+			local rows = BuildViewRules.markShort({ buy("cheap", 50), buy("dear", 500) }, 120)
+			expect(rows[1].short).to.equal(nil)
+			expect(rows[2].short).to.equal(true)
+		end)
+
+		it("clears it once the coins reach the price, which changes the shape", function()
+			local before = BuildViewRules.markShort({ buy("dear", 500) }, 120)
+			local after = BuildViewRules.markShort({ buy("dear", 500) }, 500)
+			expect(after[1].short).to.equal(nil)
+			expect(BuildViewRules.sameShape(before, after)).to.equal(false)
+		end)
+	end)
 end

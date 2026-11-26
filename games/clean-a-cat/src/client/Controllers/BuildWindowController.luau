@@ -16,6 +16,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Passes = require(Shared:WaitForChild("Passes"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
+local Wallet = require(Shared:WaitForChild("Wallet"))
 
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
 
@@ -36,12 +37,20 @@ local function draw()
 		then 2
 		else 1
 	local bowTier = player:GetAttribute(BowRules.ATTRIBUTE)
+	local rawCoins = player:GetAttribute(Wallet.ATTRIBUTE)
+	local coins = if type(rawCoins) == "number" then rawCoins else 0
 	UI.setBuild(
-		BuildViewRules.builds(builds, built, os.time() + clockOffset, LiveFlags.isOn, builders),
-		BuildViewRules.upgrades(
-			LiveFlags.isOn,
-			owns,
-			if type(bowTier) == "string" then bowTier else nil
+		BuildViewRules.markShort(
+			BuildViewRules.builds(builds, built, os.time() + clockOffset, LiveFlags.isOn, builders),
+			coins
+		),
+		BuildViewRules.markShort(
+			BuildViewRules.upgrades(
+				LiveFlags.isOn,
+				owns,
+				if type(bowTier) == "string" then bowTier else nil
+			),
+			coins
 		)
 	)
 end
@@ -104,7 +113,9 @@ function BuildWindowController.Start()
 			tick()
 		end
 	end)
-	local names = { BowRules.ATTRIBUTE, Passes.ATTRIBUTE_PREFIX .. "SecondBuilder" }
+	-- coins too, so a row turns green the moment the player can afford it (#825)
+	local names =
+		{ BowRules.ATTRIBUTE, Passes.ATTRIBUTE_PREFIX .. "SecondBuilder", Wallet.ATTRIBUTE }
 	for _, id in ToolRules.IDS do
 		table.insert(names, ToolRules.ATTRIBUTE_PREFIX .. id)
 	end
