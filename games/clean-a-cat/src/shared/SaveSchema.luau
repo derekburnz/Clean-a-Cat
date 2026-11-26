@@ -115,6 +115,8 @@ export type Save = {
 	jarAt: number, -- os.time() the jar was last filled or emptied
 	bench: { BenchCat }, -- the cats waiting, front first, as last saved
 	reopens: number, -- Grand Reopenings done (none at launch; see reopen)
+	finishCredits: { [string]: number }, -- Finish now bought with nothing left to finish, by tier "1" to "5": the next
+	-- one it covers is free (FinishRules, issue 515)
 }
 
 local SaveSchema = {}
@@ -166,6 +168,7 @@ function SaveSchema.template(now: number): Save
 		jarAt = 0,
 		bench = {},
 		reopens = 0,
+		finishCredits = {},
 	}
 end
 

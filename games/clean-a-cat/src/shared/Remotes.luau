@@ -45,6 +45,9 @@ Remotes.ClientToServer = {
 	"RequestFusePets", -- (a: int, b: int, c: int)  1 a second; three different pets, same kind and star, below star 3
 	-- Builds (BuildService, behind builds).
 	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board, slot free, order, coins
+	"RequestFinish", -- (slot: one of BuildRules.SLOTS)  1 a second; switches builds and finishNow on, save loaded, near the
+	-- board, a build running there with FinishRules.HIDE_UNDER seconds or more left: a saved credit that covers its
+	-- tier finishes it at once, else Roblox's purchase prompt opens for that tier (PurchaseService grants it)
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side
@@ -69,7 +72,8 @@ Remotes.ServerToClient = {
 	"Residents", -- (list: { { cat: string, bow: string? } })  the display window's cats, in order (switch strays)
 	"WindowTips", -- (coins: number, total: number)  window cats tipped; total is the save's coins (switch strays)
 	"CatIndex", -- (index: { [cat]: { washed: boolean, resident: boolean } })  the stamped cats (switch catIndex)
-	"Builds", -- (builds: { [slot]: { item, endsAt } }, built: { string }, serverNow: number)  for the board and countdowns
+	"Builds", -- (builds: { [slot]: { item, endsAt } }, built: { string }, serverNow: number, credits: { [tier]: count })  for the
+	-- board and countdowns; credits are the Finish now credits by tier "1" to "5" (empty while finishNow is off)
 	"BuildFinished", -- (id: string)  a build just finished, or finished while the player was away: celebrate (switch builds)
 	"PhotoPaid", -- (catId: number, coins: number, total: number, recap: RecapRules.Recap?)  the photo paid; total is the save's coins; recap for a customer, or the kitten's score card (mascot), while recapCard is on
 	"CrateOpened", -- (kind: string, pet: { id, kind, star })  the crate the player tapped and the pet in it (switch pets)
