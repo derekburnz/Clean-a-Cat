@@ -261,5 +261,19 @@ return function()
 				expect(#CatRules.displayName(name) <= 11).to.equal(true)
 			end
 		end)
+
+		describe("CatRules.SPECIAL_CATS", function()
+			it("holds the ten special visitors' cats once each, none on the roster", function()
+				expect(#CatRules.SPECIAL_CATS).to.equal(10)
+				local seen: { [string]: boolean } = {}
+				for _, name in CatRules.SPECIAL_CATS do
+					expect(seen[name]).to.equal(nil)
+					seen[name] = true
+					expect(CatRules.isSpecial(name)).to.equal(true)
+					expect(CatRules.rarityOf(name)).to.equal(CatRules.SPECIAL)
+				end
+				expect(CatRules.displayName("WhiteTiger")).to.equal("White Tiger")
+			end)
+		end)
 	end)
 end

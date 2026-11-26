@@ -3,7 +3,7 @@
 -- SpaService stamps Washed when a cat comes back clean and WindowService stamps Resident when a stray moves in.
 -- The client only shows what the server sends (CatIndex). Behind the LiveFlags switch `catIndex`.
 -- A special visitor's cat (CatRules.SPECIAL_CATS) is stamped on its own page: its notice counts the special cats
--- ("New special cat: Sherbet (2 of 6)") and it never counts toward the main set or its bonus.
+-- ("New special cat: Sherbet (2 of 10)") and it never counts toward the main set or its bonus.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
