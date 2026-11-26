@@ -221,7 +221,8 @@ function BuildRules.shown(id: string, isOn: IsOn): boolean
 	return true
 end
 
--- Coins owed back for builds a save paid for that a switch has since taken out of the game (hiddenWhen: the Brush
+-- Coins owed back for builds a save paid for that switches have since taken out of the game (every hiddenWhen switch
+-- on: the Brush
 -- Table, Dryer, Bubble Bath and Pawdicure once tubBuilds and dirtLevels are both on; Review-QA on PR 581): each one
 -- built and not refunded before pays back its board price, once. Gives the coins and the ids to mark refunded. The
 -- station stays in `stations`, so turning a switch back off gives it back as it was. Pure.
@@ -234,12 +235,19 @@ function BuildRules.oldRefund(
 	local ids: { string } = {}
 	for _, id in BuildRules.IDS do
 		local item = BuildRules.ITEMS[id]
-		if
-			item.hiddenWhen ~= nil
-			and stations[id] == true
-			and refunded[id] ~= true
-			and not BuildRules.shown(id, isOn)
-		then
+		local hidden = item.hiddenWhen
+		if hidden == nil or stations[id] ~= true or refunded[id] == true then
+			continue
+		end
+		-- only taken out by its hiddenWhen switches, all on: an item whose own switch is off is not refunded
+		local out = true
+		for _, flag in hidden do
+			if not isOn(flag) then
+				out = false
+				break
+			end
+		end
+		if out then
 			coins += item.price
 			table.insert(ids, id)
 		end

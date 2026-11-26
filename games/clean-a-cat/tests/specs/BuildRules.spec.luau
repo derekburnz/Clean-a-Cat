@@ -315,6 +315,20 @@ return function()
 			end
 		)
 
+		it(
+			"never pays for an item that is out only because its own switch or builds is off",
+			function()
+				local stations = { BrushTable = true, BubbleBath = true, Pawdicure = true }
+				local noTubs = switches({ builds = true, dirtLevels = true })
+				local coins, ids = BuildRules.oldRefund(stations, {}, noTubs)
+				expect(coins).to.equal(0)
+				expect(#ids).to.equal(0)
+				local nothingOn = switches({})
+				local none = BuildRules.oldRefund(stations, {}, nothingOn)
+				expect(none).to.equal(0)
+			end
+		)
+
 		it("covers the Bubble Bath and Pawdicure at their board prices", function()
 			local coins = BuildRules.oldRefund({ BubbleBath = true, Pawdicure = true }, {}, both)
 			expect(coins).to.equal(
