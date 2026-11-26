@@ -24,6 +24,7 @@ local Tier = require(script:WaitForChild("Tier"))
 type Emitter = PresetData.Emitter
 
 local FAST_DRAG = 30 -- studs per second, matches Audio's CueRules.FAST_DRAG
+local FOAM_MIN = 3 -- particles a second while the sponge moves at all
 
 local Effects = {}
 
@@ -145,7 +146,12 @@ function Effects.stream(name: string, position: Vector3, dragSpeed: number)
 		return
 	end
 	entry.attachment.WorldPosition = position
-	setRate(entry.emitter, Tier.foamRate(preset.maxRate, dragSpeed, FAST_DRAG, lessSparkle()))
+	-- a slow rub still shows a little foam (Sync's pass on dc51ecb saw none): never under FOAM_MIN while moving
+	local rate = Tier.foamRate(preset.maxRate, dragSpeed, FAST_DRAG, lessSparkle())
+	if dragSpeed > 0 and preset.maxRate > 0 then
+		rate = math.max(rate, math.min(FOAM_MIN, preset.maxRate))
+	end
+	setRate(entry.emitter, rate)
 end
 
 function Effects.streamFrom(name: string, cframe: CFrame, strength: number)

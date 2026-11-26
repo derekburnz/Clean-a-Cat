@@ -83,4 +83,18 @@ return function()
 			end
 		)
 	end)
+	describe("Crate.wiggleAt", function()
+		it("turns the pet side to side a little and ends straight", function()
+			expect(Crate.wiggleAt(0)).to.equal(0)
+			expect(Crate.wiggleAt(Crate.WIGGLE_SECONDS)).to.equal(0)
+			local left, right = 0, 0
+			for i = 1, 99 do
+				local a = Crate.wiggleAt(i * Crate.WIGGLE_SECONDS / 100)
+				expect(math.abs(a) <= Crate.WIGGLE + 1e-9).to.equal(true)
+				left = math.min(left, a)
+				right = math.max(right, a)
+			end
+			expect(left < 0 and right > 0).to.equal(true)
+		end)
+	end)
 end
