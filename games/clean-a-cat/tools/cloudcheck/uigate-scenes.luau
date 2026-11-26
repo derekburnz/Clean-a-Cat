@@ -329,6 +329,20 @@ local SCENES = {
 			UI.showCrate("normal", 0, CrateViewRules.rows("normal", { Cozy = true }))
 		end,
 	},
+	-- With a crate held: Open crate and the Robux rows together, the tallest the window gets (bug hunt B8).
+	{
+		"CrateShopHeld",
+		function()
+			flag("crateWindow", true)
+			flag("crateShop", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			local prices: { [string]: number } = { CrateOne = 99, CrateFive = 399 }
+			UI.setCrateShop(CrateViewRules.shopRows("normal", true, function(key: string): unknown
+				return prices[key]
+			end))
+			UI.showCrate("normal", 1, CrateViewRules.rows("normal", { Cozy = true }))
+		end,
+	},
 	{
 		"CrateGood",
 		function()
