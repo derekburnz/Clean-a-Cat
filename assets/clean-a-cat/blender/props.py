@@ -726,15 +726,20 @@ def head_top(name, spec, body, d):
     return top
 
 
-BOW_TIP = 60.0      # degrees a bow leans out on a cat with a head piece
+BOW_TIP = 75.0      # degrees a bow leans out on a cat with a head piece (60 until #782)
+BOW_OUT = 0.015     # how far past the head's side its knot sits, and
+BOW_DOWN = 0.12     # how far under the head's top: it was 0.03 inside the side and 0.03 under the top, where a wide
+                    # bow's upper loop reached into Rosette's crown and Stardust's stalks (Sync-Agent in Studio, #773)
 
 
 def bow_corner(spec, body):
-    """Where a bow sits on a cat whose crown is taken by a head piece (#486): on the front corner of the head at the
-    cat's left, tipped BOW_TIP degrees out over the edge, beside the ear. Relative to the neck and unscaled, with the
-    turn the Attachment carries. Every special cat's head piece keeps this corner clear."""
+    """Where a bow sits on a cat whose crown is taken by a head piece (#486, #782): on the side of the head at the
+    cat's left, just under the top front corner, tipped BOW_TIP degrees out so it hangs down the side like a hair
+    clip and its upper loop stands beside the head piece. Relative to the neck and unscaled, with the turn the
+    Attachment carries. Every special cat's head piece keeps this corner clear."""
     h = cats.dims(spec, body)["head"]
-    return (round(h["s"][0] / 2 - 0.03, 4), round(h["fy"] + 0.13, 4), round(h["top"] - 0.03, 4)), _ry(BOW_TIP)
+    return ((round(h["s"][0] / 2 + BOW_OUT, 4), round(h["fy"] + 0.13, 4), round(h["top"] - BOW_DOWN, 4)),
+            _ry(BOW_TIP))
 
 
 def slot(name):
