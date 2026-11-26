@@ -221,6 +221,21 @@ local SCENES = {
 			UI.open("Queue")
 		end,
 	},
+	-- A line of six (benchGrow with tubs built): one row on a wide screen, scrolling sideways on a phone.
+	{
+		"QueueSix",
+		function()
+			flag("queueWindow", true)
+			local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+			local cards = QueueViewRules.cards(
+				{ "Muffin", "Cotton", "Patches", "Inky", "Marble", "Toffee" },
+				indexEntries(),
+				{}
+			)
+			UI.setQueue(cards, QueueViewRules.headline(cards, 1), { [2] = true, [3] = true, [4] = true })
+			UI.open("Queue")
+		end,
+	},
 	{
 		"QueueVip",
 		function()
