@@ -133,11 +133,20 @@ local function forget()
 	end
 end
 
-local function fade(root: Instance, seen: number)
+-- The parts and decals a fade writes, collected once when the copy is made (issue 821: no per frame model walks).
+local function fadeParts(root: Instance): { Instance }
+	local list: { Instance } = {}
 	for _, d in root:GetDescendants() do
 		if d:IsA("BasePart") or d:IsA("Decal") then
-			(d :: any).LocalTransparencyModifier = seen
+			table.insert(list, d)
 		end
+	end
+	return list
+end
+
+local function fade(list: { Instance }, seen: number)
+	for _, d in list do
+		(d :: any).LocalTransparencyModifier = seen
 	end
 end
 
@@ -168,6 +177,9 @@ type Entry = {
 	doorAngle: number,
 	landed: boolean,
 	handedOver: boolean,
+	crateParts: { Instance }?, -- the copy's parts for its fade, collected once (issue 821)
+	crateSeen: number?, -- the fade last written, so an unchanged frame writes nothing
+	waitHidden: boolean?, -- the waiting cat is hidden once before CounterSetAt, not every frame
 }
 
 local entries: { [Model]: Entry } = {}
@@ -288,7 +300,10 @@ local function begin(entry: Entry, carrier: Model)
 			d:Destroy()
 		end
 	end
-	fade(copy, 0)
+	local parts = fadeParts(copy)
+	fade(parts, 0)
+	entry.crateParts = parts
+	entry.crateSeen = 0
 	local seatFound = copy:FindFirstChild("CatSeat", true)
 	local seat = if seatFound and seatFound:IsA("Attachment") then seatFound :: Attachment else nil
 	entry.crateFrom = carrier:GetPivot()
@@ -329,7 +344,10 @@ local function step()
 			continue
 		end
 		if now < setAt then
-			hide(cat)
+			if not entry.waitHidden then
+				entry.waitHidden = true
+				hide(cat)
+			end
 			continue
 		end
 		if now >= readyAt then
@@ -405,8 +423,10 @@ local function step()
 				show(cat)
 			end
 		end
-		if fadeShare > 0 then
-			fade(crate, fadeShare)
+		local parts = entry.crateParts
+		if fadeShare > 0 and parts and fadeShare ~= entry.crateSeen then
+			entry.crateSeen = fadeShare
+			fade(parts, fadeShare)
 		end
 	end
 	if next(entries) == nil and stepping then

@@ -78,11 +78,20 @@ local function forget()
 	end
 end
 
-local function fade(root: Instance, seen: number)
+-- The copy's parts and decals, collected once when it is made (issue 821: no per frame model walks).
+local function fadeParts(root: Instance): { Instance }
+	local list: { Instance } = {}
 	for _, d in root:GetDescendants() do
 		if d:IsA("BasePart") or d:IsA("Decal") then
-			(d :: any).LocalTransparencyModifier = seen
+			table.insert(list, d)
 		end
+	end
+	return list
+end
+
+local function fade(list: { Instance }, seen: number)
+	for _, d in list do
+		(d :: any).LocalTransparencyModifier = seen
 	end
 end
 
@@ -133,7 +142,9 @@ function CatWalkOut.play(cat: Model, to: CFrame)
 			d:Destroy()
 		end
 	end
-	fade(copy, 0)
+	local parts = fadeParts(copy)
+	local lastSeen = 0
+	fade(parts, 0)
 	copy.Name = "CleanACat_Fx_CatGoingHome"
 	copy.Parent = folder()
 	hide(cat)
@@ -165,7 +176,10 @@ function CatWalkOut.play(cat: Model, to: CFrame)
 		local t = os.clock() - began
 		if still then
 			local u = math.clamp(t / CatWalkOut.FADE, 0, 1)
-			fade(copy, u)
+			if u ~= lastSeen then
+				lastSeen = u
+				fade(parts, u)
+			end
 			if u >= 1 then
 				finish()
 			end
@@ -189,7 +203,10 @@ function CatWalkOut.play(cat: Model, to: CFrame)
 			cf = CFrame.new(landAt:Lerp(endAt, walk) + Vector3.new(0, bob, 0)) * facing
 		end
 		copy:PivotTo(cf)
-		fade(copy, seen)
+		if seen ~= lastSeen then -- the hop and most of the walk stay at 0: nothing to write
+			lastSeen = seen
+			fade(parts, seen)
+		end
 		if walk >= 1 and seen >= 1 then
 			finish()
 		end
