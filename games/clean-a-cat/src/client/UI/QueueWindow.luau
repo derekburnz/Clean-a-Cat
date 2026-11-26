@@ -16,13 +16,15 @@
 -- scroll sideways with a bar under them, so a card never shrinks below its phone size.
 -- With dirtLevels on, a dirt row (four mud drops and the step count) takes the needs' place; with heartBar on, each card
 -- has its heart bar (no numbers, a tick at the quick bonus's 10%), a "Quick bonus" tag while it lasts, and the pay
--- reads as the base ("40+"). Left out until the design sets them: helpers on a customer.
+-- reads as the base ("40+"). A special visitor's cat glows lilac with a gold rim and says only the player can wash it
+-- (#587). Left out until the design sets them: helpers on a customer.
 -- Only the X closes the window, and a pick leaves it open so the player sees the picked cat move to the front.
 -- UI never fires remotes: QueueWindowController sends the pick and the server decides.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CatRules = require(Shared:WaitForChild("CatRules"))
 local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
@@ -49,6 +51,9 @@ local HEART_H = 24 -- design px: the heart bar's row
 local BAR_PINK, BAR_GOLD, BAR_PEACH =
 	Color3.fromHex("FF86B4"), Color3.fromHex("FFD84D"), Color3.fromHex("FFB38A")
 local QUICK_TOP, QUICK_BOTTOM = Color3.fromHex("FFF4B8"), Color3.fromHex("FFD84D")
+local SPECIAL_TOP = Color3.fromHex("F3E6FF")
+local SPECIAL_INK = Color3.fromHex("7A3FC0")
+local ONLY_H = 22 -- design px: the special card's "only you" line
 local HEART_TICK = 0.5 -- seconds between heart bar redraws while the window is open
 local SIDE_BY_SIDE_NEEDS = 3 -- most needs that fit beside the pay on a short card
 local STACKED_SHIFT = 4 -- design px below the middle for the taller short window (Window's default is 33)
@@ -379,6 +384,7 @@ local function drawCard(
 		+ s.act
 		+ 2 * s.stackGap
 		+ (if heart then HEART_H + s.stackGap else 0)
+		+ (if card.special then ONLY_H + s.stackGap else 0)
 
 	local box = frame(`Customer{card.place}`, row)
 	box.LayoutOrder = card.place
@@ -386,12 +392,17 @@ local function drawCard(
 	box.BackgroundTransparency = 0
 	box.BackgroundColor3 = Kit.WHITE
 	Kit.corner(box, UDim.new(0, 18))
-	local edge = Kit.stroke(box, if card.vip then 4 else 3)
-	edge.Color = if card.vip then Kit.RARITY[card.rarity] or Kit.LINE else Kit.LINE
-	if card.vip then
+	local glows = card.vip or card.special
+	local edge = Kit.stroke(box, if glows then 4 else 3)
+	edge.Color = if glows then Kit.RARITY[card.rarity] or Kit.LINE else Kit.LINE
+	-- a special visitor's cat: lilac with the Special gold rim (Kit.RARITY_RIM), so it never reads as an Epic VIP
+	if card.special then
+		Kit.rim(box, CatRules.SPECIAL, edge.Color)
+	end
+	if glows then
 		local glow = Instance.new("UIGradient")
 		glow.Rotation = 90
-		glow.Color = ColorSequence.new(VIP_TOP, Kit.WHITE)
+		glow.Color = ColorSequence.new(if card.special then SPECIAL_TOP else VIP_TOP, Kit.WHITE)
 		glow.Parent = box
 	end
 	local pad = Instance.new("UIPadding")
@@ -451,8 +462,19 @@ local function drawCard(
 	Kit.shrinkToFit(name, s.nameText)
 
 	-- What the cat needs and what it pays: stacked on a tall screen, one row on a short one.
+	if card.special then
+		-- one plain line: workers never take a special visitor's cat (SpecialRules)
+		local only = words("Only", box, 19)
+		only.LayoutOrder = 2
+		only.FontFace = Kit.BODY_FACE
+		only.TextColor3 = SPECIAL_INK
+		only.Size = UDim2.new(1, 0, 0, ONLY_H)
+		only.Text = "Only you can wash"
+		Kit.shrinkToFit(only, 19)
+	end
+
 	local info = frame("Info", box)
-	info.LayoutOrder = 2
+	info.LayoutOrder = 3
 	info.Size = UDim2.new(1, 0, 0, infoH)
 	local needs = if card.dirt then drawDirt(card, info, s) else drawNeeds(card, info, s, stacked)
 	if card.vip and short then
@@ -505,7 +527,7 @@ local function drawCard(
 	amount.Text = if heart then `{card.pays}+` else tostring(card.pays)
 
 	if heart then
-		local entry = drawHeart(heart, box, 3)
+		local entry = drawHeart(heart, box, 4)
 		entry.quick = quickTag(if short then info else pic, short, s.payH)
 		showBar(entry)
 		table.insert(bars, entry)
@@ -532,7 +554,7 @@ local function drawCard(
 		say.Text = if card.place == 1 then "Up next" else "Waiting"
 		act = say
 	end
-	act.LayoutOrder = 4
+	act.LayoutOrder = 5
 	act.Size = UDim2.new(1, 0, 0, s.act)
 	return cardH
 end
@@ -562,9 +584,11 @@ local function redraw()
 	for _, card in cards do
 		most = math.max(most, #card.needs)
 	end
-	local dirty = false
+	local dirty, tall = false, false
 	for _, card in cards do
 		dirty = dirty or card.dirt ~= nil
+		-- a heart bar or a special card's line makes the cards taller: the window sits higher to keep its bottom on
+		tall = tall or card.heart ~= nil or card.special
 	end
 	-- the dirt row is too wide to sit beside the pay on a short card
 	local stacked = not short or most > SIDE_BY_SIDE_NEEDS or dirty
@@ -575,7 +599,7 @@ local function redraw()
 		s.band,
 		s.title,
 		s.badge,
-		if short and stacked then STACKED_SHIFT else nil
+		if (short and stacked) or tall then STACKED_SHIFT else nil
 	)
 	p.pad.PaddingLeft, p.pad.PaddingRight = UDim.new(0, s.pad), UDim.new(0, s.pad)
 	p.pad.PaddingTop, p.pad.PaddingBottom = UDim.new(0, s.pad - 8), UDim.new(0, s.pad - 2)
