@@ -17,6 +17,9 @@ VipRules.SCALE_ATTRIBUTE = "ResidentScale" -- on the area's root: the residents'
 VipRules.DEFAULT_SEATS = 8
 VipRules.DEFAULT_SCALE = 1.2
 VipRules.RESIDENT_ATTRIBUTE = "VipResident" -- on each resident cat model: its seat number
+-- A resident's model, first found wins: Model-Agent's light sitting twin (fewer parts, so a full room stays cheap on
+-- phones; issue 688), then the full sitting model, then the plain one. Visiting cats and the wash keep the full ones.
+VipRules.RESIDENT_SUFFIXES = { "_Sit_Lite", "_Sit", "" }
 
 export type IndexEntry = { washed: boolean }
 
@@ -33,6 +36,17 @@ function VipRules.residents(index: { [string]: IndexEntry }, seats: number): { s
 		end
 	end
 	return out
+end
+
+-- The asset name to seat `kind` with: the first of RESIDENT_SUFFIXES that `has` finds, or nil when none is there.
+function VipRules.residentModel(kind: string, has: (string) -> boolean): string?
+	for _, suffix in VipRules.RESIDENT_SUFFIXES do
+		local name = `CleanACat_Cat_{kind}{suffix}`
+		if has(name) then
+			return name
+		end
+	end
+	return nil
 end
 
 -- The area's seat count from its attribute, or the default when it is missing or not a sane whole number.
