@@ -18039,7 +18039,7 @@
    "CleanACat_NPC_Customer_Bea_LegL",
    "CleanACat_NPC_Customer_Bea_LegR"
   ],
-  "triangles": 1124,
+  "triangles": 1172,
   "budget": 1600,
   "parts": 47,
   "size_studs": {
@@ -18064,10 +18064,10 @@
     "back to back": 3
    },
    "checks": {
-    "budget": "1124/1600 tris",
+    "budget": "1172/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "642 faces on swatch centers",
+    "uv": "682 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.35 y=0.14",
@@ -18089,7 +18089,7 @@
    "CleanACat_NPC_Customer_Juno_LegL",
    "CleanACat_NPC_Customer_Juno_LegR"
   ],
-  "triangles": 1204,
+  "triangles": 1252,
   "budget": 1600,
   "parts": 39,
   "size_studs": {
@@ -18115,10 +18115,10 @@
     "back to back": 3
    },
    "checks": {
-    "budget": "1204/1600 tris",
+    "budget": "1252/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "698 faces on swatch centers",
+    "uv": "738 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.24 y=-0.02",
@@ -18140,7 +18140,7 @@
    "CleanACat_NPC_Customer_Kit_LegL",
    "CleanACat_NPC_Customer_Kit_LegR"
   ],
-  "triangles": 948,
+  "triangles": 996,
   "budget": 1600,
   "parts": 49,
   "size_studs": {
@@ -18165,10 +18165,10 @@
     "back to back": 3
    },
    "checks": {
-    "budget": "948/1600 tris",
+    "budget": "996/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "542 faces on swatch centers",
+    "uv": "582 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.24 y=0.05",
@@ -18190,7 +18190,7 @@
    "CleanACat_NPC_Customer_Mo_LegL",
    "CleanACat_NPC_Customer_Mo_LegR"
   ],
-  "triangles": 936,
+  "triangles": 984,
   "budget": 1600,
   "parts": 38,
   "size_studs": {
@@ -18215,10 +18215,10 @@
     "back to back": 2
    },
    "checks": {
-    "budget": "936/1600 tris",
+    "budget": "984/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "532 faces on swatch centers",
+    "uv": "572 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.23 y=0.00",
@@ -18240,7 +18240,7 @@
    "CleanACat_NPC_Customer_Pearl_LegL",
    "CleanACat_NPC_Customer_Pearl_LegR"
   ],
-  "triangles": 1324,
+  "triangles": 1372,
   "budget": 1600,
   "parts": 55,
   "size_studs": {
@@ -18265,10 +18265,10 @@
     "back to back": 3
    },
    "checks": {
-    "budget": "1324/1600 tris",
+    "budget": "1372/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "770 faces on swatch centers",
+    "uv": "810 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.33 y=0.00",
@@ -18290,7 +18290,7 @@
    "CleanACat_NPC_Customer_Pip_LegL",
    "CleanACat_NPC_Customer_Pip_LegR"
   ],
-  "triangles": 1092,
+  "triangles": 1140,
   "budget": 1600,
   "parts": 43,
   "size_studs": {
@@ -18315,10 +18315,10 @@
     "back to back": 4
    },
    "checks": {
-    "budget": "1092/1600 tris",
+    "budget": "1140/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "630 faces on swatch centers",
+    "uv": "670 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.28 y=0.02",
@@ -18340,7 +18340,7 @@
    "CleanACat_NPC_Customer_Rae_LegL",
    "CleanACat_NPC_Customer_Rae_LegR"
   ],
-  "triangles": 1024,
+  "triangles": 1072,
   "budget": 1600,
   "parts": 44,
   "size_studs": {
@@ -18365,10 +18365,10 @@
     "back to back": 2
    },
    "checks": {
-    "budget": "1024/1600 tris",
+    "budget": "1072/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "580 faces on swatch centers",
+    "uv": "620 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.24 y=0.14",
@@ -18390,7 +18390,7 @@
    "CleanACat_NPC_Customer_Rex_LegL",
    "CleanACat_NPC_Customer_Rex_LegR"
   ],
-  "triangles": 1218,
+  "triangles": 1266,
   "budget": 1600,
   "parts": 74,
   "size_studs": {
@@ -18416,10 +18416,10 @@
     "back to back": 3
    },
    "checks": {
-    "budget": "1218/1600 tris",
+    "budget": "1266/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "705 faces on swatch centers",
+    "uv": "745 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.24 y=0.17",
@@ -18441,7 +18441,7 @@
    "CleanACat_NPC_Customer_Sunny_LegL",
    "CleanACat_NPC_Customer_Sunny_LegR"
   ],
-  "triangles": 1076,
+  "triangles": 1124,
   "budget": 1600,
   "parts": 41,
   "size_studs": {
@@ -18466,10 +18466,10 @@
     "back to back": 3
    },
    "checks": {
-    "budget": "1076/1600 tris",
+    "budget": "1124/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "616 faces on swatch centers",
+    "uv": "656 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.33 y=0.00",
@@ -18491,7 +18491,7 @@
    "CleanACat_NPC_Customer_Theo_LegL",
    "CleanACat_NPC_Customer_Theo_LegR"
   ],
-  "triangles": 1264,
+  "triangles": 1312,
   "budget": 1600,
   "parts": 45,
   "size_studs": {
@@ -18517,10 +18517,10 @@
     "back to back": 2
    },
    "checks": {
-    "budget": "1264/1600 tris",
+    "budget": "1312/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "736 faces on swatch centers",
+    "uv": "776 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.24 y=-0.02",
@@ -18542,7 +18542,7 @@
    "CleanACat_NPC_Customer_Vivi_LegL",
    "CleanACat_NPC_Customer_Vivi_LegR"
   ],
-  "triangles": 1332,
+  "triangles": 1380,
   "budget": 1600,
   "parts": 60,
   "size_studs": {
@@ -18567,10 +18567,10 @@
     "back to back": 2
    },
    "checks": {
-    "budget": "1332/1600 tris",
+    "budget": "1380/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "792 faces on swatch centers",
+    "uv": "832 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=-0.24 y=0.03",
@@ -18796,7 +18796,7 @@
    "CleanACat_NPC_Staff_Jo_LegL",
    "CleanACat_NPC_Staff_Jo_LegR"
   ],
-  "triangles": 1532,
+  "triangles": 1580,
   "budget": 1600,
   "parts": 69,
   "size_studs": {
@@ -18819,10 +18819,10 @@
     "back to back": 4
    },
    "checks": {
-    "budget": "1532/1600 tris",
+    "budget": "1580/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "870 faces on swatch centers",
+    "uv": "910 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01",
@@ -18844,7 +18844,7 @@
    "CleanACat_NPC_Staff_Lou_LegL",
    "CleanACat_NPC_Staff_Lou_LegR"
   ],
-  "triangles": 1528,
+  "triangles": 1576,
   "budget": 1600,
   "parts": 70,
   "size_studs": {
@@ -18869,10 +18869,10 @@
     "back to back": 4
    },
    "checks": {
-    "budget": "1528/1600 tris",
+    "budget": "1576/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "860 faces on swatch centers",
+    "uv": "900 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.11",
@@ -18894,7 +18894,7 @@
    "CleanACat_NPC_Staff_Sam_LegL",
    "CleanACat_NPC_Staff_Sam_LegR"
   ],
-  "triangles": 1444,
+  "triangles": 1492,
   "budget": 1600,
   "parts": 67,
   "size_studs": {
@@ -18917,10 +18917,10 @@
     "back to back": 4
    },
    "checks": {
-    "budget": "1444/1600 tris",
+    "budget": "1492/1600 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "810 faces on swatch centers",
+    "uv": "850 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.01",
