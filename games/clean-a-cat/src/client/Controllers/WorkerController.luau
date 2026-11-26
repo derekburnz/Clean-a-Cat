@@ -197,6 +197,10 @@ function WorkerController.Init(_controllers: { [string]: any }) end
 function WorkerController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.FLAG)
 		:Connect(refresh)
+	-- the hire prompt shows Jo's price (switch joPrice, issue 841)
+	ReplicatedStorage
+		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.PRICE_FLAG)
+		:Connect(refresh)
 	ReplicatedStorage
 		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.HUD_TIDY_FLAG)
 		:Connect(function()

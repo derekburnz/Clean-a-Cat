@@ -534,6 +534,10 @@ function WorkerService.Start()
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(refreshAll)
 	end
+	-- Jo's pad label shows his price (switch joPrice, issue 841)
+	ReplicatedStorage
+		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.PRICE_FLAG)
+		:Connect(refreshAll)
 	task.spawn(function()
 		while true do
 			task.wait(TICK_SECONDS)

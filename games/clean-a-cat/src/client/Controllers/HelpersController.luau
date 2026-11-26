@@ -78,7 +78,16 @@ function HelpersController.Start()
 			player:GetAttributeChangedSignal(prefix .. id):Connect(refresh)
 		end
 	end
-	for _, flag in { HelperViewRules.FLAG, WorkerRules.FLAG, StaffNameRules.FLAG, Passes.FLAG } do
+	-- WorkerRules.PRICE_FLAG: the rows show Jo's price (switch joPrice, issue 841)
+	for _, flag in
+		{
+			HelperViewRules.FLAG,
+			WorkerRules.FLAG,
+			WorkerRules.PRICE_FLAG,
+			StaffNameRules.FLAG,
+			Passes.FLAG,
+		}
+	do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(refresh)
 	end
