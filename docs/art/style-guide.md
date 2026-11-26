@@ -36,6 +36,8 @@ Each Cat Index cat has its own coat swatches (`coat_*`) so no coat repeats a Cat
 
 Blocks with small chamfers in the FBX (the Part models drop bevels). Big heads, short legs, chunky props. Nothing thinner than 0.1 studs that a player is meant to see. Rounded things (tub, cushions, bubbles) use balls and cylinders.
 
+**Cat faces (#771).** One function draws every cat's face (`cats.py`, `_head`): two tall eyes, a small nose, a small W mouth in ink, and a round cheek under each eye. The owner on 2026-11-26: "these little strips beside the cats eyes on all models need a fixing I can't tell what theyt are and they look bad". The blush was a flat bar 0.12 wide and 0.05 tall touching each eye's outer bottom corner; it is now a disc (a Cylinder part facing forward, radius 0.056 of the head's `k`) under the eye's outer half, clear of the eye, the muzzle and the head's edge (`BLUSH_X`, `BLUSH_Z`, `BLUSH_R`). The same day, on Toffee: "fix the mouth on this cat". Its dark muzzle marking, a brown block under the nose, read as a big open mouth, so a coat with the `points` pattern now keeps its dark ears, paws and tail tip and has a plain face with the same mouth as the rest. Rules kept from this: no flat bar touches an eye; no marking under the nose is dark enough or big enough to read as a mouth; a face mark is judged from the player's height, not only close up. Special cats' face paint stays where it was, beside and over the eyes. The people (customers and staff) have their own cheeks and were not part of this.
+
 ## 4. Scale
 
 A Roblox R15 avatar is about 5 studs tall. A door is 7 studs, a counter 3.
