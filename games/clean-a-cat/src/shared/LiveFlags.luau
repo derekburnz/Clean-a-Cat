@@ -41,6 +41,7 @@ LiveFlags.KEYS = {
 	"helperPopFx", -- the helper pay popup pops in with one soft coin sound (UI/HelperPopup, issue 801); off by default
 	"counterCardFx", -- the counter cards grow and fade in, fade out and ease their heart bar (UI/CounterCard, issue 803); off by default
 	"sudsVoice", -- one soft meow when Suds's speech bubble appears (Audio/SudsVoice, issue 827); off by default
+	"coinBump", -- the HUD coin pill bumps, counts up and gives one coinPop on a gain (Effects/CoinBump, issue 826); off by default
 	"counterSounds", -- a soft thud as a crate is set down and a meow as the cat steps out, own plot (Effects/CounterCrate, issue 828); off by default
 	"claimFx", -- a claim sound and three sparkles when a Free Reward or the gift pet is claimed (Effects/ClaimFx, issue 802); off by default
 	"catMotion", -- cat idle, blink, ear twitch, shake-off and happy wiggle (Effects/CatMotion); off by default
@@ -162,6 +163,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	uiSounds = true,
 	claimFx = true,
 	counterSounds = true,
+	coinBump = true,
 	sudsVoice = true,
 	counterCardFx = true,
 	helperPopFx = true,
