@@ -10,6 +10,7 @@ local CueRules = require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild
 local AudioController = {}
 
 local MUSIC_FLAG = "spaMusic"
+local UI_SOUNDS_FLAG = "uiSounds" -- issue 800: window and More tray open and close sounds
 
 -- The collar piece on a named Suds: any Model or part whose name ends in "_Collar" (the naming clones the clean
 -- model's collar as it is, e.g. CleanACat_Cat_Suds_Sit_Collar). A BasePart to play at, or nil (plays 2D).
@@ -220,6 +221,13 @@ function AudioController.Start()
 		:Connect(function()
 			Audio.allowMusic(LiveFlags.isOn(MUSIC_FLAG))
 		end)
+	-- required here, not at the top, to stay clear of the 200 local limit and of UI load order
+	local UiSounds =
+		require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild("UiSounds")) :: any
+	local UI = require(script.Parent.Parent:WaitForChild("UI")) :: any
+	UiSounds.start(UI, function(): boolean
+		return LiveFlags.isOn(UI_SOUNDS_FLAG)
+	end)
 	local existing = shared:FindFirstChild("Moments")
 	if existing then
 		tryBind(existing)

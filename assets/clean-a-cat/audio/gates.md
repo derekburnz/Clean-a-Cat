@@ -2,7 +2,7 @@
 
 Written by `.claude/skills/audio-pipeline/scripts/audio_gate.py` for `assets/clean-a-cat/audio`. Do not edit by hand; rerun the script. Budgets: audio-pipeline section 5. PASS means measured clean, not that it sounds right: a person still listens.
 
-47 files: 46 PASS, 1 WARN, 0 FAIL.
+51 files: 50 PASS, 1 WARN, 0 FAIL.
 
 | file | kind | s | ch | Hz | KB | LUFS | peak dBTP | lead ms | seam | verdict | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -22,6 +22,7 @@ Written by `.claude/skills/audio-pipeline/scripts/audio_gate.py` for `assets/cle
 | `sfx/CleanACat_Sfx_CarryPurr.ogg` | sfx | 2.64 | 1 | 48000 | 37 | -29.7 | -5.9 | 3 | - | PASS |  |
 | `sfx/CleanACat_Sfx_CatLeave.ogg` | sfx | 1.00 | 1 | 48000 | 13 | -15.0 | -2.9 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_ClawSnip.ogg` | sfx | 0.09 | 1 | 48000 | 4 | - | -1.0 | 0 | - | PASS |  |
+| `sfx/CleanACat_Sfx_CoinPop.ogg` | sfx | 0.16 | 1 | 48000 | 5 | - | -8.0 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_CollarJingle.ogg` | sfx | 0.90 | 1 | 48000 | 10 | -14.2 | -2.9 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_CrateDrop.ogg` | sfx | 0.80 | 1 | 48000 | 10 | -20.3 | -2.9 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_CrateOpen.ogg` | sfx | 0.90 | 1 | 48000 | 13 | -14.9 | -2.4 | 0 | - | PASS |  |
@@ -29,6 +30,7 @@ Written by `.claude/skills/audio-pipeline/scripts/audio_gate.py` for `assets/cle
 | `sfx/CleanACat_Sfx_FoamDrop.ogg` | sfx | 0.70 | 1 | 48000 | 9 | -18.8 | -2.9 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_FoamSwell.ogg` | sfx | 0.85 | 1 | 48000 | 14 | -16.8 | -2.9 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_FurShake.ogg` | sfx | 0.75 | 1 | 48000 | 12 | -21.8 | -3.1 | 0 | - | PASS |  |
+| `sfx/CleanACat_Sfx_GiftClaim.ogg` | sfx | 1.05 | 1 | 48000 | 12 | -16.1 | -3.9 | 1 | - | PASS |  |
 | `sfx/CleanACat_Sfx_HeartLow.ogg` | sfx | 0.60 | 1 | 48000 | 6 | -13.7 | -3.0 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_Meow_1.ogg` | sfx | 0.32 | 1 | 48000 | 7 | - | -2.8 | 0 | - | PASS |  |
 | `sfx/CleanACat_Sfx_Meow_2.ogg` | sfx | 0.30 | 1 | 48000 | 7 | - | -3.0 | 0 | - | PASS |  |
@@ -52,4 +54,6 @@ Written by `.claude/skills/audio-pipeline/scripts/audio_gate.py` for `assets/cle
 | `ui/CleanACat_Ui_Camera.ogg` | ui | 0.16 | 1 | 48000 | 5 | - | -3.0 | 0 | - | PASS |  |
 | `ui/CleanACat_Ui_CheckIn.ogg` | ui | 0.80 | 1 | 48000 | 9 | -15.6 | -2.7 | 0 | - | PASS |  |
 | `ui/CleanACat_Ui_Click.ogg` | ui | 0.05 | 1 | 48000 | 4 | - | -3.0 | 0 | - | PASS |  |
+| `ui/CleanACat_Ui_Close.ogg` | ui | 0.16 | 1 | 48000 | 5 | - | -8.8 | 0 | - | PASS |  |
+| `ui/CleanACat_Ui_Open.ogg` | ui | 0.16 | 1 | 48000 | 6 | - | -7.8 | 0 | - | PASS |  |
 | `ui/CleanACat_Ui_QuestDone.ogg` | ui | 0.70 | 1 | 48000 | 10 | -14.4 | -2.7 | 0 | - | PASS |  |

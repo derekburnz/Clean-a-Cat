@@ -37,6 +37,7 @@ LiveFlags.KEYS = {
 	"revealEffects", -- sparkles and water droplets when a cat comes clean (Controllers/EffectsController); off by default
 	"fluffEffects", -- fur puffs, the fluffed glow and bow hearts (Controllers/EffectsController); off by default
 	"spaMusic", -- the two spa songs on the spa floor (Audio, AudioController, issue 529); off by default
+	"uiSounds", -- soft open and close sounds for windows and the More tray (Audio/UiSounds, issue 800); off by default
 	"catMotion", -- cat idle, blink, ear twitch, shake-off and happy wiggle (Effects/CatMotion); off by default
 	"dryEffects", -- warm air wisps from the dryer nozzle (Controllers/EffectsController); off by default
 	"toolsBoard", -- the Tools board and Bubble Soap (ToolService, Controllers/ToolsBoardController); off by default
@@ -150,6 +151,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	revealEffects = true,
 	fluffEffects = true,
 	spaMusic = true,
+	uiSounds = true,
 	catMotion = true,
 	dryEffects = true,
 	toolsBoard = true,
