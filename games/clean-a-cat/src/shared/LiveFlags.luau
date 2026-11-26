@@ -117,6 +117,7 @@ LiveFlags.KEYS = {
 	"giftStand", -- the gift stand in every spa with its free pet Starcoat: lit from 7:00 of play, its card asks to like, favourite and join the group; the favourite and the group are checked and the pet is given once (the like is asked only) (GiftRules, GiftService, GiftController, issue 521); needs pets on too; off by default
 	"visiting", -- the owner's setting for letting other players into their spa (on for every save; Settings card): while it is off, a visitor inside is moved out to the pavement in front (VisitRules, VisitService, issue 520); off by default
 	"friendBonus", -- each of the player's Roblox friends in the server adds 10% to every cat they wash by hand, at most 30%, as its own recap line and on the HUD (tuning pay.friend; VisitRules, VisitService, SpaService, issue 520); off by default
+	"staffRename", -- players rename their hired staff (up to 16 letters, numbers and spaces; empty is the default): every name goes through Roblox's text filter before anyone sees it, and again on each join; a hidden or failed name shows the default (StaffNameRules, StaffNameService, issue 487); off by default
 	"benchSave", -- the waiting line is kept in the save each time it is sent, and a spa that has served before gets the same customers back on its next join, with full heart bars (never a special visitor or the tutorial line) (BenchSave, SpaService, issue 523); off by default
 	"crateShop", -- normal crates for Robux (one for 49, five for 199), the same crate and chances as an earned one, shown only to players whose PolicyService info allows paid random items, with the chances shown before any buy (CrateRules.SHOP, CrateShopService, issue 514); needs pets on too; off by default
 	"starterPack", -- the starter pack: one Robux product giving the Golden Sponge, the Second pet slot and 2x Coins, offered for 72 hours from first join (from the first join after this ships for older saves) to players who own none of the three, from the end of the tutorial; never restarts (StarterRules, StarterService, issue 519); needs passes on too; off by default
@@ -218,6 +219,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	giftStand = true,
 	visiting = true,
 	friendBonus = true,
+	staffRename = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

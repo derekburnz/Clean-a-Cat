@@ -74,6 +74,10 @@ Remotes.ClientToServer = {
 	-- Visiting (VisitService, behind visiting).
 	"RequestVisiting", -- (allowed: boolean)  1 a second; switch on, save loaded: the owner lets other players into
 	-- their spa or not (save.visiting); while not, visitors inside are moved out
+	-- Staff names (StaffNameService, behind staffRename).
+	"RequestRenameStaff", -- (workerId: one of WorkerRules.IDS, text: string of at most 100)  1 a second; switch on, save
+	-- loaded, that worker hired: the cleaned name (StaffNameRules.clean; "" is the default) is saved raw and shown only
+	-- after Roblox's text filter
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side
