@@ -34,7 +34,7 @@ StarterAd.FLAG = "hudTidy"
 local FLAGS = { "gameHud", "hudTidy", StarterRules.FLAG, "passes" }
 
 local EDGE = 22 -- design px from the root's right edge, as the coins
-local TOP = 122 -- design px from the root's top: under the coin pill and the friend tag
+local TOP = 108 -- design px from the root's top: under the coin pill and the friend tag
 local RED = Color3.fromHex("E0475B")
 local GREEN = Color3.fromHex("2E9E46")
 local RIBBON_TOP, RIBBON_BOTTOM = Color3.fromHex("FF9CC6"), Color3.fromHex("FF6FA8")

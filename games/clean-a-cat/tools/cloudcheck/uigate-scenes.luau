@@ -69,6 +69,7 @@ local function allButtons(priced: boolean)
 			"starterPack",
 			"queueWindow",
 			"friendBonus",
+			"buildWindow",
 		}
 	do
 		flag(name, true)
@@ -657,6 +658,35 @@ local SCENES = {
 			allButtons(false)
 		end,
 	},
+	-- Build and upgrades (issue 751, switch buildWindow): a tub built, one building, the rest waiting, then the
+	-- tools and the next bow; on a phone the list scrolls.
+	{
+		"Build",
+		function()
+			for _, name in
+				{ "buildWindow", "builds", "toolsBoard", "bowTiers", "tubBuilds", "dirtLevels" }
+			do
+				flag(name, true)
+			end
+			local BuildViewRules = UIShim.require("ReplicatedStorage.Shared.BuildViewRules")
+			local function isOn(name: string): boolean
+				return game:GetService("ReplicatedStorage"):GetAttribute("LiveFlag_" .. name)
+					== true
+			end
+			UI.setBuild(
+				BuildViewRules.builds(
+					{ station = { item = "ThirdTub", endsAt = 1000 + 1500 } },
+					{ SecondTub = true },
+					1000,
+					isOn
+				),
+				BuildViewRules.upgrades(isOn, function(id: string): boolean
+					return id == "BubbleSoap"
+				end, "Ribbon")
+			)
+			UI.open("Build")
+		end,
+	},
 	-- The quest book (issue 516, switch quests): one daily done, the weekly crate one of three, then a short week.
 	{
 		"Quests",
@@ -1037,6 +1067,9 @@ function Scenes.close()
 	flag("passes", false)
 	flag("starterPack", false)
 	flag("hudTidy", false)
+	for _, name in { "buildWindow", "builds", "toolsBoard", "bowTiers", "tubBuilds", "dirtLevels" } do
+		flag(name, false)
+	end
 	flag("friendBonus", false)
 	UI.setFriends(nil)
 	UI.setSideNote("Starter", nil)

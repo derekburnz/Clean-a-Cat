@@ -49,7 +49,7 @@ SideButtons.BUTTONS = {
 	{
 		window = "CatIndex",
 		tidy = "more",
-		tidyOrder = 2,
+		tidyOrder = 4,
 		flag = "catIndexWindow",
 		icon = "Index",
 		caption = "Index",
@@ -58,8 +58,8 @@ SideButtons.BUTTONS = {
 	},
 	{
 		window = "Pets",
-		tidy = "main",
-		tidyOrder = 2,
+		tidy = "more",
+		tidyOrder = 3,
 		flag = "petsWindow",
 		icon = "Pets",
 		caption = "Pets",
@@ -69,7 +69,7 @@ SideButtons.BUTTONS = {
 	{
 		-- once a helper is hired: their levels, modes and names (issue 526 item 3)
 		window = "Helpers",
-		tidy = "more",
+		tidy = "main",
 		tidyOrder = 3,
 		flag = "helpersWindow",
 		also = "workers",
@@ -80,9 +80,21 @@ SideButtons.BUTTONS = {
 		bottom = Color3.fromHex("FFC79E"),
 	},
 	{
+		-- builds and upgrades in one window (issue 751): in the tidy grid only, so the old row never grows
+		window = "Build",
+		flag = "buildWindow",
+		also = TIDY_FLAG,
+		tidy = "main",
+		tidyOrder = 2,
+		icon = "Build",
+		caption = "Build",
+		top = Color3.fromHex("D7F0FF"),
+		bottom = Color3.fromHex("A9DDFF"),
+	},
+	{
 		window = "Checkin",
 		tidy = "more",
-		tidyOrder = 1,
+		tidyOrder = 2,
 		flag = "checkinCard",
 		icon = "Gift",
 		caption = "Gifts",
@@ -91,8 +103,8 @@ SideButtons.BUTTONS = {
 	},
 	{
 		window = "Quests",
-		tidy = "main",
-		tidyOrder = 3,
+		tidy = "more",
+		tidyOrder = 1,
 		flag = "quests",
 		attribute = "QuestsOpen", -- QuestViewRules.OPEN_ATTRIBUTE: QuestService sets it at 6:00 of play
 		icon = "Quests",
@@ -113,7 +125,7 @@ SideButtons.BUTTONS = {
 	{
 		window = "Settings",
 		tidy = "more",
-		tidyOrder = 4,
+		tidyOrder = 5,
 		flag = "settingsCard",
 		icon = "Settings",
 		caption = "Settings",

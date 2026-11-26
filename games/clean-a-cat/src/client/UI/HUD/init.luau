@@ -54,6 +54,7 @@ local FRIEND_TEXT = 19 -- design px: the friend chip under the coins (issue 520)
 -- With hudTidy (issue 738, Derek: the coins looked like they hover) the coins sit on a solid cream pill.
 local TIDY_FLAG = "hudTidy"
 local PILL_PAD = Vector2.new(18, 4) -- design px inside the pill: right and left (the coin sits near the edge), top
+local PILL_LIFT = 12 -- design px the pill and the friend tag sit higher than the bare coins (Derek, 2026-11-26)
 
 -- One wash step per stage the player acts in, in order (ScrubController and SpaRules). A `later` step (#267) shows
 -- only for a cat whose wash takes it (setPlan).
@@ -237,6 +238,8 @@ local function redraw()
 
 	p.coins.Visible = on()
 	local pill = LiveFlags.isOn(TIDY_FLAG)
+	local lift = if pill then PILL_LIFT * scale else 0
+	p.coins.Position = UDim2.new(1, -EDGE, 0, 8 - lift)
 	p.coins.BackgroundTransparency = if pill then 0 else 1
 	p.coinEdge.Enabled = pill
 	p.coinPad.PaddingLeft = UDim.new(0, if pill then PILL_PAD.Y else 0)
@@ -255,7 +258,7 @@ local function redraw()
 		1,
 		-EDGE,
 		0,
-		8 + (s.coinIcon + 8 + (if pill then PILL_PAD.Y * 2 + 4 else 0)) * scale
+		8 - lift + (s.coinIcon + 8 + (if pill then PILL_PAD.Y * 2 + 4 else 0)) * scale
 	)
 
 	local shown = shownSteps()

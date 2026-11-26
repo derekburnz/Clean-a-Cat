@@ -42,6 +42,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
+local BuildViewRules = require(Shared:WaitForChild("BuildViewRules"))
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
@@ -55,6 +56,7 @@ local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 local ShopViewRules = require(Shared:WaitForChild("ShopViewRules"))
 local StarterViewRules = require(Shared:WaitForChild("StarterViewRules"))
 
+local BuildWindow = require(script:WaitForChild("BuildWindow"))
 local CatIndex = require(script:WaitForChild("CatIndex"))
 local CheckinCard = require(script:WaitForChild("CheckinCard"))
 local Comfort = require(script:WaitForChild("Comfort"))
@@ -327,6 +329,7 @@ function UI.init()
 	windows.Starter = StarterWindow.build(root) -- the Spa Starter Pack (switch starterPack with passes, issue 519)
 	windows.Gift = GiftCard.build(root) -- the gift stand's free pet (switch giftStand with pets, issue 521)
 	windows.Rename = RenameCard.build(root) -- name a hired helper, from their row in Pets (switch staffRename, #487)
+	windows.Build = BuildWindow.build(root) -- builds and upgrades from the HUD (switch buildWindow, issue 751)
 	windows.Helpers = HelpersWindow.build(root) -- the helpers' levels, modes and names (switch helpersWindow, 526)
 	HelpersWindow.onPass(function()
 		UI.open("Shop") -- Lou's pass is one of the Shop's cards
@@ -578,6 +581,16 @@ end
 -- staffRename) and whether Lou's row points to his pass in the Shop (switch passes, his price known).
 function UI.setHelpers(rows: { HelperViewRules.Row }, rename: boolean, shop: boolean)
 	HelpersWindow.set(rows, rename, shop)
+end
+
+-- The Build window's rows (BuildWindowController, BuildViewRules.builds and .upgrades).
+function UI.setBuild(builds: { BuildViewRules.Row }, upgrades: { BuildViewRules.Row })
+	BuildWindow.set(builds, upgrades)
+end
+
+-- fn(kind, id) when a row's Build or Buy is pressed in the Build window.
+function UI.onBuildPress(fn: (kind: string, id: string) -> ())
+	BuildWindow.onPress(fn)
 end
 
 -- The two lines shown around Roblox's leave screen (LeaveLinesController, LeaveLineRules); nil leaves one out.
