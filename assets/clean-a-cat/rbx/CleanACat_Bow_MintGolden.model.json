@@ -354,251 +354,6 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       0.4,
-       0.07
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.085,
-     0.4,
-     0.045
-    ],
-    "Color": [
-     0.3725,
-     0.8235,
-     0.6588
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Bow_MintGolden",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.1226,
-       0.3406,
-       0.082
-      ],
-      "orientation": [
-       [
-        0.891,
-        0.454,
-        0.0
-       ],
-       [
-        -0.454,
-        0.891,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.085,
-     0.34,
-     0.042
-    ],
-    "Color": [
-     0.3725,
-     0.8235,
-     0.6588
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Bow_MintGolden",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -0.1226,
-       0.3406,
-       0.094
-      ],
-      "orientation": [
-       [
-        0.891,
-        -0.454,
-        0.0
-       ],
-       [
-        0.454,
-        0.891,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.085,
-     0.34,
-     0.039
-    ],
-    "Color": [
-     0.3725,
-     0.8235,
-     0.6588
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Bow_MintGolden",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.1861,
-       0.2352,
-       0.106
-      ],
-      "orientation": [
-       [
-        0.5878,
-        0.809,
-        0.0
-       ],
-       [
-        -0.809,
-        0.5878,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.085,
-     0.26,
-     0.036
-    ],
-    "Color": [
-     0.3725,
-     0.8235,
-     0.6588
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Bow_MintGolden",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -0.1861,
-       0.2352,
-       0.118
-      ],
-      "orientation": [
-       [
-        0.5878,
-        -0.809,
-        0.0
-       ],
-       [
-        0.809,
-        0.5878,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.085,
-     0.26,
-     0.033
-    ],
-    "Color": [
-     0.3725,
-     0.8235,
-     0.6588
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Bow_MintGolden",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
        -0.0076,
        0.035,
        0.1869
@@ -902,6 +657,317 @@
     }
    },
    "name": "CleanACat_Bow_MintGolden_Gem_Glow"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Bow_MintGolden/2"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Bow_MintGolden_Fan",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.4,
+         0.07
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.085,
+       0.4,
+       0.045
+      ],
+      "Color": [
+       0.3725,
+       0.8235,
+       0.6588
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         -0.4,
+         -0.07
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Bow_MintGolden/2"
+     }
+    },
+    {
+     "name": "CleanACat_Bow_MintGolden_Fan",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1226,
+         0.3406,
+         0.082
+        ],
+        "orientation": [
+         [
+          0.891,
+          0.454,
+          0.0
+         ],
+         [
+          -0.454,
+          0.891,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.085,
+       0.34,
+       0.042
+      ],
+      "Color": [
+       0.3725,
+       0.8235,
+       0.6588
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Bow_MintGolden_Fan",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1226,
+         0.3406,
+         0.094
+        ],
+        "orientation": [
+         [
+          0.891,
+          -0.454,
+          0.0
+         ],
+         [
+          0.454,
+          0.891,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.085,
+       0.34,
+       0.039
+      ],
+      "Color": [
+       0.3725,
+       0.8235,
+       0.6588
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Bow_MintGolden_Fan",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.1861,
+         0.2352,
+         0.106
+        ],
+        "orientation": [
+         [
+          0.5878,
+          0.809,
+          0.0
+         ],
+         [
+          -0.809,
+          0.5878,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.085,
+       0.26,
+       0.036
+      ],
+      "Color": [
+       0.3725,
+       0.8235,
+       0.6588
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Bow_MintGolden_Fan",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.1861,
+         0.2352,
+         0.118
+        ],
+        "orientation": [
+         [
+          0.5878,
+          -0.809,
+          0.0
+         ],
+         [
+          0.809,
+          0.5878,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.085,
+       0.26,
+       0.033
+      ],
+      "Color": [
+       0.3725,
+       0.8235,
+       0.6588
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Bow_MintGolden_Fan"
   }
  ],
  "properties": {

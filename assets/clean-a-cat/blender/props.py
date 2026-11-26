@@ -673,8 +673,11 @@ def _tier_bow(b, g, sw, tier, c=(0.0, 0.0, 0.0), k=1.0, face=False):
 GOLDEN_RAYS = ((0, 0.4), (-27, 0.34), (27, 0.34), (-54, 0.26), (54, 0.26))    # degrees from upright, length
 
 
-def _golden_bow(b, g, sw, c=(0.0, 0.0, 0.0), k=1.0, face=False):
-    """Draw the Golden bow with its knot's base at `c`, scaled by `k`; `face` and `g` as in `_tier_bow`."""
+def _golden_bow(b, g, sw, c=(0.0, 0.0, 0.0), k=1.0, face=False, f=None):
+    """Draw the Golden bow with its knot's base at `c`, scaled by `k`; `face` and `g` as in `_tier_bow`. The fan is
+    drawn on `f` when given: on a cat it is its own object `_Fan`, so the game can leave it off a cat whose head
+    piece it would cross (Review-QA on PR 597)."""
+    f = f or b
     cx, cy, cz = c
     r, off, lz = 0.24 * k, 0.28 * k, cz + 0.135 * k
     for sx in (1, -1):
@@ -688,7 +691,7 @@ def _golden_bow(b, g, sw, c=(0.0, 0.0, 0.0), k=1.0, face=False):
         rot = _ry_deg(deg)
         d = rot @ Vector((0, 0, 1))
         at = Vector((cx, cy + (0.07 + 0.012 * j) * k, cz + 0.1 * k)) + d * (0.1 + ln / 2) * k
-        b.box(tuple(at), (0.085 * k, (0.045 - 0.003 * j) * k, ln * k), sw, bevel=False, rot=rot)
+        f.box(tuple(at), (0.085 * k, (0.045 - 0.003 * j) * k, ln * k), sw, bevel=False, rot=rot)
     if g is not None:                                                           # the gem, proud of the knot
         g.box((cx, cy - kn[1] / 2 - 0.012 * k, cz + kn[2] / 2), (0.085 * k, 0.04 * k, 0.085 * k), BOW_GEM[sw],
               bevel=False, rot=_ry_deg(45))
@@ -713,14 +716,16 @@ GEM_TIERS = ("Royal", "Golden")
 
 def build_tier_bow(name, mat):
     sw, tier = BOW_TIERS[name]
-    b, g = Builder(), Builder()
+    b, g, f = Builder(), Builder(), Builder()
     if tier == "Golden":
-        _golden_bow(b, g, sw)
+        _golden_bow(b, g, sw, f=f)
     else:
         _tier_bow(b, g, sw, tier)
     objs = [b.finalize(name, mat)]
     if tier in GEM_TIERS:
         objs.append(g.finalize(name + "_Gem_Glow", mat))
+    if tier == "Golden":                                 # the fan: a child Model the game may leave off (BowFit)
+        objs.append(f.finalize(name + "_Fan", mat))
     return objs
 
 

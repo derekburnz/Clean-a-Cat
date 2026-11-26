@@ -9,6 +9,7 @@
   "Rarity": "Special",
   "Cat": "Prism",
   "Special": true,
+  "HeadPiece": true,
   "PropSlot": "Head",
   "PropSlot2": "Back"
  },
