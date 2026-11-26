@@ -62,16 +62,19 @@ def _face(x, y, tx, ty):
 
 
 BALL = (-3.3, 5.2)
-TUNNEL = (-5.6, 4.2)              # its middle; it lies along Y, 2.6 long
+TUNNEL = (-5.6, 3.6)              # its middle; it lies along Y, 2.6 long
 POST = (-2.0, 8.3)                # the scratching post
 BED = (-6.9, 7.7)                 # the pet bed
 # the pets' spots in the finished garden: (name, x, y, z over GROUND, turn in degrees)
-PET_SPOTS = (("SpotPetSit1", 0.0, 10.7, 1.19, 0.0),                              # on the bench's cushion, facing the gate
-             ("SpotPetSit2", 2.5, 3.3, 0.06, _face(2.5, 3.3, POND[0], POND[1])),   # a flat stone, looking at the pond
+STONE_SIT = (1.95, 4.35)          # the flat stone by the pond: clear of the open gate leaf, its edge at the pond's bank
+# #680: every pet at pet scale must stand clear of every prop here (a pet is up to 0.73 long each way from its pivot
+# and 0.62 wide at scale 0.7), with room to move at the toys.
+PET_SPOTS = (("SpotPetSit1", 0.0, 10.4, 1.19, 0.0),                              # on the bench's cushion, facing the gate, tail clear of its back
+             ("SpotPetSit2", STONE_SIT[0], STONE_SIT[1], 0.06, _face(STONE_SIT[0], STONE_SIT[1], POND[0], POND[1])),   # the flat stone, looking at the pond
              ("SpotPetSit3", BED[0], BED[1], 0.32, _face(BED[0], BED[1], 0.0, 6.0)),      # the pet bed
              ("SpotPetSit4", -5.4, 10.4, 0.0, _face(-5.4, 10.4, 0.0, 6.0)),         # under the tree
              ("SpotPetPlay1", -2.3, 4.3, 0.0, _face(-2.3, 4.3, *BALL)),             # by the ball
-             ("SpotPetPlay2", TUNNEL[0], TUNNEL[1] + 2.3, 0.0, 0.0),               # at the tunnel's mouth, looking in
+             ("SpotPetPlay2", TUNNEL[0], TUNNEL[1] + 2.9, 0.0, 0.0),               # 1.6 studs from the tunnel's mouth, looking in
              ("SpotPetPlay3", -3.0, 7.5, 0.0, _face(-3.0, 7.5, *POST)),             # at the scratching post
              ("SpotPetPlay4", 3.4, 7.6, 0.0, _face(3.4, 7.6, POND[0], POND[1])))    # at the pond's edge
 
@@ -270,9 +273,10 @@ def build_garden_building(mat):
 
 # ---- the finished garden ---------------------------------------------------------------------------------------
 def _path(b):
-    """Stepping stones from the gate to the arbour, with one branch to the pond. Each a hair higher than the last."""
+    """Stepping stones from the gate to the arbour, and one flat stone toward the pond for a pet to sit on. Each a
+    hair higher than the last."""
     stones = ((0.0, 2.3, 0.85), (0.35, 3.9, 0.8), (-0.2, 5.4, 0.85), (0.3, 6.9, 0.8), (-0.1, 8.3, 0.8),
-              (1.7, 4.0, 0.62), (2.5, 3.3, 0.72))
+              (STONE_SIT[0], STONE_SIT[1], 0.72))
     for i, (x, y, r) in enumerate(stones):
         b.cyl_base((x, y, GROUND - 0.05 - 0.003 * i), r, 0.08 + 0.007 * i, STONE if i % 2 == 0 else "paving_sand",
                    segments=10, bevel=False, scale=(1.0, 0.82, 1.0))
@@ -316,7 +320,7 @@ def _arbour(b, d, f):
     b.box_base((ax, by + 0.55, GROUND + 0.88), (3.6, 0.28, 1.5), "wood_light")
     for sx in (1, -1):
         b.box_base((ax + sx * 1.66, by + 0.03, GROUND - 0.024), (0.3, 1.44, 1.5), "wood_light", bevel=False)
-    d.box_base((ax, by - 0.05, GROUND + 0.89), (2.9, 1.0, 0.3), "pastel_lilac")
+    d.box_base((ax, by - 0.07, GROUND + 0.89), (2.9, 1.12, 0.3), "pastel_lilac")   # to the seat's front edge (#680)
 
 
 def _beds(b, f):

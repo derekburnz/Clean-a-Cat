@@ -128,7 +128,7 @@
         "position": [
          0.0,
          1.39,
-         3.9
+         3.6
         ],
         "orientation": [
          [
@@ -158,15 +158,15 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -2.5,
+         -1.95,
          0.26,
-         -3.5
+         -2.45
         ],
         "orientation": [
          [
-          -0.6046,
+          -0.2689,
           0.0,
-          0.7965
+          0.9632
          ],
          [
           0.0,
@@ -174,9 +174,9 @@
           0.0
          ],
          [
-          -0.7965,
+          -0.9632,
           0.0,
-          -0.6046
+          -0.2689
          ]
         ]
        }
@@ -2657,9 +2657,9 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.7,
-       0.0495,
-       4.0
+       -1.95,
+       0.0625,
+       4.35
       ],
       "orientation": [
        [
@@ -2681,64 +2681,14 @@
      }
     },
     "Size": [
-     0.089,
-     1.1284,
-     1.1284
+     0.115,
+     1.3104,
+     1.3104
     ],
     "Color": [
      0.8863,
      0.8118,
      0.6824
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": true,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Area_Garden",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -2.5,
-       0.063,
-       3.3
-      ],
-      "orientation": [
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.122,
-     1.3104,
-     1.3104
-    ],
-    "Color": [
-     0.949,
-     0.9098,
-     0.8353
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -4440,7 +4390,7 @@
         "position": [
          5.6,
          0.99,
-         4.2
+         3.6
         ],
         "orientation": [
          [
@@ -4482,7 +4432,7 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         4.2,
+         3.6,
          5.6,
          -0.99
         ],
@@ -5407,7 +5357,7 @@
         "position": [
          0.0,
          1.11,
-         10.7
+         10.68
         ],
         "orientation": [
          [
@@ -5431,7 +5381,7 @@
       "Size": [
        2.9,
        0.3,
-       1.0
+       1.12
       ],
       "Color": [
        0.7882,
@@ -5456,7 +5406,7 @@
         "position": [
          5.6,
          0.99,
-         4.2
+         3.6
         ],
         "orientation": [
          [
@@ -5506,7 +5456,7 @@
         "position": [
          5.6,
          0.99,
-         3.5
+         2.9
         ],
         "orientation": [
          [
@@ -5556,7 +5506,7 @@
         "position": [
          5.6,
          0.99,
-         4.9
+         4.3
         ],
         "orientation": [
          [
