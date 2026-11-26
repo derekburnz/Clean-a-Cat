@@ -10,6 +10,11 @@
 -- so the client can show what it changes (the Golden Sponge's gold bubbles, a second pet slot) and hide its button.
 -- Shared, so a client can tell which buttons exist; only the server gives anything. Behind the LiveFlags switch
 -- passes.
+--
+-- Each experience has its own passes (Derek, 2026-11-26, q2-wheremake), listed per experience as Products' are; IDS is
+-- the set of the experience this runs in, and every id is 0 anywhere else.
+
+local Products = require(script.Parent:WaitForChild("Products"))
 
 local Passes = {}
 
@@ -23,14 +28,35 @@ export type Info = {
 	text: string,
 }
 
--- key -> pass id; the shop's order is KEYS.
-Passes.IDS = table.freeze({
+-- key -> pass id, per experience; the shop's order is KEYS.
+Passes.IDS_BY_GAME = table.freeze({
+	[Products.DEV_GAME_ID] = table.freeze({
+		DoubleCoins = 0,
+		SecondBuilder = 0,
+		GoldenSponge = 0,
+		Lou = 0,
+		SecondPetSlot = 0,
+	}),
+	[Products.LIVE_GAME_ID] = table.freeze({
+		DoubleCoins = 0,
+		SecondBuilder = 0,
+		GoldenSponge = 0,
+		Lou = 0,
+		SecondPetSlot = 0,
+	}),
+}) :: { [number]: { [string]: number } }
+
+-- Every key with id 0, with the design's price for each: the set for an experience not listed above.
+Passes.NONE = table.freeze({
 	DoubleCoins = 0, -- 2x Coins (design: 199 Robux)
 	SecondBuilder = 0, -- Second Builder (299)
 	GoldenSponge = 0, -- Golden Sponge (99)
 	Lou = 0, -- Lou, the extra helper (249)
 	SecondPetSlot = 0, -- Second pet slot (249)
 }) :: { [string]: number }
+
+-- key -> pass id in the experience this runs in.
+Passes.IDS = Products.pick(Passes.IDS_BY_GAME, Products.currentGame(), Passes.NONE)
 
 Passes.KEYS = table.freeze({
 	"DoubleCoins",

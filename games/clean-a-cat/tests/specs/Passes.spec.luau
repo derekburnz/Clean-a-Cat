@@ -23,6 +23,31 @@ return function()
 			expect(Passes.id("Nope")).to.equal(nil)
 		end)
 
+		it(
+			"lists the same passes for the dev and the live experience, and none elsewhere",
+			function()
+				local Products = require(Shared:WaitForChild("Products"))
+				for _, byGame in { Passes.IDS_BY_GAME, Products.IDS_BY_GAME } do
+					local none = if byGame == Passes.IDS_BY_GAME then Passes.NONE else Products.NONE
+					for _, gameId in { Products.DEV_GAME_ID, Products.LIVE_GAME_ID } do
+						local set = byGame[gameId]
+						expect(set).to.be.ok()
+						for key in none do
+							expect(type(set[key])).to.equal("number")
+						end
+						for key in set do
+							expect(none[key]).to.equal(0)
+						end
+					end
+					expect(Products.pick(byGame, 0, none)).to.equal(none)
+					expect(Products.pick(byGame, Products.DEV_GAME_ID, none)).to.equal(
+						byGame[Products.DEV_GAME_ID]
+					)
+				end
+				expect(Products.DEV_GAME_ID ~= Products.LIVE_GAME_ID).to.equal(true)
+			end
+		)
+
 		it("doubles a hand wash with 2x Coins and adds 20% with the Golden Sponge", function()
 			expect(Passes.handExtra(20, owning({}))).to.equal(0)
 			expect(Passes.handExtra(20, owning({ "DoubleCoins" }))).to.equal(20)
