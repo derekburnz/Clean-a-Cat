@@ -62,8 +62,10 @@ local FigureService = {}
 
 -- (switch counterLine, issue 746) Waiting customers stand at the counter window with their cat on the counter in front
 -- of them, their carrier empty in their hand.
+-- Only on the big plot: the small plot has no counter, so its "counter" spots fall back to just in front of each
+-- customer on the mats, and with the carrier hidden the cats floated beside them (Derek on dev, 2026-11-26, #871).
 local function counterOn(): boolean
-	return LiveFlags.isOn(CounterRules.FLAG) and LiveFlags.isOn(CarryRules.FLAG)
+	return LiveFlags.isOn(CounterRules.FLAG) and LiveFlags.isOn(CarryRules.FLAG) and SpaLayout.big()
 end
 
 -- (switch counterCrate) A new customer brings their cat to the counter in its crate (CounterRules).

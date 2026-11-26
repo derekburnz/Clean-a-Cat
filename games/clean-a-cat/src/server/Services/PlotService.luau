@@ -282,6 +282,11 @@ local function remove()
 end
 
 local function refresh()
+	-- the first read sets each switch's attribute one by one: placing on the spa switch's own change could read
+	-- bigSpa before it is set and place the small spa for good (#871); Start places once the read is done
+	if not LiveFlags.read() then
+		return
+	end
 	if LiveFlags.isOn(SpaLayout.FLAG) then
 		place()
 	else
@@ -352,7 +357,14 @@ function PlotService.Start()
 		:Connect(placeSpawnLocation)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SpaLayout.SIDE_FLAG)
 		:Connect(placeSpawnLocation)
-	refresh()
+	-- the street's size (bigSpa) is chosen once, when it is placed: wait for the switches' first read, or a server
+	-- that placed before it would keep the small spa all its life while the counter line is on (#871)
+	task.spawn(function()
+		LiveFlags.waitForRead()
+		refresh()
+	end)
+	-- a first read that ends after that wait places it then (place does nothing a second time; Review-QA on #898)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.READ_ATTRIBUTE):Connect(refresh)
 end
 
 return PlotService
