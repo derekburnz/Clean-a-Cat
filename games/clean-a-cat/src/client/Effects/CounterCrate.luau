@@ -9,11 +9,11 @@
 --
 --   before    the counter cat is hidden: the customer walks up with the cat in the crate on their arm
 --   set       at CounterSetAt the carrying arm reaches forward and the crate (a local copy; the real one is hidden)
---             arcs from the hand onto the counter just behind the cat's spot, door towards it, with a soft puff
+--             arcs from the hand onto the counter (Model-Agent's SpotCounterCrate by the cat's spot), with a soft puff
 --   door      the crate's door (_Door_Swing) swings open by the crate's DoorOpenDegrees
 --   walk      the cat steps out of the crate to its spot with a little bob in each step, grows to its counter size and
 --             the real counter cat takes over where it stops
---   fade      the crate fades away slowly and is gone by CounterReadyAt
+--   fade      the gate swings shut and the crate fades away slowly, gone by CounterReadyAt
 --   after     the customer has no crate (the real one stays hidden) until Gameplay packs the cat back into it for a
 --             leave (a PackedCat in the carrier), when it shows again so they walk off with their cat in it
 --   comfort   Reduced Motion: no arc, swing or walk; the crate and the cat are simply on the counter and the crate fades
@@ -213,8 +213,36 @@ end
 
 -- Where the crate lands: its seat BACK studs behind the cat's spot towards the customer, base on the counter top,
 -- facing the way the customer faces (the door at its front, towards the cat's spot).
+-- Model-Agent's crate spots on the big spa's counter (SpotCounterCrate1 to 6, beside each SpotCounterCat): the
+-- crate's pivot goes on the nearest one, gate towards the cat. Without one, the crate lands behind the cat's spot.
+CounterCrate.CRATE_SPOT_PREFIX = "SpotCounterCrate"
+CounterCrate.CRATE_SPOT_RANGE = 4 -- studs from the cat's spot
+
+local function crateSpot(near: Vector3): CFrame?
+	local best: CFrame? = nil
+	local bestDistance = CounterCrate.CRATE_SPOT_RANGE
+	for _, d in Workspace:GetDescendants() do
+		if
+			d:IsA("Attachment")
+			and string.sub(d.Name, 1, #CounterCrate.CRATE_SPOT_PREFIX)
+				== CounterCrate.CRATE_SPOT_PREFIX
+		then
+			local at = (d :: Attachment).WorldCFrame
+			local distance = (at.Position - near).Magnitude
+			if distance < bestDistance then
+				best, bestDistance = at, distance
+			end
+		end
+	end
+	return best
+end
+
 local function landing(entry: Entry, crate: Model, seat: Attachment?): CFrame
 	local spot = entry.cat:GetPivot()
+	local placed = crateSpot(spot.Position)
+	if placed then
+		return placed
+	end
 	local facing = entry.figure:GetPivot().Rotation
 	local back = -facing.LookVector
 	local pivot = crate:GetPivot()
@@ -323,9 +351,10 @@ local function step()
 		end
 		local hinge, closed = entry.door, entry.doorClosed
 		if hinge and closed then
-			hinge:PivotTo(
-				crate:GetPivot() * closed * CFrame.Angles(entry.doorAngle * smooth(door), 0, 0)
-			)
+			-- the gate turns about its hinge's up axis, and swings shut again as the crate fades, since the open gate
+			-- lies by the sitting cat's tail (Model-Agent)
+			local open = smooth(door) * (1 - smooth(math.clamp(fadeShare * 2, 0, 1)))
+			hinge:PivotTo(crate:GetPivot() * closed * CFrame.Angles(0, entry.doorAngle * open, 0))
 		end
 		if walk > 0 and not entry.handedOver then
 			local walker = entry.walker
