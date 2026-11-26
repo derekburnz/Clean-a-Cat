@@ -47,19 +47,20 @@ PRODUCTS = [
     ("FinishTier5", "Finish now (over 8 hours)", 99, "Finishes a build with more than 8 hours left."),
     ("CrateOne", "Crate", 49, "One crate with a random pet. The odds are shown in the game before you buy."),
     ("CrateFive", "5 Crates", 199, "Five crates with a random pet each. The odds are shown in the game before you buy."),
-    ("StarterPack", "Starter Bundle", 199, "Golden Sponge, Second pet slot and 2x Coins."),
+    ("StarterPack", "Spa Starter Pack", 199, "Golden Sponge, Second pet slot and 2x Coins."),
 ]
 SERVER_SIZE = 6
 MAX_PAGES = 20
 
 
-def request(method, url, key, body=None, content_type="application/json"):
+def request(method, url, key, body=None, content_type="application/json", retry=True):
+    """retry False: one try only, for a call that makes something (a retry after a lost answer would make a copy)."""
     headers = {"x-api-key": key}
     data = None
     if body is not None:
         data = body if isinstance(body, bytes) else json.dumps(body).encode()
         headers["Content-Type"] = content_type
-    for wait in (5, 10, 20, 0):
+    for wait in (5, 10, 20, 0) if retry else (0,):
         req = urllib.request.Request(url, data=data, method=method, headers=headers)
         try:
             with urllib.request.urlopen(req, timeout=60) as res:
@@ -179,8 +180,17 @@ def make(kind, wanted, keys, universe, confirm, summary):
             continue
         fields = [("name", name), ("description", text), ("price", str(price)), ("isForSale", "true")]
         body, ctype = multipart(fields)
-        status, made = request("POST", base, key, body, ctype)
+        # never retried (Review-QA on #852): an error after Roblox made it would make a copy that cannot be deleted,
+        # so an unclear answer is checked by listing again
+        status, made = request("POST", base, key, body, ctype, retry=False)
         if status not in (200, 201):
+            time.sleep(5)
+            _, again, _ = list_all(key, base + "/creator")
+            there = next((item for item in again if item[0].strip().lower() == name.lower()), None)
+            if there:
+                ids[our_key] = there[1]
+                summary.append(f"made {name} (the answer was HTTP {status}, but the list has it): id {there[1]}")
+                continue
             summary.append(f"FAILED {name}: HTTP {status}: {short(made)}")
             ok = False
             break  # stop at the first refusal: the next ones would fail the same way
