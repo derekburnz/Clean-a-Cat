@@ -300,7 +300,7 @@ local function queueSpot(index: number, slot: number): CFrame
 		return counter -- (switch counterLine) at the counter window
 	end
 	local bench = `SpotBench{index}`
-	if LiveFlags.isOn(SpaRules.BENCH_FLAG) and SpaLayout.PLOT_SPOTS[bench] then
+	if LiveFlags.isOn(SpaRules.BENCH_FLAG) and SpaLayout.plotSpot(bench) then
 		return SpaLayout.slotSpot(bench, slot)
 	end
 	return lineSpotOf(index, slot)
