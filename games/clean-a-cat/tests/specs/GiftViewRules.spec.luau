@@ -1,6 +1,8 @@
 --!strict
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local FreeRewardRules =
+	require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("FreeRewardRules"))
 local GiftViewRules =
 	require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("GiftViewRules"))
 
@@ -82,6 +84,8 @@ return function()
 			expect(#steps).to.equal(4)
 			expect(steps[1].key).to.equal("like")
 			expect(steps[1].action).to.equal("Like")
+			-- Issue 748: the first line keeps the coins apart from the like (Derek's word 2026-11-26).
+			expect(steps[1].line).to.equal(`A gift either way, {FreeRewardRules.LIKE_COINS} coins`)
 			expect(steps[2].key).to.equal("favourite")
 			expect(steps[3].key).to.equal("group")
 			expect(steps[4].key).to.equal("play")

@@ -21,7 +21,7 @@ Products.IDS = table.freeze({
 	FinishTier5 = 0, -- more than 8 hours (99)
 	CrateOne = 0, -- one normal crate (CrateRules.SHOP, issue 514; 49 Robux): a paid random item, odds shown first
 	CrateFive = 0, -- five normal crates (199)
-	StarterPack = 0, -- the starter pack: Golden Sponge, Second pet slot and 2x Coins (StarterRules, issue 519; 299)
+	StarterPack = 0, -- the starter pack: Golden Sponge, Second pet slot and 2x Coins (StarterRules, issue 519; 199, Derek 2026-11-26)
 }) :: { [string]: number }
 
 -- The product id for `key`, or nil while it is not created (0) or unknown.

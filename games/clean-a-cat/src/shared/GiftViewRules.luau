@@ -64,7 +64,7 @@ local function likeStep(free: Free): Step
 			key = "like",
 			icon = "Heart",
 			title = "Like the game",
-			line = `If you enjoy it · {reward}`,
+			line = `A gift either way, {reward}`,
 			done = false,
 			action = "Like",
 			style = "ask",
