@@ -166,5 +166,22 @@ return function()
 			expect((cleaned :: RecapRules.Recap).mascot).to.equal(true)
 			expect((cleaned :: RecapRules.Recap).cat).to.equal("Suds")
 		end)
+
+		it("shows the Grand opening gift as its own line and in the total", function()
+			local cat = "Muffin"
+			local recap = RecapRules.make(cat, CatRules.pay(cat), 0, 0, true, { opening = 284 })
+			local found = false
+			for _, row in RecapRules.rows(recap) do
+				if row.key == "opening" then
+					found = row.value == 284
+				end
+			end
+			expect(found).to.equal(true)
+			expect(RecapRules.total(recap)).to.equal(
+				CatRules.pay(cat).coins + CatRules.pay(cat).tip + 284
+			)
+			local clean = RecapRules.clean(recap) :: any
+			expect(clean.opening).to.equal(284)
+		end)
 	end)
 end

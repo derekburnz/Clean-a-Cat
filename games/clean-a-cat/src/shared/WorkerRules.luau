@@ -69,6 +69,16 @@ WorkerRules.PRICE_FLAG = "joPrice"
 WorkerRules.JO_PRICE = 300
 
 -- The coins worker `id` costs as the switches `isOn` make it; nil for a pass worker or an unknown id.
+-- The Grand opening gift (switch openingBonus, issue 913): what tops `coins` up to Jo's price, 0 when they have it.
+WorkerRules.OPENING_FLAG = "openingBonus"
+function WorkerRules.openingGift(coins: number, isOn: ((flag: string) -> boolean)?): number
+	local price = WorkerRules.priceOf("Jo", isOn) or 0
+	if coins ~= coins then
+		return 0
+	end
+	return math.max(0, math.floor(price - coins))
+end
+
 function WorkerRules.priceOf(id: string, isOn: ((flag: string) -> boolean)?): number?
 	local info = WorkerRules.WORKERS[id]
 	if info == nil or info.price == nil then
