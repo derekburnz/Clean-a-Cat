@@ -181,6 +181,14 @@ local function play(still: boolean)
 	local began = os.clock()
 	local done = false
 	local link: RBXScriptConnection? = nil
+	local borrow = false
+	local wrote: CFrame? = nil -- the camera CFrame this last wrote
+	local function stillOurs(): boolean
+		return camera ~= nil
+			and camera.CameraType == Enum.CameraType.Scriptable
+			and wrote ~= nil
+			and camera.CFrame:FuzzyEq(wrote :: CFrame, 1e-3)
+	end
 	local function finish()
 		if done then
 			return
@@ -192,15 +200,18 @@ local function play(still: boolean)
 		if model.Parent then
 			model:PivotTo(final)
 		end
-		if camera and savedType and savedCF and camera.CameraType == Enum.CameraType.Scriptable then
+		-- hand back only a camera that is still ours: if another shot (the wash view) took it meanwhile, leave it be
+		if borrow and camera and savedType and savedCF and stillOurs() then
 			camera.CFrame = savedCF
 			camera.CameraType = savedType
 		end
+		borrow = false
 	end
 	-- only a camera that is the plain follow camera is borrowed: a scripted shot (the wash view) keeps its own
-	local borrow = camera ~= nil and savedType == Enum.CameraType.Custom
+	borrow = camera ~= nil and savedType == Enum.CameraType.Custom
 	if borrow and camera then
 		camera.CameraType = Enum.CameraType.Scriptable
+		wrote = camera.CFrame
 	end
 	local stopped = false
 	link = RunService.RenderStepped:Connect(function()
@@ -220,6 +231,9 @@ local function play(still: boolean)
 		else
 			model:PivotTo(CFrame.lookAt(at, at + way))
 		end
+		if borrow and not stillOurs() then
+			borrow = false -- something else took the camera: stop writing it and hand nothing back
+		end
 		if borrow and camera and savedCF then
 			local from = (savedCF :: CFrame).Position
 			local away = Vector3.new(from.X - at.X, 0, from.Z - at.Z)
@@ -227,6 +241,7 @@ local function play(still: boolean)
 			local eye = at + dir * JoArrive.BACK + Vector3.new(0, JoArrive.UP, 0)
 			local shot = CFrame.lookAt(eye, at + Vector3.new(0, 2.5, 0))
 			camera.CFrame = (savedCF :: CFrame):Lerp(shot, JoArrive.blend(t, total))
+			wrote = camera.CFrame
 		end
 		if t >= total then
 			finish()
