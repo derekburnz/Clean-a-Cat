@@ -257,6 +257,10 @@ local function drawTile(
 	-- the tap that puts this pet in the picked slot (or takes it off), under Fuse
 	local tap = tapArea(tile, `Put {group.kind} with the picked slot`)
 	tap.ZIndex = 2
+	-- the stack draws over the tap so Fuse takes its own taps (bug hunt, issue 678: the tap, a later sibling at
+	-- ZIndex 2, sat over the stack and a press on Fuse put the pet in the slot); its words and pictures are not
+	-- buttons, so a press on them still reaches the tap
+	body.ZIndex = 3
 	tap.Activated:Connect(function()
 		local id, slot = CrateViewRules.placeFor(group, picked, pets)
 		if id then
@@ -487,7 +491,7 @@ function PetsWindow.redraw()
 	p.scroll.Size = UDim2.new(1, 0, 0, s.listH)
 	local lines = math.ceil(#groups / s.cols)
 	p.scroll.CanvasSize =
-		UDim2.fromOffset(0, lines * s.tileH + math.max(lines - 1, 0) * s.tileGap + 4)
+		UDim2.fromOffset(0, lines * tileH + math.max(lines - 1, 0) * s.tileGap + 4)
 	for index, group in groups do
 		drawTile(group, index, s, p.scroll, cellW)
 	end
