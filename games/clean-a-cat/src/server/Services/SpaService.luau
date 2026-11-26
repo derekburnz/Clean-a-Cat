@@ -815,8 +815,12 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		pay = DirtRules.pay(pay, cat.dirt) -- a dirtier cat pays more
 	end
 	-- Built stations (a Brush Table, a dryer) make every customer pay a little more; only while builds are on.
+	-- Each built tub adds TUB_HAND_BONUS to a cat washed by hand (switch tubBuilds); this is the hand path only.
 	local bonus = if LiveFlags.isOn("builds")
-		then BuildRules.payBonus(save.stations, LiveFlags.isOn)
+		then BuildRules.payBonus(save.stations, LiveFlags.isOn) + BuildRules.handBonus(
+			save.stations,
+			LiveFlags.isOn
+		)
 		else 0
 	-- The bow tied by hand pays on top (switch bowTiers, tuning "then + bow + tip"); a worker's cat never comes here.
 	if LiveFlags.isOn(BowRules.FLAG) and cat.bow ~= nil then
@@ -1018,7 +1022,13 @@ local function tickVisitors()
 		if due == nil then
 			local scripted = save.asks[SpecialRules.FIRST_DONE] ~= true
 				and not visitedThisSession[player]
-			due = SpecialRules.dueAt(now, base.play, not scripted, nextNumber)
+			due = SpecialRules.dueAt(
+				now,
+				base.play,
+				not scripted,
+				nextNumber,
+				BuildRules.hasVip(save.stations, LiveFlags.isOn)
+			)
 			visitorDue[player] = due
 		end
 		if now >= (due :: number) then

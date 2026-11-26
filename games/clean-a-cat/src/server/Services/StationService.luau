@@ -146,8 +146,8 @@ local function drawInto(
 	for _, entry in SpaLayout.STATIONS do
 		-- a station with its own switch (the Bubble Bath, the Pawdicure; #267) stands, or waits as a pad, only
 		-- while that switch is on
-		local flag = BuildRules.ITEMS[entry.id].flag
-		if flag ~= nil and not isOn(flag) then
+		-- (tubBuilds) the tubs, and the old stations that leave for them, by BuildRules.shown
+		if not BuildRules.shown(entry.id, isOn) then
 			continue
 		end
 		local built = save.stations[entry.id] == true
@@ -166,21 +166,22 @@ local function drawInto(
 		model:PivotTo(SpaLayout.slotSpot(entry.spot, slot))
 		anchorAll(model)
 		if not built then
-			local item = BuildRules.ITEMS[entry.id]
+			local item = BuildRules.item(entry.id, isOn) :: BuildRules.Item
 			label(model, item.name, `{item.price} coins`)
 		end
 		model.Parent = folder
 	end
-	drawKitten(
-		folder,
-		assets :: Instance,
-		slot,
-		BuildRules.cleanBuilds(save.builds)[BuildRules.ITEMS.BrushTable.slot]
-	)
+	-- the kitten builds stations; under tubBuilds it is the one builder, so it builds whatever is running
+	local running = BuildRules.cleanBuilds(save.builds)
+	local kittenBuild = running[BuildRules.ITEMS.BrushTable.slot]
+	if kittenBuild == nil and isOn(BuildRules.TUBS_FLAG) then
+		kittenBuild = running.room
+	end
+	drawKitten(folder, assets :: Instance, slot, kittenBuild)
 	-- The VIP Room door: locked, a building site while it builds, gone once built.
-	local vip = BuildRules.ITEMS[SpaLayout.VIP_ID]
-	local running = BuildRules.cleanBuilds(save.builds)[vip.slot]
-	local building = running ~= nil and running.item == SpaLayout.VIP_ID
+	local vip = BuildRules.item(SpaLayout.VIP_ID, isOn) :: BuildRules.Item
+	local vipBuild = running[vip.slot]
+	local building = vipBuild ~= nil and vipBuild.item == SpaLayout.VIP_ID
 	if not save.stations[SpaLayout.VIP_ID] then
 		local doorName = if building
 			then SpaLayout.VIP_BUILDING_ASSET
@@ -190,8 +191,8 @@ local function drawInto(
 			local model = (door :: Model):Clone() :: Model
 			model.Name = SpaLayout.VIP_ID
 			model:SetAttribute("Built", false)
-			if building and running then
-				model:SetAttribute("EndsAt", running.endsAt)
+			if building and vipBuild then
+				model:SetAttribute("EndsAt", vipBuild.endsAt)
 			end
 			model:PivotTo(SpaLayout.slotSpot(SpaLayout.VIP_SPOT, slot))
 			anchorAll(model)
@@ -273,13 +274,10 @@ function StationService.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(refreshAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG)
 		:Connect(refreshAll)
-	-- a station's own switch (#267) shows or hides it and its pad
-	for _, id in BuildRules.IDS do
-		local flag = BuildRules.ITEMS[id].flag
-		if flag ~= nil then
-			ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
-				:Connect(refreshAll)
-		end
+	-- a station's own switches (#267, tubBuilds) show or hide it and its pad
+	for _, flag in BuildRules.itemFlags() do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(refreshAll)
 	end
 	refreshAll()
 end
