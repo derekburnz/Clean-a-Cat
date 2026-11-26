@@ -1,7 +1,8 @@
 --!strict
 -- BowFit: puts one of Model-Agent's bows (ReplicatedStorage.Assets.CleanACat_Bow_<Name>) on a cat's head, on
 -- the client only. The bow's BowSlot attachment (in its biggest part) meets the head's BowSlot attachment, the
--- bow is scaled like the cat (its Scale attribute times `scale`), and it never catches a ray.
+-- bow is scaled like the cat (its Scale attribute times `scale`, times its BowScale attribute when it has one),
+-- and it never catches a ray.
 -- Used by the tub (ScrubController) and the display window (WindowController).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -57,7 +58,10 @@ function BowFit.wear(cat: Model, bowId: string, scale: number): Model?
 	end
 	local bow = (asset :: Model):Clone() :: Model
 	local rawScale = cat:GetAttribute("Scale")
-	bow:ScaleTo((if type(rawScale) == "number" then rawScale else 1) * scale)
+	-- a cat with a head piece carries a smaller bow (its BowScale attribute, Model-Agent, issue 845)
+	local rawBowScale = cat:GetAttribute("BowScale")
+	local bowScale = if type(rawBowScale) == "number" and rawBowScale > 0 then rawBowScale else 1
+	bow:ScaleTo((if type(rawScale) == "number" then rawScale else 1) * scale * bowScale)
 	local slot = findSlot(bow)
 	local holder = if slot then slot.Parent else nil
 	if not slot or not holder or not holder:IsA("BasePart") then
