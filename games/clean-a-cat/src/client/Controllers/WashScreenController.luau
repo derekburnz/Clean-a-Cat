@@ -24,9 +24,9 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local WashScreenRules = require(Shared:WaitForChild("WashScreenRules"))
 
-local Client = script.Parent.Parent :: Instance
-local UI = require(Client:WaitForChild("UI"))
-local WashView = require(Client:WaitForChild("Spa"):WaitForChild("WashView"))
+local BubbleWipe = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("BubbleWipe"))
+local UI = require(script.Parent.Parent:WaitForChild("UI"))
+local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 
 local WashScreenController = {}
 
@@ -44,9 +44,9 @@ local function on(): boolean
 	return WashScreenRules.on(LiveFlags.isOn)
 end
 
--- Motion-FX's wipe: covers the screen, calls onCovered once while covered, then uncovers. With no wipe (not merged
--- yet, or it failed) onCovered runs at once, and if the wipe never calls back it runs after COVER_TIMEOUT anyway
--- (Review-QA on #860), so the screen never waits on it.
+-- Motion-FX's wipe (Effects/BubbleWipe): covers the screen, calls onCovered once while covered, then uncovers. If it
+-- fails, onCovered runs at once, and if it never calls back it runs after COVER_TIMEOUT anyway (Review-QA on #860),
+-- so the screen never waits on it.
 local COVER_TIMEOUT = 1
 local function wipe(onCovered: () -> ())
 	local called = false
@@ -57,18 +57,10 @@ local function wipe(onCovered: () -> ())
 		end
 	end
 	task.delay(COVER_TIMEOUT, once)
-	local effects = Client:FindFirstChild("Effects")
-	local module = if effects then effects:FindFirstChild("BubbleWipe") else nil
-	if module and module:IsA("ModuleScript") then
-		local ok = pcall(function()
-			local wipeModule: any = require(module :: ModuleScript)
-			wipeModule.play(once)
-		end)
-		if ok then
-			return
-		end
+	local ok = pcall(BubbleWipe.play, once)
+	if not ok then
+		once()
 	end
-	once()
 end
 
 local function setFocus(focused: boolean)
