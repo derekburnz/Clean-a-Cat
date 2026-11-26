@@ -118,10 +118,11 @@ local function refresh()
 	if prompt then
 		prompt:Destroy()
 	end
+	-- the stand's Prompt Attachment (Model-Agent), else its PetSeat, else its main part
 	local holder = (stand :: Model):FindFirstChild("Prompt", true)
 		or (stand :: Model):FindFirstChild("PetSeat", true)
 		or (stand :: Model).PrimaryPart
-	if holder == nil or not holder:IsA("BasePart") then
+	if holder == nil or not (holder:IsA("Attachment") or holder:IsA("BasePart")) then
 		return
 	end
 	local made = Instance.new("ProximityPrompt")

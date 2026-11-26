@@ -175,7 +175,8 @@ local function seatCat(player: Player, id: string, job: Job, clean: boolean)
 		end
 	end
 	anchorAll(cat)
-	cat:ScaleTo(CAT_SCALE)
+	local scale = station:GetAttribute("CatScale")
+	cat:ScaleTo(if type(scale) == "number" and scale > 0 then scale else CAT_SCALE)
 	local seat = station:FindFirstChild("CatSeat", true)
 	local at = if seat and seat:IsA("Attachment")
 		then (seat :: Attachment).WorldCFrame
@@ -193,6 +194,25 @@ local function seatCat(player: Player, id: string, job: Job, clean: boolean)
 	if staff then
 		staff:SetAttribute(WorkerRules.WASHING_ATTRIBUTE, not clean)
 	end
+end
+
+-- Where the worker stands at their station: the wash stand's WorkerSpot on the floor, upright and facing the cat's
+-- seat; beside the plain tub when the stand has no WorkerSpot.
+local function staffSpot(station: Model, spot: CFrame): CFrame
+	local at = station:FindFirstChild("WorkerSpot", true)
+	local seat = station:FindFirstChild("CatSeat", true)
+	if at and at:IsA("Attachment") then
+		local from = (at :: Attachment).WorldPosition
+		local to = if seat and seat:IsA("Attachment")
+			then (seat :: Attachment).WorldPosition
+			else spot.Position
+		local flat = Vector3.new(to.X, from.Y, to.Z)
+		if (flat - from).Magnitude < 0.01 then
+			return CFrame.new(from) * spot.Rotation
+		end
+		return CFrame.lookAt(from, flat)
+	end
+	return spot * STAFF_OFFSET
 end
 
 -- Draws the player's worker stations and pads. A job in progress keeps going; its cat is seated again.
@@ -217,7 +237,10 @@ function WorkerService.refresh(player: Player)
 			continue -- Lou comes with his pass, never as a pad
 		end
 		local spot = SpaLayout.slotSpot(info.spot, slot)
-		local template = asset(if hired then STATION_ASSET else SpaLayout.PAD_ASSET)
+		-- a hired worker's own wash stand (Model-Agent's), or the plain tub until it is in the game
+		local template = if hired
+			then (asset(info.stand) or asset(STATION_ASSET))
+			else asset(SpaLayout.PAD_ASSET)
 		if template == nil then
 			continue
 		end
@@ -232,7 +255,7 @@ function WorkerService.refresh(player: Player)
 			if staff then
 				local copy = staff:Clone() :: Model
 				anchorAll(copy)
-				copy:PivotTo(spot * STAFF_OFFSET)
+				copy:PivotTo(staffSpot(station, spot))
 				copy:SetAttribute(WorkerRules.WASHING_ATTRIBUTE, false)
 				copy.Parent = station
 			end

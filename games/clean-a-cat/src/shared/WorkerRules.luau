@@ -29,12 +29,31 @@ export type Info = {
 	name: string,
 	price: number?, -- coins, nil for a pass worker
 	pass: boolean, -- comes with a game pass, never sold for coins
-	spot: string, -- their station's spot in the plot (SpaLayout.PLOT_SPOTS)
+	spot: string, -- their station's spot in the plot (the plot's Attachment, else SpaLayout.PLOT_SPOTS)
+	stand: string, -- their wash stand, Model-Agent's model (Attachments CatSeat and WorkerSpot, attribute CatScale)
 }
 
-local JO: Info = { name = "Jo", price = 150, pass = false, spot = "WorkerJo" }
-local SAM: Info = { name = "Sam", price = 1200, pass = false, spot = "WorkerSam" }
-local LOU: Info = { name = "Lou", price = nil, pass = true, spot = "WorkerLou" }
+local JO: Info = {
+	name = "Jo",
+	price = 150,
+	pass = false,
+	spot = "SpotWorkerJo",
+	stand = "CleanACat_Station_WashStandJo",
+}
+local SAM: Info = {
+	name = "Sam",
+	price = 1200,
+	pass = false,
+	spot = "SpotWorkerSam",
+	stand = "CleanACat_Station_WashStandSam",
+}
+local LOU: Info = {
+	name = "Lou",
+	price = nil,
+	pass = true,
+	spot = "SpotWorkerLou",
+	stand = "CleanACat_Station_WashStandLou",
+}
 WorkerRules.WORKERS = table.freeze({
 	Jo = table.freeze(JO),
 	Sam = table.freeze(SAM),

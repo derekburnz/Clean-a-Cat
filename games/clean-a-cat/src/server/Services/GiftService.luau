@@ -107,7 +107,16 @@ local function seatPet(stand: Model, show: boolean)
 	end
 	local seat = stand:FindFirstChild("PetSeat", true)
 	local base = asset(`CleanACat_Pet_{GiftRules.PET}`)
-	if base == nil or seat == nil or not seat:IsA("BasePart") then
+	-- PetSeat is an Attachment on Model-Agent's stand (a part's top also works)
+	local top: CFrame? = if seat and seat:IsA("Attachment")
+		then (seat :: Attachment).WorldCFrame
+		elseif seat and seat:IsA("BasePart") then (seat :: BasePart).CFrame * CFrame.new(
+			0,
+			(seat :: BasePart).Size.Y / 2,
+			0
+		)
+		else nil
+	if base == nil or top == nil then
 		return
 	end
 	local pet = base:Clone()
@@ -121,8 +130,7 @@ local function seatPet(stand: Model, show: boolean)
 	end
 	local scale = pet:GetAttribute("PetScale")
 	pet:ScaleTo(if type(scale) == "number" and scale > 0 then scale else 0.7)
-	local top = (seat :: BasePart).CFrame * CFrame.new(0, (seat :: BasePart).Size.Y / 2, 0)
-	pet:PivotTo(top)
+	pet:PivotTo(top :: CFrame)
 	anchor(pet)
 	pet.Parent = stand
 end
