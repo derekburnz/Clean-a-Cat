@@ -25,6 +25,7 @@ DirtRules.CHANCES = table.freeze({
 	Rare = table.freeze({ 25, 35, 28, 12 }),
 	Epic = table.freeze({ 10, 30, 35, 25 }),
 	Legendary = table.freeze({ 0, 15, 35, 50 }),
+	Special = table.freeze({ 0, 0, 0, 100 }), -- dirt.chance.Special: always level 4
 }) :: { [string]: { number } }
 
 -- The later needs each level adds to the cat's rarity needs (CatRules.needs), in the wash's order.

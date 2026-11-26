@@ -12,6 +12,9 @@
 --
 -- A customer whose cat's heart bar (the HeartFill attribute) runs low taps a foot while standing (CustomerPose.mood).
 --
+-- The spa staff (CleanACat_NPC_Staff_*, same joints) walk the same way with both arms swinging, and while their
+-- Washing attribute is true (Gameplay, workers #509) they stand and scrub (StaffPose.scrub, issue #528).
+--
 -- Budget: 30 updates a second near the camera, 15 past 30 studs, none past 60 (back to rest), at most MAX customers.
 --
 -- API
@@ -21,10 +24,12 @@ local Workspace = game:GetService("Workspace")
 
 local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
 local CustomerPose = require(script.Parent:WaitForChild("CustomerPose"))
+local StaffPose = require(script.Parent:WaitForChild("StaffPose"))
 
 local CustomerMotion = {}
 
 CustomerMotion.PREFIX = "CleanACat_NPC_Customer_"
+CustomerMotion.STAFF_PREFIX = "CleanACat_NPC_Staff_"
 CustomerMotion.MAX = 10
 CustomerMotion.NEAR = 30 -- studs: full rate inside
 CustomerMotion.FAR = 60 -- studs: no motion past
@@ -48,6 +53,8 @@ type Rig = {
 	updatedAt: number,
 	appliedAt: CFrame, -- the body's CFrame when the pose was last written
 	moved: boolean,
+	staff: boolean,
+	wash: number, -- the wash pose's blend, 0 to 1 (staff only)
 }
 
 local rigs: { [Model]: Rig } = {}
@@ -55,10 +62,17 @@ local started = false
 local enabled = false
 local seedCount = 0
 
+local function isStaff(name: string): boolean
+	return string.sub(name, 1, #CustomerMotion.STAFF_PREFIX) == CustomerMotion.STAFF_PREFIX
+end
+
 local function isCustomer(instance: Instance?): boolean
 	return instance ~= nil
 		and instance:IsA("Model")
-		and string.sub(instance.Name, 1, #CustomerMotion.PREFIX) == CustomerMotion.PREFIX
+		and (
+			string.sub(instance.Name, 1, #CustomerMotion.PREFIX) == CustomerMotion.PREFIX
+			or isStaff(instance.Name)
+		)
 end
 
 local function findBody(model: Model): BasePart?
@@ -111,6 +125,8 @@ local function attach(model: Model)
 		updatedAt = os.clock(),
 		appliedAt = body.CFrame,
 		moved = false,
+		staff = isStaff(model.Name),
+		wash = 0,
 	}
 end
 
@@ -175,6 +191,12 @@ local function update(rig: Rig, now: number)
 	local fill = rig.model:GetAttribute("HeartFill")
 	if type(fill) == "number" then
 		CustomerPose.mood(rig.pose, fill, now, rig.seed, 1 - rig.amount, still)
+	end
+	if rig.staff then
+		StaffPose.freeArms(rig.pose)
+		local washing = rig.model:GetAttribute("Washing") == true
+		rig.wash = CustomerPose.approach(rig.wash, if washing then 1 else 0, StaffPose.BLEND, dt)
+		StaffPose.scrub(rig.pose, now, rig.seed, rig.wash * (1 - rig.amount), still)
 	end
 	apply(rig, rig.pose)
 	rig.moved = true

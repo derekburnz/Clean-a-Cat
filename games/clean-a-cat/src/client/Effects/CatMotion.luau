@@ -11,6 +11,9 @@
 --   CatMotion.start(tier, isOn)     isOn() is read once a second; when it turns false every cat goes back to rest
 --   CatMotion.shake(cat)            the shake-off (CatClean)
 --   CatMotion.wiggle(cat)           the happy wiggle (CatFluffed)
+--   CatMotion.hold(cat)             puts the cat back at rest and leaves it alone (while another effect resizes it,
+--                                   as the pet reveal's pop does); no rig is built for it while held
+--   CatMotion.release(cat)          lets go and rebuilds its rig from the cat as it is now (Review-QA on #561)
 -- Cats are found by the `Cat` attribute the generator sets on each cat Model, once it is inside Workspace.
 -- A waiting cat's mood follows the HeartFill number attribute (0 to 1) that Gameplay sets on the cat or on the
 -- customer holding its carrier (issue #528); a cat with none in reach has no mood.
@@ -129,8 +132,10 @@ local function moodOf(rig: Rig, now: number): number?
 	return if type(fill) == "number" then fill else nil
 end
 
+local held: { [Model]: boolean } = {}
+
 local function attach(model: Model)
-	if rigs[model] or not model:IsDescendantOf(Workspace) then
+	if rigs[model] or held[model] or not model:IsDescendantOf(Workspace) then
 		return
 	end
 	local body = findBody(model)
@@ -325,6 +330,25 @@ function CatMotion.shake(cat: Model)
 	local rig = rigs[cat]
 	if rig then
 		rig.state.shakeAt = os.clock()
+	end
+end
+
+function CatMotion.hold(cat: Model)
+	held[cat] = true
+	local rig = rigs[cat]
+	if rig then
+		toRest(rig)
+		rigs[cat] = nil
+	end
+end
+
+function CatMotion.release(cat: Model)
+	if not held[cat] then
+		return
+	end
+	held[cat] = nil
+	if cat.Parent then
+		attach(cat)
 	end
 end
 

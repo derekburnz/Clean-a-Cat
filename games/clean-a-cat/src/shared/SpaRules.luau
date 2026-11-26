@@ -38,6 +38,7 @@ export type Cat = {
 	washFrom: number?, -- os.clock() when the cat went into the tub, for the wash grade (HeartRules)
 	washSeconds: number?, -- the hand work: from the tub to the bow pick, which ends the last hand step
 	tutorial: boolean?, -- one of a new spa's first customers: always 3 stars (HeartRules.TUTORIAL_STARS_CUSTOMERS)
+	special: boolean?, -- a special visitor's cat (SpecialRules): its wash may leave a crate
 }
 
 function SpaRules.newCat(id: number, now: number): Cat

@@ -12,6 +12,7 @@ local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForC
 local CarryShared =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CarryShared"))
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
+local Crate = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Crate"))
 local CustomerLeave =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerLeave"))
 local CustomerMotion =
@@ -273,12 +274,34 @@ function EffectsController.Start()
 	-- A special visitor walks in (issue #528): glow, gold sparkles at the feet and a star over their head while they
 	-- are in the spa. The Moment comes with Gameplay's special visitors (#510), behind its own switch.
 	if Moments.VisitorArrived then
-		Moments.VisitorArrived:Connect(function(visitor: any)
+		-- `again`: the line was redrawn and this is a new figure for a visitor already seen (Gameplay, #566)
+		Moments.VisitorArrived:Connect(function(visitor: any, again: any)
 			if typeof(visitor) == "Instance" and visitor:IsA("Model") then
-				VisitorArrival.arrive(visitor)
+				VisitorArrival.arrive(visitor, again == true)
 			end
 		end)
 	end
+
+	-- Crates and pets (issue #528): Gameplay fires these with special visitors (#510) and crates and pets (#511,
+	-- #512), behind those features' switches. The open and the reveal are the same for every pet.
+	local function onModel(name: string, play: (Model) -> ())
+		if Moments[name] then
+			Moments[name]:Connect(function(model: any)
+				if typeof(model) == "Instance" and model:IsA("Model") then
+					play(model)
+				end
+			end)
+		end
+	end
+	onModel("CrateDropped", Crate.drop)
+	onModel("CrateOpened", Crate.open)
+	-- the pet is a cat body: the cats' motion lets go of it while it is resized, then it wiggles
+	local petMotion =
+		{ hold = CatMotion.hold, release = CatMotion.release, wiggle = CatMotion.wiggle }
+	onModel("PetRevealed", function(pet: Model)
+		Crate.reveal(pet, petMotion)
+	end)
+	onModel("PetStarUp", Crate.starUp)
 
 	-- The bar over a cat a worker is washing (issue #528): drawn from the cat's WorkerProgress attribute, which
 	-- Gameplay sets with workers (#509), behind that feature's switch. Nothing shows until it is set.

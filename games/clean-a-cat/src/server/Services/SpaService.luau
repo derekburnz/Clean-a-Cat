@@ -24,6 +24,7 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local BowRules = require(Shared:WaitForChild("BowRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
@@ -34,16 +35,19 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
+local SpecialRules = require(Shared:WaitForChild("SpecialRules"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
+local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local FigureService = require(script.Parent:WaitForChild("FigureService"))
 local IndexService = require(script.Parent:WaitForChild("IndexService"))
 local MascotService = require(script.Parent:WaitForChild("MascotService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
+local PetService = require(script.Parent:WaitForChild("PetService"))
 local PlotService = require(script.Parent:WaitForChild("PlotService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
@@ -73,6 +77,8 @@ type Order = {
 	since: number, -- server time the customer's heart bar started full (HeartRules, switch heartBar)
 	lasts: number, -- seconds from full to empty, fixed when they join
 	early: boolean?, -- picked to go next while their bar was still nearly full (switch queuePick)
+	reservedUntil: number?, -- os.clock() until which the player's pick is kept from the workers (worker.reserve)
+	special: boolean?, -- a special visitor (SpecialRules, switch specialVisitors): only the player washes their cat
 	tutorial: boolean, -- one of a new spa's first customers (HeartRules.TUTORIAL_STARS_CUSTOMERS)
 }
 local queueOrders: { [Player]: { Order } } = {}
@@ -90,6 +96,11 @@ local random = Random.new()
 -- Where each player's customer cat is while it is carried in (switch customerCarry): "door" with the front customer,
 -- "arms" while carried; nil once it is in the tub, or for a cat that is never carried.
 local carrying: { [Player]: CarryRules.Where } = {}
+-- Special visitors (switch specialVisitors): when the next is due, in seconds of play, and the cat of one who is due
+-- and joins the line at its next free place (the back, as any new customer), so the line never grows past its size.
+local visitorDue: { [Player]: number } = {}
+local visitorPending: { [Player]: string } = {}
+local visitedThisSession: { [Player]: boolean } = {}
 
 local function rollCustomer(player: Player): string
 	local save = DataService.get(player)
@@ -172,6 +183,26 @@ local function queueFor(player: Player): { string }
 		table.remove(o)
 	end
 	while #q < QUEUE_SIZE do
+		local visitor = visitorPending[player]
+		if visitor then
+			-- a special visitor walks in: always the dirtiest, with the first one's long bar (SpecialRules)
+			visitorPending[player] = nil
+			local save = DataService.get(player)
+			local first = save ~= nil and save.asks[SpecialRules.FIRST_DONE] ~= true
+			table.insert(q, visitor)
+			table.insert(o, {
+				needs = rollNeeds(visitor, DirtRules.SPECIAL_LEVEL),
+				dirt = DirtRules.SPECIAL_LEVEL,
+				since = Workspace:GetServerTimeNow(),
+				lasts = if first
+					then HeartRules.FIRST_SPECIAL_SECONDS
+					else HeartRules.SECONDS.Special,
+				tutorial = false,
+				special = true,
+			})
+			NetService.notice(player, "A special visitor is here! Only you can wash their cat")
+			continue
+		end
 		local kind = rollCustomer(player)
 		table.insert(q, kind)
 		table.insert(o, newOrder(player, kind, #q))
@@ -337,6 +368,7 @@ local function newCat(player: Player): SpaRules.Cat
 			cat.needs = order.needs
 			cat.dirt = order.dirt
 			cat.tutorial = order.tutorial
+			cat.special = order.special
 			-- picked or taken while the heart bar was still nearly full: the early bonus (switch heartBar)
 			cat.early = order.early == true
 				or HeartRules.early(order.since, order.lasts, Workspace:GetServerTimeNow())
@@ -653,6 +685,10 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 	if picked and HeartRules.early(picked.since, picked.lasts, Workspace:GetServerTimeNow()) then
 		picked.early = true -- the pick is what counts, not when the wash before it ends
 	end
+	if picked then
+		-- the player's pick is theirs: workers leave it for WorkerRules.RESERVE_SECONDS (tuning worker.reserve)
+		picked.reservedUntil = os.clock() + WorkerRules.RESERVE_SECONDS
+	end
 	if SpaRules.pickNext(line, index) then
 		SpaRules.pickNext(ordersFor(player), index) -- the cat's order moves with it
 		FigureService.picked(player, index) -- the customer's look goes to the front with their cat (#206)
@@ -772,8 +808,43 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	local bonus = if LiveFlags.isOn("builds")
 		then BuildRules.payBonus(save.stations, LiveFlags.isOn)
 		else 0
+	-- The bow tied by hand pays on top (switch bowTiers, tuning "then + bow + tip"); a worker's cat never comes here.
+	if LiveFlags.isOn(BowRules.FLAG) and cat.bow ~= nil then
+		local lines: RecapRules.Extra = extra or {}
+		local tier = BowRules.best(save.bows)
+		lines.bow = BowRules.bonus(tier)
+		lines.bowTier = tier
+		extra = lines
+	end
+	-- A special visitor's cat may leave a crate (switch specialVisitors): always the first of a save, then rarely.
+	if cat.special and LiveFlags.isOn(SpecialRules.FLAG) then
+		local firstDone = save.asks[SpecialRules.FIRST_DONE] == true
+		save.asks[SpecialRules.FIRST_DONE] = true
+		if SpecialRules.dropsCrate(firstDone, nextNumber) then
+			local kind = SpecialRules.CRATE_KIND
+			save.crates[kind] = (save.crates[kind] or 0) + 1
+			player:SetAttribute(SpecialRules.CRATES_ATTRIBUTE, save.crates[kind])
+			PetService.show(player)
+			NetService.notice(player, `{cat.kind} left you a crate!`)
+		end
+	end
+	-- The player's own pet adds to their tips (switch pets, tuning pet.boost)
+	local tipBoost = PetService.playerBoost(player)
+	if tipBoost > 0 then
+		pay = {
+			coins = pay.coins,
+			tip = math.floor(pay.tip * (1 + tipBoost) + 0.5),
+			stars = pay.stars,
+		}
+	end
 	local more: RecapRules.Extra = extra or {}
-	coins = pay.coins + (more.speed or 0) + (more.early or 0) + (more.dirt or 0) + pay.tip + bonus
+	coins = pay.coins
+		+ (more.speed or 0)
+		+ (more.early or 0)
+		+ (more.dirt or 0)
+		+ (more.bow or 0)
+		+ pay.tip
+		+ bonus
 	save.coins += coins
 	WalletService.show(player)
 	local starsBefore = save.stars
@@ -897,6 +968,98 @@ local function tickHearts()
 	end
 end
 
+-- Whether the player's spa has a special visitor now: waiting, due to walk in, or their cat with the player.
+local function hasVisitor(player: Player): boolean
+	if visitorPending[player] ~= nil then
+		return true
+	end
+	local cat = cats[player]
+	if cat and cat.special and not cat.photoTaken then
+		return true
+	end
+	for _, order in ordersFor(player) do
+		if order.special then
+			return true
+		end
+	end
+	return false
+end
+
+-- Once a second (switch specialVisitors): a visitor is due after a while of play, one per spa at a time. The first of
+-- a save comes at about 4:00; the rest 8 to 15 minutes of play after the last one left or was washed.
+local function tickVisitors()
+	for player in queues do
+		local save = DataService.get(player)
+		local base = playBase[player]
+		if save == nil or base == nil or player.Parent ~= Players or save.stars <= 0 then
+			continue -- not before the first serve: the tutorial's line is the player's own
+		end
+		if hasVisitor(player) then
+			visitorDue[player] = nil
+			continue
+		end
+		local now = played(player)
+		local due = visitorDue[player]
+		if due == nil then
+			local scripted = save.asks[SpecialRules.FIRST_DONE] ~= true
+				and not visitedThisSession[player]
+			due = SpecialRules.dueAt(now, base.play, not scripted, nextNumber)
+			visitorDue[player] = due
+		end
+		if now >= (due :: number) then
+			visitorDue[player] = nil
+			visitedThisSession[player] = true
+			visitorPending[player] = SpecialRules.pickCat(nextNumber) -- walks in at the next free place
+		end
+	end
+end
+
+-- The waiting line as the player's workers see it (WorkerService, switch workers), front first: what each cat is, how
+-- dirty, and how much of its heart bar is left. Empty before the spa's first serve (the tutorial's line is the
+-- player's own) and before the save loads.
+function SpaService.lineForWorkers(player: Player): { WorkerRules.Entry }
+	local save = DataService.get(player)
+	local line = queues[player]
+	if save == nil or save.stars <= 0 or line == nil then
+		return {}
+	end
+	queueFor(player) -- keeps the orders in step with the line
+	local now = Workspace:GetServerTimeNow()
+	local out: { WorkerRules.Entry } = {}
+	for place, order in ordersFor(player) do
+		local kind = line[place]
+		if kind == nil then
+			break
+		end
+		local left = if LiveFlags.isOn(HeartRules.FLAG)
+			then HeartRules.left(order.since, order.lasts, now)
+			else 1
+		-- the player's pick for a while, and a special visitor always, are the player's own
+		local reserved = order.special == true
+			or (order.reservedUntil ~= nil and os.clock() < (order.reservedUntil :: number))
+		table.insert(out, { kind = kind, dirt = order.dirt, left = left, reserved = reserved })
+	end
+	return out
+end
+
+-- A worker takes the customer at `place` of the line (as lineForWorkers gave it): they leave the line with their cat,
+-- which goes to the worker's station, and the line refills. Returns the cat's kind and dirt level, or nil when there
+-- is nobody at that place any more.
+function SpaService.takeForWorker(player: Player, place: number, kind: string): (string?, number?)
+	local line = queues[player]
+	if line == nil or line[place] ~= kind then
+		return nil, nil
+	end
+	local order = ordersFor(player)[place]
+	local dirt = if order then order.dirt else 1
+	local shownPlace = place + (if carrying[player] == CarryRules.DOOR then 1 else 0)
+	table.remove(line, place)
+	table.remove(ordersFor(player), place)
+	FigureService.left(player, shownPlace)
+	sendQueue(player)
+	return kind, dirt
+end
+
 function SpaService.Init(_services: { [string]: any }) end
 
 function SpaService.Start()
@@ -919,6 +1082,19 @@ function SpaService.Start()
 				end)
 				if not ok then
 					warn("SpaService: heart bars:", err)
+				end
+			end
+			if
+				LiveFlags.isOn(SpecialRules.FLAG)
+				and LiveFlags.isOn(FLAG)
+				and LiveFlags.isOn(CUSTOMERS_FLAG)
+			then
+				local ok, err = pcall(function()
+					tickVisitors()
+					return nil :: any
+				end)
+				if not ok then
+					warn("SpaService: special visitors:", err)
 				end
 			end
 		end
@@ -949,6 +1125,11 @@ function SpaService.Start()
 		end
 		-- The board shows the chances of the player's star tier, the same table their rolls use.
 		player:SetAttribute(CatRules.TIER_ATTRIBUTE, CatRules.tierFor(save.stars))
+		-- crates held, for the crates' HUD (issue 511); set here as special visitors are the first to give one
+		player:SetAttribute(
+			SpecialRules.CRATES_ATTRIBUTE,
+			save.crates[SpecialRules.CRATE_KIND] or 0
+		)
 		-- Whether the opening plays is decided once, here, so it waits for the server's first read of the switches
 		-- (a fraction of a second; at most LiveFlags.READ_WAIT_SECONDS).
 		LiveFlags.waitForRead()
@@ -1092,6 +1273,9 @@ function SpaService.Start()
 		loadDone[player] = nil
 		isOwner[player] = nil
 		carrying[player] = nil
+		visitorDue[player] = nil
+		visitorPending[player] = nil
+		visitedThisSession[player] = nil
 	end)
 end
 

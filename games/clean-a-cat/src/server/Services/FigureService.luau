@@ -22,6 +22,7 @@ local CatRules = require(Shared:WaitForChild("CatRules"))
 local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local SpecialRules = require(Shared:WaitForChild("SpecialRules"))
 local WalkRules = require(Shared:WaitForChild("WalkRules"))
 
 local LineLooks = require(script.Parent.Parent.Util.LineLooks)
@@ -198,7 +199,9 @@ local function carrierFor(
 ): Model?
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	-- stepped past the figure looks, so one figure look does not always carry the same carrier
-	local wanted = CARRIER_LOOKS[(lookNumber + lookNumber // looks) % #CARRIER_LOOKS + 1]
+	local wanted = if CatRules.isSpecial(kind)
+		then SpecialRules.CARRIER -- a special visitor's royal carrier (Model-Agent #476)
+		else CARRIER_LOOKS[(lookNumber + lookNumber // looks) % #CARRIER_LOOKS + 1]
 	local variant = if assets then assets:FindFirstChild(wanted) else nil
 	local carrierAsset = if variant and variant:IsA("Model")
 		then variant :: Model
@@ -268,7 +271,12 @@ end
 -- One of Model-Agent's townsfolk for look number `lookNumber`, holding the carrier with a cat of `kind`, standing on
 -- `spot` (its pivot is on the floor between its feet, front -Z, as a spot's).
 local function townsfolkFor(lookNumber: number, kind: string, spot: CFrame): Model?
-	local base = asset(`CleanACat_NPC_Customer_{TOWNSFOLK[lookNumber % #TOWNSFOLK + 1]}`)
+	local special = CatRules.isSpecial(kind)
+	-- a special visitor is one of Model-Agent's three special customers (#476), each always with the same cat
+	local look = if special
+		then SpecialRules.lookFor(kind)
+		else TOWNSFOLK[lookNumber % #TOWNSFOLK + 1]
+	local base = asset(`CleanACat_NPC_Customer_{look}`)
 	if base == nil then
 		return nil
 	end
@@ -283,6 +291,9 @@ local function townsfolkFor(lookNumber: number, kind: string, spot: CFrame): Mod
 		carrier.Parent = if arm and arm ~= (figure :: Instance) then arm else figure
 	end
 	figure:SetAttribute("CatKind", kind)
+	if special then
+		figure:SetAttribute(SpecialRules.FIGURE_ATTRIBUTE, true)
+	end
 	CollectionService:AddTag(figure, WalkRules.TAG)
 	return figure
 end

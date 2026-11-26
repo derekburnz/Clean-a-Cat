@@ -54,6 +54,23 @@ return function()
 			expect(rows[3].key).to.equal("bonus")
 			expect(rows[3].value).to.equal(3)
 		end)
+
+		it("shows the bow tier's line before the tip and counts it in the total", function()
+			local cat = CatRules.ROSTER.Common[1]
+			local pay = CatRules.pay(cat)
+			local recap = RecapRules.make(cat, pay, 0, 10, false, { bow = 4, bowTier = "Silk" })
+			local rows = RecapRules.rows(recap)
+			expect(rows[2].key).to.equal("bow")
+			expect(rows[2].say).to.equal("Silk bow")
+			expect(rows[3].key).to.equal("tip")
+			expect(RecapRules.total(recap)).to.equal(pay.coins + pay.tip + 4)
+			local cleaned = RecapRules.clean(recap) :: RecapRules.Recap
+			expect(cleaned.bow).to.equal(4)
+			expect(cleaned.bowTier).to.equal("Silk")
+			local bad = table.clone(recap) :: any
+			bad.bowTier = "Diamond"
+			expect(RecapRules.clean(bad)).to.equal(nil)
+		end)
 	end)
 
 	describe("RecapRules.clean", function()

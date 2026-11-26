@@ -32,6 +32,17 @@ Remotes.ClientToServer = {
 	-- CarryRules.PLACE_REACH studs of their tub: the cat is in the tub and CatReady follows
 	-- Tools board (ToolService, behind toolsBoard).
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
+	"RequestBuyBow", -- (tier: one of BowRules.TIERS)  1 a second; switches toolsBoard and bowTiers on, save loaded, near
+	-- the board, the next tier in order, enough coins
+	-- Workers (WorkerService, behind workers, scrubPrototype and customers). Each needs the save loaded; hiring also
+	-- needs the character within WorkerRules.SERVER_REACH studs of that worker's pad (mode and level come from the HUD).
+	"RequestHireWorker", -- (id: one of WorkerRules.IDS)  1 a second; near the pad, not a pass worker, not hired, coins
+	"RequestWorkerMode", -- (id, mode: one of WorkerRules.MODES)  2 a second; the worker is hired
+	"RequestWorkerLevel", -- (id)  1 a second; the worker is hired, below the top level, enough coins
+	-- Crates and pets (PetService, behind pets). Every pet id must be one of the player's own.
+	"RequestOpenCrate", -- (kind: one of CrateRules.KINDS)  1 a second; the save holds one: the pet is rolled and kept
+	"RequestPlacePet", -- (petId: int, slot: string?)  2 a second; one of CrateRules.slots, or nil for the pen
+	"RequestFusePets", -- (a: int, b: int, c: int)  1 a second; three different pets, same kind and star, below star 3
 	-- Builds (BuildService, behind builds).
 	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board, slot free, order, coins
 	-- Funnel (FunnelService, behind onboardingFunnel).
@@ -61,6 +72,9 @@ Remotes.ServerToClient = {
 	"Builds", -- (builds: { [slot]: { item, endsAt } }, built: { string }, serverNow: number)  for the board and countdowns
 	"BuildFinished", -- (id: string)  a build just finished, or finished while the player was away: celebrate (switch builds)
 	"PhotoPaid", -- (catId: number, coins: number, total: number, recap: RecapRules.Recap?)  the photo paid; total is the save's coins; recap for a customer, or the kitten's score card (mascot), while recapCard is on
+	"CrateOpened", -- (kind: string, pet: { id, kind, star })  the crate the player tapped and the pet in it (switch pets)
+	"PetFused", -- (pet: { id, kind, star })  three pets fused into this one, a star higher (switch pets)
+	"Pets", -- (pets: { { id, kind, star, slot? } })  every pet the player owns, after each change (switch pets)
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view
 	-- after every spa report, so a client whose step was refused falls back to it instead of getting stuck
 }

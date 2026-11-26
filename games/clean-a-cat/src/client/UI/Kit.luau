@@ -3,7 +3,7 @@
 -- outline, corner and outlined words, and scales the same way.
 --
 --   Kit.INK, Kit.WHITE, Kit.CREAM, Kit.FONT   the palette and the one display font (Fredoka One)
---   Kit.RARITY[rarity]                          a rarity's colour (Common grey to Legendary gold)
+--   Kit.RARITY[rarity]                          a rarity's colour (Common grey to Legendary gold, Special lilac)
 --   Kit.screenScale()                           (scale, short): design pixels on a 1280 x 720 canvas scale like the
 --                                               asset library's Scale.luau, clamp(min(w / 1280, h / 720), 0.75, 1.3);
 --                                               short is a screen under 560 design pixels tall (a phone held sideways)
@@ -34,6 +34,7 @@ Kit.RARITY = {
 	Rare = Color3.fromHex("5FA8FF"),
 	Epic = Color3.fromHex("C07CFF"),
 	Legendary = Color3.fromHex("FFC94D"),
+	Special = Color3.fromHex("8F62F0"), -- special visitors' cats: a deeper lilac than Epic, so the best cat never reads as Common grey
 } :: { [string]: Color3 }
 
 local DESIGN = Vector2.new(1280, 720)

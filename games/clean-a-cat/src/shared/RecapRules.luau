@@ -6,6 +6,7 @@
 -- The card has two sizes: the full card, and a slim strip so a session of many cats is not many windows to close.
 -- The two values that choose between them are FULL_BELOW_STARS and FULL_FROM_RARITY, here and nowhere else.
 -- XP, a 3-star wash grade and a quick-job bonus are not in the game yet, so the card has no rows for them.
+local BowRules = require(script.Parent:WaitForChild("BowRules"))
 local CatRules = require(script.Parent:WaitForChild("CatRules"))
 
 local RecapRules = {}
@@ -37,15 +38,24 @@ export type Recap = {
 	early: number?, -- for picking the cat early in its heart bar
 	dirt: number?, -- for a dirtier cat
 	grade: number?, -- the wash's stars, 1 to 3; 0 when there is no grade
+	bow: number?, -- the bow tier's coins (switch bowTiers, BowRules); 0 or nil when off
+	bowTier: string?, -- the tier that earned them, one of BowRules.TIERS, for the line's words
 }
 
 -- The pay formula's lines for make; each 0 when not given.
-export type Extra = { speed: number?, early: number?, dirt: number?, grade: number? }
+export type Extra = {
+	speed: number?,
+	early: number?,
+	dirt: number?,
+	grade: number?,
+	bow: number?,
+	bowTier: string?,
+}
 
 export type Row = { key: string, say: string, value: number }
 
 local function rank(rarity: string): number?
-	return table.find(CatRules.RARITIES, rarity)
+	return CatRules.rank(rarity) -- a special visitor's cat (SPECIAL) is rarest, so always the full card
 end
 
 -- Whether a customer gets the full card: the spa's stars before this customer paid, and the cat's rarity.
@@ -82,6 +92,8 @@ function RecapRules.make(
 		early = more.early or 0,
 		dirt = more.dirt or 0,
 		grade = more.grade or 0,
+		bow = more.bow or 0,
+		bowTier = more.bowTier,
 	}
 end
 
@@ -102,6 +114,7 @@ function RecapRules.mascot(name: string, stars: number): Recap
 		early = 0,
 		dirt = 0,
 		grade = 0,
+		bow = 0,
 	}
 end
 
@@ -111,6 +124,7 @@ function RecapRules.total(recap: Recap): number
 		+ (recap.speed or 0)
 		+ (recap.early or 0)
 		+ (recap.dirt or 0)
+		+ (recap.bow or 0)
 		+ recap.tip
 		+ recap.bonus
 end
@@ -128,6 +142,7 @@ function RecapRules.rows(recap: Recap): { Row }
 	add("speed", `Quick wash, {grade} {if grade == 1 then "star" else "stars"}`, recap.speed or 0)
 	add("early", "Picked early", recap.early or 0)
 	add("dirt", "Extra dirty", recap.dirt or 0)
+	add("bow", `{BowRules.TIER[recap.bowTier or BowRules.FIRST].name} bow`, recap.bow or 0)
 	add("tip", "Happy owner tip", recap.tip)
 	add("bonus", "Spa stations bonus", recap.bonus)
 	return rows
@@ -170,7 +185,12 @@ function RecapRules.clean(raw: unknown): Recap?
 	local speed, early, dirt =
 		optional(t.speed, MAX_AMOUNT), optional(t.early, MAX_AMOUNT), optional(t.dirt, MAX_AMOUNT)
 	local grade = optional(t.grade, 3)
-	if speed == nil or early == nil or dirt == nil or grade == nil then
+	local bow = optional(t.bow, MAX_AMOUNT)
+	if speed == nil or early == nil or dirt == nil or grade == nil or bow == nil then
+		return nil
+	end
+	local bowTier: unknown = t.bowTier
+	if bowTier ~= nil and BowRules.clean(bowTier) == nil then
 		return nil
 	end
 	return {
@@ -187,6 +207,8 @@ function RecapRules.clean(raw: unknown): Recap?
 		early = early,
 		dirt = dirt,
 		grade = grade,
+		bow = bow,
+		bowTier = BowRules.clean(bowTier),
 	}
 end
 

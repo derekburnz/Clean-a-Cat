@@ -70,6 +70,21 @@ local heartLow: Signal<Model> = Signal.new()
 -- (customer): (switch heartBar) a waiting customer's bar ran out and they leave with their cat; fired just before the
 -- server redraws the line, so the figure is still there for a moment.
 local catLeft: Signal<Model> = Signal.new()
+-- (cat): (switch workers) a worker finished a cat: the clean model has just sat down in their tub, WorkerProgress 1.
+-- Fired on every device that sees it, for any spa on the street.
+local workerFinished: Signal<Model> = Signal.new()
+-- (visitor, again): (switch specialVisitors) a special visitor's figure is in the player's own door line. `again` is
+-- false the first time in a visit, and true when the line was redrawn and this is a new figure for the same visitor
+-- (so the star can go back over their head without the arrival playing twice).
+local visitorArrived: Signal<Model, boolean> = Signal.new()
+-- (crate): (switch pets) a crate the player holds has landed by their tub (CleanACat_Prop_PetCrate, where it stays).
+local crateDropped: Signal<Model> = Signal.new()
+-- (crate): (switch pets) the player tapped Open and the server rolled the pet: the lid opens, the same every time.
+local crateOpened: Signal<Model> = Signal.new()
+-- (pet): (switch pets) the pet from the crate, just placed on the crate's PetSeat.
+local petRevealed: Signal<Model> = Signal.new()
+-- (pet): (switch pets) three pets fused: the pet beside the player or worker, now a star higher.
+local petStarUp: Signal<Model> = Signal.new()
 
 local Moments = {
 	ScrubStart = scrubStart,
@@ -100,6 +115,12 @@ local Moments = {
 	RinseSpray = rinseSpray,
 	HeartLow = heartLow,
 	CatLeft = catLeft,
+	WorkerFinished = workerFinished,
+	VisitorArrived = visitorArrived,
+	CrateDropped = crateDropped,
+	CrateOpened = crateOpened,
+	PetRevealed = petRevealed,
+	PetStarUp = petStarUp,
 
 	-- Every moment name, in the order they happen in a first session. Tests and tools read this list.
 	NAMES = table.freeze({
@@ -131,6 +152,12 @@ local Moments = {
 		"CatReturned",
 		"HeartLow",
 		"CatLeft",
+		"WorkerFinished",
+		"VisitorArrived",
+		"CrateDropped",
+		"CrateOpened",
+		"PetRevealed",
+		"PetStarUp",
 	}),
 }
 
