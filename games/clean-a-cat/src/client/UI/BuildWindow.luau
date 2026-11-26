@@ -264,12 +264,12 @@ end
 local function retext(rows: { BuildViewRules.Row }): boolean
 	for _, row in rows do
 		local key = `{row.kind}_{row.id}`
-		local say = drawnSays[key]
+		local say: TextLabel? = drawnSays[key]
 		if say == nil or say.Parent == nil then
 			return false
 		end
 		say.Text = row.say
-		local button = drawnButtons[key]
+		local button: GuiButton? = drawnButtons[key]
 		local action = row.action
 		if button and action then
 			button:SetAttribute("Says", `{action} {row.name}, {row.say}`)
