@@ -40,6 +40,7 @@ CounterCrate.CAT_NAME = "CounterCat"
 CounterCrate.SET_AT = "CounterSetAt"
 CounterCrate.READY_AT = "CounterReadyAt"
 CounterCrate.PACKED_NAME = "PackedCat"
+CounterCrate.SPOT_ATTRIBUTE = "CounterCrateSpot" -- Gameplay's set-down spot for the crate's pivot
 CounterCrate.REACH_ATTRIBUTE = "CounterReachAt" -- local, on the figure: CustomerMotion reaches the carrying arm
 
 -- The steps as Gameplay's 2.4 s (CounterRules.SETTLE_SECONDS) splits them; a longer or shorter total scales them.
@@ -239,6 +240,11 @@ end
 
 local function landing(entry: Entry, crate: Model, seat: Attachment?): CFrame
 	local spot = entry.cat:GetPivot()
+	-- Gameplay's spot for this place (the plot's SpotCounterCrate, or halfway on the counter top), then the plot's own
+	local given = entry.cat:GetAttribute(CounterCrate.SPOT_ATTRIBUTE)
+	if typeof(given) == "CFrame" then
+		return given :: CFrame
+	end
 	local placed = crateSpot(spot.Position)
 	if placed then
 		return placed
