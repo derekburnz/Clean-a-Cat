@@ -56,5 +56,24 @@ return function()
 				true
 			)
 		end)
+
+		it("frames the cat clear of the step dots and the tool tray (issue 924)", function()
+			-- Sync-Agent's iPhone 13 numbers: a 3.15 stud box at field of view 50
+			local d = WashScreenRules.frontDistance(3.15, 50)
+			local screen = 2 * d * math.tan(math.rad(50) / 2) -- studs of screen height at that distance
+			local share = 3.15 / screen
+			expect(math.abs(share - WashScreenRules.FRONT_FILL) < 1e-6).to.equal(true)
+			-- the box's top from the top of the screen: under the dots (about a third down), above half way
+			local top = 0.5 + WashScreenRules.FRONT_DROP - share / 2
+			expect(top > 0.3 and top < 0.45).to.equal(true)
+			-- its bottom above the tool tray (the lowest fifth)
+			expect(0.5 + WashScreenRules.FRONT_DROP + share / 2 < 0.8).to.equal(true)
+			expect(
+				math.abs(WashScreenRules.frontLookUp(d, 50) / screen - WashScreenRules.FRONT_DROP)
+					< 1e-6
+			).to.equal(true)
+			-- the camera stays inside the room's walls, with a stud to spare past the tub
+			expect(d + 1.5 + 1 < WashScreenRules.HALF).to.equal(true)
+		end)
 	end)
 end

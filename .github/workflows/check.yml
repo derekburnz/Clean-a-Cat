@@ -53,7 +53,7 @@ jobs:
         run: bash ./check.sh
 
       # Selene's Roblox list (roblox.yml) cannot be fetched from a cloud thread (its downloader does not trust the
-      # proxy's certificate), so main's copy is kept for tools/prepush.sh to download with `gh run download`.
+      # proxy's certificate), so main's copy is kept: as this artifact, then as a release asset (job keep-selene-std).
       - name: Write Selene's Roblox list into the game folder
         if: github.event_name == 'push'
         continue-on-error: true # a helper file: a failed fetch must never turn main red or hold the dev publish
@@ -68,6 +68,36 @@ jobs:
           path: ${{ env.GAME_DIR }}/roblox.yml
           retention-days: 30
           if-no-files-found: warn
+
+  # Copies main's roblox.yml to the release selene-std, where tools/prepush.sh downloads it (a cloud thread cannot
+  # reach run artifacts' storage, but it can reach release downloads). Not a required check, and it can never turn
+  # main red or hold the dev publish: every failure here is ignored.
+  keep-selene-std:
+    name: Keep Selene's Roblox list for cloud threads
+    if: github.event_name == 'push'
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: true
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: selene-roblox-std
+
+      - name: Upload it to the release selene-std
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          [ -s roblox.yml ] || { echo "no roblox.yml this run"; exit 0; }
+          gh release view selene-std >/dev/null 2>&1 || gh release create selene-std --prerelease --latest=false \
+            --target "$GITHUB_SHA" --title "Selene Roblox list (tooling, not a game release)" \
+            --notes "Selene's roblox.yml from main's last check run, for tools/prepush.sh on cloud threads. Replaced on every push to main."
+          gh release upload selene-std roblox.yml --clobber
 
   tests:
     # Required too (docs/setup-guide.md step 9). Never rename it without changing the ruleset with it.

@@ -253,6 +253,16 @@ function StarterAd.shown(): boolean
 	return p ~= nil and p.holder.Visible
 end
 
+-- The ad's card and its SAVE tag (which sticks out past the card's left) while they show, so a notice card can sit
+-- clear of them (ToastCard, issue 925).
+function StarterAd.boxes(): { GuiObject }
+	local p = parts
+	if p == nil or not p.holder.Visible then
+		return {}
+	end
+	return { p.card, p.tag }
+end
+
 function StarterAd.build(root: Instance, open: () -> ())
 	-- the holder carries the screen scale; the card inside keeps its own UIScale free for the attention bob
 	local holder = Instance.new("Frame")
