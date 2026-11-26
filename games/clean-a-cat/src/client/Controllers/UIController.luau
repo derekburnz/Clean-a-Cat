@@ -12,12 +12,17 @@ function UIController.Init(_controllers: { [string]: any })
 end
 
 function UIController.Start()
-	Remotes.event("Notice").OnClientEvent:Connect(function(kind: unknown, text: unknown)
-		if type(text) ~= "string" then
-			return
-		end
-		UI.toast(text, if kind == "warning" then "warning" else "info")
-	end)
+	Remotes.event("Notice").OnClientEvent
+		:Connect(function(kind: unknown, text: unknown, icon: unknown)
+			if type(text) ~= "string" then
+				return
+			end
+			UI.toast(
+				text,
+				if kind == "warning" then "warning" else "info",
+				if type(icon) == "string" then icon else nil
+			)
+		end)
 end
 
 return UIController
