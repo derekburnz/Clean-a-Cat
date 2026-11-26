@@ -75,6 +75,7 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotStation4 = at(15.2, 0.5, 1, 0), -- the Bubble Bath, against the wall on the tub's side (#267, #276)
 	SpotStation5 = at(15.2, 0.5, -6.6, 0), -- the Pawdicure, in front of it
 	SpotVipDoor = at(-7, 0.5, 10.5, 0),
+	SpotGardenDoor = at(12, 0.5, 10.5, 0), -- the back door to the Garden (GardenRules, Model-Agent's #579)
 	SpotBoard = at(-13.5, 0.5, -14.6, TURNED),
 	-- The opening (#285, Model-Agent): the player stands mid-entrance facing the street, the box lands in front on the
 	-- near pavement, and the truck hits the bump across the near lane.

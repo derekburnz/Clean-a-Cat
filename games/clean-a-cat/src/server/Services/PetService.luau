@@ -4,7 +4,8 @@
 -- reveal (CrateOpened). Pets go beside the player or a worker (RequestPlacePet) and three of the same fuse into a star
 -- up (RequestFusePets); the server checks every pet in a request belongs to the player. Crates held show as the Player
 -- attributes Crates_<kind>, the pet in each slot as Pet_<slot> = "<kind>:<star>" (every client draws them), and the
--- whole pen goes to the owner as Pets after every change.
+-- whole pen goes to the owner as Pets after every change. The pets in the pen play in the finished Garden
+-- (StationService.refreshGarden).
 -- Coins never buy a crate. The Robux crate is issue 514, behind PolicyService.
 -- Behind the LiveFlags switch `pets`, off by default.
 local Players = game:GetService("Players")
@@ -19,6 +20,7 @@ local Passes = require(Shared:WaitForChild("Passes"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
+local StationService = require(script.Parent:WaitForChild("StationService"))
 
 local SECOND_PASS = "SecondPetSlot" -- Passes key: a second slot for the player and every worker (issue 518)
 
@@ -60,6 +62,8 @@ function PetService.show(player: Player)
 	if LiveFlags.isOn(CrateRules.FLAG) then
 		NetService.fire(player, "Pets", save.pets)
 	end
+	-- the pets in the pen play in the finished Garden (GardenRules, issue 515)
+	StationService.refreshGarden(player)
 end
 
 -- Adds `count` crates of `kind` to the player's save (quests, the check in card, a special visitor) and shows them.
