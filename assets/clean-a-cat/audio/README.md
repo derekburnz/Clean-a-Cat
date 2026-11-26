@@ -48,3 +48,6 @@ One row per file or Creator Store id, added the moment it is picked. The asset i
 | sfx/CleanACat_Sfx_BuildDone.ogg | synth/make_sfx.py (ours) | Original | No | 132182941650686 (Creampuff Games) | 2026-11-25 |
 | ui/CleanACat_Ui_QuestDone.ogg | synth/make_sfx.py (ours) | Original | No | 86675527942579 (Creampuff Games) | 2026-11-25 |
 | ui/CleanACat_Ui_CheckIn.ogg | synth/make_sfx.py (ours) | Original | No | 105013415580311 (Creampuff Games) | 2026-11-25 |
+| ui/CleanACat_Ui_Open.ogg, ui/CleanACat_Ui_Close.ogg | owner's Catch a Cat Cafe CatCafe_Ui_Open and CatCafe_Ui_Close (derekburnz/Roblox-Asset-Library, synth/synth.py) | Original (owner's own) | No | not uploaded | 2026-11-26 |
+| sfx/CleanACat_Sfx_CoinPop.ogg | owner's Catch a Cat Cafe CatCafe_Sfx_CoinPop (derekburnz/Roblox-Asset-Library, synth/synth.py) | Original (owner's own) | No | not uploaded | 2026-11-26 |
+| sfx/CleanACat_Sfx_GiftClaim.ogg | owner's Catch a Cat Cafe CatCafe_Sfx_GiftClaim (derekburnz/Roblox-Asset-Library, synth/synth.py) | Original (owner's own) | No | not uploaded | 2026-11-26 |
