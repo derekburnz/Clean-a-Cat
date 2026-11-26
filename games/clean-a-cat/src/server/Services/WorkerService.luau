@@ -376,10 +376,15 @@ local function finish(player: Player, id: string, job: Job)
 	save.coins += coins
 	WalletService.show(player)
 	IndexService.stamp(player, job.kind, "washed")
-	NetService.notice(
-		player,
-		`+{coins} coins: {StaffNameService.nameOf(player, id)} washed {job.kind}`
-	)
+	if LiveFlags.isOn(WorkerRules.POPUP_FLAG) then
+		-- the owner's client shows the pay over this helper's stand (issue 743): no toast for every cat
+		NetService.fire(player, "HelperPaid", id, coins)
+	else
+		NetService.notice(
+			player,
+			`+{coins} coins: {StaffNameService.nameOf(player, id)} washed {job.kind}`
+		)
+	end
 	Telemetry.economy(player, "coins", "source", coins, save.coins, "Gameplay", `Worker{id}`)
 	restUntil[player] = restUntil[player] or {}
 	restUntil[player][id] = os.clock() + REST_SECONDS
