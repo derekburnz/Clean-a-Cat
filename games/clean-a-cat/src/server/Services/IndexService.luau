@@ -2,6 +2,8 @@
 -- IndexService: the Cat Index stamps in the save (save.index) and the full set bonus (save.indexBonusPaid).
 -- SpaService stamps Washed when a cat comes back clean and WindowService stamps Resident when a stray moves in.
 -- The client only shows what the server sends (CatIndex). Behind the LiveFlags switch `catIndex`.
+-- A special visitor's cat (CatRules.SPECIAL_CATS) is stamped on its own page: its notice counts the special cats
+-- ("New special cat: Sherbet (2 of 6)") and it never counts toward the main set or its bonus.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -59,11 +61,16 @@ function IndexService.stamp(player: Player, cat: string, stamp: IndexRules.Stamp
 	end
 	IndexService.send(player)
 	local cats = allCats()
+	local shown = CatRules.displayName(cat)
+	-- a special visitor's cat has its own page and never counts toward the main set (issue 524)
+	local set = if CatRules.isSpecial(cat) then CatRules.SPECIAL_CATS else cats
+	local count = `({IndexRules.washedCount(index, set)} of {#set})`
 	NetService.notice(
 		player,
-		if stamp == "washed"
-			then `New in the Cat Index: {cat} ({IndexRules.washedCount(index, cats)} of {#cats})`
-			else `{cat} got a Resident stamp`
+		if stamp ~= "washed"
+			then `{shown} got a Resident stamp`
+			elseif set ~= cats then `New special cat: {shown} {count}`
+			else `New in the Cat Index: {shown} {count}`
 	)
 	if not save.indexBonusPaid and IndexRules.complete(index, cats) then
 		save.indexBonusPaid = true
