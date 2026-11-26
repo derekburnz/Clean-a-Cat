@@ -2,6 +2,7 @@
 -- AudioController: starts Audio and plays cues on the game's moments. It only listens: no remotes, no state.
 -- Moments come from ReplicatedStorage.Shared.Moments (issue #3) once it exists; until then nothing is bound.
 -- Settings: sound and music default to on until a settings screen exists, then it calls Audio.applySettings.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Audio = require(script.Parent.Parent:WaitForChild("Audio"))
@@ -50,6 +51,27 @@ local function stopRinse()
 end
 
 -- Moment name -> handler. Payloads follow Shared.Moments: the cat first, then the moment's values.
+-- With helperPopups and helperPopFx on, the owner's own helper finishing a cat sounds once, as the popup's coinPop.
+-- True when `cat` is in the local player's own plot (Workspace.SpaPlots.Plot<slot>).
+local function ownCoinPop(cat: any): boolean
+	if typeof(cat) ~= "Instance" then
+		return false
+	end
+	local shared = ReplicatedStorage:WaitForChild("Shared")
+	local LiveFlags = require(shared:WaitForChild("LiveFlags")) :: any
+	if not (LiveFlags.isOn("helperPopups") and LiveFlags.isOn("helperPopFx")) then
+		return false
+	end
+	local SpaLayout = require(shared:WaitForChild("SpaLayout")) :: any
+	local ok, slot = pcall(SpaLayout.slotOf, Players.LocalPlayer)
+	if not ok or type(slot) ~= "number" then
+		return false
+	end
+	local plots = workspace:FindFirstChild("SpaPlots")
+	local plot = plots and plots:FindFirstChild("Plot" .. slot)
+	return plot ~= nil and (cat :: Instance):IsDescendantOf(plot)
+end
+
 local HANDLERS: { [string]: (...any) -> () } = {
 	ScrubStart = function(cat: any)
 		if scrub then
@@ -170,6 +192,9 @@ local HANDLERS: { [string]: (...any) -> () } = {
 		Audio.play("starUp")
 	end,
 	WorkerFinished = function(cat: any)
+		if ownCoinPop(cat) then
+			return -- the owner hears HelperPopupController's coinPop for their own helpers instead (issue 801)
+		end
 		Audio.play("workerDone", { at = at(cat) })
 	end,
 	BuildFinished = function(build: any)

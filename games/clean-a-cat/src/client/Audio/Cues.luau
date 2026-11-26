@@ -137,6 +137,16 @@ local Cues: { [string]: Cue } = {
 		voices = 1,
 		preload = true,
 	},
+	-- owner's Cat Cafe CatCafe_Sfx_CoinPop as CleanACat_Sfx_CoinPop: the helper pay popup over a stand (switch
+	-- helperPopFx, #801); 2D, only the owner hears it, and it stands in for workerDone on their own plot
+	coinPop = {
+		ids = { "rbxassetid://78798450390778" },
+		group = "Sfx",
+		volume = 0.3,
+		pitch = { 0.97, 1.05 },
+		minGap = 0.25,
+		voices = 1,
+	},
 	-- owner's Cat Cafe CatCafe_Sfx_GiftClaim as CleanACat_Sfx_GiftClaim: a Free Reward or the gift pet is claimed
 	-- (Effects/ClaimFx, #802); a step under the other rewards, the level Derek liked in Cat Cafe
 	giftClaim = {

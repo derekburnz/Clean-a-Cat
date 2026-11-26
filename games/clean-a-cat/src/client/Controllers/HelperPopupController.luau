@@ -11,10 +11,12 @@ local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
+local Audio = require(script.Parent.Parent:WaitForChild("Audio"))
 local HelperPopup = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("HelperPopup"))
 
 local HelperPopupController = {}
 
+local POP_FLAG = "helperPopFx" -- issue 801: the popup pops in with one soft coin sound
 local OVER = 7 -- studs over the stand's floor spot: just over a standing helper's head
 
 function HelperPopupController.Init(_controllers: { [string]: any }) end
@@ -35,7 +37,16 @@ function HelperPopupController.Start()
 		if not ok then
 			return
 		end
-		HelperPopup.show((spot :: CFrame).Position + Vector3.new(0, OVER, 0), math.floor(rawCoins))
+		local pop = LiveFlags.isOn(POP_FLAG)
+		HelperPopup.show(
+			(spot :: CFrame).Position + Vector3.new(0, OVER, 0),
+			math.floor(rawCoins),
+			pop
+		)
+		if pop then
+			-- the owner's one sound for this cat: AudioController skips workerDone on their own plot meanwhile
+			Audio.play("coinPop")
+		end
 	end)
 end
 

@@ -13,6 +13,7 @@
 --   ClaimFx.at(t, i) -> (scale, seen, degrees)   pure: star i (1 to 3) at t seconds; seen 0 is hidden, 1 fully shown
 --   ClaimFx.start(ui, isOn)                       binds once; isOn() is read at claim time
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -23,7 +24,15 @@ local Icons = require(Client:WaitForChild("UI"):WaitForChild("HUD"):WaitForChild
 
 local ClaimFx = {}
 
-ClaimFx.ATTRIBUTES = { "GiftClaimed", "FreeLikeClaimed", "FreePlayClaimed" }
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local FreeRewardRules = require(Shared:WaitForChild("FreeRewardRules"))
+local GiftRules = require(Shared:WaitForChild("GiftRules"))
+
+ClaimFx.ATTRIBUTES = {
+	GiftRules.CLAIMED_ATTRIBUTE,
+	FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE,
+	FreeRewardRules.PLAY_CLAIMED_ATTRIBUTE,
+} :: { string }
 ClaimFx.PRESS_WINDOW = 6
 ClaimFx.SECONDS = 0.5
 ClaimFx.GAP = 0.08
