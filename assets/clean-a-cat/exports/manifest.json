@@ -16707,6 +16707,141 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_WaitBench.png"
  },
  {
+  "name": "CleanACat_Station_WashStandJo",
+  "category": "Station",
+  "module": "worker_stations",
+  "objects": [
+   "CleanACat_Station_WashStandJo",
+   "CleanACat_Station_WashStandJo_Water",
+   "CleanACat_Station_WashStandJo_Foam"
+  ],
+  "triangles": 1872,
+  "budget": 2500,
+  "parts": 47,
+  "size_studs": {
+   "x": 4.59,
+   "y": 4.25,
+   "z": 4.79
+  },
+  "size_roblox": [
+   4.59,
+   4.79,
+   4.25
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "1872/2500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1220 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.16 y=-0.08",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_WashStandJo.png"
+ },
+ {
+  "name": "CleanACat_Station_WashStandLou",
+  "category": "Station",
+  "module": "worker_stations",
+  "objects": [
+   "CleanACat_Station_WashStandLou",
+   "CleanACat_Station_WashStandLou_Water",
+   "CleanACat_Station_WashStandLou_Foam"
+  ],
+  "triangles": 2380,
+  "budget": 2500,
+  "parts": 56,
+  "size_studs": {
+   "x": 4.89,
+   "y": 4.54,
+   "z": 4.3
+  },
+  "size_roblox": [
+   4.89,
+   4.3,
+   4.54
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "2380/2500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1554 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.01 y=0.07",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_WashStandLou.png"
+ },
+ {
+  "name": "CleanACat_Station_WashStandSam",
+  "category": "Station",
+  "module": "worker_stations",
+  "objects": [
+   "CleanACat_Station_WashStandSam",
+   "CleanACat_Station_WashStandSam_Water",
+   "CleanACat_Station_WashStandSam_Foam"
+  ],
+  "triangles": 2356,
+  "budget": 2500,
+  "parts": 57,
+  "size_studs": {
+   "x": 4.95,
+   "y": 4.58,
+   "z": 4.22
+  },
+  "size_roblox": [
+   4.95,
+   4.22,
+   4.58
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "2356/2500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1512 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=-0.03 y=0.09",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Station_WashStandSam.png"
+ },
+ {
   "name": "CleanACat_Tool_Brush",
   "category": "Tool",
   "module": "tools",

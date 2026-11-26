@@ -47,6 +47,7 @@ import foam_puffs  # noqa: E402
 import stations  # noqa: E402
 import tools  # noqa: E402
 import vip  # noqa: E402
+import worker_stations  # noqa: E402
 import gates  # noqa: E402
 import opening  # noqa: E402
 import loaf  # noqa: E402
@@ -71,7 +72,8 @@ def all_assets():
     for name, (fn, budget) in dirt.ASSETS.items():
         out[name] = (fn, budget, "dirt")
     for module in (stations, tools, props, plot, spa_props, customers, build_props, vip, street, rewards,
-                   burrs, busy_spa, opening, loaf, backdrop, boards, foam_puffs, crates, townsfolk, spa_staff):
+                   burrs, busy_spa, opening, loaf, backdrop, boards, foam_puffs, crates, townsfolk, spa_staff,
+                   worker_stations):
         for name, (fn, budget) in module.ASSETS.items():
             out[name] = (fn, budget, module.__name__)
     return out
@@ -154,7 +156,7 @@ def main():
         if name in props.EXTRAS:
             extra = props.EXTRAS[name]()
         for maker in (tools, plot, spa_props, customers, build_props, street, busy_spa, opening, backdrop,
-                      boards, crates, townsfolk, vip, spa_staff):
+                      boards, crates, townsfolk, vip, spa_staff, worker_stations):
             if name in maker.EXTRAS:
                 extra = maker.EXTRAS[name]()
         if dnest or dattrs:                           # a dirty cat: blobs and tangles ride their piece (dirt.py)
