@@ -82,17 +82,17 @@ local function onBuild(player: Player, rawId: unknown)
 		return
 	end
 	local state = stateOf(save)
-	local ok, reason = BuildRules.canStart(state, id)
+	local ok, reason = BuildRules.canStart(state, id, LiveFlags.isOn)
 	if not ok then
 		NetService.notice(player, reason or "Can't build that yet", "warning")
 		return
 	end
-	local spent = BuildRules.start(state, id, os.time())
+	local spent = BuildRules.start(state, id, os.time(), LiveFlags.isOn)
 	if spent <= 0 then
 		return
 	end
 	WalletService.show(player)
-	local item = BuildRules.ITEMS[id]
+	local item = BuildRules.item(id, LiveFlags.isOn) :: BuildRules.Item
 	StationService.refresh(player)
 	send(player)
 	NetService.notice(player, `Building the {item.name}`)
@@ -112,7 +112,10 @@ function BuildService.Start()
 	NetService.on("RequestBuild", { perSecond = 1, burst = 2 }, onBuild)
 	DataService.onLoaded:Connect(function(player: Player, save)
 		-- Read before anything finishes: was a long build running when the player left?
-		Telemetry.returnedDay2(player, BuildRules.longRunningAt(stateOf(save), save.lastSeen))
+		Telemetry.returnedDay2(
+			player,
+			BuildRules.longRunningAt(stateOf(save), save.lastSeen, LiveFlags.isOn)
+		)
 		if LiveFlags.isOn(FLAG) then
 			send(player)
 			finishFor(player) -- builds that finished while the player was away wait for them here

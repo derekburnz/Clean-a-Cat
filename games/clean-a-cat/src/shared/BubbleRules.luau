@@ -36,6 +36,9 @@ BubbleRules.BUBBLES = table.freeze({
 	bubble("newSoap", "New soap!", "Bigger bubbles, faster scrubs.", true), -- Bubble Soap affordable
 	bubble("build", "Let's build!", "Upgrades make your spa better.", true), -- the Brush Table affordable
 	bubble("longBuild", "Before you go", "The VIP Room builds while you're away.", true), -- the VIP Room affordable
+	-- switch tubBuilds (issue 515, Design-Agent 2026-11-26): the Third Tub affordable and not started, in place of the
+	-- VIP Room's, which is far later then
+	bubble("longBuildTub", "Before you go", "The Third Tub builds while you're away.", true),
 }) :: { Bubble }
 
 local byId: { [string]: Bubble } = {}

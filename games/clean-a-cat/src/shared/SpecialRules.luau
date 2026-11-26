@@ -18,6 +18,9 @@ SpecialRules.FIRST_AT = 4 * 60 -- seconds of play: special.first
 SpecialRules.FIRST_AFTER_JOIN = 30 -- at least this long after a join, so a returning save is not met at the door
 SpecialRules.EVERY_MIN = 8 * 60 -- special.every: a random 8 to 15 minutes of play after the last one
 SpecialRules.EVERY_MAX = 15 * 60
+-- build.VipRoom.effect (switch tubBuilds, issue 515): with the VIP Room built, every 5 to 10 minutes instead
+SpecialRules.VIP_EVERY_MIN = 5 * 60
+SpecialRules.VIP_EVERY_MAX = 10 * 60
 SpecialRules.CRATE_CHANCE = 0.05 -- special.crateChance
 SpecialRules.CRATE_KIND = "normal" -- the crate a visitor leaves (save.crates key)
 -- The Player attribute with the count of normal crates held, for the crates' HUD and open (issue 511).
@@ -30,19 +33,21 @@ SpecialRules.LOOKS = table.freeze({ "Vivi", "Rex", "Pearl" }) :: { string }
 SpecialRules.CARRIER = "CleanACat_Prop_CarrierRoyal"
 
 -- When the next visitor is due, in seconds of play. `played` is the save's play now, `joinedAt` its play at this
--- session's join, `firstDone` whether the first visitor's crate was given. `random()` is in [0, 1).
+-- session's join, `firstDone` whether the first visitor's crate was given, `vip` whether the VIP Room is built.
+-- `random()` is in [0, 1).
 function SpecialRules.dueAt(
 	played: number,
 	joinedAt: number,
 	firstDone: boolean,
-	random: () -> number
+	random: () -> number,
+	vip: boolean?
 ): number
 	if not firstDone then
 		return math.max(SpecialRules.FIRST_AT, joinedAt + SpecialRules.FIRST_AFTER_JOIN)
 	end
-	return played
-		+ SpecialRules.EVERY_MIN
-		+ random() * (SpecialRules.EVERY_MAX - SpecialRules.EVERY_MIN)
+	local least = if vip then SpecialRules.VIP_EVERY_MIN else SpecialRules.EVERY_MIN
+	local most = if vip then SpecialRules.VIP_EVERY_MAX else SpecialRules.EVERY_MAX
+	return played + least + random() * (most - least)
 end
 
 -- Which special cat a visitor brings.

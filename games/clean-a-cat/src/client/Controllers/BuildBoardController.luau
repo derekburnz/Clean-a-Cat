@@ -100,7 +100,7 @@ local function refreshPrompts()
 	local now = os.time() + clockOffset
 	refreshBell(now)
 	for id, prompt in prompts do
-		local item = BuildRules.ITEMS[id]
+		local item = BuildRules.item(id, LiveFlags.isOn) :: BuildRules.Item
 		local running: BuildRules.Build? = builds[item.slot]
 		if built[id] then
 			prompt.Enabled = false
@@ -266,15 +266,12 @@ function BuildBoardController.Init(_controllers: { [string]: any }) end
 function BuildBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	-- An item's own switch (the Bubble Bath's, the Pawdicure's) changed: the board is drawn again with or without it.
-	for _, id in BuildRules.IDS do
-		local itemFlag = BuildRules.ITEMS[id].flag
-		if itemFlag then
-			ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. itemFlag)
-				:Connect(function()
-					disable()
-					refresh()
-				end)
-		end
+	for _, itemFlag in BuildRules.itemFlags() do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. itemFlag)
+			:Connect(function()
+				disable()
+				refresh()
+			end)
 	end
 	-- The plot placed or taken away: the board moves to its spot.
 	SpaLayout.changed(function()
