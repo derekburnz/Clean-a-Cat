@@ -183,6 +183,7 @@ ROOM = "CleanACat_Area_VipRoom"
 RX = SITE_X                       # the side walls' outer faces
 RY0, RY1 = WALL_T / 2, SITE_Y[1]  # from the spa wall's back face to the back wall's outer face
 RWT = 0.4                         # wall thickness: thick enough to collide
+WALL_SINK = 0.03                  # how far the back of a thin piece on a wall reaches into the wall (#670, as plot.SINK)
 EAVES = 12.6                      # the walls' top, over the spa's 12 stud wall (the frame's ring beam)
 RISE = 2.4                        # eaves to ridge
 BAND = 5.0                        # the bubblegum lower wall the half built room promised
@@ -206,9 +207,10 @@ _RZ = lambda deg: Matrix.Rotation(math.radians(deg), 3, "Z")      # noqa: E731
 _STAND = Matrix.Rotation(math.pi / 2, 3, "X")                     # a disc lying flat stood up to face -Y
 
 
-def _window(b, at, turn, w=2.2, h=2.6, bars=True):
+def _window(b, at, turn, w=2.2, h=2.6):
     """An arched window on a wall face: a gold frame and a sky pane, built facing -Y at `at` (the middle of the
-    square part) and turned about Z by `turn` degrees. No hole in the wall: one goes on each face."""
+    square part) and turned about Z by `turn` degrees. No hole in the wall: one goes on each face. Four parts;
+    the outside ones lost their glazing bars for phones (#688)."""
     R = _RZ(turn)
 
     def p(dx, dy, dz):
@@ -227,9 +229,6 @@ def _window(b, at, turn, w=2.2, h=2.6, bars=True):
     b.box(p(0, y, 0), (w, d, h), "spa_sky", bevel=False, rot=R)
     y, d = slab(0.132, 0.11)
     b.cyl(p(0, y, h / 2), w / 2, d, "spa_sky", segments=10, bevel=False, rot=R @ _STAND)
-    if bars:
-        b.box(p(0, -0.14, 0.25), (0.1, 0.05, h + w / 2 - 0.5), "gold_mid", bevel=False, rot=R)
-        b.box(p(0, -0.146, 0.3), (w - 0.04, 0.05, 0.1), "gold_mid", bevel=False, rot=R)
 
 
 def _shell(b):
@@ -242,20 +241,26 @@ def _shell(b):
         x = sx * (RX - t / 2)
         b.box_base((x, ym, -SINK), (t, y1 - y0, BAND + SINK), "spa_bubblegum", bevel=False)
         b.box_base((x, ym, BAND), (t - 0.01, y1 - y0 - 0.01, EAVES - BAND), "spa_cream", bevel=False)
-        b.box((sx * (RX - t - 0.05), ym, BAND + 0.1), (0.1, y1 - y0 - 2 * t - 0.02, 0.24), "gold_mid", bevel=False)  # a rail
+        b.box((sx * (RX - t - 0.05 + WALL_SINK / 2), ym, BAND + 0.1), (0.1 + WALL_SINK, y1 - y0 - 2 * t - 0.02, 0.24),
+              "gold_mid", bevel=False)                                                                    # a rail
     xin = RX - t                                                                                          # back wall
     b.box_base((0, y1 - t / 2, -SINK + 0.004), (2 * xin, t, BAND + SINK - 0.004), "spa_bubblegum", bevel=False)
     b.box_base((0, y1 - t / 2, BAND + 0.002), (2 * xin, t - 0.01, EAVES - BAND - 0.002), "spa_cream", bevel=False)
-    b.box((0, y1 - t - 0.05, BAND + 0.1), (2 * xin - 0.24, 0.1, 0.24), "gold_mid", bevel=False)
+    b.box((0, y1 - t - 0.05 + WALL_SINK / 2, BAND + 0.1), (2 * xin - 0.24, 0.1 + WALL_SINK, 0.24), "gold_mid", bevel=False)
     # the lining on the back of the spa's wall, round the door opening, and the wall over the spa's wall
-    ly, lt = y0 + 0.06, 0.12
+    # (each piece's back is WALL_SINK or more inside the spa's wall: a camera resting on that wall sees no back)
+    ws = WALL_SINK
+
+    def lining(x, z, w, h, front, swatch, k=0):          # from `front` off the spa wall's back face to inside it
+        back = ws + 0.004 * k
+        b.box_base((x, y0 + (front - back) / 2, z), (w, front + back, h), swatch, bevel=False)
+
     for sx in (1, -1):
         xa, xb = DOOR_W / 2, xin
-        b.box_base((sx * (xa + xb) / 2, ly, FLOOR_UP), (xb - xa, lt, BAND - FLOOR_UP), "spa_bubblegum", bevel=False)
-        b.box_base((sx * (xa + xb) / 2, ly, BAND + 0.002), (xb - xa, lt - 0.01, EAVES - BAND - 0.002), "spa_cream",
-                   bevel=False)
-        b.box((sx * (xa + xb) / 2, ly + lt / 2 + 0.05, BAND + 0.1), (xb - xa - 0.3, 0.1, 0.24), "gold_mid", bevel=False)
-    b.box_base((0, ly, DOOR_H), (DOOR_W, lt - 0.02, EAVES - DOOR_H), "spa_cream", bevel=False)
+        lining(sx * (xa + xb) / 2, FLOOR_UP, xb - xa, BAND - FLOOR_UP, 0.12, "spa_bubblegum")
+        lining(sx * (xa + xb) / 2, BAND + 0.002, xb - xa, EAVES - BAND - 0.002, 0.115, "spa_cream", k=1)
+        lining(sx * (xa + xb) / 2, BAND - 0.02, xb - xa - 0.3, 0.24, 0.22, "gold_mid", k=2)              # a rail
+    lining(0, DOOR_H, DOOR_W, EAVES - DOOR_H, 0.11, "spa_cream", k=3)
     b.box_base((0, y0 + t / 2 + 0.13, 12.0), (2 * xin, t, EAVES - 12.0), "spa_cream", bevel=False)
     # gables: a triangle over each end wall
     tri = [(-RX, -RISE / 3), (RX, -RISE / 3), (0.0, 2 * RISE / 3)]
@@ -275,10 +280,10 @@ def _shell(b):
     for sx in (1, -1):
         b_out = (sx * RX, ym + 0.6, 8.3)
         _window(b, b_out, 90 * sx)
-        _window(b, (sx * (RX - t), ym + 0.6, 8.3), -90 * sx, bars=False)
+        _window(b, (sx * (RX - t), ym + 0.6, 8.3), -90 * sx)
     for x in (-4.6, 4.6):
         _window(b, (x, y1, 8.3), 180)
-        _window(b, (x, y1 - t, 8.3), 0, bars=False)
+        _window(b, (x, y1 - t, 8.3), 0)
 
 
 def _surround(b):
@@ -324,7 +329,8 @@ def _decor(b):
                    "gold_mid", bevel=False)
     b.cyl_base((sx0, sy0, z - 0.03), 3.0, 0.08, "gold_mid", segments=16, bevel=False)                           # the mat
     b.cyl_base((sx0, sy0, z - 0.04), 2.75, 0.11, "pastel_lilac", segments=16, bevel=False)
-    b.star((sx0, sy0, z + 0.085), 1.5, 0.68, 0.03, "pearl")
+    b.cyl_base((sx0, sy0, z + 0.07), 1.3, 0.03, "pearl", segments=12, bevel=False)   # a pearl disc (a star until #688:
+    #                                                                                  the station stands on it)
     for sx in (1, -1):                                                # rope posts along the runner
         for y in (2.0, 5.4):
             b.cyl_base((sx * 2.0, y, z - 0.05), 0.3, 0.15, "gold_mid", segments=8, bevel=False)
@@ -335,8 +341,7 @@ def _decor(b):
     b.box_base((wx, wy, z + 0.3), (1.6, 3.2, 0.6), "pastel_lilac")
     b.box_base((wx + 0.72, wy, z + 0.9), (0.36, 3.2, 1.1), "pastel_lilac")
     b.cyl((wx - 0.05, wy + 1.45, z + 1.1), 0.36, 1.44, "velvet_lilac", segments=8, bevel=False, rot=(math.pi / 2, "Y"))
-    for k, (dx, dy) in enumerate(((-0.6, -1.4), (0.6, -1.4), (-0.6, 1.4), (0.6, 1.4))):
-        b.cyl_base((wx + dx, wy + dy, z - 0.06 - 0.004 * k), 0.12, 0.38 + 0.004 * k, "gold_mid", segments=6, bevel=False)
+    b.box_base((wx, wy, z - 0.06), (1.3, 2.9, 0.38), "gold_mid", bevel=False)      # a gold plinth (four legs until #688)
     qx, qy = QUEUE                                                    # the standing mat, with a paw
     b.cyl_base((qx, qy, z - 0.07), 1.15, 0.11, "gold_mid", segments=12, bevel=False)
     b.cyl_base((qx, qy, z - 0.08), 1.0, 0.14, "spa_bubblegum", segments=12, bevel=False)
@@ -349,18 +354,25 @@ def _decor(b):
         b.sphere((px, py, z + 1.6), 0.85, "leaf_green", segments=8, rings=5)
         b.sphere((px + 0.3 * sx, py - 0.2, z + 2.4), 0.6, "leaf_dark", segments=8, rings=5)
     # on the back wall over the station: a big gold star in a ring, a crown of three points over it
-    wy_ = RY1 - RWT - 0.07
-    b.cyl((sx0, wy_, 8.3), 1.25, 0.1, "pearl", segments=16, bevel=False, rot=_STAND)
-    b.star((sx0, wy_ - 0.07, 8.3), 1.0, 0.45, 0.08, "gold_mid", rot=_STAND)
+    # (both backs are inside the wall, the star's a hair deeper: a camera resting on the wall sees no back, #670)
+    wy_ = RY1 - RWT
+    b.cyl((sx0, wy_ - 0.045, 8.3), 1.25, 0.15, "pearl", segments=16, bevel=False, rot=_STAND)
+    b.star((sx0, wy_ - 0.072, 8.3), 1.0, 0.45, 0.216, "gold_mid", rot=_STAND)
     # three cat portraits on the left wall: a gold frame, a pearl card and a cat's head in it
-    lx = -(RX - RWT) + 0.05
+    # (every layer's back is inside the wall, a hair deeper each, so a camera resting on the wall sees no back)
+    lx = -(RX - RWT)
+
+    def flat(front, k, y, zc, w, h, sw, rot=None):
+        back = WALL_SINK + 0.004 * k
+        b.box((lx + (front - back) / 2, y, zc), (front + back, w, h), sw, bevel=False, rot=rot)
+
     for i, sw in enumerate(("fur_orange", "fur_grey", "fur_cream")):
         y = 5.4 + i * 2.0
-        b.box((lx, y, 3.2), (0.1, 1.7, 2.0), "gold_mid", bevel=False)
-        b.box((lx + 0.04, y, 3.2), (0.1, 1.4, 1.7), "pearl", bevel=False)
-        b.box((lx + 0.1, y, 3.05), (0.06, 0.8, 0.7), sw, bevel=False)                                        # a head
-        for dy in (-0.25, 0.25):                                                                              # its ears
-            b.box((lx + 0.106, y + dy, 3.4), (0.06, 0.3, 0.3), sw, bevel=False, rot=Matrix.Rotation(math.pi / 4, 3, "X"))
+        flat(0.1, 0, y, 3.2, 1.7, 2.0, "gold_mid")
+        flat(0.14, 1, y, 3.2, 1.4, 1.7, "pearl")
+        flat(0.18, 2, y, 3.05, 0.8, 0.7, sw)                                                                  # a head
+        for j, dy in enumerate((-0.25, 0.25)):                                                                # its ears
+            flat(0.186, 3 + j, y + dy, 3.4, 0.3, 0.3, sw, rot=Matrix.Rotation(math.pi / 4, 3, "X"))
 
 
 def _pad(b, x, y, top, r=PAD_R):
@@ -386,24 +398,23 @@ def _residents(b):
             b.cyl_base((x, y, plate - 0.26), 0.52, 0.24, "gold_mid", segments=8, bevel=False)
             b.cyl_base((x, y, plate), PAD_R + 0.07, 0.2, "pearl", segments=10, bevel=False)
             _pad(b, x, y, top)
-            # a gold star hangs from the plate's edge on the room's side: something to bat at
+            # a gold ball hangs from the plate's edge on the room's side: something to bat at (a star until #688)
             hx, hy = x - sx * 0.8, y - 0.62
             b.box((hx, hy, plate - 0.3), (0.05, 0.05, 0.64), "gold_mid", bevel=False)
-            b.star((hx, hy, plate - 0.8), 0.27, 0.12, 0.08, "gold_mid", rot=_STAND)
-        else:                                        # a pearl shelf on two gold brackets, the pad on it
+            b.sphere((hx, hy, plate - 0.78), 0.2, "gold_mid", segments=6, rings=4)
+        else:                                        # a pearl shelf on one wide gold bracket (two until #688), the pad on it
             plate = top - 0.39
             b.cyl_base((x, y, plate), PAD_R + 0.12, 0.2, "pearl", segments=10, bevel=False)
             _pad(b, x, y, top)
             lean = math.atan2(0.75, 1.1)
-            for k, d in enumerate((-0.7, 0.7)):
-                if kind == "shelf_back":             # the wall is behind (+Y): the brackets run back and down to it
-                    wall = RY1 - RWT
-                    b.box((x + d, (y + wall) / 2 + 0.02, plate - 0.37 - 0.003 * k), (0.16, 1.36, 0.16), "gold_mid",
-                          bevel=False, rot=Matrix.Rotation(-lean, 3, "X"))
-                else:                                # the wall is to the side
-                    wall = sx * (RX - RWT)
-                    b.box(((x + wall) / 2 + sx * 0.02, y + d, plate - 0.37 - 0.003 * k), (1.36, 0.16, 0.16),
-                          "gold_mid", bevel=False, rot=Matrix.Rotation(sx * lean, 3, "Y"))
+            if kind == "shelf_back":                 # the wall is behind (+Y): the bracket runs back and down to it
+                wall = RY1 - RWT
+                b.box((x, (y + wall) / 2 + 0.02, plate - 0.37), (0.5, 1.36, 0.16), "gold_mid",
+                      bevel=False, rot=Matrix.Rotation(-lean, 3, "X"))
+            else:                                    # the wall is to the side
+                wall = sx * (RX - RWT)
+                b.box(((x + wall) / 2 + sx * 0.02, y, plate - 0.37), (1.36, 0.5, 0.16),
+                      "gold_mid", bevel=False, rot=Matrix.Rotation(sx * lean, 3, "Y"))
 
 
 def _lamp(name, mat):
