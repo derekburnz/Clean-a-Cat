@@ -335,6 +335,43 @@ local SCENES = {
 			UI.open("Shop")
 		end,
 	},
+	-- The starter pack (issue 519, switch starterPack with passes): every price known with the saving, then the pack's
+	-- own price known but one pass price missing, so the struck total and the saving stay out.
+	{
+		"Starter",
+		function()
+			flag("passes", true)
+			flag("starterPack", true)
+			local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+			local prices: { [string]: number } =
+				{ GoldenSponge = 99, SecondPetSlot = 249, DoubleCoins = 199 }
+			UI.setStarter(
+				StarterViewRules.items(function(key: string): unknown
+					return prices[key]
+				end),
+				299,
+				os.time() + 44 * 3600 + 14 * 60 + 36
+			)
+			UI.open("Starter")
+		end,
+	},
+	{
+		"StarterNoPrice",
+		function()
+			flag("passes", true)
+			flag("starterPack", true)
+			local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+			local prices: { [string]: number } = { GoldenSponge = 99, DoubleCoins = 199 }
+			UI.setStarter(
+				StarterViewRules.items(function(key: string): unknown
+					return prices[key]
+				end),
+				299,
+				os.time() + 3 * 3600 + 5
+			)
+			UI.open("Starter")
+		end,
+	},
 	{
 		"PetsSecond",
 		function()
