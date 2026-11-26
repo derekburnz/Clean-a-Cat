@@ -27,6 +27,8 @@
 --                             window, the recap or the dim step is up, when no bubble should start
 --   UI.showCrate(kind, count, rows)  opens the crate window (UI/CrateWindow, switch crateWindow, issue 526): every pet
 --                             with its chance, then Open crate; UI.onCrateOpen(fn) gets fn(kind) on Open crate
+--   UI.setPets(pets, hired)  the pets window (UI/PetsWindow, switch petsWindow, issue 526), opened by the HUD's Pets
+--                             button; UI.onPetPlace(fn) gets fn(id, slot?) and UI.onPetFuse(fn) gets fn(ids)
 --   UI.showRecap(recap, fn)   the recap card after a customer's cat (UI/Recap, switch recapCard, #224); fn runs once
 --                             when the player closes it
 --
@@ -39,6 +41,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
+local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -52,6 +55,7 @@ local CrateWindow = require(script:WaitForChild("CrateWindow"))
 local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
 local Motion = require(script:WaitForChild("Motion"))
+local PetsWindow = require(script:WaitForChild("PetsWindow"))
 local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
@@ -262,6 +266,7 @@ function UI.init()
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
+	windows.Pets = PetsWindow.build(root) -- your pets, who has one, Fuse (switch petsWindow, issue 526)
 	windows.Crate = CrateWindow.build(root) -- the crate's chance list and Open crate (switch crateWindow, issue 526)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
@@ -436,6 +441,19 @@ end
 
 function UI.onCrateOpen(fn: (kind: string) -> ())
 	CrateWindow.onOpen(fn)
+end
+
+-- The pets window's pets and which helpers are hired (PetsWindowController).
+function UI.setPets(pets: { CrateRules.Pet }, hired: { [string]: boolean })
+	PetsWindow.set(pets, hired)
+end
+
+function UI.onPetPlace(fn: (id: number, slot: string?) -> ())
+	PetsWindow.onPlace(fn)
+end
+
+function UI.onPetFuse(fn: (ids: { number }) -> ())
+	PetsWindow.onFuse(fn)
 end
 
 function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)

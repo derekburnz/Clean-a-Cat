@@ -104,6 +104,7 @@ LiveFlags.KEYS = {
 	"barSpacing", -- each waiting customer's heart bar ends at least heart.releaseStagger after the one ahead, so customers who joined together never leave together (HeartRules.spacedSince, SpaService, issue 573); off by default
 	"boardKeys", -- each row of the Tools and Build boards has its own key and gamepad button, and on a touch screen every row's pill shows, so every row can be bought from where the player stands (BoardProp.rowKeys, issue 574); off by default
 	"lineSwap", -- the door line is redrawn new first and old after, and a leaving customer's figure goes as their walk off starts, so the line never blinks empty or shows the leaver twice (FigureService, issue 571); off by default
+	"petsWindow", -- the HUD's Pets button and window: the player's pets with their stars and counts, Fuse on three of the same, and who has a pet (you and each hired helper), tap a slot then a pet (UI/PetsWindow, PetsWindowController, issue 526); off by default
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 }
 
@@ -182,6 +183,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	lineSwap = true,
 	pets = true,
 	crateWindow = true,
+	petsWindow = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

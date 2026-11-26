@@ -253,6 +253,32 @@ local SCENES = {
 			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
 		end,
 	},
+	-- The pets window (issue 526, switch petsWindow): three Cozy ready to fuse, a 2 star Koi with Jo, Sam not hired.
+	{
+		"Pets",
+		function()
+			flag("petsWindow", true)
+			UI.setPets({
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 2, kind = "Cozy", star = 1 },
+				{ id = 3, kind = "Cozy", star = 1 },
+				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+				{ id = 5, kind = "Pebble", star = 1 },
+				{ id = 6, kind = "Pebble", star = 1 },
+				{ id = 7, kind = "Nimbus", star = 3 },
+				{ id = 8, kind = "Scrubby", star = 1 },
+			}, { Jo = true })
+			UI.open("Pets")
+		end,
+	},
+	{
+		"PetsEmpty",
+		function()
+			flag("petsWindow", true)
+			UI.setPets({}, {})
+			UI.open("Pets")
+		end,
+	},
 	-- A line where cats bring the later needs (#267, switches bubbleBath and pawdicure): five needs on the Legendary
 	-- one, so the needs stack over the pay even on a short card and shrink to share the card's width.
 	{
@@ -435,6 +461,7 @@ function Scenes.close()
 	flag("catIndexWindow", false)
 	flag("queueWindow", false)
 	flag("crateWindow", false)
+	flag("petsWindow", false)
 	flag("tutorialDim", false)
 	UI.hideBubble()
 	flag("sudsBubble", false)

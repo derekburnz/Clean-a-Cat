@@ -45,6 +45,14 @@ SideButtons.BUTTONS = {
 		bottom = Color3.fromHex("A8E6CF"),
 	},
 	{
+		window = "Pets",
+		flag = "petsWindow",
+		icon = "Paw",
+		caption = "Pets",
+		top = Color3.fromHex("FFE3EE"),
+		bottom = Color3.fromHex("FFC4D8"),
+	},
+	{
 		window = "Settings",
 		flag = "settingsCard",
 		icon = "Settings",
