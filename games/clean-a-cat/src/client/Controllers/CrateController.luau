@@ -5,7 +5,9 @@
 -- server rolls from), and the line that doubles are kept and three fuse into a star up. The list shows the whole time
 -- the crate is there, before any open. The player opens it with their own tap on the prompt; the server rolls the pet
 -- (CrateOpened), the lid opens the same every time and the pet appears on the crate's PetSeat, then joins the player.
--- The chance list here is a placeholder until Design-Agent's crate window replaces it.
+-- With the switch crateWindow on, the chance list moves into Design-Agent's crate window (UI/CrateWindow): the tap
+-- reads "Look inside" and fires CrateController.lookInside(kind) for CrateWindowController, and the window's Open crate
+-- sends the open. With it off, the placeholder list stands over the crate and the tap opens it, as before.
 -- Fires Moments CrateDropped, CrateOpened and PetRevealed for the motion and sound lanes.
 -- Behind the LiveFlags switch `pets`.
 local Players = game:GetService("Players")
@@ -17,14 +19,19 @@ local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
+local Signal = require(Shared:WaitForChild("Signal"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
+local WINDOW_FLAG = "crateWindow"
 local CRATE_ASSET = "CleanACat_Prop_PetCrate"
 local NAME = "CleanACat_HeldCrate"
 local REVEAL_SECONDS = 3 -- the pet stays on the crate this long before it goes to the player
 local PROMPT_REACH = 10
 
 local CrateController = {}
+
+-- (kind) when the player taps the crate while the crate window is on (CrateWindowController opens the window).
+CrateController.lookInside = Signal.new() :: Signal.Signal<string>
 
 local crate: Model? = nil
 local shownKind: string? = nil
@@ -122,7 +129,8 @@ local function draw()
 	end
 	local rose = count > lastCount
 	lastCount = count
-	if crate and shownKind == kind and not rose then
+	local windowed = LiveFlags.isOn(WINDOW_FLAG)
+	if crate and shownKind == kind and not rose and crate:GetAttribute("Windowed") == windowed then
 		return
 	end
 	clear()
@@ -149,20 +157,28 @@ local function draw()
 	model:PivotTo(SpaLayout.spot("Crate") * CFrame.new(0, if asset then 0 else 1, 0))
 	local base = model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart", true)
 	if base then
-		oddsBoard(base :: BasePart, kind, count)
+		if not windowed then
+			oddsBoard(base :: BasePart, kind, count)
+		end
 		local prompt = Instance.new("ProximityPrompt")
-		prompt.ActionText = "Open crate"
+		prompt.ActionText = if windowed then "Look inside" else "Open crate"
 		prompt.ObjectText = if kind == "good" then "Good crate" else "Crate"
 		prompt.HoldDuration = 0
 		prompt.MaxActivationDistance = PROMPT_REACH
 		prompt.RequiresLineOfSight = false
 		prompt.Triggered:Connect(function()
-			if not busy then
+			if busy then
+				return
+			end
+			if LiveFlags.isOn(WINDOW_FLAG) then
+				CrateController.lookInside:Fire(kind)
+			else
 				Remotes.event("RequestOpenCrate"):FireServer(kind)
 			end
 		end)
 		prompt.Parent = base
 	end
+	model:SetAttribute("Windowed", windowed)
 	model.Parent = Workspace
 	crate = model
 	shownKind = kind
@@ -238,6 +254,8 @@ function CrateController.Start()
 			:Connect(draw)
 	end
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CrateRules.FLAG)
+		:Connect(draw)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WINDOW_FLAG)
 		:Connect(draw)
 	Remotes.event("CrateOpened").OnClientEvent:Connect(onOpened)
 	SpaLayout.changed(function()

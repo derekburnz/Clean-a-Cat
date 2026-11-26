@@ -100,6 +100,7 @@ LiveFlags.KEYS = {
 	"bowTiers", -- bow tiers bought with coins at the Tools board (Silk, Satin, Golden after the free Ribbon), each paying more on every hand washed customer's cat (BowRules, issue 508); off by default
 	"workers", -- Jo and Sam are hired with coins, each with a station on the back wall; a worker takes a waiting cat by the mode the player sets, washes it with a progress bar over it, and pays a small share (WorkerRules, WorkerService, issue 509); off by default
 	"specialVisitors", -- now and then a special visitor joins the line with one of the six special cats (always dirt level 4, pays the most, workers never take it); the first of a save comes at about 4:00 and its wash always leaves a crate, later ones rarely (SpecialRules, issue 510); off by default
+	"crateWindow", -- a tap on the crate by the tub opens the crate window: every pet with its chance and boost, how many crates the player holds and Open crate, in place of the list over the crate (UI/CrateWindow, CrateWindowController, issue 526); off by default
 	"barSpacing", -- each waiting customer's heart bar ends at least heart.releaseStagger after the one ahead, so customers who joined together never leave together (HeartRules.spacedSince, SpaService, issue 573); off by default
 	"boardKeys", -- each row of the Tools and Build boards has its own key and gamepad button, and on a touch screen every row's pill shows, so every row can be bought from where the player stands (BoardProp.rowKeys, issue 574); off by default
 	"lineSwap", -- the door line is redrawn new first and old after, and a leaving customer's figure goes as their walk off starts, so the line never blinks empty or shows the leaver twice (FigureService, issue 571); off by default
@@ -180,6 +181,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	boardKeys = true,
 	lineSwap = true,
 	pets = true,
+	crateWindow = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
