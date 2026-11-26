@@ -86,7 +86,7 @@ function ToolRules.brushStrokes(
 	local strokes = base
 	for id, tool in ToolRules.TOOLS do
 		local fewer = if tool.brushStrokes
-			then math.max(1, math.ceil(tool.brushStrokes * base / WashPace.OFF.brushStrokes - 1e-9))
+			then WashPace.toolStrokes(tool.brushStrokes, base)
 			else nil
 		local flag = tool.flag
 		if fewer and fewer < strokes and owns(id) and (flag == nil or isOn(flag)) then

@@ -926,7 +926,7 @@ local function rubAt(v: Visit, cat: Cat, point: Vector3, travel: number, hit: In
 	end
 	local radius = spongeRadius()
 	local toClear = if LiveFlags.isOn(FEEL_FLAG)
-		then ScrubRules.RUB_TO_CLEAR_PACED
+		then WashPace.pace(LiveFlags.isOn).rubToClear -- 3.6, or 2 with the switch washPace (issue 865)
 		else ScrubRules.RUB_TO_CLEAR
 	for index, piece in cat.mud do
 		local touched = hit ~= nil and hit:IsDescendantOf(piece.model)
