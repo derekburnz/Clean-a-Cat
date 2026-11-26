@@ -20,10 +20,11 @@ CanQuery off) keeps players out of the building site in the yard.
                               floor to stand on, lilac and gold decor (`_Decor`, not solid), a chandelier, and the
                               Attachments SpotVipEnter, SpotVipStation, SpotVipQueue and SpotVipWait. The name plate
                               inside the top of the opening has the `Screen` part. No barrier: players walk in.
-                              Eight seats for the room's residents, the player's washed special cats (#579):
-                              Attachments SpotResident1 to SpotResident8, each the top of a lilac pad and turned to
-                              face the room, climbing each back corner like steps: a floor cushion, a perch on a
-                              post, a shelf under the back window and a shelf under the side window.
+                              Ten seats for the room's residents, the player's washed special cats (#579, ten
+                              since #712): Attachments SpotResident1 to SpotResident10, each the top of a lilac pad
+                              and turned to face the room, climbing each back corner like steps: a floor cushion, a
+                              perch on a post, a shelf under the back window, a shelf under the side window and a
+                              high shelf in the corner itself, between the two windows.
 """
 
 import math
@@ -191,17 +192,20 @@ FLOOR_UP = 0.08                   # the room's floor over the spa's: above the y
 STATION = (0.0, 8.4)              # where a VIP wash station goes
 WAIT = (6.85, 6.9)                # the chaise a VIP customer waits on, along the right wall under its window
 QUEUE = (-5.0, 6.8)               # the gold mat a VIP customer stands on, clear of the open door leaves
-# The residents' seats (#579): the player's washed special cats sit in the room. Four on each side, low to high,
+# The residents' seats (#579): the player's washed special cats sit in the room. Five on each side, low to high,
 # mirrored about the runner: a floor cushion under the back window, a perch on a post in the back corner, a shelf
-# under the back window and a shelf under the side window. Every seat is past the open door leaves, so all eight
+# under the back window, a shelf under the side window and, since there are ten special cats (#712), a high shelf
+# in the corner over the perch, carried by both walls. Every seat is past the open door leaves, so all ten
 # show from the way in. (kind, x on the right side, y, the pad's top, the turn on the right side in degrees)
 RESIDENT_SCALE = 1.2              # a sitting cat at this scale fits a pad
 PAD_R = 1.08
+CORNER_TOP = 8.7                  # the corner shelves' pads: a step over the other shelves, between the windows
 _SEATS = (("cushion", 4.4, 10.6, FLOOR_UP + 0.3, -15.0),
           ("perch", 6.8, 10.8, 2.9, -40.0),
           ("shelf_back", 4.6, 10.95, 5.84, -12.0),
-          ("shelf_side", 6.95, 7.05, 5.84, -90.0))
-# SpotResident1..8: right then left at each height, so the room fills evenly from the floor up
+          ("shelf_side", 6.95, 7.05, 5.84, -90.0),
+          ("shelf_corner", 6.95, 10.95, CORNER_TOP, -45.0))
+# SpotResident1..10: right then left at each height, so the room fills evenly from the floor up
 RESIDENTS = [(kind, sx * x, y, z, sx * turn) for kind, x, y, z, turn in _SEATS for sx in (1, -1)]
 _RZ = lambda deg: Matrix.Rotation(math.radians(deg), 3, "Z")      # noqa: E731
 _STAND = Matrix.Rotation(math.pi / 2, 3, "X")                     # a disc lying flat stood up to face -Y
@@ -381,7 +385,7 @@ def _pad(b, x, y, top, r=PAD_R):
 
 
 def _residents(b):
-    """The eight seats (RESIDENTS), none of it solid. Pieces that share a floor or a wall start at different depths,
+    """The ten seats (RESIDENTS), none of it solid. Pieces that share a floor or a wall start at different depths,
     so no two faces share a plane."""
     for i, (kind, x, y, top, _turn) in enumerate(RESIDENTS):
         sx = 1 if x > 0 else -1
@@ -407,7 +411,7 @@ def _residents(b):
             b.cyl_base((x, y, plate), PAD_R + 0.12, 0.2, "pearl", segments=10, bevel=False)
             _pad(b, x, y, top)
             lean = math.atan2(0.75, 1.1)
-            if kind == "shelf_back":                 # the wall is behind (+Y): the bracket runs back and down to it
+            if kind in ("shelf_back", "shelf_corner"):   # the wall is behind (+Y): the bracket runs back and down to it
                 wall = RY1 - RWT
                 b.box((x, (y + wall) / 2 + 0.02, plate - 0.37), (0.5, 1.36, 0.16), "gold_mid",
                       bevel=False, rot=Matrix.Rotation(-lean, 3, "X"))

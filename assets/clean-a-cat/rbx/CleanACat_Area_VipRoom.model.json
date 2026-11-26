@@ -6,7 +6,7 @@
   "FloorUp": {
    "Float64": 0.08
   },
-  "ResidentSeats": 8,
+  "ResidentSeats": 10,
   "ResidentScale": {
    "Float64": 1.2
   }
@@ -468,6 +468,70 @@
           -1.0,
           0.0,
           0.0
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident9",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.95,
+         8.82,
+         4.51
+        ],
+        "orientation": [
+         [
+          0.7071,
+          0.0,
+          -0.7071
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.7071,
+          0.0,
+          0.7071
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident10",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.95,
+         8.82,
+         4.51
+        ],
+        "orientation": [
+         [
+          0.7071,
+          0.0,
+          0.7071
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.7071,
+          0.0,
+          0.7071
          ]
         ]
        }
@@ -9887,6 +9951,304 @@
        1.36,
        0.16,
        0.5
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.95,
+         8.41,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.4,
+       2.4
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.95,
+         8.6,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.95,
+         7.94,
+         11.495
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.8262,
+          -0.5633
+         ],
+         [
+          0.0,
+          0.5633,
+          0.8262
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.5,
+       0.16,
+       1.36
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.95,
+         8.41,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.4,
+       2.4
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.95,
+         8.6,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.95,
+         7.94,
+         11.495
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.8262,
+          -0.5633
+         ],
+         [
+          0.0,
+          0.5633,
+          0.8262
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.5,
+       0.16,
+       1.36
       ],
       "Color": [
        0.949,
