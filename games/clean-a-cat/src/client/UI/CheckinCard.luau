@@ -196,7 +196,9 @@ local function drawTile(tile: CheckinViewRules.Tile, parent: Frame, s: Sizes, wi
 	if tile.big and kind and canSeeChances then
 		-- the chance list for the good crate, before it is ever taken
 		local size = tapSize(s.chances)
+		-- one line here, so the words shrink to fit it rather than wrap out of sight ("Good crate", Sync's B5)
 		what.Size = UDim2.new(1, 0, 0, s.what + 4)
+		Kit.shrinkToFit(what, s.what)
 		local chances = Instance.new("TextButton")
 		chances.Name = "Chances"
 		chances.LayoutOrder = 4
