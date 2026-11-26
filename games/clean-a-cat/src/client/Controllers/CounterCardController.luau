@@ -141,6 +141,7 @@ local function add(cat: Instance, figure: Model)
 	shown[model] = entry
 	local function check()
 		if onCounter(model, figure) and on() then
+			entry.card.place(model:GetAttribute(CounterRules.PLACE_ATTRIBUTE))
 			redraw(model)
 			tintMats()
 		else
@@ -159,6 +160,7 @@ local function add(cat: Instance, figure: Model)
 	)
 	table.insert(entry.connections, model:GetPropertyChangedSignal("Name"):Connect(check))
 	table.insert(entry.connections, model.AncestryChanged:Connect(check))
+	entry.card.place(model:GetAttribute(CounterRules.PLACE_ATTRIBUTE))
 	redraw(model)
 	tintMats()
 end
@@ -172,6 +174,12 @@ local function watch(instance: Instance)
 	local figure = instance :: Model
 	watched[figure] = figure.ChildAdded:Connect(function(child: Instance)
 		add(child, figure)
+		-- FigureService parents a newcomer's cat first and gives it its place a moment later: try again then.
+		if shown[child :: Model] == nil and child:IsA("Model") then
+			child:GetAttributeChangedSignal(CounterRules.PLACE_ATTRIBUTE):Once(function()
+				add(child, figure)
+			end)
+		end
 	end)
 	for _, child in figure:GetChildren() do
 		add(child, figure)
