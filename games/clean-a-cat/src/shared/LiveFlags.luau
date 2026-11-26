@@ -114,6 +114,7 @@ LiveFlags.KEYS = {
 	"passes", -- the five game passes (2x Coins, Second Builder, Golden Sponge, Lou, Second pet slot): each can be bought once the owner has created it, and works the moment it is bought and on every join (Passes, PassService, issue 518); off by default
 	"landscapeLock", -- phones and tablets play in landscape only: the screen turns between the two landscape sides and never to portrait (OrientationController, issue 522); off by default
 	"askQueue", -- the first session's ask queue: the check in card and later every ask outside the wash (notification, gift stand, favourite, each new HUD button, the starter button's bob) wait their turn, one at a time and a minute apart, never during a wash, a recap, a window or the opening, and a no is final for the visit (AskRules, AskController, issue 522); off by default
+	"giftStand", -- the gift stand in every spa with its free pet Starcoat: lit from 7:00 of play, its card asks to like, favourite and join the group; the favourite and the group are checked and the pet is given once (the like is asked only) (GiftRules, GiftService, GiftController, issue 521); needs pets on too; off by default
 	"benchSave", -- the waiting line is kept in the save each time it is sent, and a spa that has served before gets the same customers back on its next join, with full heart bars (never a special visitor or the tutorial line) (BenchSave, SpaService, issue 523); off by default
 	"crateShop", -- normal crates for Robux (one for 49, five for 199), the same crate and chances as an earned one, shown only to players whose PolicyService info allows paid random items, with the chances shown before any buy (CrateRules.SHOP, CrateShopService, issue 514); needs pets on too; off by default
 	"starterPack", -- the starter pack: one Robux product giving the Golden Sponge, the Second pet slot and 2x Coins, offered for 72 hours from first join (from the first join after this ships for older saves) to players who own none of the three, from the end of the tutorial; never restarts (StarterRules, StarterService, issue 519); needs passes on too; off by default
@@ -212,6 +213,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	benchSave = true,
 	landscapeLock = true,
 	askQueue = true,
+	giftStand = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
