@@ -178,9 +178,13 @@ local function newOrder(player: Player, kind: string, place: number, orders: { O
 end
 
 -- How many customers wait on the player's bench now: QUEUE_SIZE, or with benchGrow once the spa has served its first
--- customer (the tutorial keeps its own line), 3 plus one per built tub (BuildRules.benchSize, issue 515).
+-- customer, 3 plus one per built tub (BuildRules.benchSize, issue 515). Before the first serve, with tutorialBench,
+-- 1 and then 2 (SpaRules.tutorialBench).
 local function benchSize(player: Player): number
 	local save = DataService.get(player)
+	if save and save.stars <= 0 and LiveFlags.isOn(SpaRules.TUTORIAL_BENCH_FLAG) then
+		return SpaRules.tutorialBench(played(player)) -- bench.tutorialSize: 1, then 2 at 2:00
+	end
 	if not LiveFlags.isOn(SpaRules.BENCH_FLAG) or save == nil or save.stars <= 0 then
 		return QUEUE_SIZE
 	end
@@ -1142,11 +1146,15 @@ function SpaService.Start()
 				end
 			end
 			if
-				LiveFlags.isOn(SpaRules.BENCH_FLAG)
+				(
+					LiveFlags.isOn(SpaRules.BENCH_FLAG)
+					or LiveFlags.isOn(SpaRules.TUTORIAL_BENCH_FLAG)
+				)
 				and LiveFlags.isOn(FLAG)
 				and LiveFlags.isOn(CUSTOMERS_FLAG)
 			then
-				-- a short line takes its next customer when the refill time is up (switch benchGrow)
+				-- a short line takes its next customer when the refill time is up (switch benchGrow), and the
+				-- tutorial's line grows to 2 at 2:00 (switch tutorialBench)
 				local ok, err = pcall(function()
 					for player, line in queues do
 						if player.Parent ~= Players then

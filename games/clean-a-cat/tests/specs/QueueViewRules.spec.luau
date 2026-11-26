@@ -160,5 +160,12 @@ return function()
 			expect(SpaRules.benchSize(99, true)).to.equal(SpaRules.MAX_QUEUE)
 			expect(SpaRules.benchSize(0 / 0, true)).to.equal(SpaRules.QUEUE_SIZE)
 		end)
+
+		it("holds 1 customer in the tutorial until 2:00 of play, then 2 (tutorialBench)", function()
+			expect(SpaRules.tutorialBench(0)).to.equal(1)
+			expect(SpaRules.tutorialBench(119)).to.equal(1)
+			expect(SpaRules.tutorialBench(120)).to.equal(2)
+			expect(SpaRules.tutorialBench(9999)).to.equal(2)
+		end)
 	end)
 end

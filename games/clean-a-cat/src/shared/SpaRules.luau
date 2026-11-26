@@ -144,6 +144,15 @@ SpaRules.MAX_QUEUE = 6
 SpaRules.BENCH_FLAG = "benchGrow"
 SpaRules.BENCH_ATTRIBUTE = "BenchSize" -- Player attribute: the player's bench places now (switch benchGrow)
 
+-- bench.tutorialSize (switch tutorialBench, Design-Agent 2026-11-26): before the spa's first serve the line holds 1
+-- customer until 2:00 of play, then 2; after the first serve the bench's own size.
+SpaRules.TUTORIAL_BENCH_FLAG = "tutorialBench"
+SpaRules.TUTORIAL_TWO_AT = 2 * 60 -- seconds of play
+
+function SpaRules.tutorialBench(played: number): number
+	return if played < SpaRules.TUTORIAL_TWO_AT then 1 else 2
+end
+
 -- The bench's places as a client sees them: the server's BenchSize while benchGrow is on, else QUEUE_SIZE.
 function SpaRules.benchSize(raw: unknown, benchOn: boolean): number
 	if not benchOn or type(raw) ~= "number" or raw ~= raw then
