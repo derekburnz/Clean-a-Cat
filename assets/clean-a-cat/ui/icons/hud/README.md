@@ -36,3 +36,9 @@ bell), Crate (the pet crate), Bow (the bow a washed cat wears) and Helpers (Jo o
 bib apron, for the HUD's Helpers button; the older `Helper` picture has neither). `.png`, 512 px, see-through, made
 by `hud_icons.py`. Checked down to 36 px; the sheet is `docs/concepts/clean-a-cat/2026-11-26-menu-icons.png`.
 Uploaded under the group like the rest once Review-QA has passed them.
+
+## Round cheeks (issue 784)
+
+`Helper` and `Helpers` were rendered again on 2026-11-26: the staff's cheeks are round, as on the models (#776), where
+they were small bars. Nothing else in the two pictures changed. They are uploaded again as new assets; the ids in
+`HUD/Icons.luau` are Design-Agent's to swap.

@@ -223,7 +223,7 @@ def helper(mat):
     for sx in (-1, 1):
         k.box((sx * 0.3, fy, 1.6), (0.19, 0.04, 0.34), "coat_inky", bevel=False)         # the eyes
         b.box((sx * 0.3 + 0.04, fy - 0.03, 1.7), (0.07, 0.04, 0.09), "foam", bevel=False)
-        b.box((sx * 0.44, fy, 1.27), (0.2, 0.04, 0.11), blush, bevel=False)              # the cheeks
+        b.cyl((sx * 0.47, fy, 1.27), 0.1, 0.04, blush, segments=10, bevel=False, rot=X)   # round cheeks, as on the models (#776)
         k.box((sx * 0.21, fy, 1.24), (0.09, 0.04, 0.09), "coat_inky", bevel=False)       # the smile's corners
     k.box((0, fy, 1.15), (0.42, 0.04, 0.09), "coat_inky", bevel=False)                   # the smile
     return _fin(b, "Helper", mat, ink=k)
@@ -507,7 +507,7 @@ def helpers(mat):
     for sx in (-1, 1):
         k.box((sx * 0.3, fy, 1.52), (0.19, 0.04, 0.34), "coat_inky", bevel=False)        # the eyes
         b.box((sx * 0.3 + 0.04, fy - 0.03, 1.62), (0.07, 0.04, 0.09), "foam", bevel=False)
-        b.box((sx * 0.44, fy, 1.2), (0.2, 0.04, 0.11), blush, bevel=False)               # the cheeks
+        b.cyl((sx * 0.47, fy, 1.2), 0.1, 0.04, blush, segments=10, bevel=False, rot=X)    # round cheeks, as on the models (#776)
         k.box((sx * 0.21, fy, 1.17), (0.09, 0.04, 0.09), "coat_inky", bevel=False)       # the smile's corners
     k.box((0, fy, 1.08), (0.42, 0.04, 0.09), "coat_inky", bevel=False)                   # the smile
     return _fin(b, "Helpers", mat, ink=k)
