@@ -456,7 +456,7 @@ local function drawCard(
 	local pic = frame("Pic", head)
 	pic.LayoutOrder = 1
 	pic.Size = UDim2.fromOffset(s.tile, s.tile)
-	Portraits.draw(card.cat, card.rarity, pic)
+	Portraits.draw(card.cat, card.rarity, pic, nil, card.dirt) -- the cat as dirty as it comes (#794)
 	if card.isNew then
 		-- on the card's top left corner, clear of the crown
 		local left = if short then 10 else (s.cardW - 2 * s.inner - s.tile) / 2 + 8

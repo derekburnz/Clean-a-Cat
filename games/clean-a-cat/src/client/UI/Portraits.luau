@@ -21,9 +21,22 @@ Portraits.GLYPHS = {
 
 local TILE_TINT = 0.55 -- how far the stand-in tile's rarity colour is lightened toward white
 
+-- The picture for `cat`, at dirt level `dirt` (1 to 4, DirtRules) when given and uploaded as "<Cat>_Dirty<n>"; else
+-- the clean picture; "" when there is none yet (the stand-in draws). Issue 794.
+function Portraits.imageFor(cat: string, dirt: number?): string
+	if dirt then
+		local dirty: string? = Portraits.IMAGES[`{cat}_Dirty{dirt}`]
+		if dirty ~= nil and dirty ~= "" then
+			return dirty
+		end
+	end
+	return Portraits.IMAGES[cat] or ""
+end
+
 -- Puts `cat`'s portrait inside `parent` on a tile framed in the rarity's colour, filling it, and returns the tile.
 -- `round` draws a round face with no frame of its own (the HUD's waiting faces, whose button has the outline).
-function Portraits.draw(cat: string, rarity: string, parent: GuiObject, round: boolean?): Frame
+-- `dirt` shows the cat at that dirt level when its picture exists (the bench card, switch dirtLevels).
+function Portraits.draw(cat: string, rarity: string, parent: GuiObject, round: boolean?, dirt: number?): Frame
 	local old = parent:FindFirstChild("Portrait")
 	if old then
 		old:Destroy()
@@ -38,7 +51,7 @@ function Portraits.draw(cat: string, rarity: string, parent: GuiObject, round: b
 		local frame = Kit.stroke(tile, 4)
 		frame.Color = Kit.INK
 	end
-	local image = Portraits.IMAGES[cat] or ""
+	local image = Portraits.imageFor(cat, dirt)
 	if image ~= "" then
 		local label = Instance.new("ImageLabel")
 		label.Name = "Image"
