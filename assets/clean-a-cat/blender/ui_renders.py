@@ -26,15 +26,17 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 import bpy  # noqa: E402
-from mathutils import Vector  # noqa: E402
+from mathutils import Matrix, Vector  # noqa: E402
 
 import build_all  # noqa: E402
 import busy_spa  # noqa: E402
 import cats  # noqa: E402
 import common  # noqa: E402
+import crates  # noqa: E402
 import customers  # noqa: E402
 import dirt  # noqa: E402
 import palette  # noqa: E402
+import pets  # noqa: E402
 import scenes  # noqa: E402
 import spa_staff  # noqa: E402
 import townsfolk  # noqa: E402
@@ -66,7 +68,10 @@ ICONS = {
     "CleanACat_NPC_Helper2": (18, 8), "CleanACat_NPC_Helper3": (18, 8),
     "CleanACat_Station_WaitBench": (15, 55), "CleanACat_Station_FrontDesk": (28, 26),
     "CleanACat_Prop_Burr": None, "CleanACat_Prop_Leaf": (35, 55), "CleanACat_Prop_Twig": (35, 55),
+    "CleanACat_Prop_PetCrate": (26, 20),
+    **{pets.PREFIX + n: (27, 12) for n in pets.PETS},       # a pet's card: the pet at star 1 (icon leaves the stars off)
 }
+STAR_OBJECTS = ("_Star2", "_Star3", "_Star3_Glow")
 FACE_FRONT = (0.0, -0.575, 4.175)          # R15's FaceFrontAttachment on the stand-in figure (scenes.avatar)
 
 
@@ -223,9 +228,25 @@ def icon(asset, mat, out, makers):
     built = makers[asset][0](mat)
     objs = built[0] if isinstance(built, tuple) else built
     objs = [o for o in objs if not o.name.endswith("_Barrier")]          # a station's invisible wall is not drawn
+    if asset.startswith(pets.PREFIX):
+        objs = [o for o in objs if not o.name.endswith(STAR_OBJECTS)]
     bpy.context.view_layer.update()
     path = os.path.join(out, "icon_" + asset.replace("CleanACat_", "") + ".png")
     shot(objs, path, ICON_RAW, ICONS[asset] or ICON_VIEW)
+    _clear()
+    return path
+
+
+def crate_open_icon(mat, out, makers):
+    """The pet crate with its lid open (icon_Prop_PetCrateOpen.png): the lid turned LidOpenDegrees on its hinge, as
+    the game opens it."""
+    objs = makers[crates.NAME][0](mat)
+    bpy.context.view_layer.update()
+    lid = next(o for o in objs if o.name.endswith("_Lid_Swing"))
+    lid.matrix_world = lid.matrix_world @ Matrix.Rotation(math.radians(-crates.LID_OPEN), 4, "X")
+    bpy.context.view_layer.update()
+    path = os.path.join(out, "icon_Prop_PetCrateOpen.png")
+    shot(objs, path, ICON_RAW, (26, 30))
     _clear()
     return path
 
@@ -258,6 +279,8 @@ def main(argv):
     for asset in ICONS:
         if asset in makers and want("icon_" + asset):
             print("ui:", icon(asset, mat, out, makers))
+    if want("icon_Prop_PetCrateOpen"):
+        print("ui:", crate_open_icon(mat, out, makers))
     for kind, looks in (("Customer", customers.LOOKS), ("Visitor", busy_spa.VISITORS)):
         for look in looks:
             if want(f"icon_{kind}_{look[0]}"):

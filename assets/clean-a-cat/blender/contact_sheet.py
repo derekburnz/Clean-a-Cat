@@ -81,6 +81,7 @@ def build_sheets(docs_dir, manifest):
         "sheet_dirty": [e for e in manifest if e["category"] == "Cat" and "_Dirty" in e["name"]],
         "sheet_spa": [e for e in manifest if e["category"] in ("Station", "Area", "Street", "Decor", "NPC")],
         "sheet_items": [e for e in manifest if e["category"] in ("Tool", "Prop", "Bow", "Mud")],
+        "sheet_pets": [e for e in manifest if e["category"] == "Pet"],
     }
     made = []
     for name, entries in groups.items():

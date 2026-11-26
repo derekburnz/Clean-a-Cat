@@ -14490,6 +14490,471 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_NPC_ToteBag.png"
  },
  {
+  "name": "CleanACat_Pet_Bamboo",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Bamboo_Body",
+   "CleanACat_Pet_Bamboo_Head",
+   "CleanACat_Pet_Bamboo_Eye1",
+   "CleanACat_Pet_Bamboo_Eye2",
+   "CleanACat_Pet_Bamboo_EarL",
+   "CleanACat_Pet_Bamboo_EarR",
+   "CleanACat_Pet_Bamboo_Tail",
+   "CleanACat_Pet_Bamboo_LegF1",
+   "CleanACat_Pet_Bamboo_LegF2",
+   "CleanACat_Pet_Bamboo_LegB1",
+   "CleanACat_Pet_Bamboo_LegB2",
+   "CleanACat_Pet_Bamboo_Prop",
+   "CleanACat_Pet_Bamboo_Prop2",
+   "CleanACat_Pet_Bamboo_Tail_Leaf",
+   "CleanACat_Pet_Bamboo_Star2",
+   "CleanACat_Pet_Bamboo_Star3",
+   "CleanACat_Pet_Bamboo_Star3_Glow"
+  ],
+  "triangles": 1504,
+  "budget": 2400,
+  "parts": 85,
+  "size_studs": {
+   "x": 1.64,
+   "y": 1.97,
+   "z": 2.36
+  },
+  "size_roblox": [
+   1.64,
+   2.36,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "shared corners": 1
+   },
+   "checks": {
+    "budget": "1504/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "960 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Bamboo.png"
+ },
+ {
+  "name": "CleanACat_Pet_Coral",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Coral_Body",
+   "CleanACat_Pet_Coral_Head",
+   "CleanACat_Pet_Coral_Eye1",
+   "CleanACat_Pet_Coral_Eye2",
+   "CleanACat_Pet_Coral_EarL",
+   "CleanACat_Pet_Coral_EarR",
+   "CleanACat_Pet_Coral_Tail",
+   "CleanACat_Pet_Coral_LegF1",
+   "CleanACat_Pet_Coral_LegF2",
+   "CleanACat_Pet_Coral_LegB1",
+   "CleanACat_Pet_Coral_LegB2",
+   "CleanACat_Pet_Coral_Prop",
+   "CleanACat_Pet_Coral_Glow",
+   "CleanACat_Pet_Coral_Prop2",
+   "CleanACat_Pet_Coral_Tail_Fluke",
+   "CleanACat_Pet_Coral_Star2",
+   "CleanACat_Pet_Coral_Star3",
+   "CleanACat_Pet_Coral_Star3_Glow"
+  ],
+  "triangles": 1404,
+  "budget": 2400,
+  "parts": 109,
+  "size_studs": {
+   "x": 1.17,
+   "y": 1.97,
+   "z": 2.06
+  },
+  "size_roblox": [
+   1.17,
+   2.06,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "1404/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "892 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Coral.png"
+ },
+ {
+  "name": "CleanACat_Pet_Cozy",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Cozy_Body",
+   "CleanACat_Pet_Cozy_Head",
+   "CleanACat_Pet_Cozy_Eye1",
+   "CleanACat_Pet_Cozy_Eye2",
+   "CleanACat_Pet_Cozy_EarL",
+   "CleanACat_Pet_Cozy_EarR",
+   "CleanACat_Pet_Cozy_Tail",
+   "CleanACat_Pet_Cozy_LegF1",
+   "CleanACat_Pet_Cozy_LegF2",
+   "CleanACat_Pet_Cozy_LegB1",
+   "CleanACat_Pet_Cozy_LegB2",
+   "CleanACat_Pet_Cozy_Prop",
+   "CleanACat_Pet_Cozy_Star2",
+   "CleanACat_Pet_Cozy_Star3",
+   "CleanACat_Pet_Cozy_Star3_Glow"
+  ],
+  "triangles": 1176,
+  "budget": 2400,
+  "parts": 82,
+  "size_studs": {
+   "x": 1.15,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.15,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "1176/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "714 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Cozy.png"
+ },
+ {
+  "name": "CleanACat_Pet_Koi",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Koi_Body",
+   "CleanACat_Pet_Koi_Head",
+   "CleanACat_Pet_Koi_Eye1",
+   "CleanACat_Pet_Koi_Eye2",
+   "CleanACat_Pet_Koi_EarL",
+   "CleanACat_Pet_Koi_EarR",
+   "CleanACat_Pet_Koi_Tail",
+   "CleanACat_Pet_Koi_LegF1",
+   "CleanACat_Pet_Koi_LegF2",
+   "CleanACat_Pet_Koi_LegB1",
+   "CleanACat_Pet_Koi_LegB2",
+   "CleanACat_Pet_Koi_Prop",
+   "CleanACat_Pet_Koi_Prop2",
+   "CleanACat_Pet_Koi_Tail_Fan",
+   "CleanACat_Pet_Koi_Star2",
+   "CleanACat_Pet_Koi_Star3",
+   "CleanACat_Pet_Koi_Star3_Glow"
+  ],
+  "triangles": 1242,
+  "budget": 2400,
+  "parts": 99,
+  "size_studs": {
+   "x": 1.36,
+   "y": 1.98,
+   "z": 2.04
+  },
+  "size_roblox": [
+   1.36,
+   2.04,
+   1.98
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 2
+   },
+   "checks": {
+    "budget": "1242/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "750 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Koi.png"
+ },
+ {
+  "name": "CleanACat_Pet_Nimbus",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Nimbus_Body",
+   "CleanACat_Pet_Nimbus_Head",
+   "CleanACat_Pet_Nimbus_Eye1",
+   "CleanACat_Pet_Nimbus_Eye2",
+   "CleanACat_Pet_Nimbus_EarL",
+   "CleanACat_Pet_Nimbus_EarR",
+   "CleanACat_Pet_Nimbus_Tail",
+   "CleanACat_Pet_Nimbus_LegF1",
+   "CleanACat_Pet_Nimbus_LegF2",
+   "CleanACat_Pet_Nimbus_LegB1",
+   "CleanACat_Pet_Nimbus_LegB2",
+   "CleanACat_Pet_Nimbus_Prop",
+   "CleanACat_Pet_Nimbus_Glow",
+   "CleanACat_Pet_Nimbus_Prop2",
+   "CleanACat_Pet_Nimbus_Wings_Glow",
+   "CleanACat_Pet_Nimbus_Tail_Drop_Glow",
+   "CleanACat_Pet_Nimbus_Star2",
+   "CleanACat_Pet_Nimbus_Star3",
+   "CleanACat_Pet_Nimbus_Star3_Glow"
+  ],
+  "triangles": 2028,
+  "budget": 2400,
+  "parts": 111,
+  "size_studs": {
+   "x": 1.78,
+   "y": 2.03,
+   "z": 2.22
+  },
+  "size_roblox": [
+   1.78,
+   2.22,
+   2.03
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "2028/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1252 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.03",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Nimbus.png"
+ },
+ {
+  "name": "CleanACat_Pet_Pebble",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Pebble_Body",
+   "CleanACat_Pet_Pebble_Head",
+   "CleanACat_Pet_Pebble_Eye1",
+   "CleanACat_Pet_Pebble_Eye2",
+   "CleanACat_Pet_Pebble_EarL",
+   "CleanACat_Pet_Pebble_EarR",
+   "CleanACat_Pet_Pebble_Tail",
+   "CleanACat_Pet_Pebble_LegF1",
+   "CleanACat_Pet_Pebble_LegF2",
+   "CleanACat_Pet_Pebble_LegB1",
+   "CleanACat_Pet_Pebble_LegB2",
+   "CleanACat_Pet_Pebble_Prop",
+   "CleanACat_Pet_Pebble_Prop2",
+   "CleanACat_Pet_Pebble_Star2",
+   "CleanACat_Pet_Pebble_Star3",
+   "CleanACat_Pet_Pebble_Star3_Glow"
+  ],
+  "triangles": 1364,
+  "budget": 2400,
+  "parts": 87,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "1364/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "872 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Pebble.png"
+ },
+ {
+  "name": "CleanACat_Pet_Pickle",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Pickle_Body",
+   "CleanACat_Pet_Pickle_Head",
+   "CleanACat_Pet_Pickle_Eye1",
+   "CleanACat_Pet_Pickle_Eye2",
+   "CleanACat_Pet_Pickle_EarL",
+   "CleanACat_Pet_Pickle_EarR",
+   "CleanACat_Pet_Pickle_Tail",
+   "CleanACat_Pet_Pickle_LegF1",
+   "CleanACat_Pet_Pickle_LegF2",
+   "CleanACat_Pet_Pickle_LegB1",
+   "CleanACat_Pet_Pickle_LegB2",
+   "CleanACat_Pet_Pickle_Prop",
+   "CleanACat_Pet_Pickle_Prop2",
+   "CleanACat_Pet_Pickle_Star2",
+   "CleanACat_Pet_Pickle_Star3",
+   "CleanACat_Pet_Pickle_Star3_Glow"
+  ],
+  "triangles": 1408,
+  "budget": 2400,
+  "parts": 92,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 1.86
+  },
+  "size_roblox": [
+   1.0,
+   1.86,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "1408/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "886 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Pickle.png"
+ },
+ {
+  "name": "CleanACat_Pet_Scrubby",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Scrubby_Body",
+   "CleanACat_Pet_Scrubby_Head",
+   "CleanACat_Pet_Scrubby_Eye1",
+   "CleanACat_Pet_Scrubby_Eye2",
+   "CleanACat_Pet_Scrubby_EarL",
+   "CleanACat_Pet_Scrubby_EarR",
+   "CleanACat_Pet_Scrubby_Tail",
+   "CleanACat_Pet_Scrubby_LegF1",
+   "CleanACat_Pet_Scrubby_LegF2",
+   "CleanACat_Pet_Scrubby_LegB1",
+   "CleanACat_Pet_Scrubby_LegB2",
+   "CleanACat_Pet_Scrubby_Prop",
+   "CleanACat_Pet_Scrubby_Star2",
+   "CleanACat_Pet_Scrubby_Star3",
+   "CleanACat_Pet_Scrubby_Star3_Glow"
+  ],
+  "triangles": 1196,
+  "budget": 2400,
+  "parts": 93,
+  "size_studs": {
+   "x": 1.0,
+   "y": 1.97,
+   "z": 2.1
+  },
+  "size_roblox": [
+   1.0,
+   2.1,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "1196/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "772 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Scrubby.png"
+ },
+ {
   "name": "CleanACat_Prop_BowButtonMint",
   "category": "Prop",
   "module": "props",

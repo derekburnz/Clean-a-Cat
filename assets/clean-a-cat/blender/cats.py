@@ -162,7 +162,7 @@ def look(spec):
     c.setdefault("second", c["fur"])
     c.setdefault("third", c["second"])
     pat, tux = spec["pattern"], spec.get("tuxedo")
-    c["leg"] = c["fur"]
+    c["leg"] = spec.get("legs") or c["fur"]         # `legs`: the legs in their own colour (the panda pet, pets.py)
     # socks when the coat names them, else dark socks on points and white on a tuxedo
     c["paw"] = c.get("socks") or (c["second"] if pat == "points" or tux else c["fur"])
     c["ear"] = spec.get("ears") or (c["second"] if pat == "points" else c["third"] if pat == "gradient" else c["fur"])

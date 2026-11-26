@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
                                 "blender-asset-qa", "scripts"))
 import qa_check  # noqa: E402  (the vendored EL4CTEO/blender-skills script, see .claude/skills/THIRD_PARTY.md)
 
-CATEGORIES = ("Cat", "NPC", "Station", "Tool", "Prop", "Bow", "Mud", "Area", "Street", "Decor")
+CATEGORIES = ("Cat", "NPC", "Station", "Tool", "Prop", "Bow", "Mud", "Area", "Street", "Decor", "Pet")
 FAIL_CHECKS = ("budget", "transforms", "material", "uv", "naming", "qa")
 WARN_CHECKS = ("pivot", "centered", "qa_warn")
 # qa warnings we accept, each with its reason (the skill: a warning is fixed or accepted with a reason). Anything
