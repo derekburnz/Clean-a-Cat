@@ -37,6 +37,20 @@ Kit.RARITY = {
 	Special = Color3.fromHex("8F62F0"), -- special visitors' cats: a deeper lilac than Epic, so the best cat never reads as Common grey
 } :: { [string]: Color3 }
 
+-- A rarity's outline where it should read by more than hue: Special is lilac with a gold rim (style guide), so it never
+-- looks like Epic. Other rarities keep the caller's own outline.
+Kit.RARITY_RIM = {
+	Special = Kit.GOLD,
+} :: { [string]: Color3 }
+
+-- Sets the chip's or card's UIStroke to the rarity's rim, or back to `default`.
+function Kit.rim(holder: Instance, rarity: string?, default: Color3)
+	local edge = holder:FindFirstChildOfClass("UIStroke") :: UIStroke?
+	if edge then
+		edge.Color = (if rarity then Kit.RARITY_RIM[rarity] else nil) or default
+	end
+end
+
 local DESIGN = Vector2.new(1280, 720)
 local SCALE_MIN, SCALE_MAX = 0.75, 1.3
 local SHORT_BELOW = 560 -- design pixels of height
