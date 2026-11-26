@@ -58,6 +58,10 @@ Remotes.ClientToServer = {
 	-- Game passes (PassService, behind passes).
 	"RequestPass", -- (key: one of Passes.KEYS)  1 a second; switch on, save loaded, the pass created and priced, not
 	-- owned yet: opens Roblox's purchase prompt for it (the only way one opens)
+	-- Starter pack (StarterService, behind starterPack and passes).
+	"RequestStarter", -- ()  1 a second; switches on, save loaded, the pack offered (StarterRules.offered) and its product
+	-- created and priced: opens Roblox's purchase prompt for it (PurchaseService grants it)
+	"RequestStarterOpened", -- ()  1 a second; switch on, save loaded: the player opened the pack window, saved once
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side

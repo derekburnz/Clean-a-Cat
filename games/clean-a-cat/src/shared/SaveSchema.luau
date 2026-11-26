@@ -218,10 +218,12 @@ end
 -- How long the starter pack offer lasts from first join (tuning: starter pack, 72 hours).
 SaveSchema.STARTER_SECONDS = 72 * 60 * 60
 
--- Stamps the starter pack's end once, from first join; a save stamped already keeps its end. Returns the end.
-function SaveSchema.stampStarter(save: Save): number
+-- Stamps the starter pack's end once, from first join; a save stamped already keeps its end. With `now`, a save from
+-- before the pack existed starts its 72 hours at this join instead (Growth-Agent's rule), never earlier than its
+-- first join. Returns the end.
+function SaveSchema.stampStarter(save: Save, now: number?): number
 	if save.starterEndsAt == 0 then
-		save.starterEndsAt = save.createdAt + SaveSchema.STARTER_SECONDS
+		save.starterEndsAt = math.max(save.createdAt, now or 0) + SaveSchema.STARTER_SECONDS
 	end
 	return save.starterEndsAt
 end

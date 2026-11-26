@@ -71,7 +71,8 @@ local function show(player: Player)
 	end
 end
 
--- Marks `key` owned for `player` (in the save when it is loaded) and tells every feature when it is new.
+-- Marks `key` owned for `player` (in the save when it is loaded) and tells every feature when it is new. Also
+-- PassService.grant, for a pass given by another purchase (the starter pack, issue 519).
 local function give(player: Player, key: string)
 	local had = PassService.owns(player, key)
 	local now = ownedNow[player]
@@ -88,6 +89,11 @@ local function give(player: Player, key: string)
 	if not had and PassService.owns(player, key) then
 		PassService.changed:Fire(player, key)
 	end
+end
+
+function PassService.grant(player: Player, key: string)
+	assert(Passes.IDS[key] ~= nil, `PassService.grant: {key} is not in shared/Passes`)
+	give(player, key)
 end
 
 -- Asks Roblox about every created pass the save does not hold yet. Yields.
