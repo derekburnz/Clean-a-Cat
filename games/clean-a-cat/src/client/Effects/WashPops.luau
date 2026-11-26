@@ -141,7 +141,32 @@ local function screen(): ScreenGui
 	return made
 end
 
--- Where world point `at` falls on screen, kept inside the middle and under the title band; nil behind the camera.
+WashPops.HUD_NAMES = { "WashMeter", "StepList" } -- the wash HUD pieces a word must stay below
+WashPops.HUD_GAP = 26 -- px under the lowest of them
+
+-- The screen y just under the lowest wash HUD piece that is showing (the step title, dots and bar), or 0. Sync's
+-- capture of the first build showed the done word over the next step's title and "Nice!" over the step dots.
+local function hudFloor(): number
+	local playerGui = Players.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if playerGui == nil then
+		return 0
+	end
+	local floor = 0
+	for _, name in WashPops.HUD_NAMES do
+		local piece = playerGui:FindFirstChild(name, true)
+		if piece and piece:IsA("GuiObject") then
+			local g = piece :: GuiObject
+			local layer = g:FindFirstAncestorOfClass("ScreenGui")
+			if g.Visible and (layer == nil or layer.Enabled) and g.AbsoluteSize.Y > 0 then
+				floor = math.max(floor, g.AbsolutePosition.Y + g.AbsoluteSize.Y + WashPops.HUD_GAP)
+			end
+		end
+	end
+	return floor
+end
+
+-- Where world point `at` falls on screen, kept inside the middle and under the title band and the wash HUD; nil
+-- behind the camera.
 local function onScreen(at: Vector3, lift: number): Vector2?
 	local camera = Workspace.CurrentCamera
 	if camera == nil then
@@ -153,7 +178,8 @@ local function onScreen(at: Vector3, lift: number): Vector2?
 	end
 	local size = camera.ViewportSize
 	local x = math.clamp(point.X, size.X * 0.15, size.X * 0.85)
-	local y = math.clamp(point.Y - lift, size.Y * WashPops.TOP_CLEAR + 30, size.Y * 0.85)
+	local top = math.max(size.Y * WashPops.TOP_CLEAR + 30, hudFloor())
+	local y = math.clamp(point.Y - lift, math.min(top, size.Y * 0.85), size.Y * 0.85)
 	return Vector2.new(x, y)
 end
 
