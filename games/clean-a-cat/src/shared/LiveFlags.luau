@@ -93,6 +93,7 @@ LiveFlags.KEYS = {
 	"customerCarry", -- the player takes a customer's cat from them at the door and carries it to the tub; the wash starts once it is in (SpaService, CarryController, CarryRules); off by default
 	"carryShared", -- a cat in someone's arms shows for every other player too, arms and all (Effects, Motion-FX; the server marks the character, CarryRules); off by default
 	"washScene", -- the wash's close-up as its own scene: a tighter shot, a narrower view and the room softly blurred (Effects/WashCamera, Motion-FX #407); off by default
+	"washScreen", -- the wash minigame on its own screen: a clean room around the shot, no Walk button, prompt pills, player list or regular HUD, a bubbly wipe in and out (WashScreenController, issue 856); off by default
 	"smallPrompts", -- every tap prompt (pick him up, open the box, the boards) drawn as a small pill beside its thing instead of Roblox's big black button (Controllers/PromptController); off by default
 	"worldBackdrop", -- the draft world behind the street: hills, houses and trees the road runs into (Model-Agent's CleanACat_Area_Backdrop, BackdropController), this player's own copy; off by default
 	"skyDraft", -- the draft sky and light: pastel haze, soft clouds, warm tint and gentle bloom (Effects/Sky), this player's own; off by default
@@ -215,6 +216,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	toolOnCat = true,
 	customerCarry = true,
 	washScene = true,
+	washScreen = true,
 	carryShared = true,
 	openingReplay = true,
 	sudsBubble = true,

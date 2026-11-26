@@ -29,6 +29,9 @@ local Kit = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Kit"))
 local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 local PillLayout = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("PillLayout"))
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
+local WashScreenRules =
+	require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("WashScreenRules"))
+local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 
 local FLAG = "smallPrompts"
 local FEWER_FLAG = "fewerPills" -- at most two pills, the nearest, within 10 studs (Spa/PillLayout, issue 745)
@@ -277,14 +280,26 @@ local function settle()
 end
 
 function PromptController.Start()
-	UI.onWindowsChanged(function(open: boolean)
-		ProximityPromptService.Enabled = not open
-		if open then
+	-- no prompt shows while a window is open, nor in the wash minigame on its own screen (switch washScreen, issue
+	-- 856: Derek on dev, "dont show buy ... during minigame"; the Build and Upgrades window sells the tools and bows)
+	local windowOpen = false
+	local function refresh()
+		local washing = WashScreenRules.on(LiveFlags.isOn) and WashView.active()
+		local shown = not windowOpen and not washing
+		ProximityPromptService.Enabled = shown
+		if not shown then
 			for prompt in table.clone(drawn) do
 				hide(prompt)
 			end
 		end
+	end
+	UI.onWindowsChanged(function(open: boolean)
+		windowOpen = open
+		refresh()
 	end)
+	WashView.onChanged(refresh)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WashScreenRules.FLAG)
+		:Connect(refresh)
 	Workspace.DescendantAdded:Connect(function(item: Instance)
 		if item:IsA("ProximityPrompt") then
 			style(item :: ProximityPrompt)

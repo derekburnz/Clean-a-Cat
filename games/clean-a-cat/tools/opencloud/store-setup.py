@@ -265,7 +265,8 @@ def store_art(keys, place, group, art, confirm, summary):
     if key is None:
         summary.append(f"Cannot read the place's page: HTTP {status}: {short(now)}")
         return False
-    summary.append(f"Using {label}. Page now: {short({k: now.get(k) for k in ('icon', 'previews')})}")
+    # the whole answer, not only icon and previews: the first runs read both as empty after a 200 PATCH (2026-11-26)
+    summary.append(f"Using {label}. Page now: {short(now)}")
     if not os.path.isfile(icon) or len(thumbs) != 4:
         summary.append(f"Files missing in {art}: icon {os.path.isfile(icon)}, thumbnails {len(thumbs)} of 4")
         return False
