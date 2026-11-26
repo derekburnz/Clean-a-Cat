@@ -71,11 +71,12 @@ Remotes.ClientToServer = {
 	"RequestGiftCheck", -- ()  1 every 2 s; switches on: asks Roblox whether the player is in the group, shown as GiftGroup
 	"RequestGiftClaim", -- ()  1 every 2 s; switches on, save loaded, the stand lit for this player, the favourite saved
 	-- and the player in the group (asked again on the server): gives Starcoat once and writes the save
-	-- Free rewards on the gift card (switch freeRewards with giftStand; FreeRewardRules, issue 730).
-	"RequestLikeAsk", -- ()  1 every 2 s; switches on, save loaded: stamps save.likeAskedAt once (os.time) and sets
-	-- FreeLikeReadyAt; the gift never depends on a like, which a game cannot read
-	"RequestFreeReward", -- (key: one of FreeRewardRules.KEYS)  1 a second; switches on, save loaded,
-	-- FreeRewardRules.canClaim on the server's own values: pays it once and sets FreeClaimed_<key>
+	-- Free Rewards rows on the gift card (FreeRewardService, behind freeRewards, giftStand and pets).
+	"RequestLikeAsk", -- ()  1 a second; switches on, save loaded, never asked and not paid: stamps likeAskedAt once
+	-- (server os.time()); FreeLikeReadyAt shows when Claim unlocks. The like itself is never read or needed
+	"RequestFreeReward", -- (key: "like" | "play")  1 a second; switches on, save loaded, that row not paid yet; like:
+	-- asked FreeRewardRules.LIKE_WAIT (10) or more seconds ago, pays 150 coins; play: 1800 s of play in total, gives
+	-- one normal crate. Each once per save
 	-- Visiting (VisitService, behind visiting).
 	"RequestVisiting", -- (allowed: boolean)  1 a second; switch on, save loaded: the owner lets other players into
 	-- their spa or not (save.visiting); while not, visitors inside are moved out

@@ -1,40 +1,74 @@
 --!strict
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Shared = ReplicatedStorage:WaitForChild("Shared")
-local CrateRules = require(Shared:WaitForChild("CrateRules"))
-local FreeRewardRules = require(Shared:WaitForChild("FreeRewardRules"))
-
 return function()
-	describe("FreeRewardRules", function()
-		it(
-			"gives the like gift LIKE_WAIT seconds after the ask, whether or not anyone liked",
-			function()
-				local wait = FreeRewardRules.LIKE_WAIT
-				expect(FreeRewardRules.canClaim("like", false, 0, 0, 1000)).to.equal(false)
-				expect(FreeRewardRules.canClaim("like", false, 1000, 0, 1000 + wait - 1)).to.equal(
-					false
-				)
-				expect(FreeRewardRules.canClaim("like", false, 1000, 0, 1000 + wait)).to.equal(true)
-				expect(FreeRewardRules.canClaim("like", true, 1000, 0, 5000)).to.equal(false)
-				expect(FreeRewardRules.likeReadyAt(0)).to.equal(nil)
-				expect(FreeRewardRules.likeReadyAt(0 / 0)).to.equal(nil)
-			end
-		)
+	local FreeRewardRules = require(game:GetService("ReplicatedStorage").Shared.FreeRewardRules)
+	local CrateRules = require(game:GetService("ReplicatedStorage").Shared.CrateRules)
 
-		it("gives the play gift after 30 minutes of play, once", function()
-			local goal = FreeRewardRules.PLAY_SECONDS
-			expect(goal).to.equal(1800)
-			expect(FreeRewardRules.canClaim("play", false, 0, goal - 1, 0)).to.equal(false)
-			expect(FreeRewardRules.canClaim("play", false, 0, goal, 0)).to.equal(true)
-			expect(FreeRewardRules.canClaim("play", true, 0, goal * 2, 0)).to.equal(false)
-			expect(FreeRewardRules.canClaim("play", false, 0, 0 / 0, 0)).to.equal(false)
-			expect(FreeRewardRules.canClaim("follow", false, 1, 99999, 99999)).to.equal(false)
+	local function state(fields: { [string]: any }): any
+		return {
+			claimed = fields.claimed or { play = false, like = false },
+			likeAskedAt = fields.likeAskedAt or 0,
+			played = fields.played or 0,
+			now = fields.now or 1000,
+		}
+	end
+
+	describe("FreeRewardRules", function()
+		it("takes only the two keys", function()
+			expect(FreeRewardRules.cleanKey("like")).to.equal("like")
+			expect(FreeRewardRules.cleanKey("play")).to.equal("play")
+			expect(FreeRewardRules.cleanKey("group")).to.equal(nil)
+			expect(FreeRewardRules.cleanKey(1)).to.equal(nil)
+			expect(FreeRewardRules.cleanKey(nil)).to.equal(nil)
 		end)
 
-		it("pays from the economy that exists", function()
-			expect(table.find(CrateRules.KINDS, FreeRewardRules.PLAY_CRATE) ~= nil).to.equal(true)
-			expect(FreeRewardRules.LIKE_COINS > 0).to.equal(true)
+		it("lists the like row first", function()
+			expect(FreeRewardRules.KEYS[1]).to.equal("like")
+			expect(FreeRewardRules.KEYS[2]).to.equal("play")
+		end)
+
+		it("pays a crate kind that exists", function()
+			expect(CrateRules.cleanKind(FreeRewardRules.PLAY_CRATE)).to.equal(
+				FreeRewardRules.PLAY_CRATE
+			)
+		end)
+
+		it("needs the like asked, then 10 seconds, liked or not", function()
+			expect(FreeRewardRules.LIKE_WAIT).to.equal(10)
+			expect(FreeRewardRules.likeReadyAt(0)).to.equal(nil)
+			expect(FreeRewardRules.likeReadyAt(500)).to.equal(510)
+			expect(FreeRewardRules.refusal(state({}), "like")).to.equal("notAsked")
+			expect(FreeRewardRules.refusal(state({ likeAskedAt = 995, now = 1000 }), "like")).to.equal(
+				"wait"
+			)
+			expect(FreeRewardRules.refusal(state({ likeAskedAt = 990, now = 1000 }), "like")).to.equal(
+				nil
+			)
+		end)
+
+		it("needs 30 minutes of play for the crate", function()
+			expect(FreeRewardRules.refusal(state({ played = 1799 }), "play")).to.equal("notYet")
+			expect(FreeRewardRules.refusal(state({ played = 1800 }), "play")).to.equal(nil)
+		end)
+
+		it("pays each row once", function()
+			local claimed = { play = true, like = true }
+			expect(FreeRewardRules.refusal(state({ claimed = claimed, played = 5000 }), "play")).to.equal(
+				"claimed"
+			)
+			expect(
+				FreeRewardRules.refusal(
+					state({ claimed = claimed, likeAskedAt = 1, now = 1000 }),
+					"like"
+				)
+			).to.equal("claimed")
+			-- one row paid leaves the other open
+			local onlyPlay = { play = true, like = false }
+			expect(
+				FreeRewardRules.refusal(
+					state({ claimed = onlyPlay, likeAskedAt = 1, now = 1000 }),
+					"like"
+				)
+			).to.equal(nil)
 		end)
 	end)
 end

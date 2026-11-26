@@ -7,6 +7,11 @@ local FreeRewardRules = require(script.Parent:WaitForChild("FreeRewardRules"))
 
 local GiftViewRules = {}
 
+-- What each free row gives, in words for the card.
+local function rewardText(key: string): string
+	return if key == "like" then `{FreeRewardRules.LIKE_COINS} coins` else "A free crate"
+end
+
 GiftViewRules.FLAG = "giftStand"
 GiftViewRules.WINDOW = "Gift"
 GiftViewRules.PET = "Starcoat"
@@ -44,7 +49,7 @@ export type Step = {
 }
 
 local function likeStep(free: Free): Step
-	local reward = FreeRewardRules.rewardText("like")
+	local reward = rewardText("like")
 	if free.likeClaimed then
 		return {
 			key = "like",
@@ -90,7 +95,7 @@ local function likeStep(free: Free): Step
 end
 
 local function playStep(free: Free): Step
-	local reward = FreeRewardRules.rewardText("play")
+	local reward = rewardText("play")
 	local goalMinutes = FreeRewardRules.PLAY_SECONDS // 60
 	if free.playClaimed then
 		return {

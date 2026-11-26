@@ -1,62 +1,64 @@
 --!strict
--- FreeRewardRules: the free rewards on the gift stand's card (issue 730, Derek's ask of 2026-11-26), behind the switch
--- freeRewards with giftStand. Two rows join the favourite and group steps (whose reward stays Starcoat, GiftRules):
---
---   like   first on the card. Tapping Like asks the server to stamp the ask (RequestLikeAsk); LIKE_WAIT seconds later
---          the gift can be claimed (RequestFreeReward "like"). A game cannot read a like, so the gift never depends on
---          it, and the card says so ("either way"); nothing pretends to check. Pays LIKE_COINS coins.
---   play   PLAY_SECONDS of play in total (save.playSeconds). Pays one PLAY_CRATE crate.
---
--- Each is paid once per save, by the server. Pure, so tests/specs/FreeRewardRules.spec.luau covers it; the server's
--- service (Gameplay-Engineer) and the card's controller both use it.
+-- FreeRewardRules: the Free Rewards rows on the gift card (issue 730, switch freeRewards, which needs giftStand). Two
+-- rows are paid here, each once per save; the third row (favourite plus group, for Starcoat) stays GiftRules'.
+-- - like: the card asks the player to like the game if they enjoy it and says the gift comes either way. A game
+--   cannot read a like, so nothing is checked: the ask is stamped once (likeAskedAt, server os.time()) and the
+--   reward can be claimed LIKE_WAIT seconds later, liked or not.
+-- - play: PLAY_SECONDS of play in total (the save's play time) gives PLAY_CRATES crates of PLAY_CRATE.
+-- Pure, so tests/specs/FreeRewardRules.spec.luau covers it; FreeRewardService uses it.
+
 local FreeRewardRules = {}
 
 FreeRewardRules.FLAG = "freeRewards"
-FreeRewardRules.KEYS = table.freeze({ "like", "play" }) :: { string }
-FreeRewardRules.LIKE_WAIT = 10 -- seconds from the ask until the like gift can be claimed (Derek: "like 10 seconds")
+FreeRewardRules.KEYS = { "like", "play" } -- the card's order: the like row first (Derek, 2026-11-26)
+
+FreeRewardRules.LIKE_WAIT = 10 -- seconds from the like ask to its Claim (Derek, 2026-11-26)
 FreeRewardRules.LIKE_COINS = 150
-FreeRewardRules.PLAY_SECONDS = 30 * 60
-FreeRewardRules.PLAY_CRATE = "normal" -- a CrateRules kind; its chance list shows before it is opened
+FreeRewardRules.PLAY_SECONDS = 1800 -- 30 minutes of play in total
+FreeRewardRules.PLAY_CRATE = "normal" -- a CrateRules kind
+FreeRewardRules.PLAY_CRATES = 1
 
 -- Player attributes the server keeps for the card.
-FreeRewardRules.LIKE_READY_ATTRIBUTE = "FreeLikeReadyAt" -- the server time (os.time) the like gift unlocks; nil before
-FreeRewardRules.CLAIMED_PREFIX = "FreeClaimed_" -- FreeClaimed_like, FreeClaimed_play: true once paid
-FreeRewardRules.PLAYED_ATTRIBUTE = "PlaySeconds" -- the save's play seconds, refreshed now and then
+FreeRewardRules.PLAY_CLAIMED_ATTRIBUTE = "FreePlayClaimed" -- true once the play reward is paid
+FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE = "FreeLikeClaimed" -- true once the like reward is paid
+FreeRewardRules.LIKE_READY_ATTRIBUTE = "FreeLikeReadyAt" -- os.time() the like's Claim unlocks, once asked
+FreeRewardRules.PLAY_SECONDS_ATTRIBUTE = "PlaySeconds" -- the save's play time so far, whole seconds
 
--- The time the like gift unlocks for an ask stamped at `askedAt` (0 or less: not asked).
+export type Key = "like" | "play"
+export type Claimed = { play: boolean, like: boolean }
+export type State = { claimed: Claimed, likeAskedAt: number, played: number, now: number }
+
+-- `raw` as one of KEYS, or nil.
+function FreeRewardRules.cleanKey(raw: unknown): Key?
+	if raw == "like" or raw == "play" then
+		return raw :: Key
+	end
+	return nil
+end
+
+-- The os.time() the like's Claim unlocks after an ask at `askedAt`; nil before any ask.
 function FreeRewardRules.likeReadyAt(askedAt: number): number?
-	if askedAt ~= askedAt or askedAt <= 0 then
+	if askedAt <= 0 then
 		return nil
 	end
 	return askedAt + FreeRewardRules.LIKE_WAIT
 end
 
--- Whether reward `key` can be paid now. `askedAt` is the like's stamp, `played` the save's play seconds.
-function FreeRewardRules.canClaim(
-	key: string,
-	claimed: boolean,
-	askedAt: number,
-	played: number,
-	now: number
-): boolean
-	if claimed then
-		return false
+-- Whether `key` can be paid now: not paid before, and for like the ask made LIKE_WAIT or more seconds ago, for play
+-- PLAY_SECONDS of play. Nil when it can, else why not ("claimed", "wait", "notAsked", "notYet").
+function FreeRewardRules.refusal(state: State, key: Key): string?
+	local paid = if key == "like" then state.claimed.like else state.claimed.play
+	if paid then
+		return "claimed"
 	end
 	if key == "like" then
-		local readyAt = FreeRewardRules.likeReadyAt(askedAt)
-		return readyAt ~= nil and now >= readyAt
-	elseif key == "play" then
-		return played == played and played >= FreeRewardRules.PLAY_SECONDS
+		local readyAt = FreeRewardRules.likeReadyAt(state.likeAskedAt)
+		if readyAt == nil then
+			return "notAsked"
+		end
+		return if state.now >= readyAt then nil else "wait"
 	end
-	return false
+	return if state.played >= FreeRewardRules.PLAY_SECONDS then nil else "notYet"
 end
 
--- What the reward is, in words for the card.
-function FreeRewardRules.rewardText(key: string): string
-	if key == "like" then
-		return `{FreeRewardRules.LIKE_COINS} coins`
-	end
-	return "A free crate"
-end
-
-return table.freeze(FreeRewardRules)
+return FreeRewardRules

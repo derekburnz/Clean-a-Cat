@@ -44,7 +44,9 @@ local function number(raw: unknown): number
 end
 
 local function freeOn(): boolean
-	return LiveFlags.isOn(FreeRewardRules.FLAG) and LiveFlags.isOn(GiftViewRules.FLAG)
+	return LiveFlags.isOn(FreeRewardRules.FLAG)
+		and LiveFlags.isOn(GiftViewRules.FLAG)
+		and LiveFlags.isOn("pets")
 end
 
 local function free(): GiftViewRules.Free?
@@ -56,9 +58,9 @@ local function free(): GiftViewRules.Free?
 	return {
 		likeAsked = readyAt > 0,
 		likeIn = if readyAt > 0 then math.max(0, math.ceil(readyAt - now)) else 0,
-		likeClaimed = player:GetAttribute(FreeRewardRules.CLAIMED_PREFIX .. "like") == true,
-		played = number(player:GetAttribute(FreeRewardRules.PLAYED_ATTRIBUTE)),
-		playClaimed = player:GetAttribute(FreeRewardRules.CLAIMED_PREFIX .. "play") == true,
+		likeClaimed = player:GetAttribute(FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE) == true,
+		played = number(player:GetAttribute(FreeRewardRules.PLAY_SECONDS_ATTRIBUTE)),
+		playClaimed = player:GetAttribute(FreeRewardRules.PLAY_CLAIMED_ATTRIBUTE) == true,
 	}
 end
 
@@ -182,9 +184,9 @@ function GiftCardController.Start()
 	for _, name in
 		{
 			FreeRewardRules.LIKE_READY_ATTRIBUTE,
-			FreeRewardRules.PLAYED_ATTRIBUTE,
-			FreeRewardRules.CLAIMED_PREFIX .. "like",
-			FreeRewardRules.CLAIMED_PREFIX .. "play",
+			FreeRewardRules.PLAY_SECONDS_ATTRIBUTE,
+			FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE,
+			FreeRewardRules.PLAY_CLAIMED_ATTRIBUTE,
 		}
 	do
 		player:GetAttributeChangedSignal(name):Connect(function()
