@@ -67,4 +67,18 @@ WashDraft.SAY = table.freeze({
 	clawsHint = "Hold on each paw",
 })
 
+-- (switch foamStep, issue 888) Derek on dev, 2026-11-26: "swirl the suds is a bad name for it, it should be like a
+-- soap bar and it be like foam up the cat". The same step with a soap bar; the words also stop sounding like Suds.
+WashDraft.FOAM_FLAG = "foamStep"
+WashDraft.SAY_FOAM = table.freeze({
+	bath = "Foam up the cat",
+	bathHint = "Rub the soap on",
+})
+
+-- The Bubble Bath's words for the switch reader `isOn`.
+function WashDraft.bathSay(isOn: (string) -> boolean): { bath: string, bathHint: string }
+	local say = if isOn(WashDraft.FOAM_FLAG) then WashDraft.SAY_FOAM else WashDraft.SAY
+	return { bath = say.bath, bathHint = say.bathHint }
+end
+
 return table.freeze(WashDraft)

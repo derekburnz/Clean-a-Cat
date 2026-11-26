@@ -11,7 +11,10 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 local SpaLayout = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("SpaLayout"))
+local WashScreenRules =
+	require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("WashScreenRules"))
 
 local Client = script.Parent.Parent
 local ControlHold = require(script.Parent:WaitForChild("ControlHold"))
@@ -43,6 +46,49 @@ local listeners: { () -> () } = {} -- WashView.onChanged: the view came up, went
 -- cover that this function plays; it calls swap once, while the screen is covered, and the camera cuts there.
 local transition: ((swap: () -> ()) -> ())? = nil
 local entering = false -- a way in is waiting for its cover
+
+-- The height of `cat`'s eyes: the middle of the parts in his Eye1 and Eye2 Models (Model-Agent's names), or nil.
+local function eyeHeight(cat: Model): number?
+	local sum, count = 0, 0
+	for _, item in cat:GetDescendants() do
+		local name = item.Name
+		if
+			item:IsA("Model") and (string.sub(name, -4) == "Eye1" or string.sub(name, -4) == "Eye2")
+		then
+			for _, part in item:GetDescendants() do
+				if part:IsA("BasePart") then
+					sum += (part :: BasePart).Position.Y
+					count += 1
+				end
+			end
+		end
+	end
+	return if count > 0 then sum / count else nil
+end
+
+-- The shot for `where` and its cat: with the wash screen (switch washScreen) a front view at his eye level
+-- (WashScreenRules.frontFrom), else Effects/WashCamera's.
+local function shotFor(where: CFrame, cat: Model?): CFrame
+	if not WashScreenRules.on(LiveFlags.isOn) then
+		return WashCamera.shot(where, cat)
+	end
+	if cat and cat.Parent then
+		local box, size = cat:GetBoundingBox()
+		local look = box.Position + Vector3.yAxis * WashCamera.SCENE.boxLookAbove
+		local from = WashScreenRules.frontFrom(
+			look,
+			cat:GetPivot().LookVector,
+			WashCamera.sceneDistanceFor(size.Y),
+			eyeHeight(cat)
+		)
+		return CFrame.lookAt(from, look)
+	end
+	local look = where.Position + Vector3.yAxis * WashCamera.SCENE.lookUp
+	return CFrame.lookAt(
+		WashScreenRules.frontFrom(look, where.LookVector, WashCamera.sceneDistance(), nil),
+		look
+	)
+end
 
 local function changed()
 	for _, listener in listeners do
@@ -145,11 +191,7 @@ local function apply()
 				end
 				return
 			end
-			wash = WashCamera.enter(
-				WashCamera.shot(spot or SpaLayout.tubSpot(), framed),
-				nil,
-				cover ~= nil
-			)
+			wash = WashCamera.enter(shotFor(spot or SpaLayout.tubSpot(), framed), nil, cover ~= nil)
 			hideCharacter(true)
 			changed()
 		end
@@ -200,7 +242,7 @@ function WashView.frame(where: CFrame?, cat: Model?)
 	framed = cat
 	local view = wash
 	if view then
-		view.moveTo(WashCamera.shot(where or SpaLayout.tubSpot(), cat))
+		view.moveTo(shotFor(where or SpaLayout.tubSpot(), cat))
 		changed()
 	end
 end

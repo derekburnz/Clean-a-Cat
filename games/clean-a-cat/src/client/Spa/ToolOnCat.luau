@@ -23,11 +23,22 @@ local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild(
 local ToolOnCat = {}
 
 ToolOnCat.FLAG = "toolOnCat"
+local SOAP_FLAG = "foamStep"
+local SOAP_BAR = "CleanACat_Tool_SoapBar"
 
 local SCALE = 1.1 -- the tools are drawn about twice real size for a hand; this reads on the 1.5 scale cat
 local LIFT = 0.04 -- studs the tool's bottom floats off the fur, so it never sinks into a curve of the coat
 local GLIDE = 30 -- per second; how fast the tool catches up with the touch point
 local FAINT = 0.6 -- see-through on the kitten's head
+-- (switch washScreen, issue 904) Derek on dev, 2026-11-26: "make the transparent models of stuff for cleaning a little
+-- less transparent but much smaller": about half the size, so the sponge no longer covers his head, and a lighter fade
+local SMALL_SCALE = 0.55
+local SMALL_FAINT = 0.35
+local SMALL_FLAG = "washScreen"
+
+local function small(): boolean
+	return LiveFlags.isOn(SMALL_FLAG)
+end
 
 -- The tool each wash step shows. A later step (step) wins over the stage it runs in, as in ScrubController.
 -- Owned upgrades show their own model (Bubble Soap's sponge, the Pro Brush's fluffy brush).
@@ -37,7 +48,12 @@ function ToolOnCat.modelFor(stage: string?, step: string?, owns: (string) -> boo
 	elseif step == "rinse" then
 		return "CleanACat_Tool_Shower" -- (washMeter) spray the foam off
 	elseif step == "smell" then
-		return "CleanACat_Tool_SpongeBubble" -- "Swirl the suds"
+		-- (switch foamStep, issue 888) "Foam up the cat" with Model-Agent's soap bar, once it is in the game
+		local assets = ReplicatedStorage:FindFirstChild("Assets")
+		if LiveFlags.isOn(SOAP_FLAG) and assets and assets:FindFirstChild(SOAP_BAR) then
+			return SOAP_BAR
+		end
+		return "CleanACat_Tool_SpongeBubble" -- the Bubble Bath ("Swirl the suds")
 	elseif stage == "dirty" then
 		return if owns("BubbleSoap") then "CleanACat_Tool_SpongeBubble" else "CleanACat_Tool_Sponge"
 	elseif stage == "clean" then
@@ -59,7 +75,9 @@ local follow: RBXScriptConnection? = nil
 -- the surface frame (Y along the fur's normal) to the model's pivot, so the bottom of its box sits on the fur and
 -- its Handle is over the touch point.
 local function copyOf(name: string): Copy?
-	local have = copies[name]
+	local scale = if small() then SMALL_SCALE else SCALE
+	local key = `{name}@{scale}` -- a copy per size, so the switch changing mid-session makes a new one
+	local have = copies[key]
 	if have then
 		return have
 	end
@@ -75,7 +93,7 @@ local function copyOf(name: string): Copy?
 		return nil
 	end
 	local model = asset:Clone() :: Model
-	model:ScaleTo(SCALE)
+	model:ScaleTo(scale)
 	local parts: { BasePart } = {}
 	for _, item in model:GetDescendants() do
 		if item:IsA("BasePart") then
@@ -105,7 +123,7 @@ local function copyOf(name: string): Copy?
 		parts = parts,
 		faint = false,
 	}
-	copies[name] = copy
+	copies[key] = copy
 	return copy
 end
 
@@ -151,7 +169,9 @@ local function setFaint(copy: Copy, faint: boolean)
 	end
 	copy.faint = faint
 	for _, part in copy.parts do
-		part.LocalTransparencyModifier = if faint then FAINT else 0
+		part.LocalTransparencyModifier = if faint
+			then (if small() then SMALL_FAINT else FAINT)
+			else 0
 	end
 end
 
