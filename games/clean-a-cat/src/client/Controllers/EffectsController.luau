@@ -77,6 +77,12 @@ function EffectsController.Start()
 
 	-- the draft sky and light, while its switch is on (instant rollback when it goes off)
 	Sky.watch(LiveFlags.ATTRIBUTE_PREFIX .. "skyDraft")
+	-- the tub's water, foam and bubbles come alive (Effects/TubLife, switch tubLife, issue 879)
+	local TubLife =
+		require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("TubLife")) :: any
+	TubLife.start(function(): boolean
+		return LiveFlags.isOn("tubLife")
+	end)
 
 	CatMotion.start(Effects.tier(), function(): boolean
 		return LiveFlags.isOn(MOTION_FLAG)

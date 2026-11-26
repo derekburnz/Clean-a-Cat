@@ -45,6 +45,7 @@ LiveFlags.KEYS = {
 	"gradeStars", -- a wash earns its grade in spa stars (1 to 3, plus a rarer cat's extra) and the star tiers start 3 times higher (CatRules.gradeStars, issue 868); off by default
 	"sudsVoice", -- one soft meow when Suds's speech bubble appears (Audio/SudsVoice, issue 827); off by default
 	"trailBold", -- the guide line in gold with a dark outline so it reads on the spa floor (Effects/TrailLine, Derek 2026-11-26); off by default
+	"tubLife", -- the tub's foam settles and breathes, bubbles rise and pop, the tap runs with a ripple (Effects/TubLife, issue 879); off by default
 	"catWalkStand", -- a washed cat walks out on its standing model with a leg trot, not sitting (Effects/CatWalkOut); off by default
 	"pillPointer", -- a gold hand bobs over the prompt pill at the end of a guided walk (Controllers/PillPointerController); off by default
 	"boxGuide", -- the guide line back to the closed box when the player walks away before opening it (Controllers/BoxGuideController); off by default
@@ -176,6 +177,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	boxGuide = true,
 	pillPointer = true,
 	catWalkStand = true,
+	tubLife = true,
 	sudsVoice = true,
 	joPrice = true,
 	washPace = true,
