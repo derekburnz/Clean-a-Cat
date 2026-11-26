@@ -86,6 +86,28 @@ return function()
 			expect(c.isNew).to.equal(true)
 		end)
 
+		it("adds the friends line to the total", function()
+			local recap = RecapRules.make(
+				CatRules.ROSTER.Common[1],
+				{ coins = 10, tip = 2, stars = 1 },
+				0,
+				9,
+				false,
+				{ friends = 3 }
+			)
+			expect(RecapRules.total(recap)).to.equal(15)
+			local found = false
+			for _, row in RecapRules.rows(recap) do
+				found = found or (row.key == "friends" and row.value == 3)
+			end
+			expect(found).to.equal(true)
+			local copy = RecapRules.clean(recap) :: RecapRules.Recap
+			expect(copy.friends).to.equal(3)
+			local bad = table.clone(recap) :: any
+			bad.friends = -1
+			expect(RecapRules.clean(bad)).to.equal(nil)
+		end)
+
 		it("keeps the pass line and refuses words it does not know", function()
 			local cat = CatRules.ROSTER.Common[1]
 			local recap = RecapRules.make(cat, CatRules.pay(cat), 0, 0, false, {

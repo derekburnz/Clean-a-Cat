@@ -43,6 +43,7 @@ export type Recap = {
 	bowTier: string?, -- the tier that earned them, one of BowRules.TIERS, for the line's words
 	pass: number?, -- what 2x Coins and the Golden Sponge added (switch passes, Passes.handExtra); 0 or nil without
 	passLine: string?, -- the line's words, one of Passes.LINES
+	friends: number?, -- what friends in the server added (switch friendBonus, VisitRules.friendExtra); 0 or nil without
 }
 
 -- The pay formula's lines for make; each 0 when not given.
@@ -55,6 +56,7 @@ export type Extra = {
 	bowTier: string?,
 	pass: number?,
 	passLine: string?,
+	friends: number?,
 }
 
 export type Row = { key: string, say: string, value: number }
@@ -101,6 +103,7 @@ function RecapRules.make(
 		bowTier = more.bowTier,
 		pass = more.pass or 0,
 		passLine = more.passLine,
+		friends = more.friends or 0,
 	}
 end
 
@@ -133,6 +136,7 @@ function RecapRules.total(recap: Recap): number
 		+ (recap.dirt or 0)
 		+ (recap.bow or 0)
 		+ (recap.pass or 0)
+		+ (recap.friends or 0)
 		+ recap.tip
 		+ recap.bonus
 end
@@ -153,6 +157,7 @@ function RecapRules.rows(recap: Recap): { Row }
 	add("bow", `{BowRules.TIER[recap.bowTier or BowRules.FIRST].name} bow`, recap.bow or 0)
 	add("tip", "Happy owner tip", recap.tip)
 	add("bonus", "Spa stations bonus", recap.bonus)
+	add("friends", "Friends here", recap.friends or 0)
 	add("pass", recap.passLine or "Pass bonus", recap.pass or 0)
 	return rows
 end
@@ -196,7 +201,16 @@ function RecapRules.clean(raw: unknown): Recap?
 	local grade = optional(t.grade, 3)
 	local bow = optional(t.bow, MAX_AMOUNT)
 	local pass = optional(t.pass, MAX_AMOUNT)
-	if speed == nil or early == nil or dirt == nil or grade == nil or bow == nil or pass == nil then
+	local friends = optional(t.friends, MAX_AMOUNT)
+	if
+		speed == nil
+		or early == nil
+		or dirt == nil
+		or grade == nil
+		or bow == nil
+		or pass == nil
+		or friends == nil
+	then
 		return nil
 	end
 	local passLine: unknown = t.passLine
@@ -228,6 +242,7 @@ function RecapRules.clean(raw: unknown): Recap?
 		bowTier = BowRules.clean(bowTier),
 		pass = pass,
 		passLine = if type(passLine) == "string" then passLine else nil,
+		friends = friends,
 	}
 end
 
