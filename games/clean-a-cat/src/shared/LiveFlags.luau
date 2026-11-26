@@ -231,9 +231,9 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helpersWindow = true,
 	buttonArrive = true,
 	leaveLines = true,
+	freeRewards = true,
 	spawnSide = true,
 	respawnCamera = true,
-	freeRewards = true,
 	helperPopups = true,
 	hudTidy = true,
 } :: { [string]: boolean }
