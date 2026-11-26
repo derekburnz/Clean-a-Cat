@@ -52,3 +52,15 @@
 
 ## Console
 Nothing new: only the known lines.
+
+## Gift stand beacon (PR 666, main 8cab81a)
+- Place: the same 2a34a8e place with Effects/GiftStand.luau from 8cab81a, the only client file PR 666 changes (PR 665's VIP Room server changes are not in it). Seeded play 6:45, so the stand lit at 7:00 while I watched. iPhone 13 frame.
+
+| Check | Result |
+|---|---|
+| Beacon at 7:00 | Made on my stand only (Plot1), 31 to 37 px on screen as it breathes, over the balloon |
+| From the spawn | FAIL. At the spawn the camera sits inside the wall panel behind it (see picture 03), so the screen is light blue and nothing shows (picture 06). 4.5 studs in from the spawn the beacon reads clearly at 33 px, 27 studs away, nothing in front (picture 07) |
+| From the tub | PASS. After turning the camera toward the stand: 36 px at 35 studs, nothing in front. The stand itself is behind the window shelf, the beacon shows above it (picture 08) |
+| Gone once claimed | PASS (simulated). A real claim needs a favourite on the owner's account, so I set GiftClaimed true on the server: the beacon went at once, the lamp and light stayed. False again brought it back |
+| Neighbour's lit stand | NOT RUN with a second player (Studio here runs one client). Simulated by setting Lit true on Plot2's stand on my client: its lamp went Neon with its light, and no beacon appeared there |
+| Console | PASS. Nothing new |
