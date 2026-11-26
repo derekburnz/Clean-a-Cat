@@ -49,6 +49,28 @@ return function()
 	end)
 
 	describe("QuestRules.count", function()
+		it("puts one wash's finished quests and the crate in one notice", function()
+			local a: QuestRules.Quest =
+				{ id = "a", text = "Wash 5 cats", goal = 5, coins = 40, counts = "washed" }
+			local b: QuestRules.Quest = {
+				id = "b",
+				text = "Get 3 stars on 20 cats",
+				goal = 20,
+				coins = 150,
+				counts = "threeStars",
+			}
+			expect(QuestRules.noticeText({}, false)).to.equal(nil)
+			expect(QuestRules.noticeText({ a }, false)).to.equal(
+				"Quest done: Wash 5 cats! +40 coins"
+			)
+			expect(QuestRules.noticeText({ a, b }, true)).to.equal(
+				"2 quests done! +190 coins. Every weekly quest done! A crate is yours"
+			)
+			expect(QuestRules.noticeText({}, true)).to.equal(
+				"Every weekly quest done! A crate is yours"
+			)
+		end)
+
 		it(
 			"pays a daily quest once when done and the weekly crate once all weekly ones are",
 			function()
