@@ -30,6 +30,10 @@ type Shown = {
 }
 
 local shown: { [Model]: Shown } = {} -- by counter cat
+-- Cats whose card has grown in once (switch counterCardFx, issue 803): a redraw, or CounterPlace arriving late and
+-- the card being made again, never grows twice. Cleared when the cat is destroyed.
+local grown: { [Model]: boolean } = {}
+local FX_FLAG = "counterCardFx"
 local matColors: { [BasePart]: Color3 } = {} -- each tinted mat's own colour, to put back
 local guiParent: Instance? = nil
 
@@ -133,8 +137,23 @@ local function add(cat: Instance, figure: Model)
 	if adornee == nil then
 		return
 	end
+	local motion: CounterCard.Motion? = nil
+	if LiveFlags.isOn(FX_FLAG) then
+		for old in grown do
+			if not old:IsDescendantOf(game) then
+				grown[old] = nil -- packed away or gone without Destroying
+			end
+		end
+		motion = if grown[model] then "ease" else "grow"
+		if not grown[model] then
+			grown[model] = true
+			model.Destroying:Once(function()
+				grown[model] = nil
+			end)
+		end
+	end
 	local entry: Shown = {
-		card = CounterCard.new(adornee :: BasePart, guiParent :: Instance),
+		card = CounterCard.new(adornee :: BasePart, guiParent :: Instance, motion),
 		figure = figure,
 		connections = {},
 	}

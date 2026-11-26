@@ -39,6 +39,7 @@ LiveFlags.KEYS = {
 	"spaMusic", -- the two spa songs on the spa floor (Audio, AudioController, issue 529); off by default
 	"uiSounds", -- soft open and close sounds for windows and the More tray (Audio/UiSounds, issue 800); off by default
 	"helperPopFx", -- the helper pay popup pops in with one soft coin sound (UI/HelperPopup, issue 801); off by default
+	"counterCardFx", -- the counter cards grow and fade in, fade out and ease their heart bar (UI/CounterCard, issue 803); off by default
 	"claimFx", -- a claim sound and three sparkles when a Free Reward or the gift pet is claimed (Effects/ClaimFx, issue 802); off by default
 	"catMotion", -- cat idle, blink, ear twitch, shake-off and happy wiggle (Effects/CatMotion); off by default
 	"dryEffects", -- warm air wisps from the dryer nozzle (Controllers/EffectsController); off by default
@@ -155,6 +156,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	spaMusic = true,
 	uiSounds = true,
 	claimFx = true,
+	counterCardFx = true,
 	helperPopFx = true,
 	catMotion = true,
 	dryEffects = true,
