@@ -4,7 +4,8 @@
 -- default, WorkerRules.WORKERS[id].name) and whether a hired helper's row offers Rename. Rename opens the Rename card
 -- (UI/RenameCard) with the name shown now and the default; Save sends RequestRenameStaff(id, text), "" for the
 -- default. The typed name is never shown here: the row changes only when the server sends the filtered name back,
--- and a refused name comes back as the server's notice. When the card goes, the pets window opens again.
+-- and a refused name comes back as the server's notice. When the card goes, the window it came from (Pets or
+-- Helpers, issue 526 item 3) opens again.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -17,12 +18,13 @@ local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
 
 local PETS_WINDOW = "Pets"
+local HELPERS_WINDOW = "Helpers"
 local RENAME_WINDOW = "Rename"
 
 local StaffNameController = {}
 
 local player = Players.LocalPlayer
-local backToPets = false -- the card was opened from the pets window, so it opens again as the card goes
+local backTo: string? = nil -- the window the card was opened from, opened again as the card goes
 
 local function on(): boolean
 	return LiveFlags.isOn(StaffNameRules.FLAG)
@@ -58,13 +60,19 @@ end
 function StaffNameController.Init(_controllers: { [string]: any }) end
 
 function StaffNameController.Start()
-	UI.onRenamePick(function(id: string)
+	local function pick(id: string, from: string)
 		if not on() or not table.find(WorkerRules.IDS, id) or not hired(id) then
 			return
 		end
 		local default = defaultName(id)
-		backToPets = true
+		backTo = from
 		UI.showRename(id, shownName(id) or default, default)
+	end
+	UI.onRenamePick(function(id: string)
+		pick(id, PETS_WINDOW)
+	end)
+	UI.onHelperRename(function(id: string)
+		pick(id, HELPERS_WINDOW)
 	end)
 	UI.onRenameSave(function(id: string, text: string)
 		if on() and table.find(WorkerRules.IDS, id) and hired(id) then
@@ -72,12 +80,13 @@ function StaffNameController.Start()
 		end
 	end)
 	UI.onWindowsChanged(function(open: boolean)
-		if open or not backToPets then
+		local window = backTo
+		if open or window == nil then
 			return
 		end
-		backToPets = false
+		backTo = nil
 		if on() and not UI.isOpen(RENAME_WINDOW) then
-			UI.open(PETS_WINDOW)
+			UI.open(window)
 		end
 	end)
 	for _, id in WorkerRules.IDS do
