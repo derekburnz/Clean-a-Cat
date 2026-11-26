@@ -32,6 +32,13 @@ ROOT=$(git rev-parse --show-toplevel)
 GAME="$ROOT/games/clean-a-cat"
 cd "$ROOT"
 
+# GitHub tests the commit, not this folder: a change not committed (or a new file not added) would pass here only
+if [ -n "$(git status --porcelain --untracked-files=normal)" ]; then
+	echo "Uncommitted or untracked files. Commit (or stash) them first, so this checks what you will push:" >&2
+	git status --short >&2
+	exit 1
+fi
+
 # 1. Newest main, as GitHub will test it
 if [ "$MERGE" = 1 ]; then
 	echo "== merge origin/main"
@@ -56,7 +63,7 @@ fetch() { # tool version url binary
 	PATH="$dir:$PATH"
 }
 want() { # tool version: true when the tool on PATH is missing or another version
-	! command -v "$1" >/dev/null 2>&1 || ! "$1" --version 2>/dev/null | grep -q "$2"
+	! command -v "$1" >/dev/null 2>&1 || ! "$1" --version 2>/dev/null | grep -qFw "$2"
 }
 OS=$(uname -s)
 if [ "$OS" = "Linux" ]; then
@@ -80,17 +87,34 @@ done
 
 # The gate job, as CI runs it. Selene alone may be skipped when Roblox's API list cannot be fetched.
 cd "$GAME"
+# a cloud thread cannot generate Selene's Roblox list itself: take the one main's last check run kept
+# (taken again once a day, since GitHub makes a fresh one on every run)
+if [ -f roblox.yml ] && [ -n "$(find roblox.yml -mmin +1440 2>/dev/null)" ]; then
+	rm -f roblox.yml
+fi
+if ! [ -f roblox.yml ] && command -v gh >/dev/null 2>&1; then
+	RUN=$(gh run list -R derekburnz/Clean-a-Cat --workflow check --branch main --event push --status success -L 1 \
+		--json databaseId -q '.[0].databaseId' 2>/dev/null || true)
+	if [ -n "$RUN" ]; then
+		gh run download "$RUN" -R derekburnz/Clean-a-Cat -n selene-roblox-std -D . >/dev/null 2>&1 || true
+	fi
+fi
 if ! [ -f roblox.yml ] && ! selene generate-roblox-std >/dev/null 2>&1; then
-	echo "WARNING: Selene skipped (Roblox's API list is blocked here); GitHub runs it."
-	sed -e 's/^step "selene" selene src$/echo "== selene skipped"/' -e "s|^cd \"\$(dirname \"\$0\")\"\$|cd \"$GAME\"|" check.sh >"${TMPDIR:-/tmp}/cleanacat-check.sh"
-	bash "${TMPDIR:-/tmp}/cleanacat-check.sh"
+	echo "WARNING: Selene skipped (no Roblox list: blocked here and none kept on main yet); GitHub runs it, so a lint error can still go red."
+	TMP_CHECK=$(mktemp)
+	trap 'rm -f "$TMP_CHECK"' EXIT
+	sed -e 's/^step "selene" selene src$/echo "== selene skipped"/' -e "s|^cd \"\$(dirname \"\$0\")\"\$|cd \"$GAME\"|" check.sh >"$TMP_CHECK"
+	bash "$TMP_CHECK"
 else
 	bash ./check.sh
 fi
 
 # 3. The tests job
 cd "$GAME/tools/cloudcheck"
-[ -d node_modules ] || npm ci --silent
+# a fresh install when the lock file changed (for example with the merge of main) since the last one
+if [ ! -d node_modules ] || [ package-lock.json -nt node_modules/.package-lock.json ]; then
+	npm ci --silent
+fi
 echo "== strict types"
 node analyze.mjs --tests
 echo "== unit tests"

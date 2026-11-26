@@ -52,6 +52,23 @@ jobs:
         working-directory: ${{ env.GAME_DIR }}
         run: bash ./check.sh
 
+      # Selene's Roblox list (roblox.yml) cannot be fetched from a cloud thread (its downloader does not trust the
+      # proxy's certificate), so main's copy is kept for tools/prepush.sh to download with `gh run download`.
+      - name: Write Selene's Roblox list into the game folder
+        if: github.event_name == 'push'
+        continue-on-error: true # a helper file: a failed fetch must never turn main red or hold the dev publish
+        working-directory: ${{ env.GAME_DIR }}
+        run: selene generate-roblox-std
+
+      - name: Keep Selene's Roblox list for cloud threads
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: selene-roblox-std
+          path: ${{ env.GAME_DIR }}/roblox.yml
+          retention-days: 30
+          if-no-files-found: warn
+
   tests:
     # Required too (docs/setup-guide.md step 9). Never rename it without changing the ruleset with it.
     name: Unit tests, strict types, UI gate
