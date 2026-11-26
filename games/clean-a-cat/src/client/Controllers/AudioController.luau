@@ -9,6 +9,8 @@ local CueRules = require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild
 
 local AudioController = {}
 
+local MUSIC_FLAG = "spaMusic"
+
 -- The collar piece on a named Suds: any Model or part whose name ends in "_Collar" (the naming clones the clean
 -- model's collar as it is, e.g. CleanACat_Cat_Suds_Sit_Collar). A BasePart to play at, or nil (plays 2D).
 local function collarPart(cat: any): Instance?
@@ -209,8 +211,15 @@ function AudioController.Init(_controllers: { [string]: any })
 end
 
 function AudioController.Start()
-	Audio.applySettings({ music = true, sound = true })
 	local shared = ReplicatedStorage:WaitForChild("Shared")
+	-- the spa songs play only while the spaMusic switch is on (issue 529), with the off switch as instant rollback
+	local LiveFlags = require(shared:WaitForChild("LiveFlags")) :: any
+	Audio.allowMusic(LiveFlags.isOn(MUSIC_FLAG))
+	Audio.applySettings({ music = true, sound = true }) -- the start-up default; SettingsController owns it after
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. MUSIC_FLAG)
+		:Connect(function()
+			Audio.allowMusic(LiveFlags.isOn(MUSIC_FLAG))
+		end)
 	local existing = shared:FindFirstChild("Moments")
 	if existing then
 		tryBind(existing)

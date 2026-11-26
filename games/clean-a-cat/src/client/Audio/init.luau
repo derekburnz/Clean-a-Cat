@@ -40,6 +40,7 @@ local rng = Random.new()
 
 local current: Settings = { music = true, sound = true }
 local musicSound: Sound? = nil
+local musicAllowed = false -- the spaMusic switch (AudioController); the player's own music setting comes on top
 local musicTrack: string? = nil
 local musicEnded: RBXScriptConnection? = nil
 
@@ -198,7 +199,12 @@ function Audio.applySettings(settings: Settings)
 	if not started then
 		Audio.start()
 	end
-	current = { music = settings.music, sound = settings.sound }
+	current = {
+		music = settings.music,
+		sound = settings.sound,
+		musicLevel = settings.musicLevel,
+		soundLevel = settings.soundLevel,
+	}
 	local soundOn = if settings.sound then level(settings.soundLevel) else 0
 	local musicOn = if settings.music then level(settings.musicLevel) else 0
 	groups.Sfx.Volume = (CueRules.GROUP_VOLUME["Sfx"] or 0) * soundOn
@@ -207,11 +213,21 @@ function Audio.applySettings(settings: Settings)
 	groups.Music.Volume = (CueRules.GROUP_VOLUME["Music"] or 0) * musicOn
 
 	local playing = musicSound
-	if settings.music and not playing then
+	local wanted = settings.music and musicAllowed
+	if wanted and not playing then
 		playNextTrack()
-	elseif playing and not settings.music then
+	elseif playing and not wanted then
 		stopMusic()
 	end
+end
+
+-- Lets the spa songs play or stops them, keeping the player's own settings (the spaMusic switch, issue 529).
+function Audio.allowMusic(allowed: boolean)
+	if musicAllowed == allowed then
+		return
+	end
+	musicAllowed = allowed
+	Audio.applySettings(current)
 end
 
 function Audio.play(cueId: string, options: PlayOptions?)
