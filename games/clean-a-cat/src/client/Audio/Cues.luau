@@ -120,7 +120,7 @@ local Cues: { [string]: Cue } = {
 	},
 	-- owner's Cat Cafe CatCafe_Ui_Open as CleanACat_Ui_Open: a window or the More tray opens (Audio/UiSounds, #800)
 	uiOpen = {
-		ids = {},
+		ids = { "rbxassetid://120566856629637" },
 		group = "Ui",
 		volume = 0.3,
 		pitch = { 0.98, 1.02 },
@@ -129,7 +129,7 @@ local Cues: { [string]: Cue } = {
 	},
 	-- owner's Cat Cafe CatCafe_Ui_Close as CleanACat_Ui_Close: the last window or the More tray closes (#800)
 	uiClose = {
-		ids = {},
+		ids = { "rbxassetid://113214587461466" },
 		group = "Ui",
 		volume = 0.25,
 		pitch = { 0.98, 1.02 },
