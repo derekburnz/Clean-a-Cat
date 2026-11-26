@@ -21,3 +21,16 @@
 | 3. Workers | Jo and Sam stayed at their pads by the tubs (z -4) for 40 s, and their washes never take them near the gate. The garden pet Scrubby sits still at (9.3, 4.8), about 0.7 studs past the end of the right slab, and does not move |
 | 4. Camera by the gate frame (spa side, 2.5 studs out, yaw -30) | 35% one flat face (the frame side at 0.4 studs), the same as after PR 728 (picture 03). 33% tilted down. The mirror spot by the right frame is also 35%. The slab never stops the camera (CanQuery false) |
 | Console | Only the known lines |
+
+## Recheck on e3ed268 (PR 737, slabs 8.5 studs tall)
+- The same place, with the Garden model from e3ed268. Each slab is now 2.75 x 8.5 x 0.34, with its top at y 8.99 (the floor is at 0.57). Phone frame, auto-jump on (the phone default), R15.
+
+| Check | Result |
+|---|---|
+| Walking sideways into each leaf at z 1.9, 2.4, 3.0, 3.6 and 4.1, from inside and from outside, 3 tries each (60 walks) | PASS for walking. No auto-jump went over: every walk from inside stopped at x 4.6 to 4.9 and 9.1 to 9.4, and from outside at x 3.1 to 3.4 and 10.6 to 10.95. One case: at z 4.1, from behind the leaf (x 1.5 and 12.5), the walk slides round the leaf's free end with no jump and comes out at x 5.5 and 8.5, 3 of 3 each side. That is the open end of the leaf, not through it |
+| Jump on the spot beside a slab (Space, standing still), 2 tries | PASS. Up and down on the spot |
+| Jump while moving into a slab (A or D held with Space), 12 tries: 6 across the 4-stud gateway into the far slab, 6 from 1 stud away into the near slab | FAIL, 12 of 12 went over. The jump lands on top of the invisible slab (Landed at root y 10.2, then Running at y 11 on top) and walks off the far side. The landings were x -3 (left) and x 22 to 25 (right). The reason: an R15 jump lifts the HumanoidRootPart's bottom to about y 9.8, and R15 legs do not collide, so the root clears a top at 8.99 and stands on it. A character set on top stands there (picture 04, root at y 12). To stop a moving jump the slab needs to reach above about y 10.5, so 11 studs or more tall, or it could meet the gate's arch |
+| Gate in and out (x 5.6, 7 and 8.4), and carrying a customer's cat twice in and out | PASS |
+| Camera by the frame | 35% (33% tilted), the same at the right frame. Unchanged |
+| Pet and workers | Unchanged by a height change. The pet beside the player has no solid parts, and the workers never come near the gate (checked on bccd28f) |
+| Console | Only the known lines |
