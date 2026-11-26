@@ -27,6 +27,7 @@ local SaveSchema = require(Shared:WaitForChild("SaveSchema"))
 local Signal = require(Shared:WaitForChild("Signal"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
+local LikeAskService = require(script.Parent:WaitForChild("LikeAskService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
@@ -145,6 +146,7 @@ local function onFinished(player: Player, passId: number, bought: boolean)
 	end
 	if not bought then
 		Telemetry.event(player, "purchase_step", 1, { key, "cancelled" })
+		LikeAskService.bad(player)
 		return
 	end
 	-- This signal fires on the server from Roblox itself, so the purchase is real; the save may still be loading.
@@ -157,6 +159,7 @@ local function onFinished(player: Player, passId: number, bought: boolean)
 	end
 	give(player, key)
 	Telemetry.event(player, "purchase_step", 1, { key, "granted" })
+	LikeAskService.moment(player, "purchase")
 	if on() then
 		NetService.notice(player, `{Passes.INFO[key].name} is yours. Thank you!`)
 	end
