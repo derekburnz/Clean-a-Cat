@@ -58,4 +58,53 @@ return function()
 			expect(owned.Cozy).to.equal(nil)
 		end)
 	end)
+
+	describe("CrateViewRules pets window", function()
+		local pets: { CrateRules.Pet } = {
+			{ id = 1, kind = "Cozy", star = 1 },
+			{ id = 2, kind = "Cozy", star = 1, slot = "player" },
+			{ id = 3, kind = "Cozy", star = 1 },
+			{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+			{ id = 5, kind = "Nimbus", star = 1 },
+		}
+
+		it("groups by pet and star, rarest first, slotted ids first", function()
+			local groups = CrateViewRules.groups(pets)
+			expect(#groups).to.equal(3)
+			expect(groups[1].kind).to.equal("Nimbus")
+			expect(groups[2].kind).to.equal("Koi")
+			local cozy = groups[3]
+			expect(cozy.count).to.equal(3)
+			expect(cozy.ids[1]).to.equal(2)
+			expect(#cozy.free).to.equal(2)
+			expect(cozy.canFuse).to.equal(true)
+			expect(groups[1].canFuse).to.equal(false)
+			local ids = CrateViewRules.fuseIds(cozy) :: { number }
+			expect(#ids).to.equal(3)
+			expect(ids[1]).to.equal(2)
+			expect(CrateViewRules.fuseIds(groups[2])).to.equal(nil)
+		end)
+
+		it("lists you, then the helpers, locking those not hired", function()
+			local rows = CrateViewRules.slotRows(pets, { Jo = true })
+			expect(#rows).to.equal(4)
+			expect(rows[1].who).to.equal("You")
+			expect(rows[1].say).to.equal("Cozy: tips +5%")
+			expect(rows[2].who).to.equal("Jo")
+			expect(rows[2].say).to.equal("Koi, 2 stars: pay +18%")
+			expect(rows[3].locked).to.equal(true)
+			expect(rows[3].say).to.equal("Comes when Sam is hired")
+		end)
+
+		it("takes a pet off its slot on a second tap, else puts a free one in", function()
+			local groups = CrateViewRules.groups(pets)
+			local cozy = groups[3]
+			local id, slot = CrateViewRules.placeFor(cozy, "player", pets)
+			expect(id).to.equal(2)
+			expect(slot).to.equal(nil)
+			id, slot = CrateViewRules.placeFor(cozy, "Jo1", pets)
+			expect(id).to.equal(1)
+			expect(slot).to.equal("Jo1")
+		end)
+	end)
 end
