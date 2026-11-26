@@ -88,11 +88,11 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotMascot = at(-10.25, 0.5, -14.3, math.rad(230)), -- Suds's bed right of the door, looking at the tub (#285, Model-Agent)
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
 	Tools = at(-1, 0.5, -2, 0),
-	-- Not in the model either: the workers' stations along the back wall, each facing the front (WorkerRules, issue
-	-- 509). Model-Agent may move them when the worker stations are modelled.
-	WorkerJo = at(-2.5, 0.5, 6.5, 0),
-	WorkerSam = at(2.5, 0.5, 6.5, 0),
-	WorkerLou = at(7.5, 0.5, 6.5, 0),
+	-- The workers' wash stands along the back wall, 4 studs apart (WorkerRules, issue 509; Model-Agent's plot
+	-- Attachments SpotWorkerJo, Sam and Lou).
+	SpotWorkerJo = at(-1, 0.5, 6.5, 0),
+	SpotWorkerSam = at(3, 0.5, 6.5, 0),
+	SpotWorkerLou = at(7, 0.5, 6.5, 0),
 	-- Not in the model: the gift stand (GiftService, issue 521), right of the spawn in plain view of the door, facing
 	-- the spawn. Model-Agent may move it with an Attachment in the plot.
 	GiftStand = at(10, 0.5, -8.5, TURNED),
