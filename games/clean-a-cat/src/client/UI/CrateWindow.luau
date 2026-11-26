@@ -372,7 +372,7 @@ function CrateWindow.onBuy(fn: (key: string) -> ())
 end
 
 function CrateWindow.build(root: Instance): Frame
-	local window = Window.new("Crate", "Crate", "Gift", root)
+	local window = Window.new("Crate", "Crate", "Crate", root)
 	window.close.Activated:Connect(function()
 		window.layer.Visible = false
 	end)

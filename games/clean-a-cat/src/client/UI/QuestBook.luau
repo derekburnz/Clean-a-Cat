@@ -404,7 +404,7 @@ function QuestBook.onChances(fn: (kind: string) -> ())
 end
 
 function QuestBook.build(root: Instance): Frame
-	local window = Window.new(QuestViewRules.WINDOW, "Quests", "Check", root)
+	local window = Window.new(QuestViewRules.WINDOW, "Quests", "Quests", root)
 	window.close.Activated:Connect(function()
 		window.layer.Visible = false
 	end)

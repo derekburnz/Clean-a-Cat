@@ -340,7 +340,7 @@ local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, co
 	whoIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	whoIcon.Position = UDim2.fromScale(0.5, 0.5)
 	whoIcon.Size = UDim2.fromScale(0.7, 0.7)
-	Icons.draw(if row.locked then "Lock" elseif row.helper then "Helper" else "Paw", whoIcon)
+	Icons.draw(if row.locked then "Lock" elseif row.helper then "Helpers" else "Paw", whoIcon)
 
 	local text = frame("Text", card)
 	text.Position = UDim2.fromOffset(s.who + 12, 0)
@@ -564,7 +564,7 @@ local function heading(parent: Instance, title: string, note: string): (Frame, T
 end
 
 function PetsWindow.build(root: Instance): Frame
-	local window = Window.new("Pets", "Pets", "Paw", root)
+	local window = Window.new("Pets", "Pets", "Pets", root)
 	window.close.Activated:Connect(function()
 		window.layer.Visible = false
 	end)

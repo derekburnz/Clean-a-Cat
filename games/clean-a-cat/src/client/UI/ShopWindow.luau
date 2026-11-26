@@ -285,7 +285,7 @@ function ShopWindow.onBuy(fn: (key: string) -> ())
 end
 
 function ShopWindow.build(root: Instance): Frame
-	local window = Window.new(ShopViewRules.WINDOW, "Shop", "Star", root)
+	local window = Window.new(ShopViewRules.WINDOW, "Shop", "Shop", root)
 	window.close.Activated:Connect(function()
 		window.layer.Visible = false
 	end)
