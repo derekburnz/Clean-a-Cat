@@ -114,9 +114,8 @@ local function seatPet(stand: Model, show: boolean)
 	pet.Name = SEAT_PET
 	for _, piece in pet:GetDescendants() do
 		local level = piece:GetAttribute("StarLevel")
-		if piece:IsA("Model") and type(level) == "number" and level > 1 then
-			piece:Destroy()
-		elseif piece:IsA("Script") or piece:IsA("LocalScript") then
+		local aboveStar = piece:IsA("Model") and type(level) == "number" and level > 1
+		if aboveStar or piece:IsA("Script") or piece:IsA("LocalScript") then
 			piece:Destroy()
 		end
 	end
