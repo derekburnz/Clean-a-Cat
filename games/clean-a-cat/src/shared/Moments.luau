@@ -73,6 +73,10 @@ local catLeft: Signal<Model> = Signal.new()
 -- (cat): (switch workers) a worker finished a cat: the clean model has just sat down in their tub, WorkerProgress 1.
 -- Fired on every device that sees it, for any spa on the street.
 local workerFinished: Signal<Model> = Signal.new()
+-- (visitor, again): (switch specialVisitors) a special visitor's figure is in the player's own door line. `again` is
+-- false the first time in a visit, and true when the line was redrawn and this is a new figure for the same visitor
+-- (so the star can go back over their head without the arrival playing twice).
+local visitorArrived: Signal<Model, boolean> = Signal.new()
 
 local Moments = {
 	ScrubStart = scrubStart,
@@ -104,6 +108,7 @@ local Moments = {
 	HeartLow = heartLow,
 	CatLeft = catLeft,
 	WorkerFinished = workerFinished,
+	VisitorArrived = visitorArrived,
 
 	-- Every moment name, in the order they happen in a first session. Tests and tools read this list.
 	NAMES = table.freeze({
@@ -136,6 +141,7 @@ local Moments = {
 		"HeartLow",
 		"CatLeft",
 		"WorkerFinished",
+		"VisitorArrived",
 	}),
 }
 
