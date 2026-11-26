@@ -83,9 +83,13 @@ return function()
 		it("asks at once after a good moment, two minutes after a purchase", function()
 			expect(LikeAskRules.dueAt("special", 50)).to.equal(50)
 			expect(LikeAskRules.dueAt("stars", 50)).to.equal(50)
-			expect(LikeAskRules.dueAt("purchase", 50)).to.equal(
-				if LikeAskRules.AFTER_PURCHASE then 50 + LikeAskRules.PURCHASE_DELAY else nil
+			expect(LikeAskRules.dueAt("purchase", 50, true)).to.equal(
+				50 + LikeAskRules.PURCHASE_DELAY
 			)
+			expect(LikeAskRules.dueAt("purchase", 50, false)).to.equal(nil) -- its own switch off
+			expect(LikeAskRules.dueAt("purchase", 50)).to.equal(nil)
+			expect(table.find(LiveFlags.KEYS, LikeAskRules.PURCHASE_FLAG)).to.be.ok()
+			expect(LiveFlags.OFF_BY_DEFAULT[LikeAskRules.PURCHASE_FLAG]).to.equal(true)
 			expect(LikeAskRules.PURCHASE_DELAY >= 120).to.equal(true)
 		end)
 	end)
