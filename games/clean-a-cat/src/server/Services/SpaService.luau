@@ -54,6 +54,7 @@ local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
 local PlotService = require(script.Parent:WaitForChild("PlotService"))
+local StationService = require(script.Parent:WaitForChild("StationService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local VisitService = require(script.Parent:WaitForChild("VisitService"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
@@ -864,6 +865,9 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	local isNew = false
 	if kind ~= nil then
 		isNew = IndexService.stamp(player, kind, "washed")
+		if isNew and cat.special and save.stations[SpaLayout.VIP_ID] then
+			StationService.refresh(player) -- a new resident for the VIP Room (issue 515)
+		end
 	end
 	if kind ~= nil and cat.stray then
 		-- A stray has nobody to pay: the photo coins, and it moves into the window when there is room.
