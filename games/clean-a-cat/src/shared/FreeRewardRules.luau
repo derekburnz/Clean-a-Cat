@@ -61,4 +61,15 @@ function FreeRewardRules.refusal(state: State, key: Key): string?
 	return if state.played >= FreeRewardRules.PLAY_SECONDS then nil else "notYet"
 end
 
+-- Whether the gift stand still holds a gift for this player: Starcoat not claimed, or, with freeRewards on, a Free
+-- Rewards row not paid. Its prompt stays while one does (GiftController).
+function FreeRewardRules.giftLeft(
+	starcoatClaimed: boolean,
+	freeOn: boolean,
+	likeClaimed: boolean,
+	playClaimed: boolean
+): boolean
+	return not starcoatClaimed or (freeOn and not (likeClaimed and playClaimed))
+end
+
 return FreeRewardRules
