@@ -66,9 +66,14 @@ def _remove(o):
     bpy.data.objects.remove(o, do_unlink=True)
 
 
+TUFTS = False     # no tangle clumps and no fluff puffs in store art. The owner, 2026-11-26, on icon E: "fix the sides
+                  # of E having orange sticking out the side of the model", then on thumbnail 3: "the cats still have
+                  # the random skin sticking out their sides". At picture size both read as flaps, not fur.
+
+
 def cat_state(name, mat, body, state, at=(0, 0, 0), k=1.0, rot_z=0.0):
-    """A roster cat: state 'dirty', 'half' (mud and tangles gone on its left, +X, where the fluff shows), 'clean'
-    (fluffed) or 'plain' (no dirt, no fluff). Claws never show here."""
+    """A roster cat: state 'dirty', 'half' (mud gone on its left, +X), 'clean' or 'plain' (no dirt). With TUFTS on,
+    a dirty side also has its tangles and a clean side its fluff ('plain' never has fluff). Claws never show here."""
     objs, _, _ = dirt.build_dirty(name, mat, body)
     keep = []
     bpy.context.view_layer.update()
@@ -76,6 +81,9 @@ def cat_state(name, mat, body, state, at=(0, 0, 0), k=1.0, rot_z=0.0):
         n = o.name
         cleanside = _centre(o).x > 0.02
         if "_Claw" in n:
+            _remove(o)
+            continue
+        if not TUFTS and ("_Tangle" in n or "_Fluff" in n):
             _remove(o)
             continue
         if "_Mud" in n or "_Tangle" in n:
@@ -646,11 +654,37 @@ def thumb_lineup(mat, out, res):
 
 
 BUSY = (("Lou", "Cotton", "dirty"), ("Sam", "Muffin", "half"), ("Jo", "Sherbet", "plain"))
+BUSY_BOW = "CleanACat_Bow_SkyRoyal"    # the finished cat wears a bow, as a wash ends: sky with gold rims, to stand off
+                                      # the pink cat and the mint uniform behind it
+
+
+def worn_bow(bow, cat, mat, at, k):
+    """A bow on a sitting cat standing at `at`, scaled `k`, as the game wears it (Spa/BowFit.luau): on the head's
+    `BowSlot` and at the cat's own scale. A sitting cat is built a little smaller than its bow, as in the game."""
+    special = cat in cats.SPECIAL_CATS
+    spec = cats.SPECIAL_CATS[cat] if special else cats.ROSTER[cat]
+    if special and props.slot(cat) in ("Head", "Face"):
+        spot, turn = props.bow_corner(spec, "sit", cat)
+        turn = turn.to_4x4()
+    else:
+        spot, tip = cats.bow_side(spec, "sit")
+        turn = Matrix.Rotation(math.radians(tip), 4, "Y")
+    slot = Vector(cats.joints(spec, "sit")["Head"]) + Vector(spot) * cats.scale_of(spec, "sit")
+    m = Matrix.Translation(Vector(at)) @ Matrix.Scale(k, 4) @ Matrix.Translation(slot) @ turn
+    objs = props.build_bow(bow, mat) if bow in props.BOWS else props.build_tier_bow(bow, mat)
+    if special:                                           # the game leaves a tier bow's fan off a cat with a head piece
+        for o in [o for o in objs if o.name.endswith("_Fan")]:
+            objs.remove(o)
+            _remove(o)
+    for o in objs:
+        o.matrix_world = m @ o.matrix_basis
+    return _fresh(objs)
 
 
 def thumb_busy(mat, out, res):
     """Thumbnail: the busy spa. The three wash stands in front, each with a cat a step further along: a muddy one,
-    one half washed and a special visitor's cat clean. The workers stand behind and between the stands, facing the
+    one half washed and a special visitor's cat clean with its bow on (the owner, 2026-11-26: "update busy spaw
+    thumbnail 3 to have the cat uodates etc"). The workers stand behind and between the stands, facing the
     camera, so the cats are the biggest things in the frame (Review-QA on #106: with the staff beside the cats it
     read as a game about people)."""
     import spa_staff
@@ -662,6 +696,8 @@ def thumb_busy(mat, out, res):
         _move(stand, (x, 0, 0))
         objs += _fresh(stand)
         objs += cat_state(cat, mat, "sit", state, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
+        if state == "plain":                              # the last step: a bow, where the game puts it (#764, #782)
+            objs += worn_bow(BUSY_BOW, cat, mat, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
         staff = spa_staff.build_staff(who, mat)
         _move(staff, (x + 2.25, 3.4, 0), 1.0, -6 * (i - 1))
         objs += _fresh(staff)
