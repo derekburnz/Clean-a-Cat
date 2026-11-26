@@ -24,6 +24,7 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local BenchSave = require(Shared:WaitForChild("BenchSave"))
 local BowRules = require(Shared:WaitForChild("BowRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
@@ -34,6 +35,7 @@ local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Passes = require(Shared:WaitForChild("Passes"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
+local SaveSchema = require(Shared:WaitForChild("SaveSchema"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local SpecialRules = require(Shared:WaitForChild("SpecialRules"))
@@ -533,6 +535,42 @@ local function sendQueue(player: Player)
 	end
 	NetService.fire(player, "CustomerQueue", kinds, shownNeeds, shownDirt, shownHearts)
 	FigureService.showQueue(player, table.clone(kinds))
+	-- (switch benchSave, issue 523) who waits goes into the save each time the line is sent, for the next join
+	local save = DataService.get(player)
+	if save and LiveFlags.isOn(BenchSave.FLAG) then
+		save.bench = BenchSave.snapshot(line, orders :: any) :: any
+	end
+end
+
+-- (switch benchSave, issue 523) A spa that has served before gets its saved line back on join, each customer with a
+-- full heart bar, at most as many as its bench holds now. Before the line is first read, so nobody is rolled first.
+local function restoreBench(player: Player, save: SaveSchema.Save)
+	if not LiveFlags.isOn(BenchSave.FLAG) or save.stars <= 0 or queues[player] ~= nil then
+		return
+	end
+	local saved = BenchSave.restore(save.bench)
+	local size = benchSize(player)
+	local line: { string } = {}
+	local orders: { Order } = {}
+	local now = Workspace:GetServerTimeNow()
+	for _, entry in saved do
+		if #line >= size then
+			break
+		end
+		local lasts = HeartRules.lasts(entry.kind, played(player))
+		table.insert(line, entry.kind)
+		table.insert(orders, {
+			needs = entry.needs,
+			dirt = entry.dirt,
+			since = HeartRules.spacedSince(now, lasts, lastEnds(orders)),
+			lasts = lasts,
+			tutorial = false,
+		})
+	end
+	if #line > 0 then
+		queues[player] = line
+		queueOrders[player] = orders
+	end
 end
 
 -- A brand new save's kitten waits in the box (switch openingBox): the client plays the scene while SudsBox is true.
@@ -1253,6 +1291,7 @@ function SpaService.Start()
 	-- The chance board lights up from the second customer: once a save has stars, a customer was served.
 	DataService.onLoaded:Connect(function(player: Player, save)
 		playBase[player] = { play = save.playSeconds, at = os.clock() }
+		restoreBench(player, save)
 		if save.stars > 0 then
 			player:SetAttribute(BOARD_LIT, true)
 		end
