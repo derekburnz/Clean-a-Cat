@@ -407,7 +407,8 @@
   "module": "props",
   "objects": [
    "CleanACat_Bow_MintGolden",
-   "CleanACat_Bow_MintGolden_Gem_Glow"
+   "CleanACat_Bow_MintGolden_Gem_Glow",
+   "CleanACat_Bow_MintGolden_Fan"
   ],
   "triangles": 356,
   "budget": 520,
@@ -595,7 +596,8 @@
   "module": "props",
   "objects": [
    "CleanACat_Bow_PinkGolden",
-   "CleanACat_Bow_PinkGolden_Gem_Glow"
+   "CleanACat_Bow_PinkGolden_Gem_Glow",
+   "CleanACat_Bow_PinkGolden_Fan"
   ],
   "triangles": 356,
   "budget": 520,
@@ -783,7 +785,8 @@
   "module": "props",
   "objects": [
    "CleanACat_Bow_SkyGolden",
-   "CleanACat_Bow_SkyGolden_Gem_Glow"
+   "CleanACat_Bow_SkyGolden_Gem_Glow",
+   "CleanACat_Bow_SkyGolden_Fan"
   ],
   "triangles": 356,
   "budget": 520,
