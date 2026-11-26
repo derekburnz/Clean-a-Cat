@@ -45,6 +45,7 @@ LiveFlags.KEYS = {
 	"gradeStars", -- a wash earns its grade in spa stars (1 to 3, plus a rarer cat's extra) and the star tiers start 3 times higher (CatRules.gradeStars, issue 868); off by default
 	"toastCards", -- the short notices are small cards at the top right, coloured by kind with a portrait for a cat, not a dark bar across the screen (UI/ToastCard, ToastRules, issue 877); off by default
 	"contextAsks", -- pop ups only when they guide a next action: announcement cards cut, guide cards name the action and start the floor trail, the notification ask waits for a first build, the special visitor and first crate get guide cards (BubbleRules, issue 877); off by default
+	"openingBonus", -- a brand new spa's first customer tops the player up to Jo's price with a one-time Grand opening gift line (WorkerRules.openingGift, issue 913); off by default
 	"sudsVoice", -- one soft meow when Suds's speech bubble appears (Audio/SudsVoice, issue 827); off by default
 	"trailBold", -- the guide line in gold with a dark outline so it reads on the spa floor (Effects/TrailLine, Derek 2026-11-26); off by default
 	"zoomCap", -- the camera zooms out at most CameraZoomController.MAX_ZOOM studs so the map ends stay hidden (issue 895); off by default
@@ -195,6 +196,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	gradeStars = true,
 	toastCards = true,
 	contextAsks = true,
+	openingBonus = true,
 	counterCardFx = true,
 	helperPopFx = true,
 	catMotion = true,

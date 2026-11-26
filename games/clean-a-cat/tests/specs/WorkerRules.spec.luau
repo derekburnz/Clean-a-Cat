@@ -173,5 +173,15 @@ return function()
 				expect(LiveFlags.resolve(flag, nil)).to.equal(false)
 			end
 		end)
+
+		it("tops the first customer's pay up to Jo's price with the Grand opening gift", function()
+			local function on(flag: string): boolean
+				return flag == WorkerRules.PRICE_FLAG
+			end
+			expect(WorkerRules.openingGift(16, on)).to.equal(284)
+			expect(WorkerRules.openingGift(16, nil)).to.equal(134)
+			expect(WorkerRules.openingGift(400, on)).to.equal(0)
+			expect(WorkerRules.openingGift(0 / 0, on)).to.equal(0)
+		end)
 	end)
 end
