@@ -29,7 +29,9 @@ WorkerBar.POP_SECONDS = 0.35
 WorkerBar.FADE_SECONDS = 0.4 -- after the pop
 WorkerBar.FAR = 60 -- studs: hidden past this (MaxDistance), and the loop skips it
 local TRACK = Color3.fromRGB(255, 255, 255)
-local EDGE = Color3.fromRGB(196, 170, 214)
+-- Kit.INK, the screens' outline (lilac means special customers in the style guide: Review-QA on #557); copied, not
+-- required, so the specs can load this module without the UI kit
+local EDGE = Color3.fromHex("45226B")
 local FILL = Color3.fromRGB(140, 214, 170)
 local SHINE = Color3.fromRGB(255, 255, 255)
 
