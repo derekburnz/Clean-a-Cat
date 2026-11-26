@@ -10,7 +10,7 @@ local Portraits = {}
 -- cat name -> "rbxassetid://<id>" once uploaded under the group; a missing or "" entry draws the stand-in. Suds, the
 -- mascot (#285), has his own key here though he is not in the Cat Index.
 Portraits.IMAGES = {
-	Suds = "rbxassetid://92665897768427", -- CleanACat_UI_Portrait_Suds, uploaded to the group by Model-Agent
+	Suds = "rbxassetid://134546291029280", -- CleanACat_UI_Portrait_Suds, round cheeks, group upload (#784)
 } :: { [string]: string }
 
 -- The stand-in glyph for a cat with no image yet; the cat glyph when not listed. One code point each: a joined emoji
