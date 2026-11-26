@@ -115,10 +115,17 @@ local function drawKitten(
 end
 
 -- A name and a second line on the model's Screen part's front.
-local function label(pad: Model, title: string, line: string)
+-- The signs of running room builds (the VIP Room's and the Garden's sites), whose second line counts down
+-- (issue 679): each label with its title and the build's end (os.time). Weak keys, so a redrawn sign just drops out.
+local countdowns: { [TextLabel]: { title: string, endsAt: number } } = setmetatable(
+	{},
+	{ __mode = "k" }
+) :: any
+
+local function label(pad: Model, title: string, line: string): TextLabel?
 	local screen = pad:FindFirstChild("Screen", true)
 	if screen == nil or not screen:IsA("BasePart") then
-		return
+		return nil
 	end
 	local gui = Instance.new("SurfaceGui")
 	gui.Face = Enum.NormalId.Front
@@ -133,6 +140,15 @@ local function label(pad: Model, title: string, line: string)
 	text.Text = `{title}\n{line}`
 	text.Parent = gui
 	gui.Parent = screen
+	return text
+end
+
+-- A running room build's sign: the title over the time left, kept up to date by the countdown loop.
+local function buildingLabel(model: Model, title: string, endsAt: number)
+	local text = label(model, title, BuildRules.leftText(endsAt - os.time()))
+	if text then
+		countdowns[text] = { title = title, endsAt = endsAt }
+	end
 end
 
 local function clear(plot: Model)
@@ -284,7 +300,11 @@ local function drawGarden(
 	model:PivotTo(SpaLayout.slotSpot(GardenRules.SPOT, slot))
 	anchorAll(model)
 	if not built then
-		label(model, item.name, if building then "Building" else `{item.price} coins`)
+		if building and build then
+			buildingLabel(model, item.name, build.endsAt)
+		else
+			label(model, item.name, `{item.price} coins`)
+		end
 	elseif isOn(CrateRules.FLAG) then
 		drawGardenPets(model, assets, save.pets)
 	end
@@ -353,7 +373,11 @@ local function drawInto(
 			end
 			model:PivotTo(SpaLayout.slotSpot(SpaLayout.VIP_SPOT, slot))
 			anchorAll(model)
-			label(model, vip.name, if building then "Building" else `{vip.price} coins`)
+			if building and vipBuild then
+				buildingLabel(model, vip.name, vipBuild.endsAt)
+			else
+				label(model, vip.name, `{vip.price} coins`)
+			end
 			model.Parent = folder
 		elseif not warned[doorName] then
 			warned[doorName] = true
@@ -461,6 +485,23 @@ function StationService.Start()
 			:Connect(refreshAll)
 	end
 	refreshAll()
+	-- the room build signs count down; a finished build redraws the plot (BuildService), which drops its sign
+	task.spawn(function()
+		while true do
+			task.wait(1)
+			local now = os.time()
+			for text, entry in countdowns do
+				if text.Parent == nil then
+					countdowns[text] = nil
+				else
+					local line = `{entry.title}\n{BuildRules.leftText(entry.endsAt - now)}`
+					if text.Text ~= line then
+						text.Text = line
+					end
+				end
+			end
+		end
+	end)
 end
 
 return StationService

@@ -266,5 +266,15 @@ return function()
 				seen[flag] = true
 			end
 		end)
+		it("reads a running build's time left for its sign", function()
+			expect(BuildRules.leftText(0)).to.equal("Done")
+			expect(BuildRules.leftText(-5)).to.equal("Done")
+			expect(BuildRules.leftText(40)).to.equal("40s left")
+			expect(BuildRules.leftText(59.2)).to.equal("1m left")
+			expect(BuildRules.leftText(61)).to.equal("2m left")
+			expect(BuildRules.leftText(3600)).to.equal("1h 0m left")
+			expect(BuildRules.leftText(23 * 3600 + 59 * 60 + 44)).to.equal("24h 0m left")
+			expect(BuildRules.leftText(2 * 3600 + 14 * 60 + 10)).to.equal("2h 15m left")
+		end)
 	end)
 end
