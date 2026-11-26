@@ -75,6 +75,7 @@ type Order = {
 	since: number, -- server time the customer's heart bar started full (HeartRules, switch heartBar)
 	lasts: number, -- seconds from full to empty, fixed when they join
 	early: boolean?, -- picked to go next while their bar was still nearly full (switch queuePick)
+	reservedUntil: number?, -- os.clock() until which the player's pick is kept from the workers (worker.reserve)
 	tutorial: boolean, -- one of a new spa's first customers (HeartRules.TUTORIAL_STARS_CUSTOMERS)
 }
 local queueOrders: { [Player]: { Order } } = {}
@@ -655,6 +656,10 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 	if picked and HeartRules.early(picked.since, picked.lasts, Workspace:GetServerTimeNow()) then
 		picked.early = true -- the pick is what counts, not when the wash before it ends
 	end
+	if picked then
+		-- the player's pick is theirs: workers leave it for WorkerRules.RESERVE_SECONDS (tuning worker.reserve)
+		picked.reservedUntil = os.clock() + WorkerRules.RESERVE_SECONDS
+	end
 	if SpaRules.pickNext(line, index) then
 		SpaRules.pickNext(ordersFor(player), index) -- the cat's order moves with it
 		FigureService.picked(player, index) -- the customer's look goes to the front with their cat (#206)
@@ -933,7 +938,8 @@ function SpaService.lineForWorkers(player: Player): { WorkerRules.Entry }
 		local left = if LiveFlags.isOn(HeartRules.FLAG)
 			then HeartRules.left(order.since, order.lasts, now)
 			else 1
-		table.insert(out, { kind = kind, dirt = order.dirt, left = left })
+		local reserved = order.reservedUntil ~= nil and os.clock() < (order.reservedUntil :: number)
+		table.insert(out, { kind = kind, dirt = order.dirt, left = left, reserved = reserved })
 	end
 	return out
 end

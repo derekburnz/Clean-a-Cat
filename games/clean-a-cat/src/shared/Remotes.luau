@@ -34,9 +34,9 @@ Remotes.ClientToServer = {
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
 	"RequestBuyBow", -- (tier: one of BowRules.TIERS)  1 a second; switches toolsBoard and bowTiers on, save loaded, near
 	-- the board, the next tier in order, enough coins
-	-- Workers (WorkerService, behind workers, scrubPrototype and customers). Each needs the save loaded and the
-	-- character within WorkerRules.SERVER_REACH studs of that worker's station.
-	"RequestHireWorker", -- (id: one of WorkerRules.IDS)  1 a second; not a pass worker, not hired, enough coins
+	-- Workers (WorkerService, behind workers, scrubPrototype and customers). Each needs the save loaded; hiring also
+	-- needs the character within WorkerRules.SERVER_REACH studs of that worker's pad (mode and level come from the HUD).
+	"RequestHireWorker", -- (id: one of WorkerRules.IDS)  1 a second; near the pad, not a pass worker, not hired, coins
 	"RequestWorkerMode", -- (id, mode: one of WorkerRules.MODES)  2 a second; the worker is hired
 	"RequestWorkerLevel", -- (id)  1 a second; the worker is hired, below the top level, enough coins
 	-- Builds (BuildService, behind builds).
