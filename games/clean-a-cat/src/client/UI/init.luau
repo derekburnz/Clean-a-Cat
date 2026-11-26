@@ -50,6 +50,7 @@ local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
 
 local CatIndex = require(script:WaitForChild("CatIndex"))
+local CheckinCard = require(script:WaitForChild("CheckinCard"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local CrateWindow = require(script:WaitForChild("CrateWindow"))
 local HUD = require(script:WaitForChild("HUD"))
@@ -268,6 +269,7 @@ function UI.init()
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
 	windows.Pets = PetsWindow.build(root) -- your pets, who has one, Fuse (switch petsWindow, issue 526)
 	windows.Crate = CrateWindow.build(root) -- the crate's chance list and Open crate (switch crateWindow, issue 526)
+	windows.Checkin = CheckinCard.build(root) -- the seven day check in card (switch checkinCard, issue 517)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -454,6 +456,42 @@ end
 
 function UI.onPetFuse(fn: (ids: { number }) -> ())
 	PetsWindow.onFuse(fn)
+end
+
+-- The check in card: the day waiting (1 to 7, or nil), the days taken, and whether the good crate's chance list can
+-- open (CheckinController).
+function UI.setCheckin(ready: number?, days: number, chances: boolean)
+	CheckinCard.set(ready, days, chances)
+end
+
+function UI.onCheckinClaim(fn: () -> ())
+	CheckinCard.onClaim(fn)
+end
+
+function UI.onCheckinChances(fn: (kind: string) -> ())
+	CheckinCard.onChances(fn)
+end
+
+-- True while window `name` shows.
+function UI.isOpen(name: string): boolean
+	local frame: Frame? = windows[name]
+	return frame ~= nil and frame.Visible
+end
+
+-- fn() once, the next time window `name` closes.
+function UI.onceClosed(name: string, fn: () -> ())
+	local frame: Frame? = windows[name]
+	if frame == nil then
+		return
+	end
+	local shown: Frame = frame
+	local connection: RBXScriptConnection
+	connection = shown:GetPropertyChangedSignal("Visible"):Connect(function()
+		if not shown.Visible then
+			connection:Disconnect()
+			fn()
+		end
+	end)
 end
 
 function UI.showRecap(recap: RecapRules.Recap, onClose: (() -> ())?)

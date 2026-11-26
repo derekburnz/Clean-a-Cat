@@ -297,6 +297,32 @@ local SCENES = {
 			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
 		end,
 	},
+	-- The check in card (issue 517, switch checkinCard): the first day ready, then day 2's good crate with day 1
+	-- ticked, then nothing waiting after day 3.
+	{
+		"Checkin",
+		function()
+			flag("checkinCard", true)
+			UI.setCheckin(1, 0, true)
+			UI.open("Checkin")
+		end,
+	},
+	{
+		"CheckinDay2",
+		function()
+			flag("checkinCard", true)
+			UI.setCheckin(2, 1, true)
+			UI.open("Checkin")
+		end,
+	},
+	{
+		"CheckinWait",
+		function()
+			flag("checkinCard", true)
+			UI.setCheckin(nil, 3, true)
+			UI.open("Checkin")
+		end,
+	},
 	-- The pets window (issue 526, switch petsWindow): three Cozy ready to fuse, a 2 star Koi with Jo, Sam not hired.
 	{
 		"Pets",
