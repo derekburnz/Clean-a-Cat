@@ -10,11 +10,12 @@ local NotifyRules = {}
 
 NotifyRules.LONG_SECONDS = BuildRules.LONG_SECONDS -- a build this long or longer gets the bell
 NotifyRules.DAY_SECONDS = 86400
--- The notification string's asset id per experience (game.GameId): Creator Hub > the game > Engagement >
--- Notifications > Create a Notification String, then ⋯ > Copy Asset ID. Not secret. "" until the owner makes it;
--- NotifyService falls back to the ServerStorage attribute NotifyMessageId, then sends nothing.
+-- The notification string's asset id per experience (game.GameId). The notify-key workflow's `string` action makes
+-- the build_done string and prints its id (or Creator Hub > the game > Engagement > Notifications > ⋯ > Copy Asset
+-- ID). Not secret. "" until it is made; NotifyService falls back to the ServerStorage attribute NotifyMessageId,
+-- then sends nothing.
 NotifyRules.MESSAGE_IDS = table.freeze({
-	[10778775478] = "", -- Clean-a-Cat-Dev
+	[10778775478] = "c0b0f489-64ff-6c46-817b-cff6ded5c9c5", -- Clean-a-Cat-Dev: build_done, made 2026-11-26
 	[10778773655] = "", -- Clean a Cat
 }) :: { [number]: string }
 NotifyRules.MAX_WAIT_SECONDS = 30 * 86400 -- a queued message older than this is dropped (MemoryStore keeps 45 days)
