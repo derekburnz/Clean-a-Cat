@@ -343,8 +343,18 @@ local Cues: { [string]: Cue } = {
 		minGap = 0.5,
 		voices = 1,
 	},
-	spaMusicA = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
-	spaMusicB = { ids = {}, group = "Music", volume = 0.5, voices = 1 },
+	spaMusicA = {
+		ids = { "rbxassetid://107621531888888" },
+		group = "Music",
+		volume = 0.5,
+		voices = 1,
+	},
+	spaMusicB = {
+		ids = { "rbxassetid://89957079712346" },
+		group = "Music",
+		volume = 0.5,
+		voices = 1,
+	},
 }
 
 return Cues

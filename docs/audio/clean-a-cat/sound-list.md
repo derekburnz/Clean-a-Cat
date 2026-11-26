@@ -49,7 +49,7 @@ Moments are the shared list in issue #3. Source: **synth** means made by `assets
 | buildDone | BuildFinished (Moment to come) | Sfx (3D at the build) | two soft mallet taps, then a warm rising chord with a shimmer | synth | CleanACat_Sfx_BuildDone (1.4 s) | 0.5 | - | 1.0 | 1 | no | uploaded to the group 2026-11-25, gate PASS; waits on the Moment |
 | questDone | QuestDone (Moment to come) | Ui | a small happy two-note ta-da with a tick of sparkle | synth | CleanACat_Ui_QuestDone (0.7 s) | 0.45 | - | 0.4 | 1 | no | uploaded to the group 2026-11-25, gate PASS; waits on the Moment |
 | checkIn | CheckInClaimed (Moment to come) | Ui | three light bell taps like coins in a jar | synth | CleanACat_Ui_CheckIn (0.8 s) | 0.45 | - | 0.5 | 1 | no | uploaded to the group 2026-11-25, gate PASS; waits on the Moment |
-| spaMusicA / spaMusicB | spa floor | Music | see brief | synth | CleanACat_Music_SpaA (Warm Bubbles, 92 BPM marimba) and CleanACat_Music_SpaB (Fluff and Fold, 80 BPM piano and flute), new songs from assets/clean-a-cat/audio/synth/music.py | 0.5 | 1.0 | - | 1 | no | made; SpaA gate WARN on the seam (downbeat level, same as every phrase start), listen |
+| spaMusicA / spaMusicB | spa floor | Music | see brief | synth | CleanACat_Music_SpaA (Warm Bubbles, 92 BPM marimba) and CleanACat_Music_SpaB (Fluff and Fold, 80 BPM piano and flute), new songs from assets/clean-a-cat/audio/synth/music.py | 0.5 | 1.0 | - | 1 | no | uploaded to the group 2026-11-26 (SpaA rbxassetid://107621531888888, SpaB rbxassetid://89957079712346); plays only with the spaMusic switch; SpaA gate WARN on the seam (downbeat level, same as every phrase start), listen |
 
 Later, not in the first slice: coin and tip jar, builder kitten hammer, door bell, window tips.
 
