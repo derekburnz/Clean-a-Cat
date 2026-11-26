@@ -769,7 +769,8 @@ local function onTakeCat(player: Player, rawPlace: unknown)
 	then
 		return
 	end
-	local counter = LiveFlags.isOn(CounterRules.FLAG)
+	-- the counter is only on the big plot (FigureService's counterOn, #871)
+	local counter = LiveFlags.isOn(CounterRules.FLAG) and SpaLayout.big()
 	local place = if rawPlace == nil then 1 else Guard.int(rawPlace, 1, SpaRules.MAX_QUEUE + 1)
 	if place == nil or (place > 1 and not counter) then
 		return
