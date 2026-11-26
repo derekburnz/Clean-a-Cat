@@ -82,6 +82,8 @@ type Order = {
 	tutorial: boolean, -- one of a new spa's first customers (HeartRules.TUTORIAL_STARS_CUSTOMERS)
 }
 local queueOrders: { [Player]: { Order } } = {}
+-- (switch benchGrow) os.clock() when the next customer may join a line that is short of its bench size
+local refillAt: { [Player]: number } = {}
 -- The save's play time when it loaded and the os.clock() then, for the heart bars' first minutes.
 local playBase: { [Player]: { play: number, at: number } } = {}
 -- Whether the last heart tick was still in the first minutes (no cat leaves), to see the moment they end.
@@ -175,7 +177,43 @@ local function newOrder(player: Player, kind: string, place: number, orders: { O
 	}
 end
 
--- The player's door queue, filled to QUEUE_SIZE, so there is always a customer waiting.
+-- How many customers wait on the player's bench now: QUEUE_SIZE, or with benchGrow once the spa has served its first
+-- customer, 3 plus one per built tub (BuildRules.benchSize, issue 515). Until the tutorial ends (2:45 of play), with
+-- tutorialBench, 1 and then 2 (SpaRules.tutorialBench), whether or not a customer was served.
+local function benchSize(player: Player): number
+	local save = DataService.get(player)
+	local tutorial = if LiveFlags.isOn(SpaRules.TUTORIAL_BENCH_FLAG) and save
+		then SpaRules.tutorialBench(played(player))
+		else nil
+	if tutorial then
+		return tutorial -- bench.tutorialSize: 1, then 2 at 2:00, until the tutorial ends at 2:45
+	end
+	if not LiveFlags.isOn(SpaRules.BENCH_FLAG) or save == nil or save.stars <= 0 then
+		return QUEUE_SIZE
+	end
+	return BuildRules.benchSize(save.stations, LiveFlags.isOn)
+end
+
+-- (switch benchGrow) Whether a customer may join now: always when the line is empty, else one each
+-- bench.refillSeconds (6 less one per built tub) after the line came up short.
+local function mayJoin(player: Player, length: number): boolean
+	local save = DataService.get(player)
+	if not LiveFlags.isOn(SpaRules.BENCH_FLAG) or length == 0 or save == nil or save.stars <= 0 then
+		return true
+	end
+	local at = refillAt[player]
+	if at == nil then
+		refillAt[player] = os.clock() + BuildRules.refillSeconds(save.stations, LiveFlags.isOn)
+		return false
+	end
+	if os.clock() < at then
+		return false
+	end
+	refillAt[player] = nil
+	return true
+end
+
+-- The player's door queue, filled to its bench size (benchSize), so there is always a customer waiting.
 local function queueFor(player: Player): { string }
 	local queue = queues[player]
 	if queue == nil then
@@ -191,7 +229,8 @@ local function queueFor(player: Player): { string }
 	while #o > #q do
 		table.remove(o)
 	end
-	while #q < QUEUE_SIZE do
+	local size = benchSize(player)
+	while #q < size and mayJoin(player, #q) do
 		local visitor = visitorPending[player]
 		if visitor then
 			-- a special visitor walks in: always the dirtiest, with the first one's long bar (SpecialRules)
@@ -678,7 +717,7 @@ local function onPickCustomer(player: Player, rawIndex: unknown)
 	then
 		return
 	end
-	local index = Guard.int(rawIndex, 2, QUEUE_SIZE)
+	local index = Guard.int(rawIndex, 2, SpaRules.MAX_QUEUE) -- SpaRules.pickNext refuses a place past the line
 	-- No pick while a customer still holds the cat at the door (switch customerCarry): the line the player sees then
 	-- has that customer in front of the server's line, so the places would not match.
 	if index == nil or queues[player] == nil or carrying[player] == CarryRules.DOOR then
@@ -1110,6 +1149,36 @@ function SpaService.Start()
 				end
 			end
 			if
+				(
+					LiveFlags.isOn(SpaRules.BENCH_FLAG)
+					or LiveFlags.isOn(SpaRules.TUTORIAL_BENCH_FLAG)
+				)
+				and LiveFlags.isOn(FLAG)
+				and LiveFlags.isOn(CUSTOMERS_FLAG)
+			then
+				-- a short line takes its next customer when the refill time is up (switch benchGrow), and the
+				-- tutorial's line grows to 2 at 2:00 (switch tutorialBench)
+				local ok, err = pcall(function()
+					for player, line in queues do
+						if player.Parent ~= Players then
+							continue
+						end
+						local before = #line
+						local size = benchSize(player)
+						if player:GetAttribute(SpaRules.BENCH_ATTRIBUTE) ~= size then
+							player:SetAttribute(SpaRules.BENCH_ATTRIBUTE, size)
+						end
+						if before < size and #queueFor(player) ~= before then
+							sendQueue(player)
+						end
+					end
+					return nil :: any
+				end)
+				if not ok then
+					warn("SpaService: bench:", err)
+				end
+			end
+			if
 				LiveFlags.isOn(SpecialRules.FLAG)
 				and LiveFlags.isOn(FLAG)
 				and LiveFlags.isOn(CUSTOMERS_FLAG)
@@ -1290,6 +1359,7 @@ function SpaService.Start()
 		nextId[player] = nil
 		lastSeq[player] = nil
 		queues[player] = nil
+		refillAt[player] = nil
 		queueOrders[player] = nil
 		playBase[player] = nil
 		noLeaveWas[player] = nil

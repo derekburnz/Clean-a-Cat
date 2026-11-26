@@ -22,6 +22,7 @@ local CatRules = require(Shared:WaitForChild("CatRules"))
 local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local SpecialRules = require(Shared:WaitForChild("SpecialRules"))
 local WalkRules = require(Shared:WaitForChild("WalkRules"))
 
@@ -41,6 +42,11 @@ local CARRIER_ASSET = "CleanACat_Prop_Carrier"
 -- their look number, so a line is not three of one thing. A look not in the game yet falls back to the first.
 local CARRIER_LOOKS = { CARRIER_ASSET, "CleanACat_Prop_CarrierSky", "CleanACat_Prop_CarrierButter" }
 local MAX_SHOWN = 3 -- one on each queue mat
+
+-- How many customers are drawn: one on each mat, or with benchGrow every bench place (SpotBench4 to 6).
+local function maxShown(): number
+	return if LiveFlags.isOn(SpaRules.BENCH_FLAG) then SpaRules.MAX_QUEUE else MAX_SHOWN
+end
 
 local FigureService = {}
 
@@ -250,14 +256,25 @@ local function clear(player: Player)
 	end
 end
 
--- The `index`th queue spot of plot `slot` (SpaLayout.lineSpot for a slot instead of a player).
-local function queueSpot(index: number, slot: number): CFrame
+-- The `index`th spot of the line of mats in plot `slot` (SpaLayout.lineSpot for a slot instead of a player); past
+-- the last mat the line goes on down the pavement.
+local function lineSpotOf(index: number, slot: number): CFrame
 	local name, past, before = SpaLayout.lineName("SpotQueue", index, true)
 	local cframe = SpaLayout.slotSpot(name, slot)
 	if past <= 0 then
 		return cframe
 	end
 	return cframe + (cframe.Position - SpaLayout.slotSpot(before, slot).Position) * past
+end
+
+-- Where the customer at place `index` of plot `slot` stands: on the mats, or with benchGrow places 4 to 6 on
+-- SpotBench<index> (SpaLayout.benchSpot for a slot).
+local function queueSpot(index: number, slot: number): CFrame
+	local bench = `SpotBench{index}`
+	if LiveFlags.isOn(SpaRules.BENCH_FLAG) and SpaLayout.PLOT_SPOTS[bench] then
+		return SpaLayout.slotSpot(bench, slot)
+	end
+	return lineSpotOf(index, slot)
 end
 
 -- Look numbers first, first + 1, ... for `count` customers.
@@ -311,13 +328,13 @@ local function buildTownsfolk(
 	folder.Name = FOLDER_NAME
 	local now = Workspace:GetServerTimeNow()
 	local arrivals = 0
-	for index = 1, math.min(#kinds, MAX_SHOWN) do
+	for index = 1, math.min(#kinds, maxShown()) do
 		local mat = queueSpot(index, slot)
 		local was = if from then from[index] else index
 		local start = mat
 		local setOff = now
 		if was == 0 then
-			start = queueSpot(WalkRules.STREET_PLACE, slot)
+			start = lineSpotOf(WalkRules.STREET_PLACE, slot) -- on the pavement, whatever the bench
 			setOff = now + arrivals * WalkRules.FILE_GAP -- new customers come in single file
 			arrivals += 1
 		elseif was ~= nil and was ~= index then
@@ -349,7 +366,7 @@ local function buildFolder(
 	end
 	local folder = Instance.new("Folder")
 	folder.Name = FOLDER_NAME
-	for index = 1, math.min(#kinds, MAX_SHOWN) do
+	for index = 1, math.min(#kinds, maxShown()) do
 		local look = LOOKS[(lookNumbers[index] or index) % #LOOKS + 1]
 		local base = template(look)
 		if base then
@@ -404,7 +421,7 @@ local function draw(player: Player)
 		shown[player] = nil
 		return
 	end
-	local drawn = table.move(line.looks, 1, math.min(#line.looks, MAX_SHOWN), 1, {})
+	local drawn = table.move(line.looks, 1, math.min(#line.looks, maxShown()), 1, {})
 	local folder =
 		buildFolder(slot, line.kinds, line.looks, LineLooks.cameFrom(shown[player], drawn))
 	-- template() may have yielded: draw only if this is still the newest queue.
@@ -434,7 +451,7 @@ function FigureService.showQueue(player: Player, kinds: { string })
 	local before = shown[player]
 	local _, folder = folderOf(player)
 	if LiveFlags.isOn(TOWNSFOLK_FLAG) and before and folder then
-		local same = #before == math.min(#line.looks, MAX_SHOWN)
+		local same = #before == math.min(#line.looks, maxShown())
 		for index, look in before do
 			same = same and line.looks[index] == look
 		end

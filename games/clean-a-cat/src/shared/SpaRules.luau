@@ -139,6 +139,33 @@ end
 
 -- Customers waiting at the door (SpaService keeps the line this long).
 SpaRules.QUEUE_SIZE = 3
+-- The longest the line can be (bench.size with every tub built, switch benchGrow): what a client takes from the server.
+SpaRules.MAX_QUEUE = 6
+SpaRules.BENCH_FLAG = "benchGrow"
+SpaRules.BENCH_ATTRIBUTE = "BenchSize" -- Player attribute: the player's bench places now (switch benchGrow)
+
+-- bench.tutorialSize (switch tutorialBench, Design-Agent 2026-11-26): until the tutorial ends the line holds 1
+-- customer, then 2 from 2:00 of play; the tutorial ends at 2:45 with the Index tip (GDD first session timeline), and
+-- the bench takes its own size from then. Play time, not the first serve: the first customer comes at about 1:00.
+SpaRules.TUTORIAL_BENCH_FLAG = "tutorialBench"
+SpaRules.TUTORIAL_TWO_AT = 2 * 60 -- seconds of play
+SpaRules.TUTORIAL_ENDS_AT = 2 * 60 + 45
+
+-- The tutorial's line after `played` seconds of play, or nil once the tutorial has ended.
+function SpaRules.tutorialBench(played: number): number?
+	if played >= SpaRules.TUTORIAL_ENDS_AT then
+		return nil
+	end
+	return if played < SpaRules.TUTORIAL_TWO_AT then 1 else 2
+end
+
+-- The bench's places as a client sees them: the server's BenchSize while benchGrow is on, else QUEUE_SIZE.
+function SpaRules.benchSize(raw: unknown, benchOn: boolean): number
+	if not benchOn or type(raw) ~= "number" or raw ~= raw then
+		return SpaRules.QUEUE_SIZE
+	end
+	return math.clamp(math.floor(raw), 1, SpaRules.MAX_QUEUE)
+end
 
 -- Moves the customer at `index` to the front of the door line, keeping the others in order (switch queuePick).
 -- Only a reorder: no customer is added, removed or rerolled. False for the front or an index outside the line.

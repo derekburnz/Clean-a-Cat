@@ -23,10 +23,11 @@ return function()
 				expect(#QueueViewRules.clean({ "Muffin", "Nobody", "Tux" })).to.equal(1)
 				expect(#QueueViewRules.clean({ "Muffin", 7 })).to.equal(1)
 				local long = {}
-				for index = 1, SpaRules.QUEUE_SIZE + 3 do
+				for index = 1, SpaRules.MAX_QUEUE + 3 do
 					long[index] = "Muffin"
 				end
-				expect(#QueueViewRules.clean(long)).to.equal(SpaRules.QUEUE_SIZE)
+				-- the longest a bench can be (benchGrow); the server sends its own length
+				expect(#QueueViewRules.clean(long)).to.equal(SpaRules.MAX_QUEUE)
 			end
 		)
 	end)
@@ -53,14 +54,14 @@ return function()
 				})
 				expect(next(needs)).to.equal(nil)
 				local long = {}
-				for place = 1, SpaRules.QUEUE_SIZE + 2 do
+				for place = 1, SpaRules.MAX_QUEUE + 2 do
 					long[place] = { "mud" }
 				end
 				local count = 0
 				for _ in QueueViewRules.cleanNeeds(long) do
 					count += 1
 				end
-				expect(count).to.equal(SpaRules.QUEUE_SIZE)
+				expect(count).to.equal(SpaRules.MAX_QUEUE)
 			end
 		)
 	end)
@@ -149,5 +150,29 @@ return function()
 			expect(QueueViewRules.canPick(2, false, true)).to.equal(false)
 			expect(QueueViewRules.canPick(2, true, false)).to.equal(false)
 		end)
+
+		it("takes picks up to the bench's size when it has grown (benchGrow)", function()
+			expect(QueueViewRules.canPick(5, true, true, 5)).to.equal(true)
+			expect(QueueViewRules.canPick(6, true, true, 5)).to.equal(false)
+			expect(SpaRules.benchSize(5, true)).to.equal(5)
+			expect(SpaRules.benchSize(5, false)).to.equal(SpaRules.QUEUE_SIZE)
+			expect(SpaRules.benchSize(nil, true)).to.equal(SpaRules.QUEUE_SIZE)
+			expect(SpaRules.benchSize(99, true)).to.equal(SpaRules.MAX_QUEUE)
+			expect(SpaRules.benchSize(0 / 0, true)).to.equal(SpaRules.QUEUE_SIZE)
+		end)
+
+		it(
+			"holds 1 customer in the tutorial until 2:00 of play, then 2, until 2:45 (tutorialBench)",
+			function()
+				expect(SpaRules.tutorialBench(0)).to.equal(1)
+				-- the first customer is served at about 1:00: play time decides, so the line stays at 1
+				expect(SpaRules.tutorialBench(60)).to.equal(1)
+				expect(SpaRules.tutorialBench(119)).to.equal(1)
+				expect(SpaRules.tutorialBench(120)).to.equal(2)
+				expect(SpaRules.tutorialBench(164)).to.equal(2)
+				expect(SpaRules.tutorialBench(165)).to.equal(nil) -- the tutorial is over: the bench's own size
+				expect(SpaRules.tutorialBench(9999)).to.equal(nil)
+			end
+		)
 	end)
 end

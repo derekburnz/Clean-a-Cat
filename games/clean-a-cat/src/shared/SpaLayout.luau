@@ -95,6 +95,11 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	WorkerLou = at(7.5, 0.5, 6.5, 0),
 	-- Not in the model: where a crate the player holds waits, on the floor between the spawn and the Tools board.
 	Crate = at(1.5, 0.5, -7, 0),
+	-- Not in the model: the bench's places 4 to 6 once tubs are built (switch benchGrow, issue 515), along the pavement
+	-- beside the line's last mat. Model-Agent may move them when the extra mats are modelled.
+	SpotBench4 = at(-1, 0.5, -21.5, TURNED),
+	SpotBench5 = at(3, 0.5, -21.5, TURNED),
+	SpotBench6 = at(7, 0.5, -21.5, TURNED),
 }) :: { [string]: Spot }
 
 -- Model-Agent's fixed props, placed with the plot (PlotService) into its PROPS_FOLDER, each with its pivot (its
@@ -313,6 +318,15 @@ function SpaLayout.spawnSpot(slot: number): CFrame
 			* CFrame.Angles(0, math.pi, 0)
 	end
 	return spotIn("SpotSpawn", slot)
+end
+
+-- Where the line's place `index` stands (switch benchGrow): places 4 to 6 on SpotBench<index>, the rest as lineSpot.
+function SpaLayout.benchSpot(index: number, player: Player?): CFrame
+	local name = `SpotBench{index}`
+	if SpaLayout.PLOT_SPOTS[name] and SpaLayout.onPlot(player) then
+		return SpaLayout.spot(name, player)
+	end
+	return SpaLayout.lineSpot("SpotQueue", index, player)
 end
 
 -- The `index`th spot of a line. Past the last listed spot the line goes on, one step (the gap between the last

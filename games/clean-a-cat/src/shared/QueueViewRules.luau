@@ -36,7 +36,7 @@ function QueueViewRules.clean(raw: unknown): { string }
 	if type(raw) ~= "table" then
 		return out
 	end
-	for index = 1, SpaRules.QUEUE_SIZE do
+	for index = 1, SpaRules.MAX_QUEUE do -- the bench grows to MAX_QUEUE with benchGrow; the server sends its own length
 		local kind = (raw :: { [number]: unknown })[index]
 		if type(kind) ~= "string" or CatRules.rarityOf(kind) == nil then
 			break
@@ -54,7 +54,7 @@ function QueueViewRules.cleanNeeds(raw: unknown): { [number]: { CatRules.Need } 
 	if type(raw) ~= "table" then
 		return out
 	end
-	for place = 1, SpaRules.QUEUE_SIZE do
+	for place = 1, SpaRules.MAX_QUEUE do
 		local list = (raw :: { [number]: unknown })[place]
 		if type(list) ~= "table" then
 			continue
@@ -87,7 +87,7 @@ function QueueViewRules.cleanDirt(raw: unknown): { [number]: number }
 	if type(raw) ~= "table" then
 		return out
 	end
-	for place = 1, SpaRules.QUEUE_SIZE do
+	for place = 1, SpaRules.MAX_QUEUE do
 		local level = DirtRules.clean((raw :: { [number]: unknown })[place])
 		if level then
 			out[place] = level
@@ -102,7 +102,7 @@ function QueueViewRules.cleanHearts(raw: unknown): { [number]: HeartRules.Heart 
 	if type(raw) ~= "table" then
 		return out
 	end
-	for place = 1, SpaRules.QUEUE_SIZE + 1 do -- the line plus a customer still at the door
+	for place = 1, SpaRules.MAX_QUEUE + 1 do -- the line plus a customer still at the door
 		local heart = HeartRules.cleanHeart((raw :: { [number]: unknown })[place])
 		if heart then
 			out[place] = heart
@@ -192,9 +192,15 @@ function QueueViewRules.headline(cards: { Card }, tier: number?): string
 end
 
 -- Whether the card at `place` gets a Wash next button: never the front (it is already next), and only while the
--- server would take the pick (the queuePick switch on and a customer already served).
-function QueueViewRules.canPick(place: number, pickOn: boolean, served: boolean): boolean
-	return pickOn and served and place >= 2 and place <= SpaRules.QUEUE_SIZE
+-- server would take the pick (the queuePick switch on and a customer already served). `size` is the bench's places
+-- (SpaRules.benchSize; QUEUE_SIZE when nil).
+function QueueViewRules.canPick(
+	place: number,
+	pickOn: boolean,
+	served: boolean,
+	size: number?
+): boolean
+	return pickOn and served and place >= 2 and place <= (size or SpaRules.QUEUE_SIZE)
 end
 
 return table.freeze(QueueViewRules)
