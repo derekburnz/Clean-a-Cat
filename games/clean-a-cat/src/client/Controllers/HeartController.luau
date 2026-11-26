@@ -17,6 +17,7 @@ local WalkRules = require(Shared:WaitForChild("WalkRules"))
 local HeartController = {}
 
 local PLACE_ATTRIBUTE = "LinePlace" -- FigureService: the customer's place in the line as shown
+local LEAVING_ATTRIBUTE = "LineLeaving" -- FigureService: a leaver's figure, still there for the walk off copy
 
 -- Each watched figure's last fill, so HeartLow fires once as the bar crosses the line, not every update.
 local lastFill: { [Model]: number } = {}
@@ -71,15 +72,24 @@ local function onLeft(rawPlace: unknown, _rawKind: unknown)
 	if type(rawPlace) ~= "number" or not LiveFlags.isOn(HeartRules.FLAG) then
 		return
 	end
+	-- With lineReuse the line is redrawn before this arrives, so the customer stepping up may already hold the
+	-- leaver's place: the leaver's own figure (LineLeaving) is taken first.
+	local found: Model? = nil
 	for _, figure in CollectionService:GetTagged(WalkRules.TAG) do
 		if
 			figure:IsA("Model")
 			and figure:GetAttribute(PLACE_ATTRIBUTE) == rawPlace
 			and isOwn(figure)
 		then
-			Moments.CatLeft:Fire(figure :: Model)
-			return
+			if figure:GetAttribute(LEAVING_ATTRIBUTE) == true then
+				found = figure :: Model
+				break
+			end
+			found = found or figure :: Model
 		end
+	end
+	if found then
+		Moments.CatLeft:Fire(found)
 	end
 end
 

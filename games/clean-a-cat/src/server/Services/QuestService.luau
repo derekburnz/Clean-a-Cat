@@ -89,7 +89,6 @@ local function onWashed(player: Player, facts: QuestRules.Facts)
 	local done, crate = QuestRules.count(save.quests, facts, LiveFlags.isOn)
 	for _, q in done do
 		save.coins += q.coins
-		NetService.notice(player, `Quest done: {q.text}! +{q.coins} coins`)
 		Telemetry.economy(
 			player,
 			"coins",
@@ -109,9 +108,13 @@ local function onWashed(player: Player, facts: QuestRules.Facts)
 	if #done > 0 then
 		WalletService.show(player)
 	end
-	if crate and PetService.give(player, QuestRules.WEEK_CRATE, 1) then
-		NetService.notice(player, "Every weekly quest done! A crate is yours")
+	local crateGiven = crate and PetService.give(player, QuestRules.WEEK_CRATE, 1)
+	if crateGiven then
 		Telemetry.event(player, "crate_earned", 1, { "quest" })
+	end
+	local text = QuestRules.noticeText(done, crateGiven)
+	if text then
+		NetService.notice(player, text) -- one toast for everything this wash finished
 	end
 	send(player, save)
 end

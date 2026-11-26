@@ -1043,11 +1043,19 @@ local function customerLeaves(player: Player, place: number)
 		return
 	end
 	local shownPlace = place + (if carrying[player] == CarryRules.DOOR then 1 else 0)
-	NetService.fire(player, "CustomerLeft", shownPlace, kind)
+	-- In place (lineReuse), the device hears it after the redraw, so it gets the newcomer and the leave in the same
+	-- frame and the line never counts one short (issue 571); the leaver's figure lingers to be found. Otherwise first.
+	local after = FigureService.inPlace()
+	if not after then
+		NetService.fire(player, "CustomerLeft", shownPlace, kind)
+	end
 	table.remove(line, place)
 	table.remove(ordersFor(player), place)
-	FigureService.left(player, shownPlace)
+	FigureService.left(player, shownPlace, after)
 	sendQueue(player)
+	if after then
+		NetService.fire(player, "CustomerLeft", shownPlace, kind)
+	end
 	NetService.notice(player, `{kind} went home`)
 end
 
