@@ -32,6 +32,33 @@ return function()
 		end)
 	end)
 
+	describe("IndexViewRules special page", function()
+		it("lists the special visitors' cats only on the Special page, never under All", function()
+			local first = CatRules.SPECIAL_CATS[1]
+			local entries = { [first] = { washed = true, resident = false } }
+			local cards = IndexViewRules.cards(entries, CatRules.SPECIAL, { [first] = true })
+			expect(#cards).to.equal(#CatRules.SPECIAL_CATS)
+			expect(cards[1].rarity).to.equal(CatRules.SPECIAL)
+			expect(cards[1].seen).to.equal(true)
+			expect(cards[1].isNew).to.equal(true)
+			expect(cards[2].seen).to.equal(false)
+			for _, card in IndexViewRules.cards(entries, "All", nil) do
+				expect(card.rarity).never.to.equal(CatRules.SPECIAL)
+			end
+		end)
+
+		it("counts the special cats washed and says where they come from", function()
+			local washed, total = IndexViewRules.specialProgress({
+				[CatRules.SPECIAL_CATS[1]] = { washed = true, resident = false },
+			})
+			expect(washed).to.equal(1)
+			expect(total).to.equal(#CatRules.SPECIAL_CATS)
+			expect(IndexViewRules.chanceLine(CatRules.SPECIAL, 1)).to.equal(
+				"Only special visitors bring these cats"
+			)
+		end)
+	end)
+
 	describe("IndexViewRules.progress", function()
 		it("counts washed cats out of the roster", function()
 			local washed, total = IndexViewRules.progress({
@@ -54,17 +81,14 @@ return function()
 
 	describe("IndexViewRules.newlyWashed", function()
 		it("finds cats washed since the last look", function()
-			local fresh = IndexViewRules.newlyWashed(
-				{
-					Muffin = { washed = true, resident = false },
-					Tux = { washed = false, resident = true },
-				},
-				{
-					Muffin = { washed = true, resident = false },
-					Tux = { washed = true, resident = true },
-					Inky = { washed = true, resident = false },
-				}
-			)
+			local fresh = IndexViewRules.newlyWashed({
+				Muffin = { washed = true, resident = false },
+				Tux = { washed = false, resident = true },
+			}, {
+				Muffin = { washed = true, resident = false },
+				Tux = { washed = true, resident = true },
+				Inky = { washed = true, resident = false },
+			})
 			expect(table.concat(fresh, ",")).to.equal("Inky,Tux")
 		end)
 	end)

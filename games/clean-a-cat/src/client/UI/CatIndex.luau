@@ -19,6 +19,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local IndexViewRules = require(Shared:WaitForChild("IndexViewRules"))
+local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
@@ -27,7 +28,7 @@ local Window = require(script.Parent:WaitForChild("Window"))
 
 local CatIndex = {}
 
-local TABS = { "All", "Common", "Uncommon", "Rare", "Epic", "Legendary" }
+local TABS = { "All", "Common", "Uncommon", "Rare", "Epic", "Legendary", "Special" } -- Special: the visitors' own page
 local NEW_PINK = Color3.fromHex("FF86CF")
 local SILHOUETTE = Color3.fromHex("4A3560")
 local TRACK = Color3.fromHex("F7E9DA")
@@ -292,13 +293,25 @@ redraw = function()
 	p.pad.PaddingTop, p.pad.PaddingBottom = UDim.new(0, s.pad - 6), UDim.new(0, s.pad)
 
 	-- The "Wash all 10" bar, in the title band.
-	local washed, total = IndexViewRules.progress(entries)
+	-- the Special page shows only while special visitors are switched on (SpecialRules.FLAG)
+	local specialOn = LiveFlags.isOn("specialVisitors")
+	if filter == CatRules.SPECIAL and not specialOn then
+		filter = "All"
+	end
+	-- On the Special page the bar counts the special visitors' cats instead, with no set bonus.
+	local special = filter == CatRules.SPECIAL
+	local washed, total
+	if special then
+		washed, total = IndexViewRules.specialProgress(entries)
+	else
+		washed, total = IndexViewRules.progress(entries)
+	end
 	p.barRow.Size = UDim2.fromOffset(0, s.band)
 	p.barTrack.Size = UDim2.fromOffset(s.track, 20)
-	p.barText.Text = `Wash all {total}`
+	p.barText.Text = if special then "Special cats" else `Wash all {total}`
 	p.barFill.Size = UDim2.fromScale(if total > 0 then washed / total else 0, 1)
 	p.barCount.Text = `{washed} / {total}`
-	p.barBonus.Text = `+{IndexRules.BONUS_COINS}`
+	p.barBonus.Text = if special then "" else `+{IndexRules.BONUS_COINS}`
 
 	local cat = selected
 	local showDetail = cat ~= nil and entries[cat] ~= nil and entries[cat].washed
@@ -311,7 +324,14 @@ redraw = function()
 		p.tabsRow.Size = UDim2.new(1, 0, 0, s.tab)
 		for name, tab in p.tabs do
 			local on = name == filter
+			tab.Visible = name ~= CatRules.SPECIAL or specialOn
 			tab.Size = UDim2.fromOffset(0, s.tab)
+			-- seven tabs: tighter sides on a short phone so the Special tab stays on screen
+			local tabPad = tab:FindFirstChildOfClass("UIPadding") :: UIPadding?
+			if tabPad then
+				local side = UDim.new(0, if short then 12 else 20)
+				tabPad.PaddingLeft, tabPad.PaddingRight = side, side
+			end
 			tab.BackgroundColor3 = if on then TAB_ON else Kit.WHITE
 			tab.TextColor3 = if on then Kit.WHITE else Kit.INK
 		end
@@ -487,7 +507,7 @@ function CatIndex.build(root: Instance): Frame
 		edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 		edge.Color = if name == "All" then Kit.INK else (Kit.RARITY[name] or Kit.INK)
 		local tabMin = Instance.new("UISizeConstraint")
-		tabMin.MinSize = Vector2.new(76, 0) -- "All" stays a full touch target
+		tabMin.MinSize = Vector2.new(64, 0) -- "All" stays a full touch target (64 design px is 48 real at the smallest scale)
 		tabMin.Parent = tab
 		local tabPad = Instance.new("UIPadding")
 		tabPad.PaddingLeft, tabPad.PaddingRight = UDim.new(0, 20), UDim.new(0, 20)
