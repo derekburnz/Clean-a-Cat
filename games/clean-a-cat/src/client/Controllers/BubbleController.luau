@@ -26,19 +26,24 @@
 -- It tells the server each bubble it shows (ReportBubbleSeen), so a rejoin never shows it again.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
+local CatRules = require(Shared:WaitForChild("CatRules"))
+local CounterRules = require(Shared:WaitForChild("CounterRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Passes = require(Shared:WaitForChild("Passes"))
 local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local SpecialRules = require(Shared:WaitForChild("SpecialRules"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local Wallet = require(Shared:WaitForChild("Wallet"))
+local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local Client = script.Parent.Parent
 local FloorTrail = require(Client:WaitForChild("Spa"):WaitForChild("FloorTrail"))
@@ -63,7 +68,7 @@ local HUD_FLAG = "gameHud" -- the Quests button lives on the HUD
 local BubbleController = {}
 
 local player = Players.LocalPlayer
-local happened = { firstCustomer = false, wetCat = false, stationReady = false } -- this session's sightings
+local happened = { firstCustomer = false, wetCat = false, stationReady = false, special = false } -- this session's sightings
 local scrub: any = nil
 local ask: any = nil -- AskController
 local told: { [string]: boolean } = {} -- shown here, before the server's list catches up
@@ -113,6 +118,13 @@ local function facts(): { [string]: boolean }
 		),
 		longBuild = not BuildRules.shown("ThirdTub", LiveFlags.isOn) and canBuild("VipRoom"),
 		longBuildTub = BuildRules.shown("ThirdTub", LiveFlags.isOn) and canBuild("ThirdTub"),
+		-- contextAsks (issue 877): a special visitor at the door, and a crate held (the first one only, once a save)
+		special = happened.special,
+		crate = (tonumber(player:GetAttribute(SpecialRules.CRATES_ATTRIBUTE)) or 0) > 0,
+		-- issue 913: Jo is affordable and not hired, with the helpers on
+		hireJo = LiveFlags.isOn(WorkerRules.FLAG)
+			and player:GetAttribute("WorkerLevel_Jo") == nil
+			and coins() >= (WorkerRules.priceOf("Jo", LiveFlags.isOn) or math.huge),
 		quests = LiveFlags.isOn(QUESTS_FLAG) and LiveFlags.isOn(HUD_FLAG) and player:GetAttribute(
 			QuestViewRules.OPEN_ATTRIBUTE
 		) == true,
@@ -127,6 +139,17 @@ local function target(id: string): Vector3?
 		return SpaLayout.spot(TOOLS_SPOT).Position
 	elseif id == "wetCat" or id == "build" or id == "longBuild" or id == "longBuildTub" then
 		return SpaLayout.spot(SpaLayout.BUILDER_SPOT).Position
+	elseif id == "special" then
+		-- where the customers wait: the counter window's first place (counterLine), else the head of the line
+		return SpaLayout.spot(
+			if LiveFlags.isOn(CounterRules.FLAG)
+				then CounterRules.SPOT_PREFIX .. "1"
+				else "SpotQueue1"
+		).Position
+	elseif id == "crate" then
+		return SpaLayout.spot("Crate").Position -- CrateController's crate
+	elseif id == "hireJo" then
+		return SpaLayout.spot(WorkerRules.WORKERS.Jo.spot).Position
 	end
 	return nil
 end
@@ -203,13 +226,25 @@ local function due(): BubbleRules.Bubble?
 	for id in told do
 		seen[id] = true
 	end
-	return BubbleRules.pick(facts(), seen)
+	return BubbleRules.pick(facts(), seen, LiveFlags.isOn)
 end
 
 local function show(bubble: BubbleRules.Bubble, onGone: ((closed: boolean) -> ())?)
 	told[bubble.id] = true
 	Remotes.event("ReportBubbleSeen"):FireServer(bubble.id)
 	local spot = if bubble.showMe then target(bubble.id) else nil
+	-- contextAsks (issue 877): a guide card shows its trail with it, not only after "Show me"
+	if spot and BubbleRules.contextOn(LiveFlags.isOn) then
+		pointTo(spot)
+		if bubble.id == "hireJo" then
+			-- Motion-FX's walk up (issue 913) on WorkerController's prompt anchor for Jo
+			local prompts = Workspace:FindFirstChild("CleanACat_WorkerPrompts")
+			local pad = if prompts then prompts:FindFirstChild("Jo") else nil
+			if pad and pad:IsA("BasePart") then
+				Moments.JoArrives:Fire(pad :: BasePart)
+			end
+		end
+	end
 	UI.showBubble(
 		bubble,
 		if spot
@@ -340,6 +375,11 @@ end
 local function onQueue(kinds: unknown)
 	if type(kinds) == "table" and #(kinds :: { unknown }) > 0 then
 		happened.firstCustomer = true
+		for _, kind in kinds :: { unknown } do
+			if type(kind) == "string" and CatRules.rarityOf(kind) == CatRules.SPECIAL then
+				happened.special = true -- contextAsks: "A special visitor!"
+			end
+		end
 	end
 end
 

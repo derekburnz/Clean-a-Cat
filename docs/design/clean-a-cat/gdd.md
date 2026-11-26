@@ -30,6 +30,21 @@ Built from Derek's 65 plan page answers, his chat decisions of 2026-11-22 to 202
 
 Rules for the whole session: one ask at a time and at least a minute apart, nothing during a wash or a recap, and menu buttons arrive one by one with a tip. The starter pack button appears after the tutorial and stays still until the second visit. A player who skipped the stand gets one favourite ask on the second visit or after 10 cats. A like ask only follows a good moment: a special visitor's cat finished, a crate opened, a three star card or a worker hired. There is one like ask a visit, none within two minutes of a lost cat or a cancelled purchase, and after a no the game waits three visits. The owner also allows an ask a little after a completed purchase (2026-11-26, his "maybe"): at least two minutes later, never on the purchase screen, behind its own switch. Every first session change ships behind its own switch (rule 16).
 
+**Pop ups and guides** (switches `contextAsks` and `toastCards`, issue 877; the owner on 2026-11-26: "use context tutorials based on what the player unlocks/can do/can buy" and "only have popups like this when their is something your guiding them to do next ... and show the arrow lines from character to destination"). A Suds card shows only to guide the next action: its title is that action, and the arrow trail to the place starts with the card. A card that only announces something is cut. Short notices are small cards at the top right, never a bar across the screen.
+
+| Card | Shows when | Guides to | Before |
+|---|---|---|---|
+| Bring the cat to the tub | the first customer is at the counter | the tub | "First customer!", trail only after Show me |
+| A special visitor! | the first special visitor arrives | counter place 1 | a dark bar at the top |
+| You got a crate! | the first crate is held | the crate | nothing |
+| Hire your first helper | Jo is affordable and not hired (issue 913, with Jo walking up) | Jo's pad | nothing |
+| Buy the Bubble Soap | the soap is affordable | the Tools board | "New soap!" |
+| Build an upgrade / Build a dryer | the first build is affordable, or a wet cat needs a dryer | the Build board | "Let's build!", "Wet cat!" |
+| Start the Third Tub (or VIP Room) | the long build is affordable | the Build board | "Before you go" |
+| Want a heads up? (notification ask) | after the first build is started or done | none | at 1:45, before any build |
+| Cut: Let's open the spa!, It's ready!, Quests! | | | announced only |
+| Kept as they are | the check in card (a reward), the like ask (after a good moment), the favourite ask (second visit), the gift stand, the starter button's bob | | |
+
 **The wash:** always done by hand; no timer ever stands in for it.
 - View: placing the cat in the tub opens a close up wash screen. The right tool is in the player's hand for each step. There is no tool menu.
 - Steps: every kind of step is in the game from the start. A cat takes 3 to 10 steps by how dirty it is: 3 at dirt level 1, 4 or 5 at level 2, 6 or 7 at level 3 and 8 to 10 at level 4. A step takes about 5 seconds and the same step never comes twice in a row. The tutorial uses only the simple 3 or 4.

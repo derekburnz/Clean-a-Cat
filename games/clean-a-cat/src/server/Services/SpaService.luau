@@ -26,6 +26,7 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BenchSave = require(Shared:WaitForChild("BenchSave"))
 local BowRules = require(Shared:WaitForChild("BowRules"))
+local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
@@ -277,7 +278,17 @@ local function queueFor(player: Player, keepOnly: boolean?): { string }
 				tutorial = false,
 				special = true,
 			})
-			NetService.notice(player, "A special visitor is here! Only you can wash their cat")
+			if LiveFlags.isOn(BubbleRules.CONTEXT_FLAG) then
+				-- contextAsks (issue 877): our card with the visitor's portrait; Suds's guide card trails the way
+				NetService.notice(
+					player,
+					`A special visitor brought {CatRules.displayName(visitor)}! Only you can wash them`,
+					nil,
+					visitor
+				)
+			else
+				NetService.notice(player, "A special visitor is here! Only you can wash their cat")
+			end
 			continue
 		end
 		local kind = rollCustomer(player)

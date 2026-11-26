@@ -45,7 +45,34 @@ BubbleRules.BUBBLES = table.freeze({
 	-- switch giftStand (issue 521): the stand lit at 7:00 (GiftLit); "Show me" opens its card. Shown through the ask
 	-- line (AskController's "gift"), not BubbleController's own facts
 	bubble("gift", "A gift for you!", "Your stand has a free pet. Take a look!", true),
+	-- switch contextAsks (issue 877): only with it on, both guide cards with the trail
+	bubble("special", "A special visitor!", "Wash their cat for a big tip.", true), -- one is at the door
+	bubble("crate", "You got a crate!", "Open it for a pet that helps.", true), -- the first crate held
+	-- Jo affordable and not hired yet (issue 913): his pad, with Jo walking up (Moments.JoArrives)
+	bubble("hireJo", "Hire your first helper", "Jo washes cats for you.", true),
 }) :: { Bubble }
+
+-- Context asks (switch contextAsks, issue 877; the owner on 2026-11-26: "use context tutorials based on what the
+-- player unlocks/can do/can buy" and "only have popups like this when their is something your guiding them to do
+-- next"). With it on: the cards that only announce something are CUT, the guide cards say the next action in their
+-- title (WORDS), every "Show me" card starts its floor trail the moment it shows, and the two new guide cards
+-- (ONLY_CONTEXT) can show. With it off every card is as before and the new two never show.
+BubbleRules.CONTEXT_FLAG = "contextAsks"
+BubbleRules.CUT =
+	table.freeze({ openSpa = true, stationReady = true, quests = true }) :: { [string]: boolean }
+BubbleRules.ONLY_CONTEXT =
+	table.freeze({ special = true, crate = true, hireJo = true }) :: { [string]: boolean }
+BubbleRules.WORDS = table.freeze({
+	firstCustomer = {
+		"Bring the cat to the tub",
+		"Pick it up and carry it there.",
+	},
+	wetCat = { "Build a dryer", "Wet cats need one to dry." },
+	newSoap = { "Buy the Bubble Soap", "It makes scrubs faster." },
+	build = { "Build an upgrade", "Head to the Build board." },
+	longBuild = { "Start the VIP Room", "It builds while you're away." },
+	longBuildTub = { "Start the Third Tub", "It builds while you're away." },
+}) :: { [string]: { string } }
 
 -- The opening's own bubbles: part of the first minutes' steps, so they never wait in the ask line (switch askQueue).
 -- Every other bubble is the ask "bubble" there: it waits its turn, a minute from any other ask.
@@ -102,11 +129,30 @@ function BubbleRules.unpack(raw: unknown): { [string]: boolean }?
 	return out
 end
 
+local context: { [string]: Bubble } = {}
+for id, words in BubbleRules.WORDS do
+	local b = byId[id]
+	context[id] =
+		table.freeze({ id = id, title = words[1], line = words[2], showMe = b.showMe }) :: Bubble
+end
+
+-- Whether the switch contextAsks is on for `isOn` (off when nil).
+function BubbleRules.contextOn(isOn: ((flag: string) -> boolean)?): boolean
+	return isOn ~= nil and isOn(BubbleRules.CONTEXT_FLAG)
+end
+
 -- The bubble to show now: the first in BUBBLES whose fact is true and that this save has not shown. nil when none.
-function BubbleRules.pick(facts: { [string]: boolean }, seen: { [string]: boolean }): Bubble?
+-- With contextAsks on (`isOn`), a CUT card never shows and a guide card comes in its WORDS.
+function BubbleRules.pick(
+	facts: { [string]: boolean },
+	seen: { [string]: boolean },
+	isOn: ((flag: string) -> boolean)?
+): Bubble?
+	local on = BubbleRules.contextOn(isOn)
 	for _, b in BubbleRules.BUBBLES do
-		if facts[b.id] and not seen[b.id] then
-			return b
+		local allowed = if on then not BubbleRules.CUT[b.id] else not BubbleRules.ONLY_CONTEXT[b.id]
+		if allowed and facts[b.id] and not seen[b.id] then
+			return if on then context[b.id] or b else b
 		end
 	end
 	return nil
