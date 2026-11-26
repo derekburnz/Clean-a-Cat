@@ -123,7 +123,7 @@ Guard rail check (must stay true, with margin): a player washing Common level 2 
 
 | key | value | why | changed |
 |---|---|---|---|
-| `build.SecondTub` | 90 coins, 15 s | The first short station build, after about 8 cats. Must stay 15 s or less: Finish now hides under 15 s left, so no Robux price shows in the first minutes (Review-QA, issue 531); a longer time goes to Derek first | 2026-11-25 |
+| `build.SecondTub` | 60 coins, 15 s (was 90) | The first short station build, after about 5 cats (about 5:30), so the first session shows a real upgrade inside its first minutes. Sync's fresh save on 6fcbac1 earned about 16 coins a cat, not 23, and reached 90 only at 8:20 (issue 660). Must stay 15 s or less: Finish now hides under 15 s left, so no Robux price shows in the first minutes (Review-QA, issue 531); a longer time goes to Derek first | 2026-11-26 |
 | `build.ThirdTub` | 1,000 coins, 30 min | The first long build, offered about minute 15 | 2026-11-25 |
 | `build.FourthTub` | 5,000 coins, 4 h | "Up to four tubs" | 2026-11-25 |
 | `build.VipRoom` | 15,000 coins, 12 h | | 2026-11-25 |
@@ -214,8 +214,8 @@ Cats washed to afford the next purchase. Re-time on the iPhone 12 once dirt leve
 | Purchase | Target | Expected with these values |
 |---|---|---|
 | Sponge level 2 (45) | after 3 cats | The three tutorial cats pay about 16 each, so 48 after cat 3 |
-| Second Tub (90) | after about 8 cats | Cats 4 to 8 pay about 22 each, so about 113 spare after cat 8 |
-| Jo (150) | after about 15 cats | Cats 9 to 15 pay about 23 each, so about 160 after cat 15 |
+| Second Tub (60) | after about 5 cats, about 5:30 | Measured on 6fcbac1 (issue 660): early cats pay about 16 each, Bubble Soap (30) is often bought first |
+| Jo (150) | after about 15 cats | At 16 a cat (18 with the Second Tub's +2) Jo lands nearer cat 15 to 16; re-time on the iPhone 12 |
 | Third Tub (1,000) | offered about minute 15, bought in the second session | |
 
-Average early cat (no friends, plain ribbon): base 14.3 across rarities × dirt 1.18 × stars 1.1 (1 to 1.2) + tip 3 + bow 2 ≈ 23.6 coins.
+Average early cat (no friends, plain ribbon): base 14.3 across rarities × dirt 1.18 × stars 1.1 (1 to 1.2) + tip 3 + bow 2 ≈ 23.6 coins on paper. Measured 2026-11-26 (Sync, fresh save): about 16, as early stars sit near 1, the tutorial cats are cheap and early dirt is mostly level 1. Plan on 16 for the first ten cats.
