@@ -23,13 +23,13 @@ export type Reward = {
 }
 
 CheckinRules.REWARDS = table.freeze({
-	table.freeze({ coins = 50, text = "50 coins" }),
-	table.freeze({ crate = "good", text = "Good crate" }), -- "Day 2 the good crate"
-	table.freeze({ coins = 100, text = "100 coins" }),
-	table.freeze({ bow = "Silk", worth = 150, text = "Silk bow" }),
-	table.freeze({ coins = 200, text = "200 coins" }),
-	table.freeze({ coins = 300, text = "300 coins" }),
-	table.freeze({ crate = "normal", text = "Crate" }),
+	table.freeze({ coins = 50, text = "50 coins" } :: Reward),
+	table.freeze({ crate = "good", text = "Good crate" } :: Reward), -- "Day 2 the good crate"
+	table.freeze({ coins = 100, text = "100 coins" } :: Reward),
+	table.freeze({ bow = "Silk", worth = 150, text = "Silk bow" } :: Reward),
+	table.freeze({ coins = 200, text = "200 coins" } :: Reward),
+	table.freeze({ coins = 300, text = "300 coins" } :: Reward),
+	table.freeze({ crate = "normal", text = "Crate" } :: Reward),
 }) :: { Reward }
 
 export type CheckIn = { days: number, lastDay: number }
