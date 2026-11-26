@@ -364,7 +364,7 @@ local function drawSlot(
 	whoIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	whoIcon.Position = UDim2.fromScale(0.5, 0.5)
 	whoIcon.Size = UDim2.fromScale(0.7, 0.7)
-	Icons.draw(if row.locked then "Lock" elseif row.helper then "Helpers" else "Paw", whoIcon)
+	Icons.draw(if row.locked then "Lock" elseif row.helper then "Helper" else "Paw", whoIcon)
 
 	local text = frame("Text", card)
 	text.Position = UDim2.fromOffset(s.who + 12, 0)
