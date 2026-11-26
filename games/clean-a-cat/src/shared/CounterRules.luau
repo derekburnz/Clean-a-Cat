@@ -25,6 +25,9 @@ CounterRules.CAT_SCALE = 0.8 -- the cat on the counter, as in a carrier
 CounterRules.CAT_NAME = "CounterCat" -- the cat's model under its customer's figure
 -- On that model, for Design's card over it and the take prompt.
 CounterRules.PLACE_ATTRIBUTE = "CounterPlace" -- its place at the counter, the same index as the CustomerQueue card
+-- Where the cat sits on the counter, in the world (issue 923): each device seats it there once its customer stands
+-- on their mat (CustomerWalkController), whatever the walk or the figure's pivot did to it on the way.
+CounterRules.SPOT_AT_ATTRIBUTE = "CounterSpotAt"
 CounterRules.LOOK_ATTRIBUTE = "LineLook" -- its customer's look number (the figure carries the same one)
 CounterRules.KIND_ATTRIBUTE = "CatKind"
 

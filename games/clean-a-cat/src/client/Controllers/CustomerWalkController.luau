@@ -12,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
+local CounterRules = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("CounterRules"))
 local WalkRules = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("WalkRules"))
 
 local CustomerWalkController = {}
@@ -42,11 +43,23 @@ local function setHidden(walk: Walk, hidden: boolean)
 	end
 end
 
+-- (switch counterLine) The figure's cat on the counter goes exactly on its spot (the server's CounterSpotAt) once the
+-- figure stands on its mat: places 2 to 6 sat about 4 studs off their mats and some floated outside the counter
+-- (issue 923), so the spot no longer rides on the figure's pivot.
+local function seatCounterCat(figure: Model)
+	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
+	local at = if cat then cat:GetAttribute(CounterRules.SPOT_AT_ATTRIBUTE) else nil
+	if cat and cat:IsA("Model") and typeof(at) == "CFrame" then
+		(cat :: Model):PivotTo(at :: CFrame)
+	end
+end
+
 local function finish(walk: Walk)
 	walks[walk.figure] = nil
 	setHidden(walk, false)
 	if walk.figure.Parent then
 		walk.figure:PivotTo(walk.to)
+		seatCounterCat(walk.figure)
 	end
 end
 
@@ -77,6 +90,7 @@ local function begin(instance: Instance)
 	local to = figure:GetAttribute(WalkRules.TO_ATTRIBUTE)
 	local at = figure:GetAttribute(WalkRules.AT_ATTRIBUTE)
 	if typeof(to) ~= "CFrame" or type(at) ~= "number" then
+		seatCounterCat(figure) -- drawn already on its mat
 		return
 	end
 	local mat = to :: CFrame

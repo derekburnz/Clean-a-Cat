@@ -346,11 +346,13 @@ local function counterCat(kind: string, lookNumber: number, place: number, at: C
 end
 
 -- A figure's place in the line as shown, on it and on its cat on the counter.
-local function setPlace(figure: Model, index: number)
+local function setPlace(figure: Model, index: number, slot: number)
 	figure:SetAttribute(PLACE_ATTRIBUTE, index)
 	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
 	if cat then
 		cat:SetAttribute(CounterRules.PLACE_ATTRIBUTE, index)
+		-- where it sits on the counter, which each device seats it at once the customer stands there (issue 923)
+		cat:SetAttribute(CounterRules.SPOT_AT_ATTRIBUTE, catSpot(index, slot))
 	end
 end
 
@@ -531,7 +533,7 @@ local function buildTownsfolk(
 		end
 		local figure = townsfolkFor(lookNumbers[index] or index, kinds[index], start, index, slot)
 		if figure then
-			setPlace(figure, index)
+			setPlace(figure, index, slot)
 			figure:SetAttribute(LOOK_ATTRIBUTE, lookNumbers[index] or index)
 			if start ~= mat then
 				figure:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
@@ -600,7 +602,7 @@ local function buildFolder(
 				end
 			end
 			figure:SetAttribute("CatKind", kinds[index])
-			setPlace(figure, index)
+			setPlace(figure, index, slot)
 			figure.Parent = folder
 		end
 	end
@@ -667,7 +669,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			return -- a newer redraw took over while this one loaded a figure
 		end
 		if made then
-			setPlace(made, index)
+			setPlace(made, index, slot)
 			made:SetAttribute(LOOK_ATTRIBUTE, look)
 			made:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
 			made:SetAttribute(WalkRules.AT_ATTRIBUTE, walkIn + arrivals * WalkRules.FILE_GAP)
@@ -711,7 +713,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			end)
 		end
 		walkFrom[step.figure] = here
-		setPlace(step.figure, step.index)
+		setPlace(step.figure, step.index, slot)
 		-- (switch counterCrate) the crate follows the customer to their new place (Sync's QA of PR 762: it stayed at
 		-- the place they came in at). Still walking in with it: it goes down when they reach the new mat instead.
 		local cat = step.figure:FindFirstChild(CounterRules.CAT_NAME)
