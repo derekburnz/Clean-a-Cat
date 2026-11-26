@@ -12,6 +12,10 @@
 -- nothing scrolls. Nothing here is destructive. UI never fires remotes: onChange(settings) runs on every change and
 -- SettingsController applies it.
 --
+-- "Visitors can come in" (issue 520, switch visiting) is a switch row like the others, but its value is the server's
+-- (the Player attribute VisitorsAllowed, nil while visiting is off, and then the row is hidden): a press asks the
+-- server (SettingsCard.onVisitors) and the switch moves only when the server's answer comes back (setVisitors).
+--
 -- "Tips on screen" from the draft waits until the game has tips to turn off: a switch that does nothing would mislead.
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
@@ -46,6 +50,13 @@ local ROWS: { RowSpec } = {
 		icon = "Sparkle",
 		say = "Less sparkle",
 		detail = "Fewer flashes",
+	},
+	{
+		key = "visitors",
+		kind = "toggle",
+		icon = "Helper",
+		say = "Visitors can come in",
+		detail = "Others may visit your spa",
 	},
 	{
 		key = "odds",
@@ -131,6 +142,16 @@ type Parts = { window: Window.Window, pad: UIPadding, columns: { Frame }, rows: 
 local parts: Parts? = nil
 local current: Settings = SettingsRules.defaults()
 local changed: ((Settings) -> ())? = nil
+local visitors: boolean? = nil -- the server's VisitorsAllowed; nil hides the row
+local visitorListeners: { (allowed: boolean) -> () } = {}
+
+-- A switch row's value: the visitors row reads the server's, the others the saved settings.
+local function toggleOn(key: string): boolean
+	if key == "visitors" then
+		return visitors == true
+	end
+	return if key == "lessShake" then current.lessShake else current.lessSparkle
+end
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -341,8 +362,17 @@ local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
 		local button = holder :: TextButton
 		button.Activated:Connect(function()
 			local key = spec.key
-			local now = if key == "lessShake" then current.lessShake else current.lessSparkle
-			setValue(key, not now)
+			if key == "visitors" then
+				local now = visitors
+				if now == nil then
+					return
+				end
+				for _, listener in visitorListeners do
+					task.spawn(listener, not now)
+				end
+				return
+			end
+			setValue(key, not toggleOn(key))
 			redraw()
 		end)
 	else
@@ -382,8 +412,15 @@ redraw = function()
 	end
 
 	local inColumn = { 0, 0 }
-	for index, row in p.rows do
-		local columnIndex = if short and index > SHORT_FIRST_COLUMN then 2 else 1
+	local shown = 0
+	for _, row in p.rows do
+		local visible = row.spec.key ~= "visitors" or visitors ~= nil
+		row.frame.Visible = visible
+		if not visible then
+			continue
+		end
+		shown += 1
+		local columnIndex = if short and shown > SHORT_FIRST_COLUMN then 2 else 1
 		row.frame.Parent = p.columns[columnIndex]
 		inColumn[columnIndex] += 1
 		row.line.Visible = inColumn[columnIndex] > 1
@@ -414,9 +451,7 @@ redraw = function()
 		local switch, switchGradient, word, knob =
 			row.switch, row.switchGradient, row.switchWord, row.knob
 		if switch and switchGradient and word and knob then
-			local on = if row.spec.key == "lessShake"
-				then current.lessShake
-				else current.lessSparkle
+			local on = toggleOn(row.spec.key)
 			switch.Size = UDim2.fromOffset(s.switchW, s.switchH)
 			switch.Position = UDim2.new(1, -4, 0.5, 0)
 			switchGradient.Color = if on
@@ -436,6 +471,17 @@ redraw = function()
 			check.Position = UDim2.new(1, -14, 0.5, 0)
 		end
 	end
+end
+
+-- The server's VisitorsAllowed (nil hides the row).
+function SettingsCard.setVisitors(allowed: boolean?)
+	visitors = allowed
+	redraw()
+end
+
+-- fn(allowed) when the visitors switch is pressed; the switch waits for setVisitors.
+function SettingsCard.onVisitors(fn: (allowed: boolean) -> ())
+	table.insert(visitorListeners, fn)
 end
 
 function SettingsCard.show(settings: Settings)
