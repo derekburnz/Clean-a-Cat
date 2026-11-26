@@ -47,6 +47,37 @@ function WashScreenRules.keeps(point: Vector3, spot: Vector3): boolean
 	return Vector2.new(d.X, d.Z).Magnitude <= WashScreenRules.KEEP
 end
 
+-- The front view (Derek on dev, 2026-11-26: "try to face the cat from the front for most minigames possible not
+-- looking sideways", then "for the cleaning minigames give a more front view of the cat not from above"). On the wash
+-- screen the camera stands on the side the cat's face is on (his pivot's LookVector, Model-Agent) at about his eye
+-- level, EYE_ABOVE over his eyes, looking at his middle; with no eyes to read it looks FRONT_PITCH degrees down.
+WashScreenRules.FRONT_PITCH = 10
+WashScreenRules.EYE_ABOVE = 0.3
+WashScreenRules.MAX_PITCH = 20 -- never steeper than this, even for a cat whose eyes sit far over his middle
+
+-- Where the camera stands for a front view that looks at `look`: `distance` studs out along `facing` (flattened), at
+-- height `eyeY` + EYE_ABOVE when given, else FRONT_PITCH degrees above `look`; the slope is held to MAX_PITCH. Spa/
+-- WashView looks from there at `look`.
+function WashScreenRules.frontFrom(
+	look: Vector3,
+	facing: Vector3,
+	distance: number,
+	eyeY: number?
+): Vector3
+	local flat = Vector3.new(facing.X, 0, facing.Z)
+	local ahead = if flat.Magnitude > 0.01 then flat.Unit else Vector3.zAxis
+	local pitch = math.rad(WashScreenRules.FRONT_PITCH)
+	if eyeY ~= nil then
+		local rise = math.clamp(eyeY + WashScreenRules.EYE_ABOVE - look.Y, -distance, distance)
+		pitch = math.asin(rise / distance)
+	end
+	local most = math.rad(WashScreenRules.MAX_PITCH)
+	pitch = math.clamp(pitch, -most, most)
+	return look
+		+ ahead * (distance * math.cos(pitch))
+		+ Vector3.yAxis * (distance * math.sin(pitch))
+end
+
 -- Is the wash screen on, given the switch reader?
 function WashScreenRules.on(isOn: (string) -> boolean): boolean
 	return isOn(WashScreenRules.FLAG)

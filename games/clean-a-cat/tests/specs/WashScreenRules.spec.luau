@@ -32,5 +32,29 @@ return function()
 				expect(WashScreenRules.inRoom(Vector3.new(0, 20, 0), spot)).to.equal(false)
 			end
 		)
+
+		it("frames the cat from the front at about eye level", function()
+			local look = Vector3.new(10, 3, 5)
+			local facing = Vector3.new(0, 0, -1) -- a cat facing -Z
+			local from = WashScreenRules.frontFrom(look, facing, 8, 3.6)
+			-- in front of his face, not off to a side
+			expect(from.Z < look.Z - 7).to.equal(true)
+			expect(math.abs(from.X - look.X) < 0.01).to.equal(true)
+			-- at his eyes plus a little, so a gentle slope, not the old 38 degrees from above
+			expect(math.abs(from.Y - (3.6 + WashScreenRules.EYE_ABOVE)) < 0.01).to.equal(true)
+			expect(math.abs((from - look).Magnitude - 8) < 0.01).to.equal(true)
+		end)
+
+		it("holds the slope with no eyes and with eyes far above", function()
+			local look = Vector3.new(0, 2, 0)
+			local plain = WashScreenRules.frontFrom(look, Vector3.new(1, 0.5, 0), 6, nil)
+			local rise = math.sin(math.rad(WashScreenRules.FRONT_PITCH)) * 6
+			expect(math.abs(plain.Y - look.Y - rise) < 0.01).to.equal(true)
+			expect(plain.X > 5).to.equal(true)
+			local steep = WashScreenRules.frontFrom(look, Vector3.new(0, 0, 1), 6, 50)
+			expect(steep.Y - look.Y <= math.sin(math.rad(WashScreenRules.MAX_PITCH)) * 6 + 1e-6).to.equal(
+				true
+			)
+		end)
 	end)
 end
