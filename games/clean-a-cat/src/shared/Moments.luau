@@ -73,6 +73,9 @@ local catLeft: Signal<Model> = Signal.new()
 -- (cat): (switch workers) a worker finished a cat: the clean model has just sat down in their tub, WorkerProgress 1.
 -- Fired on every device that sees it, for any spa on the street.
 local workerFinished: Signal<Model> = Signal.new()
+-- (pad): the Jo hire guide card's trail starts (BubbleController, switch contextAsks, issue 913); pad is the Part at
+-- Jo's hire spot. Motion-FX plays Jo walking up to it.
+local joArrives: Signal<BasePart> = Signal.new()
 -- (visitor, again): (switch specialVisitors) a special visitor's figure is in the player's own door line. `again` is
 -- false the first time in a visit, and true when the line was redrawn and this is a new figure for the same visitor
 -- (so the star can go back over their head without the arrival playing twice).
@@ -123,6 +126,7 @@ local Moments = {
 	HeartLow = heartLow,
 	CatLeft = catLeft,
 	WorkerFinished = workerFinished,
+	JoArrives = joArrives,
 	VisitorArrived = visitorArrived,
 	CrateDropped = crateDropped,
 	CrateOpened = crateOpened,
@@ -163,6 +167,7 @@ local Moments = {
 		"HeartLow",
 		"CatLeft",
 		"WorkerFinished",
+		"JoArrives",
 		"VisitorArrived",
 		"CrateDropped",
 		"CrateOpened",

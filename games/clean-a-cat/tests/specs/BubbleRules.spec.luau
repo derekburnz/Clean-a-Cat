@@ -18,6 +18,11 @@ return function()
 				expect(BubbleRules.get(b.id)).to.equal(b)
 			end
 			expect(#BubbleRules.IDS).to.equal(#BubbleRules.BUBBLES)
+			for id, words in BubbleRules.WORDS do
+				expect(BubbleRules.get(id) ~= nil).to.equal(true)
+				expect(#words[1] > 0 and #words[1] <= 24).to.equal(true)
+				expect(#words[2] > 0 and #words[2] <= 40).to.equal(true)
+			end
 		end)
 
 		it("ships behind its switch, off by default", function()
@@ -79,5 +84,27 @@ return function()
 			expect(back and back.firstCustomer).to.equal(true)
 			expect(back and back.nope).to.equal(nil)
 		end)
+
+		it(
+			"with contextAsks: cuts announcements, renames guide cards and adds the new ones",
+			function()
+				local function on(flag: string): boolean
+					return flag == BubbleRules.CONTEXT_FLAG
+				end
+				local none: { [string]: boolean } = {}
+				expect(BubbleRules.pick({ openSpa = true }, none, on)).to.equal(nil)
+				expect(BubbleRules.pick({ stationReady = true }, none, on)).to.equal(nil)
+				expect(BubbleRules.pick({ quests = true }, none, on)).to.equal(nil)
+				expect((BubbleRules.pick({ openSpa = true }, none) :: any).id).to.equal("openSpa")
+				local first = BubbleRules.pick({ firstCustomer = true }, none, on) :: any
+				expect(first.title).to.equal("Bring the cat to the tub")
+				expect(first.showMe).to.equal(true)
+				for _, id in { "special", "crate", "hireJo" } do
+					expect(BubbleRules.pick({ [id] = true }, none)).to.equal(nil)
+					expect((BubbleRules.pick({ [id] = true }, none, on) :: any).id).to.equal(id)
+					expect(BubbleRules.pick({ [id] = true }, { [id] = true }, on)).to.equal(nil)
+				end
+			end
+		)
 	end)
 end

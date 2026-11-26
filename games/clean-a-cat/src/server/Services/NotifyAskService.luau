@@ -36,7 +36,10 @@ local function check(player: Player)
 	local due = on()
 		and NotifyAskRules.due(
 			Telemetry.played(player) or save.playSeconds,
-			save.asks[NotifyAskRules.SAVE_KEY] == true
+			save.asks[NotifyAskRules.SAVE_KEY] == true,
+			-- contextAsks: a build started (save.builds) or finished (save.stations)
+			next(save.builds or {}) ~= nil or next(save.stations or {}) ~= nil,
+			LiveFlags.isOn
 		)
 	if player:GetAttribute(NotifyAskRules.ATTRIBUTE) ~= (if due then true else nil) then
 		player:SetAttribute(NotifyAskRules.ATTRIBUTE, if due then true else nil)

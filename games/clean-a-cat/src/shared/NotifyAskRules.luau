@@ -24,9 +24,25 @@ NotifyAskRules.BUBBLE = table.freeze({
 	button = "Sure!",
 }) :: BubbleRules.Bubble
 
--- Whether the ask is due for a save with `played` seconds of play that has `asked` it before.
-function NotifyAskRules.due(played: number, asked: boolean): boolean
-	return not asked and played >= NotifyAskRules.AT
+-- With the switch contextAsks (issue 877; the owner: "wait until they build something to ask this one"): the ask
+-- comes only once the save has started or finished a build, when "a build is done" means something to the player.
+NotifyAskRules.CONTEXT_FLAG = "contextAsks"
+
+-- Whether the ask is due for a save with `played` seconds of play that has `asked` it before. With contextAsks on
+-- (`isOn`) it also needs `built`: a build started or finished.
+function NotifyAskRules.due(
+	played: number,
+	asked: boolean,
+	built: boolean?,
+	isOn: ((flag: string) -> boolean)?
+): boolean
+	if asked then
+		return false
+	end
+	if isOn ~= nil and isOn(NotifyAskRules.CONTEXT_FLAG) then
+		return built == true
+	end
+	return played >= NotifyAskRules.AT
 end
 
 return table.freeze(NotifyAskRules)

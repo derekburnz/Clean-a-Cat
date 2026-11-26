@@ -27,5 +27,15 @@ return function()
 			expect(string.find(words, "coin", 1, true)).to.equal(nil)
 			expect(string.find(words, "free", 1, true)).to.equal(nil)
 		end)
+
+		it("with contextAsks waits for a first build, not the clock", function()
+			local function on(flag: string): boolean
+				return flag == NotifyAskRules.CONTEXT_FLAG
+			end
+			expect(NotifyAskRules.due(600, false, false, on)).to.equal(false)
+			expect(NotifyAskRules.due(10, false, true, on)).to.equal(true)
+			expect(NotifyAskRules.due(10, true, true, on)).to.equal(false)
+			expect(NotifyAskRules.due(600, false, false)).to.equal(true)
+		end)
 	end)
 end
