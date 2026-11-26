@@ -119,8 +119,13 @@ local function screenWidth(scale: number): number
 end
 
 -- Design px the words take at `size`.
+local TEXT_FLOOR = 19 -- Kit's MIN_TEXT: no text is drawn smaller
+local MEASURE_SLACK = 1.08 -- the real font draws a little wider than TextService's guess (issue 698)
+
+-- Design px the words take at `size` (never under the text floor), with room to spare.
 local function measure(text: string, size: number): number
-	return TextService:GetTextSize(text, size, Kit.FONT, Vector2.new(2000, 200)).X
+	local drawn = math.max(size, TEXT_FLOOR)
+	return TextService:GetTextSize(text, drawn, Kit.FONT, Vector2.new(2000, 200)).X * MEASURE_SLACK
 end
 
 local function tell(listeners: { (id: string) -> () }, id: string)
@@ -223,6 +228,7 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 		mode.TextColor3 = Kit.INK
 		mode.TextStrokeTransparency = 1
 		mode.TextSize = s.buttonText
+		mode.TextWrapped = true -- if the font still runs wide, two lines rather than a cut word (issue 698)
 		local modeW = modeWidth(s)
 		mode.Size = UDim2.fromOffset(modeW, buttonH)
 		mode:SetAttribute("Says", `{row.name} takes {row.modeName}. Tap to change`)
