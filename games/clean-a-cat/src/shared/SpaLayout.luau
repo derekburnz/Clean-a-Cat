@@ -43,19 +43,6 @@ SpaLayout.PLOT_SPACING = 44
 SpaLayout.PLOTS_FOLDER = "SpaPlots" -- Workspace.SpaPlots.Plot<slot>
 SpaLayout.SLOT_ATTRIBUTE = "SpaPlot" -- Player attribute: the player's slot, 1 to PLOT_COUNT
 SpaLayout.STREET_ASSET = "CleanACat_Area_Street" -- the street under the plots; its pivot is slot 1's pivot
--- (switch bigSpa, issue 746) Model-Agent's bigger spa: a roomier building with the counter window, on a wider street.
--- PlotService reads the switch when it places the street and says which it placed with BIG_ATTRIBUTE, which everything
--- here follows, so server and clients agree even if the switch moves later (it takes effect on the next placement,
--- such as a server restart). A missing big asset keeps the small spa.
-SpaLayout.BIG_FLAG = "bigSpa"
-SpaLayout.BIG_ATTRIBUTE = "SpaBig" -- ReplicatedStorage attribute: true while the big plots are the placed ones
-SpaLayout.BIG_ASSET = "CleanACat_Area_SpaPlotBig"
-SpaLayout.BIG_STREET_ASSET = "CleanACat_Area_StreetBig"
-SpaLayout.BIG_BACKDROP_ASSET = "CleanACat_Area_BackdropBig"
-SpaLayout.BIG_PLOT_SPACING = 56
--- The small spa's props the big one does without: its counter mats are part of the plot, so no mats in the street
-SpaLayout.BIG_SKIPS_PROPS =
-	table.freeze({ QueueMat1 = true, QueueMat2 = true, QueueMat3 = true }) :: { [string]: boolean }
 
 export type Spot = { position: Vector3, yaw: number }
 
@@ -180,82 +167,11 @@ SpaLayout.ROOM_SPOTS = table.freeze({
 	Tools = at(-6, 0, -12, TURNED),
 }) :: { [string]: Spot }
 
--- (switch bigSpa) The big plot's spots that differ from PLOT_SPOTS, from Model-Agent's CleanACat_Area_SpaPlotBig
--- (PR 753; same pivot as the small plot). Every other spot is where the small plot has it. SpotBench4 to 6 are not in
--- the model: with counterLine the counter's six places hold the whole bench.
-SpaLayout.BIG_SPOTS = table.freeze({
-	SpotStray = at(22.4, 0.5, 13.6, math.pi / 2),
-	SpotStation4 = at(21.2, 0.5, 1, 0),
-	SpotStation5 = at(21.2, 0.5, -6.6, 0),
-	SpotBuilder = at(-13, 0.5, 12, 0),
-	SpotVipDoor = at(-7, 0.5, 16.5, 0),
-	SpotGardenDoor = at(12, 0.5, 16.5, 0),
-	SpotWorkerJo = at(-1, 0.5, 12.5, 0),
-	SpotWorkerSam = at(3, 0.5, 12.5, 0),
-	SpotWorkerLou = at(7, 0.5, 12.5, 0),
-	SpotWindow1 = at(-21.7, 3.03, -14.2, 0), -- the residents' seat moved to the window left of the entrance
-	SpotWindow2 = at(-19.1, 3.03, -14.2, 0),
-	SpotWindow3 = at(-16.5, 3.03, -14.2, 0),
-	SpotWindow4 = at(-13.9, 3.03, -14.2, 0),
-	SpotTipJar = at(1.5, 3.3, -15.0, 0), -- the counter's entrance end
-	SpotSign = at(-17.7, 8.7, -17, 0),
-	SpotGift = at(-22.4, 0.5, -9.5, -math.pi / 2),
-	SpotBoard = at(-23.1, 0.5, -3.5, -math.pi / 2), -- against the side wall, facing across the room
-	-- the counter window (CounterRules, switch counterLine): customers outside facing in, their cats on the counter
-	SpotCounter1 = at(3.4, 0.5, -19.4, TURNED),
-	SpotCounter2 = at(6.6, 0.5, -19.4, TURNED),
-	SpotCounter3 = at(9.8, 0.5, -19.4, TURNED),
-	SpotCounter4 = at(13, 0.5, -19.4, TURNED),
-	SpotCounter5 = at(16.2, 0.5, -19.4, TURNED),
-	SpotCounter6 = at(19.4, 0.5, -19.4, TURNED),
-	SpotCounterCat1 = at(3.4, 3.38, -15.6, TURNED),
-	SpotCounterCat2 = at(6.6, 3.38, -15.6, TURNED),
-	SpotCounterCat3 = at(9.8, 3.38, -15.6, TURNED),
-	SpotCounterCat4 = at(13, 3.38, -15.6, TURNED),
-	SpotCounterCat5 = at(16.2, 3.38, -15.6, TURNED),
-	SpotCounterCat6 = at(19.4, 3.38, -15.6, TURNED),
-}) :: { [string]: Spot }
-
--- Are the big plots the placed ones (switch bigSpa, as PlotService placed them)?
-function SpaLayout.big(): boolean
-	return ReplicatedStorage:GetAttribute(SpaLayout.BIG_ATTRIBUTE) == true
-end
-
--- The plot's own spot `name` from the tables, for the big plot when `big`: the big plot's where it differs, else the
--- small plot's. Nil for a name neither has (the big plot has no SpotBench4 to 6).
-function SpaLayout.plotSpotFor(name: string, big: boolean): Spot?
-	if big then
-		local moved = SpaLayout.BIG_SPOTS[name]
-		if moved then
-			return moved
-		end
-		if string.sub(name, 1, 9) == "SpotBench" then
-			return nil
-		end
-	end
-	return SpaLayout.PLOT_SPOTS[name]
-end
-
--- The plot's own spot `name` from the tables, for the street placed now.
-function SpaLayout.plotSpot(name: string): Spot?
-	return SpaLayout.plotSpotFor(name, SpaLayout.big())
-end
-
--- The pivot-to-pivot step between plots, on the big street when `big`.
-function SpaLayout.spacingFor(big: boolean): number
-	return if big then SpaLayout.BIG_PLOT_SPACING else SpaLayout.PLOT_SPACING
-end
-
--- The pivot-to-pivot step between plots on the street placed now.
-function SpaLayout.spacing(): number
-	return SpaLayout.spacingFor(SpaLayout.big())
-end
-
 -- Where plot `slot`'s pivot goes: slot 1 at PIVOT_POSITION, then one step right, one left, two right...
 function SpaLayout.slotPivot(slot: number): Vector3
 	local steps = slot // 2
 	local side = if slot % 2 == 0 then 1 else -1
-	return SpaLayout.PIVOT_POSITION + Vector3.new(side * steps * SpaLayout.spacing(), 0, 0)
+	return SpaLayout.PIVOT_POSITION + Vector3.new(side * steps * SpaLayout.PLOT_SPACING, 0, 0)
 end
 
 -- A spot's world position and yaw from the tables: plot `slot`'s (default 1) while it is placed, else the
@@ -265,7 +181,7 @@ function SpaLayout.place(name: string, onPlot: boolean, slot: number?): (Vector3
 	if not onPlot and room then
 		return room.position, room.yaw
 	end
-	local plot = SpaLayout.plotSpot(name)
+	local plot = SpaLayout.PLOT_SPOTS[name]
 	if plot then
 		return SpaLayout.slotPivot(slot or 1) + plot.position, plot.yaw
 	end
@@ -279,11 +195,9 @@ function SpaLayout.lineName(
 	index: number,
 	onPlot: boolean
 ): (string, number, string)
-	local function has(name: string): boolean
-		return if onPlot then SpaLayout.plotSpot(name) ~= nil else SpaLayout.ROOM_SPOTS[name] ~= nil
-	end
+	local tables = if onPlot then SpaLayout.PLOT_SPOTS else SpaLayout.ROOM_SPOTS
 	local last = 0
-	while has(prefix .. (last + 1)) do
+	while tables[prefix .. (last + 1)] do
 		last += 1
 	end
 	if index <= last or last < 2 then
@@ -421,7 +335,7 @@ end
 -- Where the line's place `index` stands (switch benchGrow): places 4 to 6 on SpotBench<index>, the rest as lineSpot.
 function SpaLayout.benchSpot(index: number, player: Player?): CFrame
 	local name = `SpotBench{index}`
-	if SpaLayout.plotSpot(name) and SpaLayout.onPlot(player) then
+	if SpaLayout.PLOT_SPOTS[name] and SpaLayout.onPlot(player) then
 		return SpaLayout.spot(name, player)
 	end
 	return SpaLayout.lineSpot("SpotQueue", index, player)
@@ -445,15 +359,7 @@ function SpaLayout.counterSpot(prefix: string, index: number, slot: number): CFr
 		return nil
 	end
 	local attachment = placedAttachment(`{prefix}{index}`, slot)
-	if attachment then
-		return attachment.WorldCFrame
-	end
-	-- the big plot's table (its Attachments may not have replicated yet); the small plot has no counter
-	local spot = if SpaLayout.big() then SpaLayout.BIG_SPOTS[`{prefix}{index}`] else nil
-	if spot then
-		return CFrame.new(SpaLayout.slotPivot(slot) + spot.position) * CFrame.Angles(0, spot.yaw, 0)
-	end
-	return nil
+	return if attachment then attachment.WorldCFrame else nil
 end
 
 -- fn() when the street is placed or taken away, or the local player gets their slot.

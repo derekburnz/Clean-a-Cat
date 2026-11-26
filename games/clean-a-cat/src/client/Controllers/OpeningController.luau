@@ -407,7 +407,7 @@ end
 
 -- The box's spot on the player's plot, known without the character; nil off a plot.
 local function plotLanding(): CFrame?
-	if SpaLayout.onPlot() and SpaLayout.plotSpot(SudsRules.BOX_SPOT) then
+	if SpaLayout.onPlot() and SpaLayout.PLOT_SPOTS[SudsRules.BOX_SPOT] then
 		return SpaLayout.spot(SudsRules.BOX_SPOT)
 	end
 	return nil

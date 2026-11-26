@@ -74,9 +74,6 @@ local function placePlot(asset: Model, assets: Instance, slot: number, folder: F
 	local props = Instance.new("Folder")
 	props.Name = SpaLayout.PROPS_FOLDER
 	for _, entry in SpaLayout.PROPS do
-		if SpaLayout.big() and SpaLayout.BIG_SKIPS_PROPS[entry.name] then
-			continue
-		end
 		local propAsset = assets:FindFirstChild(entry.asset)
 		if propAsset and propAsset:IsA("Model") then
 			local prop = (propAsset :: Model):Clone() :: Model
@@ -181,7 +178,7 @@ end
 -- Stands the player on plot spot `name` of their own plot (the opening's SpotOpening, #285), now if the character
 -- is there and on every spawn until release(). False when the street, the plot or the spot is missing.
 function PlotService.standOn(player: Player, name: string): boolean
-	if SpaLayout.plotSpot(name) == nil then
+	if SpaLayout.PLOT_SPOTS[name] == nil then
 		return false
 	end
 	standSpot[player] = name
@@ -203,22 +200,7 @@ local function place()
 		return
 	end
 	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
-	-- (switch bigSpa) the big spa when it is on and both its plot and street are in the game, else the small one
-	local bigPlot = if assets then assets:FindFirstChild(SpaLayout.BIG_ASSET) else nil
-	local bigStreet = if assets then assets:FindFirstChild(SpaLayout.BIG_STREET_ASSET) else nil
-	local useBig = LiveFlags.isOn(SpaLayout.BIG_FLAG)
-		and bigPlot ~= nil
-		and bigPlot:IsA("Model")
-		and bigStreet ~= nil
-		and bigStreet:IsA("Model")
-	if LiveFlags.isOn(SpaLayout.BIG_FLAG) and not useBig then
-		warn(
-			`[PlotService] bigSpa is on but {SpaLayout.BIG_ASSET} or {SpaLayout.BIG_STREET_ASSET} is missing; placing the small spa`
-		)
-	end
-	local asset = if assets
-		then assets:FindFirstChild(if useBig then SpaLayout.BIG_ASSET else SpaLayout.ASSET)
-		else nil
+	local asset = if assets then assets:FindFirstChild(SpaLayout.ASSET) else nil
 	if asset == nil or not asset:IsA("Model") or street or not LiveFlags.isOn(SpaLayout.FLAG) then
 		if asset == nil then
 			warn(
@@ -227,13 +209,9 @@ local function place()
 		end
 		return
 	end
-	-- said before anything is placed, so every spot and pivot below (and on every client) follows the same street
-	ReplicatedStorage:SetAttribute(SpaLayout.BIG_ATTRIBUTE, useBig)
 	local folder = Instance.new("Folder")
 	folder.Name = SpaLayout.PLOTS_FOLDER
-	local streetAsset = (assets :: Instance):FindFirstChild(
-		if useBig then SpaLayout.BIG_STREET_ASSET else SpaLayout.STREET_ASSET
-	)
+	local streetAsset = (assets :: Instance):FindFirstChild(SpaLayout.STREET_ASSET)
 	if streetAsset and streetAsset:IsA("Model") then
 		local streetModel = (streetAsset :: Model):Clone() :: Model
 		streetModel.Name = "Street"
@@ -260,7 +238,6 @@ end
 
 local function remove()
 	ReplicatedStorage:SetAttribute(SpaLayout.PLACED_ATTRIBUTE, false)
-	ReplicatedStorage:SetAttribute(SpaLayout.BIG_ATTRIBUTE, false)
 	local folder = street
 	street = nil
 	if folder then
