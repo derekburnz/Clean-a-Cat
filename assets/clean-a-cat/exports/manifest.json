@@ -16303,7 +16303,8 @@
   "objects": [
    "CleanACat_Prop_GiftStand",
    "CleanACat_Prop_GiftStand_Decor",
-   "CleanACat_Prop_GiftStand_Lamp"
+   "CleanACat_Prop_GiftStand_Lamp",
+   "CleanACat_Prop_GiftStand_Balloon"
   ],
   "triangles": 1948,
   "budget": 2100,
