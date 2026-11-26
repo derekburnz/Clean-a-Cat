@@ -78,10 +78,11 @@ function BowFit.wear(cat: Model, bowId: string, scale: number): Model?
 		end
 	end
 	-- A cat with a head piece of its own (Rosette's crown, Stardust's star: the model's HeadPiece attribute) wears the
-	-- bow without its tall fan (a child named _Fan, the Golden bow's), so the two never push through each other.
+	-- bow without its tall fan (the Golden bow's child Model whose name ends in _Fan, CleanACat_Bow_<Colour>Golden_Fan),
+	-- so the two never push through each other.
 	if cat:GetAttribute("HeadPiece") then
 		for _, descendant in bow:GetDescendants() do
-			if descendant.Name == FAN_NAME then
+			if string.sub(descendant.Name, -#FAN_NAME) == FAN_NAME then
 				descendant:Destroy()
 			end
 		end
