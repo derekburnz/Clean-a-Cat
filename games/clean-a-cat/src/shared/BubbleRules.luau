@@ -39,6 +39,8 @@ BubbleRules.BUBBLES = table.freeze({
 	-- switch tubBuilds (issue 515, Design-Agent 2026-11-26): the Third Tub affordable and not started, in place of the
 	-- VIP Room's, which is far later then
 	bubble("longBuildTub", "Before you go", "The Third Tub builds while you're away.", true),
+	-- switch quests (issue 516, gdd: "Quests at 6:00"): the Quests button has just arrived (QuestsOpen)
+	bubble("quests", "Quests!", "Coins every day, a crate each week.", false),
 }) :: { Bubble }
 
 local byId: { [string]: Bubble } = {}

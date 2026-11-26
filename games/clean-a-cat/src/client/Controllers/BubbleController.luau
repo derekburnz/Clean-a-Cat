@@ -27,6 +27,7 @@ local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
+local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
@@ -48,6 +49,8 @@ local TOOLS_SPOT = "Tools"
 local TOOLS_FLAG = "toolsBoard"
 local BUILDS_FLAG = "builds"
 local MASCOT_FOLDER = "Mascot" -- MascotService's folder in the plot
+local QUESTS_FLAG = "quests"
+local HUD_FLAG = "gameHud" -- the Quests button lives on the HUD
 
 local BubbleController = {}
 
@@ -100,6 +103,9 @@ local function facts(): { [string]: boolean }
 		),
 		longBuild = not BuildRules.shown("ThirdTub", LiveFlags.isOn) and canBuild("VipRoom"),
 		longBuildTub = BuildRules.shown("ThirdTub", LiveFlags.isOn) and canBuild("ThirdTub"),
+		quests = LiveFlags.isOn(QUESTS_FLAG) and LiveFlags.isOn(HUD_FLAG) and player:GetAttribute(
+			QuestViewRules.OPEN_ATTRIBUTE
+		) == true,
 	}
 end
 
