@@ -187,6 +187,7 @@ local function onFinish(player: Player, rawSlot: unknown)
 	if credit and FinishRules.spendCredit(credits, credit) then
 		local id = FinishRules.finish(state, slot)
 		if id then
+			NetService.notice(player, "Used your saved Finish now")
 			finishedEarly(player, id)
 			Telemetry.event(player, "skip_credit_used", 1, { tostring(credit) })
 		end
@@ -207,7 +208,7 @@ local function grantFinish(paid: number): PurchaseService.Grant
 		if slot == nil then
 			FinishRules.addCredit(creditsOf(save), paid)
 			task.defer(function()
-				NetService.notice(player, "Your Finish now is saved for your next build")
+				NetService.notice(player, "Your Finish now is saved for a later build")
 				send(player)
 			end)
 			return true

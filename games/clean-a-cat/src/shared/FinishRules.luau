@@ -7,13 +7,17 @@
 --
 -- A finish bought for a build that ended on its own before the purchase came through (the prompt stayed open, or
 -- the receipt came back on a later join) is kept as a credit of its tier: the next Finish now it covers is free.
--- Credits live in the save as finishCredits, a count by tier ("1" to "5").
+-- Credits live in the save as finishCredits, a count by tier ("1" to "5"). A credit covers a build of its own tier or
+-- the tier just below (CREDIT_REACH), so a dear credit is never spent on a cheap finish from one tap (Review-QA on
+-- PR 588); a cheaper build is priced as usual and the credit waits for one it fits.
 -- Pure, so tests/specs/FinishRules.spec.luau covers it; BuildService runs it. Behind the LiveFlags switch finishNow.
 
 local FinishRules = {}
 
 FinishRules.FLAG = "finishNow"
 FinishRules.HIDE_UNDER = 15 -- seconds left; under this the button is gone (Growth's rule, issue 531)
+FinishRules.CREDIT_REACH = 1 -- tiers below its own that a credit still covers
+FinishRules.HOLD_SECONDS = 0.5 -- the Finish now prompt is held this long, so a passing tap never buys
 
 export type Tier = {
 	key: string, -- the developer product's key in shared/Products
@@ -73,9 +77,10 @@ function FinishRules.cleanCredits(raw: unknown): { [string]: number }
 	return out
 end
 
--- The cheapest credit that covers a finish of tier `tier`: its tier, or nil when there is none.
+-- The cheapest credit that covers a finish of tier `tier` (its own tier, or up to CREDIT_REACH tiers dearer): its
+-- tier, or nil when there is none.
 function FinishRules.creditFor(credits: { [string]: number }, tier: number): number?
-	for index = tier, #FinishRules.TIERS do
+	for index = tier, math.min(tier + FinishRules.CREDIT_REACH, #FinishRules.TIERS) do
 		if (credits[tostring(index)] or 0) >= 1 then
 			return index
 		end

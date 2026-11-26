@@ -7,8 +7,9 @@
 -- done": only a tap on it asks Roblox for the notification opt-in prompt (#38). A player Roblox would not ask sees
 -- "Ready in 8 h. Come back to see it!" on the board instead. What happened goes to the server as ReportOptIn.
 -- With `finishNow` on as well, a running build's prompt reads "Finish now for 35 Robux" (the product's price on
--- Roblox) once its product exists, or "Finish now, free" when a saved credit covers it; never under 15 s left. A tap
--- asks the server (RequestFinish), which opens Roblox's purchase prompt; waiting stays free.
+-- Roblox) once its product exists, or "Finish now with your saved finish" when a saved credit covers it; never under
+-- 15 s left. It is held for half a second, then asks the server (RequestFinish), which opens Roblox's purchase prompt;
+-- waiting stays free.
 --
 --   BuildBoardController.finished:Connect(fn)  fn(id) when a build finishes (also one that finished while away),
 --                                              for the celebration effects and the builder panel
@@ -113,7 +114,7 @@ local function finishText(left: number): string?
 		return nil
 	end
 	if FinishRules.creditFor(credits, tier) then
-		return "Finish now, free"
+		return "Finish now with your saved finish"
 	end
 	local key = FinishRules.TIERS[tier].key
 	local price = ReplicatedStorage:GetAttribute(Products.PRICE_PREFIX .. key)
@@ -135,6 +136,7 @@ local function refreshPrompts()
 		elseif running and running.item == id then
 			prompt.Enabled = true
 			local finish = finishText(running.endsAt - now)
+			prompt.HoldDuration = if finish then FinishRules.HOLD_SECONDS else 0
 			if finish then
 				finishing[id] = item.slot
 				prompt.ActionText = finish
