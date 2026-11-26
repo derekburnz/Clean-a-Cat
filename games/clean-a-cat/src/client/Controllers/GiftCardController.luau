@@ -21,6 +21,7 @@ local GiftCardController = {}
 
 local ASK_ID = "gift"
 local CLOSE_AFTER = 2.5 -- seconds "Starcoat is yours!" stays before the card closes
+local ASK_UP_SECONDS = 20 -- Suds's tip goes by itself after this, as BubbleController's do (#649); not a "no"
 
 local gift: any = nil -- GiftController
 local asks: any = nil -- AskController
@@ -60,6 +61,11 @@ local function askOnce()
 		end, function(closed: boolean)
 			if not answered then
 				asks.done(ASK_ID, if closed then "no" else "closed")
+			end
+		end)
+		task.delay(ASK_UP_SECONDS, function()
+			if not answered and UI.shownBubble() == bubble then
+				UI.hideBubble()
 			end
 		end)
 	end)
