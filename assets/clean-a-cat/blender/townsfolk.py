@@ -50,6 +50,7 @@ from stations import _tris
 PREFIX = "CleanACat_NPC_Customer_"
 FACE_INK = "fur_black"
 
+CHEEK_X, CHEEK_Z, CHEEK_R = 0.5, 0.27, 0.1    # a cheek's middle out from the nose line and under the eye line, and its radius
 ADULT = dict(leg=1.45, pelvis=0.35, torso=1.5, tw=1.4, td=0.8, arm=1.3, hw=1.5, hd=1.35, hh=1.45, speed=6.5)
 TALL = dict(leg=1.68, pelvis=0.35, torso=1.6, tw=1.42, td=0.8, arm=1.42, hw=1.46, hd=1.32, hh=1.4, speed=7.0)
 SMALL = dict(leg=1.35, pelvis=0.33, torso=1.45, tw=1.36, td=0.8, arm=1.2, hw=1.52, hd=1.36, hh=1.46, speed=6.0)
@@ -397,7 +398,10 @@ def _face(h, f, look):
         # every mark is 0.03 thick and set 0.01 into the face, so it touches the head and stands 0.02 proud
         h.box((sx * 0.32, y - 0.005, ez), (0.17, 0.03, 0.28), FACE_INK, bevel=False)             # eyes
         h.box((sx * 0.32 - 0.03, y - 0.025, ez + 0.06), (0.06, 0.01, 0.07), "milk", bevel=False)
-        h.box((sx * 0.52, y - 0.005, ez - 0.25), (0.24, 0.03, 0.1), "blush", bevel=False)        # cheeks
+        # a round cheek under the eye's outer half (#776): it was a bar 0.24 wide and 0.1 tall, the people's version
+        # of the strips the owner could not read on the cats; ten sides, a true Cylinder as a Part
+        h.cyl((sx * CHEEK_X, y - 0.005, ez - CHEEK_Z), CHEEK_R, 0.03, "blush", segments=10, bevel=False,
+              rot=(math.radians(90), "X"))
         if look.get("brows"):
             h.box((sx * 0.33, y - 0.005, ez + 0.27), (0.24, 0.03, 0.06), look["hair"], bevel=False)
     mz = ez - 0.33
