@@ -49,7 +49,8 @@ CT = C.transposed()
 RZ90 = Matrix(((0, -1, 0), (1, 0, 0), (0, 0, 1)))   # Roblox local X (cylinder axis) onto local Y
 
 # Asset families whose big parts block players. Everything else (cats, people, tools, small props) is walk-through.
-COLLIDE_PREFIXES = ("CleanACat_Station_", "CleanACat_Area_", "CleanACat_Street_")
+# the gift stand is a present as big as a station: nobody walks through it (#502)
+COLLIDE_PREFIXES = ("CleanACat_Station_", "CleanACat_Area_", "CleanACat_Street_", "CleanACat_Prop_GiftStand")
 NO_COLLIDE_OBJECTS = ("_Bulb", "_Bulbs", "_Tube", "_Water", "_Foam", "_Decor", "_Glow", "_Flowers", "_Canopy",
                       "_Bubbles", "_Stream")
 INVISIBLE_OBJECTS = ("_Barrier",)     # volumes never drawn: walls that keep players out of a spot
@@ -83,7 +84,8 @@ RENAME_BIGGEST = {n: "Handle" for n in ("CleanACat_Tool_Sponge", "CleanACat_Tool
                                           "CleanACat_Tool_Towel", "CleanACat_Tool_Clipper", "CleanACat_Tool_Dryer",
                                           "CleanACat_Tool_Shampoo",
                                           "CleanACat_NPC_SunHat", "CleanACat_NPC_Scarf", "CleanACat_NPC_ToteBag")}   # a Roblox Tool's grip part
-PART_NAMES = {"_SignBoard": "SignBoard", "_Screen": "Screen", "_Fill": "Fill", "_Nozzle": "Nozzle", "_Spout": "Spout"}
+PART_NAMES = {"_SignBoard": "SignBoard", "_Screen": "Screen", "_Fill": "Fill", "_Nozzle": "Nozzle", "_Spout": "Spout",
+              "_Lamp": "Lamp"}
 # CollectionService tags, keyed by object name, or by name suffix when the key starts with "_".
 TAGS = {"_ChanceBoard": ["ChanceBoard"]}
 # Tags on every part of an object, by object name suffix.

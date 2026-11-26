@@ -917,6 +917,38 @@
        }
       }
      }
+    },
+    {
+     "name": "SpotGift",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -16.4,
+         0.25,
+         -11.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      }
+     }
     }
    ]
   },

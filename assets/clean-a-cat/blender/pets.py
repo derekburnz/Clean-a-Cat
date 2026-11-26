@@ -2,6 +2,8 @@
 
     CleanACat_Pet_<Name>    Common Cozy and Scrubby, Uncommon Pebble and Pickle, Rare Koi and Bamboo, Epic Coral,
                             Legendary Nimbus (the names and rarities CrateRules.PETS lists; draft names)
+    CleanACat_Pet_Starcoat  the gift stand's pet (#502, the game's #521), never in a crate: the roster's star coat
+                            with a big pink present bow on its head and a small present on its back
 
 A pet is the roster cat's body on all fours (cats.build_cat, body A) in a coat no customer's cat wears, with spa
 pieces built on: a Common has one piece, an Uncommon two, a Rare two and a tail piece, the Epic a lit gem as well,
@@ -65,6 +67,18 @@ PETS = {
                     pattern="gradient", muzzle=None, nose="nose_bubblegum", fluffy=True, tail_thick=0.3,
                     inner_ear="spa_sky", eye_k=1.1),
 }
+
+# The gift stand's pet (gift.py, #502): no crate holds it. Gameplay-Engineer named it after the roster's Starcoat, so
+# it wears that coat; the present bow and the present on its back say it is the gift and not a customer's cat.
+GIFT_PETS = {
+    "Starcoat": dict(cats.ROSTER["Starcoat"], gift=True),
+}
+ALL = {**PETS, **GIFT_PETS}
+
+
+def key(name):
+    """The name a pet's pieces are listed under in props.py: never a cat's own name (Starcoat is a roster cat)."""
+    return "Pet" + name
 
 
 # ----------------------------------------------------------------------------------------------- helpers --
@@ -310,20 +324,46 @@ def cloud_wings(ctx):
     T.ico(tuple(tip + d * 0.05), th * 0.62, NEON_SKY, scale=(1, 1, 1.2))
 
 
-HEAD = {"Cozy": onsen_towel, "Scrubby": bath_pom, "Pebble": tanuki_leaf, "Pickle": cucumber_beret,
+def present_bow(ctx):
+    """Starcoat the gift pet: a big pink present bow tied on the head, a paler heart in each loop and a small gold
+    heart on the knot. Wider than any bow a customer's cat wears and in the middle of the head."""
+    P = ctx.pen("head")
+    y = -0.12
+    for sx in (1, -1):
+        tip = _ry(-18 * sx)
+        P.sphere((sx * 0.31, y, 0.2), 0.3, "fur_strawberry", scale=(1.0, 0.5, 0.72), rot=tip, segments=8, rings=4)
+        P.sphere((sx * 0.33, y - 0.06, 0.21), 0.15, "fur_rose", scale=(1.0, 0.5, 0.72), rot=tip, segments=8, rings=4)
+    P.box((0, y, 0.11), (0.2, 0.2, 0.22), "fur_strawberry", bevel=True)
+    _heart(P, (0.0, y - 0.105, 0.13), 0.065, GOLD, depth=0.03)
+
+
+def present_pack(ctx):
+    """Starcoat the gift pet's back piece: a small pink present with a gold ribbon and a gold knot, as on the stand."""
+    P = ctx.pen("back")
+    R = _rz(8)
+    c = Vector((0.0, -0.02, 0.0))
+    P.box(tuple(c + Vector((0, 0, 0.16))), (0.44, 0.4, 0.34), "spa_bubblegum", rot=R, bevel=True)
+    P.box(tuple(c + Vector((0, 0, 0.168))), (0.12, 0.42, 0.352), GOLD, rot=R)
+    P.box(tuple(c + Vector((0, 0, 0.174))), (0.46, 0.12, 0.36), GOLD, rot=R)
+    for sx in (-1, 1):
+        P.ico(tuple(c + R @ Vector((sx * 0.1, 0, 0.4))), 0.09, GOLD, scale=(1.2, 0.7, 0.8))
+    P.ico(tuple(c + Vector((0, 0, 0.39))), 0.06, "gold_light")
+
+
+HEAD = {"Starcoat": present_bow, "Cozy": onsen_towel, "Scrubby": bath_pom, "Pebble": tanuki_leaf, "Pickle": cucumber_beret,
         "Koi": lily_pad, "Bamboo": bamboo_sprig, "Coral": shell_tiara, "Nimbus": sun_halo}
-BACK = {"Pebble": spa_stones, "Pickle": cucumber_plates, "Koi": koi_fins, "Bamboo": bamboo_yoke,
+BACK = {"Starcoat": present_pack, "Pebble": spa_stones, "Pickle": cucumber_plates, "Koi": koi_fins, "Bamboo": bamboo_yoke,
         "Coral": coral_branches, "Nimbus": cloud_wings}
 EXTRA = {"Koi": {"Tail_Fan": "Tail"}, "Bamboo": {"Tail_Leaf": "Tail"},
          "Coral": {"Glow": "Prop", "Tail_Fluke": "Tail"},
          "Nimbus": {"Glow": "Prop", "Wings_Glow": "Prop2", "Tail_Drop_Glow": "Tail"}}
-for _n in PETS:                                         # the pets' pieces are props.py pieces under the pet's name
-    assert _n not in props.PROPS and _n not in cats.ROSTER and _n not in cats.SPECIAL_CATS, _n
-    props.PROPS[_n] = ("Head", HEAD[_n])
+for _n in ALL:                                          # the pets' pieces are props.py pieces under key(name)
+    assert key(_n) not in props.PROPS and key(_n) not in cats.ROSTER and key(_n) not in cats.SPECIAL_CATS, _n
+    props.PROPS[key(_n)] = ("Head", HEAD[_n])
     if _n in BACK:
-        props.PROPS2[_n] = ("Back", BACK[_n])
+        props.PROPS2[key(_n)] = ("Back", BACK[_n])
     if _n in EXTRA:
-        props.PIECES[_n] = EXTRA[_n]
+        props.PIECES[key(_n)] = EXTRA[_n]
 
 
 # --------------------------------------------------------------------------------------------- the stars --
@@ -347,9 +387,9 @@ def _stars(spec):
 
 
 def build_pet(name, mat):
-    spec = PETS[name]
+    spec = ALL[name]
     base = PREFIX + name
-    objs = cats.build_cat(name, mat, spec=spec, base=base, body="walk")
+    objs = cats.build_cat(key(name), mat, spec=spec, base=base, body="walk")
     k = cats.scale_of(spec, "walk")
     for suffix, (b, at) in _stars(spec).items():
         ob = b.finalize(f"{base}_{suffix}", mat, location=tuple(v * k for v in at))
@@ -362,22 +402,24 @@ def build_pet(name, mat):
 
 def pet_rbx_extras(name):
     def make():
-        spec = PETS[name]
+        spec = ALL[name]
         d = cats.dims(spec, "walk")
         k = cats.scale_of(spec, "walk")
         neck = Vector(cats.joints(spec, "walk")["Head"])
-        top = props.head_top(name, spec, "walk", d)
+        top = props.head_top(key(name), spec, "walk", d)
         burst = neck + Vector((0.0, d["head"]["c"][1], (top if top is not None else d["head"]["top"]) + 0.2)) * k
         attributes = {"Pet": True, "PetId": name, "Rarity": spec["rarity"], "PetScale": {"Float64": PET_SCALE},
-                      "PropSlot": props.slot(name)}
+                      "PropSlot": props.slot(key(name))}
+        if spec.get("gift"):                             # the gift stand's pet: no crate holds it
+            attributes["Gift"] = True
         part_attributes = {"_Prop": {"Follows": "Head"}, "_Prop_Glass": {"Follows": "Head"}}
         nest = {"_Prop": "_Head", "_Prop_Glass": "_Head", "_Star3_Glow": "_Star3"}
-        if props.slot2(name):
-            attributes["PropSlot2"] = props.slot2(name)
+        if props.slot2(key(name)):
+            attributes["PropSlot2"] = props.slot2(key(name))
             part_attributes["_Prop2"] = {"Follows": "Body"}
-        for piece, host in props.PIECES.get(name, {}).items():      # lit and tail pieces: inside their host's Model
+        for piece, host in props.PIECES.get(key(name), {}).items():   # lit and tail pieces: inside their host's Model
             nest["_" + piece] = "_" + host
-            part_attributes["_" + piece] = {"Follows": props.piece_follows(name, piece)}
+            part_attributes["_" + piece] = {"Follows": props.piece_follows(key(name), piece)}
         for sfx in ("_Star2", "_Star3", "_Star3_Glow"):
             part_attributes[sfx] = {"Follows": "Body"}
         return {"attachments": [("_Body", "Burst", Matrix.Translation(burst))], "attributes": attributes,
@@ -387,5 +429,5 @@ def pet_rbx_extras(name):
     return make
 
 
-ASSETS = {PREFIX + n: (lambda mat, n=n: build_pet(n, mat), BUDGET) for n in PETS}
-EXTRAS = {PREFIX + n: pet_rbx_extras(n) for n in PETS}
+ASSETS = {PREFIX + n: (lambda mat, n=n: build_pet(n, mat), BUDGET) for n in ALL}
+EXTRAS = {PREFIX + n: pet_rbx_extras(n) for n in ALL}

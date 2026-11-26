@@ -14955,6 +14955,65 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Scrubby.png"
  },
  {
+  "name": "CleanACat_Pet_Starcoat",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Starcoat_Body",
+   "CleanACat_Pet_Starcoat_Head",
+   "CleanACat_Pet_Starcoat_Eye1",
+   "CleanACat_Pet_Starcoat_Eye2",
+   "CleanACat_Pet_Starcoat_EarL",
+   "CleanACat_Pet_Starcoat_EarR",
+   "CleanACat_Pet_Starcoat_Tail",
+   "CleanACat_Pet_Starcoat_LegF1",
+   "CleanACat_Pet_Starcoat_LegF2",
+   "CleanACat_Pet_Starcoat_LegB1",
+   "CleanACat_Pet_Starcoat_LegB2",
+   "CleanACat_Pet_Starcoat_Prop",
+   "CleanACat_Pet_Starcoat_Prop2",
+   "CleanACat_Pet_Starcoat_Star2",
+   "CleanACat_Pet_Starcoat_Star3",
+   "CleanACat_Pet_Starcoat_Star3_Glow"
+  ],
+  "triangles": 1384,
+  "budget": 2400,
+  "parts": 88,
+  "size_studs": {
+   "x": 1.29,
+   "y": 1.97,
+   "z": 2.04
+  },
+  "size_roblox": [
+   1.29,
+   2.04,
+   1.97
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 1,
+    "enclosed parts": 1
+   },
+   "checks": {
+    "budget": "1384/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "872 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Starcoat.png"
+ },
+ {
   "name": "CleanACat_Prop_BowButtonMint",
   "category": "Prop",
   "module": "props",
@@ -16236,6 +16295,53 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_FoamPuff3.png"
+ },
+ {
+  "name": "CleanACat_Prop_GiftStand",
+  "category": "Prop",
+  "module": "gift",
+  "objects": [
+   "CleanACat_Prop_GiftStand",
+   "CleanACat_Prop_GiftStand_Decor",
+   "CleanACat_Prop_GiftStand_Lamp"
+  ],
+  "triangles": 1948,
+  "budget": 2100,
+  "parts": 53,
+  "size_studs": {
+   "x": 3.53,
+   "y": 2.78,
+   "z": 7.28
+  },
+  "size_roblox": [
+   3.53,
+   7.28,
+   2.78
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "1948/2100 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1370 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.23 y=-0.14",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_GiftStand.png"
  },
  {
   "name": "CleanACat_Prop_Hammer",
