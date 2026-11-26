@@ -23,6 +23,8 @@ local Window = require(script.Parent:WaitForChild("Window"))
 local BuildWindow = {}
 
 local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
+-- a Buy the player cannot afford yet (#825): grey, the price still readable on the row
+local GREY_TOP, GREY_BOTTOM = Color3.fromHex("C9C4CF"), Color3.fromHex("A39DAA")
 local ICON_FILL = Color3.fromHex("FFF1C2")
 local DONE_FILL = Color3.fromHex("E7F6EF")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
@@ -162,7 +164,9 @@ local function drawRow(row: BuildViewRules.Row, order: number, s: Sizes, parent:
 	if row.state == "buy" and action then
 		local width = math.ceil(measure(action, s.buttonText)) + BUTTON_PAD
 		width = math.max(width, buttonH + 24)
-		local button = Window.button("Action", action, card, GREEN_TOP, GREEN_BOTTOM)
+		local button = if row.short
+			then Window.button("Action", action, card, GREY_TOP, GREY_BOTTOM)
+			else Window.button("Action", action, card, GREEN_TOP, GREEN_BOTTOM)
 		button.AnchorPoint = Vector2.new(1, 0.5)
 		button.Position = UDim2.fromScale(1, 0.5)
 		button.Size = UDim2.fromOffset(width, buttonH)
