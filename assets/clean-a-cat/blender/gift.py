@@ -12,9 +12,14 @@ present that reads as a gift from across the room, its heart balloon stands 7 st
 the pet on it is the pet the player gets (`CleanACat_Pet_Starcoat`, pets.py). A draft: when and how the pet is given is the game's design.
 
 Objects: the stand itself (it collides, so nobody walks through the present), `_Decor` (the bow, two small presents
-at its foot and the board's dots: walk-through), `_Balloon` (the heart balloon, its string and its knot, a child
-Model whose pivot is the knot on the lid, so the game can sway it about that point; walk-through) and `_Lamp`, one ball in deep gold whose part is named `Lamp`.
-The lamp is plain SmoothPlastic; the game may light it (the design lights the stand at about minute 7).
+at its foot and the board's dots: walk-through), `_Balloon` (the balloon's string and its knot, a child Model
+whose pivot is the knot on the lid, so the game can sway it about that point; walk-through) and, nested in it,
+`_Balloon_Heart` (the heart itself, 1.85 studs wide and 1.6 tall, a third bigger than its first draft, pivot at
+its middle, with the Attachment `HeartGlow` there for the game's sparkle), and `_Lamp`, one ball in deep gold whose
+part is named `Lamp`. The heart stays plain deep pink SmoothPlastic and is never Neon: a shape that must keep its
+outline does not glow (#491). The lit cue of #659 is the game's screen sized sparkle over the heart; the bigger
+heart only gives it more to sit on. The lamp is plain SmoothPlastic too; the game may light it (the design lights
+the stand at about minute 7).
 
 Attachments in the stand's first part: `PetSeat` (the cushion's top, facing the front), `Prompt` (in front of the
 seal, 1.2 studs up) and `Glow` (the middle of the pet, for a soft light). Root attribute `CatScale` 1.0: a pet up
@@ -41,6 +46,8 @@ BOARD_Z = SEAT + 0.88
 BOX, LID_SW, RIBBON = "spa_bubblegum", "fur_strawberry", "gold_mid"
 CAT_SCALE = 1.0
 BALLOON = (1.3, 0.5, 6.05)           # the heart balloon's lower tip; its string runs there from the lid's corner
+HEART_K = 1.3                        # the heart's size over its first draft (#659): 1.85 studs wide, 1.6 tall
+HEART_MID = (BALLOON[0], BALLOON[1], BALLOON[2] + 0.78 * HEART_K)
 BUDGET = 2100
 _STAND = (math.radians(90), "X")     # a disc stood up, its face to the front
 
@@ -56,7 +63,7 @@ def _present(b, c, s, box, ribbon):
 
 def build_gift_stand(mat, balloon=True):
     """`balloon=False` leaves the balloon off: the card picture's look, where it would shrink the present."""
-    b, dec, lamp, bal = Builder(), Builder(), Builder(), Builder()
+    b, dec, lamp, bal, heart = Builder(), Builder(), Builder(), Builder(), Builder()
     b.box_base((0, 0, 0), (W, D, H), BOX)                                               # the present
     b.box_base((0, 0, 0.01), (0.42, D + 0.05, H - 0.004), RIBBON, bevel=False)          # its ribbon, front to back
     b.box_base((0, 0, 0.016), (W + 0.05, 0.42, H - 0.004), RIBBON, bevel=False)         # and side to side
@@ -107,20 +114,25 @@ def build_gift_stand(mat, balloon=True):
         bal.ico((0, 0, 0.05), 0.09, "gold_light")
         bal.box((ux / 2, 0, uz / 2), (0.05, 0.05, run), "gold_light", bevel=False,
                 rot=Matrix.Rotation(math.atan2(ux, uz), 3, "Y"))
-        bal.cyl((ux, uy, uz + 0.4), 0.06, 0.8, "fur_strawberry", segments=10, bevel=False, radius2=0.66,
-                scale=(1.0, 0.62, 1.0))
-        for sx in (1, -1):
-            bal.sphere((ux + sx * 0.31, uy, uz + 0.83), 0.4, "fur_strawberry", segments=8, rings=5,
-                       scale=(1.0, 0.7, 1.0))
-        bal.sphere((ux - 0.42, uy - 0.2, uz + 0.98), 0.1, "fur_rose", segments=6, rings=4, scale=(1.0, 0.6, 1.3))
         out.append(_tris(bal.finalize(NAME + "_Balloon", mat, location=(kx, ky, kz))))
+        k, mz = HEART_K, 0.78 * HEART_K              # the heart, built about its own middle: mz over its lower tip
+        heart.cyl((0, 0, 0.4 * k - mz), 0.06, 0.8 * k, "fur_strawberry", segments=10, bevel=False,
+                  radius2=0.66 * k, scale=(1.0, 0.62, 1.0))
+        for sx in (1, -1):
+            heart.sphere((sx * 0.31 * k, 0, 0.83 * k - mz), 0.4 * k, "fur_strawberry", segments=8, rings=5,
+                         scale=(1.0, 0.7, 1.0))
+        heart.sphere((-0.42 * k, -0.2 * k, 0.98 * k - mz), 0.1 * k, "fur_rose", segments=6, rings=4,
+                     scale=(1.0, 0.6, 1.3))
+        out.append(_tris(heart.finalize(NAME + "_Balloon_Heart", mat, location=HEART_MID)))
     return out
 
 
 def gift_stand_rbx_extras():
     return {"attachments": [(NAME, "PetSeat", Matrix.Translation((0.0, 0.0, SEAT))),
                             (NAME, "Prompt", Matrix.Translation((0.0, -D / 2 - 0.4, 1.2))),
-                            (NAME, "Glow", Matrix.Translation((0.0, 0.1, SEAT + 0.85)))],
+                            (NAME, "Glow", Matrix.Translation((0.0, 0.1, SEAT + 0.85))),
+                            (NAME + "_Balloon_Heart", "HeartGlow", Matrix.Translation(HEART_MID))],
+            "nest": {"_Balloon_Heart": "_Balloon"},
             "attributes": {"CatScale": {"Float64": CAT_SCALE}, "SeatHeight": {"Float64": round(SEAT, 3)}}}
 
 
