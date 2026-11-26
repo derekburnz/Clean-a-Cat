@@ -286,6 +286,8 @@ local function updateWashView(v: {
 		and not v.steppedOut
 		and not v.mascot
 		and not WashView.holds(OPENING_REASON)
+		-- the wash on its own screen has no Walk button (Derek on dev: "dont show walk"; switch washScreen, issue 856)
+		and not LiveFlags.isOn("washScreen")
 	if walk ~= walkShown then
 		walkShown = walk
 		ScrubController.walkChanged:Fire(walk)

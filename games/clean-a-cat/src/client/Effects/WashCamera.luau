@@ -10,8 +10,9 @@
 --
 -- API
 --   WashCamera.shot(tub) -> CFrame        the framed shot for a tub spot (in front of it, above, looking down at it)
---   WashCamera.enter(shot, onDone?) -> Handle
---       eases into `shot` (a camera CFrame, usually WashCamera.shot(SpaLayout.tubSpot())); onDone when it is there
+--   WashCamera.enter(shot, onDone?, cut?) -> Handle
+--       eases into `shot` (a camera CFrame, usually WashCamera.shot(SpaLayout.tubSpot())); onDone when it is there;
+--       with `cut` every move of the handle cuts instead (the wash screen, under its wipe)
 --   handle.exit(onDone?)   eases back to where the player's camera was and gives it back; onDone when it is back
 --   handle.moveTo(shot)    eases from where the camera is now to another shot (a later step's station), the same
 --                          ease as the way in; the exit still goes back to the player's own camera. Nothing while
@@ -186,9 +187,11 @@ end
 
 local count = 0
 
-function WashCamera.enter(shot: CFrame, onDone: (() -> ())?): Handle
+function WashCamera.enter(shot: CFrame, onDone: (() -> ())?, cut: boolean?): Handle
 	local camera = Workspace.CurrentCamera
-	local reduced = Effects.reducedMotion()
+	-- `cut`: every move of this handle cuts, as under Reduced Motion (the wash screen swaps under the bubble wipe's
+	-- cover, switch washScreen, issue 856: Motion-FX asked for a cut, not an ease the bubbles clear over)
+	local reduced = Effects.reducedMotion() or cut == true
 	local done = false
 	local pending: (() -> ())? = onDone
 	local function answer()
