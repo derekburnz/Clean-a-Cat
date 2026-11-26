@@ -247,4 +247,19 @@ return function()
 			).to.equal("claws")
 		end)
 	end)
+
+	describe("CatRules.displayName", function()
+		it("spaces the roster's one-word ids and keeps names on a card short", function()
+			expect(CatRules.displayName("LilacCloud")).to.equal("Lilac Cloud")
+			expect(CatRules.displayName("Smudge")).to.equal("Smudge")
+			for _, rarity in CatRules.RARITIES do
+				for _, name in CatRules.ROSTER[rarity] do
+					expect(#CatRules.displayName(name) <= 11).to.equal(true)
+				end
+			end
+			for _, name in CatRules.SPECIAL_CATS do
+				expect(#CatRules.displayName(name) <= 11).to.equal(true)
+			end
+		end)
+	end)
 end

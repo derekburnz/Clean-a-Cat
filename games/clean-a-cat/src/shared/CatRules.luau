@@ -108,6 +108,12 @@ function CatRules.rarityOf(name: string): Rarity?
 	return nil
 end
 
+-- How a cat's name reads to the player: the roster's one-word ids with a space before each inner capital, so
+-- "LilacCloud" reads "Lilac Cloud". Names stay 11 letters or fewer on a card (issue 524).
+function CatRules.displayName(name: string): string
+	return (string.gsub(name, "(%l)(%u)", "%1 %2"))
+end
+
 -- Whether `name` is a special visitor's cat.
 function CatRules.isSpecial(name: string): boolean
 	return table.find(CatRules.SPECIAL_CATS, name) ~= nil
