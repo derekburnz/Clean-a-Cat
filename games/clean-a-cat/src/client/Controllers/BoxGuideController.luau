@@ -28,6 +28,7 @@ BoxGuideController.FAR = 25 -- studs, flat: further than this from the closed bo
 BoxGuideController.NEAR = 15 -- studs: back within this hides it
 BoxGuideController.EVERY = 0.25 -- seconds between checks
 BoxGuideController.BOX_NAME = "PH_DeliveryBox" -- Effects/OpeningScene's box
+BoxGuideController.SEARCH_EVERY = 1 -- seconds between searches for the box while it is not found
 
 function BoxGuideController.want(shown: boolean, distance: number): boolean
 	if shown then
@@ -38,12 +39,18 @@ end
 
 local mine = false
 local box: BasePart? = nil
+local searchedAt = -math.huge
 
 local function findBox(): BasePart?
 	local known = box
 	if known and known:IsDescendantOf(Workspace) then
 		return known
 	end
+	-- a whole-Workspace search at most once a second until the box is there (Review-QA's nit on PR 867)
+	if os.clock() - searchedAt < BoxGuideController.SEARCH_EVERY then
+		return nil
+	end
+	searchedAt = os.clock()
 	local found: Instance? = Workspace:FindFirstChild(BoxGuideController.BOX_NAME, true)
 	if found and found:IsA("Model") then
 		local model = found :: Model

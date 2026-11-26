@@ -33,4 +33,18 @@ return function()
 			expect(math.abs(CatWalkOut.walkSeconds(d) - 2) < 1e-9).to.equal(true)
 		end)
 	end)
+
+	describe("CatWalkOut.legAngle", function()
+		it("swings the diagonal pairs opposite, within LEG_SWING", function()
+			local CWO = CatWalkOut
+			for i = 0, 30 do
+				local t = i * 0.037
+				local a = CWO.legAngle(t, CWO.LEG_PHASE.LegF1)
+				local b = CWO.legAngle(t, CWO.LEG_PHASE.LegF2)
+				expect(math.abs(a + b) < 1e-6).to.equal(true)
+				expect(math.abs(a) <= CWO.LEG_SWING + 1e-6).to.equal(true)
+			end
+			expect(CWO.LEG_PHASE.LegF1).to.equal(CWO.LEG_PHASE.LegB2)
+		end)
+	end)
 end
