@@ -143,6 +143,9 @@ BuildRules.GARDEN_JAR_TIMES = 1.25 -- and fills this much faster (jar.rate 30 to
 BuildRules.LONG_SECONDS = 3600 -- a build this long or longer logs long_build_started
 BuildRules.PROMPT_REACH = 10 -- studs; the board's prompts show within this distance
 BuildRules.SERVER_REACH = 16 -- studs; the server's distance check, with room for lag
+-- (issue 751) With this switch on the HUD's Build window starts builds and buys tools and bows from anywhere: only the
+-- distance to the board is not checked for those (RequestBuild, RequestBuyTool, RequestBuyBow); Finish now still is.
+BuildRules.WINDOW_FLAG = "buildWindow"
 
 export type Build = { item: string, endsAt: number }
 
