@@ -113,5 +113,22 @@ return function()
 			expect((QuestRules.get("dirty2") :: QuestRules.Quest).coins).to.equal(60)
 			expect((QuestRules.get("wStars20") :: QuestRules.Quest).goal).to.equal(20)
 		end)
+
+		it("counts only quests that were open in the last send and are done now", function()
+			local before = {
+				{ id = "a", done = false },
+				{ id = "b", done = false },
+				{ id = "c", done = true },
+			}
+			local after = {
+				{ id = "a", done = true },
+				{ id = "b", done = false },
+				{ id = "c", done = true },
+				{ id = "d", done = true }, -- new this send (a new day): not a finish
+			}
+			expect(QuestRules.newlyDone(before, after)).to.equal(1)
+			expect(QuestRules.newlyDone({}, after)).to.equal(0)
+			expect(QuestRules.newlyDone(after, after)).to.equal(0)
+		end)
 	end)
 end

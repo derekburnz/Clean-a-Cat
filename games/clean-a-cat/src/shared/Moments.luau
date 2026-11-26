@@ -85,6 +85,13 @@ local crateOpened: Signal<Model> = Signal.new()
 local petRevealed: Signal<Model> = Signal.new()
 -- (pet): (switch pets) three pets fused: the pet beside the player or worker, now a star higher.
 local petStarUp: Signal<Model> = Signal.new()
+-- (build): (switch builds) a build the player started just finished, or finished while they were away: the built
+-- station or room in their plot once it is drawn (its plot if it is not there within a few seconds).
+local buildFinished: Signal<Model> = Signal.new()
+-- (): (switch quests) one or more quests in the player's book just finished (they pay at once, with a notice).
+local questDone: Signal<()> = Signal.new()
+-- (): (switch checkinCard) the player claimed today's check in gift.
+local checkInClaimed: Signal<()> = Signal.new()
 
 local Moments = {
 	ScrubStart = scrubStart,
@@ -121,6 +128,9 @@ local Moments = {
 	CrateOpened = crateOpened,
 	PetRevealed = petRevealed,
 	PetStarUp = petStarUp,
+	BuildFinished = buildFinished,
+	QuestDone = questDone,
+	CheckInClaimed = checkInClaimed,
 
 	-- Every moment name, in the order they happen in a first session. Tests and tools read this list.
 	NAMES = table.freeze({
@@ -158,6 +168,9 @@ local Moments = {
 		"CrateOpened",
 		"PetRevealed",
 		"PetStarUp",
+		"BuildFinished",
+		"QuestDone",
+		"CheckInClaimed",
 	}),
 }
 

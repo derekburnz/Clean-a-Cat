@@ -214,4 +214,26 @@ function QuestRules.count(book: Book, facts: Facts, isOn: IsOn): ({ Quest }, boo
 	return done, crate
 end
 
+-- How many quests turned done between two sends of the Quests remote (`before`, then `after`), for the client's
+-- QuestDone moment: only a quest that was in `before` and not done there counts, so the first send of a visit, a new
+-- day or a new week plays nothing.
+function QuestRules.newlyDone(
+	before: { { id: string, done: boolean } },
+	after: { { id: string, done: boolean } }
+): number
+	local open: { [string]: boolean } = {}
+	for _, entry in before do
+		if not entry.done then
+			open[entry.id] = true
+		end
+	end
+	local count = 0
+	for _, entry in after do
+		if entry.done and open[entry.id] then
+			count += 1
+		end
+	end
+	return count
+end
+
 return table.freeze(QuestRules)
