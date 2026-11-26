@@ -12,7 +12,9 @@
 -- before the server would take a pick (the first customer not served yet, or queuePick off) the others say Waiting.
 -- A Rare or rarer customer is a VIP: a rarity glow and a crown, the same rows as everyone else, and the line under
 -- the title says how often that rarity visits, with the chance board's own numbers (QueueViewRules.headline).
--- Left out until the design sets them: patience, helpers on a customer and a line long enough to scroll.
+-- A line of more than 3 (benchGrow, up to 6 with tubs built) widens the window; past the screen's width the cards
+-- scroll sideways with a bar under them, so a card never shrinks below its phone size.
+-- Left out until the design sets them: helpers on a customer.
 -- Only the X closes the window, and a pick leaves it open so the player sees the picked cat move to the front.
 -- UI never fires remotes: QueueWindowController sends the pick and the server decides.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -36,6 +38,8 @@ local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F
 local NEW_PINK = Color3.fromHex("FF86CF")
 local VIP_TOP = Color3.fromHex("E3F0FF")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
+local ROW_EDGE = 12 -- design px inside the cards' row each side, for the cards' outlines and the short card's crown
+local SCROLL_BAR = 8
 local SIDE_BY_SIDE_NEEDS = 3 -- most needs that fit beside the pay on a short card
 local STACKED_SHIFT = 4 -- design px below the middle for the taller short window (Window's default is 33)
 local NEED_ICON: { [string]: string } =
@@ -100,7 +104,7 @@ type Parts = {
 	headRow: Frame,
 	headCrown: Frame,
 	headText: TextLabel,
-	row: Frame,
+	row: ScrollingFrame,
 	rowList: UIListLayout,
 	rowPad: UIPadding,
 }
@@ -230,7 +234,7 @@ end
 -- tall screen, and on a short one when some cat in the line has more needs than fit beside the pay.
 local function drawCard(
 	card: QueueViewRules.Card,
-	row: Frame,
+	row: GuiObject,
 	s: Sizes,
 	short: boolean,
 	stacked: boolean
@@ -387,7 +391,7 @@ local function drawCard(
 	return cardH
 end
 
-local function clearRow(row: Frame)
+local function clearRow(row: GuiObject)
 	for _, child in row:GetChildren() do
 		if child:IsA("GuiObject") then
 			child:Destroy()
@@ -402,11 +406,12 @@ local function redraw()
 	end
 	local scale, short = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
-	local count = SpaRules.QUEUE_SIZE
-	local width = math.min(
-		count * s.cardW + (count - 1) * s.gap + 2 * s.pad,
-		screenWidth(scale) - SCREEN_MARGIN
-	)
+	-- the line is 3 long at first and grows to 6 with more tubs (benchGrow): the window widens to fit, and past
+	-- the screen's width the cards scroll sideways
+	local count = math.max(#cards, SpaRules.QUEUE_SIZE)
+	local content = count * s.cardW + (count - 1) * s.gap + 2 * ROW_EDGE
+	local width = math.min(content + 2 * s.pad, screenWidth(scale) - SCREEN_MARGIN)
+	local scrolls = content > width - 2 * s.pad
 	local most = 0
 	for _, card in cards do
 		most = math.max(most, #card.needs)
@@ -441,7 +446,13 @@ local function redraw()
 	for _, card in cards do
 		tallest = math.max(tallest, drawCard(card, p.row, s, short, stacked))
 	end
-	p.row.Size = UDim2.new(1, 0, 0, tallest + s.room + 4)
+	local bar = if scrolls then SCROLL_BAR + 4 else 0
+	p.row.Size = UDim2.new(1, 0, 0, tallest + s.room + 4 + bar)
+	p.row.CanvasSize = UDim2.fromOffset(if scrolls then content else 0, 0)
+	p.row.ScrollBarThickness = if scrolls then SCROLL_BAR else 0
+	p.rowList.HorizontalAlignment = if scrolls
+		then Enum.HorizontalAlignment.Left
+		else Enum.HorizontalAlignment.Center
 	p.rowPad.PaddingTop = UDim.new(0, s.room)
 end
 
@@ -492,11 +503,19 @@ function QueueWindow.build(root: Instance): Frame
 	headText.LayoutOrder = 2
 	headText.AutomaticSize = Enum.AutomaticSize.X
 
-	local row = frame("Cards", stack)
+	local row = Instance.new("ScrollingFrame")
+	row.Name = "Cards"
+	row.BackgroundTransparency = 1
+	row.BorderSizePixel = 0
+	row.ScrollingDirection = Enum.ScrollingDirection.X
+	row.ScrollBarImageColor3 = Kit.INK_SOFT
+	row.VerticalScrollBarInset = Enum.ScrollBarInset.None
+	row.Parent = stack
 	row.LayoutOrder = 2
 	local rowList = list(row, true, 14)
 	rowList.VerticalAlignment = Enum.VerticalAlignment.Top
 	local rowPad = Instance.new("UIPadding")
+	rowPad.PaddingLeft, rowPad.PaddingRight = UDim.new(0, ROW_EDGE), UDim.new(0, ROW_EDGE)
 	rowPad.Parent = row
 
 	parts = {
