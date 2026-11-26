@@ -36,9 +36,10 @@ type Spec = {
 	bottom: Color3,
 	attribute: string?, -- also waits for this Player attribute to be set and not false (QuestsOpen, StarterEndsAt)
 	also: string?, -- a second switch it needs (the starter pack gives passes, so it needs passes too)
+	anyOf: { string }?, -- also waits for at least one of these Player attributes to be set (a helper hired)
 }
 
--- In order, left to right. Tools, Helpers and Build join when their windows exist.
+-- In order, left to right. Tools and Build join when their windows exist.
 SideButtons.BUTTONS = {
 	{
 		window = "CatIndex",
@@ -55,6 +56,17 @@ SideButtons.BUTTONS = {
 		caption = "Pets",
 		top = Color3.fromHex("FFE3EE"),
 		bottom = Color3.fromHex("FFC4D8"),
+	},
+	{
+		-- once a helper is hired: their levels, modes and names (issue 526 item 3)
+		window = "Helpers",
+		flag = "helpersWindow",
+		also = "workers",
+		anyOf = { "WorkerLevel_Jo", "WorkerLevel_Sam", "WorkerLevel_Lou" }, -- HelperViewRules.LEVEL_PREFIX .. id
+		icon = "Helper",
+		caption = "Helpers",
+		top = Color3.fromHex("FFE4CC"),
+		bottom = Color3.fromHex("FFC79E"),
 	},
 	{
 		window = "Checkin",
@@ -129,6 +141,16 @@ local function shown(spec: Spec): boolean
 	if also and not LiveFlags.isOn(also) then
 		return false
 	end
+	local anyOf = spec.anyOf
+	if anyOf then
+		local found = false
+		for _, name in anyOf do
+			found = found or Players.LocalPlayer:GetAttribute(name) ~= nil
+		end
+		if not found then
+			return false
+		end
+	end
 	return LiveFlags.isOn(HUD_FLAG) and LiveFlags.isOn(spec.flag)
 end
 
@@ -166,6 +188,9 @@ function SideButtons.onChanged(fn: () -> ())
 		local attribute = spec.attribute
 		if attribute then
 			Players.LocalPlayer:GetAttributeChangedSignal(attribute):Connect(fn)
+		end
+		for _, name in spec.anyOf or {} do
+			Players.LocalPlayer:GetAttributeChangedSignal(name):Connect(fn)
 		end
 	end
 end

@@ -125,6 +125,7 @@ LiveFlags.KEYS = {
 	"tubBuilds", -- the Build board sells the Second, Third and Fourth Tub, the VIP Room at its new price and the Garden; one builder; a built tub pays +2 on every hand wash and the VIP Room brings special visitors more often; with dirtLevels on, the old stations leave (BuildRules, issue 515); off by default
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 	"cameraClear", -- for 2 s after each spawn, a camera resting inside a part players walk through (the back wall's picture behind a returning player's spawn) turns around the player to the nearest clear view, keeping its own distance and tilt (CameraClearController, issue 670); off by default
+	"helpersWindow", -- a Helpers button on the HUD, shown once a helper is hired, opens one row per helper: their name, level with Level up and its price, the line they wash first (tap to change) and Rename; a helper not hired yet shows their price at their pad, and Lou his pass in the Shop (UI/HelpersWindow, HelperViewRules, issue 526 item 3); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -222,6 +223,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	friendBonus = true,
 	staffRename = true,
 	cameraClear = true,
+	helpersWindow = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

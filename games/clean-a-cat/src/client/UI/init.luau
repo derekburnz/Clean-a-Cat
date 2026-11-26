@@ -45,6 +45,7 @@ local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
+local HelperViewRules = require(Shared:WaitForChild("HelperViewRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
@@ -61,6 +62,7 @@ local CrateWindow = require(script:WaitForChild("CrateWindow"))
 local GiftCard = require(script:WaitForChild("GiftCard"))
 local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
+local HelpersWindow = require(script:WaitForChild("HelpersWindow"))
 local Motion = require(script:WaitForChild("Motion"))
 local PetsWindow = require(script:WaitForChild("PetsWindow"))
 local QuestBook = require(script:WaitForChild("QuestBook"))
@@ -317,6 +319,10 @@ function UI.init()
 	windows.Starter = StarterWindow.build(root) -- the Spa Starter Pack (switch starterPack with passes, issue 519)
 	windows.Gift = GiftCard.build(root) -- the gift stand's free pet (switch giftStand with pets, issue 521)
 	windows.Rename = RenameCard.build(root) -- name a hired helper, from their row in Pets (switch staffRename, #487)
+	windows.Helpers = HelpersWindow.build(root) -- the helpers' levels, modes and names (switch helpersWindow, 526)
+	HelpersWindow.onPass(function()
+		UI.open("Shop") -- Lou's pass is one of the Shop's cards
+	end)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -558,6 +564,27 @@ end
 -- fn(helperId) when a helper's Rename is pressed in the pets window.
 function UI.onRenamePick(fn: (id: string) -> ())
 	PetsWindow.onRename(fn)
+end
+
+-- The Helpers window's rows (HelpersController, HelperViewRules.rows), whether hired helpers offer Rename (switch
+-- staffRename) and whether Lou's row points to his pass in the Shop (switch passes, his price known).
+function UI.setHelpers(rows: { HelperViewRules.Row }, rename: boolean, shop: boolean)
+	HelpersWindow.set(rows, rename, shop)
+end
+
+-- fn(helperId) when a helper's Takes button is pressed in the Helpers window.
+function UI.onHelperMode(fn: (id: string) -> ())
+	HelpersWindow.onMode(fn)
+end
+
+-- fn(helperId) when a helper's Level up is pressed in the Helpers window.
+function UI.onHelperLevel(fn: (id: string) -> ())
+	HelpersWindow.onLevel(fn)
+end
+
+-- fn(helperId) when a helper's Rename is pressed in the Helpers window.
+function UI.onHelperRename(fn: (id: string) -> ())
+	HelpersWindow.onRename(fn)
 end
 
 -- Opens the Rename card for helper `id`, with the name shown now and the default name.
