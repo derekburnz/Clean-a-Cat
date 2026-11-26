@@ -44,6 +44,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
+local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
@@ -57,6 +58,7 @@ local CatIndex = require(script:WaitForChild("CatIndex"))
 local CheckinCard = require(script:WaitForChild("CheckinCard"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local CrateWindow = require(script:WaitForChild("CrateWindow"))
+local GiftCard = require(script:WaitForChild("GiftCard"))
 local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
 local Motion = require(script:WaitForChild("Motion"))
@@ -312,6 +314,7 @@ function UI.init()
 	windows.Quests = QuestBook.build(root) -- the quest book (switch quests, issue 516)
 	windows.Shop = ShopWindow.build(root) -- the shop's game passes (switch passes, issues 518 and 526)
 	windows.Starter = StarterWindow.build(root) -- the Spa Starter Pack (switch starterPack with passes, issue 519)
+	windows.Gift = GiftCard.build(root) -- the gift stand's free pet (switch giftStand with pets, issue 521)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -580,6 +583,21 @@ end
 -- The starter pack window (StarterController): its three cards, the pack's price or nil, and the offer's end time.
 function UI.setStarter(items: { StarterViewRules.Item }, pack: number?, endsAt: number?)
 	StarterWindow.set(items, pack, endsAt)
+end
+
+-- The gift stand's card (GiftCardController): GiftController.state().
+function UI.setGift(state: GiftViewRules.State)
+	GiftCard.set(state)
+end
+
+-- fn(key) when a gift step's button is pressed ("favourite" or "group").
+function UI.onGiftStep(fn: (key: string) -> ())
+	GiftCard.onStep(fn)
+end
+
+-- fn() when Get Starcoat is pressed.
+function UI.onGiftClaim(fn: () -> ())
+	GiftCard.onClaim(fn)
 end
 
 -- fn() when Get pack is pressed.
