@@ -5,7 +5,9 @@
                                 small lamp on top of the board and a pink heart balloon tied to the lid
 
 The owner on 2026-11-25: "have one pet that can be got by joining group and liking game. Make sure to not crowd any
-player with all at once but make sure the pet for liking/joining group is obvious to find." So the stand is a
+player with all at once but make sure the pet for liking/joining group is obvious to find." The design's rule since
+(gdd.md): the pet is given for a favourite and for joining the group, which a game can check; the like is asked for
+in words and never checked. So the stand is a
 present that reads as a gift from across the room, its heart balloon stands 7 studs up, over a player's head, and
 the pet on it is the pet the player gets (`CleanACat_Pet_Starcoat`, pets.py). A draft: when and how the pet is given is the game's design.
 

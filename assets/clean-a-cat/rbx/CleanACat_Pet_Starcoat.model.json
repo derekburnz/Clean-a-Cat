@@ -5,7 +5,7 @@
   "PartBuilt": true,
   "Pet": true,
   "PetId": "Starcoat",
-  "Rarity": "Legendary",
+  "Rarity": "Uncommon",
   "PetScale": {
    "Float64": 0.7
   },

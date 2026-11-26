@@ -70,8 +70,11 @@ PETS = {
 
 # The gift stand's pet (gift.py, #502): no crate holds it. Gameplay-Engineer named it after the roster's Starcoat, so
 # it wears that coat; the present bow and the present on its back say it is the gift and not a customer's cat.
+# `pet_rarity` is what the model's `Rarity` attribute says: the game has the gift pet as Uncommon
+# (`CrateRules.GIFT_PETS`), so a free pet does not outshine a crate's Legendary. The coat's own `rarity` stays the
+# roster's, because the cat generator reads it for the star specks.
 GIFT_PETS = {
-    "Starcoat": dict(cats.ROSTER["Starcoat"], gift=True),
+    "Starcoat": dict(cats.ROSTER["Starcoat"], gift=True, pet_rarity="Uncommon"),
 }
 ALL = {**PETS, **GIFT_PETS}
 
@@ -408,7 +411,7 @@ def pet_rbx_extras(name):
         neck = Vector(cats.joints(spec, "walk")["Head"])
         top = props.head_top(key(name), spec, "walk", d)
         burst = neck + Vector((0.0, d["head"]["c"][1], (top if top is not None else d["head"]["top"]) + 0.2)) * k
-        attributes = {"Pet": True, "PetId": name, "Rarity": spec["rarity"], "PetScale": {"Float64": PET_SCALE},
+        attributes = {"Pet": True, "PetId": name, "Rarity": spec.get("pet_rarity", spec["rarity"]), "PetScale": {"Float64": PET_SCALE},
                       "PropSlot": props.slot(key(name))}
         if spec.get("gift"):                             # the gift stand's pet: no crate holds it
             attributes["Gift"] = True
