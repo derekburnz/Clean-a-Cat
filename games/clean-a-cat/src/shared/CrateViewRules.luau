@@ -98,6 +98,8 @@ export type SlotRow = {
 	pet: CrateRules.Pet?,
 	say: string, -- "Cozy: tips +5%", "Koi, 2 stars: pay +18%", "No pet yet", "Comes when Lou is hired"
 	locked: boolean,
+	slot2: string?, -- the second slot beside the first, with the Second pet slot pass ("player2", "<id>2")
+	pet2: CrateRules.Pet?,
 }
 
 local RARITY_ORDER: { [string]: number } =
@@ -172,11 +174,18 @@ function CrateViewRules.petLine(pet: CrateRules.Pet, slot: string): string
 	return `{name}: {what} {boostPercent(pet.kind, pet.star)}`
 end
 
+-- A pet's short boost for a row holding two: "Cozy +5%".
+local function shortLine(pet: CrateRules.Pet): string
+	return `{pet.kind} {boostPercent(pet.kind, pet.star)}`
+end
+
 -- The slots in order: the player, then each helper. A helper not hired yet shows locked. `hired` holds the hired
--- helpers' ids (the server's WorkerLevel_<id> attributes).
+-- helpers' ids (the server's WorkerLevel_<id> attributes). With `second` (the Second pet slot pass, issue 518) each
+-- row holds two slots, "<slot>" and its second ("player2", "<id>2"), and says both pets in short.
 function CrateViewRules.slotRows(
 	pets: { CrateRules.Pet },
-	hired: { [string]: boolean }
+	hired: { [string]: boolean },
+	second: boolean?
 ): { SlotRow }
 	local inSlot: { [string]: CrateRules.Pet } = {}
 	for _, pet in pets do
@@ -185,12 +194,24 @@ function CrateViewRules.slotRows(
 		end
 	end
 	local rows: { SlotRow } = {}
-	local function add(slot: string, who: string, helper: string?, locked: boolean)
+	local function add(slot: string, slot2: string, who: string, helper: string?, locked: boolean)
 		local pet = inSlot[slot]
-		local say = if locked
-			then `Comes when {who} is hired`
-			elseif pet then CrateViewRules.petLine(pet, slot)
-			else "No pet yet"
+		local pet2 = if second then inSlot[slot2] else nil
+		local say
+		if locked then
+			say = `Comes when {who} is hired`
+		elseif second and (pet or pet2) then
+			-- the pets there in short; an empty box shows as empty, so the line stays short on a phone
+			if pet and pet2 then
+				say = `{shortLine(pet)}, {shortLine(pet2)}`
+			else
+				say = shortLine((pet or pet2) :: CrateRules.Pet)
+			end
+		elseif pet then
+			say = CrateViewRules.petLine(pet, slot)
+		else
+			say = if second then "No pets yet" else "No pet yet"
+		end
 		table.insert(rows, {
 			slot = slot,
 			who = who,
@@ -198,11 +219,13 @@ function CrateViewRules.slotRows(
 			pet = if locked then nil else pet,
 			say = say,
 			locked = locked,
+			slot2 = if second then slot2 else nil,
+			pet2 = if locked then nil else pet2,
 		})
 	end
-	add(CrateRules.PLAYER_SLOT, "You", nil, false)
+	add(CrateRules.PLAYER_SLOT, CrateRules.PLAYER_SLOT .. "2", "You", nil, false)
 	for _, id in CrateViewRules.HELPERS do
-		add(`{id}1`, id, id, hired[id] ~= true)
+		add(`{id}1`, `{id}2`, id, id, hired[id] ~= true)
 	end
 	return rows
 end

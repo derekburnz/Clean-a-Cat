@@ -10,6 +10,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Passes = require(Shared:WaitForChild("Passes"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
@@ -32,8 +33,15 @@ local function hired(): { [string]: boolean }
 	return out
 end
 
+local SECOND_SLOT = Passes.ATTRIBUTE_PREFIX .. "SecondPetSlot"
+
+-- The Second pet slot pass counts only with the passes switch on (PassService's own check).
+local function second(): boolean
+	return LiveFlags.isOn(Passes.FLAG) and Players.LocalPlayer:GetAttribute(SECOND_SLOT) == true
+end
+
 local function show()
-	UI.setPets(pets, hired())
+	UI.setPets(pets, hired(), second())
 end
 
 local function cleanPets(raw: unknown): { CrateRules.Pet }
@@ -75,6 +83,9 @@ function PetsWindowController.Start()
 	for _, id in CrateViewRules.HELPERS do
 		Players.LocalPlayer:GetAttributeChangedSignal(`WorkerLevel_{id}`):Connect(show)
 	end
+	Players.LocalPlayer:GetAttributeChangedSignal(SECOND_SLOT):Connect(show)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. Passes.FLAG)
+		:Connect(show)
 	-- the server sends the whole list once the save loads and again after each change
 	Remotes.event("Pets").OnClientEvent:Connect(function(raw: unknown)
 		pets = cleanPets(raw)
