@@ -138,7 +138,7 @@ Guard rail check (must stay true, with margin): a player washing Common level 2 
 | `build.VipRoom` | 15,000 coins, 12 h | | 2026-11-25 |
 | `build.Garden` | 25,000 coins, 24 h | Never more than 24 h | 2026-11-25 |
 | `build.slots` | 1 builder; 2 with the Second Builder pass | | 2026-11-25 |
-| `finishNow.price` | ≤5 min 5, ≤30 min 15, ≤2 h 35, ≤8 h 75, more 99 Robux | From the design; waiting is always free | 2026-11-25 |
+| `finishNow.price` | ≤2 min 5, ≤1 h 15, ≤4 h 35, ≤12 h 75, more 99 Robux; hidden under 15 s left | The edges Derek picked on the plan page (q2-skipprice, 2026-11-25); the code had 5 min, 30 min, 2 h and 8 h until issue 881. A fresh Third Tub (30 min) costs 15, a Fourth Tub (4 h) 35, the VIP Room (12 h) 75, the Garden (24 h) 99. Waiting is always free | 2026-11-26 |
 
 What each build does once finished (answers Gameplay-Engineer on issue 515, 2026-11-26):
 
