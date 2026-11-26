@@ -7,7 +7,7 @@
 --   Waiting.build(root, open)   makes the faces once; open() runs when a face is pressed
 --   Waiting.set(cards)          the line (QueueViewRules cards, front first)
 --
--- Shows only while the game HUD (gameHud) and queueWindow are on and someone is waiting.
+-- Shows only while the game HUD (gameHud) and queueWindow are on, hudTidy is off and someone is waiting.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -22,6 +22,7 @@ local Portraits = require(script.Parent.Parent:WaitForChild("Portraits"))
 local Waiting = {}
 
 local FLAGS = { "gameHud", "queueWindow" }
+local TIDY_FLAG = "hudTidy"
 local FACE_FULL, FACE_SHORT = 74, 60 -- design px
 local EDGE = 26 -- real px from the root's right edge
 local SHORT_TOP = 122 -- design px from the root's top on a short screen: under the coin counter
@@ -39,7 +40,9 @@ local function allOn(): boolean
 			return false
 		end
 	end
-	return true
+	-- the tidy HUD has no waiting faces (issue 738, Derek: "the 3 cat bubbles are not needed"): the line stands at
+	-- the door in the world, and "Who's next?" opens from the bench
+	return not LiveFlags.isOn(TIDY_FLAG)
 end
 
 local function redraw()
@@ -163,7 +166,7 @@ function Waiting.build(root: Instance, open: () -> ())
 	holder.Parent = root
 
 	parts = { holder = holder, scale = scale, list = list, head = head, faces = faces }
-	for _, name in FLAGS do
+	for _, name in { "gameHud", "queueWindow", TIDY_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
 			:Connect(redraw)
 	end

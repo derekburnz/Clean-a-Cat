@@ -51,6 +51,50 @@ local function recap(full)
 	})
 end
 
+-- Every HUD button on, with hudTidy, coins, two friends, three in the line and the starter pack's prices.
+local function allButtons(priced: boolean)
+	hud(true)
+	flag("hudTidy", true)
+	UI.setCoins(999999)
+	for _, name in
+		{
+			"catIndexWindow",
+			"petsWindow",
+			"helpersWindow",
+			"workers",
+			"checkinCard",
+			"quests",
+			"passes",
+			"settingsCard",
+			"starterPack",
+			"queueWindow",
+			"friendBonus",
+		}
+	do
+		flag(name, true)
+	end
+	UI.setFriends(2)
+	local player = game:GetService("Players").LocalPlayer
+	player:SetAttribute("WorkerLevel_Jo", 1)
+	player:SetAttribute("QuestsOpen", true)
+	player:SetAttribute("StarterEndsAt", 1)
+	local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+	local prices: { [string]: number } = if priced
+		then { GoldenSponge = 99, SecondPetSlot = 249, DoubleCoins = 199 }
+		else { GoldenSponge = 99, DoubleCoins = 199 }
+	UI.setStarter(
+		StarterViewRules.items(function(key: string): unknown
+			return prices[key]
+		end),
+		299,
+		os.time() + 44 * 3600
+	)
+	UI.setSideNote("Starter", "1d 20h")
+	local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+	local cards = QueueViewRules.cards({ "Muffin", "Cotton", "Patches" }, indexEntries(), {})
+	UI.setQueue(cards, QueueViewRules.headline(cards, 1), {})
+end
+
 function Scenes.setup()
 	UI = UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI")
 	UI.init()
@@ -544,6 +588,29 @@ local SCENES = {
 			player:SetAttribute("StarterEndsAt", 1)
 		end,
 	},
+	-- The tidy HUD (issues 738 and 739, switch hudTidy): Shop, Pets, Quests and More in a 2 by 2 grid, the coins on
+	-- a pill with the friend tag, the waiting faces gone, and the starter pack's side ad with its struck total and
+	-- saving. HudTidyMore: the More tray open. HudTidyNoPrice: a pass price missing, so no struck total or saving.
+	{
+		"HudTidy",
+		function()
+			allButtons(true)
+		end,
+	},
+	{
+		"HudTidyMore",
+		function()
+			allButtons(true)
+			UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI.HUD.SideButtons")
+				.openTray()
+		end,
+	},
+	{
+		"HudTidyNoPrice",
+		function()
+			allButtons(false)
+		end,
+	},
 	-- The quest book (issue 516, switch quests): one daily done, the weekly crate one of three, then a short week.
 	{
 		"Quests",
@@ -922,6 +989,10 @@ function Scenes.close()
 	flag("quests", false)
 	flag("passes", false)
 	flag("starterPack", false)
+	flag("hudTidy", false)
+	flag("friendBonus", false)
+	UI.setFriends(nil)
+	UI.setSideNote("Starter", nil)
 	local tester = game:GetService("Players").LocalPlayer
 	for _, name in { "WorkerLevel_Jo", "QuestsOpen", "StarterEndsAt" } do
 		tester:SetAttribute(name, nil)

@@ -51,6 +51,9 @@ local WHITE = Kit.WHITE
 local GOLD_TEXT = Kit.GOLD_TEXT
 local EDGE = 22 -- design pixels from the root's edge (the screens' right margin)
 local FRIEND_TEXT = 19 -- design px: the friend chip under the coins (issue 520)
+-- With hudTidy (issue 738, Derek: the coins looked like they hover) the coins sit on a solid cream pill.
+local TIDY_FLAG = "hudTidy"
+local PILL_PAD = Vector2.new(18, 4) -- design px inside the pill: right and left (the coin sits near the edge), top
 
 -- One wash step per stage the player acts in, in order (ScrubController and SpaRules). A `later` step (#267) shows
 -- only for a cat whose wash takes it (setPlan).
@@ -89,6 +92,8 @@ type Sizes = typeof(SIZES.full)
 
 type Pieces = {
 	coins: Frame,
+	coinEdge: UIStroke,
+	coinPad: UIPadding,
 	friends: Frame,
 	friendText: TextLabel,
 	coinIcon: Frame,
@@ -231,6 +236,13 @@ local function redraw()
 	end
 
 	p.coins.Visible = on()
+	local pill = LiveFlags.isOn(TIDY_FLAG)
+	p.coins.BackgroundTransparency = if pill then 0 else 1
+	p.coinEdge.Enabled = pill
+	p.coinPad.PaddingLeft = UDim.new(0, if pill then PILL_PAD.Y else 0)
+	p.coinPad.PaddingRight = UDim.new(0, if pill then PILL_PAD.X else 0)
+	p.coinPad.PaddingTop = UDim.new(0, if pill then PILL_PAD.Y else 0)
+	p.coinPad.PaddingBottom = UDim.new(0, if pill then PILL_PAD.Y else 0)
 	p.coinIcon.Size = UDim2.fromOffset(s.coinIcon, s.coinIcon)
 	p.coinText.TextSize = s.coinText
 	p.coinText.Text = Wallet.format(coins)
@@ -239,7 +251,12 @@ local function redraw()
 	p.friends.Visible = on() and friendText ~= nil
 	p.friendText.Text = friendText or ""
 	p.friendText.TextSize = FRIEND_TEXT
-	p.friends.Position = UDim2.new(1, -EDGE, 0, 8 + (s.coinIcon + 8) * scale)
+	p.friends.Position = UDim2.new(
+		1,
+		-EDGE,
+		0,
+		8 + (s.coinIcon + 8 + (if pill then PILL_PAD.Y * 2 + 4 else 0)) * scale
+	)
 
 	local shown = shownSteps()
 	local current = stepIndex(stage, shown)
@@ -337,7 +354,17 @@ function HUD.build(rootFrame: Frame)
 	local coinsFrame, coinsScale =
 		holder("Coins", rootFrame, Vector2.new(1, 0), UDim2.new(1, -EDGE, 0, 8))
 	table.insert(scales, coinsScale)
-	list(coinsFrame, true, 12)
+	local coinRow = list(coinsFrame, true, 12)
+	coinRow.VerticalAlignment = Enum.VerticalAlignment.Center
+	-- the pill (switch hudTidy): drawn always, shown only with the switch
+	coinsFrame.BackgroundColor3 = Kit.CREAM
+	Kit.corner(coinsFrame, UDim.new(0.5, 0))
+	local coinEdge = Kit.stroke(coinsFrame, 4)
+	coinEdge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	coinEdge.Enabled = false
+	local coinPad = Instance.new("UIPadding")
+	coinPad.Name = "PillPad"
+	coinPad.Parent = coinsFrame
 	local coinIcon = Instance.new("Frame")
 	coinIcon.Name = "CoinIcon"
 	coinIcon.BackgroundTransparency = 1
@@ -480,6 +507,8 @@ function HUD.build(rootFrame: Frame)
 
 	pieces = {
 		coins = coinsFrame,
+		coinEdge = coinEdge,
+		coinPad = coinPad,
 		friends = friendsFrame,
 		friendText = friendText,
 		coinIcon = coinIcon,
@@ -501,6 +530,8 @@ function HUD.build(rootFrame: Frame)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HUD.FLAG)
 		:Connect(redraw)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HUD.AUTO_TOOL_FLAG)
+		:Connect(redraw)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. TIDY_FLAG)
 		:Connect(redraw)
 	local camera = Workspace.CurrentCamera
 	if camera then

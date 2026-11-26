@@ -126,6 +126,7 @@ LiveFlags.KEYS = {
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 	"helpersWindow", -- a Helpers button on the HUD, shown once a helper is hired, opens one row per helper: their name, level with Level up and its price, the line they wash first (tap to change) and Rename; a helper not hired yet shows their price at their pad, and Lou his pass in the Shop (UI/HelpersWindow, HelperViewRules, issue 526 item 3); off by default
 	"buttonArrive", -- a HUD button that unlocks while the player is in the game arrives with Motion-FX's small pop, tilt and twinkle, once (Effects/Arrive from UI/HUD/SideButtons, issue 528); buttons already there on join simply show; off by default
+	"hudTidy", -- the phone-friendly HUD: the side buttons become a 2 by 2 grid (Shop, Pets, Quests, More) with the rest in a More tray, the coins sit on a solid pill, the waiting faces leave the HUD and the starter pack becomes a side ad with its struck shop total and saving (HUD/SideButtons, HUD/StarterAd, issues 738 and 739); off by default
 	"leaveLines", -- while Roblox's menu is open, two big friendly lines above and below its leave screen, each true for this player now (the tip jar with a helper hired, tomorrow's check in gift) or left out; no guilt or hurry (UI/LeaveLines, LeaveLineRules, issue 726); off by default
 	"spawnSide", -- with spawnView on, the player spawns on the same spot turned a quarter to face the door line's side of the room, so the camera behind them starts in open room and not on the back wall's art (SpaLayout.spawnSpot, PlotService, issue 670); off by default
 	"respawnCamera", -- for 2 s after a respawn, while the player stands still and has not moved the camera, a camera looking more than 30 degrees from the new character's facing is made Scriptable for one frame behind the character, then Custom again, so Roblox's camera module drops its stale last transform and carries on from there (on a respawn the module's own turn is lost and the camera keeps its old yaw) (RespawnCameraController, issue 670); off by default
@@ -228,6 +229,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helpersWindow = true,
 	buttonArrive = true,
 	leaveLines = true,
+	hudTidy = true,
 	spawnSide = true,
 	respawnCamera = true,
 } :: { [string]: boolean }

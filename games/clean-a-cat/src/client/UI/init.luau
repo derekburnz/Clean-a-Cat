@@ -74,6 +74,7 @@ local SettingsCard = require(script:WaitForChild("Settings"))
 local ShopWindow = require(script:WaitForChild("ShopWindow"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
 local Spotlight = require(script:WaitForChild("Spotlight"))
+local StarterAd = require(script:WaitForChild("HUD"):WaitForChild("StarterAd"))
 local StarterWindow = require(script:WaitForChild("StarterWindow"))
 local SudsBubble = require(script:WaitForChild("SudsBubble"))
 local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
@@ -274,6 +275,11 @@ function UI.init()
 	SideButtons.build(root, function(name: string)
 		UI.open(name)
 	end)
+	-- the starter pack's side ad (switch hudTidy, issue 739) stands in for the Starter button
+	StarterAd.build(root, function()
+		UI.open(StarterViewRules.WINDOW)
+	end)
+	SideButtons.useAd(StarterAd)
 	Waiting.build(
 		root,
 		function() -- the waiting faces open "Who's next?" (switch queueWindow, #246)
@@ -647,6 +653,7 @@ end
 -- The starter pack window (StarterController): its three cards, the pack's price or nil, and the offer's end time.
 function UI.setStarter(items: { StarterViewRules.Item }, pack: number?, endsAt: number?)
 	StarterWindow.set(items, pack, endsAt)
+	StarterAd.set(items, pack)
 end
 
 -- The gift stand's card (GiftCardController): GiftController.state().
@@ -722,6 +729,7 @@ function UI.open(name: string)
 	end
 	local frame: Frame? = windows[name]
 	assert(frame ~= nil, `UI.open: no window {name}`)
+	SideButtons.closeTray()
 	Recap.setHidden(true)
 	frame.Visible = true
 	for _, listener in openedListeners do
