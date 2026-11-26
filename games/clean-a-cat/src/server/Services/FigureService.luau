@@ -33,7 +33,8 @@ local TOWNSFOLK_FLAG = "townsfolk"
 local SWAP_FLAG = "lineSwap" -- issue 571
 local REUSE_FLAG = "lineReuse" -- issues 571 and 570: the line is redrawn in place, each customer kept
 local LOOK_ATTRIBUTE = "LineLook" -- the customer's look number on their townsfolk figure, so a redraw finds them
-local STEP_UP_DELAY = 0.8 -- seconds a customer waits before stepping up into a leaver's place (issue 570)
+local STEP_UP_DELAY = 1.2 -- seconds a customer waits before stepping up into a leaver's place (issue 570; 0.8 s still
+-- overlapped the leaver's fading copy by half a stud in bug hunt B4)
 -- Model-Agent's townsfolk (#446), CleanACat_NPC_Customer_<name>. A look number n is TOWNSFOLK[n % #TOWNSFOLK + 1].
 local TOWNSFOLK = { "Sunny", "Mo", "Pip", "Rae", "Juno", "Bea", "Theo", "Kit" }
 local CUSTOMERS_FLAG = "customers"
@@ -100,6 +101,9 @@ local building: { [string]: boolean } = {}
 local lines: { [Player]: LineLooks.Line } = {}
 -- The look numbers of the townsfolk last put in each player's plot, front first, so the next draw knows who moved.
 local shown: { [Player]: { number } } = {}
+-- Each player's newest in-place redraw (lineReuse): a redraw whose figure loading yielded stops if a newer one began,
+-- so two quick redraws never both walk in the same newcomer (Review-QA's note on #596).
+local redraws: { [Player]: number } = {}
 local warned: { [string]: boolean } = {}
 
 local function warnOnce(key: string, text: string)
@@ -415,6 +419,8 @@ end
 -- step into a leaver's spot while the leaver walks off; a new customer is added on the pavement and walks in; one
 -- who left is taken away. Nothing else is rebuilt, so no other figure blinks or arrives late on any screen.
 local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line, folder: Instance)
+	local mine = (redraws[player] or 0) + 1
+	redraws[player] = mine
 	local drawn = table.move(line.looks, 1, math.min(#line.looks, maxShown()), 1, {})
 	local byLook: { [number]: Model } = {}
 	for _, child in folder:GetChildren() do
@@ -442,6 +448,12 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			continue
 		end
 		local made = townsfolkFor(look, kind, lineSpotOf(WalkRules.STREET_PLACE, slot))
+		if redraws[player] ~= mine then
+			if made then
+				made:Destroy()
+			end
+			return -- a newer redraw took over while this one loaded a figure
+		end
 		if made then
 			made:SetAttribute(PLACE_ATTRIBUTE, index)
 			made:SetAttribute(LOOK_ATTRIBUTE, look)
@@ -621,6 +633,7 @@ function FigureService.Start()
 		clear(player)
 		lines[player] = nil
 		shown[player] = nil
+		redraws[player] = nil
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(drawAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(drawAll)
