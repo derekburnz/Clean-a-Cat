@@ -393,55 +393,6 @@
        "CFrame": {
         "position": [
          0.0,
-         0.969,
-         -0.5747
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.285,
-       0.228,
-       0.0475
-      ],
-      "Color": [
-       0.4902,
-       0.3333,
-       0.2235
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_Toffee_Sit_Head",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
          1.0873,
          -0.6033
         ],
@@ -492,7 +443,7 @@
         "position": [
          0.0,
          1.0272,
-         -0.6033
+         -0.5842
         ],
         "orientation": [
          [
@@ -541,7 +492,7 @@
         "position": [
          0.0249,
          0.9825,
-         -0.6061
+         -0.5871
         ],
         "orientation": [
          [
@@ -590,7 +541,7 @@
         "position": [
          0.0848,
          0.9825,
-         -0.6033
+         -0.5842
         ],
         "orientation": [
          [
@@ -639,7 +590,7 @@
         "position": [
          -0.0249,
          0.9825,
-         -0.6061
+         -0.5871
         ],
         "orientation": [
          [
@@ -688,7 +639,7 @@
         "position": [
          -0.0848,
          0.9825,
-         -0.6033
+         -0.5842
         ],
         "orientation": [
          [
@@ -735,33 +686,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.3591,
-         1.0573,
+         0.2993,
+         0.9905,
          -0.5795
         ],
         "orientation": [
          [
-          1.0,
           0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
+          -1.0,
           0.0
          ],
          [
           0.0,
           0.0,
           1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
          ]
         ]
        }
       },
       "Size": [
-       0.1197,
-       0.0499,
-       0.0475
+       0.0475,
+       0.1117,
+       0.1117
       ],
       "Color": [
        0.9098,
@@ -774,7 +725,8 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
      }
     },
     {
@@ -784,33 +736,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3591,
-         1.0573,
+         -0.2993,
+         0.9905,
          -0.5795
         ],
         "orientation": [
          [
-          1.0,
           0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
+          -1.0,
           0.0
          ],
          [
           0.0,
           0.0,
           1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
          ]
         ]
        }
       },
       "Size": [
-       0.1197,
-       0.0499,
-       0.0475
+       0.0475,
+       0.1117,
+       0.1117
       ],
       "Color": [
        0.9098,
@@ -823,7 +775,8 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
      }
     },
     {

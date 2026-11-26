@@ -229,6 +229,11 @@ B_NECK, B_TAIL = (0.0, -0.1, 1.02), (0.2, 0.54)   # the tail root (x, y); it lie
 HEADS = {"walk": dict(c=(0.0, -0.22, 0.32), s=(1.0, 0.8, 0.84), fz=0.26, k=1.15, eye_dx=0.22, ear_x=0.3, ear=(0.32, 0.3)),
          "sit": dict(c=(0.0, -0.14, 0.28), s=(0.92, 0.74, 0.76), fz=0.24, k=1.05, eye_dx=0.21, ear_x=0.28, ear=(0.3, 0.3))}
 EYE_H = 0.26
+# The cheeks: a round blush under each eye's outer half. It was a strip 0.12 wide and 0.05 tall touching the eye's
+# outer bottom corner; the owner on 2026-11-26: "these little strips beside the cats eyes ... I can't tell what
+# they are and they look bad". Its middle out from the nose line and down from the eye line, and its radius, all
+# in units of the head's k.
+BLUSH_X, BLUSH_Z, BLUSH_R = 0.30, 0.207, 0.056
 # Body S standing at work: B's chest at B's height (so the sitting outfit and B's back props fit as they are) on two
 # short legs, A's head with its back over B's, and the front legs hanging from the shoulders as arms. Drawn at
 # SIT_SCALE like B, so a working cat is no taller than a sitting one.
@@ -491,18 +496,14 @@ def _head(spec, c, h):
     elif pat == "patches" and not spec.get("tuxedo"):
         b.box((-0.22 * w, cy + 0.05, top + 0.01), (0.34 * w, sy * 0.55, 0.06), c["second"], bevel=False)
         b.box((0.3 * w, fy + 0.01, fz + 0.12), (0.2, 0.06, 0.26), c["third"], bevel=False)
-    elif pat == "points":                               # a small dark muzzle under the eyes, not a mask round them
-        b.box((0, fy + 0.005, fz - 0.24), (0.3 * w, 0.05, 0.24), c["second"], bevel=False)
     elif pat == "gradient":                             # the back of the head fades into the second colour
         lift = 0.06 if h.get("arms") else 0.0           # S: the band's sharp lower corners keep off a waving arm
         b.box((0, cy + sy * 0.3, cz + lift / 2), (sx + 0.03, sy * 0.42, sz + 0.03 - lift), c["second"], bevel=False)
     if spec.get("tiles"):                               # #2584 the Mosaic Cat: four tiles on the crown
         _top_tiles(b, c, 0.0, cy + 0.04, top, 2, 2, sx * 0.34, sy * 0.4)
     surf, under = fy, c["fur"]                          # the face the mouth is drawn on, and its colour
-    if pat == "points":
-        surf, under = fy - 0.02, c["second"]
     if c.get("muzzle") and c["muzzle"] != c["fur"]:
-        # 0.02 proud like the points muzzle, so its front keeps 0.025 behind the eyes': on B and S (drawn at 0.95)
+        # 0.02 proud of the face, so its front keeps 0.025 behind the eyes': on B and S (drawn at 0.95)
         # 0.015 came out under rbx_zfight's reach, which pushed the muzzle out over the nose and mouth (Derek 11-02)
         b.box((0, fy + 0.015, fz - 0.15 * k), (0.36 * k, 0.07, 0.2 * k), c["muzzle"], bevel=False)
         surf, under = fy - 0.02, c["muzzle"]
@@ -521,9 +522,10 @@ def _head(spec, c, h):
               rot=_rot(ang, "Y") if ang else None)
     b.box((0, fy - 0.025, fz - 0.11 * k), (0.1 * k, 0.06, 0.07 * k), c["nose"], bevel=False)
     _mouth(b, surf, fz - 0.145 * k, k, "fur_grey" if palette.lstar(under) < 35 else "fur_black")
-    for side in (-1, 1):
-        bx = side * (h["eye_dx"] + 0.15) * k
-        b.box((bx, fy, fz - 0.14 * k), (0.12 * k, 0.05, 0.05 * k), "blush", bevel=False)
+    for side in (-1, 1):                                # a round cheek under each eye's outer half, clear of the eye
+        # ten sides: twelve put the Bathtile Cat's sitting model 4 triangles over its budget; the Part is a true Cylinder
+        b.cyl((side * BLUSH_X * k, fy, fz - BLUSH_Z * k), BLUSH_R * k, 0.05, "blush", segments=10, bevel=False,
+              rot=(math.radians(90), "X"))
     if spec.get("persian") or spec.get("fluffy"):       # cheek fluff either side of the face
         for side in (-1, 1):
             b.box((side * (sx / 2 + 0.02), fy + 0.14, fz - 0.2), (0.14, 0.26, 0.3), c["second"])

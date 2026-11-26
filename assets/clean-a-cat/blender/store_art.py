@@ -511,6 +511,7 @@ def _face_mud(mat, cat):
     patch(xe, elo.x - 0.035, elo.z + 0.03, top - 3 * c)                    # down the temple beside the eye
     patch(xe, elo.x + 0.02, elo.z - 0.05, elo.z + 0.03)                    # round under its corner
     patch(xe, ehi.x - 0.05, bot + c, elo.z - 0.05)                         # the cheek: two steps
+    patch(elo.x + 0.02, ehi.x - 0.05, elo.z - 0.05, elo.z - 0.012)         # and up to the eye, over the round cheek (#771)
     patch(xe + 0.05, ehi.x + 0.02, bot, bot + c)
     patch(xe + 0.07, xe + 0.22, top - 0.115, top - 0.05, "mud_wet", 0.006)  # wet shine
     patch(xe + 0.06, xe + 0.18, bot + 0.075, bot + 0.125, "mud_wet", 0.006)

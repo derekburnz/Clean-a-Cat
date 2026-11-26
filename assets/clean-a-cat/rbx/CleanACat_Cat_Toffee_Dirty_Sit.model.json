@@ -410,55 +410,6 @@
        "CFrame": {
         "position": [
          0.0,
-         0.969,
-         -0.5747
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.285,
-       0.228,
-       0.0475
-      ],
-      "Color": [
-       0.4902,
-       0.3333,
-       0.2235
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Cat_Toffee_Dirty_Sit_Head",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
          1.0873,
          -0.6033
         ],
@@ -509,7 +460,7 @@
         "position": [
          0.0,
          1.0272,
-         -0.6033
+         -0.5842
         ],
         "orientation": [
          [
@@ -558,7 +509,7 @@
         "position": [
          0.0249,
          0.9825,
-         -0.6061
+         -0.5871
         ],
         "orientation": [
          [
@@ -607,7 +558,7 @@
         "position": [
          0.0848,
          0.9825,
-         -0.6033
+         -0.5842
         ],
         "orientation": [
          [
@@ -656,7 +607,7 @@
         "position": [
          -0.0249,
          0.9825,
-         -0.6061
+         -0.5871
         ],
         "orientation": [
          [
@@ -705,7 +656,7 @@
         "position": [
          -0.0848,
          0.9825,
-         -0.6033
+         -0.5842
         ],
         "orientation": [
          [
@@ -752,33 +703,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.3591,
-         1.0573,
+         0.2993,
+         0.9905,
          -0.5795
         ],
         "orientation": [
          [
-          1.0,
           0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
+          -1.0,
           0.0
          ],
          [
           0.0,
           0.0,
           1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
          ]
         ]
        }
       },
       "Size": [
-       0.1197,
-       0.0499,
-       0.0475
+       0.0475,
+       0.1117,
+       0.1117
       ],
       "Color": [
        0.9098,
@@ -791,7 +742,8 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
      }
     },
     {
@@ -801,33 +753,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.3591,
-         1.0573,
+         -0.2993,
+         0.9905,
          -0.5795
         ],
         "orientation": [
          [
-          1.0,
           0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
+          -1.0,
           0.0
          ],
          [
           0.0,
           0.0,
           1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
          ]
         ]
        }
       },
       "Size": [
-       0.1197,
-       0.0499,
-       0.0475
+       0.0475,
+       0.1117,
+       0.1117
       ],
       "Color": [
        0.9098,
@@ -840,7 +792,8 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
      }
     },
     {
@@ -3533,7 +3486,7 @@
          "CFrame": {
           "position": [
            -0.494,
-           1.2255,
+           1.235,
            -0.3415
           ],
           "orientation": [
@@ -3611,7 +3564,7 @@
          "CFrame": {
           "position": [
            -0.494,
-           1.2255,
+           1.235,
            -0.3415
           ],
           "orientation": [
@@ -3660,7 +3613,7 @@
          "CFrame": {
           "position": [
            -0.494,
-           1.2255,
+           1.235,
            -0.3415
           ],
           "orientation": [
@@ -3707,7 +3660,7 @@
        "OptionalCFrame": {
         "position": [
          -0.437,
-         1.2255,
+         1.235,
          -0.3415
         ],
         "orientation": [
@@ -3747,7 +3700,7 @@
          "CFrame": {
           "position": [
            0.494,
-           1.2255,
+           1.235,
            -0.3415
           ],
           "orientation": [
@@ -3825,7 +3778,7 @@
          "CFrame": {
           "position": [
            0.494,
-           1.2255,
+           1.235,
            -0.3415
           ],
           "orientation": [
@@ -3874,7 +3827,7 @@
          "CFrame": {
           "position": [
            0.494,
-           1.2255,
+           1.235,
            -0.3415
           ],
           "orientation": [
@@ -3921,7 +3874,7 @@
        "OptionalCFrame": {
         "position": [
          0.437,
-         1.2255,
+         1.235,
          -0.3415
         ],
         "orientation": [
@@ -4174,7 +4127,7 @@
          "CFrame": {
           "position": [
            -0.5016,
-           1.0725,
+           1.082,
            -0.3852
           ],
           "orientation": [
@@ -4263,7 +4216,7 @@
          "CFrame": {
           "position": [
            -0.521,
-           1.1404,
+           1.1499,
            -0.3013
           ],
           "orientation": [
@@ -4321,7 +4274,7 @@
        "OptionalCFrame": {
         "position": [
          -0.5016,
-         1.0725,
+         1.082,
          -0.3852
         ],
         "orientation": [
@@ -4360,7 +4313,7 @@
          "CFrame": {
           "position": [
            0.5016,
-           1.0725,
+           1.082,
            -0.3852
           ],
           "orientation": [
@@ -4449,7 +4402,7 @@
          "CFrame": {
           "position": [
            0.521,
-           1.174,
+           1.1835,
            -0.4222
           ],
           "orientation": [
@@ -4507,7 +4460,7 @@
        "OptionalCFrame": {
         "position": [
          0.5016,
-         1.0725,
+         1.082,
          -0.3852
         ],
         "orientation": [
@@ -4547,7 +4500,7 @@
           "position": [
            0.0,
            1.653,
-           0.0052
+           -0.0014
           ],
           "orientation": [
            [
@@ -4636,7 +4589,7 @@
           "position": [
            0.0181,
            1.6701,
-           0.0987
+           0.0921
           ],
           "orientation": [
            [
@@ -4694,7 +4647,7 @@
         "position": [
          0.0,
          1.653,
-         0.0052
+         -0.0014
         ],
         "orientation": [
          [

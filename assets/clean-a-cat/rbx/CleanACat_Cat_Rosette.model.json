@@ -2405,33 +2405,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.4255,
-         0.949,
+         0.345,
+         0.872,
          -0.92
         ],
         "orientation": [
          [
-          1.0,
           0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
+          -1.0,
           0.0
          ],
          [
           0.0,
           0.0,
           1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
          ]
         ]
        }
       },
       "Size": [
-       0.138,
-       0.0575,
-       0.05
+       0.05,
+       0.1288,
+       0.1288
       ],
       "Color": [
        0.9098,
@@ -2444,7 +2444,8 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
      }
     },
     {
@@ -2454,33 +2455,33 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.4255,
-         0.949,
+         -0.345,
+         0.872,
          -0.92
         ],
         "orientation": [
          [
-          1.0,
           0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
+          -1.0,
           0.0
          ],
          [
           0.0,
           0.0,
           1.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
          ]
         ]
        }
       },
       "Size": [
-       0.138,
-       0.0575,
-       0.05
+       0.05,
+       0.1288,
+       0.1288
       ],
       "Color": [
        0.9098,
@@ -2493,7 +2494,8 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
      }
     },
     {
