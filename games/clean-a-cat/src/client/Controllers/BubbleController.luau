@@ -181,7 +181,7 @@ end
 local function due(): BubbleRules.Bubble?
 	if
 		not LiveFlags.isOn(BubbleRules.FLAG)
-		or UI.busy()
+		or UI.bubbleBlocked()
 		or catInTub()
 		or player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == true
 		or SudsRules.cleanStage(player:GetAttribute(SudsRules.ATTRIBUTE)) == SudsRules.BOX -- the kitten hops to the tub
@@ -274,7 +274,7 @@ local function check()
 		freeSince = now -- a bubble just going is no free screen (Review-QA on #300)
 		return
 	end
-	if UI.busy() or catInTub() or FloorTrail.isShown() then
+	if UI.bubbleBlocked() or catInTub() or FloorTrail.isShown() then
 		freeSince = now
 		return
 	end
