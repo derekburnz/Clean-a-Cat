@@ -33,6 +33,7 @@ local TOWNSFOLK_FLAG = "townsfolk"
 local SWAP_FLAG = "lineSwap" -- issue 571
 local REUSE_FLAG = "lineReuse" -- issues 571 and 570: the line is redrawn in place, each customer kept
 local LOOK_ATTRIBUTE = "LineLook" -- the customer's look number on their townsfolk figure, so a redraw finds them
+local LEAVING_ATTRIBUTE = "LineLeaving" -- a leaver's figure waiting for the redraw to take it away
 local STEP_UP_DELAY = 1.2 -- seconds a customer waits before stepping up into a leaver's place (issue 570; 0.8 s still
 -- overlapped the leaver's fading copy by half a stud in bug hunt B4)
 -- Model-Agent's townsfolk (#446), CleanACat_NPC_Customer_<name>. A look number n is TOWNSFOLK[n % #TOWNSFOLK + 1].
@@ -425,7 +426,11 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 	local byLook: { [number]: Model } = {}
 	for _, child in folder:GetChildren() do
 		local look = child:GetAttribute(LOOK_ATTRIBUTE)
-		if child:IsA("Model") and type(look) == "number" then
+		if
+			child:IsA("Model")
+			and type(look) == "number"
+			and child:GetAttribute(LEAVING_ATTRIBUTE) ~= true
+		then
 			byLook[look] = child :: Model
 		end
 	end
@@ -561,7 +566,18 @@ end
 -- heartBar), before it resends the line: they and their look go, and everyone behind moves up.
 function FigureService.left(player: Player, index: number)
 	local _, folder = folderOf(player)
-	if folder and LiveFlags.isOn(SWAP_FLAG) then
+	-- With lineReuse the leaver's figure stays until the redraw, which takes it away in the same frame the newcomer comes,
+	-- so the line never counts one short for a frame (bug hunt B4); the device hides it beside its walk off copy itself
+	-- (Effects/CustomerLeave, #612).
+	local inPlace = LiveFlags.isOn(REUSE_FLAG) and LiveFlags.isOn(TOWNSFOLK_FLAG)
+	if folder and inPlace then
+		for _, figure in folder:GetChildren() do
+			if figure:GetAttribute(PLACE_ATTRIBUTE) == index then
+				-- never taken for a newcomer with the same look; its place stays, for CustomerLeft's copy on the device
+				figure:SetAttribute(LEAVING_ATTRIBUTE, true)
+			end
+		end
+	elseif folder and LiveFlags.isOn(SWAP_FLAG) then
 		-- (switch lineSwap) the leaver's figure goes now: CustomerLeft went first, so their device already made the
 		-- walk off copy, and the real figure is not shown beside it until the line is redrawn (issue 571)
 		for _, figure in folder:GetChildren() do
