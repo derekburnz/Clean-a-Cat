@@ -26,6 +26,7 @@ local Client = script.Parent.Parent
 local Carry = require(Client:WaitForChild("Effects"):WaitForChild("Carry"))
 local ControlHold = require(Client:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local FloorTrail = require(Client:WaitForChild("Spa"):WaitForChild("FloorTrail"))
+local PromptFocus = require(Client:WaitForChild("Spa"):WaitForChild("PromptFocus"))
 local WashView = require(Client:WaitForChild("Spa"):WaitForChild("WashView"))
 
 local CarryController = {}
@@ -92,7 +93,13 @@ local function letGo()
 end
 
 -- A tap target at `cframe`: an invisible part with a prompt.
-local function promptAt(cframe: CFrame, size: Vector3, action: string, fn: () -> ())
+local function promptAt(
+	cframe: CFrame,
+	size: Vector3,
+	action: string,
+	fn: () -> (),
+	focus: boolean?
+)
 	clearPrompt()
 	local anchor = Instance.new("Part")
 	anchor.Name = "CleanACat_CarryPrompt"
@@ -114,6 +121,9 @@ local function promptAt(cframe: CFrame, size: Vector3, action: string, fn: () ->
 	p.Parent = anchor
 	anchor.Parent = Workspace
 	prompt = anchor
+	if focus then
+		PromptFocus.claim(p) -- with the cat in their arms, the tub's prompt always wins (switch promptFocus, #540)
+	end
 end
 
 -- Sends `name` now and again every RESEND_SECONDS while the cat is still `from` in this turn; `onGiveUp` when the
@@ -307,7 +317,7 @@ function leadToTub()
 		trailShown = true
 		FloorTrail.show(SpaLayout.tubSpot().Position)
 	end
-	promptAt(seat, Vector3.new(4, 3, 4), "Put in tub", putIn)
+	promptAt(seat, Vector3.new(4, 3, 4), "Put in tub", putIn, true)
 end
 
 -- The cat is in the tub (the attribute cleared): the copy goes, and ScrubController's cat takes its place. The wash

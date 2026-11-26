@@ -96,6 +96,7 @@ LiveFlags.KEYS = {
 	"washMeter", -- a fill bar at the top over the wash's area steps (scrub, brush, lather, a new spray-off rinse, claws); at about 90 percent the cat shakes off the rest and the next step starts (the owner's 2026-11-25 salon video note, ScrubController, WashMeter); off by default
 	"dirtLevels", -- each customer's cat comes at a dirt level 1 to 4, rarer cats dirtier: more mud and tangles, more steps (the bath from level 2, the claws from 3, no station needed) and more pay (the owner's 2026-11-25 pick, DirtRules); off by default
 	"heartBar", -- each waiting customer's cat has a heart bar that drains; picked early it pays a bonus, at empty the customer leaves (never before 10 minutes of play, never before the first serve), and the pay is base x wash stars x early x dirt with a recap line each (the owner's 2026-11-25 picks, HeartRules, issue 507); off by default
+	"promptFocus", -- while the player holds a cat or Suds, the tub's "Put in tub" or "Wash him" is the only prompt on their device, so a board's prompt nearby never takes the pill (Spa/PromptFocus, Review-QA's pass A, #540); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -164,6 +165,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	washMeter = true,
 	dirtLevels = true,
 	heartBar = true,
+	promptFocus = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
