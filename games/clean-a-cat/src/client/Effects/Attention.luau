@@ -16,8 +16,8 @@
 -- per-player count lives with the caller (the save or the controller), not here.
 --
 -- Client only and cosmetic. It steps only while the button is visible inside an enabled ScreenGui, and lets go by
--- itself when the button is destroyed. Any HUD button can use it. The stars are drawn from Frames (two crossed
--- rounded bars each), so they need no font glyph and no image upload.
+-- itself when the button is destroyed. Any HUD button can use it. The stars are the HUD's Sparkle icon
+-- (UI/HUD/Icons), already uploaded to the group.
 --
 -- API
 --   Attention.start(button, bobs?) -> Handle   plays `bobs` (default DEFAULT_BOBS) bobs with sparkles, then settles;
@@ -28,6 +28,8 @@
 local RunService = game:GetService("RunService")
 
 local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
+local Icons =
+	require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("HUD"):WaitForChild("Icons"))
 
 local Attention = {}
 
@@ -45,8 +47,6 @@ Attention.SPOTS = table.freeze({
 	{ x = 1.0, y = 0.42, size = 0.28 },
 	{ x = 0.1, y = 0.94, size = 0.24 },
 })
-local GOLD = Color3.fromRGB(255, 226, 120)
-local WHITE = Color3.fromRGB(255, 255, 255)
 
 function Attention.bob(t: number): number
 	return 1 + Attention.BOB_SIZE * 0.5 * (1 - math.cos(2 * math.pi * t / Attention.BOB_SECONDS))
@@ -85,47 +85,31 @@ end
 
 export type Handle = { stop: () -> () }
 
-type Star = { holder: Frame, bars: { Frame } }
+type Star = { holder: ImageLabel }
 
 local function makeStar(button: GuiObject, i: number): Star
 	local spot = Attention.SPOTS[i]
-	local holder = Instance.new("Frame")
+	-- the HUD's own Sparkle icon (Review-QA after #553: crossed bars beside a button read as a plus or a close mark)
+	local holder = Instance.new("ImageLabel")
 	holder.Name = "AttentionSparkle" .. i
 	holder.BackgroundTransparency = 1
 	holder.AnchorPoint = Vector2.new(0.5, 0.5)
 	holder.Position = UDim2.fromScale(spot.x, spot.y)
 	holder.Size = UDim2.fromScale(spot.size, spot.size)
 	holder.SizeConstraint = Enum.SizeConstraint.RelativeYY
+	holder.ScaleType = Enum.ScaleType.Fit
+	holder.Image = Icons.IMAGES.Sparkle
+	holder.ImageTransparency = 1
 	holder.ZIndex = button.ZIndex + 2
-	local bars: { Frame } = {}
-	-- a four-point twinkle: a long bar and a cross bar, rounded, so it reads as a shine at any size
-	for b = 1, 2 do
-		local bar = Instance.new("Frame")
-		bar.Name = "Bar"
-		bar.BorderSizePixel = 0
-		bar.BackgroundColor3 = if i == 2 then WHITE else GOLD
-		bar.BackgroundTransparency = 1
-		bar.AnchorPoint = Vector2.new(0.5, 0.5)
-		bar.Position = UDim2.fromScale(0.5, 0.5)
-		bar.Size = if b == 1 then UDim2.fromScale(0.22, 1) else UDim2.fromScale(1, 0.22)
-		bar.ZIndex = holder.ZIndex
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(1, 0)
-		corner.Parent = bar
-		bar.Parent = holder
-		table.insert(bars, bar)
-	end
 	holder.Parent = button
-	return { holder = holder, bars = bars }
+	return { holder = holder }
 end
 
 local function show(star: Star, i: number, scale: number, seen: number, degrees: number)
 	local size = Attention.SPOTS[i].size * scale
 	star.holder.Size = UDim2.fromScale(size, size)
 	star.holder.Rotation = degrees
-	for _, bar in star.bars do
-		bar.BackgroundTransparency = seen
-	end
+	star.holder.ImageTransparency = seen
 end
 
 function Attention.start(button: GuiObject, bobs: number?): Handle
