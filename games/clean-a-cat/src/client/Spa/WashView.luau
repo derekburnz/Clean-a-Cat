@@ -74,13 +74,12 @@ local function shotFor(where: CFrame, cat: Model?): CFrame
 	end
 	if cat and cat.Parent then
 		local box, size = cat:GetBoundingBox()
-		local look = box.Position + Vector3.yAxis * WashCamera.SCENE.boxLookAbove
-		local from = WashScreenRules.frontFrom(
-			look,
-			cat:GetPivot().LookVector,
-			WashCamera.sceneDistanceFor(size.Y),
-			eyeHeight(cat)
-		)
+		-- (issue 924) framed smaller and a little lower than the old shot, clear of the step dots and the tool tray
+		local fov = WashCamera.SCENE.fov
+		local distance = WashScreenRules.frontDistance(size.Y, fov)
+		local look = box.Position + Vector3.yAxis * WashScreenRules.frontLookUp(distance, fov)
+		local from =
+			WashScreenRules.frontFrom(look, cat:GetPivot().LookVector, distance, eyeHeight(cat))
 		return CFrame.lookAt(from, look)
 	end
 	local look = where.Position + Vector3.yAxis * WashCamera.SCENE.lookUp
