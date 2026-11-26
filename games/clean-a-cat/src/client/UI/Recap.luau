@@ -564,6 +564,7 @@ local function redraw()
 		else UDim2.new(1, 0, 0, chipHeight)
 	p.rarityChip.Size = UDim2.fromOffset(0, s.chip)
 	p.rarityChip.BackgroundColor3 = Kit.RARITY[recap.rarity] or Kit.RARITY.Common
+	Kit.rim(p.rarityChip, recap.rarity, Kit.INK)
 	p.rarityText.TextSize = s.chipText
 	p.rarityText.Text = recap.rarity
 	p.newChip.Visible = recap.isNew

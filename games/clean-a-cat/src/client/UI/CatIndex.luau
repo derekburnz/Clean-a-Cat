@@ -223,7 +223,7 @@ local function drawCard(card: IndexViewRules.Card, grid: Frame, order: number, s
 	Kit.corner(holder, UDim.new(0, 16))
 	local edge = Kit.stroke(holder, 4)
 	edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	edge.Color = Kit.RARITY[card.rarity] or Kit.INK
+	edge.Color = Kit.RARITY_RIM[card.rarity] or Kit.RARITY[card.rarity] or Kit.INK
 	holder.Parent = grid
 
 	local tileBox = frame("TileBox", holder)
@@ -353,6 +353,7 @@ redraw = function()
 	p.detailName.Size = UDim2.fromOffset(0, s.name + 6)
 	p.detailName.Text = cat
 	p.detailRarity.BackgroundColor3 = Kit.RARITY[rarity] or Kit.RARITY.Common
+	Kit.rim(p.detailRarity, rarity, Kit.INK)
 	p.detailRarityText.Text = rarity
 	-- New! sits beside the rarity chip, never on the portrait (Design-Agent).
 	p.detailNew.Visible = newCats[cat] == true
@@ -505,7 +506,9 @@ function CatIndex.build(root: Instance): Frame
 		Kit.corner(tab, UDim.new(0.5, 0))
 		local edge = Kit.stroke(tab, 3)
 		edge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-		edge.Color = if name == "All" then Kit.INK else (Kit.RARITY[name] or Kit.INK)
+		edge.Color = if name == "All"
+			then Kit.INK
+			else (Kit.RARITY_RIM[name] or Kit.RARITY[name] or Kit.INK)
 		local tabMin = Instance.new("UISizeConstraint")
 		tabMin.MinSize = Vector2.new(64, 0) -- "All" stays a full touch target (64 design px is 48 real at the smallest scale)
 		tabMin.Parent = tab
