@@ -26,7 +26,7 @@ faces there (the Attachment's LookVector), all at floor height:
                        Bath beside the tub and a little behind it, and the Pawdicure in front of the bath
   SpotVipDoor          the middle of the VIP Room door, facing into the room
   SpotWorkerJo, Sam, Lou   the three workers' wash stands (worker_stations.py, #527), in a row along the back wall
-                       between the back door and the VIP Room door, 4.9 apart, facing the entrance side
+                       between the back door and the VIP Room door, 4 apart, facing the entrance side
   SpotBoard            the chance board (CleanACat_Prop_ChanceBoard stands here), beside the entrance, facing in
   SpotMascot           the mascot's bed (CleanACat_Prop_SudsBed, #297), just inside the entrance between the door
                        and the chance board, turned to look across the room at the tub
@@ -102,11 +102,11 @@ SPOTS = {
     "SpotBox": (0.0, -30.6, 0.0, 0.0),
     "SpotBump": (7.5, -37.6, -0.28, 90.0),
     "SpotBoard": (13.5, ROOM_Y[0] + 1.4, 0.0, 180.0),
-    # The workers' wash stands (#527): the back wall between the doors is 12 studs and three stands are 14.7, so
-    # Jo's mat reaches 1.5 studs across the VIP door's 8 and Lou's plant 1.1 across the back door's 6.
-    "SpotWorkerJo": (2.1, 6.5, 0.0, 0.0),
-    "SpotWorkerSam": (-2.8, 6.5, 0.0, 0.0),
-    "SpotWorkerLou": (-7.7, 6.5, 0.0, 0.0),
+    # The workers' wash stands (#527): the back wall between the doors is 12 studs (BACK_DOOR's end to VIP_DOOR's
+    # start) and a stand is 4 wide, so three stand side by side on it and neither door is crossed.
+    "SpotWorkerJo": (1.0, 6.5, 0.0, 0.0),
+    "SpotWorkerSam": (-3.0, 6.5, 0.0, 0.0),
+    "SpotWorkerLou": (-7.0, 6.5, 0.0, 0.0),
 }
 # Floor pads that show each spot in the graybox: (spot, size x, size y, swatch)
 PADS = [("SpotTub", 5.4, 4.6, "spa_sky"), ("SpotSpawn", 2.4, 2.4, "shirt_green"),

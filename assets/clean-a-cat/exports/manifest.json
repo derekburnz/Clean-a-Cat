@@ -16713,18 +16713,19 @@
   "objects": [
    "CleanACat_Station_WashStandJo",
    "CleanACat_Station_WashStandJo_Water",
-   "CleanACat_Station_WashStandJo_Foam"
+   "CleanACat_Station_WashStandJo_Foam",
+   "CleanACat_Station_WashStandJo_Decor"
   ],
   "triangles": 1872,
   "budget": 2500,
   "parts": 47,
   "size_studs": {
-   "x": 4.59,
+   "x": 4.0,
    "y": 4.25,
    "z": 4.79
   },
   "size_roblox": [
-   4.59,
+   4.0,
    4.79,
    4.25
   ],
@@ -16744,7 +16745,7 @@
     "uv": "1220 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.16 y=-0.08",
+    "centered": "footprint center x=0.00 y=-0.08",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -16758,20 +16759,21 @@
   "objects": [
    "CleanACat_Station_WashStandLou",
    "CleanACat_Station_WashStandLou_Water",
-   "CleanACat_Station_WashStandLou_Foam"
+   "CleanACat_Station_WashStandLou_Foam",
+   "CleanACat_Station_WashStandLou_Decor"
   ],
   "triangles": 2380,
   "budget": 2500,
   "parts": 56,
   "size_studs": {
-   "x": 4.89,
-   "y": 4.54,
-   "z": 4.3
+   "x": 4.0,
+   "y": 4.52,
+   "z": 4.78
   },
   "size_roblox": [
-   4.89,
-   4.3,
-   4.54
+   4.0,
+   4.78,
+   4.52
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -16789,7 +16791,7 @@
     "uv": "1554 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=0.01 y=0.07",
+    "centered": "footprint center x=0.00 y=0.06",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -16803,18 +16805,19 @@
   "objects": [
    "CleanACat_Station_WashStandSam",
    "CleanACat_Station_WashStandSam_Water",
-   "CleanACat_Station_WashStandSam_Foam"
+   "CleanACat_Station_WashStandSam_Foam",
+   "CleanACat_Station_WashStandSam_Barrier"
   ],
-  "triangles": 2356,
+  "triangles": 2368,
   "budget": 2500,
-  "parts": 57,
+  "parts": 58,
   "size_studs": {
-   "x": 4.95,
+   "x": 4.0,
    "y": 4.58,
    "z": 4.22
   },
   "size_roblox": [
-   4.95,
+   4.0,
    4.22,
    4.58
   ],
@@ -16828,13 +16831,13 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "2356/2500 tris",
+    "budget": "2368/2500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1512 faces on swatch centers",
+    "uv": "1518 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
-    "centered": "footprint center x=-0.03 y=0.09",
+    "centered": "footprint center x=0.00 y=0.09",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
