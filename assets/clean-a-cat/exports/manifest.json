@@ -224,12 +224,13 @@
    "CleanACat_Area_SpaPlot_Bands",
    "CleanACat_Area_SpaPlot_Tiles",
    "CleanACat_Area_SpaPlot_Decor",
+   "CleanACat_Area_SpaPlot_WallArt",
    "CleanACat_Area_SpaPlot_Glow",
    "CleanACat_Area_SpaPlot_Flowers"
   ],
-  "triangles": 4564,
+  "triangles": 4504,
   "budget": 25000,
-  "parts": 220,
+  "parts": 219,
   "size_studs": {
    "x": 44.0,
    "y": 48.0,
@@ -248,13 +249,13 @@
    "warnings": [],
    "qa_accepted": {
     "shared corners": 1,
-    "back to back": 6
+    "back to back": 8
    },
    "checks": {
-    "budget": "4564/25000 tris",
+    "budget": "4504/25000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2722 faces on swatch centers",
+    "uv": "2678 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00",
