@@ -71,6 +71,12 @@ Remotes.ClientToServer = {
 	"RequestGiftCheck", -- ()  1 every 2 s; switches on: asks Roblox whether the player is in the group, shown as GiftGroup
 	"RequestGiftClaim", -- ()  1 every 2 s; switches on, save loaded, the stand lit for this player, the favourite saved
 	-- and the player in the group (asked again on the server): gives Starcoat once and writes the save
+	-- Free Rewards rows on the gift card (FreeRewardService, behind freeRewards, giftStand and pets).
+	"RequestLikeAsk", -- ()  1 a second; switches on, save loaded, never asked and not paid: stamps likeAskedAt once
+	-- (server os.time()); FreeLikeReadyAt shows when Claim unlocks. The like itself is never read or needed
+	"RequestFreeReward", -- (key: "like" | "play")  1 a second; switches on, save loaded, that row not paid yet; like:
+	-- asked FreeRewardRules.LIKE_WAIT (10) or more seconds ago, pays 150 coins; play: 1800 s of play in total, gives
+	-- one normal crate. Each once per save
 	-- Visiting (VisitService, behind visiting).
 	"RequestVisiting", -- (allowed: boolean)  1 a second; switch on, save loaded: the owner lets other players into
 	-- their spa or not (save.visiting); while not, visitors inside are moved out
@@ -109,6 +115,8 @@ Remotes.ServerToClient = {
 	"Quests", -- (quests: { { id, text, goal, progress, coins, weekly: boolean, done: boolean } }, weeklyCrate: boolean)  the open
 	-- quests, today's daily ones first, and whether this week's crate is taken (switch quests)
 	"CrateOpened", -- (kind: string, pet: { id, kind, star })  the crate the player tapped and the pet in it (switch pets)
+	"HelperPaid", -- (id: one of WorkerRules.IDS, coins: number)  that helper just finished a cat and paid this many coins
+	-- into the save: a popup over their stand, only for the owner (switch helperPopups, issue 743)
 	"PetFused", -- (pet: { id, kind, star })  three pets fused into this one, a star higher (switch pets)
 	"Pets", -- (pets: { { id, kind, star, slot? } })  every pet the player owns, after each change (switch pets)
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view

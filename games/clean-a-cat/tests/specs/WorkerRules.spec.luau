@@ -143,5 +143,14 @@ return function()
 				expect(value(after, "WorkerLevel_Sam")).to.equal(nil)
 			end
 		)
+
+		it("ships the pay popup and the HUD tidy behind switches that start off", function()
+			local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+			for _, flag in { WorkerRules.POPUP_FLAG, WorkerRules.HUD_TIDY_FLAG } do
+				expect(table.find(LiveFlags.KEYS, flag)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[flag]).to.equal(true)
+				expect(LiveFlags.resolve(flag, nil)).to.equal(false)
+			end
+		end)
 	end)
 end

@@ -110,6 +110,8 @@ export type Save = {
 	asks: { [string]: boolean }, -- first session asks and HUD unlocks already shown, by ask id (issue 522)
 	giftClaimed: boolean, -- the gift stand's pet (issue 521) is granted
 	giftFavourite: boolean, -- the player said they favourited, as the client told it (only for that cosmetic)
+	freeRewards: { play: boolean, like: boolean }, -- the gift card's Free Rewards rows already paid (issue 730)
+	likeAskedAt: number, -- os.time() the card's like ask was first opened, 0 before (FreeRewardRules; never a like)
 	visiting: boolean, -- others may visit this spa (issue 520)
 	jarCoins: number, -- the tip jar's coins waiting (issue 517)
 	jarAt: number, -- os.time() the jar was last filled or emptied
@@ -165,6 +167,8 @@ function SaveSchema.template(now: number): Save
 		asks = {},
 		giftClaimed = false,
 		giftFavourite = false,
+		freeRewards = { play = false, like = false },
+		likeAskedAt = 0,
 		visiting = true,
 		jarCoins = 0,
 		jarAt = 0,

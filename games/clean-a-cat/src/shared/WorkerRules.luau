@@ -15,6 +15,8 @@ local DirtRules = require(script.Parent:WaitForChild("DirtRules"))
 local WorkerRules = {}
 
 WorkerRules.FLAG = "workers"
+WorkerRules.POPUP_FLAG = "helperPopups" -- a helper's pay goes to the HelperPaid remote (a popup over their stand), no toast
+WorkerRules.HUD_TIDY_FLAG = "hudTidy" -- the stand's Level up prompt leaves the world: levels are bought in the Helpers window
 WorkerRules.PROGRESS_ATTRIBUTE = "WorkerProgress" -- 0 to 1 on the cat a worker washes (Motion-FX's WorkerBar)
 WorkerRules.WORKER_ATTRIBUTE = "Worker" -- the worker's id on that cat and on their station
 WorkerRules.WASHING_ATTRIBUTE = "Washing" -- true on the staff model while they wash a cat (Motion-FX's staff motion)
