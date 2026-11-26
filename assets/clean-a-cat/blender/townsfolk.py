@@ -11,9 +11,10 @@ with new looks in our colours, cut at the joints so they can walk, and with a ha
       ..._Body                      the main object: torso, hips, skirt, neck, scarf, hood or backpack. Its biggest
                                     part is the PrimaryPart.
       ..._Head                      child Model, pivot at the top of the neck: face, hair, hat, glasses
-      ..._ArmL, ..._ArmR            child Models, pivot at the shoulder. The left arm hangs straight down (with the
-                                    look's tote bag when it has one). The right arm is built already held out to the
-                                    side by `CarryArmDegrees`, so the carrier hangs clear of the leg.
+      ..._ArmL, ..._ArmR            child Models, pivot at the shoulder. Both arms hang straight down (the left one
+                                    with the look's tote bag when it has one). Derek on dev, 2026-11-26 (#874): the
+                                    right arm built held out read as a splayed arm off the body. Code turns it out by
+                                    `CarryArmDegrees` only while a carrier hangs from it.
       ..._LegL, ..._LegR            child Models, pivot at the hip: the leg and its shoe
                                     Each joint turns about its pivot's X axis (the side to side axis) for a step, a
                                     swing or a nod. Left and right are the customer's own.
@@ -21,8 +22,10 @@ with new looks in our colours, cut at the joints so they can walk, and with a ha
   own `Grip` there, the carrier facing the way the customer faces. `Overhead` over the head, clear of any hat, for a
   bubble or a timer.
   Attributes: `Look` (the name), `WalkSpeed` (studs a second for the walk in), `LegLength` (hip to floor: a step of
-  A degrees each way covers 2 * LegLength * sin(A)), `CarryArmDegrees` (how far the right arm is held out; turn the
-  arm back by it about the pivot's Z to hang it straight), `Height`.
+  A degrees each way covers 2 * LegLength * sin(A)), `CarryArmDegrees` (how far to turn the right arm out about the
+  pivot's Z while it holds a carrier, so the carrier clears the leg and the floor; in Roblox that is
+  rest * CFrame.Angles(0, 0, math.rad(CarryArmDegrees)), before the walk's swing), `ArmsStraight` = true (the right
+  arm is built straight, #874; models built before it had the arm already turned out), `Height`.
 
 The carrier (spa_props) was resized with them: its Grip is 1.95 up, so with the hand 2.0 or more above the floor it
 swings just over the ground beside the leg.
@@ -451,8 +454,10 @@ def _hair(h, f, look):
         for sx in (1, -1):
             h.box((sx * (hw / 2 + 0.05), 0.1, top - 1.0), (0.16, hd - 0.1, 0.12), hc)
     if style == "long":                                    # down the back to the shoulder blades
+        # lying on the back (its front 0.02 into the torso's back), not standing off it behind the deeper head
         lo = h0 - 0.55
-        h.box_base((0, hd / 2 + 0.03, lo), (hw + 0.04, 0.22, top - 0.1 - 1.1 - lo + 0.02), hc)
+        back = d["td"] / 2 - 0.02
+        h.box_base((0, back + 0.13, lo), (hw + 0.04, 0.26, top - 0.1 - 1.1 - lo + 0.02), hc)
     if style == "ponytail":
         h.box((0, hd / 2 + 0.1, top - 0.45), (0.34, 0.12, 0.26), look["tie"], bevel=False)                # the tie
         h.box_base((0, hd / 2 + 0.24, h0 + 0.05), (0.36, 0.3, top - 0.45 - h0 - 0.05), hc)                # the tail
@@ -542,21 +547,22 @@ def top_of(look):
     return f.head1 + extra
 
 
-def grip_at(look, carry=True):
-    """The middle of the right hand in the customer's space, where the carrier's Grip goes."""
+def grip_at(look, carry=False):
+    """The middle of the right hand in the customer's space, where the carrier's Grip goes (`carry`: with the arm
+    turned out by `carry_degrees`)."""
     f = Frame(look["body"])
     tilt = _ry(carry_degrees(look)) if carry else None
     p = Piece((-f.arm_x, 0, f.shoulder), tilt)
     return p.at((-f.arm_x, 0, f.hand))
 
 
-def build_customer(name, mat, carry=True):
-    """The customer's six objects: Body first (the main object), then Head, ArmL, ArmR, LegL, LegR. `carry` False
-    hangs the right arm straight (pictures only)."""
+def build_customer(name, mat, carry=False):
+    """The customer's six objects: Body first (the main object), then Head, ArmL, ArmR, LegL, LegR. `carry` True
+    builds the right arm turned out as it holds a carrier (pictures only)."""
     return build_figure(PREFIX + name, ALL_LOOKS[name], mat, carry)
 
 
-def build_figure(asset, look, mat, carry=True):
+def build_figure(asset, look, mat, carry=False):
     """Any figure on this body (the customers here, the staff in spa_staff.py): six objects named from `asset`."""
     f = Frame(look["body"])
     body = Piece()
@@ -585,6 +591,7 @@ def customer_rbx_extras(name):
             "attributes": {"Look": {"String": name}, "WalkSpeed": {"Float64": look["body"]["speed"]},
                            "LegLength": {"Float64": round(f.leg_joint, 3)},
                            "CarryArmDegrees": {"Float64": carry_degrees(look)},
+                           "ArmsStraight": {"Bool": True},      # built with the right arm straight (#874)
                            "Height": {"Float64": round(top_of(look), 3)},
                            **({"Special": {"Bool": True}} if name in SPECIAL_LOOKS else {})}}
 
