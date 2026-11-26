@@ -462,6 +462,75 @@ local SCENES = {
 			UI.setStaffNames({}, false)
 		end,
 	},
+	-- The Helpers window (issue 526 item 3, switch helpersWindow): Jo renamed to the longest name at level 4 taking
+	-- the longest mode, Sam not hired yet, Lou pointing to his pass; then all three hired, Lou at the top level.
+	{
+		"Helpers",
+		function()
+			flag("helpersWindow", true)
+			flag("workers", true)
+			local HelperViewRules = UIShim.require("ReplicatedStorage.Shared.HelperViewRules")
+			local values = { WorkerLevel_Jo = 4, WorkerMode_Jo = "leaving" }
+			UI.setHelpers(
+				HelperViewRules.rows(function(name)
+					return values[name]
+				end, { Jo = "Captain Bubbles" }),
+				true,
+				true
+			)
+			UI.open("Helpers")
+		end,
+	},
+	{
+		"HelpersAll",
+		function()
+			flag("helpersWindow", true)
+			flag("workers", true)
+			local HelperViewRules = UIShim.require("ReplicatedStorage.Shared.HelperViewRules")
+			local values = {
+				WorkerLevel_Jo = 2,
+				WorkerMode_Jo = "dirtiest",
+				WorkerLevel_Sam = 1,
+				WorkerLevel_Lou = 5,
+				WorkerMode_Lou = "rarest",
+			}
+			UI.setHelpers(
+				HelperViewRules.rows(function(name)
+					return values[name]
+				end, { Sam = "Mister Whiskers" }),
+				false,
+				false
+			)
+			UI.open("Helpers")
+		end,
+	},
+	-- Every HUD button at once, Helpers among them, at its widest: the row must stay on the screen.
+	{
+		"HudAllButtons",
+		function()
+			hud(true)
+			UI.setCoins(999999)
+			for _, name in
+				{
+					"catIndexWindow",
+					"petsWindow",
+					"helpersWindow",
+					"workers",
+					"checkinCard",
+					"quests",
+					"passes",
+				}
+			do
+				flag(name, true)
+			end
+			flag("settingsCard", true)
+			flag("starterPack", true)
+			local player = game:GetService("Players").LocalPlayer
+			player:SetAttribute("WorkerLevel_Jo", 1)
+			player:SetAttribute("QuestsOpen", true)
+			player:SetAttribute("StarterEndsAt", 1)
+		end,
+	},
 	-- The quest book (issue 516, switch quests): one daily done, the weekly crate one of three, then a short week.
 	{
 		"Quests",
@@ -833,6 +902,16 @@ function Scenes.close()
 	flag("queueWindow", false)
 	flag("crateWindow", false)
 	flag("petsWindow", false)
+	flag("helpersWindow", false)
+	flag("workers", false)
+	flag("checkinCard", false)
+	flag("quests", false)
+	flag("passes", false)
+	flag("starterPack", false)
+	local tester = game:GetService("Players").LocalPlayer
+	for _, name in { "WorkerLevel_Jo", "QuestsOpen", "StarterEndsAt" } do
+		tester:SetAttribute(name, nil)
+	end
 	flag("tutorialDim", false)
 	UI.hideBubble()
 	flag("sudsBubble", false)
