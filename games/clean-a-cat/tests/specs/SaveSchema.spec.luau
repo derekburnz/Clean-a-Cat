@@ -93,4 +93,99 @@ return function()
 			expect(reason).to.be.a("string")
 		end)
 	end)
+
+	describe("SaveSchema for the agreed design (issue 523)", function()
+		it("gives an old save every new field with its default", function()
+			local save = SaveSchema.migrate({ version = 1, coins = 9, stars = 3 }, 100) :: any
+			expect(save.coins).to.equal(9)
+			expect(save.bow).to.equal("Ribbon")
+			expect(save.nextPetId).to.equal(1)
+			expect(save.visiting).to.equal(true)
+			expect(save.starterEndsAt).to.equal(0)
+			expect(save.giftClaimed).to.equal(false)
+			expect(save.starterOpened).to.equal(false)
+			expect(save.visits).to.equal(0)
+			expect(save.asks).to.be.a("table")
+			expect(save.quests.day).to.equal(0)
+			expect(save.quests.weeklyCrate).to.equal(false)
+			expect(save.checkin.days).to.equal(0)
+			for _, key in { "bows", "workers", "pets", "crates", "receipts", "bench" } do
+				expect(save[key]).to.be.a("table")
+				expect(next(save[key])).to.equal(nil)
+			end
+		end)
+
+		it("fills the missing or broken fields of a record and keeps the rest", function()
+			local save = SaveSchema.migrate({
+				version = 1,
+				quests = { tz = -5, day = 20000, progress = { wash5 = 3 }, week = "x" },
+				checkin = { days = 4 },
+			}, 100) :: any
+			expect(save.quests.tz).to.equal(-5)
+			expect(save.quests.day).to.equal(20000)
+			expect(save.quests.progress.wash5).to.equal(3)
+			expect(save.quests.week).to.equal(0)
+			expect(save.quests.claimed).to.be.a("table")
+			expect(save.checkin.days).to.equal(4)
+			expect(save.checkin.lastDay).to.equal(0)
+		end)
+
+		it("round trips every new field", function()
+			local save = SaveSchema.template(100) :: any
+			save.bows.Silk = true
+			save.bow = "Silk"
+			save.workers.Jo =
+				{ mode = "rarest", level = 2, name = "Jojo", station = "Tub2", hiredAt = 50 }
+			table.insert(save.pets, { id = 1, kind = "Pip", star = 2, slot = "player" })
+			save.nextPetId = 2
+			save.crates.good = 1
+			save.starterEndsAt = 999
+			table.insert(
+				save.bench,
+				{ kind = "Tux", dirt = 3, needs = { "mud", "tangles", "smell", "claws" } }
+			)
+			local back = SaveSchema.migrate(save, 200) :: any
+			expect(back.bows.Silk).to.equal(true)
+			expect(back.workers.Jo.mode).to.equal("rarest")
+			expect(back.workers.Jo.name).to.equal("Jojo")
+			expect(back.pets[1].star).to.equal(2)
+			expect(back.crates.good).to.equal(1)
+			expect(back.starterEndsAt).to.equal(999)
+			expect(back.bench[1].dirt).to.equal(3)
+			expect(back.createdAt).to.equal(100)
+		end)
+
+		it("never grants one receipt twice and keeps only the newest", function()
+			local save = SaveSchema.template(1)
+			expect(SaveSchema.addReceipt(save, "a")).to.equal(true)
+			expect(SaveSchema.addReceipt(save, "a")).to.equal(false)
+			for n = 1, SaveSchema.RECEIPTS_KEPT + 5 do
+				SaveSchema.addReceipt(save, `r{n}`)
+			end
+			expect(#save.receipts).to.equal(SaveSchema.RECEIPTS_KEPT)
+			expect(table.find(save.receipts, "a")).to.equal(nil)
+		end)
+
+		it("resets the spa and keeps what the player owns on a Grand Reopening", function()
+			local save = SaveSchema.template(1)
+			save.coins = 500
+			save.stars = 40
+			save.stations.Tub2 = true
+			save.workers.Jo = { mode = "first", level = 3, hiredAt = 1 }
+			save.index.Tux = { washed = true, resident = false }
+			table.insert(save.pets, { id = 1, kind = "Pip", star = 1, slot = "Jo1" })
+			table.insert(save.pets, { id = 2, kind = "Bun", star = 1, slot = "player" })
+			save.crates.normal = 2
+			SaveSchema.reopen(save, 2)
+			expect(save.coins).to.equal(0)
+			expect(save.stars).to.equal(0)
+			expect(save.stations.Tub2).to.equal(nil)
+			expect(save.workers.Jo).to.equal(nil)
+			expect(save.index.Tux.washed).to.equal(true)
+			expect(save.pets[1].slot).to.equal(nil) -- back to the pen: its worker is gone
+			expect(save.pets[2].slot).to.equal("player")
+			expect(save.crates.normal).to.equal(2)
+			expect(save.reopens).to.equal(1)
+		end)
+	end)
 end
