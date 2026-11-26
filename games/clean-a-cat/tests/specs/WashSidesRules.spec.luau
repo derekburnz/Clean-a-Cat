@@ -1,8 +1,7 @@
 --!strict
 return function()
-	local Shared = game:GetService("ReplicatedStorage").Shared
-	local LiveFlags = require(Shared.LiveFlags)
-	local WashSidesRules = require(Shared.WashSidesRules)
+	local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+	local WashSidesRules = require(game:GetService("ReplicatedStorage").Shared.WashSidesRules)
 
 	describe("WashSidesRules (washSides, issue 899)", function()
 		it("ships behind a switch that starts off", function()
