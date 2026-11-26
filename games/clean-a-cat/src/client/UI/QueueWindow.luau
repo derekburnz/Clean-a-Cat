@@ -21,6 +21,7 @@
 -- Only the X closes the window, and a pick leaves it open so the player sees the picked cat move to the front.
 -- UI never fires remotes: QueueWindowController sends the pick and the server decides.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TextService = game:GetService("TextService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -170,10 +171,19 @@ end
 
 local CHIP_TEXT = 19
 local CHIP_PAD = 10
-local CHIP_CHAR = 0.62 -- Fredoka One's mean letter width per px of text size, a little generous
+local CHIP_TIGHT_PAD = 5 -- the chip's side room when even the smallest text needs more space
+local CHIP_OUTLINE = 6 -- the outline's 3 px on each side of the words
+local MIN_CHIP_TEXT = 14
+
+-- How wide `text` draws at `size`, outline included, measured from the real font.
+local function chipWords(text: string, size: number): number
+	local bounds = TextService:GetTextSize(text, size, Kit.FONT, Vector2.new(10000, 1000))
+	return math.ceil(bounds.X) + CHIP_OUTLINE
+end
 
 -- A rounded chip with outlined words: the rarity tag and New!. With `maxWidth` the words shrink (to the 14 px
--- floor) so the chip stays inside it: "Uncommon" on a narrow card (issue 609).
+-- floor) so the chip stays inside it, measured from the real font, and the side room tightens if the floor is still
+-- too wide: "Uncommon" on a narrow card (issue 609; Sync's B5 found the old letter-width guess 7 px short).
 local function chip(
 	name: string,
 	parent: Instance,
@@ -198,9 +208,14 @@ local function chip(
 	label.TextSize = CHIP_TEXT
 	if maxWidth then
 		local room = maxWidth - 2 * CHIP_PAD - 4
-		local wants = math.ceil(#text * CHIP_CHAR * CHIP_TEXT)
+		local wants = chipWords(text, CHIP_TEXT)
 		if wants > room then
-			label.TextSize = math.max(14, math.floor(room / (#text * CHIP_CHAR)))
+			local size = math.max(MIN_CHIP_TEXT, math.floor(CHIP_TEXT * room / wants))
+			label.TextSize = size
+			if chipWords(text, size) > room then
+				pad.PaddingLeft, pad.PaddingRight =
+					UDim.new(0, CHIP_TIGHT_PAD), UDim.new(0, CHIP_TIGHT_PAD)
+			end
 		end
 		local cap = Instance.new("UISizeConstraint")
 		cap.MaxSize = Vector2.new(maxWidth, math.huge)

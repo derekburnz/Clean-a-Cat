@@ -112,6 +112,7 @@ local meterFraction: number? = nil
 local meterStep: string? = nil
 local root: Frame? = nil
 local listListeners: { () -> () } = {}
+local washWas = false -- a wash under way when last drawn (the side buttons step aside for it, issue 625)
 
 -- The steps this wash shows, as indexes into HUD.STEPS, in order.
 local function shownSteps(): { number }
@@ -242,8 +243,8 @@ local function redraw()
 	local checklist = StepList.isOn()
 	local noTray = LiveFlags.isOn(HUD.AUTO_TOOL_FLAG)
 	p.pipRow.Parent = if checklist and not (noTray and not listNow) then nil else p.steps
-	if listNow ~= listWas then
-		listWas = listNow
+	if listNow ~= listWas or washing ~= washWas then
+		listWas, washWas = listNow, washing
 		for _, fn in listListeners do
 			task.spawn(fn)
 		end
@@ -479,6 +480,12 @@ function HUD.listShown(): boolean
 	return StepList.isShown()
 end
 
+-- True while a wash is under way and the HUD is on: the step line has the top of the screen.
+function HUD.washing(): boolean
+	return washWas
+end
+
+-- fn() when the tick list shows or hides, or a wash starts or ends.
 function HUD.onListChanged(fn: () -> ())
 	table.insert(listListeners, fn)
 end

@@ -159,6 +159,35 @@ end
 -- Roblox's thumbstick and jump button sit over a window's lower corners on a phone held sideways (Sync-Agent's
 -- iPhone 14 check of the Cat Index). With the switch windowsHideControls on, they hide while any window is open and
 -- come back when the last one closes. Off by default. A window is for tapping, not walking, so nothing is lost.
+local windowListeners: { (open: boolean) -> () } = {}
+local windowWasOpen = false
+
+-- True while any window is open (not the recap card or strip, which sit beside play).
+function UI.anyWindowOpen(): boolean
+	for _, frame in windows do
+		if frame.Visible then
+			return true
+		end
+	end
+	return false
+end
+
+-- fn(open) each time the first window opens or the last one closes.
+function UI.onWindowsChanged(fn: (open: boolean) -> ())
+	table.insert(windowListeners, fn)
+end
+
+local function syncWindows()
+	local open = UI.anyWindowOpen()
+	if open == windowWasOpen then
+		return
+	end
+	windowWasOpen = open
+	for _, listener in windowListeners do
+		task.spawn(listener, open)
+	end
+end
+
 local function syncControls()
 	local anyOpen = false
 	for _, frame in windows do
@@ -220,9 +249,11 @@ function UI.init()
 		)
 		menu.TextSize = if tv then MENU_TEXT_TV else MENU_TEXT
 		-- the HUD's button row (#232) replaces the starter Menu while any of its buttons shows; both step aside for
-		-- the wash's tick list (switch washChecklist), which takes their place at the left
+		-- the wash's tick list (switch washChecklist), which takes their place at the left. The row also steps aside
+		-- for the whole wash: with five or more buttons it reached the step line's title (issue 625, Sync's B5), and
+		-- the windows are for between washes.
 		local listShown = HUD.listShown()
-		SideButtons.setAside(listShown)
+		SideButtons.setAside(listShown or HUD.washing())
 		menu.Visible = not SideButtons.any() and not listShown
 	end
 	fitScreen()
@@ -303,6 +334,7 @@ function UI.init()
 
 	for _, frame in windows do
 		frame:GetPropertyChangedSignal("Visible"):Connect(syncControls)
+		frame:GetPropertyChangedSignal("Visible"):Connect(syncWindows)
 	end
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CONTROLS_FLAG)
 		:Connect(syncControls)
@@ -616,23 +648,61 @@ function UI.windowNames(): { string }
 	return names
 end
 
-function UI.toast(text: string, kind: ("info" | "warning")?)
+-- A toast at the top: shown 5 s. Toasts that come together (one cat finishing several quests) wait their turn
+-- instead of replacing each other: while one waits, the one showing gives way after TOAST_SHORT seconds (issue 624,
+-- Sync's B5). At most TOAST_QUEUE wait; past that the oldest waiting one is dropped.
+local TOAST_SECONDS = 5
+local TOAST_SHORT = 2.5
+local TOAST_QUEUE = 4
+type Toast = { text: string, kind: ("info" | "warning")? }
+local toastQueue: { Toast } = {}
+local toastShownAt = -math.huge
+local toastBusy = false
+
+local function showNextToast()
 	local label = toastLabel
-	if label == nil then
+	local nextToast = table.remove(toastQueue, 1)
+	if label == nil or nextToast == nil then
+		toastBusy = false
+		if label then
+			label.Visible = false
+		end
 		return
 	end
+	toastBusy = true
 	toastToken += 1
 	local token = toastToken
-	label.Text = text
-	label.BackgroundColor3 = if kind == "warning"
+	label.Text = nextToast.text
+	label.BackgroundColor3 = if nextToast.kind == "warning"
 		then Color3.fromRGB(150, 60, 20)
 		else Color3.fromRGB(30, 30, 30)
 	label.Visible = true
-	task.delay(5, function()
+	toastShownAt = os.clock()
+	task.spawn(function()
+		while token == toastToken do
+			local shownFor = os.clock() - toastShownAt
+			if shownFor >= TOAST_SECONDS or (#toastQueue > 0 and shownFor >= TOAST_SHORT) then
+				break
+			end
+			task.wait(0.1)
+		end
 		if token == toastToken then
-			label.Visible = false
+			showNextToast()
 		end
 	end)
+end
+
+function UI.toast(text: string, kind: ("info" | "warning")?)
+	if toastLabel == nil then
+		return
+	end
+	table.insert(toastQueue, { text = text, kind = kind })
+	while #toastQueue > TOAST_QUEUE do
+		table.remove(toastQueue, 1)
+	end
+	if not toastBusy then
+		showNextToast()
+	end
 end
 
 return UI
