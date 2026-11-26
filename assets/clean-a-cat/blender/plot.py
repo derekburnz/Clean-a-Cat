@@ -107,6 +107,9 @@ SPOTS = {
     "SpotWorkerJo": (1.0, 6.5, 0.0, 0.0),
     "SpotWorkerSam": (-3.0, 6.5, 0.0, 0.0),
     "SpotWorkerLou": (-7.0, 6.5, 0.0, 0.0),
+    # The gift stand (#502): against the right wall near the front, between the towel rail and the corner plant, facing
+    # across the room. Clear of the door, the queue, station 3 and the walk from the door to the stations.
+    "SpotGift": (16.4, -11.8, 0.0, 270.0),
 }
 # Floor pads that show each spot in the graybox: (spot, size x, size y, swatch)
 PADS = [("SpotTub", 5.4, 4.6, "spa_sky"), ("SpotSpawn", 2.4, 2.4, "shirt_green"),

@@ -35,6 +35,7 @@ import common  # noqa: E402
 import crates  # noqa: E402
 import customers  # noqa: E402
 import dirt  # noqa: E402
+import gift  # noqa: E402
 import palette  # noqa: E402
 import pets  # noqa: E402
 import scenes  # noqa: E402
@@ -69,7 +70,8 @@ ICONS = {
     "CleanACat_Station_WaitBench": (15, 55), "CleanACat_Station_FrontDesk": (28, 26),
     "CleanACat_Prop_Burr": None, "CleanACat_Prop_Leaf": (35, 55), "CleanACat_Prop_Twig": (35, 55),
     "CleanACat_Prop_PetCrate": (26, 20),
-    **{pets.PREFIX + n: (27, 12) for n in pets.PETS},       # a pet's card: the pet at star 1 (icon leaves the stars off)
+    **{pets.PREFIX + n: (27, 12) for n in pets.ALL},
+    "CleanACat_Prop_GiftStand": (24, 14),       # a pet's card: the pet at star 1 (icon leaves the stars off)
 }
 STAR_OBJECTS = ("_Star2", "_Star3", "_Star3_Glow")
 FACE_FRONT = (0.0, -0.575, 4.175)          # R15's FaceFrontAttachment on the stand-in figure (scenes.avatar)
@@ -225,7 +227,8 @@ def person(kind, look, mat, out, makers):
 
 
 def icon(asset, mat, out, makers):
-    built = makers[asset][0](mat)
+    # the gift stand's card leaves the balloon off: 7 studs of string would shrink the present to a speck
+    built = gift.build_gift_stand(mat, balloon=False) if asset == gift.NAME else makers[asset][0](mat)
     objs = built[0] if isinstance(built, tuple) else built
     objs = [o for o in objs if not o.name.endswith("_Barrier")]          # a station's invisible wall is not drawn
     if asset.startswith(pets.PREFIX):
