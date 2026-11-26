@@ -153,15 +153,24 @@ local function played(player: Player): number
 end
 
 -- A new customer's order for a cat of `kind`, joining the line now at `place`.
-local function newOrder(player: Player, kind: string, place: number): Order
+-- Where the bar of the order last in `orders` ends (server time), or nil for an empty line.
+local function lastEnds(orders: { Order }): number?
+	local last = orders[#orders]
+	return if last and LiveFlags.isOn(HeartRules.SPACING_FLAG) then last.since + last.lasts else nil
+end
+
+-- A new customer's order for a cat of `kind`, joining the line now at `place`, behind `orders`. Its bar ends a
+-- stagger after the one ahead (HeartRules.spacedSince), so customers who join together do not leave together.
+local function newOrder(player: Player, kind: string, place: number, orders: { Order }): Order
 	local dirt = rollDirt(player, kind, place)
 	local save = DataService.get(player)
 	local fresh = save == nil or save.stars <= 0
+	local lasts = HeartRules.lasts(kind, played(player))
 	return {
 		needs = rollNeeds(kind, dirt),
 		dirt = dirt,
-		since = Workspace:GetServerTimeNow(),
-		lasts = HeartRules.lasts(kind, played(player)),
+		since = HeartRules.spacedSince(Workspace:GetServerTimeNow(), lasts, lastEnds(orders)),
+		lasts = lasts,
 		tutorial = fresh and place <= HeartRules.TUTORIAL_STARS_CUSTOMERS,
 	}
 end
@@ -177,7 +186,7 @@ local function queueFor(player: Player): { string }
 	local o = ordersFor(player)
 	-- out of step: roll what is missing, drop what is extra
 	while #o < #q do
-		table.insert(o, newOrder(player, q[#o + 1], #o + 1))
+		table.insert(o, newOrder(player, q[#o + 1], #o + 1, o))
 	end
 	while #o > #q do
 		table.remove(o)
@@ -189,14 +198,15 @@ local function queueFor(player: Player): { string }
 			visitorPending[player] = nil
 			local save = DataService.get(player)
 			local first = save ~= nil and save.asks[SpecialRules.FIRST_DONE] ~= true
+			local lasts = if first
+				then HeartRules.FIRST_SPECIAL_SECONDS
+				else HeartRules.SECONDS.Special
 			table.insert(q, visitor)
 			table.insert(o, {
 				needs = rollNeeds(visitor, DirtRules.SPECIAL_LEVEL),
 				dirt = DirtRules.SPECIAL_LEVEL,
-				since = Workspace:GetServerTimeNow(),
-				lasts = if first
-					then HeartRules.FIRST_SPECIAL_SECONDS
-					else HeartRules.SECONDS.Special,
+				since = HeartRules.spacedSince(Workspace:GetServerTimeNow(), lasts, lastEnds(o)),
+				lasts = lasts,
 				tutorial = false,
 				special = true,
 			})
@@ -205,7 +215,7 @@ local function queueFor(player: Player): { string }
 		end
 		local kind = rollCustomer(player)
 		table.insert(q, kind)
-		table.insert(o, newOrder(player, kind, #q))
+		table.insert(o, newOrder(player, kind, #q, o))
 	end
 	return q
 end
@@ -945,9 +955,14 @@ local function tickHearts()
 			sendQueue(player)
 		end
 		local leaving: number? = nil
+		local aheadEnds: number? = nil
 		for place, order in orders do
 			if paused then
-				order.since = now
+				-- held full until the first serve, each a stagger after the one ahead for when they start
+				order.since = HeartRules.spacedSince(now, order.lasts, aheadEnds)
+				aheadEnds = if LiveFlags.isOn(HeartRules.SPACING_FLAG)
+					then order.since + order.lasts
+					else nil
 			elseif leaving == nil and HeartRules.gone(order.since, order.lasts, now, playTime) then
 				leaving = place
 			end

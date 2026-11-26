@@ -21,6 +21,7 @@ local DirtRules = require(script.Parent:WaitForChild("DirtRules"))
 local HeartRules = {}
 
 HeartRules.FLAG = "heartBar"
+HeartRules.SPACING_FLAG = "barSpacing" -- spacedSince is used only while this is on (issue 573)
 -- A waiting customer's bar, full to empty, by rarity (tuning heart.seconds): rarer cats are a bit more urgent.
 HeartRules.SECONDS = table.freeze({
 	Common = 150,
@@ -87,6 +88,17 @@ function HeartRules.graceSince(since: number, lasts: number, now: number, place:
 	end
 	local stagger = HeartRules.RELEASE_STAGGER * math.max((place or 1) - 1, 0)
 	return now - lasts * (1 - HeartRules.GRUMPY_AT) + stagger
+end
+
+-- The start of a bar of `lasts` seconds joining the line `now` behind a bar that ends at `aheadEnds` (nil for the
+-- front): never before now, and late enough that it ends RELEASE_STAGGER seconds or more after the one ahead, so bars
+-- that start in the same second (the line unpausing at the first serve, a returning save's line rolled on join) do
+-- not all empty and leave together (Sync's bug hunt B2). A start after now shows a full bar until then.
+function HeartRules.spacedSince(now: number, lasts: number, aheadEnds: number?): number
+	if aheadEnds == nil then
+		return now
+	end
+	return math.max(now, aheadEnds + HeartRules.RELEASE_STAGGER - lasts)
 end
 
 -- True once the bar is empty and the save has played NO_LEAVE_BEFORE: the customer leaves.

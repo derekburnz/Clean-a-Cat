@@ -55,8 +55,10 @@ local function enable()
 	end
 	for _, id in offered do
 		local tool = ToolRules.TOOLS[id]
-		local spot = made.rows[table.find(ToolRules.IDS, id) :: number]
+		local row = table.find(ToolRules.IDS, id) :: number
+		local spot = made.rows[row]
 		local prompt = Instance.new("ProximityPrompt")
+		BoardProp.rowKeys(prompt, row)
 		prompt.ActionText = `Buy {tool.name}`
 		prompt.ObjectText = `{tool.price} coins`
 		prompt.HoldDuration = 0
@@ -82,6 +84,7 @@ local function enable()
 	end
 	if sellsBows then
 		local prompt = Instance.new("ProximityPrompt")
+		BoardProp.rowKeys(prompt, #ToolRules.IDS + 1)
 		prompt.HoldDuration = 0
 		prompt.MaxActivationDistance = ToolRules.PROMPT_REACH
 		prompt.RequiresLineOfSight = false

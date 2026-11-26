@@ -10,7 +10,14 @@
 --   BoardProp.moveTo(board, at)     the plot moved: the board goes with it
 --   BoardProp.showDisplay(board, name, shown)  shows or hides the model's child Model `<asset>_Display_<name>` (the
 --                                   Tools board's Bubble Soap and Pro Brush on their shelves)
+--   BoardProp.rowKeys(prompt, row)  (switch boardKeys, issue 574) gives row `row`'s prompt its own key and gamepad
+--                                   button: Roblox shows one prompt per key, so with every row on E only the row
+--                                   facing the camera had a pill. On a touch screen there are no keys, so every
+--                                   row's pill is shown (Exclusivity AlwaysShow) and each is its own tap.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 
 local BoardProp = {}
 
@@ -178,6 +185,38 @@ function BoardProp.showDisplay(board: Board, name: string, shown: boolean)
 		elseif piece:IsA("Decal") then
 			(piece :: Decal).LocalTransparencyModifier = if shown then 0 else 1
 		end
+	end
+end
+
+BoardProp.KEYS_FLAG = "boardKeys"
+-- Row 1 first. E is the game's usual key; G and the R2 trigger are taken (a worker's pet, the scrub).
+local ROW_KEYS = {
+	Enum.KeyCode.E,
+	Enum.KeyCode.R,
+	Enum.KeyCode.F,
+	Enum.KeyCode.T,
+	Enum.KeyCode.Y,
+	Enum.KeyCode.U,
+}
+local ROW_BUTTONS = {
+	Enum.KeyCode.ButtonX,
+	Enum.KeyCode.ButtonY,
+	Enum.KeyCode.ButtonL1,
+	Enum.KeyCode.ButtonR1,
+	Enum.KeyCode.ButtonL2,
+	Enum.KeyCode.DPadUp,
+}
+
+function BoardProp.rowKeys(prompt: ProximityPrompt, row: number)
+	if not LiveFlags.isOn(BoardProp.KEYS_FLAG) then
+		return
+	end
+	local at = math.clamp(row, 1, #ROW_KEYS)
+	prompt.KeyboardKeyCode = ROW_KEYS[at]
+	prompt.GamepadKeyCode = ROW_BUTTONS[at]
+	if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
+		-- a tap picks one pill, so showing them all never buys two things at once
+		prompt.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow
 	end
 end
 
