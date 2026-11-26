@@ -104,6 +104,7 @@ BuildRules.ITEMS = table.freeze({
 		seconds = 24 * 3600, -- never more than 24 h
 		payBonus = 0,
 		flag = BuildRules.TUBS_FLAG,
+		alsoFlag = DIRT_FLAG, -- the new board comes whole, so it never has more rows than MAX_ROWS
 	}) :: Item,
 }) :: { [string]: Item }
 
@@ -130,6 +131,9 @@ BuildRules.IDS = table.freeze({
 	"Garden",
 })
 BuildRules.TUBS = table.freeze({ "SecondTub", "ThirdTub", "FourthTub" })
+-- Rows the builder board can give their own key (BoardProp.rowKeys, issue 574), the bell's included: the offered
+-- items plus the bell stay within it under every switch (tests/specs/BuildRules.spec.luau).
+BuildRules.MAX_ROWS = 6
 BuildRules.TUB_HAND_BONUS = 2 -- build.tub.effect: coins on every cat washed by hand, per built tub
 BuildRules.BENCH_START = 3 -- bench.size before any tub
 BuildRules.BENCH_MAX = 6

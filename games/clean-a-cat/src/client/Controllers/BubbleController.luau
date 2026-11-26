@@ -98,7 +98,8 @@ local function facts(): { [string]: boolean }
 		build = canBuild(
 			if BuildRules.shown("SecondTub", LiveFlags.isOn) then "SecondTub" else "BrushTable"
 		),
-		longBuild = canBuild("VipRoom"),
+		longBuild = not BuildRules.shown("ThirdTub", LiveFlags.isOn) and canBuild("VipRoom"),
+		longBuildTub = BuildRules.shown("ThirdTub", LiveFlags.isOn) and canBuild("ThirdTub"),
 	}
 end
 
@@ -108,7 +109,7 @@ local function target(id: string): Vector3?
 		return SpaLayout.tubSpot().Position
 	elseif id == "newSoap" then
 		return SpaLayout.spot(TOOLS_SPOT).Position
-	elseif id == "wetCat" or id == "build" or id == "longBuild" then
+	elseif id == "wetCat" or id == "build" or id == "longBuild" or id == "longBuildTub" then
 		return SpaLayout.spot(SpaLayout.BUILDER_SPOT).Position
 	end
 	return nil

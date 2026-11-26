@@ -231,6 +231,20 @@ return function()
 			expect(BuildRules.hasVip({ VipRoom = true }, off)).to.equal(false)
 		end)
 
+		it(
+			"never offers more rows than the board has keys for, the bell included (#574)",
+			function()
+				local flags = BuildRules.itemFlags()
+				for mask = 0, 2 ^ #flags - 1 do
+					local function isOn(flag: string): boolean
+						local at = table.find(flags, flag)
+						return at ~= nil and (mask // 2 ^ (at - 1)) % 2 == 1
+					end
+					expect(#BuildRules.offered(isOn) + 1 <= BuildRules.MAX_ROWS).to.equal(true)
+				end
+			end
+		)
+
 		it("lists every switch the items depend on once", function()
 			local flags = BuildRules.itemFlags()
 			expect(table.find(flags, "tubBuilds")).to.be.ok()
