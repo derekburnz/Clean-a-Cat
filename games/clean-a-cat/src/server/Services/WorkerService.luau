@@ -294,6 +294,13 @@ local function forRequest(player: Player, rawId: unknown, atStation: boolean): (
 	return id, save
 end
 
+-- The player's workers on Player attributes, for the station prompts and the Helpers window (WorkerRules.shown).
+local function showWorkers(player: Player, save: any)
+	for _, attribute in WorkerRules.shown(save) do
+		player:SetAttribute(attribute.name, attribute.value)
+	end
+end
+
 local function onHire(player: Player, rawId: unknown)
 	local id, save = forRequest(player, rawId, true)
 	if id == nil then
@@ -309,6 +316,7 @@ local function onHire(player: Player, rawId: unknown)
 		return
 	end
 	WalletService.show(player)
+	showWorkers(player, save) -- the stand's prompts and the Helpers button need the new worker at once (issue 696)
 	WorkerService.refresh(player)
 	PetService.show(player) -- the worker brings a pet slot
 	NetService.notice(player, `{StaffNameService.nameOf(player, id)} works here now`)
@@ -349,21 +357,6 @@ local function onLevel(player: Player, rawId: unknown)
 		`{StaffNameService.nameOf(player, id)} is level {save.workers[id].level}`
 	)
 	Telemetry.economy(player, "coins", "sink", spent, save.coins, "Shop", `WorkerLevel{id}`)
-end
-
--- The player's workers on Player attributes, for the station prompts: WorkerMode_<id> and WorkerLevel_<id>.
-local function showWorkers(player: Player, save: any)
-	for _, id in WorkerRules.IDS do
-		local worker = save.workers[id]
-		player:SetAttribute(
-			`WorkerMode_{id}`,
-			if worker then WorkerRules.cleanMode(worker.mode) else nil
-		)
-		player:SetAttribute(
-			`WorkerLevel_{id}`,
-			if worker then WorkerRules.cleanLevel(worker.level) else nil
-		)
-	end
 end
 
 local function finish(player: Player, id: string, job: Job)
