@@ -3,6 +3,11 @@ return function()
 	local NotifyRules = require(game:GetService("ReplicatedStorage").Shared.NotifyRules)
 
 	describe("NotifyRules", function()
+		it("lists a message id slot for the dev and the live experience", function()
+			expect(type(NotifyRules.MESSAGE_IDS[10778775478])).to.equal("string")
+			expect(type(NotifyRules.MESSAGE_IDS[10778773655])).to.equal("string")
+		end)
+
 		it("gives the bell only to builds of an hour or more", function()
 			expect(NotifyRules.isLong("VipRoom")).to.equal(true)
 			expect(NotifyRules.isLong("Dryer")).to.equal(false)

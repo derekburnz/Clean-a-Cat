@@ -1,0 +1,47 @@
+# The build finished notification's key (Derek, 2026-11-26, q2-notifykey: reuse a key he already has, paste nothing).
+# check: asks Roblox what OWNER_KEY and ROBLOX_GROUP_KEY may do and lists their scope names in the run summary.
+# install: also saves the first key that can send user notifications as the experience secret CleanACat_NotifyKey,
+# which NotifyService reads in game, usable only for apis.roblox.com. No key is printed. install on live runs only on
+# the owner's own word, as flags and publishes do. Script: games/clean-a-cat/tools/opencloud/notify-key.py.
+name: notify-key
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "dev: the dev copy. live: the real game, only on the owner's word"
+        type: choice
+        options: [dev, live]
+        default: dev
+      action:
+        description: "check: list what each key may do. install: also save the notification key as the game's secret"
+        type: choice
+        options: [check, install]
+        default: check
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notify-key
+  cancel-in-progress: false
+
+env:
+  UNIVERSE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_UNIVERSE_ID || '10778773655') || (vars.ROBLOX_DEV_UNIVERSE_ID || '10778775478') }}
+
+jobs:
+  key:
+    name: Notification key
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install PyNaCl
+        if: inputs.action == 'install'
+        run: python3 -m pip install --quiet pynacl==1.5.0
+      - name: Check the keys (and save the secret)
+        env:
+          KEY_OWNER: ${{ secrets.OWNER_KEY }}
+          KEY_GROUP: ${{ secrets.ROBLOX_GROUP_KEY }}
+          ACTION: ${{ inputs.action }}
+        run: python3 games/clean-a-cat/tools/opencloud/notify-key.py
