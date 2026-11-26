@@ -70,6 +70,7 @@ Body never moves, so mud on the body stays put and the server can still move the
 | Moment signals for scrub, reveal, fluff, bow, photo, window | Gameplay-Engineer | #3 |
 | Cat rig with the part names above and a separate dirty layer that can fade | Model-Agent | #11 |
 | Palette colours for foam, mud, sparkles and glow | Design-Agent (style guide) | to open once the style guide exists |
+| (gift stand lit, stand attribute Lit from 7:00 of play) | The small lamp on the stand turns Neon in its own deep gold with a soft warm PointLight that breathes slowly (2.8 s); a small gold sparkle at the pet every 4.5 s; when it lights while you watch, the light swells once with a burst. A child Model ending _Balloon, if present, sways gently | the gift stand | revealSparkle (gold) | 1 PointLight (no shadows) per lit stand, loop only while a lit stand is within 60 studs | the light holds steady, the balloon stays still; Less sparkle halves the sparkles | #528 | built (Effects/GiftStand); shows once GiftService sets Lit (giftStand, #521) |
 
 ## Rules
 Effects only listen. No more than three flashes a second, no full-screen flash, no camera shake. Every row that changes the first session ships behind a LiveFlags off switch. A capture of each finished effect goes in this folder.
