@@ -283,4 +283,43 @@ return function()
 			expect(LiveFlags.OFF_BY_DEFAULT[BuildRules.WINDOW_FLAG]).to.equal(true)
 		end)
 	end)
+	describe("BuildRules.oldRefund", function()
+		local function switches(on: { [string]: boolean }): (string) -> boolean
+			return function(flag: string): boolean
+				return on[flag] == true
+			end
+		end
+		local both = switches({ builds = true, tubBuilds = true, dirtLevels = true })
+
+		it(
+			"pays back each old station built, once, only while tubBuilds and dirtLevels are both on",
+			function()
+				local stations =
+					{ BrushTable = true, Dryer = true, SecondTub = true, VipRoom = true }
+				local coins, ids = BuildRules.oldRefund(stations, {}, both)
+				expect(coins).to.equal(
+					BuildRules.ITEMS.BrushTable.price + BuildRules.ITEMS.Dryer.price
+				)
+				expect(#ids).to.equal(2)
+				local refunded = {}
+				for _, id in ids do
+					refunded[id] = true
+				end
+				local again, none = BuildRules.oldRefund(stations, refunded, both)
+				expect(again).to.equal(0)
+				expect(#none).to.equal(0)
+				local onlyTubs = switches({ builds = true, tubBuilds = true })
+				local off, offIds = BuildRules.oldRefund(stations, {}, onlyTubs)
+				expect(off).to.equal(0)
+				expect(#offIds).to.equal(0)
+			end
+		)
+
+		it("covers the Bubble Bath and Pawdicure at their board prices", function()
+			local coins = BuildRules.oldRefund({ BubbleBath = true, Pawdicure = true }, {}, both)
+			expect(coins).to.equal(
+				BuildRules.ITEMS.BubbleBath.price + BuildRules.ITEMS.Pawdicure.price
+			)
+		end)
+	end)
 end

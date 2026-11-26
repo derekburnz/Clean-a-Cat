@@ -221,6 +221,32 @@ function BuildRules.shown(id: string, isOn: IsOn): boolean
 	return true
 end
 
+-- Coins owed back for builds a save paid for that a switch has since taken out of the game (hiddenWhen: the Brush
+-- Table, Dryer, Bubble Bath and Pawdicure once tubBuilds and dirtLevels are both on; Review-QA on PR 581): each one
+-- built and not refunded before pays back its board price, once. Gives the coins and the ids to mark refunded. The
+-- station stays in `stations`, so turning a switch back off gives it back as it was. Pure.
+function BuildRules.oldRefund(
+	stations: { [string]: boolean },
+	refunded: { [string]: boolean },
+	isOn: IsOn
+): (number, { string })
+	local coins = 0
+	local ids: { string } = {}
+	for _, id in BuildRules.IDS do
+		local item = BuildRules.ITEMS[id]
+		if
+			item.hiddenWhen ~= nil
+			and stations[id] == true
+			and refunded[id] ~= true
+			and not BuildRules.shown(id, isOn)
+		then
+			coins += item.price
+			table.insert(ids, id)
+		end
+	end
+	return coins, ids
+end
+
 -- Can `state` start building `id`? False plus a short reason the player can read. Under tubBuilds (with `isOn`)
 -- there is one builder, so one build at a time whatever its slot; with `builders` 2 (the Second Builder pass, issue
 -- 518) each slot builds on its own again, so a room and a station (a tub) can build at once.
