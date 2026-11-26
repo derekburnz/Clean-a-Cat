@@ -167,6 +167,26 @@ end
 
 -- Counts one wash's `facts` on every open quest and pays the ones it finishes: returns those quests (each paid once,
 -- marked claimed) and whether the weekly crate is now earned (once a week, when every weekly quest in play is done).
+-- The one notice for one wash's finished quests (and the weekly crate), so a cat that finishes several shows them
+-- all at once instead of each toast replacing the last (Sync-Agent's B5). nil when nothing finished.
+function QuestRules.noticeText(done: { Quest }, crate: boolean): string?
+	local text: string? = nil
+	if #done == 1 then
+		text = `Quest done: {done[1].text}! +{done[1].coins} coins`
+	elseif #done > 1 then
+		local coins = 0
+		for _, q in done do
+			coins += q.coins
+		end
+		text = `{#done} quests done! +{coins} coins`
+	end
+	if crate then
+		local line = "Every weekly quest done! A crate is yours"
+		text = if text then `{text}. {line}` else line
+	end
+	return text
+end
+
 function QuestRules.count(book: Book, facts: Facts, isOn: IsOn): ({ Quest }, boolean)
 	local done: { Quest } = {}
 	for _, q in QuestRules.open(book, isOn) do

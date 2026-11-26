@@ -41,7 +41,7 @@ local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 8
 local CLOSE_ROOM = 84 -- design px at the band's right for the X
 local MIN_TAP = 44 -- real px
-local TICK_SECONDS = 20 -- the line shows minutes at most, so this only keeps it fresh
+local TICK_SECONDS = 1 -- read each second, in step with the HUD chip (issue 636); the words change once a minute
 
 -- Sizes in design pixels: full, then compact for a short screen (a phone held sideways).
 local SIZES = {
@@ -238,6 +238,7 @@ local function drawItem(
 		what.TextColor3 = Kit.INK_SOFT
 		what.TextWrapped = true
 		what.Size = UDim2.new(1, 0, 0, s.what * 2 + 4)
+		what.AutomaticSize = Enum.AutomaticSize.Y -- a narrow card needs a third line (Sync's B6 on the iPad)
 		what.Text = item.what
 	end
 	local price = item.price

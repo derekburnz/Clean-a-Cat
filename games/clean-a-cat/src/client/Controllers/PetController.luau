@@ -127,13 +127,15 @@ local function refresh(owner: Player)
 			end
 			drop(key)
 			local model = make(kind, star)
-			local at = target(owner, slot)
-			if model and at then
-				model:PivotTo(at)
-				model.Parent = folder
+			if model then
+				-- kept even with nowhere to stand yet (no character or plot on a join): `step` puts it out once there is
+				-- (issue 634: a pet already in the save never showed until its attribute changed)
 				shown[key] = { model = model, look = look, owner = owner, slot = slot }
-			elseif model then
-				model:Destroy()
+				local at = target(owner, slot)
+				if at then
+					model:PivotTo(at)
+					model.Parent = folder
+				end
 			end
 		end
 	end
@@ -151,6 +153,11 @@ local function step(dt: number)
 	for _, entry in shown do
 		local at = target(entry.owner, entry.slot)
 		if at == nil then
+			continue
+		end
+		if entry.model.Parent ~= folder then
+			entry.model:PivotTo(at) -- its first place to stand
+			entry.model.Parent = folder
 			continue
 		end
 		local now = entry.model:GetPivot()

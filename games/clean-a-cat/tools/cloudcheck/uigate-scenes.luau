@@ -158,6 +158,24 @@ local SCENES = {
 			UI.open("Settings")
 		end,
 	},
+	-- Settings with visiting on (issue 520): the "Visitors can come in" row shows; then the HUD's friend chip.
+	{
+		"SettingsVisitors",
+		function()
+			flag("settingsCard", true)
+			UI.setVisitors(true)
+			UI.open("Settings")
+		end,
+	},
+	{
+		"HudFriends",
+		function()
+			hud(true)
+			UI.setCoins(1240)
+			UI.setWashStage(nil)
+			UI.setFriends(2)
+		end,
+	},
 	{
 		"SettingsChanged",
 		function()
@@ -295,6 +313,20 @@ local SCENES = {
 			flag("crateWindow", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
 			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
+		end,
+	},
+	-- The Robux crate rows (issue 514, switch crateShop): under Open crate, with the chance list beside them.
+	{
+		"CrateShop",
+		function()
+			flag("crateWindow", true)
+			flag("crateShop", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			local prices: { [string]: number } = { CrateOne = 49, CrateFive = 199 }
+			UI.setCrateShop(CrateViewRules.shopRows("normal", true, function(key: string): unknown
+				return prices[key]
+			end))
+			UI.showCrate("normal", 0, CrateViewRules.rows("normal", { Cozy = true }))
 		end,
 	},
 	{
@@ -622,6 +654,29 @@ local SCENES = {
 			UI.setWashStage(nil)
 			local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
 			UI.showBubble(BubbleRules.get("longBuild"))
+		end,
+	},
+	-- Suds's tip above the compact recap strip (issue 626): the two never overlap.
+	{
+		"SudsBubbleStrip",
+		function()
+			hud(true)
+			flag("sudsBubble", true)
+			flag("recapCard", true)
+			UI.setCoins(1240)
+			UI.setWashStage(nil)
+			UI.showRecap({
+				cat = "Muffin",
+				rarity = "Common",
+				coins = 12,
+				tip = 2,
+				bonus = 0,
+				stars = 3,
+				isNew = false,
+				full = false,
+			})
+			local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
+			UI.showBubble(BubbleRules.get("quests"))
 		end,
 	},
 	-- After Suds's naming card, the tub still empty: customers wait at the door (the HUD's waiting faces).

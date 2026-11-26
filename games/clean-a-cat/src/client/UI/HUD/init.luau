@@ -24,6 +24,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local FriendViewRules = require(Shared:WaitForChild("FriendViewRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local Wallet = require(Shared:WaitForChild("Wallet"))
@@ -49,6 +50,7 @@ local FONT = Kit.FONT
 local WHITE = Kit.WHITE
 local GOLD_TEXT = Kit.GOLD_TEXT
 local EDGE = 22 -- design pixels from the root's edge (the screens' right margin)
+local FRIEND_TEXT = 19 -- design px: the friend chip under the coins (issue 520)
 
 -- One wash step per stage the player acts in, in order (ScrubController and SpaRules). A `later` step (#267) shows
 -- only for a cat whose wash takes it (setPlan).
@@ -87,6 +89,8 @@ type Sizes = typeof(SIZES.full)
 
 type Pieces = {
 	coins: Frame,
+	friends: Frame,
+	friendText: TextLabel,
 	coinIcon: Frame,
 	coinText: TextLabel,
 	steps: Frame,
@@ -105,6 +109,7 @@ type Pieces = {
 
 local pieces: Pieces? = nil
 local coins = 0
+local friendsHere: unknown = nil -- the Player attribute FriendsHere (switch friendBonus, issue 520)
 local stage: string? = nil
 local plan: { string } = {} -- the later steps this wash takes
 local listWas = false
@@ -112,6 +117,7 @@ local meterFraction: number? = nil
 local meterStep: string? = nil
 local root: Frame? = nil
 local listListeners: { () -> () } = {}
+local washWas = false -- a wash under way when last drawn (the side buttons step aside for it, issue 625)
 
 -- The steps this wash shows, as indexes into HUD.STEPS, in order.
 local function shownSteps(): { number }
@@ -222,6 +228,12 @@ local function redraw()
 	p.coinIcon.Size = UDim2.fromOffset(s.coinIcon, s.coinIcon)
 	p.coinText.TextSize = s.coinText
 	p.coinText.Text = Wallet.format(coins)
+	-- the friend chip under the coins: friends in the server and their bonus, nothing with none
+	local friendText = FriendViewRules.chipText(friendsHere)
+	p.friends.Visible = on() and friendText ~= nil
+	p.friendText.Text = friendText or ""
+	p.friendText.TextSize = FRIEND_TEXT
+	p.friends.Position = UDim2.new(1, -EDGE, 0, 8 + (s.coinIcon + 8) * scale)
 
 	local shown = shownSteps()
 	local current = stepIndex(stage, shown)
@@ -242,8 +254,8 @@ local function redraw()
 	local checklist = StepList.isOn()
 	local noTray = LiveFlags.isOn(HUD.AUTO_TOOL_FLAG)
 	p.pipRow.Parent = if checklist and not (noTray and not listNow) then nil else p.steps
-	if listNow ~= listWas then
-		listWas = listNow
+	if listNow ~= listWas or washing ~= washWas then
+		listWas, washWas = listNow, washing
 		for _, fn in listListeners do
 			task.spawn(fn)
 		end
@@ -313,6 +325,33 @@ function HUD.build(rootFrame: Frame)
 	Icons.draw("Coins", coinIcon)
 	local coinText = outlined("Amount", coinsFrame)
 	coinText.LayoutOrder = 2
+
+	-- Friend chip, under the coins (switch friendBonus): "2 friends · +20%".
+	local friendsFrame, friendsScale =
+		holder("Friends", rootFrame, Vector2.new(1, 0), UDim2.new(1, -EDGE, 0, 64))
+	table.insert(scales, friendsScale)
+	local friendChip = Instance.new("Frame")
+	friendChip.Name = "Chip"
+	friendChip.AutomaticSize = Enum.AutomaticSize.X
+	friendChip.Size = UDim2.fromOffset(0, FRIEND_TEXT + 14)
+	friendChip.BackgroundColor3 = Kit.WHITE
+	Kit.corner(friendChip, UDim.new(0.5, 0))
+	local friendEdge = Kit.stroke(friendChip, 3)
+	friendEdge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	local friendPad = Instance.new("UIPadding")
+	friendPad.PaddingLeft, friendPad.PaddingRight = UDim.new(0, 12), UDim.new(0, 12)
+	friendPad.Parent = friendChip
+	local friendText = Instance.new("TextLabel")
+	friendText.Name = "Text"
+	friendText.BackgroundTransparency = 1
+	friendText.AutomaticSize = Enum.AutomaticSize.X
+	friendText.Size = UDim2.fromScale(0, 1)
+	friendText.Font = Kit.FONT
+	friendText.TextColor3 = Kit.INK
+	friendText.TextSize = FRIEND_TEXT
+	Kit.minText(friendText)
+	friendText.Parent = friendChip
+	friendChip.Parent = friendsFrame
 
 	-- Step bar, top centre: "Step 1 of 4 · Scrub the mud" over one pip per step.
 	local steps, stepsScale =
@@ -420,6 +459,8 @@ function HUD.build(rootFrame: Frame)
 
 	pieces = {
 		coins = coinsFrame,
+		friends = friendsFrame,
+		friendText = friendText,
 		coinIcon = coinIcon,
 		coinText = coinText,
 		steps = steps,
@@ -444,6 +485,12 @@ function HUD.build(rootFrame: Frame)
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)
 	end
+	redraw()
+end
+
+-- Friends in the server (the Player attribute FriendsHere; nil while friendBonus is off).
+function HUD.setFriends(value: unknown)
+	friendsHere = value
 	redraw()
 end
 
@@ -479,6 +526,12 @@ function HUD.listShown(): boolean
 	return StepList.isShown()
 end
 
+-- True while a wash is under way and the HUD is on: the step line has the top of the screen.
+function HUD.washing(): boolean
+	return washWas
+end
+
+-- fn() when the tick list shows or hides, or a wash starts or ends.
 function HUD.onListChanged(fn: () -> ())
 	table.insert(listListeners, fn)
 end

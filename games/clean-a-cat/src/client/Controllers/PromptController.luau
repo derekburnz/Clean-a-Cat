@@ -6,6 +6,11 @@
 -- a touch screen) and the action ("Pick him up"), standing just to the right of the thing it is for, never over it.
 -- A tap on the pill does what the prompt does; keys work as before. Switch off: Roblox's own prompts come back.
 --
+-- While any window is open (the crate window, the shop, a board's card...), every prompt in the world is off on this
+-- device: no pill, no key, no tap goes through the window to a board or a prompt behind it (issue 623, Sync's B5: a
+-- tap on the crate window bought the Pro Brush behind it). They come back as the last window closes. This holds with
+-- smallPrompts on or off.
+--
 -- It sets the style on this device only, for every prompt in Workspace (the game's own: the opening, the spa and the
 -- boards make theirs there; Roblox's core prompts live elsewhere and are left alone) and every one added later.
 local Players = game:GetService("Players")
@@ -17,6 +22,7 @@ local Workspace = game:GetService("Workspace")
 
 local Kit = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Kit"))
 local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
+local UI = require(script.Parent.Parent:WaitForChild("UI"))
 
 local FLAG = "smallPrompts"
 local HEIGHT = 44 -- real px: a thumb's reach, and no bigger
@@ -161,7 +167,7 @@ local function show(prompt: ProximityPrompt, input: Enum.ProximityPromptInputTyp
 	label.Parent = pill
 	pill.Parent = gui
 	pill.Activated:Connect(function()
-		if not prompt.Enabled then
+		if not prompt.Enabled or not ProximityPromptService.Enabled or UI.anyWindowOpen() then
 			return
 		end
 		-- a hold prompt is held for its time, as a key would be
@@ -197,6 +203,14 @@ local function show(prompt: ProximityPrompt, input: Enum.ProximityPromptInputTyp
 end
 
 function PromptController.Start()
+	UI.onWindowsChanged(function(open: boolean)
+		ProximityPromptService.Enabled = not open
+		if open then
+			for prompt in table.clone(drawn) do
+				hide(prompt)
+			end
+		end
+	end)
 	Workspace.DescendantAdded:Connect(function(item: Instance)
 		if item:IsA("ProximityPrompt") then
 			style(item :: ProximityPrompt)

@@ -9,6 +9,9 @@
 -- only after the screen has been free for SETTLE_SECONDS. Closed with its X, it waits on the HUD's Gifts button.
 -- The good crate's chance button opens the crate window, and the card comes back when that closes (not after Open
 -- crate there, so the reveal plays clear).
+-- With askQueue on (issue 522), the card's own opening goes through AskController instead: it waits its turn in the
+-- one ask queue (a minute from any other ask) and the queue's screen free test, and with the switch off the old
+-- path above runs as before.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -27,12 +30,14 @@ local UI = require(script.Parent.Parent:WaitForChild("UI"))
 local CHECK_SECONDS = 1
 local SETTLE_SECONDS = 1.5 -- the screen stays free this long before the card opens by itself
 local WINDOW = "Checkin"
+local ASK = "checkin" -- AskRules id
 
 local CheckinController = {}
 
 local player = Players.LocalPlayer
 local scrub: any = nil
 local crates: any = nil
+local ask: any = nil
 local openedFor: number? = nil -- the day the card already opened by itself for, this session
 local freeSince = -math.huge
 
@@ -76,12 +81,39 @@ local function free(): boolean
 	)
 end
 
+-- The card's turn in the ask queue (askQueue on).
+local function showAsked()
+	local ready = state()
+	if not on() or ready == nil then
+		ask.done(ASK, "closed")
+		return
+	end
+	openedFor = ready
+	refresh()
+	UI.open(WINDOW)
+	UI.onceClosed(WINDOW, function()
+		ask.done(ASK, "closed")
+	end)
+end
+
 local function tick()
 	if not on() then
 		freeSince = -math.huge
+		if ask and ask.on() then
+			ask.drop(ASK)
+		end
 		return
 	end
 	local ready = state()
+	if ask and ask.on() then
+		freeSince = -math.huge
+		if ready == nil or ready == openedFor then
+			ask.drop(ASK)
+		else
+			ask.want(ASK, showAsked)
+		end
+		return
+	end
 	if ready == nil or ready == openedFor then
 		return
 	end
@@ -103,6 +135,7 @@ end
 function CheckinController.Init(controllers: { [string]: any })
 	scrub = controllers.ScrubController
 	crates = controllers.CrateWindowController
+	ask = controllers.AskController
 end
 
 function CheckinController.Start()

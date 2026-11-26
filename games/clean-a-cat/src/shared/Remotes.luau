@@ -65,6 +65,19 @@ Remotes.ClientToServer = {
 	"RequestStarter", -- ()  1 a second; switches on, save loaded, the pack offered (StarterRules.offered) and its product
 	-- created and priced: opens Roblox's purchase prompt for it (PurchaseService grants it)
 	"RequestStarterOpened", -- ()  1 a second; switch on, save loaded: the player opened the pack window, saved once
+	-- Gift stand (GiftService, behind giftStand and pets).
+	"RequestGiftFavourite", -- (favourited: true)  1 a second; switches on, save loaded: the player's own favourite prompt
+	-- said yes (the device tells it; trusted for this one free pet), saved once
+	"RequestGiftCheck", -- ()  1 every 2 s; switches on: asks Roblox whether the player is in the group, shown as GiftGroup
+	"RequestGiftClaim", -- ()  1 every 2 s; switches on, save loaded, the stand lit for this player, the favourite saved
+	-- and the player in the group (asked again on the server): gives Starcoat once and writes the save
+	-- Visiting (VisitService, behind visiting).
+	"RequestVisiting", -- (allowed: boolean)  1 a second; switch on, save loaded: the owner lets other players into
+	-- their spa or not (save.visiting); while not, visitors inside are moved out
+	-- Staff names (StaffNameService, behind staffRename).
+	"RequestRenameStaff", -- (workerId: one of WorkerRules.IDS, text: string of at most 100)  1 a second; switch on, save
+	-- loaded, that worker hired: the cleaned name (StaffNameRules.clean; "" is the default) is saved raw and shown only
+	-- after Roblox's text filter
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side

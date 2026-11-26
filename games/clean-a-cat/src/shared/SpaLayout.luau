@@ -93,6 +93,9 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	WorkerJo = at(-2.5, 0.5, 6.5, 0),
 	WorkerSam = at(2.5, 0.5, 6.5, 0),
 	WorkerLou = at(7.5, 0.5, 6.5, 0),
+	-- Not in the model: the gift stand (GiftService, issue 521), right of the spawn in plain view of the door, facing
+	-- the spawn. Model-Agent may move it with an Attachment in the plot.
+	GiftStand = at(10, 0.5, -8.5, TURNED),
 	-- Not in the model: where a crate the player holds waits, on the floor between the spawn and the Tools board.
 	Crate = at(1.5, 0.5, -7, 0),
 	-- Not in the model: the bench's places 4 to 6 once tubs are built (switch benchGrow, issue 515), along the pavement

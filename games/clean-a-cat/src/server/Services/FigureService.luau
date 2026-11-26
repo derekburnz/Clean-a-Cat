@@ -36,6 +36,9 @@ local LOOK_ATTRIBUTE = "LineLook" -- the customer's look number on their townsfo
 local LEAVING_ATTRIBUTE = "LineLeaving" -- a leaver's figure waiting for the redraw to take it away
 local STEP_UP_DELAY = 1.2 -- seconds a customer waits before stepping up into a leaver's place (issue 570; 0.8 s still
 -- overlapped the leaver's fading copy by half a stud in bug hunt B4)
+-- Seconds a leaver's figure stays (server side) after the redraw that took them out of the line, so the device that
+-- hears CustomerLeft after that redraw still finds it for the walk off copy; that device hides it at once.
+local LEAVE_LINGER = 0.5
 -- Model-Agent's townsfolk (#446), CleanACat_NPC_Customer_<name>. A look number n is TOWNSFOLK[n % #TOWNSFOLK + 1].
 local TOWNSFOLK = { "Sunny", "Mo", "Pip", "Rae", "Juno", "Bea", "Theo", "Kit" }
 local CUSTOMERS_FLAG = "customers"
@@ -105,6 +108,8 @@ local shown: { [Player]: { number } } = {}
 -- Each player's newest in-place redraw (lineReuse): a redraw whose figure loading yielded stops if a newer one began,
 -- so two quick redraws never both walk in the same newcomer (Review-QA's note on #596).
 local redraws: { [Player]: number } = {}
+-- Leavers' figures that wait LEAVE_LINGER before going (a customer who left; not one a worker took).
+local lingering: { [Instance]: boolean } = setmetatable({}, { __mode = "k" }) :: any
 local warned: { [string]: boolean } = {}
 
 local function warnOnce(key: string, text: string)
@@ -435,8 +440,24 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 		end
 	end
 	local now = Workspace:GetServerTimeNow()
+	-- a newcomer waits on the pavement while anyone steps up, so they never reach a place before its customer has
+	-- moved on from it (issue 628)
+	local stepping = false
+	for index, look in drawn do
+		local figure = byLook[look]
+		if
+			figure
+			and figure:GetAttribute("CatKind") == line.kinds[index]
+			and figure:GetAttribute(PLACE_ATTRIBUTE) ~= index
+		then
+			stepping = true
+		end
+	end
+	local walkIn = now + (if stepping then STEP_UP_DELAY else 0)
 	local arrivals = 0
 	local kept: { [Instance]: boolean } = {}
+	local stepUps: { { figure: Model, index: number, mat: CFrame } } = {}
+	local newcomers: { Model } = {}
 	for index, look in drawn do
 		local mat = queueSpot(index, slot)
 		local kind = line.kinds[index]
@@ -444,11 +465,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 		if figure and figure:GetAttribute("CatKind") == kind then
 			kept[figure] = true
 			if figure:GetAttribute(PLACE_ATTRIBUTE) ~= index then
-				figure:SetAttribute(PLACE_ATTRIBUTE, index)
-				figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, nil)
-				figure:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
-				-- set last: a client starts the walk when the start time changes
-				figure:SetAttribute(WalkRules.AT_ATTRIBUTE, now + STEP_UP_DELAY)
+				table.insert(stepUps, { figure = figure, index = index, mat = mat })
 			end
 			continue
 		end
@@ -457,23 +474,48 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			if made then
 				made:Destroy()
 			end
+			for _, other in newcomers do
+				other:Destroy()
+			end
 			return -- a newer redraw took over while this one loaded a figure
 		end
 		if made then
 			made:SetAttribute(PLACE_ATTRIBUTE, index)
 			made:SetAttribute(LOOK_ATTRIBUTE, look)
 			made:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
-			made:SetAttribute(WalkRules.AT_ATTRIBUTE, now + arrivals * WalkRules.FILE_GAP)
+			made:SetAttribute(WalkRules.AT_ATTRIBUTE, walkIn + arrivals * WalkRules.FILE_GAP)
 			made:SetAttribute(WalkRules.FILE_ATTRIBUTE, true)
 			arrivals += 1
 			kept[made] = true
-			made.Parent = folder
+			table.insert(newcomers, made)
 		end
 	end
+	-- One pass with no yield (issue 571): who went is taken away, the newcomers come and the rest step up, so every
+	-- device gets the whole change in the same frame and the line never counts one short or one over.
 	for _, child in folder:GetChildren() do
-		if not kept[child] then
+		if kept[child] then
+			continue
+		end
+		if lingering[child] then
+			lingering[child] = nil
+			task.delay(LEAVE_LINGER, function()
+				if child.Parent then
+					child:Destroy()
+				end
+			end)
+		else
 			child:Destroy()
 		end
+	end
+	for _, made in newcomers do
+		made.Parent = folder
+	end
+	for _, step in stepUps do
+		step.figure:SetAttribute(PLACE_ATTRIBUTE, step.index)
+		step.figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, nil)
+		step.figure:SetAttribute(WalkRules.TO_ATTRIBUTE, step.mat)
+		-- set last: a client starts the walk when the start time changes
+		step.figure:SetAttribute(WalkRules.AT_ATTRIBUTE, now + STEP_UP_DELAY)
 	end
 	shown[player] = drawn
 end
@@ -562,19 +604,31 @@ function FigureService.picked(player: Player, index: number)
 	end
 end
 
+-- True while the line is redrawn in place (lineReuse with townsfolk): SpaService then tells the device of a leave
+-- (CustomerLeft) after the redraw, and the leaver's figure lingers for it (`left` with `linger`).
+function FigureService.inPlace(): boolean
+	return LiveFlags.isOn(REUSE_FLAG) and LiveFlags.isOn(TOWNSFOLK_FLAG)
+end
+
 -- Called by SpaService when the customer at `index` of the line as shown leaves without being served (switch
--- heartBar), before it resends the line: they and their look go, and everyone behind moves up.
-function FigureService.left(player: Player, index: number)
+-- heartBar) or is taken by a worker, before it resends the line: they and their look go, and everyone behind moves
+-- up. `linger` (a customer who left, in place): the figure stays LEAVE_LINGER after the redraw for the walk off copy.
+function FigureService.left(player: Player, index: number, linger: boolean?)
 	local _, folder = folderOf(player)
 	-- With lineReuse the leaver's figure stays until the redraw, which takes it away in the same frame the newcomer comes,
 	-- so the line never counts one short for a frame (bug hunt B4); the device hides it beside its walk off copy itself
 	-- (Effects/CustomerLeave, #612).
-	local inPlace = LiveFlags.isOn(REUSE_FLAG) and LiveFlags.isOn(TOWNSFOLK_FLAG)
-	if folder and inPlace then
+	if folder and FigureService.inPlace() then
 		for _, figure in folder:GetChildren() do
-			if figure:GetAttribute(PLACE_ATTRIBUTE) == index then
+			if
+				figure:GetAttribute(PLACE_ATTRIBUTE) == index
+				and figure:GetAttribute(LEAVING_ATTRIBUTE) ~= true
+			then
 				-- never taken for a newcomer with the same look; its place stays, for CustomerLeft's copy on the device
 				figure:SetAttribute(LEAVING_ATTRIBUTE, true)
+				if linger then
+					lingering[figure] = true
+				end
 			end
 		end
 	elseif folder and LiveFlags.isOn(SWAP_FLAG) then

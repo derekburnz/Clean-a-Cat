@@ -115,6 +115,8 @@ local function span(screen: Vector2, scale: number): (number, number)
 	return centre, width
 end
 
+local lift = 0 -- real px the card sits higher, over the compact recap strip (issue 626)
+
 local function redraw()
 	local p = parts
 	if p == nil then
@@ -133,7 +135,7 @@ local function redraw()
 	local designWidth = width / scale
 	p.scale.Scale = scale
 	p.card.Size = UDim2.fromOffset(designWidth, s.height)
-	p.card.Position = UDim2.new(0, centre, 1, -BOTTOM_GAP)
+	p.card.Position = UDim2.new(0, centre, 1, -BOTTOM_GAP - lift)
 
 	p.face.Size = UDim2.fromOffset(s.face, s.face)
 	-- The face sits on the card's left with its top s.poke above the card's top edge.
@@ -312,6 +314,15 @@ function SudsBubble.build(root: Frame)
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SudsBubble.FLAG)
 		:Connect(redraw)
+end
+
+-- Lifts the card `px` real px higher, so it sits above the compact recap strip and never over it (issue 626).
+function SudsBubble.setLift(px: number)
+	local value = math.max(0, math.floor(px))
+	if value ~= lift then
+		lift = value
+		redraw()
+	end
 end
 
 return SudsBubble

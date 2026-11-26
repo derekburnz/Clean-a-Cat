@@ -33,6 +33,10 @@ CrateRules.PETS = table.freeze({
 	Legendary = table.freeze({ "Nimbus" }),
 }) :: { [string]: { string } }
 
+-- Pets that come from no crate, with their rarity: the gift stand's pet (GiftRules, issue 521). Never rolled; boosts and
+-- shows like any pet of that rarity.
+CrateRules.GIFT_PETS = table.freeze({ Starcoat = "Uncommon" }) :: { [string]: string }
+
 -- Percent per rarity for each crate kind; each sums to 100 (tuning crate.chance and crate.good).
 CrateRules.CHANCES = table.freeze({
 	normal = table.freeze({ Common = 50, Uncommon = 26, Rare = 16, Epic = 6, Legendary = 2 }),
@@ -69,6 +73,9 @@ for _, rarity in CatRules.RARITIES do
 	for _, pet in pets do
 		PET_RARITY[pet] = rarity
 	end
+end
+for pet, rarity in CrateRules.GIFT_PETS do
+	PET_RARITY[pet] = rarity
 end
 
 function CrateRules.rarityOf(pet: string): string?

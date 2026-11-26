@@ -5,7 +5,7 @@
 -- ProductPrice_StarterPack for the pack and PassPrice_<key> for each of the three passes in it.
 --
 -- The HUD's Starter button shows only while StarterEndsAt is set (SideButtons), with a calm chip under its caption
--- ("1d 20h", "5h 12m", never seconds), refreshed each minute. The button bobs as it appears, three times on the first
+-- ("1d 20h", "5h 12m", never seconds), read with the window's line. The button bobs as it appears, three times on the first
 -- visit and once on the next two, never after the window has been opened (Effects/Attention). The window never opens
 -- by itself. The first time it is opened, RequestStarterOpened tells the server; Get pack sends RequestStarter, and the
 -- server opens Roblox's own purchase prompt, which is the player's real confirm. When the offer ends, the window
@@ -28,7 +28,8 @@ local UI = require(Client:WaitForChild("UI"))
 local StarterController = {}
 
 local WINDOW = StarterViewRules.WINDOW
-local NOTE_SECONDS = 60 -- the HUD chip changes once a minute at most
+local NOTE_SECONDS = 1 -- read each second so the chip turns with the window's line (issue 636); the words only
+-- change once a minute, so nothing visibly ticks
 local CHECK_SECONDS = 1
 
 local player = Players.LocalPlayer
@@ -36,6 +37,8 @@ local sentOpened = false
 local bobbed = false -- the button bobs once per visit at most
 local noteAt = -math.huge
 local lastNote: string? = nil
+local ASK_ID = "starterButton"
+local asks: any = nil -- AskController, when loaded
 
 local function on(): boolean
 	return LiveFlags.isOn(StarterRules.FLAG) and LiveFlags.isOn(Passes.FLAG)
@@ -80,6 +83,19 @@ local function setNote(force: boolean)
 	end
 end
 
+local function bob()
+	local button = UI.sideButton(WINDOW)
+	if button == nil or not button.Visible or not on() or endsAt() == nil then
+		return
+	end
+	local bobs = StarterViewRules.bobs(player:GetAttribute(StarterRules.VISITS_ATTRIBUTE), opened())
+	if bobs > 0 then
+		Attention.start(button, bobs)
+	end
+end
+
+-- The bob waits its turn in the ask line (AskController, switch askQueue: the quiet "starterButton" ask, which ends
+-- the moment it shows), else it plays as soon as the button shows.
 local function tryBob()
 	if bobbed or not on() or endsAt() == nil then
 		return
@@ -89,10 +105,10 @@ local function tryBob()
 		return
 	end
 	bobbed = true
-	local bobs = StarterViewRules.bobs(player:GetAttribute(StarterRules.VISITS_ATTRIBUTE), opened())
-	if bobs > 0 then
-		Attention.start(button, bobs)
+	if asks and asks.on() and asks.want(ASK_ID, bob) then
+		return
 	end
+	bob()
 end
 
 local function tick()
@@ -110,7 +126,9 @@ local function tick()
 	tryBob()
 end
 
-function StarterController.Init(_controllers: { [string]: any }) end
+function StarterController.Init(controllers: { [string]: any })
+	asks = controllers.AskController
+end
 
 function StarterController.Start()
 	UI.onOpened(function(name: string)

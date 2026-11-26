@@ -17,6 +17,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
+local StaffNameRules = require(Shared:WaitForChild("StaffNameRules"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local FOLDER_NAME = "CleanACat_WorkerPrompts"
@@ -47,6 +48,14 @@ end
 
 local function attribute(kind: string, id: string): unknown
 	return Players.LocalPlayer:GetAttribute(`{kind}_{id}`)
+end
+
+-- The worker's name as the player renamed them (StaffNameService: already filtered by Roblox), or the default.
+local function nameOf(id: string): string
+	local renamed = if LiveFlags.isOn(StaffNameRules.FLAG) then attribute("StaffName", id) else nil
+	return if type(renamed) == "string" and renamed ~= ""
+		then renamed
+		else WorkerRules.WORKERS[id].name
 end
 
 local function prompt(parent: Instance, key: Enum.KeyCode, pad: Enum.KeyCode): ProximityPrompt
@@ -80,7 +89,7 @@ local function build(id: string)
 		local best = if hired and LiveFlags.isOn(CrateRules.FLAG) then bestInPen() else nil
 		give.Enabled = best ~= nil
 		give.ActionText = "Give a pet"
-		give.ObjectText = if best then `{best.kind} to {info.name}` else ""
+		give.ObjectText = if best then `{best.kind} to {nameOf(id)}` else ""
 		if not hired then
 			main.Enabled = not info.pass
 			main.ActionText = `Hire {info.name}`
@@ -91,12 +100,12 @@ local function build(id: string)
 		local mode = WorkerRules.cleanMode(attribute("WorkerMode", id)) or WorkerRules.DEFAULT_MODE
 		main.Enabled = true
 		main.ActionText = `Takes: {WorkerRules.MODE_NAMES[mode]}`
-		main.ObjectText = `{info.name}, tap to change`
+		main.ObjectText = `{nameOf(id)}, tap to change`
 		local cost =
 			WorkerRules.levelCost({ level = WorkerRules.cleanLevel(attribute("WorkerLevel", id)) })
 		level.Enabled = cost ~= nil
 		level.ActionText = "Level up"
-		level.ObjectText = if cost then `{info.name}, {cost} coins` else ""
+		level.ObjectText = if cost then `{nameOf(id)}, {cost} coins` else ""
 	end
 	show()
 	table.insert(
@@ -126,7 +135,7 @@ local function build(id: string)
 		end)
 	)
 	table.insert(shows, show)
-	for _, kind in { "WorkerLevel", "WorkerMode" } do
+	for _, kind in { "WorkerLevel", "WorkerMode", "StaffName" } do
 		table.insert(
 			connections,
 			Players.LocalPlayer:GetAttributeChangedSignal(`{kind}_{id}`):Connect(show)
