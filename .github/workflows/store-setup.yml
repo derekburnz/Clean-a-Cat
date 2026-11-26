@@ -1,0 +1,56 @@
+# Makes the passes and developer products, sets the server size and puts the store art on the game page, with the
+# keys already saved as secrets (Derek, 2026-11-26 plan page: passes and products "with keys", server size "6 is
+# fine", store art "with keys"). Issues 850 and 851. Script: games/clean-a-cat/tools/opencloud/store-setup.py.
+#
+# Every run without confirm "yes" only lists what is there and prints the plan. A pass cannot be deleted, so the
+# script skips every name the experience already has. Passes, products and server size on live run only on the
+# owner's own word (promotion day), as publishes and switches. The store art goes on the live game page (the page
+# players see), which Derek asked for with "You should be able to do this with keys".
+name: store-setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "dev: the dev copy. live: the real game, only on the owner's word"
+        type: choice
+        options: [dev, live]
+        default: dev
+      action:
+        description: "list: what passes and products exist. passes, products: make the missing ones. server-size: set 6. store-art: upload the icon and 4 thumbnails and set them on the page"
+        type: choice
+        options: [list, passes, products, server-size, store-art]
+        default: list
+      confirm:
+        description: "yes to make or change anything; anything else only prints the plan"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: store-setup
+  cancel-in-progress: false
+
+env:
+  UNIVERSE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_UNIVERSE_ID || '10778773655') || (vars.ROBLOX_DEV_UNIVERSE_ID || '10778775478') }}
+  PLACE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_PLACE_ID || '79301459457383') || (vars.ROBLOX_DEV_PLACE_ID || '111265803618777') }}
+
+jobs:
+  setup:
+    name: Store setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run
+        env:
+          KEY_GROUP: ${{ secrets.ROBLOX_GROUP_KEY }}
+          KEY_OWNER: ${{ secrets.OWNER_KEY }}
+          TARGET: ${{ inputs.target }}
+          ACTION: ${{ inputs.action }}
+          CONFIRM: ${{ inputs.confirm }}
+          GROUP_ID: ${{ vars.ROBLOX_GROUP_ID || '107520049' }}
+          ART_DIR: assets/clean-a-cat/store/picked-2026-11-26
+        run: python3 games/clean-a-cat/tools/opencloud/store-setup.py
