@@ -101,7 +101,8 @@ function Crate.spinAt(t: number): (number, number)
 	return turn, Crate.HOP * 4 * u * (1 - u)
 end
 
--- Runs `step(t)` each frame for `seconds`, then `done()`. Stops early when `model` leaves its parent.
+-- Runs `step(t)` each frame for `seconds`, then `done()`. Stops early, still calling `done()`, when `model` leaves
+-- its parent.
 local function run(model: Model, seconds: number, step: (number) -> (), done: () -> ())
 	local start = os.clock()
 	local connection: RBXScriptConnection? = nil
@@ -111,6 +112,7 @@ local function run(model: Model, seconds: number, step: (number) -> (), done: ()
 			if connection then
 				connection:Disconnect()
 			end
+			done() -- still called, so whatever was taken (the cats' motion) is given back
 			return
 		end
 		if t >= seconds then
@@ -199,15 +201,28 @@ function Crate.open(crate: Model)
 	end)
 end
 
-function Crate.reveal(pet: Model)
+-- The reveal's order (Review-QA on #561): the cats' motion lets go of the pet before it is resized, and takes it
+-- back only at full size, so the head and tail never float round a shrunk body; the wiggle comes after.
+Crate.REVEAL_ORDER = table.freeze({ "hold", "pop", "release", "wiggle" })
+
+export type Motion = { hold: (Model) -> (), release: (Model) -> (), wiggle: (Model) -> () }
+
+function Crate.reveal(pet: Model, motion: Motion?)
 	local final = pet:GetScale()
 	local function done()
 		pet:ScaleTo(final)
+		if motion then
+			motion.release(pet)
+			motion.wiggle(pet)
+		end
 		burstAt(pet, "Burst")
 	end
 	if Effects.reducedMotion() then
 		done()
 		return
+	end
+	if motion then
+		motion.hold(pet)
 	end
 	run(pet, Crate.POP_SECONDS, function(t)
 		pet:ScaleTo(final * math.max(0.05, Crate.popAt(t))) -- ScaleTo keeps the pivot, the pet's base

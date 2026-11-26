@@ -294,9 +294,11 @@ function EffectsController.Start()
 	end
 	onModel("CrateDropped", Crate.drop)
 	onModel("CrateOpened", Crate.open)
+	-- the pet is a cat body: the cats' motion lets go of it while it is resized, then it wiggles
+	local petMotion =
+		{ hold = CatMotion.hold, release = CatMotion.release, wiggle = CatMotion.wiggle }
 	onModel("PetRevealed", function(pet: Model)
-		Crate.reveal(pet)
-		CatMotion.wiggle(pet) -- the pet is a cat body, so the happy wiggle plays on it too
+		Crate.reveal(pet, petMotion)
 	end)
 	onModel("PetStarUp", Crate.starUp)
 

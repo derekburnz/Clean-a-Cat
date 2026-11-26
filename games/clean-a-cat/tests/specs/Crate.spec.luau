@@ -68,4 +68,19 @@ return function()
 			expect(math.abs(top - Crate.HOP) < 1e-9).to.equal(true)
 		end)
 	end)
+	describe("Crate.REVEAL_ORDER", function()
+		it(
+			"lets go of the cats' motion before the pop and takes it back at full size, then wiggles",
+			function()
+				local order = Crate.REVEAL_ORDER
+				local at = {}
+				for i, step in order do
+					at[step] = i
+				end
+				expect(at.hold < at.pop).to.equal(true)
+				expect(at.pop < at.release).to.equal(true)
+				expect(at.release < at.wiggle).to.equal(true)
+			end
+		)
+	end)
 end
