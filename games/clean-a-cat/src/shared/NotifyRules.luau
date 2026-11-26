@@ -10,6 +10,13 @@ local NotifyRules = {}
 
 NotifyRules.LONG_SECONDS = BuildRules.LONG_SECONDS -- a build this long or longer gets the bell
 NotifyRules.DAY_SECONDS = 86400
+-- The notification string's asset id per experience (game.GameId): Creator Hub > the game > Engagement >
+-- Notifications > Create a Notification String, then ⋯ > Copy Asset ID. Not secret. "" until the owner makes it;
+-- NotifyService falls back to the ServerStorage attribute NotifyMessageId, then sends nothing.
+NotifyRules.MESSAGE_IDS = table.freeze({
+	[10778775478] = "", -- Clean-a-Cat-Dev
+	[10778773655] = "", -- Clean a Cat
+}) :: { [number]: string }
 NotifyRules.MAX_WAIT_SECONDS = 30 * 86400 -- a queued message older than this is dropped (MemoryStore keeps 45 days)
 -- What the client reports about the opt-in prompt (notify_opt_in): the bell tapped and the prompt shown, the
 -- prompt closed, or Roblox would not show the prompt (not eligible, or already opted in): they see the come back

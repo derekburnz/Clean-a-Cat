@@ -7,9 +7,10 @@
 -- - Every server checks the queue each CHECK_SECONDS and sends what is due through Open Cloud user notifications:
 --   a claim first (so two servers never send the same one), at most one a day per player (NotifyRules.canSend).
 --   Roblox delivers only to players who opted in; for anyone else the call fails and nothing happens.
--- Sending needs two things from the owner, kept out of this public repo: the notification's message id
--- (ServerStorage attribute NotifyMessageId, set in Studio) and an Open Cloud key with user notification write
--- access, saved as the experience secret SECRET_NAME. Without them nothing is sent and the log says so once.
+-- Sending needs two things: the notification string's id (NotifyRules.MESSAGE_IDS for this experience, else the
+-- ServerStorage attribute NotifyMessageId) and an Open Cloud key with user notification write access, saved as the
+-- experience secret SECRET_NAME (the notify-key workflow saves one of the owner's keys there, never printed).
+-- Without them nothing is sent and the log says so once.
 local HttpService = game:GetService("HttpService")
 local MemoryStoreService = game:GetService("MemoryStoreService")
 local Players = game:GetService("Players")
@@ -99,7 +100,10 @@ local function unqueue(player: Player)
 end
 
 local function send(userId: number, item: string): boolean
-	local messageId = ServerStorage:GetAttribute(MESSAGE_ATTRIBUTE)
+	local listed = NotifyRules.MESSAGE_IDS[game.GameId]
+	local messageId = if type(listed) == "string" and listed ~= ""
+		then listed
+		else ServerStorage:GetAttribute(MESSAGE_ATTRIBUTE)
 	if type(messageId) ~= "string" or messageId == "" then
 		warnOnce(
 			`no message id: set the ServerStorage attribute {MESSAGE_ATTRIBUTE} to the notification's id`
