@@ -20,11 +20,9 @@ local Portraits = require(script.Parent:WaitForChild("Portraits"))
 
 local ToastCard = {}
 
-type Look = ToastRules.Look
-
 local DARK = Color3.fromRGB(30, 30, 30)
 local DARK_WARNING = Color3.fromRGB(150, 60, 20)
-local TAB: { [Look]: Color3 } = {
+local TAB: { [string]: Color3 } = {
 	reward = Color3.fromHex("6FD8A8"),
 	warning = Color3.fromHex("FFB38F"),
 	news = Color3.fromHex("CDB8FF"),
@@ -72,7 +70,7 @@ function ToastCard.style(label: TextLabel, text: string, kind: ("info" | "warnin
 		pad.PaddingRight = UDim.new(0, 0)
 		return
 	end
-	local look = ToastCard.lookOf(text, kind)
+	local look: string = ToastCard.lookOf(text, kind)
 	local image = if icon then Portraits.imageFor(icon) else ""
 	label.Font = Kit.FONT
 	label.TextSize = TEXT_SIZE

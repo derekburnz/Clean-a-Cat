@@ -6,8 +6,11 @@ return function()
 
 	describe("ToastRules", function()
 		it("ships behind its switch, off by default", function()
-			local LiveFlags =
-				require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("LiveFlags"))
+			local LiveFlags = require(
+				game:GetService("ReplicatedStorage")
+					:WaitForChild("Shared")
+					:WaitForChild("LiveFlags")
+			)
 			expect(LiveFlags.OFF_BY_DEFAULT[ToastRules.FLAG]).to.equal(true)
 		end)
 
