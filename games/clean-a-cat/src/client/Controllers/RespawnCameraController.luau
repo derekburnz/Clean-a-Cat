@@ -1,20 +1,20 @@
 --!strict
 -- RespawnCameraController: after a respawn the camera starts behind the new character, as it does on a join
--- (issue 670, switch respawnCamera). Roblox's camera module (PlayerModule ClassicCamera, which serves the classic and
--- follow modes) means to turn the camera behind each new character: CharacterAdded sets its resetCameraAngle flag.
--- But its next Update clears that flag first and only uses it once the character has a subject position, so on a
--- respawn, where the first Update comes before the new character is ready, the turn is lost and the camera keeps
--- whatever yaw it had (Sync, fe114a4: 41, 5 and 67 degrees off). Spawning turned toward open room (spawnSide) then
--- leaves the camera on the back wall art. PR 704's first try set the flag once the HumanoidRootPart child was there,
--- but the module looks the root up as Humanoid.RootPart, which can still be nil then, and falls back to world -Z (a
--- yaw of about 0, 89 to 108 degrees off the character on 8 of 8 respawns).
--- So for WINDOW_SECONDS after a respawn (not the first character of the visit, whose camera is already right), while
--- the camera is the plain follow camera on this humanoid, the character stands still and the camera looks more
--- than OFF away from the character's facing, this hands the module the root (Humanoid.RootPart) and sets its flag,
--- then looks again a few frames later, at most MAX_ASKS times. The module turns the camera itself, with its own
--- state, so nothing fights the turn afterwards (where CameraClearController's held turn failed). A scripted shot
--- such as the opening or the wash view is never touched, and the moment the player turns or zooms the camera, it is
--- theirs.
+-- (issue 670, switch respawnCamera). Roblox's camera module (PlayerModule's ClassicCamera, serving the classic and
+-- follow modes) loses its own respawn turn: CharacterAdded sets its resetCameraAngle flag, but its next Update clears
+-- the flag before the new character has a subject position, so the camera keeps its old yaw, and with spawnSide the
+-- character now faces open room while the camera stays on the back wall art. The module cannot be reached to fix
+-- this: CameraModule returns an empty table, so PlayerModule:GetCameras() has no activeCameraController (Sync, on
+-- 4e061e5, which is why PR 709's ask fell back every time). Setting Camera.CFrame alone does not hold either: in
+-- follow mode (the touch default) each Update turns the camera back toward the module's own lastCameraTransform.
+-- What does hold is the module's own reset path: with the camera Scriptable the module disables its controller,
+-- which clears lastCameraTransform (BaseCamera:Cleanup), and once the camera is Custom again it starts from
+-- Camera.CFrame. So for WINDOW_SECONDS after a respawn (not the first character of the visit, whose camera is
+-- already right), while the camera is the plain follow camera on this humanoid, the character stands still and the
+-- camera looks more than OFF away from the character's facing, this makes the camera Scriptable for one frame
+-- placed behind the character at its own distance and the module's 15 degree tilt, then Custom again, and looks a
+-- few frames later, at most MAX_ASKS times. It runs after the module's step. A scripted shot such as the opening or
+-- the wash view is never touched, and the moment the player turns or zooms the camera, it is theirs.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -28,45 +28,23 @@ local FLAG = "respawnCamera"
 local BIND_NAME = "CleanACatRespawnCamera"
 local WINDOW_SECONDS = 2 -- how long after a respawn the camera is checked
 local OFF = math.rad(30) -- a camera looking this far from the character's facing is turned behind it
-local MAX_ASKS = 6 -- how many times one respawn asks the module to turn the camera
-local ASK_GAP = 3 -- frames between asks, so the module has run before the camera is looked at again
+local MAX_ASKS = 3 -- how many times one respawn turns the camera
+local ASK_GAP = 3 -- frames after a turn before the camera is looked at again
+local TILT = math.rad(15) -- the module's own downward tilt behind a new character (ClassicCamera INITIAL_CAMERA_ANGLE)
+local MIN_DISTANCE = 4
+local MAX_DISTANCE = 40
 local STILL = 0.1 -- a MoveDirection shorter than this is a character standing still
-local FALLBACK_DISTANCE = 12.5 -- the camera's default distance, used only if the module cannot be reached
-local FALLBACK_RISE = 0.27 -- about the module's own 15 degree tilt, used with the fallback
 
 local RespawnCameraController = {}
 
--- The active camera controller in Roblox's PlayerModule (ClassicCamera serves both the classic and follow modes),
--- or nil when it cannot be reached.
-local function activeCamera(): any
-	local scripts = Players.LocalPlayer:FindFirstChild("PlayerScripts")
-	local module = if scripts then scripts:FindFirstChild("PlayerModule") else nil
-	if module == nil or not module:IsA("ModuleScript") then
-		return nil
-	end
-	local ok, found = pcall(function(): any
-		local cameras = (require(module :: ModuleScript) :: any):GetCameras()
-		return if type(cameras) == "table" then cameras.activeCameraController else nil
-	end)
-	return if ok and type(found) == "table" then found else nil
-end
-
--- Turns the camera behind `root`: through the module's own reset (handing it the root, which it would otherwise look
--- up as Humanoid.RootPart) when it has one, else by placing the camera once.
-local function reset(camera: Camera, root: BasePart)
-	local controller = activeCamera()
-	if controller ~= nil and controller.resetCameraAngle ~= nil then
-		controller.humanoidRootPart = root
-		controller.resetCameraAngle = true
-		return
-	end
-	local look = root.CFrame.LookVector
-	local back = Vector3.new(-look.X, 0, -look.Z)
-	if back.Magnitude < 1e-3 then
-		return
-	end
-	local offset = (back.Unit + Vector3.new(0, FALLBACK_RISE, 0)).Unit * FALLBACK_DISTANCE
-	camera.CFrame = CFrame.lookAt(camera.Focus.Position + offset, camera.Focus.Position)
+-- Where the camera goes behind a character facing `facing` (flat): at the camera's own distance from its focus, tilted
+-- down like the module's own reset.
+local function behind(camera: Camera, facing: Vector3): CFrame
+	local focus = camera.Focus.Position
+	local distance =
+		math.clamp((camera.CFrame.Position - focus).Magnitude, MIN_DISTANCE, MAX_DISTANCE)
+	local look = (facing * math.cos(TILT) - Vector3.new(0, math.sin(TILT), 0)).Unit
+	return CFrame.lookAt(focus - look * distance, focus)
 end
 
 -- Is the camera the plain follow camera on this character's humanoid?
@@ -103,9 +81,24 @@ local function flat(look: Vector3): Vector3?
 	return if level.Magnitude > 1e-3 then level.Unit else nil
 end
 
+-- The camera turned Scriptable here and not yet given back to the module, with where it was placed.
+local placed: CFrame? = nil
+
+-- Gives the camera back to the module, placed, when this controller left it Scriptable.
+local function release()
+	local target = placed
+	placed = nil
+	local camera = Workspace.CurrentCamera
+	if target and camera and camera.CameraType == Enum.CameraType.Scriptable then
+		camera.CFrame = target
+		camera.CameraType = Enum.CameraType.Custom
+	end
+end
+
 local function watch(character: Model)
 	local player = Players.LocalPlayer
 	RunService:UnbindFromRenderStep(BIND_NAME)
+	release()
 	if not LiveFlags.isOn(FLAG) then
 		return
 	end
@@ -113,8 +106,14 @@ local function watch(character: Model)
 	playerTurned = false
 	local asks = 0
 	local pause = 0
-	-- before the camera module's own step, so a reset asked for lands on this same frame
-	RunService:BindToRenderStep(BIND_NAME, Enum.RenderPriority.Camera.Value - 1, function()
+	-- after the camera module's own step, so the placed camera is what this frame shows
+	RunService:BindToRenderStep(BIND_NAME, Enum.RenderPriority.Camera.Value + 1, function()
+		if placed then
+			-- the module has seen Scriptable and dropped its last transform: hand the camera back where it was put
+			release()
+			pause = ASK_GAP
+			return
+		end
 		if
 			os.clock() - started > WINDOW_SECONDS
 			or playerTurned
@@ -149,9 +148,11 @@ local function watch(character: Model)
 		if math.acos(math.clamp(facing:Dot(looking), -1, 1)) <= OFF then
 			return
 		end
-		reset(camera, root)
+		local target = behind(camera, facing)
+		camera.CameraType = Enum.CameraType.Scriptable
+		camera.CFrame = target
+		placed = target
 		asks += 1
-		pause = ASK_GAP
 	end)
 end
 
