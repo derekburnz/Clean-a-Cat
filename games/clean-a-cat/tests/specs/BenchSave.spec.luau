@@ -27,6 +27,15 @@ return function()
 			expect(saved[2].needs[1]).to.equal("mud")
 		end)
 
+		it("never keeps a tutorial customer", function()
+			local saved = BenchSave.snapshot({ common, rare }, {
+				{ dirt = 1, needs = { "mud" }, tutorial = true },
+				{ dirt = 2, needs = { "mud" } },
+			})
+			expect(#saved).to.equal(1)
+			expect(saved[1].kind).to.equal(rare)
+		end)
+
 		it("reads a saved line back, dropping anything malformed", function()
 			local back = BenchSave.restore({
 				{ kind = common, dirt = 2, needs = { "mud", "mud", "nope" } },

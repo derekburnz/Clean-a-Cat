@@ -16,15 +16,17 @@ BenchSave.FLAG = "benchSave"
 
 export type Entry = { kind: string, dirt: number, needs: { string } }
 
--- What one waiting customer needs to be kept: their order's dirt, needs and whether they are a special visitor.
-export type Waiting = { dirt: number, needs: { string }, special: boolean? }
+-- What one waiting customer needs to be kept: their order's dirt, needs and whether they are a special visitor or one
+-- of a new spa's tutorial customers.
+export type Waiting = { dirt: number, needs: { string }, special: boolean?, tutorial: boolean? }
 
--- The line to save, from the queue's kinds and their orders, front first; special visitors are left out.
+-- The line to save, from the queue's kinds and their orders, front first; special visitors and tutorial customers
+-- are left out.
 function BenchSave.snapshot(kinds: { string }, orders: { Waiting }): { Entry }
 	local out: { Entry } = {}
 	for place, kind in kinds do
 		local order = orders[place]
-		if order and not order.special and #out < SpaRules.MAX_QUEUE then
+		if order and not order.special and not order.tutorial and #out < SpaRules.MAX_QUEUE then
 			table.insert(out, { kind = kind, dirt = order.dirt, needs = table.clone(order.needs) })
 		end
 	end
