@@ -427,9 +427,9 @@
    "CleanACat_Area_VipRoom_Lamp_Decor",
    "CleanACat_Area_VipRoom_Bulbs"
   ],
-  "triangles": 4496,
+  "triangles": 4664,
   "budget": 5000,
-  "parts": 202,
+  "parts": 208,
   "size_studs": {
    "x": 17.92,
    "y": 14.01,
@@ -455,10 +455,10 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "4496/5000 tris",
+    "budget": "4664/5000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2904 faces on swatch centers",
+    "uv": "3020 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.32 (want 0)",
     "centered": "footprint center x=0.00 y=6.14",
