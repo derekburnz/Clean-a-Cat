@@ -98,6 +98,7 @@ LiveFlags.KEYS = {
 	"heartBar", -- each waiting customer's cat has a heart bar that drains; picked early it pays a bonus, at empty the customer leaves (never before 10 minutes of play, never before the first serve), and the pay is base x wash stars x early x dirt with a recap line each (the owner's 2026-11-25 picks, HeartRules, issue 507); off by default
 	"promptFocus", -- while the player holds a cat or Suds, the tub's "Put in tub" or "Wash him" is the only prompt on their device, so a board's prompt nearby never takes the pill (Spa/PromptFocus, Review-QA's pass A, #540); off by default
 	"bowTiers", -- bow tiers bought with coins at the Tools board (Silk, Satin, Golden after the free Ribbon), each paying more on every hand washed customer's cat (BowRules, issue 508); off by default
+	"workers", -- Jo and Sam are hired with coins, each with a station on the back wall; a worker takes a waiting cat by the mode the player sets, washes it with a progress bar over it, and pays a small share (WorkerRules, WorkerService, issue 509); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -168,6 +169,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	heartBar = true,
 	promptFocus = true,
 	bowTiers = true,
+	workers = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

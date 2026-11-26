@@ -88,6 +88,11 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotMascot = at(-10.25, 0.5, -14.3, math.rad(230)), -- Suds's bed right of the door, looking at the tub (#285, Model-Agent)
 	-- Not in the model: the Tools board stands on the floor left of the tub, facing the spawn.
 	Tools = at(-1, 0.5, -2, 0),
+	-- Not in the model either: the workers' stations along the back wall, each facing the front (WorkerRules, issue
+	-- 509). Model-Agent may move them when the worker stations are modelled.
+	WorkerJo = at(-2.5, 0.5, 6.5, 0),
+	WorkerSam = at(2.5, 0.5, 6.5, 0),
+	WorkerLou = at(7.5, 0.5, 6.5, 0),
 }) :: { [string]: Spot }
 
 -- Model-Agent's fixed props, placed with the plot (PlotService) into its PROPS_FOLDER, each with its pivot (its
