@@ -228,9 +228,9 @@
    "CleanACat_Area_SpaPlot_Glow",
    "CleanACat_Area_SpaPlot_Flowers"
   ],
-  "triangles": 4504,
+  "triangles": 4488,
   "budget": 25000,
-  "parts": 219,
+  "parts": 223,
   "size_studs": {
    "x": 44.0,
    "y": 48.0,
@@ -249,13 +249,13 @@
    "warnings": [],
    "qa_accepted": {
     "shared corners": 1,
-    "back to back": 8
+    "back to back": 5
    },
    "checks": {
-    "budget": "4504/25000 tris",
+    "budget": "4488/25000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "2678 faces on swatch centers",
+    "uv": "2646 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.00 y=0.00",
