@@ -27,3 +27,12 @@ Eighteen smaller pictures in the same style for spots that would otherwise show 
 Camera, Paw, Heart, Gift, Music, Speaker, Shake, Sparkle, Dice, Check, Crown, Lock, Mud, Tangles, Wet, Pointer, Star and
 Station (`.png`, 512 px). Model-Agent drew them and Review-QA passed them down to 28 px (#253, #257, #261), so unlike
 the six button pictures above they may show from 28 px up. They are uploaded under the group like the rest.
+
+## Menu pictures (issue 527)
+
+Six more in the button pictures' build, for the menu buttons and cards of milestone 1: `CleanACat_Icon_Hud_`
+Quests (a clipboard with a tick), Shop (a shopfront under a striped awning), Pets (a cat's head in a collar with a
+bell), Crate (the pet crate), Bow (the bow a washed cat wears) and Helpers (Jo of the staff in the headband and the
+bib apron, for the HUD's Helpers button; the older `Helper` picture has neither). `.png`, 512 px, see-through, made
+by `hud_icons.py`. Checked down to 36 px; the sheet is `docs/concepts/clean-a-cat/2026-11-26-menu-icons.png`.
+Uploaded under the group like the rest once Review-QA has passed them.
