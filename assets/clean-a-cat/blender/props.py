@@ -42,6 +42,7 @@ import math
 from mathutils import Matrix, Vector
 
 import cats
+import common
 from common import Builder
 from stations import _tris
 
@@ -311,7 +312,10 @@ def rose_crown(ctx):
     P = ctx.pen("head")
     G = ctx.piece("Gem_Glow", "head", (0, 0.02, 0.4))
     y0, r = 0.03, 0.3
-    P.ring((0, y0, 0.07), r, 0.07, 0.15, GOLD, segments=10)
+    if common.lite():                                                    # a light twin's band is one solid drum
+        P.cyl((0, y0, 0.07), r, 0.15, GOLD, segments=10)                 # (#688): the cap hides its middle
+    else:
+        P.ring((0, y0, 0.07), r, 0.07, 0.15, GOLD, segments=10)
     P.sphere((0, y0, 0.12), r - 0.03, "royal_berry", scale=(1, 1, 0.75), segments=10, rings=5)   # the velvet cap
     for k in range(5):                                                   # one point to the front, four round
         a = math.radians(-90 + 72 * k)
@@ -337,7 +341,8 @@ def rose_fan(ctx):
     chain = []
     for k in range(n + 1):
         a = math.radians(span[0] + step * k)
-        chain.append((math.cos(a) * dip, math.sin(a) * dip))
+        if k in (0, n) or not common.lite():                             # a light twin's fan has no dips (#688):
+            chain.append((math.cos(a) * dip, math.sin(a) * dip))         # 12 WedgeParts in place of 20
         if 0 < k < n:                                                    # a berry rib to each dip
             U.bar(tuple(root), tuple(root + lean @ Vector((math.cos(a), 0, math.sin(a))) * (dip - 0.02)), 0.05, 0.075,
                   "royal_berry", up=(0, 1, 0))
@@ -380,14 +385,18 @@ def rainbow_arc(ctx):
     G = ctx.piece("Rainbow_Glow", "up", (0, 0.2, 0.3))
     y0 = 0.3 if ctx.body == "walk" else 0.12
     half = ctx.back_w / 2 - 0.02
-    n = 6
+    n = 4 if common.lite() else 6                          # a light twin's arc has four bars a colour (#688)
     for j, sw in enumerate(("neon_pink", "pastel_butter", "spa_mint", "spa_sky")):
         r = half + 0.3 - 0.08 * j
         ys = y0 + 0.012 * j                                # each band a hair behind the last: no shared planes
         pts = [Vector((r * math.cos(math.radians(180 * i / n)), ys, r * math.sin(math.radians(180 * i / n)) * 1.15 + 0.02))
                for i in range(n + 1)]
-        for p0, p1 in zip(pts, pts[1:]):
-            G.bar(tuple(p0), tuple(p1), 0.09, 0.07 + 0.006 * j, sw, up=(0, 1, 0))
+        for i, (p0, p1) in enumerate(zip(pts, pts[1:])):
+            if common.lite():                              # longer bars meet at their outer corners, where four a
+                e = (p1 - p0).normalized() * 0.02          # colour would leave a notch; every other one a hair
+                p0, p1 = p0 - e, p1 + e                    # thicker, so no two faces share a plane
+            G.bar(tuple(p0), tuple(p1), 0.09, 0.07 + 0.006 * j + (0.004 * (i % 2) if common.lite() else 0.0), sw,
+                  up=(0, 1, 0))
     for sx in (-1, 1):
         for dx, dz, r in ((0.1, 0.05, 0.14), (0.0, 0.11, 0.185), (-0.15, 0.04, 0.15)):
             U.ico((sx * (half + 0.16 + dx), y0 + 0.02, dz), r, "milk", rot=_rz(17) @ _rx(11))
@@ -441,7 +450,7 @@ def dragon_back(ctx):
         chain = []                                           # the skin between the ribs, scalloped between their tips
         for k, (ang, Lw) in enumerate(ribs):
             chain.append((sx * math.cos(math.radians(ang)) * Lw * 0.94, math.sin(math.radians(ang)) * Lw * 0.94))
-            if k + 1 < len(ribs):
+            if k + 1 < len(ribs) and not common.lite():      # a light twin's wing has no scallops (#688)
                 am, Lm = math.radians((ang + ribs[k + 1][0]) / 2), (Lw + ribs[k + 1][1]) / 2 * 0.82
                 chain.append((sx * math.cos(am) * Lm, math.sin(am) * Lm))
         U.fan(tuple(root), (0.0, 0.0), chain, 0.035, "spa_mint", rot=lean @ _rx(90))

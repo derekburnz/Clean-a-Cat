@@ -98,6 +98,8 @@ def cat_rbx_extras(name):
         attributes["Mascot"] = True
     if spec["rarity"] == "Special":                   # a special customer's cat (cats.SPECIAL_CATS): not in the Index
         attributes["Special"] = True
+    if name.endswith(cats.LITE):                      # a light twin (cats.build_cat_lite): for cats seen across a room
+        attributes["Lite"] = True
     bow = Matrix.Translation(bow)
     slot = props.slot(cat)
     if slot in ("Head", "Face"):                      # the game leaves a bow's `_Fan` off such a cat (BowFit): the

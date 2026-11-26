@@ -17,8 +17,10 @@ Motion-FX animates these by name: tell it before renaming a piece or moving a pi
 
 import math
 
+import bpy
 from mathutils import Euler, Matrix, Vector
 
+import common
 import palette
 from common import Builder, scale_mesh
 
@@ -1281,9 +1283,54 @@ def build_cat(name, mat, spec=None, base=None, body="walk", held=True):
     return objs
 
 
+LITE_MIN = 0.13             # a light twin leaves out every piece smaller than this (see build_cat_lite)
+# A cat's own value for one of its objects, where the default drops what makes it that cat from 10 studs: Rosette's
+# four berry marks on a pale face, Prism's rainbow whiskers and brow on a black one, Bathtile's tiles.
+LITE_MIN_BY_CAT = {"Rosette": {"_Head": 0.11}, "Prism": {"_Head": 0.07}, "Bathtile": {"_Head": 0.105, "_Body": 0.115}}
+LITE = "_Lite"
+LITE_EYES = ("_Eye1", "_Eye2")
+
+
+def build_cat_lite(name, mat):
+    """The light sitting twin of a special cat (#688), `CleanACat_Cat_<Name>_Sit_Lite`: the same cat built by the
+    same code, for cats that sit still and are seen across a room. The VIP Room's residents are that, and every
+    player on a server draws them for every plot. About 60 Parts where the full cat is 77 to 130.
+
+    A piece goes when the mean of its two longest sides is under LITE_MIN studs (0.13 is about four pixels of an
+    iPhone 12's screen from 10 studs at a resident's scale of 1.2): mouth strokes, whisker dots, sprinkles, the
+    smallest gems and sparks. The nose, the cheeks and the shine in each eye stay whatever their size, since a
+    player in the room stands close. Shapes cost less too (common.LITE): a star is 6 WedgeParts for 10, an ear or
+    a spine 2 Parts for 3, and props.py draws a fan, a wing, an arc and a crown's band the cheap way.
+
+    Same pivot, joints, child Models and Attachments as `_Sit`, so it poses and wears a bow the same; a child
+    Model whose every piece was small (some `_Glow`s) is left out. The visiting cat and the wash keep the full
+    model."""
+    own = LITE_MIN_BY_CAT.get(name, {})
+
+    def small(obj, kind, matrix, swatch, extra):
+        if (obj.endswith("_Head") and (swatch == "blush" or swatch.startswith("nose_"))) or (
+                obj.endswith(LITE_EYES) and swatch == "milk"):
+            return False
+        low = next((v for k, v in own.items() if obj.endswith(k)), LITE_MIN)
+        a, b, _c = common.prim_size(kind, matrix, extra)
+        return math.sqrt(a * b) < low
+
+    common.LITE = small
+    try:
+        objs = build_cat(name, mat, base=f"CleanACat_Cat_{name}_Sit{LITE}", body="sit")
+    finally:
+        common.LITE = None
+    kept = [o for o in objs if len(o.data.polygons)]
+    for o in objs:
+        if o not in kept:
+            bpy.data.objects.remove(o, do_unlink=True)
+    return kept
+
+
 def parse(asset):
-    """CleanACat_Cat_<Name>[_Dirty][_Sit|_Work|_Loaf] -> (name, gold, body). A dirty model (dirt.py) parses as its cat."""
-    rest = asset[len("CleanACat_Cat_"):]
+    """CleanACat_Cat_<Name>[_Dirty][_Sit|_Work|_Loaf][_Lite] -> (name, gold, body). A dirty model (dirt.py) and a
+    light twin (build_cat_lite) parse as their cat."""
+    rest = asset[len("CleanACat_Cat_"):].removesuffix(LITE)
     body = "sit" if rest.endswith("_Sit") else "work" if rest.endswith("_Work") else "loaf" if rest.endswith("_Loaf") else "walk"
     rest = rest.removesuffix("_Sit").removesuffix("_Work").removesuffix("_Loaf").removesuffix("_Dirty")
     gold = rest.endswith("_Gold")
@@ -1295,3 +1342,5 @@ BUILT_BODIES = ("walk", "sit")      # Clean a Cat builds A and B only
 for _n in (*ROSTER, *EXTRA_CATS, *SPECIAL_CATS):
     for _body in BUILT_BODIES:
         ASSETS[f"CleanACat_Cat_{_n}{SUFFIX[_body]}"] = (lambda mat, n=_n, bd=_body: build_cat(n, mat, body=bd), 1500)
+for _n in SPECIAL_CATS:
+    ASSETS[f"CleanACat_Cat_{_n}_Sit{LITE}"] = (lambda mat, n=_n: build_cat_lite(n, mat), 1500)
