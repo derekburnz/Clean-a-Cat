@@ -54,6 +54,23 @@ return function()
 			expect(third - since).to.equal(2 * HeartRules.RELEASE_STAGGER)
 		end)
 
+		it("spaces bars that start together so they end RELEASE_STAGGER apart", function()
+			expect(HeartRules.spacedSince(100, 150, nil)).to.equal(100) -- the front starts now
+			-- three bars rolled in the same second: each ends a stagger after the one ahead
+			local first = HeartRules.spacedSince(100, 150, nil)
+			local second = HeartRules.spacedSince(100, 150, first + 150)
+			local third = HeartRules.spacedSince(100, 150, second + 150)
+			expect(second + 150 - (first + 150)).to.equal(HeartRules.RELEASE_STAGGER)
+			expect(third + 150 - (second + 150)).to.equal(HeartRules.RELEASE_STAGGER)
+			expect(HeartRules.left(third, 150, 100)).to.equal(1) -- a later start shows full
+			-- a bar ahead that ends well before this one changes nothing
+			expect(HeartRules.spacedSince(100, 150, 120)).to.equal(100)
+			-- a shorter bar behind a long one waits until it would end after it
+			expect(HeartRules.spacedSince(100, 90, 100 + 240)).to.equal(
+				100 + 240 + HeartRules.RELEASE_STAGGER - 90
+			)
+		end)
+
 		it("gives the early bonus only in the first tenth of the bar", function()
 			expect(HeartRules.early(0, 150, 15)).to.equal(true)
 			expect(HeartRules.early(0, 150, 16)).to.equal(false)
