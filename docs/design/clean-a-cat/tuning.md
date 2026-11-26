@@ -30,13 +30,13 @@ Each row of chances adds up to 100.
 | key | value | why | changed |
 |---|---|---|---|
 | `rarity.chance` | Common 60, Uncommon 25, Rare 11, Epic 3.5, Legendary 0.5 | Unchanged from the current `CatRules.CHANCES`; the star tiers stay as they are | 2026-11-25 |
-| `bench.size` | 3 at the start, 4 from 15 spa stars | "Three or four cats wait" | 2026-11-25 |
+| `bench.size` | 3 at the start, plus one per built tub (`build.tub.effect`), at most 6 | "Three or four cats wait" | 2026-11-25 |
 | `bench.refillSeconds` | 6 | A new customer walks in about 6 s after one is taken | 2026-11-25 |
 | `bench.tutorialSize` | 1, then 2 at 2:00 | Matches the first session timeline | 2026-11-25 |
 
 ## 3. Pay for one cat
 
-Pay = base × stars × early pick × dirt, rounded, then + bow + tip. Friends then add their bonus on the total.
+Pay = base × stars × early pick × dirt, rounded, then + bow + tip + tub bonus (`build.tub.effect`, hand washes only). Friends then add their bonus on the total.
 
 | key | value | why | changed |
 |---|---|---|---|
@@ -111,9 +111,11 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.maxLevel` | 5 | | 2026-11-25 |
 | `worker.modes` | about to leave, rarest, dirtiest, first in line (default first in line) | | 2026-11-25 |
 | `worker.nameLength` | 3 to 16 letters, filtered | | 2026-11-25 |
+| `worker.reserve` | a customer the player picked (Who's next? or Wash next) is kept for the player for 15 s or until it reaches the player's tub; workers take the next one by their mode | A worker never takes the cat the player is walking to (Review-QA on PR 562) | 2026-11-26 |
+| `worker.windowFromHud` | the Helpers window opens from its HUD button anywhere in the spa; Picks and Level up work from there with no distance check (the server still checks ownership, coins and the rate limit) | A menu choice is not a world interaction; a greyed button that asks the player to walk to a station would read as broken | 2026-11-26 |
 | `worker.count` | 3 at most (Jo, Sam and Lou) | | 2026-11-25 |
 | `worker.petCap` | a worker's pet boosts add together and are capped at +30% | Two pets with the second slot pass, star ups included, never pass the cap | 2026-11-25 |
-| `worker.doubleCoins` | 2x Coins and the Golden Sponge apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
+| `worker.doubleCoins` | 2x Coins, the Golden Sponge and the tub bonus apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
 
 Guard rail check (must stay true, with margin): a player washing Common level 2 cats by hand, with no passes, at the 8 s step target (4.5 steps, about 36 s a cat) at 2 stars makes about 0.49 coins a second ((10 × 1.25 × 1.1 + 4) / 36 s). Three level 5 workers at the pet cap take 75 × 0.8 = 60 s a cat and make 3 × (12.5 × 0.37 × 1.3 / 60 s) ≈ 0.30 coins a second, about 61% of the player. Any change to `worker.*`, `pet.*`, `pay.*` or `dirt.stepSeconds` re-runs this sum.
 
@@ -129,7 +131,16 @@ Guard rail check (must stay true, with margin): a player washing Common level 2 
 | `build.slots` | 1 builder; 2 with the Second Builder pass | | 2026-11-25 |
 | `finishNow.price` | ≤5 min 5, ≤30 min 15, ≤2 h 35, ≤8 h 75, more 99 Robux | From the design; waiting is always free | 2026-11-25 |
 
-Today's `BuildRules` stations (Brush Table, Dryer, Bubble Bath, Pawdicure) become steps that every cat can need from the start, so their build rows go away once the dirt level build lands.
+What each build does once finished (answers Gameplay-Engineer on issue 515, 2026-11-26):
+
+| key | value | why | changed |
+|---|---|---|---|
+| `build.tub.effect` | each built tub adds one bench place (3 at the start, then 4, 5, 6), takes 1 s off `bench.refillSeconds` (6, 5, 4, 3) and adds +2 coins to each cat the player washes by hand (after rounding, with the bow and tip; never to worker pay or the tip jar) | More cats to choose from and a busier spa as the player and workers wash more; the bench never goes past 6 | 2026-11-26 |
+| `build.VipRoom.effect` | special visitors come every 5 to 10 min of play instead of 8 to 15, and the room shows the player's washed special cats as residents | The rare visitors are the best part, so the big build brings more of them | 2026-11-26 |
+| `build.Garden.effect` | the tip jar (`jar.cap`, `jar.rate` in section 13) holds 12 hours instead of 8 and fills 25% faster (30 → 37.5 coins an hour per hired worker); the player's and workers' pets play there | The longest build pays off the next morning, the day 2 reason | 2026-11-26 |
+| `build.oldStations` | Brush Table, Dryer, Bubble Bath and Pawdicure leave the Build board while `dirtLevels` is on (every step is in from the start); with it off they stay as they are | No build that is only a hidden pay bonus | 2026-11-26 |
+
+`bench.size` above becomes 3 plus one per built tub. `bench.tutorialSize` wins until the tutorial ends; only then does `bench.size` apply (a first-session change, so behind its own switch, rule 16). The guard rail in section 7 holds: tubs add bench places, not washers.
 
 ## 9. Special visitors
 
