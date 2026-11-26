@@ -46,6 +46,11 @@ BubbleRules.BUBBLES = table.freeze({
 	bubble("gift", "A gift for you!", "Your stand has a free pet. Take a look!", true),
 }) :: { Bubble }
 
+-- The opening's own bubbles: part of the first minutes' steps, so they never wait in the ask line (switch askQueue).
+-- Every other bubble is the ask "bubble" there: it waits its turn, a minute from any other ask.
+BubbleRules.OPENING =
+	table.freeze({ openSpa = true, firstCustomer = true }) :: { [string]: boolean }
+
 local byId: { [string]: Bubble } = {}
 local ids: { string } = {}
 for _, b in BubbleRules.BUBBLES do

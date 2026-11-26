@@ -23,6 +23,7 @@ AskRules.IDS = table.freeze({
 	"checkin", -- the check in card
 	"gift", -- the gift stand's ask
 	"favourite", -- the favourite ask
+	"bubble", -- Suds's help bubble, except the opening's own (BubbleRules.OPENING)
 	"menu_index", -- each new HUD button with its tip
 	"menu_quests",
 	"menu_helpers",
@@ -101,6 +102,34 @@ function AskRules.done(queue: Queue, id: string, answer: Answer, now: number): b
 	end
 	queue.shown = nil
 	queue.lastEnd = now
+	return true
+end
+
+-- Shows `id` at once if nothing is up and the gap is over (a moment that cannot wait, like a recap card closing with
+-- the next cat on hold): true and `id` is up until done(). False when it is unknown, refused or must wait.
+function AskRules.takeNow(queue: Queue, id: string, now: number): boolean
+	if not AskRules.known(id) or queue.refused[id] or queue.shown ~= nil then
+		return false
+	end
+	local quiet = AskRules.QUIET[id] == true
+	if not quiet and now - queue.lastEnd < AskRules.GAP then
+		return false
+	end
+	queue.waiting[id] = nil
+	if not quiet then
+		queue.shown = id
+		queue.shownAt = now
+	end
+	return true
+end
+
+-- `id` came up but had nothing to show after all (its reason went away while it waited): it is no longer up, and the
+-- gap does not start. False when `id` was not up.
+function AskRules.skip(queue: Queue, id: string): boolean
+	if queue.shown ~= id then
+		return false
+	end
+	queue.shown = nil
 	return true
 end
 

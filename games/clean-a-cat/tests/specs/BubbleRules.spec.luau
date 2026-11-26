@@ -29,6 +29,14 @@ return function()
 		end)
 	end)
 
+	describe("BubbleRules.OPENING", function()
+		it("names only known bubbles", function()
+			for id in BubbleRules.OPENING do
+				expect(BubbleRules.get(id)).never.to.equal(nil)
+			end
+		end)
+	end)
+
 	describe("BubbleRules.pick", function()
 		it("shows nothing when nothing is due", function()
 			expect(BubbleRules.pick({}, {})).to.equal(nil)
