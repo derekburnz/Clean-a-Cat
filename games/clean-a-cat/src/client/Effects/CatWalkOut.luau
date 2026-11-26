@@ -104,7 +104,7 @@ function CatWalkOut.play(cat: Model, to: CFrame)
 	if playing[cat] or cat.Parent == nil then
 		return
 	end
-	local cloned: Model? = cat:Clone()
+	local cloned = (cat :: Instance):Clone() :: any -- nil when the model is not Archivable
 	if cloned == nil then
 		return -- not Archivable: leave the cat as it is
 	end
