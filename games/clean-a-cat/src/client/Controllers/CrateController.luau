@@ -164,6 +164,9 @@ local function draw()
 		prompt.ActionText = if windowed then "Look inside" else "Open crate"
 		prompt.ObjectText = if kind == "good" then "Good crate" else "Crate"
 		prompt.HoldDuration = 0
+		-- its own key, so it never takes E from the door's Take cat or the Tools board's prompts (bug hunt B7, #648)
+		prompt.KeyboardKeyCode = Enum.KeyCode.R
+		prompt.GamepadKeyCode = Enum.KeyCode.ButtonY
 		prompt.MaxActivationDistance = PROMPT_REACH
 		prompt.RequiresLineOfSight = false
 		prompt.Triggered:Connect(function()

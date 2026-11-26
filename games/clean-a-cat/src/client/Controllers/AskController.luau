@@ -5,6 +5,9 @@
 --   AskController.want(id, show, hide?)   puts the ask in the line; `show()` runs when its turn comes
 --   AskController.done(id, answer)        the ask was answered ("yes", "no": final for the visit) or "closed"
 --   AskController.drop(id)                takes a waiting ask out of the line (its reason went away)
+--   AskController.takeNow(id)             true and `id` is up now if nothing is up and the gap is over (the caller
+--                                         has checked its own screen); else false and it must wait its turn
+--   AskController.skip(id)                `id` came up with nothing to show after all: no gap starts
 --   AskController.on()                    true while askQueue is on; with it off, call your old path instead
 --
 -- The screen counts as free (the one test for every ask, lifted from CheckinController) when no window, recap card
@@ -82,6 +85,20 @@ end
 function AskController.drop(id: string)
 	AskRules.drop(queue, id)
 	if queue.shown ~= id then
+		entries[id] = nil
+	end
+end
+
+function AskController.takeNow(id: string): boolean
+	if not AskController.on() then
+		return false
+	end
+	return AskRules.takeNow(queue, id, os.clock())
+end
+
+function AskController.skip(id: string)
+	AskRules.skip(queue, id)
+	if queue.waiting[id] == nil then
 		entries[id] = nil
 	end
 end

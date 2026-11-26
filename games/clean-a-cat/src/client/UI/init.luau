@@ -66,6 +66,7 @@ local PetsWindow = require(script:WaitForChild("PetsWindow"))
 local QuestBook = require(script:WaitForChild("QuestBook"))
 local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
+local RenameCard = require(script:WaitForChild("RenameCard"))
 local SettingsCard = require(script:WaitForChild("Settings"))
 local ShopWindow = require(script:WaitForChild("ShopWindow"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
@@ -315,6 +316,7 @@ function UI.init()
 	windows.Shop = ShopWindow.build(root) -- the shop's game passes (switch passes, issues 518 and 526)
 	windows.Starter = StarterWindow.build(root) -- the Spa Starter Pack (switch starterPack with passes, issue 519)
 	windows.Gift = GiftCard.build(root) -- the gift stand's free pet (switch giftStand with pets, issue 521)
+	windows.Rename = RenameCard.build(root) -- name a hired helper, from their row in Pets (switch staffRename, #487)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -545,6 +547,29 @@ end
 
 function UI.onPetFuse(fn: (ids: { number }) -> ())
 	PetsWindow.onFuse(fn)
+end
+
+-- The helpers' shown names (the server's filtered StaffName_<id>; missing means the default) and whether a hired
+-- helper's row in Pets offers Rename (StaffNameController, switch staffRename, issue 487).
+function UI.setStaffNames(names: { [string]: string }, on: boolean)
+	PetsWindow.setNames(names, on)
+end
+
+-- fn(helperId) when a helper's Rename is pressed in the pets window.
+function UI.onRenamePick(fn: (id: string) -> ())
+	PetsWindow.onRename(fn)
+end
+
+-- Opens the Rename card for helper `id`, with the name shown now and the default name.
+function UI.showRename(id: string, shown: string, default: string)
+	RenameCard.show(id, shown, default)
+	UI.open(RenameCard.WINDOW)
+end
+
+-- fn(id, text) when the Rename card sends a name ("" for the default). The card closes; the name shows once the
+-- server sends it back filtered.
+function UI.onRenameSave(fn: (id: string, text: string) -> ())
+	RenameCard.onSave(fn)
 end
 
 -- The check in card: the day waiting (1 to 7, or nil), the days taken, and whether the good crate's chance list can

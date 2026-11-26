@@ -115,6 +115,7 @@ local function promptAt(
 	p.HoldDuration = 0
 	p.RequiresLineOfSight = false
 	p.MaxActivationDistance = PROMPT_REACH
+	p:SetAttribute("PillWins", true) -- the carry's step always shows over a nearby board or crate (issue 648)
 	p.Triggered:Connect(function(_who: Player)
 		fn()
 	end)

@@ -322,7 +322,7 @@ local SCENES = {
 			flag("crateWindow", true)
 			flag("crateShop", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
-			local prices: { [string]: number } = { CrateOne = 49, CrateFive = 199 }
+			local prices: { [string]: number } = { CrateOne = 99, CrateFive = 399 } -- the widest prices (issue 650)
 			UI.setCrateShop(CrateViewRules.shopRows("normal", true, function(key: string): unknown
 				return prices[key]
 			end))
@@ -334,6 +334,7 @@ local SCENES = {
 		function()
 			flag("crateWindow", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.setCrateShop({}) -- the Robux rows are on the normal crate only (CrateWindowController)
 			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
 		end,
 	},
@@ -415,6 +416,36 @@ local SCENES = {
 				{ id = 4, kind = "Pebble", star = 1 },
 			}, { Jo = true, Sam = true }, true)
 			UI.open("Pets")
+		end,
+	},
+	-- Staff names (issue 487, switch staffRename): Jo renamed to the longest name, Sam with the default, both with
+	-- Rename, Lou locked; then the Rename card for Jo.
+	{
+		"PetsNames",
+		function()
+			flag("petsWindow", true)
+			flag("staffRename", true)
+			UI.setStaffNames({ Jo = "Captain Bubbles" }, true)
+			UI.setPets({
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+			}, { Jo = true, Sam = true }, true)
+			UI.open("Pets")
+		end,
+	},
+	{
+		"Rename",
+		function()
+			flag("staffRename", true)
+			UI.showRename("Jo", "Captain Bubbles", "Jo")
+		end,
+	},
+	{
+		"RenameEmpty",
+		function()
+			flag("staffRename", true)
+			UI.showRename("Sam", "Sam", "Sam")
+			UI.setStaffNames({}, false)
 		end,
 	},
 	-- The quest book (issue 516, switch quests): one daily done, the weekly crate one of three, then a short week.

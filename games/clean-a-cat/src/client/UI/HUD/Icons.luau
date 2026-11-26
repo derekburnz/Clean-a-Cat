@@ -72,6 +72,7 @@ local STAND_INS: { [string]: StandIn } = {
 	Wet = { glyph = "💧", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Smell = { glyph = "🧼", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Claws = { glyph = "💅", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Pencil = { glyph = "✏️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- rename a helper
 	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
 }
 

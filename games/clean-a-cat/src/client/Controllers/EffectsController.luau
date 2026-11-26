@@ -19,6 +19,7 @@ local CustomerMotion =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerMotion"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 local FoamDrop = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("FoamDrop"))
+local GiftStand = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("GiftStand"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
 local VisitorArrival =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("VisitorArrival"))
@@ -306,6 +307,10 @@ function EffectsController.Start()
 	-- The bar over a cat a worker is washing (issue #528): drawn from the cat's WorkerProgress attribute, which
 	-- Gameplay sets with workers (#509), behind that feature's switch. Nothing shows until it is set.
 	WorkerBar.start()
+
+	-- The gift stand's light (issue #528): from the stand's Lit attribute, which GiftService sets at 7:00 of the
+	-- owner's play (giftStand, #521). Nothing shows until a stand is lit.
+	GiftStand.start()
 
 	-- A cat's heart bar ran out (issue #528): the customer turns and walks off with it, head low, and fades. The
 	-- Moment comes with Gameplay's heart bar (#543, townsfolk on) and passes the customer's figure.
