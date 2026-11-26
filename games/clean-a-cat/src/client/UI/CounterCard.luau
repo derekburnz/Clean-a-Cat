@@ -32,6 +32,10 @@ CounterCard.EASE = 0.25 -- seconds for the heart bar to reach a new fill
 
 export type Motion = "grow" | "ease"
 
+-- A card still fading out, by the part it sits over: a new card for the same cat ends it at once, so a redraw never
+-- shows two cards at the same time (Review-QA on #808).
+local fading: { [BasePart]: BillboardGui } = {}
+
 -- Every transparency on the card, with its own value, so a fade multiplies towards it and puts it back exactly.
 type Seen = { object: Instance, property: string, base: number }
 
@@ -156,6 +160,11 @@ function CounterCard.new(adornee: BasePart, parent: Instance, motion: Motion?): 
 	heart.Parent = track
 	Icons.draw("Heart", heart)
 
+	local leaving = fading[adornee]
+	if leaving then
+		fading[adornee] = nil
+		leaving:Destroy()
+	end
 	local reduced = Comfort.reducedMotion()
 	local seen: { Seen }? = if motion then seenList(gui) else nil
 	if seen and motion == "grow" then -- a redrawn card ("ease") shows at once: only a cat's first card arrives
@@ -235,11 +244,15 @@ function CounterCard.new(adornee: BasePart, parent: Instance, motion: Motion?): 
 			gui:Destroy()
 			return
 		end
+		fading[adornee] = gui
 		run(CounterCard.FADE, function(t: number)
 			if gui.Parent then
 				applySeen(list, 1 - t / CounterCard.FADE)
 			end
 		end, function()
+			if fading[adornee] == gui then
+				fading[adornee] = nil
+			end
 			gui:Destroy()
 		end)
 	end
