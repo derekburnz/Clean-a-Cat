@@ -29,7 +29,10 @@ local SPA_TEXT_SIZE = 34 -- "Spa" has a line of its own at one size, so it reads
 local SpaSignController = {}
 
 local watched: { [Player]: RBXScriptConnection } = {}
-local leaving: { [Player]: boolean } = setmetatable({}, { __mode = "k" }) :: any -- still listed while they leave
+-- still listed while they leave; a strong table (a weak one on Instances can drop a player who still exists), each
+-- entry cleared once the leaver has gone
+local leaving: { [Player]: boolean } = {}
+local LEAVING_KEEP = 10 -- seconds a leaver stays marked: long after they are out of the player list
 
 local function ownerOf(slot: number): Player?
 	for _, player in Players:GetPlayers() do
@@ -201,6 +204,9 @@ function SpaSignController.Start()
 			connection:Disconnect()
 		end
 		refresh() -- the leaver's sign goes back to the empty text
+		task.delay(LEAVING_KEEP, function()
+			leaving[player] = nil
+		end)
 	end)
 	for _, player in Players:GetPlayers() do
 		watch(player)

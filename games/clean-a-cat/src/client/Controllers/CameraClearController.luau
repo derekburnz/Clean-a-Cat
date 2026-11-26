@@ -7,10 +7,11 @@
 -- the line from the camera's focus to the camera: if it passes into a part the camera ignores, or the camera sits
 -- behind or inside a solid wall, the camera turns around its focus by the smallest of TURNS that gives a clear line,
 -- in front of the first wall on it. It keeps its tilt and finds its own distance again from the next frame, and the
--- check goes on for the whole window, since the camera can reset itself after a turn. With the line clear nothing
--- changes, so the opening's shots and any good first frame stay exactly as they were. The moment the player turns or
--- zooms the camera themselves (a drag on the screen, the right mouse button, the wheel, the right stick or the arrow
--- keys), the check stops for that spawn, so it never fights them.
+-- check goes on for the whole window, since the camera can reset itself after a turn; once it has turned, the turn
+-- is held (put back after a reset) until the player moves the camera or HOLD_SECONDS after the spawn. With the line
+-- clear and no turn held nothing changes, so the opening's shots and any good first frame stay exactly as they were.
+-- The moment the player turns or zooms the camera themselves (a drag on the screen, the right mouse button, the
+-- wheel, the right stick or the arrow keys), the check stops for that spawn, so it never fights them.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -23,6 +24,8 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local FLAG = "cameraClear"
 local BIND_NAME = "CleanACatCameraClear"
 local SETTLE_SECONDS = 2 -- how long after a spawn the camera is checked
+local HOLD_SECONDS = 5 -- after a turn, how long after the spawn the turn is held through a camera reset
+local HOLD_SLACK = math.rad(5) -- a camera this far off the held turn has been reset
 local NEAR = 0.3 -- past the camera along the line: the near plane draws this close
 local REACH = 12.5 -- the camera's default distance, used when testing a turn
 local SEE_THROUGH = 0.95 -- a part at least this transparent does not count
@@ -65,6 +68,32 @@ local function scan(
 	return nil, nil
 end
 
+-- The turn made since this spawn, as the camera's flat direction from its focus: a respawn's camera resets itself
+-- about 0.33 s after the turn, so the turn is put back until the player moves the camera or HOLD_SECONDS pass.
+local held: Vector3? = nil
+
+local function flat(direction: Vector3): Vector3?
+	local level = Vector3.new(direction.X, 0, direction.Z)
+	return if level.Magnitude > 1e-3 then level.Unit else nil
+end
+
+-- Puts the camera along `turned` from `focus`, in front of the first wall on it. False when that is too near.
+local function place(
+	camera: Camera,
+	focus: Vector3,
+	turned: Vector3,
+	distance: number,
+	wall: number?
+): boolean
+	local at = if wall then math.min(distance, wall - WALL_MARGIN) else distance
+	if at < MIN_DISTANCE then
+		return false
+	end
+	camera.CFrame = CFrame.lookAt(focus + turned * at, focus)
+	held = flat(turned)
+	return true
+end
+
 local function check(character: Model)
 	if not LiveFlags.isOn(FLAG) then
 		return
@@ -84,6 +113,18 @@ local function check(character: Model)
 		return -- first person: nothing to clear
 	end
 	local skip: { Instance } = { character }
+	-- a held turn the camera has reset away from goes back, at the camera's own tilt, while its line stays clear
+	local level = flat(offset)
+	if held and level and math.acos(math.clamp(level:Dot(held), -1, 1)) > HOLD_SLACK then
+		local rise = offset.Unit.Y
+		local back = (held * math.sqrt(math.max(1 - rise * rise, 0)) + Vector3.new(0, rise, 0)).Unit
+		local heldThrough, heldWall = scan(focus, back, math.max(distance, REACH) + NEAR, skip)
+		if
+			heldThrough == nil and place(camera, focus, back, math.max(distance, REACH), heldWall)
+		then
+			return
+		end
+	end
 	local through, solid = scan(focus, offset.Unit, distance + NEAR, skip)
 	-- in the clear: nothing walk-through in front of the camera, and not behind or inside a solid wall
 	if through == nil and (solid == nil or (solid :: number) >= distance - WALL_GAP) then
@@ -96,9 +137,7 @@ local function check(character: Model)
 			continue
 		end
 		-- the camera goes in front of the first wall itself, so this frame never shows the inside of one
-		local at = if wall then math.min(distance, (wall :: number) - WALL_MARGIN) else distance
-		if at >= MIN_DISTANCE then
-			camera.CFrame = CFrame.lookAt(focus + turned * at, focus)
+		if place(camera, focus, turned, distance, wall) then
 			return
 		end
 	end
@@ -130,14 +169,12 @@ local function watch(character: Model)
 	RunService:UnbindFromRenderStep(BIND_NAME)
 	local started = os.clock()
 	playerTurned = false
+	held = nil
 	RunService:BindToRenderStep(BIND_NAME, Enum.RenderPriority.Camera.Value + 1, function()
 		-- checked every frame for the whole window: the camera can reset itself after a turn (a respawn does at
 		-- about 0.33 s), and a character not yet in the world is waited for, not given up on
-		if
-			os.clock() - started > SETTLE_SECONDS
-			or playerTurned
-			or player.Character ~= character
-		then
+		local window = if held then HOLD_SECONDS else SETTLE_SECONDS
+		if os.clock() - started > window or playerTurned or player.Character ~= character then
 			RunService:UnbindFromRenderStep(BIND_NAME)
 			return
 		end
