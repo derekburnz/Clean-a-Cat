@@ -656,6 +656,25 @@ local SCENES = {
 			UI.showBubble(BubbleRules.get("longBuild"))
 		end,
 	},
+	-- The gift stand's card (issue 521, switch giftStand): nothing done yet, then the favourite done, then both.
+	{
+		"Gift",
+		function()
+			flag("pets", true)
+			flag("giftStand", true)
+			UI.setGift({ lit = true, favourite = false, group = false, claimed = false })
+			UI.open("Gift")
+		end,
+	},
+	{
+		"GiftReady",
+		function()
+			flag("pets", true)
+			flag("giftStand", true)
+			UI.setGift({ lit = true, favourite = true, group = true, claimed = false })
+			UI.open("Gift")
+		end,
+	},
 	-- Suds's tip above the compact recap strip (issue 626): the two never overlap.
 	{
 		"SudsBubbleStrip",

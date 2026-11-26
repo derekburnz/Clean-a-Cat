@@ -41,6 +41,9 @@ BubbleRules.BUBBLES = table.freeze({
 	bubble("longBuildTub", "Before you go", "The Third Tub builds while you're away.", true),
 	-- switch quests (issue 516, gdd: "Quests at 6:00"): the Quests button has just arrived (QuestsOpen)
 	bubble("quests", "Quests!", "Coins every day, a crate each week.", false),
+	-- switch giftStand (issue 521): the stand lit at 7:00 (GiftLit); "Show me" opens its card. Shown through the ask
+	-- line (AskController's "gift"), not BubbleController's own facts
+	bubble("gift", "A gift for you!", "Your stand has a free pet. Take a look!", true),
 }) :: { Bubble }
 
 local byId: { [string]: Bubble } = {}
