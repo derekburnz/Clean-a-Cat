@@ -1127,7 +1127,8 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 			bonus,
 			starsBefore // CatRules.starScale(LiveFlags.isOn),
 			isNew,
-			extra
+			extra,
+			LiveFlags.isOn(RecapRules.EVERY_FLAG) -- the full card after every cat (issue 890)
 		)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins, recap)
 	else
