@@ -151,6 +151,7 @@ def _contrast(a, b):
 
 
 PALE = 0.5                # fur brighter than this (white, cream, pale grey, lilac, gold) gets the drab mud
+MID_LOW, MID_OK = 1.5, 1.6   # contrast with the fur: under MID_LOW a mud does not read, from MID_OK it does
 DARK_FUR_MUD = ("mud_dust_wet", "mud_drab")   # the mud on fur too dark for the brown, and its every third piece (#326)
 
 
@@ -159,7 +160,10 @@ def _mud_for(fur, wet=False):
     stands out more from the fur under the blob, so the scrub's reveal reads on every coat. #155: on pale fur the
     brown read as a brown patched coat (a dirty Cotton looked like Patches), so pale fur gets a duller, greyer mud
     that no coat uses. #326: on dark fur the pale dust read as tan patches of a calico coat at phone size, so dark
-    fur gets the darker wet dust, and its every third piece the drab: dirt on a black cat, not a second coat."""
+    fur gets the darker wet dust, and its every third piece the drab: dirt on a black cat, not a second coat.
+    #527: on fur of middling darkness (Moonstag's dusk blue) the wet dust is as bright as the fur and vanishes
+    (1.25:1), so there the darker brown comes back when it reads (1.73:1). The owner on 2026-11-25: "dirt is fine
+    make it darker if needed"."""
     pairs = (("mud", "mud_wet"), ("mud_dust", "mud_dust_wet"))
     if fur is None:
         return pairs[0][wet]
@@ -169,6 +173,8 @@ def _mud_for(fur, wet=False):
         best = ("mud_drab", "mud_drab_wet")
     elif best[0] == "mud_dust":
         best = DARK_FUR_MUD
+        if _contrast(hexes[best[0]], hexes[fur]) < MID_LOW and _contrast(hexes["mud"], hexes[fur]) >= MID_OK:
+            best = pairs[0]
     return best[1] if wet else best[0]
 
 
@@ -348,6 +354,8 @@ def _cells(block, frac, k):
 
 
 BOXES = [0]                        # counts the mud boxes of the cat being built, see STAGGER
+FIRST_BOX = [0]                    # where that count starts: a coat's `mud_step` for this body, for a cat whose
+# mud would otherwise end in the plane of one of its own bevels (Djinn's sitting paw)
 STAGGER = 0.0013                   # studs: each mud box stands this much prouder than the one before, twelve steps
 # round. Two boxes on one edge (a leg's and its paw's, a piece's and its drip's) would otherwise end in one plane,
 # and two faces in one plane flicker (#160, the blender-asset-qa check). Far too small to see.
@@ -565,7 +573,7 @@ def _settle(objs, pieces):
 def _coat(objs, base, body, k, eyes, mat):
     """The MUD pieces of the coat for a built cat: [(object, the cat piece it rides)]."""
     pieces = {_piece(o, base): o for o in objs}
-    BOXES[0] = 0
+    BOXES[0] = FIRST_BOX[0]
     taken = {}                                         # (piece, block): the mud pixels already used
     placed = []
     for i, (piece, boxes) in enumerate(COAT[body]):    # first every piece's own boxes, so a ragged edge never
@@ -655,6 +663,7 @@ def build_dirty(name, mat, body, base=None):
     nest = {}
     cat_objs = list(objs)
     BROW_PAINT[0] = bool(spec.get("face") or spec.get("mark"))
+    FIRST_BOX[0] = spec.get("mud_step", {}).get(body, 0)
     for ob, piece in _coat(cat_objs, base, body, k, eyes, mat):
         objs.append(ob)
         if piece in RIDES:

@@ -43,6 +43,8 @@ from common import Builder, scale_mesh
 # crown), both built as geometry so they hold in gold; #2739 (the Cat Makeovers): mark ((shape, colour or colours)): a
 # forehead mark from MARKS; Christmas: inner_ear (the colour inside the ears, pink by default); Tier 8: rosettes (each spot a ring round a third-colour middle), cuff (a fur band round each
 # leg above the paw, a snow boot's top); Clean a Cat #474: ears (the ears' own colour), and a mark's third entry is its size.
+# #527: mud_step ({body: n}): where dirt.py's stagger of mud boxes starts on that body, for a cat whose mud would
+# otherwise end in the plane of one of its own bevels.
 # Themed cats wear a prop, some two (props.py).
 ROSTER = {
     # Clean a Cat's first Cat Index (model list v1, issue #22). Working names, final names from Design-Agent. None of
@@ -133,6 +135,30 @@ SPECIAL_CATS = {
                       face=((0.2, 0.36, 0.06, 0.06, "gold_mid"), (-0.2, 0.36, 0.06, 0.06, "gold_mid"),
                             (0.34, 0.29, 0.05, 0.05, "gold_mid"), (-0.34, 0.29, 0.05, 0.05, "gold_mid"),
                             (0.39, 0.02, 0.05, 0.13, "gold_mid"), (-0.39, 0.02, 0.05, 0.13, "gold_mid"))),
+    # Four more with names and designs from Catch a Cat Cafe, the owner's earlier game (#527; the owner 2026-11-25:
+    # "names and designs from cats for catcafe especially for rare customers as catcafes detailed cats have some
+    # really cool designs"). Colourways as there, tuned to this game's palette and its Neon rule.
+    # reborn from the embers: copper fading to red and gold, a two colour mane, a pale gold tail tip
+    "Phoenix":   dict(rarity="Special", fur="eye_copper", second="bowl_red", third="eye_amber", eyes="eye_gold",
+                      pattern="gradient", muzzle=None, nose="nose_dark", glow_eyes=True, tip="sparkle",
+                      socks="bowl_red", mane=("eye_amber", "bowl_red"), eye_k=1.1,
+                      mark=("drop", ("bowl_red", "eye_amber", "sparkle"), 1.6),
+                      face=((0.38, 0.1, 0.1, 0.05, "bowl_red"), (0.36, 0.0, 0.14, 0.05, "eye_amber"),
+                            (-0.38, 0.1, 0.1, 0.05, "bowl_red"), (-0.36, 0.0, 0.14, 0.05, "eye_amber"))),
+    # a stag of the night woods: dusk blue with pale sky rings, a blaze up the face, dark socks, big ears
+    "Moonstag":  dict(rarity="Special", fur="paw_sewer", second="pastel_sky", third="milk", eyes="eye_mint",
+                      pattern="spots", rosettes=True, muzzle=None, nose="nose_dark", glow_eyes=True,
+                      socks="night_sky", tip="spa_mint", ear_k=1.15, blaze="pastel_sky", eye_k=1.1),
+    # a genie: wine fading to violet, gold cuffs, a curled lilac tail tip and a gold star on the brow
+    "Djinn":     dict(rarity="Special", fur="royal_berry", second="aurora_violet", third="gold_mid", eyes="eye_gold",
+                      pattern="gradient", muzzle=None, nose="nose_dark", glow_eyes=True, sparkle=True, cuff="gold_mid",
+                      tip="pastel_lilac", curl=True, mark=("star", "gold_mid"), eye_k=1.1, mud_step={"sit": 5}),
+    # a white tiger: black stripes on white, the tabby M on the brow, ice blue eyes, a thick tail
+    "WhiteTiger": dict(rarity="Special", fur="offwhite", second="fur_black", eyes="eye_sky", pattern="stripes",
+                       muzzle=None, nose="nose_pink", body_scale=(1.08, 1.0, 1.06), tail_thick=0.28,
+                       mark=("m", "fur_black"), inner_ear="pastel_sky", eye_k=1.1, fluff_twist=7,
+                       face=((0.38, 0.11, 0.1, 0.05, "fur_black"), (0.36, 0.01, 0.14, 0.05, "fur_black"),
+                             (-0.38, 0.11, 0.1, 0.05, "fur_black"), (-0.36, 0.01, 0.14, 0.05, "fur_black"))),
 }
 STARRY = ("Mythical", "Secret", "Special")     # the rarities whose sparkle is the dense star field, on the face too
 
@@ -1286,7 +1312,8 @@ def build_cat(name, mat, spec=None, base=None, body="walk", held=True):
 LITE_MIN = 0.13             # a light twin leaves out every piece smaller than this (see build_cat_lite)
 # A cat's own value for one of its objects, where the default drops what makes it that cat from 10 studs: Rosette's
 # four berry marks on a pale face, Prism's rainbow whiskers and brow on a black one, Bathtile's tiles.
-LITE_MIN_BY_CAT = {"Rosette": {"_Head": 0.11}, "Prism": {"_Head": 0.07}, "Bathtile": {"_Head": 0.105, "_Body": 0.115}}
+LITE_MIN_BY_CAT = {"Rosette": {"_Head": 0.11}, "Prism": {"_Head": 0.07}, "Bathtile": {"_Head": 0.105, "_Body": 0.115},
+                   "Moonstag": {"_Prop": 0.06}, "WhiteTiger": {"_Head": 0.06}, "Phoenix": {"_Head": 0.06}}
 LITE = "_Lite"
 LITE_EYES = ("_Eye1", "_Eye2")
 

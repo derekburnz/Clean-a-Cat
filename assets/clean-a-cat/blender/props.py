@@ -507,17 +507,184 @@ def bubble_trail(ctx):
     G.ico(tuple(at + Vector((0.07, 0.02, r * 0.8))), 0.07, NEON_SKY)
 
 
+# Phoenix ----------------------------------------------------------------------------------------------------
+def flame_crest(ctx):
+    """Phoenix: a crest of four flames sweeps back from between the ears, red outside and amber inside, with a
+    plume feather out to each side and a lit spark at each plume's tip. The flames are solid (#491). From Catch a
+    Cat Cafe's flame_crest, with fewer and bigger flames and nothing over the brow."""
+    P = ctx.pen("head")
+    G = ctx.piece("Glow", "head", (0, 0, 0.1))
+    for k, (y, h, lean) in enumerate(((-0.14, 0.46, -6), (0.0, 0.72, 10), (0.14, 0.6, 26), (0.27, 0.42, 42))):
+        P.pyramid((0, y, h / 2 - 0.02), 0.3 - 0.02 * k, h, "bowl_red", rot=_rx(-lean))
+        P.pyramid((0, y - 0.03, h * 0.34), 0.2 - 0.015 * k, h * 0.7, "eye_amber", rot=_rx(-lean))
+    for sx in (-1, 1):                                                     # the plume feathers, out and back
+        a, b = Vector((sx * 0.24, 0.05, 0.0)), Vector((sx * 0.56, 0.36, 0.4))
+        P.bar(tuple(a), tuple(b), 0.07, 0.045, "eye_copper")
+        P.box(tuple(b), (0.17, 0.05, 0.17), "eye_amber", rot=_ry(45))
+        G.box(tuple(b), (0.08, 0.07, 0.08), NEON_GOLD, rot=_ry(45))
+
+
+def fire_wings(ctx):
+    """Phoenix's back piece: two wings of four flame feathers each, red at the shoulder and amber to the tips, a
+    pale gold tip on the two longest and one lit spark a wing. From Catch a Cat Cafe's fire_wings, kept within
+    the back pieces' width."""
+    U = ctx.pen("up")
+    G = ctx.piece("Wings_Glow", "up", (0, 0.1, 0.3))
+    y0 = 0.3 if ctx.body == "walk" else 0.12
+    lean = _rx(-14)
+    U.box((0, y0, 0.053), (0.29, 0.13, 0.15), "bowl_red")
+    for sx in (-1, 1):
+        root = Vector((sx * 0.1, y0, 0.07))
+        for k, (ang, L) in enumerate(((76, 0.62), (58, 0.78), (40, 0.76), (22, 0.6))):
+            a = math.radians(ang)
+            dirv = lean @ Vector((sx * math.cos(a), 0, math.sin(a)))
+            U.bar(tuple(root), tuple(root + dirv * L * 0.62), 0.2, 0.04 + 0.006 * k, "bowl_red", up=(0, 1, 0))
+            U.bar(tuple(root + dirv * L * 0.42), tuple(root + dirv * L), 0.16, 0.052 + 0.006 * k, "eye_amber",
+                  up=(0, 1, 0))
+            if k in (1, 2):
+                U.box(tuple(root + dirv * (L + 0.01)), (0.13, 0.064 + 0.006 * k, 0.13), STAR, rot=lean @ _ry(45))
+            if k == 1:
+                G.box(tuple(root + dirv * (L + 0.01)), (0.05, 0.09, 0.05), NEON_GOLD, rot=lean @ _ry(45))
+
+
+# Moonstag ---------------------------------------------------------------------------------------------------
+def moon_antlers(ctx):
+    """Moonstag: two pearl antlers with three tines each, a lit mint bud on every tine, holding a crescent moon
+    between them. The antlers and the moon are solid (#491): only the six buds are lit. From Catch a Cat Cafe's
+    moon_antlers; the moon is a pale disc with a dusk blue bite so the two inner tines can hold it."""
+    P = ctx.pen("head")
+    G = ctx.piece("Glow", "head", (0, 0, 0.1))
+    for sx in (-1, 1):
+        base = Vector((sx * 0.16, 0.02, -0.02))
+        mid = base + Vector((sx * 0.2, 0.04, 0.28))
+        top = mid + Vector((sx * 0.02, 0.02, 0.3))
+        P.ico(tuple(base + Vector((0, 0, 0.03))), 0.085, "night_sky", scale=(1.2, 1.2, 0.7))
+        P.bar(tuple(base), tuple(mid), 0.08, 0.08, "pearl", up=(0, 1, 0))
+        P.bar(tuple(mid), tuple(top), 0.07, 0.07, "pearl", up=(0, 1, 0))
+        half = mid + (top - mid) * 0.5
+        for a, end in ((mid, Vector((sx * 0.2, 0.0, 0.16))), (half, Vector((-sx * 0.2, -0.04, 0.08))),
+                       (top, Vector((sx * 0.12, 0.0, 0.1)))):
+            P.bar(tuple(a), tuple(a + end), 0.055, 0.055, "pearl", up=(0, 1, 0))
+            G.ico(tuple(a + end * 1.12), 0.045, NEON_MINT)
+    c = Vector((0, 0.02, 0.52))                                            # the moon between the antlers
+    P.cyl(tuple(c), 0.2, 0.06, STAR, rot=_rx(90), segments=12)
+    P.cyl(tuple(c + Vector((0.08, 0, 0.04))), 0.155, 0.075, "paw_sewer", rot=_rx(90), segments=12)
+
+
+def spirit_grove(ctx):
+    """Moonstag's back piece: a patch of moss with three toadstools, mint, sky and violet, a lit spark on the two
+    tallest. From Catch a Cat Cafe's spirit_grove; the fireflies sit on the caps so nothing floats."""
+    U = ctx.pen("up")
+    G = ctx.piece("Grove_Glow", "up", (0, 0.2, 0.3))
+    y0 = 0.3 if ctx.body == "walk" else 0.14
+    U.box((0, y0, 0.04), (0.5, 0.36, 0.14), "leaf_dark", rot=_rz(-6), bevel=True)
+    U.ico((0.15, y0 + 0.1, 0.11), 0.09, "leaf_green", scale=(1.3, 1.1, 0.6))
+    for x, y, h, r, sw, lit in ((-0.05, 0.0, 0.3, 0.17, "spa_mint", True), (0.15, -0.09, 0.18, 0.12, "pastel_sky", True),
+                                (-0.16, 0.1, 0.14, 0.095, "aurora_violet", False)):
+        U.cyl((x, y0 + y, h / 2 + 0.08), 0.04, h, "offwhite", segments=6)
+        U.cyl((x, y0 + y, h + 0.115), r, 0.09, sw, r2=r * 0.4, segments=8)
+        U.cyl((x, y0 + y, h + 0.063), r * 0.8, 0.02, STAR, segments=8)
+        if lit:
+            G.ico((x, y0 + y, h + 0.175), 0.04, NEON_GOLD)
+
+
+# Djinn ------------------------------------------------------------------------------------------------------
+def djinn_turban(ctx):
+    """Djinn: a wound turban of pearl and lilac with a gold knob, a gold diamond holding a lit pink gem at the
+    front, a three feather plume and a gold ring at each ear. From Catch a Cat Cafe's djinn_turban; the plume is
+    solid (#491)."""
+    P, w = ctx.pen("head"), ctx.hw
+    G = ctx.piece("Glow", "head", (0, -0.3, 0.15))
+    for z, r, sw, tilt in ((0.06, 0.4, "pearl", 0), (0.17, 0.36, "pastel_lilac", 8), (0.27, 0.3, "pearl", -8),
+                           (0.36, 0.22, "pastel_lilac", 6)):
+        P.cyl((0, 0, z), r, 0.13, sw, rot=_ry(tilt), r2=r * 0.9, segments=8)
+    P.ico((0, 0, 0.46), 0.1, GOLD)
+    P.box((0, -0.37, 0.14), (0.2, 0.06, 0.2), GOLD, rot=_ry(45))
+    G.box((0, -0.4, 0.14), (0.11, 0.06, 0.11), "neon_pink", rot=_ry(45))
+    for k, (dx, h) in enumerate(((0.0, 0.44), (0.07, 0.36), (-0.07, 0.32))):               # the plume
+        P.box((dx, -0.25 + 0.004 * k, 0.28 + h / 2), (0.07, 0.045, h), ("pearl", "aurora_violet", "aurora_violet")[k],
+              rot=_ry(-dx * 220) @ _rx(-8))
+    for sx in (-1, 1):                                                     # gold rings
+        P.cyl((sx * (w + 0.012), -0.05, -0.25), 0.09, 0.035, GOLD, rot=_ry(90), segments=8)
+
+
+def magic_lamp(ctx):
+    """Djinn's back piece: its gold lamp on a lilac cushion, lying across the shoulders, with a curl of violet and
+    lilac smoke rising from the spout to a pale star. From Catch a Cat Cafe's magic_lamp; the smoke is solid and
+    every puff touches the next, the star sits on the top one (#491, nothing floats)."""
+    U = ctx.pen("up")
+    y0 = 0.3 if ctx.body == "walk" else 0.14
+    U.box((0, y0, 0.05), (0.46, 0.3, 0.14), "pastel_lilac", bevel=True)                     # its cushion
+    U.ico((-0.02, y0, 0.22), 0.16, GOLD, scale=(1.35, 1.0, 0.8))
+    U.cyl((-0.02, y0, 0.115), 0.1, 0.05, "brass", segments=8)
+    U.ico((-0.02, y0, 0.36), 0.055, "brass")
+    U.bar((0.12, y0, 0.22), (0.36, y0, 0.36), 0.08, 0.07, GOLD, up=(0, 1, 0))               # the spout, to the side
+    U.bar((-0.2, y0, 0.3), (-0.33, y0, 0.24), 0.05, 0.05, "brass", up=(0, 1, 0))            # the handle
+    U.bar((-0.33, y0, 0.25), (-0.22, y0, 0.14), 0.05, 0.058, "brass", up=(0, 1, 0))
+    at, r = Vector((0.38, y0, 0.42)), 0.07
+    for k in range(4):                                                     # the smoke: bigger puffs, curling in
+        U.ico(tuple(at), r, ("aurora_violet", "pastel_lilac")[k % 2])
+        top, r2 = at, r + 0.016
+        step = Vector((-0.5 - 0.25 * k, 0.03, 1.0)).normalized()
+        at, r = at + step * (r + r2) * 0.6, r2
+    U.star(tuple(top + Vector((0, 0, r - 0.016 + 0.03))), 0.12, 0.054, 0.05, STAR, rot=_rx(90))
+
+
+# White Tiger ------------------------------------------------------------------------------------------------
+def frost_circlet(ctx):
+    """White Tiger: a crown of five ice shards on a silver band, the middle one tallest and deepest blue, and a lit
+    ice gem on the band's front. Catch a Cat Cafe's frost_circlet was a thin band with small snowflakes, which
+    did not read at card size; the shards do."""
+    P = ctx.pen("head")
+    G = ctx.piece("Gem_Glow", "head", (0, -0.33, 0.12))
+    P.cyl((0, 0, 0.04), 0.3, 0.08, "fur_silver", segments=10)
+    for ang, h, w, sw in ((0, 0.62, 0.25, "eye_sky"), (-40, 0.44, 0.21, "spa_sky"), (40, 0.44, 0.2, "spa_sky"),
+                          (-74, 0.26, 0.15, "pastel_sky"), (74, 0.26, 0.14, "pastel_sky")):
+        a = math.radians(ang)
+        P.pyramid((0.24 * math.sin(a), -0.24 * math.cos(a), 0.05), w, h, sw, rot=_ry(ang * 0.3) @ _rz(-ang))
+    G.box((0, -0.3, 0.045), (0.09, 0.06, 0.09), NEON_SKY, rot=_ry(45))
+
+
+def snow_standard(ctx):
+    """White Tiger's back piece: one big sky snowflake standing behind the shoulders on a silver foot, a darker
+    diamond at each of its six tips and a lit ice gem at its heart. Catch a Cat Cafe's white tiger wore a red cape
+    with white fur; a cape hides the mud a dirty cat arrives with and white on a cat reads as foam left to rinse,
+    so this one carries its snowflake clasp grown big."""
+    U = ctx.pen("up")
+    G = ctx.piece("Flake_Glow", "up", (0, 0.2, 0.3))
+    y0 = 0.3 if ctx.body == "walk" else 0.12
+    lean = _rx(-12)
+    foot = Vector((0, y0, 0.05))
+    U.box(tuple(foot), (0.28, 0.13, 0.15), "fur_silver")
+    c, r = foot + lean @ Vector((0, 0, 0.44)), 0.42
+    for k in range(3):
+        a = math.radians(90 + 60 * k)
+        d = lean @ Vector((math.cos(a), 0.0, math.sin(a)))
+        U.bar(tuple(c - d * r), tuple(c + d * r), 0.075, 0.05 + 0.006 * k, "pastel_sky", up=(0, 1, 0))
+        for e in (-1, 1):
+            if k == 0 and e == -1:
+                continue                                 # the arm that points down is the stem: no tip in the foot
+            U.box(tuple(c + d * r * e * 0.94), (0.13, 0.07 + 0.006 * k, 0.13), "spa_sky", rot=lean @ _ry(45 - 60 * k))
+    G.box(tuple(c + lean @ Vector((0, -0.01, 0))), (0.11, 0.09, 0.11), NEON_SKY, rot=lean @ _ry(45))
+
+
 PROPS = {"Stardust": ("Head", star_tiara), "Sherbet": ("Head", sundae_top), "Rosette": ("Head", rose_crown),
-         "Prism": ("Head", crystal_horn), "Jade": ("Head", lotus_horns), "Bathtile": ("Head", shower_cap)}
+         "Prism": ("Head", crystal_horn), "Jade": ("Head", lotus_horns), "Bathtile": ("Head", shower_cap),
+         "Phoenix": ("Head", flame_crest), "Moonstag": ("Head", moon_antlers), "Djinn": ("Head", djinn_turban),
+         "WhiteTiger": ("Head", frost_circlet)}
 PROPS2 = {"Stardust": ("Back", comet_back), "Sherbet": ("Back", heart_wings), "Rosette": ("Back", rose_fan),
-          "Prism": ("Back", rainbow_arc), "Jade": ("Back", dragon_back), "Bathtile": ("Back", bubble_trail)}
+          "Prism": ("Back", rainbow_arc), "Jade": ("Back", dragon_back), "Bathtile": ("Back", bubble_trail),
+          "Phoenix": ("Back", fire_wings), "Moonstag": ("Back", spirit_grove), "Djinn": ("Back", magic_lamp),
+          "WhiteTiger": ("Back", snow_standard)}
 # Extra objects a piece draws (Ctx.piece): cat -> {suffix: the object it hangs from, or "Tail"}.
 PIECES = {"Stardust": {"Glow": "Prop", "Comet_Glow": "Prop2", "Tail_Star": "Tail", "Tail_Star_Glow": "Tail"},
           "Sherbet": {"Cherry_Glow": "Prop", "Wings_Glow": "Prop2"},
           "Rosette": {"Gem_Glow": "Prop", "Fan_Glow": "Prop2", "Tail_Rose": "Tail"},
           "Prism": {"Glow": "Prop", "Rainbow_Glow": "Prop2"},
           "Jade": {"Glow": "Prop", "Spines_Glow": "Prop2", "Wings_Glow": "Prop2", "Tail_Pearl_Glow": "Tail"},
-          "Bathtile": {"Duck_Glow": "Prop", "Bubbles_Glow": "Prop2"}}
+          "Bathtile": {"Duck_Glow": "Prop", "Bubbles_Glow": "Prop2"},
+          "Phoenix": {"Glow": "Prop", "Wings_Glow": "Prop2"}, "Moonstag": {"Glow": "Prop", "Grove_Glow": "Prop2"},
+          "Djinn": {"Glow": "Prop"}, "WhiteTiger": {"Gem_Glow": "Prop", "Flake_Glow": "Prop2"}}
 SPECIAL_BUDGET = 2100       # a special cat with two pieces (a roster cat has 1,500)
 
 
