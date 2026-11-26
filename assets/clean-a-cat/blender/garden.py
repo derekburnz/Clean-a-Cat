@@ -39,6 +39,8 @@ from common import Builder
 from stations import _tris
 
 DOOR_W, DOOR_H = 6.0, 9.0         # the back door's opening (plot.BACK_DOOR, plot.DOOR_H)
+FRAME_T = 0.38                    # the butter door frame's depth: over rbx_export.MIN_COLLIDE, so it is solid and a
+#                                   camera stops on it instead of resting in the wall behind it (camera_rest_parts.py)
 WALL_T = 1.0
 SITE_X = 9.0                      # the site in the yard: x from -SITE_X to SITE_X about the door's middle
 SITE_Y = (1.2, 12.4)              # from just behind the wall to just inside the plot's back fence (13.0)
@@ -84,10 +86,11 @@ def _frame(b):
     """A butter frame round the back door on the wall's room face, as round the VIP door. No crown: the strays' sign
     hangs over this door."""
     w, h = DOOR_W, DOOR_H
-    fy = -0.6
+    fy, fo = -0.6, (FRAME_T - 0.3) / 2
     for sx in (1, -1):
-        b.box_base((sx * (w / 2 + 0.25), fy, -SINK), (0.5, 0.3, h + 0.3 + SINK), "pastel_butter", bevel=False)
-    b.box_base((0, fy - 0.01, h - 0.02), (w + 1.2, 0.32, 0.62), "pastel_butter", bevel=False)
+        b.box_base((sx * (w / 2 + 0.25), fy - fo, -SINK), (0.5, FRAME_T, h + 0.3 + SINK), "pastel_butter",
+                   bevel=False)
+    b.box_base((0, fy - 0.01 - fo, h - 0.02), (w + 1.2, FRAME_T + 0.02, 0.62), "pastel_butter", bevel=False)
 
 
 def _sign(name, mat, tall):

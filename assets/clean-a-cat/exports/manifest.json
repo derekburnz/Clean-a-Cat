@@ -70,13 +70,13 @@
   "parts": 194,
   "size_studs": {
    "x": 19.15,
-   "y": 13.87,
+   "y": 13.95,
    "z": 10.9
   },
   "size_roblox": [
    19.15,
    10.9,
-   13.87
+   13.95
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -98,7 +98,7 @@
     "uv": "3130 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.33 (want 0)",
-    "centered": "footprint center x=-0.12 y=6.17",
+    "centered": "footprint center x=-0.12 y=6.13",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -121,13 +121,13 @@
   "parts": 102,
   "size_studs": {
    "x": 18.96,
-   "y": 13.89,
+   "y": 13.97,
    "z": 12.28
   },
   "size_roblox": [
    18.96,
    12.28,
-   13.89
+   13.97
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -150,7 +150,7 @@
     "uv": "1190 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.33 (want 0)",
-    "centered": "footprint center x=0.15 y=6.17",
+    "centered": "footprint center x=0.15 y=6.13",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -173,13 +173,13 @@
   "parts": 79,
   "size_studs": {
    "x": 18.96,
-   "y": 13.89,
+   "y": 13.97,
    "z": 12.28
   },
   "size_roblox": [
    18.96,
    12.28,
-   13.89
+   13.97
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -202,7 +202,7 @@
     "uv": "796 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.33 (want 0)",
-    "centered": "footprint center x=0.15 y=6.17",
+    "centered": "footprint center x=0.15 y=6.13",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -421,6 +421,7 @@
   "module": "vip",
   "objects": [
    "CleanACat_Area_VipRoom",
+   "CleanACat_Area_VipRoom_WallArt",
    "CleanACat_Area_VipRoom_Decor",
    "CleanACat_Area_VipRoom_Sign_Decor",
    "CleanACat_Area_VipRoom_Screen",
@@ -451,7 +452,7 @@
    ],
    "qa_accepted": {
     "shared corners": 1,
-    "back to back": 3,
+    "back to back": 5,
     "pivot off the floor": 1
    },
    "checks": {

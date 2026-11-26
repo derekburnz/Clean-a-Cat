@@ -20,6 +20,9 @@ CanQuery off) keeps players out of the building site in the yard.
                               floor to stand on, lilac and gold decor (`_Decor`, not solid), a chandelier, and the
                               Attachments SpotVipEnter, SpotVipStation, SpotVipQueue and SpotVipWait. The name plate
                               inside the top of the opening has the `Screen` part. No barrier: players walk in.
+                              The lining on the back of the spa's wall is its own solid object (`_WallArt`), and
+                              the open leaves and the butter door frame are thick enough to be solid, so a camera
+                              stops on them instead of resting in the wall behind (#725, camera_rest_parts.py).
                               Ten seats for the room's residents, the player's washed special cats (#579, ten
                               since #712): Attachments SpotResident1 to SpotResident10, each the top of a lilac pad
                               and turned to face the room, climbing each back corner like steps: a floor cushion, a
@@ -35,6 +38,8 @@ from common import Builder
 from stations import _tris
 
 DOOR_W, DOOR_H = 8.0, 9.0         # the opening in the plot's back wall (plot.VIP_DOOR, plot.DOOR_H)
+FRAME_T = 0.38                    # the butter door frame's depth: over rbx_export.MIN_COLLIDE, so it is solid and a
+#                                   camera stops on it instead of resting in the wall behind it (camera_rest_parts.py)
 WALL_T = 1.0                      # the back wall's thickness: it runs from y -0.5 to 0.5 here
 SITE_X = 8.4                      # the building site in the yard: x from -SITE_X to SITE_X
 SITE_Y = (1.2, 12.4)              # and y, from just behind the wall to just inside the plot's back edge (13.5)
@@ -54,10 +59,11 @@ def _door(b):
               rot=Matrix.Rotation(math.pi / 2, 3, "X"))                             # a round window
         b.box((sx * 0.35, -0.24, 4.2), (0.14, 0.2, 0.9), "gold_mid", bevel=False)   # gold handles by the gap
     # a butter frame round the opening on the wall's room face, and a crown on its header
-    fy = -0.6                                                                       # 0.1 into the wall
+    fy, fo = -0.6, (FRAME_T - 0.3) / 2                                              # 0.1 into the wall
     for sx in (1, -1):
-        b.box_base((sx * (w / 2 + 0.25), fy, -SINK), (0.5, 0.3, h + 0.3 + SINK), "pastel_butter", bevel=False)
-    b.box_base((0, fy - 0.01, h - 0.02), (w + 1.2, 0.32, 0.62), "pastel_butter", bevel=False)
+        b.box_base((sx * (w / 2 + 0.25), fy - fo, -SINK), (0.5, FRAME_T, h + 0.3 + SINK), "pastel_butter",
+                   bevel=False)
+    b.box_base((0, fy - 0.01 - fo, h - 0.02), (w + 1.2, FRAME_T + 0.02, 0.62), "pastel_butter", bevel=False)
     cz, cy = h + 0.55, fy
     b.box_base((0, cy, cz), (2.4, 0.22, 0.6), "pastel_butter")
     for i, x in enumerate((-0.9, 0.0, 0.9)):
@@ -184,6 +190,7 @@ ROOM = "CleanACat_Area_VipRoom"
 RX = SITE_X                       # the side walls' outer faces
 RY0, RY1 = WALL_T / 2, SITE_Y[1]  # from the spa wall's back face to the back wall's outer face
 RWT = 0.4                         # wall thickness: thick enough to collide
+LEAF_T = 0.38                     # the open door leaves: over rbx_export.MIN_COLLIDE (0.35), so they are solid
 WALL_SINK = 0.03                  # how far the back of a thin piece on a wall reaches into the wall (#670, as plot.SINK)
 EAVES = 12.6                      # the walls' top, over the spa's 12 stud wall (the frame's ring beam)
 RISE = 2.4                        # eaves to ridge
@@ -235,8 +242,9 @@ def _window(b, at, turn, w=2.2, h=2.6):
     b.cyl(p(0, y, h / 2), w / 2, d, "spa_sky", segments=10, bevel=False, rot=R @ _STAND)
 
 
-def _shell(b):
-    """Floor, walls in two bands, the lining on the spa wall's back, gables and the roof."""
+def _shell(b, art):
+    """Floor, walls in two bands, gables and the roof into `b`; the lining on the spa wall's back into `art`, which
+    is solid (`_WallArt`), with its gold rail left walk-through in `b`."""
     x0, x1, y0, y1, t = -RX, RX, RY0, RY1, RWT
     ym = (y0 + y1) / 2
     b.box_base((0, ym, FLOOR_UP - 0.4), (x1 - x0 - 0.02, y1 - y0 - 0.02, 0.4), "pearl", bevel=False)        # the floor
@@ -252,18 +260,21 @@ def _shell(b):
     b.box_base((0, y1 - t / 2, BAND + 0.002), (2 * xin, t - 0.01, EAVES - BAND - 0.002), "spa_cream", bevel=False)
     b.box((0, y1 - t - 0.05 + WALL_SINK / 2, BAND + 0.1), (2 * xin - 0.24, 0.1 + WALL_SINK, 0.24), "gold_mid", bevel=False)
     # the lining on the back of the spa's wall, round the door opening, and the wall over the spa's wall
-    # (each piece's back is WALL_SINK or more inside the spa's wall: a camera resting on that wall sees no back)
+    # (each piece's back is WALL_SINK or more inside the spa's wall: a camera resting on that wall sees no back).
+    # The big panels are solid, as plot.py's rule (1) for anything flat on a wall: a camera that comes to rest at
+    # the edge of the door opening has part of its near plane inside the spa's wall, and while the panels were
+    # walk-through it drew their backs over half the screen (camera_rest_parts.py). On a solid panel it stops.
     ws = WALL_SINK
 
-    def lining(x, z, w, h, front, swatch, k=0):          # from `front` off the spa wall's back face to inside it
+    def lining(x, z, w, h, front, swatch, k=0, to=art):  # from `front` off the spa wall's back face to inside it
         back = ws + 0.004 * k
-        b.box_base((x, y0 + (front - back) / 2, z), (w, front + back, h), swatch, bevel=False)
+        to.box_base((x, y0 + (front - back) / 2, z), (w, front + back, h), swatch, bevel=False)
 
     for sx in (1, -1):
         xa, xb = DOOR_W / 2, xin
         lining(sx * (xa + xb) / 2, FLOOR_UP, xb - xa, BAND - FLOOR_UP, 0.12, "spa_bubblegum")
         lining(sx * (xa + xb) / 2, BAND + 0.002, xb - xa, EAVES - BAND - 0.002, 0.115, "spa_cream", k=1)
-        lining(sx * (xa + xb) / 2, BAND - 0.02, xb - xa - 0.3, 0.24, 0.22, "gold_mid", k=2)              # a rail
+        lining(sx * (xa + xb) / 2, BAND - 0.02, xb - xa - 0.3, 0.24, 0.22, "gold_mid", k=2, to=b)        # a rail
     lining(0, DOOR_H, DOOR_W, EAVES - DOOR_H, 0.11, "spa_cream", k=3)
     b.box_base((0, y0 + t / 2 + 0.13, 12.0), (2 * xin, t, EAVES - 12.0), "spa_cream", bevel=False)
     # gables: a triangle over each end wall
@@ -293,10 +304,11 @@ def _shell(b):
 def _surround(b):
     """The butter frame round the opening on the spa's side and the crown on its header, as on the closed door."""
     w, h = DOOR_W, DOOR_H
-    fy = -0.6
+    fy, fo = -0.6, (FRAME_T - 0.3) / 2
     for sx in (1, -1):
-        b.box_base((sx * (w / 2 + 0.25), fy, -SINK), (0.5, 0.3, h + 0.3 + SINK), "pastel_butter", bevel=False)
-    b.box_base((0, fy - 0.01, h - 0.02), (w + 1.2, 0.32, 0.62), "pastel_butter", bevel=False)
+        b.box_base((sx * (w / 2 + 0.25), fy - fo, -SINK), (0.5, FRAME_T, h + 0.3 + SINK), "pastel_butter",
+                   bevel=False)
+    b.box_base((0, fy - 0.01 - fo, h - 0.02), (w + 1.2, FRAME_T + 0.02, 0.62), "pastel_butter", bevel=False)
     cz, cy = h + 0.55, fy
     b.box_base((0, cy, cz), (2.4, 0.22, 0.6), "pastel_butter")
     for i, x in enumerate((-0.9, 0.0, 0.9)):
@@ -306,18 +318,20 @@ def _surround(b):
 
 
 def _open_leaves(b):
-    """The two door leaves swung back into the room and standing open, one each side of the way in."""
+    """The two door leaves swung back into the room and standing open, one each side of the way in. LEAF_T thick,
+    so they are solid: a camera stops on a leaf as on a wall instead of resting beside its walk-through end."""
     lw, h = DOOR_W / 2 - 0.06, DOOR_H - 0.03
+    ht = LEAF_T / 2
     for sx in (1, -1):
-        x = sx * (DOOR_W / 2 + 0.19)                                 # clear of the opening
+        x = sx * (DOOR_W / 2 + ht + 0.02)                            # clear of the opening
         y = RY0 + 0.2 + lw / 2
-        b.box_base((x, y, FLOOR_UP), (0.34, lw, h - FLOOR_UP), "spa_bubblegum")
+        b.box_base((x, y, FLOOR_UP), (LEAF_T, lw, h - FLOOR_UP), "spa_bubblegum")
         for z0, ph in ((0.7, 2.6), (4.9, 3.2)):                      # raised panels, on both faces: the room sees the back
-            b.box_base((x - sx * 0.17, y, z0), (0.06, lw - 0.94, ph), "spa_cream", bevel=False)
-            b.box_base((x + sx * 0.17, y, z0), (0.06, lw - 0.94, ph), "spa_cream", bevel=False)
-        b.cyl((x - sx * 0.19, y, 3.9), 0.42, 0.06, "spa_sky", segments=10, bevel=False,
+            b.box_base((x - sx * ht, y, z0), (0.06, lw - 0.94, ph), "spa_cream", bevel=False)
+            b.box_base((x + sx * ht, y, z0), (0.06, lw - 0.94, ph), "spa_cream", bevel=False)
+        b.cyl((x - sx * (ht + 0.02), y, 3.9), 0.42, 0.06, "spa_sky", segments=10, bevel=False,
               rot=Matrix.Rotation(math.pi / 2, 3, "Y"))               # the round window
-        b.box((x - sx * 0.24, y + lw / 2 - 0.35, 4.2), (0.2, 0.14, 0.9), "gold_mid", bevel=False)     # the gold handle
+        b.box((x - sx * (ht + 0.07), y + lw / 2 - 0.35, 4.2), (0.2, 0.14, 0.9), "gold_mid", bevel=False)   # the gold handle
 
 
 def _decor(b):
@@ -439,10 +453,12 @@ def _lamp(name, mat):
 
 def build_vip_room(mat):
     b = Builder()
-    _shell(b)
+    a = Builder()
+    _shell(b, a)
     _surround(b)
     _open_leaves(b)
     main = _tris(b.finalize(ROOM, mat))
+    art = _tris(a.finalize(ROOM + "_WallArt", mat))
     d = Builder()
     _decor(d)
     _residents(d)
@@ -453,7 +469,7 @@ def build_vip_room(mat):
     f = Builder()
     f.box_base((0, -0.16, DOOR_H - 1.13), (4.24, 0.06, 0.96), "offwhite", bevel=False)
     face = f.finalize(ROOM + "_Screen", mat, bevel=0)
-    return [main, decor, plate, face] + _lamp(ROOM, mat)
+    return [main, art, decor, plate, face] + _lamp(ROOM, mat)
 
 
 def vip_room_rbx_extras():
