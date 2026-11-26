@@ -142,16 +142,20 @@ def _gate(b, open_):
         _leaf(b, hinge, (-sx * 100 if open_ else 0), sx)
 
 
+SLAB_H = 8.5                      # the open gate leaves' invisible slabs: over Roblox's 7.2 stud jump
+
+
 def _leaf_barrier(name, mat):
     """An invisible solid slab along each open gate leaf, so a player walks round the leaf and not through its thin
     pickets (which stay walk-through: thin solid rails read as ladder rungs to a Roblox character). CanQuery is
-    off, as on every `_Barrier` here, so the camera and taps pass through it."""
+    off, as on every `_Barrier` here, so the camera and taps pass through it. SLAB_H tall, over a jump: a slab as
+    low as the leaf (3.3 studs) was hopped by a phone's auto jump (#736)."""
     b = Builder()
     for sx in (1, -1):
         turn = -sx * 100
         c, s = math.cos(math.radians(turn)), math.sin(math.radians(turn))
         hx, hy = sx * (DOOR_W / 2 - 0.2), 0.95
-        b.box_base((hx - sx * 1.48 * c, hy - sx * 1.48 * s, -0.01), (2.75, 0.34, 3.27 + 0.01 * (sx > 0)), "metal",
+        b.box_base((hx - sx * 1.48 * c, hy - sx * 1.48 * s, -0.01), (2.75, 0.34, SLAB_H + 0.01 * (sx > 0)), "metal",
                    bevel=False, rot=_RZ(turn))                    # no face shares a plane with a picket or a rail
     ob = b.finalize(name + "_Gate_Barrier", mat, bevel=0)
     ob.hide_render = True
