@@ -9,7 +9,10 @@
 -- leaves, so the next player in that slot starts empty.
 -- With tubBuilds on (issue 515, tuning build.VipRoom.effect), the built VIP Room itself (VipRules.AREA_ASSET) stands at
 -- the door's spot, and the special cats the player has washed sit on its seats as residents (VipRules.residents);
--- SpaService calls StationService.refresh when a special cat is washed for the first time.
+-- SpaService calls StationService.refresh when a special cat is washed for the first time. The Garden (GardenRules)
+-- stands behind the back door the same way: its locked gate, its building site, then the garden itself, where the
+-- pets in the player's pen play while the switch pets is on too; PetService calls StationService.refreshGarden after
+-- every change to the pets.
 -- Behind the LiveFlags switch `stations`, off by default. Stations change nothing on the server: the pay bonus
 -- is BuildRules', and the client's dry step (ScrubController) only reads the Blow Dryer model placed here.
 local Players = game:GetService("Players")
@@ -17,6 +20,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
+local CrateRules = require(Shared:WaitForChild("CrateRules"))
+local GardenRules = require(Shared:WaitForChild("GardenRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local VipRules = require(Shared:WaitForChild("VipRules"))
@@ -197,11 +202,100 @@ local function drawVipRoom(folder: Folder, assets: Instance, slot: number, index
 	area.Parent = folder
 end
 
+-- A pet in the garden: its model at its star, with no scripts, anchored and not in the way, on spot `spot`.
+local function seatGardenPet(garden: Model, assets: Instance, pet: GardenRules.Seated, spot: number)
+	local at = attachmentIn(garden, GardenRules.spotName(spot))
+	local base = assets:FindFirstChild(`CleanACat_Pet_{pet.kind}`)
+	if at == nil or base == nil or not base:IsA("Model") then
+		return
+	end
+	local model = (base :: Model):Clone() :: Model
+	model.Name = `GardenPet{spot}`
+	for _, piece in model:GetDescendants() do
+		local level = piece:GetAttribute("StarLevel")
+		local aboveStar = piece:IsA("Model") and type(level) == "number" and level > pet.star
+		if aboveStar or piece:IsA("Script") or piece:IsA("LocalScript") then
+			piece:Destroy()
+		elseif piece:IsA("BasePart") then
+			local part = piece :: BasePart
+			part.Anchored = true
+			part.CanCollide = false
+			part.CanQuery = false
+			part.CanTouch = false
+		end
+	end
+	model:SetAttribute(GardenRules.PET_ATTRIBUTE, spot)
+	model:SetAttribute("Pet", pet.kind)
+	model:ScaleTo(GardenRules.PET_SCALE)
+	model:PivotTo((at :: Attachment).WorldCFrame)
+	model.Parent = garden
+end
+
+-- The pets in the finished garden, drawn again from `pets` (the save's).
+local function drawGardenPets(garden: Model, assets: Instance, pets: any)
+	for _, child in garden:GetChildren() do
+		if child:GetAttribute(GardenRules.PET_ATTRIBUTE) ~= nil then
+			child:Destroy()
+		end
+	end
+	if type(pets) ~= "table" then
+		return
+	end
+	local spots = GardenRules.spotCount(garden:GetAttribute(GardenRules.SPOTS_ATTRIBUTE))
+	for spot, pet in GardenRules.pets(pets, spots) do
+		seatGardenPet(garden, assets, pet, spot)
+	end
+end
+
+-- (tubBuilds) The Garden at the back door: the locked gate, the building site while its build runs, then the garden.
+local function drawGarden(
+	folder: Folder,
+	assets: Instance,
+	slot: number,
+	save: { stations: any, pets: any? },
+	running: { [string]: BuildRules.Build },
+	isOn: (flag: string) -> boolean
+)
+	local item = BuildRules.item(GardenRules.ID, isOn)
+	if item == nil then
+		return
+	end
+	local build = running[item.slot]
+	local building = build ~= nil and build.item == GardenRules.ID
+	local built = save.stations[GardenRules.ID] == true
+	local assetName = if built
+		then GardenRules.AREA_ASSET
+		elseif building then GardenRules.BUILDING_ASSET
+		else GardenRules.LOCKED_ASSET
+	local asset = assets:FindFirstChild(assetName)
+	if asset == nil or not asset:IsA("Model") then
+		if not warned[assetName] then
+			warned[assetName] = true
+			warn(`[StationService] {assetName} is missing from ReplicatedStorage.Assets`)
+		end
+		return
+	end
+	local model = (asset :: Model):Clone() :: Model
+	model.Name = if built then GardenRules.AREA_NAME else GardenRules.ID
+	model:SetAttribute("Built", built)
+	if building and build then
+		model:SetAttribute("EndsAt", build.endsAt)
+	end
+	model:PivotTo(SpaLayout.slotSpot(GardenRules.SPOT, slot))
+	anchorAll(model)
+	if not built then
+		label(model, item.name, if building then "Building" else `{item.price} coins`)
+	elseif isOn(CrateRules.FLAG) then
+		drawGardenPets(model, assets, save.pets)
+	end
+	model.Parent = folder
+end
+
 local function drawInto(
 	plot: Model,
 	slot: number,
 	assets: Instance,
-	save: { stations: any, builds: any, index: any? },
+	save: { stations: any, builds: any, index: any?, pets: any? },
 	isOn: (flag: string) -> boolean
 )
 	local folder = Instance.new("Folder")
@@ -268,6 +362,9 @@ local function drawInto(
 	elseif isOn(BuildRules.TUBS_FLAG) then
 		drawVipRoom(folder, assets :: Instance, slot, save.index)
 	end
+	if BuildRules.shown(GardenRules.ID, isOn) then
+		drawGarden(folder, assets :: Instance, slot, save, running, isOn)
+	end
 	folder.Parent = plot
 end
 
@@ -285,6 +382,25 @@ function StationService.refresh(player: Player)
 		return
 	end
 	drawInto(plot, slot, assets :: Instance, save, LiveFlags.isOn)
+end
+
+-- Draws the pets in the player's finished garden again (PetService, after every change to the pets), leaving the
+-- rest of the plot as it is.
+function StationService.refreshGarden(player: Player)
+	local slot = SpaLayout.slotOf(player)
+	local plot = if slot then SpaLayout.plotModel(slot) else nil
+	local folder = if plot then plot:FindFirstChild(SpaLayout.STATIONS_FOLDER) else nil
+	local garden = if folder then folder:FindFirstChild(GardenRules.AREA_NAME) else nil
+	local save = DataService.get(player)
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	if garden == nil or not garden:IsA("Model") or save == nil or assets == nil then
+		return
+	end
+	drawGardenPets(
+		garden :: Model,
+		assets :: Instance,
+		if LiveFlags.isOn(CrateRules.FLAG) then save.pets else nil
+	)
 end
 
 -- Draws plot `slot` as if its owner had these stations and builds, whatever the switches say, replacing what is
