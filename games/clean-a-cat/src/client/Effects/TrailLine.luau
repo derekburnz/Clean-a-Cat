@@ -50,6 +50,46 @@ TrailLine.LOOK = table.freeze({
 	layer = 0.02, -- between stacked see-through tops, so they never shimmer on a phone (Review-QA's rule)
 })
 
+-- Derek's playtest, 2026-11-26: "the green and white lines flowing kinda blend in with the models of the map/spa". With
+-- the switch trailBold (off by default) a new line takes this look instead: a warm gold band (no floor or wall in the
+-- spa or the town uses it) with the HUD's dark plum outline, a white glow, less see-through, a wider arrowhead and a
+-- brighter dash. Only colours, widths and transparency change: the arrow's length and the dash spacing stay LOOK's,
+-- so TrailLine.layout and TrailLine.dashes hold for both looks.
+TrailLine.BOLD_FLAG = "trailBold"
+TrailLine.LOOK_BOLD = table.freeze({
+	width = 1.8,
+	fill = Color3.fromHex("FFC94D"), -- Kit.GOLD
+	fillSeen = 0.25,
+	edge = Color3.fromHex("45226B"), -- Kit.INK, the outline every HUD word wears
+	edgeWidth = 0.22,
+	edgeSeen = 0.1,
+	glow = Color3.fromHex("FFFFFF"),
+	glowWidth = 0.4,
+	glowSeen = 0.55,
+	arrowWidth = 4.6,
+	arrowLength = TrailLine.LOOK.arrowLength,
+	dash = Color3.fromHex("FFFFFF"),
+	dashLength = TrailLine.LOOK.dashLength,
+	dashSeen = 0.05,
+	dashGap = TrailLine.LOOK.dashGap,
+	dashSpeed = TrailLine.LOOK.dashSpeed,
+	thick = TrailLine.LOOK.thick,
+	lift = TrailLine.LOOK.lift,
+	layer = TrailLine.LOOK.layer,
+})
+
+-- The look a new line takes: LOOK_BOLD while trailBold is on. Read once per line, so a switch flip shows on the
+-- next line drawn (the next step's trail, or the next time the player walks away).
+function TrailLine.look(): typeof(TrailLine.LOOK)
+	local ok, bold = pcall(function()
+		local ReplicatedStorage = game:GetService("ReplicatedStorage")
+		local LiveFlags =
+			require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags")) :: any
+		return LiveFlags.isOn(TrailLine.BOLD_FLAG)
+	end)
+	return if ok and bold == true then TrailLine.LOOK_BOLD else TrailLine.LOOK
+end
+
 export type Leg = { from: Vector3, to: Vector3, length: number }
 export type Layout = { legs: { Leg }, length: number, base: Vector3?, tip: Vector3? }
 
@@ -155,9 +195,10 @@ local function halfArrow(
 	dir: Vector3,
 	sign: number,
 	up: number,
-	grow: number
+	grow: number,
+	shape: typeof(TrailLine.LOOK)
 )
-	local look = TrailLine.LOOK
+	local look = shape
 	local half = look.arrowWidth / 2 + grow
 	local length = look.arrowLength + grow * 2
 	local start = base - dir * grow
@@ -172,7 +213,7 @@ local function halfArrow(
 end
 
 function TrailLine.new(parent: Instance?): LineHandle
-	local look = TrailLine.LOOK
+	local look = TrailLine.look()
 	local folder = Instance.new("Folder")
 	folder.Name = "CleanACat_TrailLine"
 	folder.Parent = parent or Workspace
@@ -272,7 +313,8 @@ function TrailLine.new(parent: Instance?): LineHandle
 					dir,
 					sign,
 					look.lift,
-					look.glowWidth
+					look.glowWidth,
+					look
 				)
 				halfArrow(
 					take("Arrow", true, look.fill, look.fillSeen, false),
@@ -280,7 +322,8 @@ function TrailLine.new(parent: Instance?): LineHandle
 					dir,
 					sign,
 					look.lift + look.layer,
-					0
+					0,
+					look
 				)
 				-- the dark edge along each slanted side, from the base's corner to the tip
 				local corner = base + dir:Cross(UP) * sign * (look.arrowWidth / 2)
