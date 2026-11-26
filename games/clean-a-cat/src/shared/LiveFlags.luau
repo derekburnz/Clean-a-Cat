@@ -108,6 +108,7 @@ LiveFlags.KEYS = {
 	"tutorialBench", -- until the tutorial ends at 2:45 of play the line holds 1 customer, then 2 from 2:00 (bench.tutorialSize, SpaRules.tutorialBench, SpaService); off by default
 	"petsWindow", -- the HUD's Pets button and window: the player's pets with their stars and counts, Fuse on three of the same, and who has a pet (you and each hired helper), tap a slot then a pet (UI/PetsWindow, PetsWindowController, issue 526); off by default
 	"finishNow", -- a running build's board prompt offers Finish now for Robux by the time left (5 min, 30 min, 2 h, 8 h, more; never under 15 s left), once the owner has created that tier's developer product; a saved credit covers it free (FinishRules, PurchaseService, BuildService, issue 515); off by default
+	"tipJar", -- the tip jar fills from the hired workers while the player is away (30 coins an hour each, up to 8 hours; 12 hours and 1.25 times as fast with the Garden) and a tap on the jar collects it (JarRules, JarService, JarController, issue 517); off by default
 	"tubBuilds", -- the Build board sells the Second, Third and Fourth Tub, the VIP Room at its new price and the Garden; one builder; a built tub pays +2 on every hand wash and the VIP Room brings special visitors more often; with dirtLevels on, the old stations leave (BuildRules, issue 515); off by default
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 }
@@ -192,6 +193,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	crateWindow = true,
 	petsWindow = true,
 	finishNow = true,
+	tipJar = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
