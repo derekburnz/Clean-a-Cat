@@ -48,6 +48,7 @@ local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WashPace = require(Shared:WaitForChild("WashPace"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
+local OPENING_BONUS_FLAG = "openingBonus" -- WorkerRules.OPENING_FLAG: the first customer tops up to Jo (issue 913)
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local FigureService = require(script.Parent:WaitForChild("FigureService"))
@@ -1085,6 +1086,21 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		more.passLine = Passes.handLine(owns)
 		extra = more
 		coins += passExtra
+	end
+	-- The Grand opening gift (switch openingBonus, issue 913; Derek: "make it so you can afford 300 coins after your
+	-- first wash"): a brand new spa's first customer tops the player up to Jo's price, once a save (save.asks).
+	if
+		LiveFlags.isOn(OPENING_BONUS_FLAG)
+		and save.stars <= 0
+		and save.asks[OPENING_BONUS_FLAG] ~= true
+	then
+		save.asks[OPENING_BONUS_FLAG] = true
+		local gift = WorkerRules.openingGift(save.coins + coins, LiveFlags.isOn)
+		if gift > 0 then
+			more.opening = gift
+			extra = more
+			coins += gift
+		end
 	end
 	save.coins += coins
 	WalletService.show(player)

@@ -45,12 +45,14 @@ LiveFlags.KEYS = {
 	"gradeStars", -- a wash earns its grade in spa stars (1 to 3, plus a rarer cat's extra) and the star tiers start 3 times higher (CatRules.gradeStars, issue 868); off by default
 	"toastCards", -- the short notices are small cards at the top right, coloured by kind with a portrait for a cat, not a dark bar across the screen (UI/ToastCard, ToastRules, issue 877); off by default
 	"contextAsks", -- pop ups only when they guide a next action: announcement cards cut, guide cards name the action and start the floor trail, the notification ask waits for a first build, the special visitor and first crate get guide cards (BubbleRules, issue 877); off by default
+	"openingBonus", -- a brand new spa's first customer tops the player up to Jo's price with a one-time Grand opening gift line (WorkerRules.openingGift, issue 913); off by default
 	"sudsVoice", -- one soft meow when Suds's speech bubble appears (Audio/SudsVoice, issue 827); off by default
 	"trailBold", -- the guide line in gold with a dark outline so it reads on the spa floor (Effects/TrailLine, Derek 2026-11-26); off by default
 	"zoomCap", -- the camera zooms out at most CameraZoomController.MAX_ZOOM studs so the map ends stay hidden (issue 895); off by default
 	"photoFx", -- the photo camera's LED blinks faster, the flash fires and a printed card slides out the back (Effects/PhotoFx, issue 862); off by default
 	"carryBlink", -- a cat scaled after its rig was built (carried Suds) blinks with eyes at its own size (Effects/CatMotion, issue 903); off by default
 	"washPops", -- little words and a combo count pop over the cat during the wash, with soft chimes (Effects/WashPops, issue 902); off by default
+	"joArrive", -- Jo walks in to his hire pad with a short camera shot when the first helper card starts its trail (Effects/JoArrive, issue 913); off by default
 	"tubLife", -- the tub's foam settles and breathes, bubbles rise and pop, the tap runs with a ripple (Effects/TubLife, issue 879); off by default
 	"catWalkStand", -- a washed cat walks out on its standing model with a leg trot, not sitting (Effects/CatWalkOut); off by default
 	"pillPointer", -- a gold hand bobs over the prompt pill at the end of a guided walk (Controllers/PillPointerController); off by default
@@ -185,6 +187,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	pillPointer = true,
 	catWalkStand = true,
 	tubLife = true,
+	joArrive = true,
 	washPops = true,
 	carryBlink = true,
 	photoFx = true,
@@ -195,6 +198,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	gradeStars = true,
 	toastCards = true,
 	contextAsks = true,
+	openingBonus = true,
 	counterCardFx = true,
 	helperPopFx = true,
 	catMotion = true,

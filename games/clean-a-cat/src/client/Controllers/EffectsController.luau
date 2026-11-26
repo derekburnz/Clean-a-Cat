@@ -83,6 +83,12 @@ function EffectsController.Start()
 	TubLife.start(function(): boolean
 		return LiveFlags.isOn("tubLife")
 	end)
+	-- Jo walks in to his hire pad when the first helper card starts its trail (Effects/JoArrive, issue 913)
+	local JoArrive =
+		require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("JoArrive")) :: any
+	JoArrive.start(function(): boolean
+		return LiveFlags.isOn("joArrive")
+	end)
 
 	CatMotion.start(Effects.tier(), function(): boolean
 		return LiveFlags.isOn(MOTION_FLAG)

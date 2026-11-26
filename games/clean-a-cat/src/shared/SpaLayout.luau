@@ -82,7 +82,7 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotWindow4 = at(5, 3.03, -14.2, 0),
 	SpotTipJar = at(2.4, 3.03, -14.2, 0),
 	SpotSign = at(-13.5, 6.5, -17, 0), -- the spa sign on the front wall, its back on the wall
-	SpotBuilder = at(-13, 0.5, 6, 0),
+	SpotBuilder = at(-16, 0.5, 3.5, -math.pi / 2), -- Model-Agent, issue 878: clear of the bigger stands
 	SpotStation2 = at(-7, 0.5, -1, 0),
 	SpotStation3 = at(-13.5, 0.5, -1, 0),
 	SpotStation4 = at(15.2, 0.5, 1, 0), -- the Bubble Bath, against the wall on the tub's side (#267, #276)
@@ -104,9 +104,9 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	Tools = at(-1, 0.5, -2, 0),
 	-- The workers' wash stands along the back wall, 4 studs apart (WorkerRules, issue 509; Model-Agent's plot
 	-- Attachments SpotWorkerJo, Sam and Lou).
-	SpotWorkerJo = at(-1, 0.5, 6.5, 0),
-	SpotWorkerSam = at(3, 0.5, 6.5, 0),
-	SpotWorkerLou = at(7, 0.5, 6.5, 0),
+	SpotWorkerJo = at(-14.5, 0.5, 6.5, 0), -- issue 878: the 1.35x stands, pads at least 5 apart
+	SpotWorkerSam = at(6, 0.5, 6.5, 0),
+	SpotWorkerLou = at(0, 0.5, 6.5, 0),
 	-- The gift stand (GiftService, issue 521): Model-Agent's plot Attachment SpotGift, against the right wall near
 	-- the door, facing into the room.
 	SpotGift = at(-16.4, 0.5, -11.8, -math.pi / 2),
@@ -187,12 +187,12 @@ SpaLayout.BIG_SPOTS = table.freeze({
 	SpotStray = at(22.4, 0.5, 13.6, math.pi / 2),
 	SpotStation4 = at(21.2, 0.5, 1, 0),
 	SpotStation5 = at(21.2, 0.5, -6.6, 0),
-	SpotBuilder = at(-13, 0.5, 12, 0),
+	SpotBuilder = at(-22.5, 0.5, 5, -math.pi / 2), -- issue 878
 	SpotVipDoor = at(-7, 0.5, 16.5, 0),
 	SpotGardenDoor = at(12, 0.5, 16.5, 0),
-	SpotWorkerJo = at(-1, 0.5, 12.5, 0),
-	SpotWorkerSam = at(3, 0.5, 12.5, 0),
-	SpotWorkerLou = at(7, 0.5, 12.5, 0),
+	SpotWorkerJo = at(-17.5, 0.5, 12.5, 0), -- issue 878: Jo alone right of the VIP door
+	SpotWorkerSam = at(6, 0.5, 12.5, 0),
+	SpotWorkerLou = at(0, 0.5, 12.5, 0),
 	SpotWindow1 = at(-21.7, 3.03, -14.2, 0), -- the residents' seat moved to the window left of the entrance
 	SpotWindow2 = at(-19.1, 3.03, -14.2, 0),
 	SpotWindow3 = at(-16.5, 3.03, -14.2, 0),

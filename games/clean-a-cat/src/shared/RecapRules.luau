@@ -44,6 +44,7 @@ export type Recap = {
 	pass: number?, -- what 2x Coins and the Golden Sponge added (switch passes, Passes.handExtra); 0 or nil without
 	passLine: string?, -- the line's words, one of Passes.LINES
 	friends: number?, -- what friends in the server added (switch friendBonus, VisitRules.friendExtra); 0 or nil without
+	opening: number?, -- the first customer's one-time gift up to Jo's price (switch openingBonus, issue 913)
 }
 
 -- The pay formula's lines for make; each 0 when not given.
@@ -57,6 +58,7 @@ export type Extra = {
 	pass: number?,
 	passLine: string?,
 	friends: number?,
+	opening: number?,
 }
 
 export type Row = { key: string, say: string, value: number }
@@ -104,6 +106,7 @@ function RecapRules.make(
 		pass = more.pass or 0,
 		passLine = more.passLine,
 		friends = more.friends or 0,
+		opening = more.opening or 0,
 	}
 end
 
@@ -137,6 +140,7 @@ function RecapRules.total(recap: Recap): number
 		+ (recap.bow or 0)
 		+ (recap.pass or 0)
 		+ (recap.friends or 0)
+		+ (recap.opening or 0)
 		+ recap.tip
 		+ recap.bonus
 end
@@ -159,6 +163,7 @@ function RecapRules.rows(recap: Recap): { Row }
 	add("bonus", "Spa stations bonus", recap.bonus)
 	add("friends", "Friends here", recap.friends or 0)
 	add("pass", recap.passLine or "Pass bonus", recap.pass or 0)
+	add("opening", "Grand opening gift", recap.opening or 0)
 	return rows
 end
 
@@ -202,6 +207,7 @@ function RecapRules.clean(raw: unknown): Recap?
 	local bow = optional(t.bow, MAX_AMOUNT)
 	local pass = optional(t.pass, MAX_AMOUNT)
 	local friends = optional(t.friends, MAX_AMOUNT)
+	local opening = optional(t.opening, MAX_AMOUNT)
 	if
 		speed == nil
 		or early == nil
@@ -210,6 +216,7 @@ function RecapRules.clean(raw: unknown): Recap?
 		or bow == nil
 		or pass == nil
 		or friends == nil
+		or opening == nil
 	then
 		return nil
 	end
@@ -243,6 +250,7 @@ function RecapRules.clean(raw: unknown): Recap?
 		pass = pass,
 		passLine = if type(passLine) == "string" then passLine else nil,
 		friends = friends,
+		opening = opening,
 	}
 end
 

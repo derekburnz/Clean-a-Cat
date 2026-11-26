@@ -110,6 +110,7 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | key | value | why | changed |
 |---|---|---|---|
 | `worker.Jo.price` | 150 coins, station included; 300 with the switch `joPrice` (issue 841) | First worker after about 15 cats. The early gifts (check in 50 at 3:45, like reward 150 from about 4:40, quests from 6:00) put a 150 coin Jo at about cat 6; 300 puts him at cat 10 to 15 | 2026-11-26 |
+| `worker.Jo.openingGift` | with the switch `openingBonus` (issue 913): a brand new spa's first customer adds a one-time "Grand opening gift" line that tops the player up to Jo's price (300 with `joPrice`), about 284 coins | Derek 2026-11-26: "make it so you can afford 300 coins after your first wash". This replaces the about 15 cats target: Jo is the first buy, at about 1:30, with a Suds guide card, the trail to his pad and Jo walking up. Jo then earns about 3 coins a cat for the player, so the Second Tub (60) comes about 4 cats later and Sam (1,200) stays near minute 45 | 2026-11-26 |
 | `worker.Sam.price` | 1,200 coins, station included | | 2026-11-25 |
 | `worker.Lou` | game pass 249 Robux, station included | Works exactly like Jo and Sam | 2026-11-25 |
 | `worker.washSeconds` | L1 50, L2 75, L3 110, L4 150 | About twice the player's time at the 8 s step target | 2026-11-25 |
@@ -223,7 +224,7 @@ Cats washed to afford the next purchase. Re-time on the iPhone 12 once dirt leve
 |---|---|---|
 | Sponge level 2 (45) | after 3 cats | The three tutorial cats pay about 16 each, so 48 after cat 3 |
 | Second Tub (60) | after about 5 cats, about 5:30 | Measured on 6fcbac1 (issue 660): early cats pay about 16 each, Bubble Soap (30) is often bought first |
-| Jo (150; 300 with `joPrice`) | after about 15 cats | Modelled 2026-11-26 (issue 841) with the check in, quests and the like reward: at 150 he lands at cat 6 to 10 (4:45 to 7:25); at 300 at cat 10 to 15 (7:25 to 10:45). Re-time on the iPhone 12 |
+| Jo (150; 300 with `joPrice`) | after about 15 cats; right after the first customer with `openingBonus` | Modelled 2026-11-26 (issue 841) with the check in, quests and the like reward: at 150 he lands at cat 6 to 10 (4:45 to 7:25); at 300 at cat 10 to 15 (7:25 to 10:45). Re-time on the iPhone 12 |
 | Third Tub (1,000) | offered about minute 15, bought in the second session | |
 
 Average early cat (no friends, plain ribbon): base 14.3 across rarities × dirt 1.18 × stars 1.1 (1 to 1.2) + tip 3 + bow 2 ≈ 23.6 coins on paper. Measured 2026-11-26 (Sync, fresh save): about 16, as early stars sit near 1, the tutorial cats are cheap and early dirt is mostly level 1. Plan on 16 for the first ten cats.
