@@ -260,7 +260,7 @@ local function drawBuy(
 	local button = Window.button("Buy", `{row.price} Robux`, line, BUY_TOP, BUY_BOTTOM)
 	button.AnchorPoint = Vector2.new(1, 0.5)
 	button.Position = UDim2.fromScale(1, 0.5)
-	button.Size = UDim2.new(0.54, 0, 1, 0)
+	button.Size = UDim2.fromScale(0.54, 1)
 	button.TextSize = s.buyText
 	local key = row.key
 	button.Activated:Connect(function()
