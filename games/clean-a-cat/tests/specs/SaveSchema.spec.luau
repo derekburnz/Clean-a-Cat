@@ -130,6 +130,20 @@ return function()
 			expect(save.checkin.lastDay).to.equal(0)
 		end)
 
+		it("gives an old save the Free Rewards fields and keeps a paid row", function()
+			local old = SaveSchema.migrate({ version = 1 }, 100) :: any
+			expect(old.freeRewards.play).to.equal(false)
+			expect(old.freeRewards.like).to.equal(false)
+			expect(old.likeAskedAt).to.equal(0)
+			local paid = SaveSchema.migrate(
+				{ version = 1, freeRewards = { like = true }, likeAskedAt = 50 },
+				100
+			) :: any
+			expect(paid.freeRewards.like).to.equal(true)
+			expect(paid.freeRewards.play).to.equal(false)
+			expect(paid.likeAskedAt).to.equal(50)
+		end)
+
 		it("round trips every new field", function()
 			local save = SaveSchema.template(100) :: any
 			save.bows.Silk = true
