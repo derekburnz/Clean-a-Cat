@@ -2,7 +2,7 @@
 -- Motion: how a window arrives and how a button answers a press. A trial (#183) behind the live switch springUi,
 -- off by default: while it is off nothing moves, exactly as before. While it is on:
 --
---   Motion.popIn(window)   the window grows from 85% to full size on a quick spring with no overshoot (settled in about 0.13 s)
+--   Motion.popIn(window)   the window grows from 85% to full size on a quick spring with no overshoot (settled in about 0.19 s)
 --   Motion.press(button)   the button squashes to 92% while held and springs back on release
 --
 -- Springs come from spr (shared/Vendor/spr.luau, MIT), required only when the switch is on. They animate a UIScale
@@ -20,7 +20,7 @@ local Motion = {}
 local FLAG = "springUi"
 -- Issue 809 (Design-Agent, 2026-11-26): the open settles in under 0.2 s with a plain ease out and no overshoot (bounce
 -- is kept for reward moments only); close stays instant. Damping 1 is a critically damped spring, which never
--- overshoots; it settles to 2% in about 4 / (2 pi * frequency) seconds: 4 / 31.4 is about 0.13 s.
+-- overshoots; it settles to 2% in about 5.8 / (2 pi * frequency) seconds: 5.8 / 31.4 is about 0.19 s.
 local POP_FROM = 0.85
 local POP_DAMPING, POP_FREQUENCY = 1, 5
 local PRESS_SCALE = 0.92
