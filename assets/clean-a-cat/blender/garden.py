@@ -142,14 +142,15 @@ def _gate(b, open_):
         _leaf(b, hinge, (-sx * 100 if open_ else 0), sx)
 
 
-SLAB_H = 8.5                      # the open gate leaves' invisible slabs: over Roblox's 7.2 stud jump
+SLAB_H = 12.0                     # the open gate leaves' invisible slabs: over a jumping character's root part
 
 
 def _leaf_barrier(name, mat):
     """An invisible solid slab along each open gate leaf, so a player walks round the leaf and not through its thin
     pickets (which stay walk-through: thin solid rails read as ladder rungs to a Roblox character). CanQuery is
-    off, as on every `_Barrier` here, so the camera and taps pass through it. SLAB_H tall, over a jump: a slab as
-    low as the leaf (3.3 studs) was hopped by a phone's auto jump (#736)."""
+    off, as on every `_Barrier` here, so the camera and taps pass through it. SLAB_H tall: a slab as
+    low as the leaf (3.3 studs) was hopped by a phone's auto jump (#736), and one of 8.5 studs by a moving jump,
+    which lifts an R15 root part's bottom to about 9.3 studs off the floor, legs passing through (#741)."""
     b = Builder()
     for sx in (1, -1):
         turn = -sx * 100
