@@ -22,7 +22,13 @@ Paw, Heart, Gift, Music, Speaker, Shake, Sparkle, Dice and Check. They are used 
 buttons, so each is one plain shape. Three more joined them (#259), the last names that drew an emoji: Pointer (the
 tutorial's arrow), Star (a star earned for a wash) and Station (a bath, for the recap card's bonus row).
 
-Five tiny pictures come last (#255), for the queue window: Crown (a VIP), Lock (a need whose station is not built) and
+Six more in the button pictures' build joined them for milestone 1 (#527): Quests (a lilac clipboard with a green
+tick), Shop (a little shopfront under a pink and white awning), Pets (a lilac cat's head in a pink collar with a gold
+bell), Crate (the pet crate of crates.py, simplified: slats, a lilac lid with cat ears, a gold paw latch), Bow (a pink
+bow) and Helpers (Jo of the real staff, spa_staff.py, in the headband and the bib apron; the Helpers button used the
+older Helper picture, which has neither). Each was checked at 36 px.
+
+Five tiny pictures came before those (#255), for the queue window: Crown (a VIP), Lock (a need whose station is not built) and
 the three needs Mud, Tangles and Wet. A need draws at about 18 to 21 px on a phone, inside a round white chip, and the
 lock badge at about 13 to 16 px. So each is one flat shape seen almost straight on (TINY_VIEW), in one colour that
 stands off white, with at most one mark on it, and its outline is nearly twice as thick (TINY_OUTLINE), which leaves
@@ -475,6 +481,118 @@ def station(mat):
     return _fin(b, "Station", mat)
 
 
+# --- the menu buttons and cards of milestone 1 (#527): the same build as the button pictures above ---
+
+def helpers(mat):
+    """Helpers: Jo of the spa's staff (spa_staff.py), head and shoulders in the real uniform: the mint smock, the
+    cream bib apron with its pink paw and straps, a ginger bob under the cream towelling headband with a pink paw.
+    The headband and the apron are what say "works here"; the older Helper picture has neither."""
+    blush = staff.LOOKS[0][4]
+    skin, hair = "skin_light", "fur_ginger"
+    b, k = Builder(), Builder()
+    b.box((0, 0, 0.5), (2.2, 1.2, 0.68), "spa_mint")                                     # the smock's shoulders
+    b.box((0, -0.6, 0.42), (1.2, 0.1, 0.56), "spa_cream")                                # the apron's bib
+    for sx in (-1, 1):                                                                   # and its straps
+        b.box((sx * 0.5, -0.02, 0.86), (0.24, 1.3, 0.1), "spa_cream")
+    _paw(b, 0, -0.67, 0.4, 0.13, "nose_bubblegum", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
+    b.box((0, 0, 1.62), (1.5, 1.4, 1.5), skin)                                           # the head
+    b.box((0, 0.02, 2.4), (1.7, 1.6, 0.36), hair)                                        # the bob: top,
+    for sx in (-1, 1):
+        b.box((sx * 0.8, 0.0, 1.5), (0.2, 1.56, 1.5), hair)                              # sides down to the jaw,
+        b.box((sx * 0.6, -0.72, 1.92), (0.5, 0.16, 0.5), hair)                           # a fringe each side
+    b.box((0, 0.78, 1.5), (1.7, 0.16, 1.5), hair)                                        # and the back
+    b.box((0, 0, 2.2), (1.86, 1.76, 0.3), "spa_cream")                                   # the headband
+    _paw(b, 0, -0.9, 2.19, 0.085, "nose_bubblegum", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
+    fy = -0.72
+    for sx in (-1, 1):
+        k.box((sx * 0.3, fy, 1.52), (0.19, 0.04, 0.34), "coat_inky", bevel=False)        # the eyes
+        b.box((sx * 0.3 + 0.04, fy - 0.03, 1.62), (0.07, 0.04, 0.09), "foam", bevel=False)
+        b.box((sx * 0.44, fy, 1.2), (0.2, 0.04, 0.11), blush, bevel=False)               # the cheeks
+        k.box((sx * 0.21, fy, 1.17), (0.09, 0.04, 0.09), "coat_inky", bevel=False)       # the smile's corners
+    k.box((0, fy, 1.08), (0.42, 0.04, 0.09), "coat_inky", bevel=False)                   # the smile
+    return _fin(b, "Helpers", mat, ink=k)
+
+
+def quests(mat):
+    """Quests: a lilac clipboard with a gold clip, cream paper and one big green tick. A list of jobs to tick off."""
+    b = Builder()
+    b.box((0, 0, 1.25), (2.0, 0.26, 2.5), "velvet_lilac")                                # the board
+    b.box((0, -0.15, 1.14), (1.6, 0.1, 1.94), "spa_cream")                               # the paper
+    b.box((0, -0.2, 2.4), (0.96, 0.34, 0.42), "gold_mid")                                # the clip
+    b.cyl((0, -0.2, 2.66), 0.22, 0.34, "gold_mid", segments=14, rot=X)
+    b.box((-0.34, -0.25, 0.92), (0.3, 0.12, 0.72), "rarity_uncommon", rot=(math.radians(-45), "Y"))   # the tick
+    b.box((0.18, -0.27, 1.16), (0.3, 0.12, 1.2), "rarity_uncommon", rot=(math.radians(40), "Y"))
+    return _fin(b, "Quests", mat)
+
+
+def shop(mat):
+    """The shop: a little cream shopfront under a pink and white striped awning, a mint door and a sky window."""
+    b = Builder()
+    b.box((0, 0, 0.85), (2.2, 1.0, 1.7), "spa_cream")                                    # the front
+    b.box((0, 0, 0.1), (2.4, 1.16, 0.2), "velvet_lilac")                                 # its step
+    b.box((0.5, -0.5, 0.72), (0.62, 0.1, 1.06), "bow_mint")                              # the door
+    b.box((-0.5, -0.5, 0.86), (0.72, 0.1, 0.62), "bow_sky")                              # the window
+    for i in range(5):                                                                   # the awning: five stripes
+        x, sw = (i - 2) * 0.5, ("nose_bubblegum", "foam")[i % 2]
+        b.box((x, -0.34, 1.92), (0.5, 1.5, 0.3 + 0.006 * (i % 2)), sw, rot=(math.radians(-18), "X"))
+        b.cyl((x, -1.0, 1.66), 0.21, 0.2 + 0.006 * (i % 2), sw, segments=12, rot=X)      # and a scallop on each
+    b.box((0, 0.2, 2.16), (2.5, 0.8, 0.26), "velvet_lilac")                              # the sign board over it
+    return _fin(b, "Shop", mat)
+
+
+def pets(mat):
+    """Pets: a lilac cat's head in a pink collar with a gold bell. A cat that is yours, not a customer's. The eyes
+    are drawn flat in the outline's ink."""
+    b, k = Builder(), Builder()
+    b.sphere((0, 0, 1.1), 1.12, "coat_lilac", segments=16, rings=10, scale=(1.0, 0.72, 0.84))      # the head
+    for sx in (-1, 1):
+        b.prism((sx * 0.62, 0.0, 1.86), [(-0.42, -0.2), (0.42, -0.2), (sx * 0.14, 0.62)], 0.5, "coat_lilac",
+                bevel=True, rot=X)                                                       # the ears
+        b.prism((sx * 0.62, -0.26, 1.9), [(-0.2, -0.1), (0.2, -0.1), (sx * 0.08, 0.32)], 0.06, "nose_bubblegum",
+                rot=X)
+        k.box((sx * 0.4, -0.8, 1.2), (0.2, 0.04, 0.36), "coat_inky", bevel=False)        # the eyes
+        b.cyl((sx * 0.72, -0.72, 0.86), 0.15, 0.05, "blush", segments=10, bevel=False, rot=X, scale=(1.3, 1, 1))
+    b.box((0, -0.82, 0.92), (0.2, 0.06, 0.13), "nose_bubblegum")                         # the nose
+    b.cyl((0, 0, 0.2), 0.8, 0.3, "bow_pink", segments=18, scale=(1.0, 0.72, 1.0))        # the collar
+    b.sphere((0, -0.62, 0.02), 0.27, "eye_gold", segments=12, rings=8)                   # and its bell
+    return _fin(b, "Pets", mat, ink=k)
+
+
+def crate(mat):
+    """The pet crate (crates.py, simplified): wooden slats in a lilac frame, a lilac lid with two cat ears and a
+    gold paw latch on the front."""
+    b = Builder()
+    w, d, h = 2.2, 1.7, 1.5
+    b.box((0, 0, h / 2), (w - 0.1, d - 0.1, h), "wood_light")                            # the slats
+    for z in (0.5, 1.0):
+        b.box((0, 0, z), (w - 0.06, d - 0.06, 0.07), "caramel_wood", bevel=False)        # the gaps between them
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            b.box((sx * (w / 2 - 0.12), sy * (d / 2 - 0.12), h / 2), (0.3, 0.3, h + 0.04), "pastel_lilac")   # posts
+    b.box((0, 0, 0.1), (w + 0.08, d + 0.08, 0.2), "pastel_lilac")                        # the foot rail
+    b.box((0, 0, h + 0.14), (w + 0.2, d + 0.2, 0.34), "velvet_lilac")                    # the lid
+    for sx in (-1, 1):                                                                   # its ears
+        b.prism((sx * 0.62, 0.1, h + 0.5), [(-0.36, -0.2), (0.36, -0.2), (sx * 0.1, 0.46)], 0.5, "velvet_lilac",
+                bevel=True, rot=X)
+    b.cyl((0, -d / 2 - 0.1, 1.02), 0.44, 0.12, "gold_mid", segments=18, rot=X)           # the latch
+    _paw(b, 0, -d / 2 - 0.18, 1.0, 0.15, "spa_cream", rot=Matrix.Rotation(math.radians(90), 3, "X"), depth=0.05)
+    return _fin(b, "Crate", mat)
+
+
+def bow(mat):
+    """The bow a washed cat wears: two fat pink loops, a knot and two tails."""
+    b = Builder()
+    for sx in (-1, 1):
+        b.sphere((sx * 0.84, 0, 0.5), 0.86, "bow_pink", segments=14, rings=8, scale=(1.0, 0.5, 0.8),
+                 rot=(math.radians(sx * -12), "Y"))                                      # the loops
+        b.sphere((sx * 0.9, -0.3, 0.5), 0.4, "nose_bubblegum", segments=12, rings=6, scale=(1.0, 0.42, 0.74),
+                 rot=(math.radians(sx * -12), "Y"))                                      # the fold inside each
+        b.box((sx * 0.4, 0.06, -0.46), (0.5, 0.26, 0.96), "bow_pink", rot=(math.radians(sx * 24), "Y"))   # the tails
+    b.box((0, -0.06, 0.5), (0.54, 0.62, 0.62), "nose_bubblegum")                         # the knot
+    _twinkle(b, 1.3, -0.44, 1.02, 0.26)
+    return _fin(b, "Bow", mat)
+
+
 BUILDERS = {                                       # name -> (builder, (yaw, pitch)[, outline px])
     "Index": (index, (22.0, 12.0)),
     "Settings": (settings, (-16.0, 8.0)),
@@ -494,6 +612,12 @@ BUILDERS = {                                       # name -> (builder, (yaw, pit
     "Pointer": (pointer, (-10.0, 6.0)),
     "Star": (star, (-14.0, 8.0)),
     "Station": (station, (-14.0, 10.0)),
+    "Quests": (quests, (-20.0, 12.0)),               # the menu buttons and cards of milestone 1 (#527)
+    "Shop": (shop, (-22.0, 14.0)),
+    "Pets": (pets, (-14.0, 8.0)),
+    "Crate": (crate, (-28.0, 20.0)),
+    "Bow": (bow, (-10.0, 6.0)),
+    "Helpers": (helpers, (-18.0, 10.0)),
     "Crown": (crown, TINY_VIEW, TINY_OUTLINE),       # the tiny pictures (#255)
     "Lock": (lock, TINY_VIEW, TINY_OUTLINE),
     "Mud": (mud, TINY_VIEW, TINY_OUTLINE),
