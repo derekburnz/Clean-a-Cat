@@ -45,6 +45,7 @@ local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local CrateViewRules = require(Shared:WaitForChild("CrateViewRules"))
 local IndexRules = require(Shared:WaitForChild("IndexRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
 local QueueViewRules = require(Shared:WaitForChild("QueueViewRules"))
 local RecapRules = require(Shared:WaitForChild("RecapRules"))
 local SettingsRules = require(Shared:WaitForChild("SettingsRules"))
@@ -57,6 +58,7 @@ local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
 local Motion = require(script:WaitForChild("Motion"))
 local PetsWindow = require(script:WaitForChild("PetsWindow"))
+local QuestBook = require(script:WaitForChild("QuestBook"))
 local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
 local SettingsCard = require(script:WaitForChild("Settings"))
@@ -270,6 +272,7 @@ function UI.init()
 	windows.Pets = PetsWindow.build(root) -- your pets, who has one, Fuse (switch petsWindow, issue 526)
 	windows.Crate = CrateWindow.build(root) -- the crate's chance list and Open crate (switch crateWindow, issue 526)
 	windows.Checkin = CheckinCard.build(root) -- the seven day check in card (switch checkinCard, issue 517)
+	windows.Quests = QuestBook.build(root) -- the quest book (switch quests, issue 516)
 	windows.Settings = SettingsCard.build(root, function(settings: SettingsRules.Settings)
 		for _, listener in settingsListeners do
 			listener(settings)
@@ -470,6 +473,16 @@ end
 
 function UI.onCheckinChances(fn: (kind: string) -> ())
 	CheckinCard.onChances(fn)
+end
+
+-- The quest book: the server's quests (QuestViewRules.clean), the weekly crate taken, and whether its chance list
+-- can open (QuestController).
+function UI.setQuests(entries: { QuestViewRules.Entry }, crateTaken: boolean, chances: boolean)
+	QuestBook.set(entries, crateTaken, chances)
+end
+
+function UI.onQuestChances(fn: (kind: string) -> ())
+	QuestBook.onChances(fn)
 end
 
 -- True while window `name` shows.

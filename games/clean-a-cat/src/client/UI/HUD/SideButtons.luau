@@ -13,6 +13,7 @@
 -- A button shows only while the game HUD (gameHud) and its own window's switch are on, so a switched-off window
 -- never has a way in. While any button shows, the starter Menu hides (UI/init). With a gamepad the row is reached
 -- with Roblox's UI navigation (the Select button); the buttons are linked left and right in order.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
@@ -32,6 +33,7 @@ type Spec = {
 	caption: string,
 	top: Color3,
 	bottom: Color3,
+	attribute: string?, -- also waits for this Player attribute to be true (the Quests button's 6:00, QuestsOpen)
 }
 
 -- In order, left to right. Tools, Helpers and Build join when their windows exist.
@@ -61,6 +63,15 @@ SideButtons.BUTTONS = {
 		bottom = Color3.fromHex("FFD97A"),
 	},
 	{
+		window = "Quests",
+		flag = "quests",
+		attribute = "QuestsOpen", -- QuestViewRules.OPEN_ATTRIBUTE: QuestService sets it at 6:00 of play
+		icon = "Check",
+		caption = "Quests",
+		top = Color3.fromHex("D6F0FF"),
+		bottom = Color3.fromHex("A9DCFB"),
+	},
+	{
 		window = "Settings",
 		flag = "settingsCard",
 		icon = "Settings",
@@ -83,6 +94,10 @@ local buttons: { Button } = {}
 local aside = false
 
 local function shown(spec: Spec): boolean
+	local attribute = spec.attribute
+	if attribute and Players.LocalPlayer:GetAttribute(attribute) ~= true then
+		return false
+	end
 	return LiveFlags.isOn(HUD_FLAG) and LiveFlags.isOn(spec.flag)
 end
 
@@ -111,6 +126,12 @@ function SideButtons.onChanged(fn: () -> ())
 	end
 	for _, name in names do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name):Connect(fn)
+	end
+	for _, spec in SideButtons.BUTTONS do
+		local attribute = spec.attribute
+		if attribute then
+			Players.LocalPlayer:GetAttributeChangedSignal(attribute):Connect(fn)
+		end
 	end
 end
 

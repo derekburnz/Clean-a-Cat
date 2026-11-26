@@ -232,7 +232,11 @@ local SCENES = {
 				indexEntries(),
 				{}
 			)
-			UI.setQueue(cards, QueueViewRules.headline(cards, 1), { [2] = true, [3] = true, [4] = true })
+			UI.setQueue(
+				cards,
+				QueueViewRules.headline(cards, 1),
+				{ [2] = true, [3] = true, [4] = true }
+			)
 			UI.open("Queue")
 		end,
 	},
@@ -261,7 +265,11 @@ local SCENES = {
 				{ [1] = 1, [2] = 2, [3] = 3, [4] = 4 },
 				{ [1] = heart(0.97), [2] = heart(0.6), [3] = heart(0.2), [4] = heart(0.8) }
 			)
-			UI.setQueue(cards, QueueViewRules.headline(cards, 1), { [2] = true, [3] = true, [4] = true })
+			UI.setQueue(
+				cards,
+				QueueViewRules.headline(cards, 1),
+				{ [2] = true, [3] = true, [4] = true }
+			)
 			UI.open("Queue")
 		end,
 	},
@@ -295,6 +303,100 @@ local SCENES = {
 			flag("crateWindow", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
 			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
+		end,
+	},
+	-- The quest book (issue 516, switch quests): one daily done, the weekly crate one of three, then a short week.
+	{
+		"Quests",
+		function()
+			flag("quests", true)
+			flag("crateWindow", true)
+			local QuestViewRules = UIShim.require("ReplicatedStorage.Shared.QuestViewRules")
+			UI.setQuests(
+				QuestViewRules.clean({
+					{
+						id = "wash5",
+						text = "Wash 5 customer cats",
+						goal = 5,
+						progress = 5,
+						coins = 50,
+						done = true,
+					},
+					{
+						id = "dirty2",
+						text = "Wash 2 cats at dirt level 3 or 4",
+						goal = 2,
+						progress = 1,
+						coins = 60,
+					},
+					{
+						id = "wStars20",
+						text = "Get 3 stars on 20 cats",
+						goal = 20,
+						progress = 20,
+						coins = 300,
+						weekly = true,
+						done = true,
+					},
+					{
+						id = "wSpecial2",
+						text = "Wash 2 special visitors' cats",
+						goal = 2,
+						progress = 1,
+						coins = 300,
+						weekly = true,
+					},
+					{
+						id = "wDirt4x10",
+						text = "Wash 10 cats at dirt level 4",
+						goal = 10,
+						progress = 4,
+						coins = 300,
+						weekly = true,
+					},
+				}),
+				false,
+				true
+			)
+			UI.open("Quests")
+		end,
+	},
+	{
+		"QuestsTaken",
+		function()
+			flag("quests", true)
+			local QuestViewRules = UIShim.require("ReplicatedStorage.Shared.QuestViewRules")
+			UI.setQuests(
+				QuestViewRules.clean({
+					{
+						id = "bow3",
+						text = "Put a bow on 3 cats",
+						goal = 3,
+						progress = 0,
+						coins = 40,
+					},
+					{
+						id = "early2",
+						text = "Take 2 cats early",
+						goal = 2,
+						progress = 2,
+						coins = 40,
+						done = true,
+					},
+					{
+						id = "wSpecial2",
+						text = "Wash 2 special visitors' cats",
+						goal = 2,
+						progress = 2,
+						coins = 300,
+						weekly = true,
+						done = true,
+					},
+				}),
+				true,
+				false
+			)
+			UI.open("Quests")
 		end,
 	},
 	-- The check in card (issue 517, switch checkinCard): the first day ready, then day 2's good crate with day 1
