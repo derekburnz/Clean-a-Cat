@@ -6,38 +6,26 @@ return function()
 	local Ledger = PromptFocus.Ledger
 
 	describe("PromptFocus.Ledger", function()
-		it("gives back what each owner had", function()
+		it("gives each held prompt its own reach back", function()
 			local ledger = Ledger.new()
-			expect(Ledger.mute(ledger, "buySoap", true)).to.equal(true)
-			expect(Ledger.mute(ledger, "ownedBrush", false)).to.equal(true)
-			expect(Ledger.mute(ledger, "buySoap", false)).to.equal(false) -- held already: keeps the first
+			expect(Ledger.mute(ledger, "buySoap", 8)).to.equal(true)
+			expect(Ledger.mute(ledger, "bell", 10)).to.equal(true)
+			expect(Ledger.mute(ledger, "buySoap", 0)).to.equal(false) -- held already: keeps the first reach
 			local back = Ledger.release(ledger)
-			expect(back.buySoap).to.equal(true)
-			expect(back.ownedBrush).to.equal(false)
+			expect(back.buySoap).to.equal(8)
+			expect(back.bell).to.equal(10)
 			expect(next(Ledger.release(ledger))).to.equal(nil)
 		end)
 
-		it("keeps an owner's change during the hold, not our own writes", function()
+		it("leaves a prompt with no reach alone", function()
 			local ledger = Ledger.new()
-			Ledger.mute(ledger, "buySoap", true)
-			-- our write switching it off is not the owner's
-			ledger.writing.buySoap = true
-			expect(Ledger.changed(ledger, "buySoap", false)).to.equal(false)
-			ledger.writing.buySoap = nil
-			-- the tool was bought meanwhile: its owner switched the prompt off
-			expect(Ledger.changed(ledger, "buySoap", false)).to.equal(true)
-			-- a build board's bell came on meanwhile
-			Ledger.mute(ledger, "bell", false)
-			expect(Ledger.changed(ledger, "bell", true)).to.equal(true)
-			local back = Ledger.release(ledger)
-			expect(back.buySoap).to.equal(false)
-			expect(back.bell).to.equal(true)
+			expect(Ledger.mute(ledger, "hidden", 0)).to.equal(false)
+			expect(next(Ledger.release(ledger))).to.equal(nil)
 		end)
 
-		it("ignores a prompt it never held", function()
-			local ledger = Ledger.new()
-			expect(Ledger.changed(ledger, "other", true)).to.equal(false)
-			expect(next(Ledger.release(ledger))).to.equal(nil)
+		it("keeps a reach its owner set during the hold", function()
+			expect(Ledger.restoreTo(8, 0)).to.equal(8)
+			expect(Ledger.restoreTo(8, 12)).to.equal(12)
 		end)
 	end)
 end
