@@ -21,7 +21,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        1.005,
        -0.7
       ],
@@ -66,8 +66,8 @@
      "CFrame": {
       "position": [
        -1.005,
-       0.7607,
-       0.5209
+       0.6641,
+       0.5467
       ],
       "orientation": [
        [
@@ -133,8 +133,8 @@
        "CFrame": {
         "position": [
          -1.005,
-         2.3182,
-         -0.6212
+         1.9319,
+         -0.5176
         ],
         "orientation": [
          [
@@ -166,7 +166,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        0.1,
        -0.7
       ],
@@ -216,7 +216,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        0.43,
        -0.7
       ],
@@ -266,7 +266,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        0.66,
        -0.7
       ],
@@ -316,7 +316,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.72,
+       -0.82,
        1.41,
        -0.7
       ],
@@ -365,7 +365,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.5432,
+       -0.6432,
        1.4105,
        -0.04
       ],
@@ -414,7 +414,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.06,
+       -0.16,
        1.41,
        0.4432
       ],
@@ -463,7 +463,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        1.4105,
        0.62
       ],
@@ -512,7 +512,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.26,
+       1.16,
        1.41,
        0.4432
       ],
@@ -561,7 +561,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.7432,
+       1.6432,
        1.4105,
        -0.04
       ],
@@ -610,7 +610,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.92,
+       1.82,
        1.41,
        -0.7
       ],
@@ -659,7 +659,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.7432,
+       1.6432,
        1.4105,
        -1.36
       ],
@@ -708,7 +708,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.26,
+       1.16,
        1.41,
        -1.8432
       ],
@@ -757,7 +757,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        1.4105,
        -2.02
       ],
@@ -806,7 +806,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.06,
+       -0.16,
        1.41,
        -1.8432
       ],
@@ -855,7 +855,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.5432,
+       -0.6432,
        1.4105,
        -1.36
       ],
@@ -904,7 +904,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        1.015,
        -2.1056
       ],
@@ -954,7 +954,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.685,
+       0.585,
        1.07,
        -2.1306
       ],
@@ -1004,7 +1004,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.515,
+       0.415,
        1.07,
        -2.1406
       ],
@@ -1054,7 +1054,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       0.6,
+       0.5,
        0.98,
        -2.1366
       ],
@@ -1103,7 +1103,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.8,
+       -1.5,
        0.025,
        -0.7
       ],
@@ -1127,7 +1127,7 @@
      }
     },
     "Size": [
-     1.3,
+     1.0,
      0.05,
      1.7
     ],
@@ -1152,7 +1152,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       -1.8,
+       -1.5,
        0.047,
        -0.7
       ],
@@ -1176,7 +1176,7 @@
      }
     },
     "Size": [
-     1.06,
+     0.78,
      0.07,
      1.46
     ],
@@ -1201,7 +1201,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.85,
+       1.7,
        0.06,
        1.75
       ],
@@ -1251,7 +1251,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.85,
+       1.7,
        2.255,
        1.75
       ],
@@ -1301,457 +1301,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.85,
-       4.45,
-       1.75
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.4,
-     0.4,
-     0.4
-    ],
-    "Color": [
-     0.7216,
-     0.5686,
-     0.2275
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": true,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Ball"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.5773,
-       4.45,
-       1.2155
-      ],
-      "orientation": [
-       [
-        -0.4545,
-        0.0,
-        -0.8908
-       ],
-       [
-        0.0,
-        -1.0,
-        0.0
-       ],
-       [
-        -0.8908,
-        0.0,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     1.2,
-     0.2,
-     0.2
-    ],
-    "Color": [
-     0.7216,
-     0.5686,
-     0.2275
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": true,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.2592,
-       4.37,
-       0.592
-      ],
-      "orientation": [
-       [
-        0.2408,
-        -0.3854,
-        -0.8908
-       ],
-       [
-        0.848,
-        0.5299,
-        0.0
-       ],
-       [
-        0.472,
-        -0.7554,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.22,
-     1.24,
-     1.24
-    ],
-    "Color": [
-     0.9294,
-     0.7333,
-     0.6314
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": true,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.2279,
-       4.2598,
-       0.5306
-      ],
-      "orientation": [
-       [
-        0.2408,
-        -0.3854,
-        -0.8908
-       ],
-       [
-        0.848,
-        0.5299,
-        0.0
-       ],
-       [
-        0.472,
-        -0.7554,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.08,
-     1.0,
-     1.0
-    ],
-    "Color": [
-     1.0,
-     0.9647,
-     0.9255
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": true,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.2177,
-       4.2237,
-       0.5106
-      ],
-      "orientation": [
-       [
-        0.2408,
-        -0.3854,
-        -0.8908
-       ],
-       [
-        0.848,
-        0.5299,
-        0.0
-       ],
-       [
-        0.472,
-        -0.7554,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.055,
-     0.14,
-     0.14
-    ],
-    "Color": [
-     0.2471,
-     0.6824,
-     0.949
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.1192,
-       4.3679,
-       0.3177
-      ],
-      "orientation": [
-       [
-        0.2408,
-        -0.3854,
-        -0.8908
-       ],
-       [
-        0.848,
-        0.5299,
-        0.0
-       ],
-       [
-        0.472,
-        -0.7554,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.044,
-     0.14,
-     0.14
-    ],
-    "Color": [
-     0.2471,
-     0.6824,
-     0.949
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.3197,
-       4.0923,
-       0.7105
-      ],
-      "orientation": [
-       [
-        0.2408,
-        -0.3854,
-        -0.8908
-       ],
-       [
-        0.848,
-        0.5299,
-        0.0
-       ],
-       [
-        0.472,
-        -0.7554,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.048,
-     0.14,
-     0.14
-    ],
-    "Color": [
-     0.2471,
-     0.6824,
-     0.949
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.9879,
-       4.2301,
-       0.6323
-      ],
-      "orientation": [
-       [
-        0.2408,
-        -0.3854,
-        -0.8908
-       ],
-       [
-        0.848,
-        0.5299,
-        0.0
-       ],
-       [
-        0.472,
-        -0.7554,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.052,
-     0.14,
-     0.14
-    ],
-    "Color": [
-     0.2471,
-     0.6824,
-     0.949
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.451,
-       4.2301,
-       0.396
-      ],
-      "orientation": [
-       [
-        0.2408,
-        -0.3854,
-        -0.8908
-       ],
-       [
-        0.848,
-        0.5299,
-        0.0
-       ],
-       [
-        0.472,
-        -0.7554,
-        0.4545
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.056,
-     0.14,
-     0.14
-    ],
-    "Color": [
-     0.2471,
-     0.6824,
-     0.949
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth",
-    "Shape": "Cylinder"
-   }
-  },
-  {
-   "name": "CleanACat_Station_WashStandJo",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       1.85,
+       1.7,
        1.75,
        1.75
       ],
@@ -1801,7 +1351,7 @@
     "CFrame": {
      "CFrame": {
       "position": [
-       1.85,
+       1.7,
        2.1,
        1.75
       ],
@@ -1857,7 +1407,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.6,
+         0.5,
          1.397,
          -0.7
         ],
@@ -1902,7 +1452,7 @@
        "CFrame": {
         "position": [
          -1.397,
-         0.6,
+         0.5,
          0.7
         ],
         "orientation": [
@@ -1936,7 +1486,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.85,
+         0.75,
          1.451,
          -1.68
         ],
@@ -1985,7 +1535,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.1,
+         0.0,
          1.451,
          -1.56
         ],
@@ -2034,7 +1584,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.55,
+         1.45,
          1.451,
          -0.4
         ],
@@ -2120,7 +1670,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.3794,
+         1.2794,
          1.504,
          -1.0635
         ],
@@ -2163,7 +1713,7 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -1.3794,
+         -1.2794,
          -1.504,
          1.0635
         ],
@@ -2207,7 +1757,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.1794,
+         -0.2794,
          1.502,
          -1.0635
         ],
@@ -2265,7 +1815,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.2056,
+         0.1056,
          1.5,
          0.0417
         ],
@@ -2323,7 +1873,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.6,
+         0.5,
          1.497,
          -1.62
         ],
@@ -2381,7 +1931,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.2022,
+         1.1022,
          1.545,
          -1.3688
         ],
@@ -2431,7 +1981,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.0156,
+         -0.1156,
          1.538,
          -1.3837
         ],
@@ -2481,7 +2031,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.1048,
+         -0.2048,
          1.531,
          -0.1086
         ],
@@ -2531,7 +2081,7 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.55,
+         1.45,
          1.524,
          -0.7
         ],
@@ -2604,6 +2154,522 @@
     }
    },
    "name": "CleanACat_Station_WashStandJo_Foam"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Station_WashStandJo/3"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.1282,
+         4.37,
+         0.5825
+        ],
+        "orientation": [
+         [
+          0.2331,
+          -0.373,
+          -0.8981
+         ],
+         [
+          0.848,
+          0.5299,
+          0.0
+         ],
+         [
+          0.4759,
+          -0.7616,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.22,
+       1.24,
+       1.24
+      ],
+      "Color": [
+       0.9294,
+       0.7333,
+       0.6314
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         -4.2462,
+         -1.4513,
+         0.7569
+        ],
+        "orientation": [
+         [
+          0.2331,
+          0.848,
+          0.4759
+         ],
+         [
+          -0.373,
+          0.5299,
+          -0.7616
+         ],
+         [
+          -0.8981,
+          0.0,
+          0.4399
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Station_WashStandJo/3"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.7,
+         4.45,
+         1.75
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4,
+       0.4,
+       0.4
+      ],
+      "Color": [
+       0.7216,
+       0.5686,
+       0.2275
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.4361,
+         4.45,
+         1.2112
+        ],
+        "orientation": [
+         [
+          -0.4399,
+          0.0,
+          -0.8981
+         ],
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          -0.8981,
+          0.0,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.2,
+       0.2,
+       0.2
+      ],
+      "Color": [
+       0.7216,
+       0.5686,
+       0.2275
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.0979,
+         4.2598,
+         0.5207
+        ],
+        "orientation": [
+         [
+          0.2331,
+          -0.373,
+          -0.8981
+         ],
+         [
+          0.848,
+          0.5299,
+          0.0
+         ],
+         [
+          0.4759,
+          -0.7616,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.08,
+       1.0,
+       1.0
+      ],
+      "Color": [
+       1.0,
+       0.9647,
+       0.9255
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.0897,
+         4.2301,
+         0.504
+        ],
+        "orientation": [
+         [
+          0.2331,
+          -0.373,
+          -0.8981
+         ],
+         [
+          0.848,
+          0.5299,
+          0.0
+         ],
+         [
+          0.4759,
+          -0.7616,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.04,
+       0.14,
+       0.14
+      ],
+      "Color": [
+       0.2471,
+       0.6824,
+       0.949
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.9927,
+         4.3679,
+         0.306
+        ],
+        "orientation": [
+         [
+          0.2331,
+          -0.373,
+          -0.8981
+         ],
+         [
+          0.848,
+          0.5299,
+          0.0
+         ],
+         [
+          0.4759,
+          -0.7616,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.044,
+       0.14,
+       0.14
+      ],
+      "Color": [
+       0.2471,
+       0.6824,
+       0.949
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.1867,
+         4.0923,
+         0.702
+        ],
+        "orientation": [
+         [
+          0.2331,
+          -0.373,
+          -0.8981
+         ],
+         [
+          0.848,
+          0.5299,
+          0.0
+         ],
+         [
+          0.4759,
+          -0.7616,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.048,
+       0.14,
+       0.14
+      ],
+      "Color": [
+       0.2471,
+       0.6824,
+       0.949
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.8562,
+         4.2301,
+         0.6184
+        ],
+        "orientation": [
+         [
+          0.2331,
+          -0.373,
+          -0.8981
+         ],
+         [
+          0.848,
+          0.5299,
+          0.0
+         ],
+         [
+          0.4759,
+          -0.7616,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.052,
+       0.14,
+       0.14
+      ],
+      "Color": [
+       0.2471,
+       0.6824,
+       0.949
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Station_WashStandJo_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.3232,
+         4.2301,
+         0.3896
+        ],
+        "orientation": [
+         [
+          0.2331,
+          -0.373,
+          -0.8981
+         ],
+         [
+          0.848,
+          0.5299,
+          0.0
+         ],
+         [
+          0.4759,
+          -0.7616,
+          0.4399
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.056,
+       0.14,
+       0.14
+      ],
+      "Color": [
+       0.2471,
+       0.6824,
+       0.949
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Station_WashStandJo_Decor"
   }
  ],
  "properties": {
