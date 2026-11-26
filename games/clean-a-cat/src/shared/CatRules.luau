@@ -53,8 +53,19 @@ CatRules.ROSTER = table.freeze({
 -- Index; a special visitor brings one now and then, and only the player can wash it. Their rarity is SPECIAL, which is
 -- not one of RARITIES (so the rolls, the chance board and the index never see it) but is in ALL_RARITIES, rarest.
 CatRules.SPECIAL = "Special"
-CatRules.SPECIAL_CATS =
-	table.freeze({ "Bathtile", "Sherbet", "Stardust", "Rosette", "Prism", "Jade" }) :: { string }
+-- Phoenix, Moonstag, Djinn and WhiteTiger ("White Tiger") joined with Model-Agent's PR 705 (issue 527).
+CatRules.SPECIAL_CATS = table.freeze({
+	"Bathtile",
+	"Sherbet",
+	"Stardust",
+	"Rosette",
+	"Prism",
+	"Jade",
+	"Phoenix",
+	"Moonstag",
+	"Djinn",
+	"WhiteTiger",
+}) :: { string }
 CatRules.ALL_RARITIES =
 	table.freeze({ "Common", "Uncommon", "Rare", "Epic", "Legendary", "Special" }) :: { Rarity }
 
