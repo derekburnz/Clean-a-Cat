@@ -124,6 +124,15 @@ local function show(root: Instance)
 	end
 end
 
+-- drop what was hidden and is now gone (a served customer's figure is destroyed with its carrier still hidden)
+local function forget()
+	for d in saved do
+		if not d:IsDescendantOf(game) then
+			saved[d] = nil
+		end
+	end
+end
+
 local function fade(root: Instance, seen: number)
 	for _, d in root:GetDescendants() do
 		if d:IsA("BasePart") or d:IsA("Decal") then
@@ -219,20 +228,21 @@ end
 CounterCrate.CRATE_SPOT_PREFIX = "SpotCounterCrate"
 CounterCrate.CRATE_SPOT_RANGE = 4 -- studs from the cat's spot
 
+-- the crate spots seen so far, collected by watch() as they stream in, so a crate never searches the whole world
+local crateSpots: { [Attachment]: boolean } = {}
+
 local function crateSpot(near: Vector3): CFrame?
 	local best: CFrame? = nil
 	local bestDistance = CounterCrate.CRATE_SPOT_RANGE
-	for _, d in Workspace:GetDescendants() do
-		if
-			d:IsA("Attachment")
-			and string.sub(d.Name, 1, #CounterCrate.CRATE_SPOT_PREFIX)
-				== CounterCrate.CRATE_SPOT_PREFIX
-		then
-			local at = (d :: Attachment).WorldCFrame
-			local distance = (at.Position - near).Magnitude
-			if distance < bestDistance then
-				best, bestDistance = at, distance
-			end
+	for spot in crateSpots do
+		if spot.Parent == nil then
+			crateSpots[spot] = nil
+			continue
+		end
+		local at = spot.WorldCFrame
+		local distance = (at.Position - near).Magnitude
+		if distance < bestDistance then
+			best, bestDistance = at, distance
 		end
 	end
 	return best
@@ -307,6 +317,7 @@ local function step()
 		if cat.Parent == nil or entry.figure.Parent == nil then
 			clean(entry)
 			entries[cat] = nil
+			forget()
 			continue
 		end
 		local setAt = cat:GetAttribute(CounterCrate.SET_AT)
@@ -405,6 +416,14 @@ local function step()
 end
 
 local function watch(instance: Instance)
+	if
+		instance:IsA("Attachment")
+		and string.sub(instance.Name, 1, #CounterCrate.CRATE_SPOT_PREFIX)
+			== CounterCrate.CRATE_SPOT_PREFIX
+	then
+		crateSpots[instance :: Attachment] = true
+		return
+	end
 	if not instance:IsA("Model") or instance.Name ~= CounterCrate.CAT_NAME then
 		return
 	end
@@ -444,6 +463,7 @@ local function watch(instance: Instance)
 			clean(entry)
 			show(cat)
 			entries[cat] = nil
+			forget()
 		end
 	end)
 	if stepping == nil then
