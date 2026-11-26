@@ -78,6 +78,9 @@ CounterCrate.READY_AT = "CounterReadyAt"
 CounterCrate.PACKED_NAME = "PackedCat"
 CounterCrate.SPOT_ATTRIBUTE = "CounterCrateSpot" -- Gameplay's set-down spot for the crate's pivot
 CounterCrate.REACH_ATTRIBUTE = "CounterReachAt" -- local, on the figure: CustomerMotion reaches the carrying arm
+-- local, on the figure: true while the carrier on their arm is hidden (set down, or none until a leave), so
+-- CustomerMotion lets the empty hand hang straight (Gameplay's CarryArmOut, issues 871 and 874)
+CounterCrate.EMPTY_HAND_ATTRIBUTE = "CarrierHidden"
 
 -- The steps as Gameplay's 2.4 s (CounterRules.SETTLE_SECONDS) splits them; a longer or shorter total scales them.
 CounterCrate.TOTAL = 2.4
@@ -268,6 +271,7 @@ local function settle(entry: Entry)
 	local carrier = carrierOf(entry.figure)
 	if carrier and carrier:FindFirstChild(CounterCrate.PACKED_NAME) == nil then
 		hide(carrier)
+		entry.figure:SetAttribute(CounterCrate.EMPTY_HAND_ATTRIBUTE, true)
 	end
 end
 
@@ -349,6 +353,7 @@ local function begin(entry: Entry, carrier: Model)
 	copy:PivotTo(if still then entry.crateTo :: CFrame else entry.crateFrom :: CFrame)
 	copy.Parent = folder()
 	hide(carrier)
+	entry.figure:SetAttribute(CounterCrate.EMPTY_HAND_ATTRIBUTE, true)
 	entry.crate = copy
 	entry.door = doorOf(copy)
 	if entry.door then
@@ -527,6 +532,7 @@ local function watch(instance: Instance)
 		carrier.ChildAdded:Connect(function(child)
 			if child.Name == CounterCrate.PACKED_NAME then
 				show(carrier :: Model)
+				entry.figure:SetAttribute(CounterCrate.EMPTY_HAND_ATTRIBUTE, nil)
 			end
 		end)
 	end
