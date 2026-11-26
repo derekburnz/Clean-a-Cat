@@ -63,6 +63,7 @@ local SIZES = {
 		chip = 24,
 		star = 24,
 		fuse = 48,
+		effect = 19,
 		slotH = 84,
 		pencil = 28, -- the pencil on a helper's picture: tap it to rename them
 		slotGap = 10,
@@ -88,6 +89,7 @@ local SIZES = {
 		chip = 22,
 		star = 22,
 		fuse = 46,
+		effect = 19,
 		slotH = 72,
 		pencil = 26,
 		slotGap = 4,
@@ -218,7 +220,9 @@ local function fuseHeight(s: Sizes): number
 end
 
 local function tileHeight(s: Sizes): number
-	return s.tileH - s.fuse + fuseHeight(s)
+	-- with petLines, room for the line that says what the pet gives (issue 927)
+	local extra = if LiveFlags.isOn(CrateViewRules.LINES_FLAG) then s.effect + 6 else 0
+	return s.tileH - s.fuse + fuseHeight(s) + extra
 end
 
 local function drawTile(
@@ -261,6 +265,19 @@ local function drawTile(
 	local lineList = list(line, true, 6)
 	lineList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	Kit.rarityChip(line, group.rarity, s.chip, 1, cellW - 8) -- never past the tile (issue 609)
+	if LiveFlags.isOn(CrateViewRules.LINES_FLAG) then
+		-- what it gives, true numbers at its stars: beside you your tips, beside a helper their pay (issue 927)
+		local effect = words("Gives", body, s.effect)
+		effect.LayoutOrder = 4
+		effect.FontFace = Kit.BODY_FACE
+		effect.TextColor3 = Kit.INK_SOFT
+		effect.Size = UDim2.new(1, -8, 0, s.effect + 2)
+		effect.Text = CrateViewRules.effectText(
+			CrateViewRules.boostText(group.kind, group.star),
+			LiveFlags.isOn
+		)
+		Kit.shrinkToFit(effect, s.effect)
+	end
 	-- the stars sit across the bottom of the picture, so a Legendary chip and three stars never crowd one line
 	local starRow = frame("StarRow", pic)
 	starRow.AnchorPoint = Vector2.new(0.5, 0.8)
@@ -289,7 +306,7 @@ local function drawTile(
 
 	if group.canFuse then
 		local fuse = Window.button("Fuse", "Fuse", body, SKY_TOP, SKY_BOTTOM)
-		fuse.LayoutOrder = 4
+		fuse.LayoutOrder = 5
 		fuse.Size = UDim2.new(1, -20, 0, fuseHeight(s))
 		fuse.TextSize = 22
 		fuse.ZIndex = 5

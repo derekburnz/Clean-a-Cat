@@ -360,6 +360,16 @@ local SCENES = {
 			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
 		end,
 	},
+	-- Each pet says what it gives (issue 927, switch petLines): "+5% tips or pay" on its chance row.
+	{
+		"CrateLines",
+		function()
+			flag("crateWindow", true)
+			flag("petLines", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
+		end,
+	},
 	-- The Robux crate rows (issue 514, switch crateShop): under Open crate, with the chance list beside them.
 	{
 		"CrateShop",
@@ -812,6 +822,25 @@ local SCENES = {
 		"Pets",
 		function()
 			flag("petsWindow", true)
+			UI.setPets({
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 2, kind = "Cozy", star = 1 },
+				{ id = 3, kind = "Cozy", star = 1 },
+				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+				{ id = 5, kind = "Pebble", star = 1 },
+				{ id = 6, kind = "Pebble", star = 1 },
+				{ id = 7, kind = "Nimbus", star = 3 },
+				{ id = 8, kind = "Scrubby", star = 1 },
+			}, { Jo = true })
+			UI.open("Pets")
+		end,
+	},
+	-- The same pets, each tile with its line of what it gives at its stars (issue 927, switch petLines).
+	{
+		"PetsLines",
+		function()
+			flag("petsWindow", true)
+			flag("petLines", true)
 			UI.setPets({
 				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
 				{ id = 2, kind = "Cozy", star = 1 },

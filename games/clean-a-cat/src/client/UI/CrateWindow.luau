@@ -235,7 +235,7 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 	-- under the pill on a narrow phone the full "+5% boost" ran into the chance (issue 836): it drops the word (the
 	-- rows that fit still say "boost", and a line under the grid would push the window off a large text phone); the
 	-- pill packs tighter if even that is too wide
-	local full = `{row.boost} boost`
+	local full = CrateViewRules.effectText(row.boost, LiveFlags.isOn) -- "+5% tips or pay" with petLines (issue 927)
 	local fits = besideName
 		or Kit.chipWidth(row.rarity) + 6 + measure(full, s.boost) + FIT_SLACK <= whoW
 	local chipRoom = if besideName then nil else whoW - 6 - measure(row.boost, s.boost) - FIT_SLACK

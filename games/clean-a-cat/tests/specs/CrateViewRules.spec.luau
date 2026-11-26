@@ -157,5 +157,18 @@ return function()
 				return -5
 			end)).to.equal(0)
 		end)
+
+		describe("CrateViewRules.effectText", function()
+			it("says what a pet gives with petLines, with its true boost", function()
+				local function on(flag: string): boolean
+					return flag == CrateViewRules.LINES_FLAG
+				end
+				expect(CrateViewRules.boostText("Cozy", 1)).to.equal("+5%")
+				expect(CrateViewRules.boostText("Koi", 2)).to.equal("+18%")
+				expect(CrateViewRules.boostText("Nimbus", 3)).to.equal("+40%")
+				expect(CrateViewRules.effectText("+5%", on)).to.equal("+5% tips or pay")
+				expect(CrateViewRules.effectText("+5%")).to.equal("+5% boost")
+			end)
+		end)
 	end)
 end
