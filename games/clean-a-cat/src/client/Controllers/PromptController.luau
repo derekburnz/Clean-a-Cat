@@ -11,17 +11,23 @@
 -- tap on the crate window bought the Pro Brush behind it). They come back as the last window closes. This holds with
 -- smallPrompts on or off.
 --
+-- No two pills stand on top of each other (bug hunt B7, issue 648): ten times a second each pill is measured on screen
+-- and Spa/PillLayout picks which show. A pill that wins (PillWins, the door's Take cat) comes first, then the nearest;
+-- one that would overlap a kept pill hides until they part and takes no tap meanwhile. Its key still works.
+--
 -- It sets the style on this device only, for every prompt in Workspace (the game's own: the opening, the spa and the
 -- boards make theirs there; Roblox's core prompts live elsewhere and are left alone) and every one added later.
 local Players = game:GetService("Players")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local TextService = game:GetService("TextService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local Kit = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Kit"))
 local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
+local PillLayout = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("PillLayout"))
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
 
 local FLAG = "smallPrompts"
@@ -31,6 +37,7 @@ local KEY = 28 -- real px: the key chip
 local PAD = 12 -- real px inside the pill, each side
 local GAP = 8 -- real px between the key chip and the words
 local SIDE = 0.6 -- the pill's own widths right of the thing's edge, so it never covers it
+local SETTLE_SECONDS = 0.1 -- how often overlapping pills are sorted out
 local GAMEPAD_NAMES: { [Enum.KeyCode]: string } = {
 	[Enum.KeyCode.ButtonA] = "A",
 	[Enum.KeyCode.ButtonB] = "B",
@@ -40,6 +47,7 @@ local GAMEPAD_NAMES: { [Enum.KeyCode]: string } = {
 	[Enum.KeyCode.ButtonR1] = "RB",
 	[Enum.KeyCode.ButtonL2] = "LT",
 	[Enum.KeyCode.DPadUp] = "Up",
+	[Enum.KeyCode.DPadDown] = "Down",
 }
 
 local PromptController = {}
@@ -202,6 +210,66 @@ local function show(prompt: ProximityPrompt, input: Enum.ProximityPromptInputTyp
 	end)
 end
 
+-- Where a pill stands on screen, as BillboardGui places it: beside the adornee's right edge as the camera sees it,
+-- moved by SizeOffset in its own sizes (up for a positive Y). Nil when it is behind the camera.
+local function measure(gui: BillboardGui, camera: Camera): (Vector2?, Vector3?)
+	local adornee = gui.Adornee
+	local right = camera.CFrame.RightVector
+	local at: Vector3
+	if adornee and adornee:IsA("BasePart") then
+		local part = adornee :: BasePart
+		local frame, size = part.CFrame, part.Size
+		local extent = math.abs(right:Dot(frame.RightVector)) * size.X / 2
+			+ math.abs(right:Dot(frame.UpVector)) * size.Y / 2
+			+ math.abs(right:Dot(frame.LookVector)) * size.Z / 2
+		at = part.Position + right * extent
+	elseif adornee and adornee:IsA("Attachment") then
+		at = (adornee :: Attachment).WorldPosition
+	else
+		return nil, nil
+	end
+	local point, onScreen = camera:WorldToViewportPoint(at)
+	if not onScreen then
+		return nil, nil
+	end
+	local width, height = gui.Size.X.Offset, gui.Size.Y.Offset
+	local step = gui.SizeOffset
+	return Vector2.new(point.X + step.X * width, point.Y - step.Y * height), at
+end
+
+local function settle()
+	local camera = Workspace.CurrentCamera
+	if camera == nil or next(drawn) == nil then
+		return
+	end
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
+	local from = if root and root:IsA("BasePart")
+		then (root :: BasePart).Position
+		else camera.CFrame.Position
+	local pills: { PillLayout.Pill<ProximityPrompt> } = {}
+	for prompt, gui in drawn do
+		local center, at = measure(gui, camera)
+		if center and at then
+			table.insert(pills, {
+				key = prompt,
+				center = center,
+				size = Vector2.new(gui.Size.X.Offset, gui.Size.Y.Offset),
+				wins = prompt:GetAttribute(PillLayout.WINS_ATTRIBUTE) == true,
+				distance = (at - from).Magnitude,
+			})
+		end
+	end
+	local kept = PillLayout.keep(pills)
+	for _, pill in pills do
+		local gui = drawn[pill.key]
+		local visible = kept[pill.key] == true
+		if gui and gui.Enabled ~= visible then
+			gui.Enabled = visible
+		end
+	end
+end
+
 function PromptController.Start()
 	UI.onWindowsChanged(function(open: boolean)
 		ProximityPromptService.Enabled = not open
@@ -233,6 +301,14 @@ function PromptController.Start()
 		end
 	)
 	ProximityPromptService.PromptHidden:Connect(hide)
+	local since = 0
+	RunService.Heartbeat:Connect(function(dt: number)
+		since += dt
+		if since >= SETTLE_SECONDS then
+			since = 0
+			settle()
+		end
+	end)
 	restyleAll()
 end
 
