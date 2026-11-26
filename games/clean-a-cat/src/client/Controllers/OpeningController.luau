@@ -36,6 +36,7 @@ local Carry = require(Client:WaitForChild("Effects"):WaitForChild("Carry"))
 local ControlHold = require(Client:WaitForChild("Spa"):WaitForChild("ControlHold"))
 local FloorTrail = require(Client:WaitForChild("Spa"):WaitForChild("FloorTrail"))
 local OpeningScene = require(Client:WaitForChild("Effects"):WaitForChild("OpeningScene"))
+local PromptFocus = require(Client:WaitForChild("Spa"):WaitForChild("PromptFocus"))
 local UI = require(Client:WaitForChild("UI"))
 local WashView = require(Client:WaitForChild("Spa"):WaitForChild("WashView"))
 
@@ -277,6 +278,11 @@ local function leadToTub()
 	tapTarget(spot, "Wash him", PLACE_REACH, CLICK_REACH.place, setDown)
 	spot.Parent = Workspace
 	placer = spot
+	-- with him in their arms, "Wash him" always wins over a board's prompt nearby (switch promptFocus, #540)
+	local wash = spot:FindFirstChildOfClass("ProximityPrompt")
+	if wash then
+		PromptFocus.claim(wash :: ProximityPrompt)
+	end
 end
 
 -- The player walks up to `target` (stopping PICK_STAND short of it) and turns to face it, then `onArrive`. Their
@@ -423,21 +429,62 @@ local function sayStarted()
 	)
 end
 
-local function play()
-	if handle ~= nil or boxState() ~= true or not LiveFlags.isOn(SudsRules.BOX_FLAG) then
+-- The early camera hold (issue #541): from the moment a new save's box is known until the scene starts, so the
+-- default camera never shows a frame behind the player first. The scene takes it over; if the scene never starts
+-- (the box goes, the switch is off), it gives the camera back, and after HOLD_SECONDS at the latest.
+local HOLD_SECONDS = 5
+local releaseHold: (() -> ())? = nil
+
+local function dropHold()
+	local release = releaseHold
+	releaseHold = nil
+	if release then
+		release()
+	end
+end
+
+local function holdEarly()
+	if
+		releaseHold ~= nil
+		or handle ~= nil
+		or boxState() ~= true
+		or not LiveFlags.isOn(SudsRules.BOX_FLAG)
+	then
 		return
 	end
+	local release = OpeningScene.holdCamera(plotLanding)
+	releaseHold = release
+	task.delay(HOLD_SECONDS, function()
+		if releaseHold == release then
+			dropHold()
+		end
+	end)
+end
+
+local function play()
+	if handle ~= nil then
+		return
+	end
+	if boxState() ~= true or not LiveFlags.isOn(SudsRules.BOX_FLAG) then
+		dropHold()
+		return
+	end
+	holdEarly()
 	local spot = plotLanding()
 	if spot == nil then
 		-- Off a plot the box lands in front of the player, so this one waits for the character.
 		local character = player.Character or player.CharacterAdded:Wait()
 		local root = character:WaitForChild("HumanoidRootPart", CHARACTER_WAIT)
 		if handle ~= nil or root == nil or not root:IsA("BasePart") or boxState() ~= true then
+			if handle == nil then
+				dropHold()
+			end
 			return
 		end
 		spot = landing(root :: BasePart, character)
 	end
 	handle = OpeningScene.play(spot :: CFrame, { shot = true, onTap = onTap })
+	releaseHold = nil -- the scene has the camera now
 	sayStarted()
 end
 
@@ -452,6 +499,7 @@ local function onBoxChanged()
 	end
 	local scene = handle
 	if scene == nil then
+		dropHold()
 		return
 	end
 	if state == false then

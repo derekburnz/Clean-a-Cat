@@ -53,7 +53,8 @@ Remotes.ServerToClient = {
 	-- is not built, stray is true for a stray (switch strays) that moves into the window once clean; kind is SudsRules.NAME
 	-- for the opening's kitten (switch sudsWash), who skips the bows; dirt is the cat's dirt level 1 to 4 (switch dirtLevels): the
 	-- client takes off the mud and tangle pieces above it
-	"CustomerQueue", -- (kinds: { string }, needs: { { string } }, dirt: { number }?)  the cats waiting at the door, front first, what each needs and, with dirtLevels on, each one's dirt level (switch customers)
+	"CustomerQueue", -- (kinds: { string }, needs: { { string } }, dirt: { number }?, hearts: { { number } }?)  the cats waiting at the door, front first, what each needs, with dirtLevels on each one's dirt level, and with heartBar on each one's heart bar { since, lasts, stops, paused } in server time (switch customers)
+	"CustomerLeft", -- (place: number, kind: string)  the customer at that place of the line as shown left with their cat, their heart bar empty (switch heartBar); sent before the line is redrawn
 	"Residents", -- (list: { { cat: string, bow: string? } })  the display window's cats, in order (switch strays)
 	"WindowTips", -- (coins: number, total: number)  window cats tipped; total is the save's coins (switch strays)
 	"CatIndex", -- (index: { [cat]: { washed: boolean, resident: boolean } })  the stamped cats (switch catIndex)

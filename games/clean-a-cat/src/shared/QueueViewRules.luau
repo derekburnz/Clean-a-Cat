@@ -5,6 +5,7 @@
 -- line and the picks (SpaService, SpaRules.pickNext); nothing here decides anything.
 local CatRules = require(script.Parent:WaitForChild("CatRules"))
 local DirtRules = require(script.Parent:WaitForChild("DirtRules"))
+local HeartRules = require(script.Parent:WaitForChild("HeartRules"))
 local IndexRules = require(script.Parent:WaitForChild("IndexRules"))
 local SpaRules = require(script.Parent:WaitForChild("SpaRules"))
 
@@ -25,6 +26,7 @@ export type Card = {
 	vip: boolean,
 	dirt: number?, -- 1 to 4 while the dirt levels are on (DirtRules); nil while they are off
 	steps: number, -- the steps this cat's wash shows (DirtRules.steps), the bow included
+	heart: HeartRules.Heart?, -- the heart bar while heartBar is on (HeartRules.fill draws it); nil while it is off
 }
 
 -- The line as the server sent it, kept only if it is a list of real cats no longer than the line can be.
@@ -93,6 +95,21 @@ function QueueViewRules.cleanDirt(raw: unknown): { [number]: number }
 	return out
 end
 
+-- Each waiting cat's heart bar, as the server sent it beside the line (switch heartBar), place by place.
+function QueueViewRules.cleanHearts(raw: unknown): { [number]: HeartRules.Heart }
+	local out: { [number]: HeartRules.Heart } = {}
+	if type(raw) ~= "table" then
+		return out
+	end
+	for place = 1, SpaRules.QUEUE_SIZE + 1 do -- the line plus a customer still at the door
+		local heart = HeartRules.cleanHeart((raw :: { [number]: unknown })[place])
+		if heart then
+			out[place] = heart
+		end
+	end
+	return out
+end
+
 function QueueViewRules.isVip(rarity: string): boolean
 	local from = table.find(CatRules.RARITIES, QueueViewRules.VIP_FROM) :: number
 	local at = table.find(CatRules.RARITIES, rarity)
@@ -107,7 +124,8 @@ function QueueViewRules.cards(
 	entries: { [string]: IndexRules.Entry },
 	built: { [string]: boolean },
 	rolled: { [number]: { CatRules.Need } }?,
-	dirt: { [number]: number }?
+	dirt: { [number]: number }?,
+	hearts: { [number]: HeartRules.Heart }?
 ): { Card }
 	local out: { Card } = {}
 	for place, cat in line do
@@ -133,6 +151,7 @@ function QueueViewRules.cards(
 			vip = QueueViewRules.isVip(rarity),
 			dirt = level,
 			steps = DirtRules.steps(needs),
+			heart = if hearts then hearts[place] else nil,
 		})
 	end
 	return out

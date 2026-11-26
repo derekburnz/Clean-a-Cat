@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="states" content="pets,crate,goodcrate">
+<title>Pets And Crates</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+/* Pets and crates (agreed design "Pets"; tuning.md section 10; issue 526 item 4). Pet pictures are placeholders made
+   from customer portraits until Model-Agent's pets exist; the names and chances follow tuning.md.
+   pets:  left, the pets you own as tiles with rarity, stars and how many you have. Three of the same show a Fuse
+          button (free, fixed result: star 2). Right, the slots: you and each worker, one pet each (two with the pass).
+          A worker's pet raises that worker's pay, yours raises your tips. Lou's slot shows locked until he is hired.
+   crate: the crate window. Every pet in it with its chance as a percentage and its boost, before anything is
+          opened or bought. Open uses a crate you earned. The Robux buttons show only where PolicyService allows paid
+          random items; where it does not, that row is not drawn at all and earned crates still open. Nothing here is
+          timed and nothing says "hurry".
+   goodcrate: the day 2 check in crate (tuning.md crate.good: Common 30, Uncommon 30, Rare 24, Epic 12, Legendary 4),
+          opened from the check in card's eye. Its own title and its own chances, so it is never confused with the
+          normal crate, and no Robux buttons at all: it is earned only, never sold. */
+.win.pets { width: 1100px; }
+.pets .body { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; }
+.col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.col h3 { margin: 0; font-family: var(--font-head); font-weight: 400; font-size: 24px; display: flex; justify-content: space-between; align-items: baseline; }
+.col h3 small { font-family: var(--font-body); font-weight: 800; font-size: 16px; color: var(--ink-soft); }
+.own { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pet { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 6px 10px; }
+.pet .pic { width: 88px; height: 88px; border-radius: 50%; border: 3px solid var(--ink); background: #fff4e6; overflow: hidden; display: grid; place-items: center; }
+.pet .pic img { width: 100%; height: 100%; object-fit: cover; }
+.pet .nm { font-family: var(--font-head); font-size: 19px; line-height: 1; }
+.pet .stars { color: #f0b400; font-size: 16px; letter-spacing: 1px; }
+.pet .cnt { position: absolute; top: 6px; right: 8px; font-family: var(--font-head); font-size: 20px; background: #fff; border: 3px solid var(--ink); border-radius: 12px; padding: 0 6px; }
+.pet .on { position: absolute; top: 6px; left: 8px; font-size: 26px; }
+.pet .btn { margin-top: 4px; }
+.slot { display: grid; grid-template-columns: 64px 1fr 64px; gap: 12px; align-items: center; padding: 8px 10px; }
+.slot .who { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--ink); overflow: hidden; background: #e8f7ff; }
+.slot .who img { width: 100%; height: 100%; object-fit: cover; }
+.slot .t { font-family: var(--font-head); font-size: 20px; line-height: 1.1; }
+.slot .d { font-weight: 800; font-size: 16px; color: var(--ink-soft); line-height: 1.15; }
+.slot .petin { width: 64px; height: 64px; border-radius: 16px; border: 3px dashed var(--ink-soft); display: grid; place-items: center; overflow: hidden; background: #fff; }
+.slot .petin img { width: 100%; height: 100%; object-fit: cover; }
+.slot .petin.full { border-style: solid; border-color: var(--ink); }
+.slot.locked { opacity: .55; }
+.slots { display: flex; flex-direction: column; gap: 10px; }
+
+/* crate */
+.win.crate { width: 1040px; }
+.crate .body { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: start; }
+.box { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 14px 10px; background: linear-gradient(#fff6d6, #fff); border: 3px solid #f0cf6b; border-radius: var(--radius-card); }
+.box > .ic { font-size: 110px; }
+.box .have { font-weight: 800; font-size: 17px; color: var(--ink-soft); }
+.rbx { width: 1em; height: 1em; flex: none; }
+.box .buy .rbx { width: 26px; height: 26px; }
+.box .buy { display: flex; flex-direction: column; gap: 8px; align-self: stretch; }
+.list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+.row { display: grid; grid-template-columns: 48px 1fr auto; column-gap: 10px; align-items: center; padding: 6px 10px; }
+.row .pic { width: 48px; height: 48px; border-radius: 50%; border: 3px solid var(--ink); overflow: hidden; background: #fff4e6; }
+.row .pic img { width: 100%; height: 100%; object-fit: cover; }
+.row .pic.new img { filter: brightness(0) opacity(.6); }
+.row .nm { font-family: var(--font-head); font-size: 19px; line-height: 1.05; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.row .nm .rar { height: 24px; font-size: 14px; padding: 0 9px; }
+.row .bo { font-weight: 800; font-size: 15px; color: var(--ink-soft); }
+.row .pc { font-family: var(--font-head); font-size: 26px; }
+.sum { margin-top: 8px; font-weight: 800; font-size: 16px; color: var(--ink-soft); }
+body[data-state="crate"] .win.pets, body[data-state="goodcrate"] .win.pets, body:not([data-state="crate"]):not([data-state="goodcrate"]) .win.crate { display: none !important; }
+body[data-state="goodcrate"] .policy-ok { display: none !important; }
+
+body.short .win.pets { width: 900px; }
+body.short .pets .body { gap: 12px; }
+body.short .col { gap: 6px; }
+body.short .col h3 { font-size: 20px; }
+body.short .col h3 small { display: none; }
+body.short .own { gap: 6px; }
+body.short .pet { flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 4px 6px; gap: 6px 6px; }
+body.short .pet .pic { width: 44px; height: 44px; }
+body.short .pet .nm { font-size: 16px; }
+body.short .pet .stars { display: none; }
+body.short .pet .cnt { font-size: 15px; top: 2px; right: 2px; padding: 0 4px; }
+body.short .pet .on { font-size: 18px; top: 2px; left: 2px; }
+body.short .pet .btn { margin-top: 0; }
+body.short .slot { grid-template-columns: 44px 1fr 44px; padding: 4px 8px; gap: 8px; }
+body.short .slot .who { width: 40px; height: 40px; }
+body.short .slot .petin { width: max(44px, calc(44px / var(--s))); height: max(44px, calc(44px / var(--s))); }
+body.short .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+body.short .slot { grid-template-columns: 1fr auto; }
+body.short .slot .who { display: none; }
+body.short .pet .cnt { position: static; order: 9; }
+body.short .pet .rar { display: none; }
+body.short .slot .d { display: none; }
+body.short .slot .t { font-size: 17px; }
+body.short .slot .d { font-size: 14px; }
+body.short .win.crate { width: 900px; }
+body.short .crate .body { grid-template-columns: 170px 1fr; gap: 12px; }
+body.short .box { padding: 6px; gap: 6px; }
+body.short .box > .ic { font-size: 34px; }
+body.short .box .have { font-size: 15px; }
+body.short .box .buy { gap: 4px; }
+body.short .box .buy .rbx { width: 20px; height: 20px; }
+body.short .list { gap: 4px 8px; }
+body.short .row { padding: 2px 8px; grid-template-columns: 34px 1fr auto; }
+body.short .row .pic { width: 34px; height: 34px; }
+body.short .row .nm { font-size: 16px; }
+body.short .row .bo { display: none; }
+body.short .row .pc { font-size: 20px; }
+body.short .sum { display: none; }
+</style>
+</head>
+<body class="no-move">
+<div id="screen"><div id="stage">
+  <div class="world spa" style="background-image:url(img/world-spa.jpg)"></div>
+  <div class="backdrop"></div>
+
+  <div class="win pets">
+    <div class="band">
+      <div class="badge"><i data-ic="paw"></i></div>
+      <span class="title outlined">Pets</span>
+    </div>
+    <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+    <div class="body">
+      <div class="col">
+        <h3>Your pets <small>Three the same fuse into a star up</small></h3>
+        <div class="own">
+          <div class="pet card"><span class="cnt">×3</span><div class="pic"><img src="img/portrait_Muffin_ink.png" alt=""></div><span class="nm">Muffin</span><span class="rar common">Common</span>
+            <button class="btn sky small" data-tap aria-label="Fuse three Muffin into a star 2 Muffin"><span class="lbl">Fuse</span></button></div>
+          <div class="pet card"><i data-ic="check" class="on"></i><div class="pic"><img src="img/portrait_Cotton_ink.png" alt=""></div><span class="nm">Cotton</span><span class="rar common">Common</span><span class="stars" aria-label="Star 1">★</span></div>
+          <div class="pet card"><i data-ic="check" class="on"></i><div class="pic"><img src="img/portrait_Marble_ink.png" alt=""></div><span class="nm">Marble</span><span class="rar rare">Rare</span><span class="stars" aria-label="Star 2">★★</span></div>
+          <div class="pet card"><span class="cnt">×2</span><div class="pic"><img src="img/portrait_Patches_ink.png" alt=""></div><span class="nm">Patches</span><span class="rar uncommon">Uncommon</span><span class="stars" aria-label="Star 1">★</span></div>
+          <div class="pet card"><div class="pic"><img src="img/portrait_Toffee_ink.png" alt=""></div><span class="nm">Toffee</span><span class="rar rare">Rare</span><span class="stars" aria-label="Star 1">★</span></div>
+          <div class="pet card"><div class="pic"><img src="img/portrait_Starcoat_ink.png" alt=""></div><span class="nm">Starcoat</span><span class="rar epic">Gift</span><span class="stars" aria-label="Star 1">★</span></div>
+        </div>
+      </div>
+      <div class="col">
+        <h3>Who has a pet <small>Tap a slot, then a pet</small></h3>
+        <div class="slots">
+        <div class="slot card"><div class="who"><img src="img/portrait_Helper_ink.png" alt=""></div><div><div class="t">You</div><div class="d">Cotton: tips +5%</div></div><div class="petin full"><img src="img/portrait_Cotton_ink.png" alt=""></div></div>
+        <div class="slot card"><div class="who"><img src="img/portrait_Staff_Jo_ink.png" alt=""></div><div><div class="t">Jo</div><div class="d">Marble ★★: pay +18%</div></div><div class="petin full"><img src="img/portrait_Marble_ink.png" alt=""></div></div>
+        <div class="slot card"><div class="who"><img src="img/portrait_Staff_Sam_ink.png" alt=""></div><div><div class="t">Sam</div><div class="d">No pet yet</div></div><button class="petin" data-tap aria-label="Give Sam a pet"><i data-ic="paw"></i></button></div>
+        <div class="slot card locked"><div class="who"><i data-ic="lock"></i></div><div><div class="t">Lou</div><div class="d">Comes when Lou is hired</div></div><div class="petin"><i data-ic="lock"></i></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="win crate">
+    <div class="band">
+      <div class="badge"><i data-ic="gift"></i></div>
+      <span class="title outlined ctitle">Crate</span>
+    </div>
+    <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+    <div class="body">
+      <div class="box">
+        <i data-ic="gift"></i>
+        <span class="have">You have 1 crate</span>
+        <button class="btn green" data-tap><span class="lbl">Open crate</span></button>
+        <div class="buy policy-ok">
+          <button class="btn sky small" data-tap><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">49 · Buy 1</span></button>
+          <button class="btn sky small" data-tap><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">199 · Buy 5</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="list">
+          <div class="row card"><div class="pic"><img src="img/portrait_Cotton_ink.png" alt=""></div><div><div class="nm">Cotton <span class="rar common">Common</span></div><div class="bo">+5%</div></div><span class="pc">25%</span></div>
+          <div class="row card"><div class="pic"><img src="img/portrait_Muffin_ink.png" alt=""></div><div><div class="nm">Muffin <span class="rar common">Common</span></div><div class="bo">+5%</div></div><span class="pc">25%</span></div>
+          <div class="row card"><div class="pic"><img src="img/portrait_Patches_ink.png" alt=""></div><div><div class="nm">Patches <span class="rar uncommon">Uncommon</span></div><div class="bo">+8%</div></div><span class="pc">13%</span></div>
+          <div class="row card"><div class="pic"><img src="img/portrait_Inky_ink.png" alt=""></div><div><div class="nm">Inky <span class="rar uncommon">Uncommon</span></div><div class="bo">+8%</div></div><span class="pc">13%</span></div>
+          <div class="row card"><div class="pic"><img src="img/portrait_Marble_ink.png" alt=""></div><div><div class="nm">Marble <span class="rar rare">Rare</span></div><div class="bo">+12%</div></div><span class="pc">8%</span></div>
+          <div class="row card"><div class="pic"><img src="img/portrait_Toffee_ink.png" alt=""></div><div><div class="nm">Toffee <span class="rar rare">Rare</span></div><div class="bo">+12%</div></div><span class="pc">8%</span></div>
+          <div class="row card"><div class="pic new"><img src="img/portrait_Smudge_ink.png" alt=""></div><div><div class="nm">Lilac Cloud <span class="rar epic">Epic</span></div><div class="bo">+16%</div></div><span class="pc">6%</span></div>
+          <div class="row card"><div class="pic new"><img src="img/portrait_Starcoat_ink.png" alt=""></div><div><div class="nm">Comet <span class="rar legend">Legendary</span></div><div class="bo">+20%</div></div><span class="pc">2%</span></div>
+        </div>
+        <div class="sum">The chances add up to 100%. A pet you already have counts towards a star up. Boosts are for a worker's pay or your tips.</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+<svg width="0" height="0" style="position:absolute"><symbol id="rbx" viewBox="0 0 64 64"><path d="M32 4l24 14v28L32 60 8 46V18z" fill="#5fc98b" stroke="#45226b" stroke-width="6" stroke-linejoin="round"/><path d="M32 20l11 6v12l-11 6-11-6V26z" fill="#fff" stroke="#45226b" stroke-width="4" stroke-linejoin="round"/></symbol></svg>
+<script>
+// the good crate: its own name and chances (tuning.md crate.good), earned only
+if (new URLSearchParams(location.search).get('state') === 'goodcrate') {
+  document.querySelector('.ctitle').textContent = 'Good crate';
+  document.querySelector('.box .have').textContent = 'Your day 2 gift';
+  const good = ['15%', '15%', '15%', '15%', '12%', '12%', '12%', '4%'];
+  document.querySelectorAll('.row .pc').forEach((e, i) => { e.textContent = good[i]; });
+}
+// the chances shown must add to 100
+const total = [...document.querySelectorAll('.row .pc')].reduce((n, e) => n + parseFloat(e.textContent), 0);
+if (Math.abs(total - 100) > 0.001) console.error('crate chances add to ' + total);
+</script>
+<script src="kit.js"></script>
+</body>
+</html>

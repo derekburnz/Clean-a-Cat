@@ -12,11 +12,15 @@ local BrushShine = require(script.Parent.Parent:WaitForChild("Effects"):WaitForC
 local CarryShared =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CarryShared"))
 local CatMotion = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CatMotion"))
+local CustomerLeave =
+	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerLeave"))
 local CustomerMotion =
 	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("CustomerMotion"))
 local Effects = require(script.Parent.Parent:WaitForChild("Effects"))
 local FoamDrop = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("FoamDrop"))
 local Sky = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("Sky"))
+local VisitorArrival =
+	require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("VisitorArrival"))
 
 local SCRUB_FLAG = "scrubEffects"
 local REVEAL_FLAG = "revealEffects"
@@ -262,6 +266,26 @@ function EffectsController.Start()
 				end
 				suds:PivotTo(base * CFrame.new(0, SUDS_HOP_HEIGHT * 4 * u * (1 - u), 0))
 			end)
+		end)
+	end
+
+	-- A special visitor walks in (issue #528): glow, gold sparkles at the feet and a star over their head while they
+	-- are in the spa. The Moment comes with Gameplay's special visitors (#510), behind its own switch.
+	if Moments.VisitorArrived then
+		Moments.VisitorArrived:Connect(function(visitor: any)
+			if typeof(visitor) == "Instance" and visitor:IsA("Model") then
+				VisitorArrival.arrive(visitor)
+			end
+		end)
+	end
+
+	-- A cat's heart bar ran out (issue #528): the customer turns and walks off with it, head low, and fades. The
+	-- Moment comes with Gameplay's heart bar (#543, townsfolk on) and passes the customer's figure.
+	if Moments.CatLeft then
+		Moments.CatLeft:Connect(function(figure: any)
+			if typeof(figure) == "Instance" and figure:IsA("Model") then
+				CustomerLeave.leave(figure)
+			end
 		end)
 	end
 

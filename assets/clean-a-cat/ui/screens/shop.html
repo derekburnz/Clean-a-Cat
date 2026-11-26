@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="states" content="passes,crates,starter">
+<title>Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=block" rel="stylesheet">
+<link rel="stylesheet" href="kit.css">
+<style>
+/* Shop in three screens (agreed design "Monetization", issue 526 item 8, tuning.md section 14). Tabs: Passes,
+   Crates, Starter Pack. Opened only from its HUD button, never by itself.
+   passes:  the five game passes as cards, each with what it does in plain words and its Robux price on the button.
+            An owned pass shows Owned and no button.
+   crates:  the crate with its chance list one tap away (the eye) and the same list shown in short on the card, then
+            Buy 1 for 49 and Buy 5 for 199. Earned crates open free from here too. The whole Robux row is drawn only
+            where PolicyService allows paid random items; elsewhere the tab shows the earned crates alone.
+   starter: the starter pack in short with its real countdown, opening the starter pack card (starterpack.html).
+            After the 72 hours, or once bought, this tab is gone.
+   No coins are sold, nothing says "hurry" or "only today", and every price shows before Roblox's own prompt. */
+.win.shop { width: 1080px; }
+.tabs { display: flex; gap: 10px; margin-bottom: 14px; }
+.tab { display: inline-flex; align-items: center; gap: 8px; min-height: max(48px, calc(44px / var(--s))); padding: 0 18px; border-radius: 16px; border: 3px solid var(--ink); background: #fff;
+  font-family: var(--font-head); font-size: 21px; color: var(--ink-soft); box-shadow: 0 3px 0 var(--ink); }
+.tab .ic { font-size: 26px; }
+.tab.on { background: var(--lilac); color: var(--ink); }
+.rbx { width: 1em; height: 1em; flex: none; }
+.btn .rbx { width: 28px; height: 28px; }
+.page { display: none; }
+body[data-state="passes"] .p-passes, body:not([data-state]) .p-passes, body[data-state="crates"] .p-crates, body[data-state="starter"] .p-starter { display: block; }
+
+.grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.pass { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 10px; text-align: center; }
+.pass .pic { width: 96px; height: 96px; border-radius: 20px; border: 3px solid var(--ink); display: grid; place-items: center; background: linear-gradient(#fff6d6, #ffe7a8); position: relative; }
+.pass .pic > .ic { font-size: 58px; }
+.pass .pic img { width: 100%; height: 100%; object-fit: contain; }
+.pass .pic .x2 { position: absolute; right: -8px; bottom: -8px; font-family: var(--font-head); font-size: 20px; background: #ff7eb0; color: #fff; border: 3px solid var(--ink); border-radius: 12px; padding: 0 6px; }
+.pass .nm { font-family: var(--font-head); font-size: 21px; line-height: 1.05; }
+.pass .what { font-weight: 800; font-size: 16px; color: var(--ink-soft); line-height: 1.15; flex: 1; }
+.pass .owned { font-family: var(--font-head); font-size: 20px; color: #2f9a63; display: inline-flex; align-items: center; gap: 6px; min-height: 48px; }
+
+.crate { display: grid; grid-template-columns: 200px 1fr; gap: 18px; align-items: center; padding: 14px; background: linear-gradient(#fff6d6, #fff); border: 3px solid #f0cf6b; border-radius: var(--radius-card); }
+.crate .art { position: relative; display: grid; place-items: center; }
+.crate .art > .ic { font-size: 130px; }
+.crate .eye { position: absolute; right: 4px; top: 4px; width: max(48px, calc(44px / var(--s))); height: max(48px, calc(44px / var(--s))); border-radius: 14px; border: 3px solid var(--ink); background: #fff; display: grid; place-items: center; font-size: 26px; box-shadow: 0 3px 0 var(--ink); }
+.crate .t { font-family: var(--font-head); font-size: 26px; }
+.crate .odds { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.crate .odds .rar { height: 30px; font-size: 16px; }
+.crate .have { font-weight: 800; font-size: 17px; color: var(--ink-soft); margin-bottom: 10px; }
+.crate .row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.starter { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; padding: 16px; background: linear-gradient(#ffe3f0, #fff); border: 3px solid #ff9cc6; border-radius: var(--radius-card); }
+.starter .t { font-family: var(--font-head); font-size: 28px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.starter .clock { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-head); font-size: 19px; background: #fff; border: 3px solid var(--ink); border-radius: 14px; padding: 2px 10px; }
+.starter .items { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-family: var(--font-head); font-size: 20px; flex-wrap: wrap; }
+.starter .items .i { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 3px solid var(--ink); border-radius: 14px; padding: 4px 10px; }
+.starter .items .ic { font-size: 26px; }
+.starter .price { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.starter .was { font-family: var(--font-head); font-size: 20px; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 4px; }
+.starter .save { font-family: var(--font-head); font-size: 18px; background: #ffd84d; border: 3px solid var(--ink); border-radius: 12px; padding: 0 8px; }
+
+body.short .win.shop { width: 900px; }
+body.short .tabs { position: absolute; z-index: 2; top: 6px; left: 210px; margin: 0; gap: 8px; }
+body.short .tab { min-height: max(44px, calc(44px / var(--s))); }
+body.short .tab { font-size: 18px; padding: 0 12px; }
+body.short .grid { grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+body.short .win.shop > .body { padding-top: 8px; padding-bottom: 8px; }
+body.short .tab .ic { display: none; }
+body.short .pass { display: grid; grid-template-columns: 48px 1fr auto; grid-template-areas: "pic nm act" "pic what act"; column-gap: 10px; row-gap: 0; text-align: left; padding: 1px 10px 1px 6px; align-items: center; }
+body.short .pass .pic { grid-area: pic; width: 40px; height: 40px; border-radius: 12px; }
+body.short .pass .pic > .ic { font-size: 30px; }
+body.short .pass .pic .x2 { font-size: 14px; right: -6px; bottom: -6px; padding: 0 4px; border-width: 2px; }
+body.short .pass .nm { grid-area: nm; font-size: 17px; }
+body.short .pass .what { grid-area: what; font-size: 14px; }
+body.short .pass .btn, body.short .pass .owned { grid-area: act; }
+body.short .pass .btn .rbx { width: 22px; height: 22px; }
+body.short .pass .owned { min-height: 44px; font-size: 17px; }
+body.short .crate { grid-template-columns: 120px 1fr; padding: 8px 12px; gap: 12px; }
+body.short .crate .art > .ic { font-size: 56px; }
+body.short .crate .art { gap: 6px; }
+body.short .crate .eye { position: static; }
+body.short .crate .t { font-size: 22px; }
+body.short .crate .odds { margin: 4px 0 6px; gap: 6px; }
+body.short .crate .odds .rar { height: 26px; font-size: 14px; }
+body.short .crate .have { font-size: 15px; margin-bottom: 6px; }
+body.short .starter { padding: 10px 12px; }
+body.short .starter .t { font-size: 22px; }
+body.short .starter .items { font-size: 16px; margin-top: 8px; }
+</style>
+</head>
+<body class="no-move">
+<div id="screen"><div id="stage">
+  <div class="world spa" style="background-image:url(img/world-spa.jpg)"></div>
+  <div class="backdrop"></div>
+
+  <div class="win shop">
+    <div class="band">
+      <div class="badge"><i data-ic="crown"></i></div>
+      <span class="title outlined">Shop</span>
+    </div>
+    <button class="xbtn" data-tap aria-label="Close"><i data-ic="x"></i></button>
+    <div class="body">
+      <div class="tabs" role="tablist">
+        <button class="tab t-passes" data-tap role="tab"><i data-ic="star"></i>Passes</button>
+        <button class="tab t-crates" data-tap role="tab"><i data-ic="gift"></i>Crates</button>
+        <button class="tab t-starter" data-tap role="tab"><i data-ic="sparkle"></i>Starter Pack</button>
+      </div>
+
+      <div class="page p-passes">
+        <div class="grid">
+          <div class="pass card"><div class="pic"><i data-ic="coin"></i><span class="x2">x2</span></div><span class="nm">2x Coins</span><span class="what">Double coins from your washes</span>
+            <button class="btn sky small" data-tap aria-label="Buy 2x Coins for 199 Robux"><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">199</span></button></div>
+          <div class="pass card"><div class="pic"><i data-ic="hammer"></i><span class="x2">x2</span></div><span class="nm">Second Builder</span><span class="what">Two builds at once</span>
+            <span class="owned"><i data-ic="check"></i>Owned</span></div>
+          <div class="pass card"><div class="pic"><img src="img/icon_Tool_SpongeGolden_ink.png" alt=""></div><span class="nm">Golden Sponge</span><span class="what">Wider scrub, +20% by hand</span>
+            <button class="btn sky small" data-tap aria-label="Buy Golden Sponge for 99 Robux"><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">99</span></button></div>
+          <div class="pass card"><div class="pic"><i data-ic="helper"></i></div><span class="nm">Lou</span><span class="what">Extra helper, own tub</span>
+            <button class="btn sky small" data-tap aria-label="Buy Lou for 249 Robux"><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">249</span></button></div>
+          <div class="pass card"><div class="pic"><i data-ic="paw"></i><span class="x2">+1</span></div><span class="nm">Pet Slot</span><span class="what">+1 pet for you and helpers</span>
+            <button class="btn sky small" data-tap aria-label="Buy Pet Slot for 249 Robux"><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">249</span></button></div>
+        </div>
+      </div>
+
+      <div class="page p-crates">
+        <div class="crate">
+          <div class="art"><i data-ic="gift"></i><button class="eye" data-tap aria-label="See every pet and its chance"><i data-ic="eye"></i></button></div>
+          <div>
+            <div class="t">Pet crate</div>
+            <div class="odds" aria-label="Chances by rarity">
+              <span class="rar common">Common 50%</span><span class="rar uncommon">Uncommon 26%</span><span class="rar rare">Rare 16%</span><span class="rar epic">Epic 6%</span><span class="rar legend">Legendary 2%</span>
+            </div>
+            <div class="have">You have 1 crate you earned. Quests and the check in give more.</div>
+            <div class="row">
+              <button class="btn green small" data-tap><span class="lbl">Open 1 free</span></button>
+              <button class="btn sky small policy-ok" data-tap aria-label="Buy 1 crate for 49 Robux"><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">49 · Buy 1</span></button>
+              <button class="btn sky small policy-ok" data-tap aria-label="Buy 5 crates for 199 Robux"><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">199 · Buy 5</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page p-starter">
+        <div class="starter">
+          <div>
+            <div class="t">Spa Starter Pack <span class="clock"><i data-ic="clock"></i>1d 20h left</span></div>
+            <div class="items"><span class="i"><img src="img/icon_Tool_SpongeGolden_ink.png" alt="" style="width:30px;height:30px">Golden Sponge</span>+<span class="i"><i data-ic="paw"></i>Pet Slot</span>+<span class="i"><i data-ic="coin"></i>2x Coins</span></div>
+          </div>
+          <div class="price">
+            <span class="was"><svg class="rbx"><use href="#rbx"/></svg><s>547</s></span>
+            <button class="btn green" data-tap aria-label="See the starter pack, 299 Robux"><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">299 · See pack</span></button>
+            <span class="save">Bundle · save 45%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+<svg width="0" height="0" style="position:absolute"><symbol id="rbx" viewBox="0 0 64 64"><path d="M32 4l24 14v28L32 60 8 46V18z" fill="#5fc98b" stroke="#45226b" stroke-width="6" stroke-linejoin="round"/><path d="M32 20l11 6v12l-11 6-11-6V26z" fill="#fff" stroke="#45226b" stroke-width="4" stroke-linejoin="round"/></symbol></svg>
+<script>
+const st = new URLSearchParams(location.search).get('state') || 'passes';
+document.querySelector('.t-' + st)?.classList.add('on');
+</script>
+<script src="kit.js"></script>
+</body>
+</html>

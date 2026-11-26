@@ -12,8 +12,9 @@
    last section), drawn after a pack window Derek liked in another game on 2026-11-25: three item cards joined by plus
    signs, each with its real shop price, a struck through total, one big green button with the pack price, and a HUD
    button that bobs with sparkles. Ideas only, our own look.
-   Contents (Planning's pick): Golden Sponge 99 + second pet slot 149 + 2x Coins 199 = 447; the pack is 249, labelled
-   "Bundle · save 44%" (never "SALE"). All three are real passes sold on their own at those prices, so the struck total
+   Contents (Derek's plan page pick, "Yes, these three cards for 299 Robux"): Golden Sponge 99 + second pet slot 249 (for
+   the player and every worker) + 2x Coins 199 = 547; the pack is 299, labelled "Bundle · save 45%". The struck total and
+   the saving are computed from the item prices (script at the bottom; the game does the same from tuning.md) (never "SALE"). All three are real passes sold on their own at those prices, so the struck total
    and the saving are true; keep the item prices unchanged while the pack shows. Nothing random and no coins in it.
    Shown only to a player who owns none of the three (for an owner the saving would be false); buying any one of them
    takes the pack away for that player. The window opens only when the player taps the HUD button.
@@ -145,27 +146,27 @@ body.short .starter .gift { font-size: 42px; }
             <div class="pic"><img src="img/icon_Tool_SpongeGolden_ink.png" alt=""></div>
             <span class="name">Golden Sponge</span>
             <span class="what">Wider scrub with gold bubbles</span>
-            <span class="each"><svg class="rbx"><use href="#rbx"/></svg>99</span>
+            <span class="each"><svg class="rbx"><use href="#rbx"/></svg><b class="p">99</b></span>
           </div>
           <span class="plus"><svg><use href="#plus"/></svg></span>
           <div class="item slot">
             <div class="pic"><i data-ic="paw" class="big"></i><span class="plus1">+1</span></div>
             <span class="name">Pet Slot</span>
-            <span class="what">One more pet beside you</span>
-            <span class="each"><svg class="rbx"><use href="#rbx"/></svg>149</span>
+            <span class="what">One more pet for you and each helper</span>
+            <span class="each"><svg class="rbx"><use href="#rbx"/></svg><b class="p">249</b></span>
           </div>
           <span class="plus"><svg><use href="#plus"/></svg></span>
           <div class="item tips">
             <div class="pic"><i data-ic="coin" class="big"></i><span class="x2">x2</span></div>
             <span class="name">2x Coins</span>
             <span class="what">Double coins from every cat, for good</span>
-            <span class="each"><svg class="rbx"><use href="#rbx"/></svg>199</span>
+            <span class="each"><svg class="rbx"><use href="#rbx"/></svg><b class="p">199</b></span>
           </div>
         </div>
         <div class="buyrow">
-          <span class="was" aria-label="Bought one by one: 447"><svg class="rbx"><use href="#rbx"/></svg><s>447</s></span>
-          <button class="btn green buy" data-tap><svg class="rbx"><use href="#rbx"/></svg><span class="lbl">249 · Get pack</span></button>
-          <span class="save">Bundle · save 44%</span>
+          <span class="was" aria-label="Bought one by one: 547"><svg class="rbx"><use href="#rbx"/></svg><s class="tot">547</s></span>
+          <button class="btn green buy" data-tap><svg class="rbx"><use href="#rbx"/></svg><span class="lbl"><b class="packprice">299</b> · Get pack</span></button>
+          <span class="save">Bundle · save 45%</span>
         </div>
         <span class="fine">Nothing random. All three are yours to keep.</span>
       </div>
@@ -186,6 +187,14 @@ body.short .starter .gift { font-size: 42px; }
 <script>
 // a window hides the thumbstick and jump button (as every window does); the HUD state keeps them
 if (new URLSearchParams(location.search).get('state') !== 'hud') document.body.classList.add('no-move');
+// the struck total and the saving come from the prices, never typed by hand
+{
+  const sum = [...document.querySelectorAll('.item .p')].reduce((n, b) => n + Number(b.textContent), 0);
+  const pack = Number(document.querySelector(".packprice").textContent);
+  document.querySelector('.tot').textContent = sum;
+  document.querySelector('.was').setAttribute('aria-label', `Bought one by one: ${sum}`);
+  document.querySelector('.save').textContent = `Bundle · save ${Math.floor((1 - pack / sum) * 100)}%`;
+}
 </script>
 <script src="kit.js"></script>
 </body>

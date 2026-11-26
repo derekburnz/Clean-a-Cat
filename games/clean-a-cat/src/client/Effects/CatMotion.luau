@@ -12,6 +12,8 @@
 --   CatMotion.shake(cat)            the shake-off (CatClean)
 --   CatMotion.wiggle(cat)           the happy wiggle (CatFluffed)
 -- Cats are found by the `Cat` attribute the generator sets on each cat Model, once it is inside Workspace.
+-- A waiting cat's mood follows the HeartFill number attribute (0 to 1) that Gameplay sets on the cat or on the
+-- customer holding its carrier (issue #528); a cat with none in reach has no mood.
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
@@ -37,6 +39,8 @@ type Rig = {
 	state: CatPose.State,
 	nextAt: number,
 	moved: boolean,
+	moodFrom: Instance?, -- the cat or the ancestor that carries HeartFill
+	moodLookAt: number, -- when to look for one again, while there is none
 }
 
 local CatMotion = {}
@@ -86,6 +90,45 @@ local function eyeParts(eye: PVInstance): { EyePart }
 	return list
 end
 
+local MOOD_ATTRIBUTE = "HeartFill"
+
+local function parentOf(instance: Instance): Instance?
+	local parent = instance.Parent
+	return if parent == nil or parent:IsA("Workspace") then nil else parent
+end
+
+local function hasFill(instance: Instance): boolean
+	return type(instance:GetAttribute(MOOD_ATTRIBUTE)) == "number"
+end
+
+-- The cat or nearest ancestor (a few steps up) that carries HeartFill, or nil.
+local function moodSource(model: Model): Instance?
+	return CatPose.moodHolder(model :: Instance, parentOf, hasFill)
+end
+
+local function moodOf(rig: Rig, now: number): number?
+	local from = rig.moodFrom
+	-- a cat carried away from its customer (to the tub) drops the customer's mood at once
+	if from and not CatPose.within(rig.model :: Instance, from, parentOf) then
+		from = nil
+		rig.moodFrom = nil
+	end
+	if from == nil then
+		-- Gameplay may set the attribute after the cat arrives, so look again, once a second
+		if now < rig.moodLookAt then
+			return nil
+		end
+		rig.moodLookAt = now + 1
+		from = moodSource(rig.model)
+		rig.moodFrom = from
+		if from == nil then
+			return nil
+		end
+	end
+	local fill = (from :: Instance):GetAttribute(MOOD_ATTRIBUTE)
+	return if type(fill) == "number" then fill else nil
+end
+
 local function attach(model: Model)
 	if rigs[model] or not model:IsDescendantOf(Workspace) then
 		return
@@ -131,6 +174,8 @@ local function attach(model: Model)
 		state = CatPose.newState(CatPose.hash(seedCount, 7), now),
 		nextAt = 0,
 		moved = false,
+		moodFrom = moodSource(model),
+		moodLookAt = now + 1,
 	}
 end
 
@@ -203,6 +248,10 @@ local function step()
 		end
 		rig.nextAt = now + interval
 		CatPose.sample(rig.pose, rig.state, now, reduced)
+		local fill = moodOf(rig, now)
+		if fill then
+			CatPose.applyMood(rig.pose, rig.state, now, fill, reduced)
+		end
 		apply(rig, rig.pose)
 		rig.moved = true
 	end

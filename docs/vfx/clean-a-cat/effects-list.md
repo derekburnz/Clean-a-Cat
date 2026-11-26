@@ -6,6 +6,9 @@ Owner: Motion-FX-Agent (vfx-animator). Every effect is a row here before it is b
 | Moment | Effect | Where it plays | Preset | Phone budget | Reduce Motion | Issue | Status |
 |---|---|---|---|---|---|---|---|
 | (dirty cat in view) | REMOVED 2026-11-25 (Derek: no green stink smoke anywhere; mud on the coat shows a dirty cat). Was stinkWisps, #122 | | | | | #122 | removed |
+| VisitorArrived | A special visitor walks in: a soft gold outline fades in and out over 2.6 s, three small gold bursts at the feet, then a small gold star bobs over their head for as long as they are in the spa. Nothing stops play | the visitor | revealSparkle (gold) | 1 Highlight (inside the budget), 1 BillboardGui, bursts 6 phone, 8 PC | the glow just shows and fades, the star sits still; less sparkle: one burst | #528 | built; plays once Gameplay adds VisitorArrived (#510) |
+| CatLeft | The customer turns round (0.45 s) and walks off with the cat at a calm 2.8 studs a second, head low, the cat in the leaving pose, fading over the last 0.7 s; gone in 2.6 s. A client copy, so the server's redraw cannot cut it short. No sad face or cloud | the customer | none (motion) | 1 copied figure, no particles | fades in place over 0.5 s | #528 | built; plays with the heart bar (#543, townsfolk on) |
+| (a menu button unlocks) | The button pops in from nothing with a small overshoot (0.45 s), a little wobble, and one gold twinkle at its top right corner. Once per button, the first time it unlocks | the HUD side button | none (UI) | 1 UIScale, 1 Frame, one frame loop for 0.75 s | the button just shows | #528 | built (Effects/Arrive); waits on the side buttons calling it |
 | ScrubMove | Foam bubbles at the sponge point, drift up and pop; rate follows drag speed | hit point on the cat | foamTrail | Rate 8, life 0.8 s | kept, halved | #4 | built, switch scrubEffects |
 | ScrubMove (Bubble Soap) | Wider ring of bubbles | hit point | foamTrailWide | Rate 8, life 0.8 s | kept, halved | #4 | planned |
 | ScrubMove (Golden Sponge pass) | Gold-tinted bubbles, same count | hit point | foamTrailGold | Rate 8, life 0.8 s | kept, halved | #4 | planned |
@@ -47,6 +50,8 @@ Part names from Model-Agent (issue #11): Body, Head, Eye1, Eye2, EarL, EarR, Tai
 | Ear twitch (one ear, 0.25 s, every 4 to 9 s) | always, within 60 studs | EarL, EarR | skipped | #6 | built, switch catMotion |
 | Shake-off (head roll and tail whip, 0.5 s) | CatClean | Head, Tail, EarL, EarR | skipped | #6 | built, switch catMotion |
 | Happy wiggle (tail wag, ears, head tilt, 0.8 s) | CatFluffed | Head, Tail, EarL, EarR | skipped | #7 | built, switch catMotion |
+| Waiting moods: happy (tail up, wider sway) while the heart bar is high, grumpy below half (ears out, head a little low, a tail lash every 1.6 s), leaving at empty (ears flat, head and tail down, no sway) | a waiting cat's HeartFill attribute (on the cat or its customer), refreshed by the server about once a second | Head, Tail, EarL, EarR | the pose is held, the lash stops | #528 | built, switch catMotion; shows once Gameplay sets HeartFill (#507) |
+| Customer impatience: a foot tap while standing, every 2.4 s at 40% down to 1 s near empty; head hangs as they leave | the customer's HeartFill attribute | LegL, Head | head kept low, no tap | #528 | built, switch customerWalk; shows once Gameplay sets HeartFill (#507) |
 
 Body never moves, so mud on the body stays put and the server can still move the whole cat. Phone budget: 4 cats at 30 updates a second, half rate past 30 studs, none past 60. Still to measure on a phone profile in Studio.
 

@@ -19,6 +19,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CatRules = require(Shared:WaitForChild("CatRules"))
+local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local WalkRules = require(Shared:WaitForChild("WalkRules"))
@@ -31,6 +32,8 @@ local TOWNSFOLK_FLAG = "townsfolk"
 local TOWNSFOLK = { "Sunny", "Mo", "Pip", "Rae", "Juno", "Bea", "Theo", "Kit" }
 local CUSTOMERS_FLAG = "customers"
 local FOLDER_NAME = "Customers"
+-- Each drawn customer's place in the line as shown, 1 at the front, for SetHearts and the client's CustomerLeft.
+local PLACE_ATTRIBUTE = "LinePlace"
 local CARRIER_ASSET = "CleanACat_Prop_Carrier"
 -- Model-Agent's carrier looks (#458), the same Attachments and attributes as the first: each customer keeps one by
 -- their look number, so a line is not three of one thing. A look not in the game yet falls back to the first.
@@ -310,6 +313,7 @@ local function buildTownsfolk(
 		end
 		local figure = townsfolkFor(lookNumbers[index] or index, kinds[index], start)
 		if figure then
+			figure:SetAttribute(PLACE_ATTRIBUTE, index)
 			if start ~= mat then
 				figure:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
 				figure:SetAttribute(WalkRules.AT_ATTRIBUTE, setOff)
@@ -361,6 +365,7 @@ local function buildFolder(
 				carrier.Parent = figure
 			end
 			figure:SetAttribute("CatKind", kinds[index])
+			figure:SetAttribute(PLACE_ATTRIBUTE, index)
 			figure.Parent = folder
 		end
 	end
@@ -435,6 +440,31 @@ function FigureService.picked(player: Player, index: number)
 	local line = LineLooks.picked(lines[player], index)
 	if line then
 		lines[player] = line
+	end
+end
+
+-- Called by SpaService when the customer at `index` of the line as shown leaves without being served (switch
+-- heartBar), before it resends the line: they and their look go, and everyone behind moves up.
+function FigureService.left(player: Player, index: number)
+	local line = LineLooks.left(lines[player], index)
+	if line then
+		lines[player] = line
+	end
+end
+
+-- Puts each waiting customer's heart bar, 0 to 1, on their figure as HeartFill (switch heartBar), in the order of the
+-- line as shown, for Motion-FX's mood poses and the client's grumpy moment. A figure not drawn yet gets it next time.
+function FigureService.setHearts(player: Player, fills: { number })
+	local _, folder = folderOf(player)
+	if folder == nil then
+		return
+	end
+	for _, figure in folder:GetChildren() do
+		local place = figure:GetAttribute(PLACE_ATTRIBUTE)
+		local fill = if type(place) == "number" then fills[place] else nil
+		if figure:GetAttribute(HeartRules.FILL_ATTRIBUTE) ~= fill then
+			figure:SetAttribute(HeartRules.FILL_ATTRIBUTE, fill)
+		end
 	end
 end
 
