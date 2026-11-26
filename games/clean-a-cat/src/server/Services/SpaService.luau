@@ -24,6 +24,7 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local BowRules = require(Shared:WaitForChild("BowRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
@@ -772,8 +773,22 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 	local bonus = if LiveFlags.isOn("builds")
 		then BuildRules.payBonus(save.stations, LiveFlags.isOn)
 		else 0
+	-- The bow tied by hand pays on top (switch bowTiers, tuning "then + bow + tip"); a worker's cat never comes here.
+	if LiveFlags.isOn(BowRules.FLAG) and cat.bow ~= nil then
+		local lines: RecapRules.Extra = extra or {}
+		local tier = BowRules.best(save.bows)
+		lines.bow = BowRules.bonus(tier)
+		lines.bowTier = tier
+		extra = lines
+	end
 	local more: RecapRules.Extra = extra or {}
-	coins = pay.coins + (more.speed or 0) + (more.early or 0) + (more.dirt or 0) + pay.tip + bonus
+	coins = pay.coins
+		+ (more.speed or 0)
+		+ (more.early or 0)
+		+ (more.dirt or 0)
+		+ (more.bow or 0)
+		+ pay.tip
+		+ bonus
 	save.coins += coins
 	WalletService.show(player)
 	local starsBefore = save.stars

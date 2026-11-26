@@ -32,6 +32,7 @@ local Icons =
 local ToolOnCat = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ToolOnCat"))
 local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local BowRules = require(Shared:WaitForChild("BowRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local DirtRules = require(Shared:WaitForChild("DirtRules"))
@@ -1639,7 +1640,15 @@ local function tapButton(v: Visit, input: InputObject): boolean
 	local bowId = part:GetAttribute("BowId")
 	if v.stage == "fluffed" and type(bowId) == "string" then
 		setStage(v, "styled")
-		if not BowFit.wear(cat.model, bowId, CAT_SCALE) then
+		-- the tier in use decides the look (switch bowTiers); the plain bow while that tier's model is not in the place
+		local tier = Players.LocalPlayer:GetAttribute(BowRules.ATTRIBUTE)
+		local look = if LiveFlags.isOn(BowRules.FLAG)
+			then BowRules.lookId(bowId, BowRules.clean(tier))
+			else bowId
+		if
+			not (look ~= bowId and BowFit.wear(cat.model, look, CAT_SCALE))
+			and not BowFit.wear(cat.model, bowId, CAT_SCALE)
+		then
 			cat.bow.Color = BOW_COLORS[bowId] or BUTTON_COLOR
 			show(cat.bow, true)
 			cat.bow.CanQuery = false

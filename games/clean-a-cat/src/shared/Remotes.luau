@@ -32,6 +32,8 @@ Remotes.ClientToServer = {
 	-- CarryRules.PLACE_REACH studs of their tub: the cat is in the tub and CatReady follows
 	-- Tools board (ToolService, behind toolsBoard).
 	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
+	"RequestBuyBow", -- (tier: one of BowRules.TIERS)  1 a second; switches toolsBoard and bowTiers on, save loaded, near
+	-- the board, the next tier in order, enough coins
 	-- Builds (BuildService, behind builds).
 	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board, slot free, order, coins
 	-- Funnel (FunnelService, behind onboardingFunnel).
