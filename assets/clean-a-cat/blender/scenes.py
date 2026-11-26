@@ -326,7 +326,7 @@ def mud_close(mat, out):
 def foam_close(mat, out):
     """#107: the foam up close: the wash tub and the bubble bath, each with a rinsed cat at the stations' scale."""
     allo = []
-    rows = (("Muffin", stations.build_tub, stations.SEAT_Z), ("Cotton", stations.build_bubble_bath, stations.BATH_SEAT))
+    rows = (("Muffin", stations.build_tub, stations.TUB_SEAT), ("Cotton", stations.build_bubble_bath, stations.BATH_SEAT))
     for i, (name, build, seat) in enumerate(rows):
         x = i * 6.0
         st = [o for o in build(mat) if not o.name.endswith("_Barrier")]
@@ -359,7 +359,7 @@ def _drop(objs, suffixes):
 def tub(mat, out):
     objs = stations.build_tub(mat)
     cat, _, _ = dirt.build_dirty("Smudge", mat, "sit")
-    _move(cat, (0, 0, stations.SEAT_Z), 1.5)            # the game shows the cat at ScaleTo(1.5) at the tub
+    _move(cat, (0, 0, stations.TUB_SEAT), 1.5)            # the game shows the cat at ScaleTo(1.5) at the tub
     sp = tools.build_sponge("CleanACat_Tool_Sponge", mat)
     _move(sp, (1.3, -1.3, 2.6))
     common.render_preview(objs + cat + sp, out, res=(900, 640), samples=24, azimuth=25, elevation=28)
@@ -449,7 +449,7 @@ def plot_views(mat, out_dir, stem="plot-real", date="2026-11-23", built=False):
 
     allo += fresh(place(stations.build_tub(mat), "SpotTub"))
     cat, _, _ = dirt.build_dirty("Smudge", mat, "sit")
-    allo += fresh(place(cat, "SpotTub", lift=stations.SEAT_Z, k=1.5))
+    allo += fresh(place(cat, "SpotTub", lift=stations.TUB_SEAT, k=1.5))
     allo += fresh(place([avatar(mat)], "SpotSpawn"))
     for i, name in enumerate(("Muffin", "Patches", "Toffee"), start=1):
         allo += fresh(place([avatar(mat)], f"SpotQueue{i}"))
@@ -657,7 +657,7 @@ def opening_board(mat, out_dir, only=""):
                               eye=(cx - 1.5, cy + 8.4, F + 5.0), target=(cx + 1.0, cy, F + 3.0), lens=30,
                               hide=("_Glass", "_Roof"))
     # d: in the tub, still muddy, in the close wash view: the sponge beside him and foam on one side
-    wash = fresh(at_spot(stray("sit"), "SpotTub", lift=stations.SEAT_Z, k=1.5))
+    wash = fresh(at_spot(stray("sit"), "SpotTub", lift=stations.TUB_SEAT, k=1.5))
     sp = tools.build_sponge("CleanACat_Tool_Sponge", mat)
     tx, ty = plot.SPOTS["SpotTub"][0], plot.SPOTS["SpotTub"][1]
     fresh(xf(sp, T(tx - 1.2, ty - 1.15, F + 4.15) @ R(-18, "Y") @ R(24, "Z")))
@@ -676,7 +676,7 @@ def opening_board(mat, out_dir, only=""):
     j = cats.joints(cats.spec_of("Suds"), "sit")
     turn_about(clean, HEAD, j["Head"], R(20, "Y") @ R(-8, "X"))
     turn_about(clean, ("_Tail",), j["Tail"], R(35, "Z"))
-    shake = fresh(at_spot(clean, "SpotTub", lift=stations.SEAT_Z, k=1.5))
+    shake = fresh(at_spot(clean, "SpotTub", lift=stations.TUB_SEAT, k=1.5))
     sb = Builder()
     X = (rad(90), "X")
     for x, z, r in ((-1.7, 4.9, 0.34), (1.6, 5.3, 0.3), (-1.2, 3.2, 0.22), (1.9, 3.6, 0.24), (0.2, 6.0, 0.26)):

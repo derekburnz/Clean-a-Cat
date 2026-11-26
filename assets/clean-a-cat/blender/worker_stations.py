@@ -6,9 +6,11 @@ worker and their own station, and the player keeps their own tub. So a wash stan
 player's bath: it is a round basin on a cream pedestal, smaller and plainer than the claw-foot tub and the pink
 bubble bath, and its colour is one neither bath has.
 
-  CleanACat_Station_WashStand<Name>     Jo, Sam and Lou. 4 studs wide and under 5 deep, so three stand side by side
-                                        on the 12 studs of back wall between the plot's two doors (Review-QA after
-                                        #577); pivot on the floor at the middle, front -Y here (-Z in Roblox).
+  CleanACat_Station_WashStand<Name>     Jo, Sam and Lou. Built 4 studs wide and under 5 deep, then grown K = 1.35
+                                        times (#878, Derek: "make the stations for the helpers bigger"): 5.4 wide,
+                                        6.6 deep, the rim 2.07 up. Sam and Lou stand on the back wall between the
+                                        plot's two doors, Jo right of the VIP door (plot.py); pivot on the floor at
+                                        the middle, front -Y here (-Z in Roblox).
       ..._Water, ..._Foam               the deep blue water (solid, as in the baths) and the lather on it
       ..._Decor                         what a player must never snag on, walk-through in the game: the head of Jo's
                                         shower up at head height, and the leaves and flowers of Lou's plant
@@ -37,7 +39,11 @@ from common import Builder
 from stations import STATION_CAT_SCALE, _barrier, _tris, foam_bubble, foam_mound, water_shine
 
 PREFIX = "CleanACat_Station_WashStand"
-SEAT = 1.2                        # the CatSeat: lower than the tub's 1.5, so a worker's hands come down onto the cat
+# Derek on dev, 2026-11-26 (#878): "make the stations for the helpers bigger". A stand is built at the sizes below
+# and then grown K times about its pivot (common.scale_object), so it keeps its exact look and the 1.5 scale cat sits
+# in a basin with room round it. The CatSeat follows the water, which still stands 0.27 up the cat.
+K = 1.35
+SEAT = 1.2                        # the CatSeat before the stand grows (seat() has the grown one): lower than the tub's
 WATER = SEAT + 0.27               # as far up the cat as in the tub (dirt.TUB_WATER at the 1.5 scale)
 RIM = WATER + 0.06                # the water stands just under the rim, as in both baths
 FLOOR = RIM - 0.21                # top of the solid bowl
@@ -232,7 +238,8 @@ def _foam():
     return b
 
 
-def build_stand(who, mat):
+def build_stand(who, mat, grow=True):
+    """`grow` False builds it at the old size (the store art, which Derek has signed off)."""
     name = PREFIX + who
     look = LOOKS[who]
     b = Builder()
@@ -250,15 +257,21 @@ def build_stand(who, mat):
         objs.append(_tris(top_b.finalize(name + "_Decor", mat)))
     if look["tall"] == "shelf":            # its boards are too thin to collide, so an invisible box keeps players out
         objs.append(_barrier(name, mat, (SHELF[0] - 0.04, SHELF[1] - 0.04, SHELF[2] - 0.1), (*SHELF_AT, 0.03)))
-    return objs
+    return [common.scale_object(ob, K) for ob in objs] if grow else objs
+
+
+def seat():
+    """The grown stand's CatSeat (x, y, z): over the basin's middle, 0.27 under the grown water."""
+    return (round(K * BX, 4), round(K * BY, 4), round(K * WATER - 0.27, 4))
 
 
 def stand_rbx_extras(who):
     name = PREFIX + who
-    spot = Matrix.Translation((WX, WY, 0.0)) @ Matrix.Rotation(-math.pi / 2, 4, "Z")     # a worker's front to the cat
-    return lambda: {"attachments": [(name, "CatSeat", Matrix.Translation((BX, BY, SEAT))),
+    # a worker's front to the cat, on the grown mat
+    spot = Matrix.Translation((K * WX, K * WY, 0.0)) @ Matrix.Rotation(-math.pi / 2, 4, "Z")
+    return lambda: {"attachments": [(name, "CatSeat", Matrix.Translation(seat())),
                                     (name, "WorkerSpot", spot)],
-                    "attributes": {"Worker": {"String": who}, "SeatHeight": {"Float64": SEAT},
+                    "attributes": {"Worker": {"String": who}, "SeatHeight": {"Float64": seat()[2]},
                                    "CatScale": {"Float64": STATION_CAT_SCALE}}}
 
 

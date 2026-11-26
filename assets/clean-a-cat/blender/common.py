@@ -589,6 +589,20 @@ def bake_transform(ob):
     PRIMS[ob.data.name] = [(k, M @ m, sw, extra) for k, m, sw, extra in PRIMS.get(ob.data.name, [])]
 
 
+def scale_object(ob, k):
+    """Grows a finished object `k` times about the asset's pivot (the world origin): its mesh, its pivot and the
+    Roblox parts logged for it (#878: the bigger tub and wash stands keep their exact look). Uniform only, so a box
+    stays a box and a ball a ball; flat outlines ("tri") log their points unscaled, so an object with one is refused."""
+    s = Matrix.Scale(k, 4)
+    ob.data.transform(s)
+    ob.location = ob.location * k
+    prims = PRIMS.get(ob.data.name)
+    if prims is not None:
+        assert all(kind != "tri" for kind, *_ in prims), ob.name + ": scale_object cannot scale flat outlines"
+        PRIMS[ob.data.name] = [(kind, s @ m, sw, extra) for kind, m, sw, extra in prims]
+    return ob
+
+
 def shade_smooth(ob):
     """Round shading for an object of balls (foam, bubbles): Roblox draws a Ball part smooth, so the previews and the
     store art should too. Returns the object."""

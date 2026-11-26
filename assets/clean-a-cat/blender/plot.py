@@ -26,8 +26,9 @@ faces there (the Attachment's LookVector), all at floor height:
                        Bath beside the tub and a little behind it, and the Pawdicure in front of the bath
   SpotVipDoor          the middle of the VIP Room door, facing into the room
   SpotGardenDoor       the middle of the back door, facing into the room: the Garden's three looks (garden.py)
-  SpotWorkerJo, Sam, Lou   the three workers' wash stands (worker_stations.py, #527), in a row along the back wall
-                       between the back door and the VIP Room door, 4 apart, facing the entrance side
+  SpotWorkerJo, Sam, Lou   the three workers' wash stands (worker_stations.py, #527): Sam and Lou on the back wall
+                           between the doors, Jo right of the VIP door (#878)
+                           facing the entrance side
   SpotBoard            the chance board (CleanACat_Prop_ChanceBoard stands here), beside the entrance, facing in
   SpotMascot           the mascot's bed (CleanACat_Prop_SudsBed, #297), just inside the entrance between the door
                        and the chance board, turned to look across the room at the tub
@@ -105,7 +106,7 @@ SPOTS = {
     "SpotWindow4": (-5.0, -14.2, WINDOW_SEAT + 0.03, 0.0),
     "SpotTipJar": (-2.4, -14.2, WINDOW_SEAT + 0.03, 0.0),
     "SpotSign": (13.5, ROOM_Y[0] - WALL_T, 6.0, 0.0),
-    "SpotBuilder": (13.0, 6.0, 0.0, 0.0),
+    "SpotBuilder": (16.0, 3.5, 0.0, 270.0),          # on the right wall facing the room; Jo's stand took (13, 6) (#878)
     "SpotStation2": (7.0, -1.0, 0.0, 0.0),
     "SpotStation3": (13.5, -1.0, 0.0, 0.0),
     "SpotStation4": (-15.2, 1.0, 0.0, 90.0),     # a quarter turn: these two stand against the side wall and face
@@ -116,11 +117,12 @@ SPOTS = {
     "SpotBox": (0.0, -30.6, 0.0, 0.0),
     "SpotBump": (7.5, -37.6, -0.28, 90.0),
     "SpotBoard": (13.5, ROOM_Y[0] + 1.4, 0.0, 180.0),
-    # The workers' wash stands (#527): the back wall between the doors is 12 studs (BACK_DOOR's end to VIP_DOOR's
-    # start) and a stand is 4 wide, so three stand side by side on it and neither door is crossed.
-    "SpotWorkerJo": (1.0, 6.5, 0.0, 0.0),
-    "SpotWorkerSam": (-3.0, 6.5, 0.0, 0.0),
-    "SpotWorkerLou": (-7.0, 6.5, 0.0, 0.0),
+    # The workers' wash stands (#527). Grown to 5.4 wide (#878), two fill the 12 studs of back wall between the doors
+    # (BACK_DOOR's end to VIP_DOOR's start) and Jo, the first hire, stands alone right of the VIP door, so each hire
+    # pad reads as its own spot (Design-Agent: pad centres at least 5 studs apart).
+    "SpotWorkerJo": (14.5, 6.5, 0.0, 0.0),
+    "SpotWorkerSam": (-6.0, 6.5, 0.0, 0.0),
+    "SpotWorkerLou": (0.0, 6.5, 0.0, 0.0),
     # The gift stand (#502): against the right wall near the front, between the towel rail and the corner plant, facing
     # across the room. Clear of the door, the queue, station 3 and the walk from the door to the stations.
     "SpotGift": (16.4, -11.8, 0.0, 270.0),
@@ -682,6 +684,8 @@ def _big_spots():
     move("SpotStation5", -grow_x)
     # along the right wall, both facing across the room: the gift stand clear of the display seat, the chance board
     # behind it (it stood by the entrance, where the seat is now)
+    s["SpotWorkerJo"] = (17.5, BIG_ROOM_Y[1] - 3.5, 0.0, 0.0)            # right of the VIP door (#878)
+    s["SpotBuilder"] = (BIG_ROOM_X[1] - 1.5, 5.0, 0.0, 270.0)            # on the right wall, clear of Jo's stand
     s["SpotGift"] = (BIG_ROOM_X[1] - 1.6, -9.5, 0.0, 270.0)
     s["SpotBoard"] = (BIG_ROOM_X[1] - 0.9, -3.5, 0.0, 270.0)
     d0, d1 = BIG_DISPLAY
