@@ -28,6 +28,8 @@ bell), Crate (the pet crate of crates.py, simplified: slats, a lilac lid with ca
 bow) and Helpers (Jo of the real staff, spa_staff.py, in the headband and the bib apron; the Helpers button used the
 older Helper picture, which has neither). Each was checked at 36 px.
 
+Staff (#929) replaced Helpers on the Helpers button: the staff's apron on its own, no face, so it is never one helper.
+
 Five tiny pictures came before those (#255), for the queue window: Crown (a VIP), Lock (a need whose station is not built) and
 the three needs Mud, Tangles and Wet. A need draws at about 18 to 21 px on a phone, inside a round white chip, and the
 lock badge at about 13 to 16 px. So each is one flat shape seen almost straight on (TINY_VIEW), in one colour that
@@ -593,6 +595,30 @@ def bow(mat):
     return _fin(b, "Bow", mat)
 
 
+def staff_apron(mat):
+    """Staff: the spa's work apron on its own, no person in it, so the Helpers button never looks like one helper
+    (Derek, 2026-11-26, issue 929: "switch the helper icon to be something other then the first helper"). The cream
+    bib apron of the uniform with its big pink paw, a pink neck loop, waistband, ties and hem, and a mint pocket with
+    the yellow sponge and the sky brush standing in it."""
+    b = Builder()
+    up = Matrix.Rotation(math.radians(90), 3, "X")
+    b.box((0, 0, 1.9), (1.24, 0.22, 1.0), "spa_cream")                                  # the bib
+    b.prism((0, 0, 0.78), [(-1.12, -0.72), (1.12, -0.72), (0.98, 0.72), (-0.98, 0.72)], 0.24, "spa_cream", bevel=True,
+            rot=X)                                                                      # the skirt, flared
+    b.box((0, 0, 1.46), (2.06, 0.32, 0.24), "nose_bubblegum")                           # the waistband
+    b.box((0, 0, 0.1), (2.3, 0.3, 0.2), "nose_bubblegum")                               # the hem
+    for sx in (-1, 1):
+        b.box((sx * 1.12, 0.02, 1.16), (0.17, 0.17, 0.62), "nose_bubblegum", rot=(math.radians(sx * -22), "Y"))  # ties
+        b.box((sx * 0.4, 0.0, 2.62), (0.18, 0.16, 0.58), "nose_bubblegum", rot=(math.radians(sx * -26), "Y"))  # loop
+    b.box((0, 0.0, 2.86), (0.56, 0.16, 0.18), "nose_bubblegum")
+    _paw(b, 0, -0.13, 1.88, 0.17, "nose_bubblegum", rot=up, depth=0.05)
+    b.box((0.42, -0.15, 0.66), (0.96, 0.1, 0.74), "spa_mint")                           # the pocket
+    b.box((0.22, -0.12, 1.06), (0.44, 0.12, 0.42), "pastel_butter")                     # the sponge in it
+    b.box((0.64, -0.12, 1.14), (0.15, 0.1, 0.62), "spa_sky")                            # and the brush
+    b.box((0.64, -0.12, 1.5), (0.38, 0.14, 0.2), "spa_sky")
+    return _fin(b, "Staff", mat)
+
+
 BUILDERS = {                                       # name -> (builder, (yaw, pitch)[, outline px])
     "Index": (index, (22.0, 12.0)),
     "Settings": (settings, (-16.0, 8.0)),
@@ -618,6 +644,7 @@ BUILDERS = {                                       # name -> (builder, (yaw, pit
     "Crate": (crate, (-28.0, 20.0)),
     "Bow": (bow, (-10.0, 6.0)),
     "Helpers": (helpers, (-18.0, 10.0)),
+    "Staff": (staff_apron, (-18.0, 10.0)),          # the Helpers button with no face (#929)
     "Crown": (crown, TINY_VIEW, TINY_OUTLINE),       # the tiny pictures (#255)
     "Lock": (lock, TINY_VIEW, TINY_OUTLINE),
     "Mud": (mud, TINY_VIEW, TINY_OUTLINE),
