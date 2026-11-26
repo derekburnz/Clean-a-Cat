@@ -88,6 +88,10 @@ done
 # The gate job, as CI runs it. Selene alone may be skipped when Roblox's API list cannot be fetched.
 cd "$GAME"
 # a cloud thread cannot generate Selene's Roblox list itself: take the one main's last check run kept
+# (taken again once a day, since GitHub makes a fresh one on every run)
+if [ -f roblox.yml ] && [ -n "$(find roblox.yml -mmin +1440 2>/dev/null)" ]; then
+	rm -f roblox.yml
+fi
 if ! [ -f roblox.yml ] && command -v gh >/dev/null 2>&1; then
 	RUN=$(gh run list -R derekburnz/Clean-a-Cat --workflow check --branch main --event push --status success -L 1 \
 		--json databaseId -q '.[0].databaseId' 2>/dev/null || true)
