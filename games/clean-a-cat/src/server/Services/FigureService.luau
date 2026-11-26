@@ -108,8 +108,9 @@ local shown: { [Player]: { number } } = {}
 -- Each player's newest in-place redraw (lineReuse): a redraw whose figure loading yielded stops if a newer one began,
 -- so two quick redraws never both walk in the same newcomer (Review-QA's note on #596).
 local redraws: { [Player]: number } = {}
--- Leavers' figures that wait LEAVE_LINGER before going (a customer who left; not one a worker took).
-local lingering: { [Instance]: boolean } = setmetatable({}, { __mode = "k" }) :: any
+-- Leavers' figures that wait LEAVE_LINGER before going (a customer who left; not one a worker took). A strong table
+-- (a weak one on Instances can lose an entry while the figure still exists); an entry goes when its figure does.
+local lingering: { [Instance]: boolean } = {}
 local warned: { [string]: boolean } = {}
 
 local function warnOnce(key: string, text: string)
@@ -628,8 +629,11 @@ function FigureService.left(player: Player, index: number, linger: boolean?)
 			then
 				-- never taken for a newcomer with the same look; its place stays, for CustomerLeft's copy on the device
 				figure:SetAttribute(LEAVING_ATTRIBUTE, true)
-				if linger then
+				if linger and not lingering[figure] then
 					lingering[figure] = true
+					figure.Destroying:Once(function()
+						lingering[figure] = nil
+					end)
 				end
 			end
 		end

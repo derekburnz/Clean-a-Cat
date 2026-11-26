@@ -114,14 +114,12 @@ local function drawKitten(
 	end
 end
 
--- A name and a second line on the model's Screen part's front.
 -- The signs of running room builds (the VIP Room's and the Garden's sites), whose second line counts down
--- (issue 679): each label with its title and the build's end (os.time). Weak keys, so a redrawn sign just drops out.
-local countdowns: { [TextLabel]: { title: string, endsAt: number } } = setmetatable(
-	{},
-	{ __mode = "k" }
-) :: any
+-- (issue 679): each label with its title and the build's end (os.time). A strong table: a weak one on Instances can
+-- lose a label that still exists (Review-QA, #679), so a sign drops out only when it is destroyed.
+local countdowns: { [TextLabel]: { title: string, endsAt: number } } = {}
 
+-- A name and a second line on the model's Screen part's front.
 local function label(pad: Model, title: string, line: string): TextLabel?
 	local screen = pad:FindFirstChild("Screen", true)
 	if screen == nil or not screen:IsA("BasePart") then
@@ -148,6 +146,9 @@ local function buildingLabel(model: Model, title: string, endsAt: number)
 	local text = label(model, title, BuildRules.leftText(endsAt - os.time()))
 	if text then
 		countdowns[text] = { title = title, endsAt = endsAt }
+		text.Destroying:Once(function()
+			countdowns[text] = nil
+		end)
 	end
 end
 
