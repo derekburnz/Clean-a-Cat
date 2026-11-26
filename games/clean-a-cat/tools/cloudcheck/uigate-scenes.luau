@@ -638,6 +638,29 @@ local SCENES = {
 			UI.showBubble(BubbleRules.get("longBuild"))
 		end,
 	},
+	-- Suds's tip above the compact recap strip (issue 626): the two never overlap.
+	{
+		"SudsBubbleStrip",
+		function()
+			hud(true)
+			flag("sudsBubble", true)
+			flag("recapCard", true)
+			UI.setCoins(1240)
+			UI.setWashStage(nil)
+			UI.showRecap({
+				cat = "Muffin",
+				rarity = "Common",
+				coins = 12,
+				tip = 2,
+				bonus = 0,
+				stars = 3,
+				isNew = false,
+				full = false,
+			})
+			local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
+			UI.showBubble(BubbleRules.get("quests"))
+		end,
+	},
 	-- After Suds's naming card, the tub still empty: customers wait at the door (the HUD's waiting faces).
 	{
 		"SudsBubbleQueue",

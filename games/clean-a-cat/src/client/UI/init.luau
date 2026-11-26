@@ -38,6 +38,7 @@
 local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
@@ -86,6 +87,7 @@ local MENU_HEIGHT_HUD = 0.36 -- with the game HUD on: clear of the touch thumbst
 
 local SETTINGS_FLAG = "settingsCard"
 local CONTROLS_FLAG = "windowsHideControls"
+local BUBBLE_OVER_STRIP = 10 -- real px between the compact recap strip and Suds's bubble above it (issue 626)
 
 local windows: { [string]: Frame } = {}
 local settingsListeners: { (SettingsRules.Settings) -> () } = {}
@@ -339,6 +341,13 @@ function UI.init()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. CONTROLS_FLAG)
 		:Connect(syncControls)
 	Recap.onShownChanged(syncControls)
+	local function liftBubble()
+		SudsBubble.setLift(Recap.stripTop() + if Recap.stripShown() then BUBBLE_OVER_STRIP else 0)
+	end
+	Recap.onShownChanged(liftBubble)
+	if Workspace.CurrentCamera then
+		Workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(liftBubble)
+	end
 
 	hud.Parent = playerGui
 end
@@ -452,6 +461,17 @@ end
 
 function UI.bubbleShown(): boolean
 	return SudsBubble.isShown()
+end
+
+-- True while something would sit over Suds's bubble: a window, the full recap card or the dim step. The compact
+-- recap strip does not count: the bubble sits above it (issue 626), so a tip need not wait for the strip's tap.
+function UI.bubbleBlocked(): boolean
+	for _, frame in windows do
+		if frame.Visible then
+			return true
+		end
+	end
+	return (Recap.isOpen() and not Recap.stripShown()) or Spotlight.isOn()
 end
 
 -- The bubble on screen now, or nil.
