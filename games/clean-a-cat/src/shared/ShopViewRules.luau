@@ -25,9 +25,9 @@ export type Card = {
 type Look = { icon: string, badge: string?, short: string? }
 
 local LOOK: { [string]: Look } = {
-	DoubleCoins = { icon = "Coins", badge = "x2", short = "Double coins from cats you wash" },
-	SecondBuilder = { icon = "Build", badge = "x2", short = "Build two things at once" },
-	GoldenSponge = { icon = "Sponge", short = "Best sponge, +20% coins" },
+	DoubleCoins = { icon = "Coins", badge = "x2", short = "Double coins on cats you wash by hand" },
+	SecondBuilder = { icon = "Build", badge = "x2", short = "Build a tub and a room at once" },
+	GoldenSponge = { icon = "Sponge", short = "Gold sponge, +20% on hand washes" },
 	Lou = { icon = "Helper", short = "A third helper with his own stand" },
 	SecondPetSlot = { icon = "Paw", badge = "+1", short = "A second pet for you and helpers" },
 }
