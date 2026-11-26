@@ -39,6 +39,7 @@ local SudsRules = require(Shared:WaitForChild("SudsRules"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WindowRules = require(Shared:WaitForChild("WindowRules"))
+local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local FigureService = require(script.Parent:WaitForChild("FigureService"))
@@ -910,6 +911,49 @@ local function tickHearts()
 		end
 		FigureService.setHearts(player, fills)
 	end
+end
+
+-- The waiting line as the player's workers see it (WorkerService, switch workers), front first: what each cat is, how
+-- dirty, and how much of its heart bar is left. Empty before the spa's first serve (the tutorial's line is the
+-- player's own) and before the save loads.
+function SpaService.lineForWorkers(player: Player): { WorkerRules.Entry }
+	local save = DataService.get(player)
+	local line = queues[player]
+	if save == nil or save.stars <= 0 or line == nil then
+		return {}
+	end
+	queueFor(player) -- keeps the orders in step with the line
+	local now = Workspace:GetServerTimeNow()
+	local out: { WorkerRules.Entry } = {}
+	for place, order in ordersFor(player) do
+		local kind = line[place]
+		if kind == nil then
+			break
+		end
+		local left = if LiveFlags.isOn(HeartRules.FLAG)
+			then HeartRules.left(order.since, order.lasts, now)
+			else 1
+		table.insert(out, { kind = kind, dirt = order.dirt, left = left })
+	end
+	return out
+end
+
+-- A worker takes the customer at `place` of the line (as lineForWorkers gave it): they leave the line with their cat,
+-- which goes to the worker's station, and the line refills. Returns the cat's kind and dirt level, or nil when there
+-- is nobody at that place any more.
+function SpaService.takeForWorker(player: Player, place: number, kind: string): (string?, number?)
+	local line = queues[player]
+	if line == nil or line[place] ~= kind then
+		return nil, nil
+	end
+	local order = ordersFor(player)[place]
+	local dirt = if order then order.dirt else 1
+	local shownPlace = place + (if carrying[player] == CarryRules.DOOR then 1 else 0)
+	table.remove(line, place)
+	table.remove(ordersFor(player), place)
+	FigureService.left(player, shownPlace)
+	sendQueue(player)
+	return kind, dirt
 end
 
 function SpaService.Init(_services: { [string]: any }) end
