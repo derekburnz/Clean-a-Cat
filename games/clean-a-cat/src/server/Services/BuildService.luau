@@ -16,6 +16,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
+local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local FinishRules = require(Shared:WaitForChild("FinishRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -114,6 +115,33 @@ local function logOffers(player: Player, state: BuildRules.State, now: number)
 	end
 end
 
+-- (tubBuilds with dirtLevels) coins back, once, for the old stations this save built (BuildRules.oldRefund).
+local function refundOld(player: Player)
+	local save = DataService.get(player)
+	if save == nil then
+		return
+	end
+	local coins, ids = BuildRules.oldRefund(save.stations, save.oldRefunds, LiveFlags.isOn)
+	if #ids == 0 then
+		return
+	end
+	for _, id in ids do
+		save.oldRefunds[id] = true
+	end
+	save.coins += coins
+	WalletService.show(player)
+	NetService.notice(player, `Your old stations made room for tubs: {coins} coins back`)
+	Telemetry.economy(
+		player,
+		"coins",
+		"source",
+		coins,
+		save.coins,
+		"Gameplay",
+		"old_station_refund"
+	)
+end
+
 local function finishFor(player: Player)
 	local save = DataService.get(player)
 	if save == nil then
@@ -130,6 +158,7 @@ local function finishFor(player: Player)
 		NetService.fire(player, "BuildFinished", id)
 		NetService.notice(player, `{BuildRules.ITEMS[id].name} is ready!`)
 	end
+	refundOld(player) -- an old station whose build was running when the switches went on
 	StationService.refresh(player)
 	send(player)
 end
@@ -259,7 +288,16 @@ function BuildService.Start()
 			send(player)
 			finishFor(player) -- builds that finished while the player was away wait for them here
 		end
+		refundOld(player)
 	end)
+	for _, flag in { BuildRules.TUBS_FLAG, DirtRules.FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(function()
+				for _, player in Players:GetPlayers() do
+					refundOld(player)
+				end
+			end)
+	end
 	for _, flag in { FLAG, FinishRules.FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()

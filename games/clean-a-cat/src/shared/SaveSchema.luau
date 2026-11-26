@@ -87,6 +87,7 @@ export type Save = {
 	tools: { [string]: boolean }, -- bought tools, for example BubbleSoap = true
 	stations: { [string]: boolean }, -- finished stations and rooms, for example BrushTable = true
 	builds: { [string]: Build }, -- running builds by slot name ("station", "room")
+	oldRefunds: { [string]: boolean }, -- builds whose coins were paid back once a switch took them out (BuildRules.oldRefund)
 	index: { [string]: IndexEntry }, -- Cat Index stamps by coat name
 	indexBonusPaid: boolean, -- the full set bonus, paid once
 	tutorialStep: number, -- the highest first session step reached (0 before the first scrub)
@@ -143,6 +144,7 @@ function SaveSchema.template(now: number): Save
 		tools = {},
 		stations = {},
 		builds = {},
+		oldRefunds = {},
 		index = {},
 		indexBonusPaid = false,
 		tutorialStep = 0,
