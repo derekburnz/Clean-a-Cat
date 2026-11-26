@@ -36,7 +36,7 @@ Each row of chances adds up to 100.
 
 ## 3. Pay for one cat
 
-Pay = base × stars × early pick × dirt, rounded, then + bow + tip. Friends then add their bonus on the total.
+Pay = base × stars × early pick × dirt, rounded, then + bow + tip + tub bonus (`build.tub.effect`, hand washes only). Friends then add their bonus on the total.
 
 | key | value | why | changed |
 |---|---|---|---|
@@ -115,7 +115,7 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.windowFromHud` | the Helpers window opens from its HUD button anywhere in the spa; Picks and Level up work from there with no distance check (the server still checks ownership, coins and the rate limit) | A menu choice is not a world interaction; a greyed button that asks the player to walk to a station would read as broken | 2026-11-26 |
 | `worker.count` | 3 at most (Jo, Sam and Lou) | | 2026-11-25 |
 | `worker.petCap` | a worker's pet boosts add together and are capped at +30% | Two pets with the second slot pass, star ups included, never pass the cap | 2026-11-25 |
-| `worker.doubleCoins` | 2x Coins and the Golden Sponge apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
+| `worker.doubleCoins` | 2x Coins, the Golden Sponge and the tub bonus apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
 
 Guard rail check (must stay true, with margin): a player washing Common level 2 cats by hand, with no passes, at the 8 s step target (4.5 steps, about 36 s a cat) at 2 stars makes about 0.49 coins a second ((10 × 1.25 × 1.1 + 4) / 36 s). Three level 5 workers at the pet cap take 75 × 0.8 = 60 s a cat and make 3 × (12.5 × 0.37 × 1.3 / 60 s) ≈ 0.30 coins a second, about 61% of the player. Any change to `worker.*`, `pet.*`, `pay.*` or `dirt.stepSeconds` re-runs this sum.
 
@@ -135,12 +135,12 @@ What each build does once finished (answers Gameplay-Engineer on issue 515, 2026
 
 | key | value | why | changed |
 |---|---|---|---|
-| `build.tub.effect` | each built tub adds one bench place (3 at the start, then 4, 5, 6), takes 1 s off `bench.refillSeconds` (6, 5, 4, 3) and adds +2 coins to every customer's pay | More cats to choose from and a busier spa as the player and workers wash more; the bench never goes past 6 | 2026-11-26 |
+| `build.tub.effect` | each built tub adds one bench place (3 at the start, then 4, 5, 6), takes 1 s off `bench.refillSeconds` (6, 5, 4, 3) and adds +2 coins to each cat the player washes by hand (after rounding, with the bow and tip; never to worker pay or the tip jar) | More cats to choose from and a busier spa as the player and workers wash more; the bench never goes past 6 | 2026-11-26 |
 | `build.VipRoom.effect` | special visitors come every 5 to 10 min of play instead of 8 to 15, and the room shows the player's washed special cats as residents | The rare visitors are the best part, so the big build brings more of them | 2026-11-26 |
-| `build.Garden.effect` | the tip jar holds 12 hours instead of 8 and fills 25% faster; the player's and workers' pets play there | The longest build pays off the next morning, the day 2 reason | 2026-11-26 |
+| `build.Garden.effect` | the tip jar (`jar.cap`, `jar.rate` in section 13) holds 12 hours instead of 8 and fills 25% faster (30 → 37.5 coins an hour per hired worker); the player's and workers' pets play there | The longest build pays off the next morning, the day 2 reason | 2026-11-26 |
 | `build.oldStations` | Brush Table, Dryer, Bubble Bath and Pawdicure leave the Build board while `dirtLevels` is on (every step is in from the start); with it off they stay as they are | No build that is only a hidden pay bonus | 2026-11-26 |
 
-`bench.size` above becomes 3 plus one per built tub. The guard rail in section 7 holds: tubs add bench places, not washers.
+`bench.size` above becomes 3 plus one per built tub. `bench.tutorialSize` wins until the tutorial ends; only then does `bench.size` apply (a first-session change, so behind its own switch, rule 16). The guard rail in section 7 holds: tubs add bench places, not washers.
 
 ## 9. Special visitors
 
