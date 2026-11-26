@@ -9,9 +9,13 @@
 --   HelpersWindow.onLevel(fn)          fn(id) when Level up is pressed
 --   HelpersWindow.onRename(fn)         fn(id) when Rename is pressed
 --   HelpersWindow.onPass(fn)           fn() when Lou's See the pass is pressed
+--   HelpersWindow.setPets(pets)        the player's pets (CrateRules.Pet list), for the pet box on each hired row
+--   HelpersWindow.onPet(fn)            fn(id) when a helper's pet box is pressed (UI opens Pets with their slot picked)
 --
 -- One row per helper: their round picture, name and level, then Takes: <which waiting cat first> (tap to change),
--- and Level up with its coins; a pencil on the picture renames them. A helper not hired yet shows their price, paid at their pad by
+-- and Level up with its coins; a pencil on the picture renames them. With the switch helperPets (issue 929) a hired
+-- row starts its buttons with a pet box: their pet's portrait, or a paw when they have none; pets are given there, not
+-- at a prompt in the world. A helper not hired yet shows their price, paid at their pad by
 -- the tubs (hiring stays there, so the player sees where they will work); Lou says he comes with his pass. The
 -- buttons ask; the row changes only when the server's WorkerLevel_<id> and WorkerMode_<id> come back. UI never
 -- fires remotes: HelpersController asks the server.
@@ -20,12 +24,14 @@ local TextService = game:GetService("TextService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local HelperViewRules = require(Shared:WaitForChild("HelperViewRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
+local Portraits = require(script.Parent:WaitForChild("Portraits"))
 local Window = require(script.Parent:WaitForChild("Window"))
 
 local HelpersWindow = {}
@@ -35,9 +41,10 @@ local SOFT_TOP, SOFT_BOTTOM = Color3.fromHex("FFF6EC"), Color3.fromHex("ECDCCA")
 local GOLD_TOP, GOLD_BOTTOM = Color3.fromHex("FFE9A8"), Color3.fromHex("FFC94D")
 local WHO_FILL = Color3.fromHex("E8F7FF")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
-local SHORT_SHIFT = 8 -- design px below the middle on a short screen
+local SHORT_SHIFT = 22 -- design px below the middle on a short screen: the X clears the coin pill (issue 873)
 local MIN_TAP = 44 -- real px
 local BUTTON_PAD = 28 -- design px of face beside a button's words
+local BUTTON_GAP = 16 -- design px between a row's buttons, so Takes and Level up never read as one (issue 929)
 
 -- Sizes in design pixels: full, then compact for a short screen (a phone held sideways).
 local SIZES = {
@@ -89,6 +96,8 @@ local modeListeners: { (id: string) -> () } = {}
 local levelListeners: { (id: string) -> () } = {}
 local renameListeners: { (id: string) -> () } = {}
 local passListeners: { () -> () } = {}
+local petListeners: { (id: string) -> () } = {}
+local pets: { CrateRules.Pet } = {}
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -180,7 +189,7 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 	whoIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	whoIcon.Position = UDim2.fromScale(0.5, 0.5)
 	whoIcon.Size = UDim2.fromScale(0.7, 0.7)
-	Icons.draw(if row.hired then "Helpers" elseif row.pass then "Star" else "Coins", whoIcon)
+	Icons.draw(if row.hired then "Helper" elseif row.pass then "Star" else "Coins", whoIcon)
 	local id = row.id
 	if row.hired and canRename then
 		-- the round picture is the Rename button, with a pencil on it, as in the Pets window (issue 487)
@@ -218,9 +227,49 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 	rightList.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	rightList.VerticalAlignment = Enum.VerticalAlignment.Center
 	rightList.SortOrder = Enum.SortOrder.LayoutOrder
-	rightList.Padding = UDim.new(0, 8)
+	rightList.Padding = UDim.new(0, BUTTON_GAP)
 	rightList.Parent = right
 	local used = 0
+	if
+		row.hired
+		and LiveFlags.isOn(HelperViewRules.PETS_FLAG)
+		and LiveFlags.isOn(CrateRules.FLAG)
+	then
+		-- the pet box: their pet, or a paw; a tap opens Pets with this helper's slot picked
+		local pet = HelperViewRules.petOf(id, pets)
+		local box = frame("Pet", right)
+		box.LayoutOrder = 0
+		box.Size = UDim2.fromOffset(buttonH, buttonH)
+		box.BackgroundTransparency = 0
+		box.BackgroundColor3 = Kit.WHITE
+		Kit.corner(box, UDim.new(0, 14))
+		local boxEdge = Kit.stroke(box, 3)
+		boxEdge.Color = if pet then Kit.INK else Kit.INK_SOFT
+		if pet then
+			Portraits.draw(pet.kind, CrateRules.rarityOf(pet.kind) or "Common", box, true)
+		else
+			local paw = frame("Icon", box)
+			paw.AnchorPoint = Vector2.new(0.5, 0.5)
+			paw.Position = UDim2.fromScale(0.5, 0.5)
+			paw.Size = UDim2.fromScale(0.6, 0.6)
+			Icons.draw("Paw", paw, true)
+		end
+		local tap = Instance.new("TextButton")
+		tap.Name = "Tap"
+		tap.Text = ""
+		tap.BackgroundTransparency = 1
+		tap.Size = UDim2.fromScale(1, 1)
+		tap.ZIndex = 4
+		tap:SetAttribute(
+			"Says",
+			if pet then `{row.name}'s pet {pet.kind}. Tap to change` else `Give {row.name} a pet`
+		)
+		tap.Parent = box
+		tap.Activated:Connect(function()
+			tell(petListeners, id)
+		end)
+		used += buttonH + BUTTON_GAP
+	end
 	if row.hired then
 		local mode =
 			Window.button("Mode", HelperViewRules.modeText(row), right, SOFT_TOP, SOFT_BOTTOM)
@@ -235,7 +284,7 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 		mode.Activated:Connect(function()
 			tell(modeListeners, id)
 		end)
-		used += modeW + 8
+		used += modeW + BUTTON_GAP
 		local levelText = HelperViewRules.levelText(row)
 		if levelText then
 			local level = Window.button("Level", levelText, right, GREEN_TOP, GREEN_BOTTOM)
@@ -247,7 +296,7 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 			level.Activated:Connect(function()
 				tell(levelListeners, id)
 			end)
-			used += levelW + 8
+			used += levelW + BUTTON_GAP
 		end
 	elseif row.pass and canShop then
 		local text = "See the pass"
@@ -264,7 +313,7 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 				task.spawn(listener)
 			end
 		end)
-		used += passW + 8
+		used += passW + BUTTON_GAP
 	end
 
 	local text = frame("Text", card)
@@ -333,6 +382,18 @@ end
 
 function HelpersWindow.onPass(fn: () -> ())
 	table.insert(passListeners, fn)
+end
+
+function HelpersWindow.setPets(newPets: { CrateRules.Pet })
+	pets = newPets
+	local p = parts
+	if p and p.window.layer.Visible then
+		redraw()
+	end
+end
+
+function HelpersWindow.onPet(fn: (id: string) -> ())
+	table.insert(petListeners, fn)
 end
 
 function HelpersWindow.build(root: Instance): Frame
