@@ -26,8 +26,11 @@ Remotes.ClientToServer = {
 	"RequestPlaceKitten", -- ()  1 a second; the box opened this session and not yet handed out (SudsBox false), no cat
 	-- out, and the player's character within SudsRules.PLACE_REACH studs of their tub: hands the kitten to the tub
 	-- Carrying a customer's cat in (SpaService, switches scrubPrototype and customerCarry; CarryRules).
-	"RequestTakeCat", -- ()  1 a second (burst 2); the cat is with the front customer (CarryCat "door") and the player's
-	-- character within CarryRules.TAKE_REACH studs of SpotQueue1: the cat goes into their arms (CarryCat "arms")
+	"RequestTakeCat", -- (place: int?)  1 a second (burst 2); the next cat is with the front customer (CarryCat "door")
+	-- and the player's character within CarryRules.TAKE_REACH studs of SpotQueue1, or with counterLine on of the cat at
+	-- counter place `place` (1 to SpaRules.MAX_QUEUE + 1 of the line as shown; nil is 1): that cat goes into their arms
+	-- (CarryCat "arms"). A place past 1 needs counterLine and a served customer (stars > 0), and is a pick: the front
+	-- customer's cat goes back on the counter at the front of the line (CounterRules.swapIn)
 	"RequestPlaceCat", -- ()  1 a second (burst 2); the cat is in their arms (CarryCat "arms") and the character within
 	-- CarryRules.PLACE_REACH studs of their tub: the cat is in the tub and CatReady follows
 	-- Tools board (ToolService, behind toolsBoard).
