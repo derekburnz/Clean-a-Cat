@@ -39,3 +39,13 @@ The Take cat prompt shows 0.1 to 1.0 s after ReadyAt, because the client scans e
 | A card over each counter cat | FAIL. Newcomers get no card. CounterCardController.add runs when the CounterCat is parented to the figure, but CounterPlace is set after that, so onCounter is false and nothing checks again. Cards showed only after I turned counterCards off and on (rebuild), and newcomers after that got none: phone, 1 card for 3 cats (picture 02); iPad, 1 card for 3 cats. Fix: also listen for CounterPlace being set, or re-check in add a frame later |
 | Text 14 px or more | There is no text on the card, only the owner chip and the heart bar. The card draws at 42 x 12 to 44 x 13 px on the phone from the player's spot (6 studs) and 77 x 23 px on the iPad |
 | Nothing overlaps the HUD | PASS for the cards. On both frames the Starter Pack offer panel on the right covers part of the counter's right end (picture 01). That panel is the HUD's own |
+
+## Landing spot recheck on c78f7d5 (place logged at every set)
+- Short line (empty counter at join): PASS. Sunny arrived at place 1 with CounterCrateSpot (-1.60, 3.30, -26.62). At her set she was still place 1. Her cat walked out and sat at x -1.60.
+- Full line, newcomer at place 3 with no step-up: PASS. Juno was place 3 at arrival and at her set. Crate copy at (4.80, 3.30, -26.62); the real cat sat at (4.80, -24.90).
+- Full line with a step-up between arrival and set: FAIL.
+  - Rae arrived at place 3 with spot x 4.80, then stepped up to place 2 at +0.42 s when Pip was served.
+  - At her set 2.9 s later she was place 2, but CounterCrateSpot was still x 4.80. Her crate landed on the place 3 mat, and her cat walked out from there toward place 2, then sat at x 1.60.
+  - Juno's crate landed on the same mat 1 s later.
+  - The spot is right when it is set but goes stale after a step-up. The fix is to refresh it when CounterPlace changes before CounterSetAt, or to land at the current place on the client.
+  - The c94174e Theo/Kit case was very likely the same step-up.
