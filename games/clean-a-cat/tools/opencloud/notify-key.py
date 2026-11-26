@@ -19,6 +19,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 SECRET_ID = "CleanACat_NotifyKey"
@@ -27,6 +28,7 @@ SECRET_DOMAIN = "apis.roblox.com"
 STRING_NAME = "build_done"
 # NotifyService fills {buildName}; 99 characters at most, no false urgency (Roblox's notification guidelines).
 STRING_CONTENT = "Your {buildName} is ready! Come back and show it off."
+MAX_PAGES = 10  # the list is only a handful of strings; a cap keeps a bad cursor from looping
 API = "https://apis.roblox.com"
 
 
@@ -166,17 +168,39 @@ def main():
             result = 1
         else:
             base = f"{API}/notifications/v1/developer-configuration"
-            status, listed = call(
-                "GET",
-                f"{base}/experience-notifications-list?UniverseId={universe}&Count=50",
-                key=string_key[1],
-            )
+            # Look through every page of the list first. Make the string only when the list answered fully and had
+            # no build_done: a failed or cut short list must never make a duplicate on each run.
             found = None
-            if status == 200:
+            listed_ok = True
+            cursor = ""
+            seen = set()
+            for _ in range(MAX_PAGES):
+                query = f"UniverseId={universe}&Count=50" + (f"&Cursor={urllib.parse.quote(cursor)}" if cursor else "")
+                status, listed = call("GET", f"{base}/experience-notifications-list?{query}", key=string_key[1])
+                if status != 200:
+                    summary.append(
+                        f"Could not list the notification strings (HTTP {status}: {listed.get('message', '')}),"
+                        " so nothing was made."
+                    )
+                    listed_ok = False
+                    break
                 for item in listed.get("notificationStringConfigs") or []:
                     if item.get("name") == STRING_NAME:
                         found = item
-            if found is None:
+                cursor = listed.get("nextPageToken") or listed.get("nextPageCursor") or ""
+                if found is not None or not cursor:
+                    break
+                if cursor in seen:
+                    summary.append("The notification string list repeated a page, so nothing was made.")
+                    listed_ok = False
+                    break
+                seen.add(cursor)
+            else:
+                summary.append(f"The notification string list ran past {MAX_PAGES} pages, so nothing was made.")
+                listed_ok = False
+            if not listed_ok:
+                result = 1
+            if found is None and listed_ok:
                 status, made = call(
                     "POST",
                     f"{base}/create-notification",
@@ -189,7 +213,7 @@ def main():
                 else:
                     summary.append(f"Making the notification string failed (HTTP {status}: {made.get('message', '')}).")
                     result = 1
-            else:
+            elif found is not None:
                 summary.append(f"The notification string {STRING_NAME} already exists.")
             if found is not None:
                 summary.append(f"Message id for NotifyRules.MESSAGE_IDS[{universe}]: {found['id']}")
