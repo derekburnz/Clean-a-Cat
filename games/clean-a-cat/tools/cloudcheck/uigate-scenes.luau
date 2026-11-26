@@ -235,6 +235,24 @@ local SCENES = {
 			UI.open("Queue")
 		end,
 	},
+	-- The crate window (issue 526, switch crateWindow): the normal crate with three held and two pets owned, then
+	-- the day 2 good crate.
+	{
+		"Crate",
+		function()
+			flag("crateWindow", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
+		end,
+	},
+	{
+		"CrateGood",
+		function()
+			flag("crateWindow", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
+		end,
+	},
 	-- A line where cats bring the later needs (#267, switches bubbleBath and pawdicure): five needs on the Legendary
 	-- one, so the needs stack over the pay even on a short card and shrink to share the card's width.
 	{
@@ -416,6 +434,7 @@ function Scenes.close()
 	flag("settingsCard", false)
 	flag("catIndexWindow", false)
 	flag("queueWindow", false)
+	flag("crateWindow", false)
 	flag("tutorialDim", false)
 	UI.hideBubble()
 	flag("sudsBubble", false)
