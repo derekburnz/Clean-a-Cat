@@ -283,22 +283,27 @@ def _torso(b, f, look):
             b.box((dx, fy - 0.01, z1 - 0.22 + dz), (0.11, 0.05, 0.11), look["pearls"], bevel=False)
     if look.get("cape"):
         cape, trim = look["cape"]
-        # down the back between the arms, swept back so a leg swinging behind passes under it; below the hands it
-        # widens, so it shows beside the legs from the front
-        top_z, hem_z, sweep = z1 - 0.02, f.hip - 0.85, math.radians(11)
+        # hangs flat on the back between the arms (its front 0.04 into the torso, so it never stands off the back);
+        # below the hands it widens and flares back a little, so it shows beside the legs from the front; it ends at
+        # mid thigh, where a leg swinging 26 degrees behind still passes under its hem
+        top_z, hem_z, flare = z1 - 0.02, f.hip - 0.45, math.radians(14)
         split = f.arm0 - 0.4                              # just under the hanging hands
-        tilt = Matrix.Rotation(sweep, 3, "X")
-        y_at = lambda z: dep / 2 + 0.07 + math.tan(sweep) * (top_z - z)      # noqa: E731
-        # the lower length laps 0.08 over the upper and is thicker, so they join with no two faces in one plane
-        for lo, hi, wd, th in ((split, top_z, w - 0.06, 0.12), (hem_z, split + 0.08, w + 0.34, 0.15)):
-            zc = (lo + hi) / 2
-            b.box((0, y_at(zc), zc), (wd, th, (hi - lo) / math.cos(sweep)), cape, rot=tilt)
+        yc = dep / 2 + 0.02                               # the upper length's middle: 0.12 deep, front 0.04 in
+        b.box((0, yc, (split + top_z) / 2), (w - 0.06, 0.12, top_z - split), cape)
+        # the lower length laps 0.08 over the upper, is thicker and tilted, so they join with no two faces in one plane
+        hi = split + 0.08
+        zc = (hem_z + hi) / 2
+        b.box((0, yc + 0.01 + math.tan(flare) * (hi - zc), zc), (w + 0.34, 0.15, (hi - hem_z) / math.cos(flare)), cape,
+              rot=Matrix.Rotation(flare, 3, "X"))
         b.box_base((0, 0.03, z1 - 0.13), (w + 0.1, dep + 0.16, 0.26), trim)                    # the collar
         for i, dx in enumerate((-0.48, -0.16, 0.16, 0.48)):                                   # its ermine specks
             b.box((dx, fy - 0.065, z1 - 0.01 + 0.03 * (i % 2)), (0.07, 0.03, 0.09), "fur_ink", bevel=False)
         b.box((0, fy - 0.07, z1 - 0.06), (0.16, 0.05, 0.16), "gold_mid", bevel=False, rot=_ry(45))   # the clasp
     if look.get("hood"):
-        b.box((0, dep / 2 + 0.12, z1 - 0.2), (0.95, 0.3, 0.55), look["top"])                 # the hood, down
+        # the hood, down: a roll round the neck on the shoulders and the hood lying on the back under it, its front
+        # 0.06 into the torso (a bevel's width), so from the side it is part of the top and never a block behind it
+        b.box_base((0, 0.08, z1 - 0.12), (1.0, dep + 0.1, 0.22), look["top"])
+        b.box((0, dep / 2 + 0.05, z1 - 0.32), (0.9, 0.22, 0.56), look["top"])
         b.box((0, fy - 0.015, z0 + 0.35), (0.8, 0.03, 0.4), look["pocket"], bevel=False)     # the pocket
         for x in (-0.15, 0.15):
             b.box((x, fy - 0.01, z1 - 0.32), (0.05, 0.04, 0.4), "offwhite", bevel=False)     # the strings
@@ -314,8 +319,9 @@ def _torso(b, f, look):
         b.box_base((0, 0, z1 - 0.1), (0.95, dep - 0.05, 0.28), look["scarf"])
         b.box((0.3, fy - 0.04, z1 - 0.45), (0.28, 0.06, 0.6), look["scarf"], bevel=False, rot=_ry(-8))
     if look.get("backpack"):
-        b.box((0, dep / 2 + 0.22, (z0 + z1) / 2 + 0.05), (w - 0.2, 0.44, z1 - z0 - 0.15), look["backpack"])
-        b.box((0, dep / 2 + 0.45, (z0 + z1) / 2 - 0.05), (w - 0.5, 0.06, 0.4), "offwhite", bevel=False)
+        # its front 0.06 into the back (a bevel's width), so it sits on the back with no gap
+        b.box((0, dep / 2 + 0.16, (z0 + z1) / 2 + 0.05), (w - 0.2, 0.44, z1 - z0 - 0.15), look["backpack"])
+        b.box((0, dep / 2 + 0.39, (z0 + z1) / 2 - 0.05), (w - 0.5, 0.06, 0.4), "offwhite", bevel=False)
         for sx in (1, -1):
             b.box((sx * 0.33, fy - 0.015, (z0 + z1) / 2 + 0.1), (0.14, 0.04, z1 - z0 - 0.3), look["backpack"],
                   bevel=False)
@@ -352,7 +358,7 @@ def _apron(b, f, look):
     b.box((0, by + 0.09, z0 + 0.12), (0.2, 0.14, 0.2), trim, bevel=False)                          # the bow's knot
     for sx in (1, -1):
         b.box((sx * 0.3, by + 0.08, z0 + 0.15), (0.46, 0.1, 0.3), trim, rot=_ry(-14 * sx))         # its loops
-        b.box((sx * 0.13, by + 0.07, z0 - 0.2), (0.14, 0.07, 0.48), trim, bevel=False, rot=_ry(10 * sx))   # its tails
+        b.box((sx * 0.13, by - 0.005, z0 - 0.2), (0.14, 0.07, 0.48), trim, bevel=False, rot=_ry(10 * sx))  # its tails
     b.box_base((0, 0, z1 - 0.08), (1.0, dep - 0.06, 0.2), cloth, bevel=False)                      # the collar
     if look.get("towel"):                                 # tucked in the waistband on the wearer's right
         tw_ = look["towel"]
@@ -459,8 +465,9 @@ def _hair(h, f, look):
         back = d["td"] / 2 - 0.02
         h.box_base((0, back + 0.13, lo), (hw + 0.04, 0.26, top - 0.1 - 1.1 - lo + 0.02), hc)
     if style == "ponytail":
-        h.box((0, hd / 2 + 0.1, top - 0.45), (0.34, 0.12, 0.26), look["tie"], bevel=False)                # the tie
-        h.box_base((0, hd / 2 + 0.24, h0 + 0.05), (0.36, 0.3, top - 0.45 - h0 - 0.05), hc)                # the tail
+        # the tail's front 0.07 into the back hair, the tie wrapped round its top, so it hangs from the head
+        h.box_base((0, hd / 2 + 0.15, h0 + 0.05), (0.36, 0.3, top - 0.45 - h0 - 0.05), hc)                # the tail
+        h.box((0, hd / 2 + 0.15, top - 0.45), (0.42, 0.38, 0.2), look["tie"], bevel=False)                 # the tie
     if style == "bun":
         h.sphere((0, hd / 2 - 0.05, top - 0.05), 0.4, hc, segments=10, rings=6)
     if style == "curls":
