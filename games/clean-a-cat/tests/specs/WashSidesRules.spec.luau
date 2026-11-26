@@ -27,14 +27,22 @@ return function()
 		it("brings the hidden rest round to the camera", function()
 			local toCamera = Vector3.new(0, 1, 5) -- the camera in front, on +Z
 			-- what is left sits on his back (-Z): about half a turn
-			local yaw = WashSidesRules.yawFor("scrub", { Vector3.new(0, 0.5, -1), Vector3.new(0.2, 0.4, -1) }, toCamera)
+			local yaw = WashSidesRules.yawFor(
+				"scrub",
+				{ Vector3.new(0, 0.5, -1), Vector3.new(0.2, 0.4, -1) },
+				toCamera
+			)
 			expect(yaw).to.be.ok()
 			expect(math.abs(math.abs(yaw :: number) - math.pi) < 0.25).to.equal(true)
 			-- what is left already faces the camera: no turn
-			expect(WashSidesRules.yawFor("rinse", { Vector3.new(0, 0.5, 1) }, toCamera)).to.equal(nil)
+			expect(WashSidesRules.yawFor("rinse", { Vector3.new(0, 0.5, 1) }, toCamera)).to.equal(
+				nil
+			)
 			expect(WashSidesRules.yawFor("rinse", {}, toCamera)).to.equal(nil)
 			-- the lather turns a quarter
-			expect(WashSidesRules.yawFor("lather", {}, toCamera)).to.equal(WashSidesRules.LATHER_TURN)
+			expect(WashSidesRules.yawFor("lather", {}, toCamera)).to.equal(
+				WashSidesRules.LATHER_TURN
+			)
 		end)
 	end)
 end

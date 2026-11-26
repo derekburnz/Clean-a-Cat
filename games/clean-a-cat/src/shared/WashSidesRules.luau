@@ -17,7 +17,8 @@ local WashSidesRules = {}
 WashSidesRules.FLAG = "washSides"
 WashSidesRules.AT = 0.5 -- the step's bar fill at which the cat turns
 WashSidesRules.LATHER_TURN = math.pi / 2 -- radians: the lather's quarter turn
-WashSidesRules.STEPS = table.freeze({ scrub = true, lather = true, rinse = true }) :: { [string]: boolean }
+WashSidesRules.STEPS =
+	table.freeze({ scrub = true, lather = true, rinse = true }) :: { [string]: boolean }
 
 -- Whether `step` (WashMeter's step name) at `fill` (0 to 1) turns the cat now, given the steps already turned.
 function WashSidesRules.due(step: string?, fill: number, turned: { [string]: boolean }): boolean
