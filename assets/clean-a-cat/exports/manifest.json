@@ -8834,9 +8834,9 @@
    "CleanACat_Cat_Phoenix_Prop2",
    "CleanACat_Cat_Phoenix_Wings_Glow"
   ],
-  "triangles": 1256,
+  "triangles": 1280,
   "budget": 2100,
-  "parts": 103,
+  "parts": 105,
   "size_studs": {
    "x": 1.56,
    "y": 1.97,
@@ -8945,10 +8945,10 @@
    "warnings": [],
    "qa_accepted": {},
    "checks": {
-    "budget": "1256/2100 tris",
+    "budget": "1280/2100 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "696 faces on swatch centers",
+    "uv": "708 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00",
@@ -9023,9 +9023,9 @@
    "CleanACat_Cat_Phoenix_Dirty_Prop2",
    "CleanACat_Cat_Phoenix_Dirty_Wings_Glow"
   ],
-  "triangles": 3242,
+  "triangles": 3266,
   "budget": 4300,
-  "parts": 204,
+  "parts": 206,
   "size_studs": {
    "x": 1.56,
    "y": 2.09,
@@ -9186,10 +9186,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3242/4300 tris",
+    "budget": "3266/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1951 faces on swatch centers",
+    "uv": "1963 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.03",
@@ -9262,9 +9262,9 @@
    "CleanACat_Cat_Phoenix_Dirty_Sit_Prop2",
    "CleanACat_Cat_Phoenix_Dirty_Sit_Wings_Glow"
   ],
-  "triangles": 3266,
+  "triangles": 3290,
   "budget": 4300,
-  "parts": 207,
+  "parts": 209,
   "size_studs": {
    "x": 1.64,
    "y": 1.24,
@@ -9414,10 +9414,10 @@
     "back to back": 20
    },
    "checks": {
-    "budget": "3266/4300 tris",
+    "budget": "3290/4300 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "1967 faces on swatch centers",
+    "uv": "1979 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.08 y=-0.02",
@@ -9446,9 +9446,9 @@
    "CleanACat_Cat_Phoenix_Sit_Prop2",
    "CleanACat_Cat_Phoenix_Sit_Wings_Glow"
   ],
-  "triangles": 1256,
+  "triangles": 1280,
   "budget": 2100,
-  "parts": 103,
+  "parts": 105,
   "size_studs": {
    "x": 1.55,
    "y": 1.24,
@@ -9547,10 +9547,10 @@
    "warnings": [],
    "qa_accepted": {},
    "checks": {
-    "budget": "1256/2100 tris",
+    "budget": "1280/2100 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "696 faces on swatch centers",
+    "uv": "708 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.03 y=-0.02",
@@ -9577,9 +9577,9 @@
    "CleanACat_Cat_Phoenix_Sit_Lite_Prop",
    "CleanACat_Cat_Phoenix_Sit_Lite_Prop2"
   ],
-  "triangles": 1064,
+  "triangles": 1088,
   "budget": 2100,
-  "parts": 77,
+  "parts": 79,
   "size_studs": {
    "x": 1.5,
    "y": 1.24,
@@ -9680,10 +9680,10 @@
    ],
    "qa_accepted": {},
    "checks": {
-    "budget": "1064/2100 tris",
+    "budget": "1088/2100 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "600 faces on swatch centers",
+    "uv": "612 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=0.00 (want 0)",
     "centered": "footprint center x=0.05 y=-0.02",
