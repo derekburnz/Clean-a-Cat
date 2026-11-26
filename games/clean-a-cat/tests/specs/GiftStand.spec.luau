@@ -53,4 +53,22 @@ return function()
 			end
 		end)
 	end)
+	describe("GiftStand.beaconAt", function()
+		it(
+			"breathes a little and turns only a little; still under Reduced Motion (#659)",
+			function()
+				for i = 0, 100 do
+					local scale, turn = GiftStand.beaconAt(i * 0.09, false)
+					expect(scale >= 0.9 - 1e-9 and scale <= 1.1 + 1e-9).to.equal(true)
+					expect(math.abs(turn) <= GiftStand.BEACON_TURN + 1e-9).to.equal(true)
+				end
+				local scale, turn = GiftStand.beaconAt(1.3, true)
+				expect(scale).to.equal(1)
+				expect(turn).to.equal(0)
+			end
+		)
+		it("is at least 15 px on screen at its smallest", function()
+			expect(GiftStand.BEACON_PX * 0.9 >= 15).to.equal(true)
+		end)
+	end)
 end
