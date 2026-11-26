@@ -29,7 +29,8 @@ export type Row = {
 -- The rows in WorkerRules.IDS order. `attribute(name)` reads a Player attribute; `names[id]` is a shown name.
 function HelperViewRules.rows(
 	attribute: (name: string) -> unknown,
-	names: { [string]: string }
+	names: { [string]: string },
+	isOn: ((flag: string) -> boolean)?
 ): { Row }
 	local out: { Row } = {}
 	for _, id in WorkerRules.IDS do
@@ -52,7 +53,7 @@ function HelperViewRules.rows(
 				else nil,
 			mode = mode,
 			modeName = if mode then WorkerRules.MODE_NAMES[mode] else nil,
-			price = if hired then nil else info.price,
+			price = if hired then nil else WorkerRules.priceOf(id, isOn),
 			pass = info.pass,
 		})
 	end

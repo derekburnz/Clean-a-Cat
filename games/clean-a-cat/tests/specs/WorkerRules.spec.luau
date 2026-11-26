@@ -31,6 +31,27 @@ return function()
 			expect(WorkerRules.pay(common, 1, 1) < CatRules.pay(common).coins).to.equal(true)
 		end)
 
+		it("prices Jo at 300 only with joPrice on (issue 841)", function()
+			local on = function(flag: string): boolean
+				return flag == WorkerRules.PRICE_FLAG
+			end
+			local off = function(_flag: string): boolean
+				return false
+			end
+			expect(WorkerRules.priceOf("Jo")).to.equal(150)
+			expect(WorkerRules.priceOf("Jo", off)).to.equal(150)
+			expect(WorkerRules.priceOf("Jo", on)).to.equal(300)
+			expect(WorkerRules.priceOf("Sam", on)).to.equal(1200)
+			expect(WorkerRules.priceOf("Lou", on)).to.equal(nil)
+			local save = newSave(200)
+			expect(WorkerRules.canHire(save, "Jo", on)).to.equal(false)
+			expect(WorkerRules.hire(save, "Jo", 5, on)).to.equal(0)
+			expect(save.coins).to.equal(200)
+			save.coins = 300
+			expect(WorkerRules.hire(save, "Jo", 6, on)).to.equal(300)
+			expect(save.coins).to.equal(0)
+		end)
+
 		it("hires a coin worker once and never sells the pass worker", function()
 			local save = newSave(1000)
 			expect(WorkerRules.hire(save, "Jo", 5)).to.equal(150)
