@@ -82,6 +82,7 @@ local Spotlight = require(script:WaitForChild("Spotlight"))
 local StarterAd = require(script:WaitForChild("HUD"):WaitForChild("StarterAd"))
 local StarterWindow = require(script:WaitForChild("StarterWindow"))
 local SudsBubble = require(script:WaitForChild("SudsBubble"))
+local ToastCard = require(script:WaitForChild("ToastCard"))
 local Waiting = require(script:WaitForChild("HUD"):WaitForChild("Waiting"))
 local WalkButton = require(script:WaitForChild("HUD"):WaitForChild("WalkButton"))
 
@@ -824,7 +825,7 @@ end
 local TOAST_SECONDS = 5
 local TOAST_SHORT = 2.5
 local TOAST_QUEUE = 4
-type Toast = { text: string, kind: ("info" | "warning")? }
+type Toast = { text: string, kind: ("info" | "warning")?, icon: string? }
 local toastQueue: { Toast } = {}
 local toastShownAt = -math.huge
 local toastBusy = false
@@ -843,9 +844,7 @@ local function showNextToast()
 	toastToken += 1
 	local token = toastToken
 	label.Text = nextToast.text
-	label.BackgroundColor3 = if nextToast.kind == "warning"
-		then Color3.fromRGB(150, 60, 20)
-		else Color3.fromRGB(30, 30, 30)
+	ToastCard.style(label, nextToast.text, nextToast.kind, nextToast.icon) -- our card with toastCards, else the dark bar
 	label.Visible = true
 	toastShownAt = os.clock()
 	task.spawn(function()
@@ -862,11 +861,12 @@ local function showNextToast()
 	end)
 end
 
-function UI.toast(text: string, kind: ("info" | "warning")?)
+-- `icon`: the cat a notice is about, whose portrait the card shows (switch toastCards, ToastCard).
+function UI.toast(text: string, kind: ("info" | "warning")?, icon: string?)
 	if toastLabel == nil then
 		return
 	end
-	table.insert(toastQueue, { text = text, kind = kind })
+	table.insert(toastQueue, { text = text, kind = kind, icon = icon })
 	while #toastQueue > TOAST_QUEUE do
 		table.remove(toastQueue, 1)
 	end

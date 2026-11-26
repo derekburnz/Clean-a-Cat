@@ -92,8 +92,9 @@ function NetService.fireAll(name: string, ...: any)
 end
 
 -- A short toast on one player's screen.
-function NetService.notice(player: Player, text: string, kind: ("info" | "warning")?)
-	NetService.fire(player, "Notice", kind or "info", text)
+-- `icon`: the cat the notice is about, for its portrait on the card (switch toastCards).
+function NetService.notice(player: Player, text: string, kind: ("info" | "warning")?, icon: string?)
+	NetService.fire(player, "Notice", kind or "info", text, icon)
 end
 
 function NetService.Init(_services: { [string]: any })
