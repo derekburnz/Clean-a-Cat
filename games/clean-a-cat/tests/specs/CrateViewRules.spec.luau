@@ -60,7 +60,7 @@ return function()
 	end)
 
 	describe("CrateViewRules pets window", function()
-		local pets = {
+		local pets: { CrateRules.Pet } = {
 			{ id = 1, kind = "Cozy", star = 1 },
 			{ id = 2, kind = "Cozy", star = 1, slot = "player" },
 			{ id = 3, kind = "Cozy", star = 1 },
