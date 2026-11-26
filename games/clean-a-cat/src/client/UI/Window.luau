@@ -11,7 +11,8 @@
 --
 -- A window never runs off a short screen (bug hunt B8: the crate window with its Robux rows was 360 px tall on a
 -- 332 px phone screen under Roblox's top bar): whenever the card's height changes, a card taller than the room under
--- the top bar is scaled down to fit (to at most MIN_FIT of its size) and moved up to sit just under the bar.
+-- the top bar is scaled down to fit (to at most MIN_FIT of its size, never under Kit.SCALE_MIN) and moved up to sit
+-- just under the bar.
 --
 -- The screen scale sits on a see-through holder the size of the layer, so Motion.popIn can use its own UIScale on
 -- the layer (one UIScale per object).
@@ -107,7 +108,9 @@ local function keepOnScreen(w: Window)
 	local room = bottom - top
 	local scale, shift = want.scale, want.shift
 	if designH * scale > room and designH > 0 and room > 0 then
-		scale = math.max(room / designH, want.scale * MIN_FIT)
+		-- never under Kit.SCALE_MIN: the text floor (Kit.minText) holds in real pixels, so a smaller scale shrinks a
+		-- pill around words that stay the same size (Sync on 2a34a8e: "Uncommon" past its pill, prices at 12.7 px)
+		scale = math.max(room / designH, want.scale * MIN_FIT, Kit.SCALE_MIN)
 		-- the card's middle, so its X sits EDGE under the top bar
 		local middle = top + (OVERHANG + (designH - OVERHANG) / 2) * scale
 		shift = (middle - (layerTop + layerH / 2)) / scale
