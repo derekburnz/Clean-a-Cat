@@ -221,6 +221,50 @@ local SCENES = {
 			UI.open("Queue")
 		end,
 	},
+	-- A line of six (benchGrow with tubs built): one row on a wide screen, scrolling sideways on a phone.
+	{
+		"QueueSix",
+		function()
+			flag("queueWindow", true)
+			local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+			local cards = QueueViewRules.cards(
+				{ "Muffin", "Cotton", "Patches", "Inky", "Marble", "Toffee" },
+				indexEntries(),
+				{}
+			)
+			UI.setQueue(cards, QueueViewRules.headline(cards, 1), { [2] = true, [3] = true, [4] = true })
+			UI.open("Queue")
+		end,
+	},
+	-- The bench cards with dirt levels and heart bars (dirtLevels, heartBar): a fresh cat in its quick bonus, one half
+	-- way, a grumpy one, and a level 4 special visitor's cat.
+	{
+		"QueueHearts",
+		function()
+			flag("queueWindow", true)
+			local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+			local now = game:GetService("Workspace"):GetServerTimeNow()
+			local function heart(left: number)
+				return { since = now - 240 * (1 - left), lasts = 240, stops = false, paused = false }
+			end
+			local DirtRules = UIShim.require("ReplicatedStorage.Shared.DirtRules")
+			local cats = { "Muffin", "Patches", "Toffee", "Bathtile" }
+			local rolled = {}
+			for place, cat in cats do
+				rolled[place] = DirtRules.needs(cat, place)
+			end
+			local cards = QueueViewRules.cards(
+				cats,
+				indexEntries(),
+				{},
+				rolled,
+				{ [1] = 1, [2] = 2, [3] = 3, [4] = 4 },
+				{ [1] = heart(0.97), [2] = heart(0.6), [3] = heart(0.2), [4] = heart(0.8) }
+			)
+			UI.setQueue(cards, QueueViewRules.headline(cards, 1), { [2] = true, [3] = true, [4] = true })
+			UI.open("Queue")
+		end,
+	},
 	{
 		"QueueVip",
 		function()
@@ -233,6 +277,50 @@ local SCENES = {
 			)
 			UI.setQueue(cards, QueueViewRules.headline(cards, 2), {})
 			UI.open("Queue")
+		end,
+	},
+	-- The crate window (issue 526, switch crateWindow): the normal crate with three held and two pets owned, then
+	-- the day 2 good crate.
+	{
+		"Crate",
+		function()
+			flag("crateWindow", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
+		end,
+	},
+	{
+		"CrateGood",
+		function()
+			flag("crateWindow", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
+		end,
+	},
+	-- The pets window (issue 526, switch petsWindow): three Cozy ready to fuse, a 2 star Koi with Jo, Sam not hired.
+	{
+		"Pets",
+		function()
+			flag("petsWindow", true)
+			UI.setPets({
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 2, kind = "Cozy", star = 1 },
+				{ id = 3, kind = "Cozy", star = 1 },
+				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+				{ id = 5, kind = "Pebble", star = 1 },
+				{ id = 6, kind = "Pebble", star = 1 },
+				{ id = 7, kind = "Nimbus", star = 3 },
+				{ id = 8, kind = "Scrubby", star = 1 },
+			}, { Jo = true })
+			UI.open("Pets")
+		end,
+	},
+	{
+		"PetsEmpty",
+		function()
+			flag("petsWindow", true)
+			UI.setPets({}, {})
+			UI.open("Pets")
 		end,
 	},
 	-- A line where cats bring the later needs (#267, switches bubbleBath and pawdicure): five needs on the Legendary
@@ -416,6 +504,8 @@ function Scenes.close()
 	flag("settingsCard", false)
 	flag("catIndexWindow", false)
 	flag("queueWindow", false)
+	flag("crateWindow", false)
+	flag("petsWindow", false)
 	flag("tutorialDim", false)
 	UI.hideBubble()
 	flag("sudsBubble", false)

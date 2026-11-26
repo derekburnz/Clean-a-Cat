@@ -100,6 +100,15 @@ LiveFlags.KEYS = {
 	"bowTiers", -- bow tiers bought with coins at the Tools board (Silk, Satin, Golden after the free Ribbon), each paying more on every hand washed customer's cat (BowRules, issue 508); off by default
 	"workers", -- Jo and Sam are hired with coins, each with a station on the back wall; a worker takes a waiting cat by the mode the player sets, washes it with a progress bar over it, and pays a small share (WorkerRules, WorkerService, issue 509); off by default
 	"specialVisitors", -- now and then a special visitor joins the line with one of the six special cats (always dirt level 4, pays the most, workers never take it); the first of a save comes at about 4:00 and its wash always leaves a crate, later ones rarely (SpecialRules, issue 510); off by default
+	"crateWindow", -- a tap on the crate by the tub opens the crate window: every pet with its chance and boost, how many crates the player holds and Open crate, in place of the list over the crate (UI/CrateWindow, CrateWindowController, issue 526); off by default
+	"barSpacing", -- each waiting customer's heart bar ends at least heart.releaseStagger after the one ahead, so customers who joined together never leave together (HeartRules.spacedSince, SpaService, issue 573); off by default
+	"boardKeys", -- each row of the Tools and Build boards has its own key and gamepad button, and on a touch screen every row's pill shows, so every row can be bought from where the player stands (BoardProp.rowKeys, issue 574); off by default
+	"lineSwap", -- the door line is redrawn new first and old after, and a leaving customer's figure goes as their walk off starts, so the line never blinks empty or shows the leaver twice (FigureService, issue 571); off by default
+	"benchGrow", -- once the spa has served its first customer the bench holds 3 plus one per built tub, at most 6 (places 4 to 6 on SpotBench4 to 6), and a short line takes its next customer every 6 s less one per tub (BuildRules.benchSize and refillSeconds, SpaService, issue 515); off by default
+	"tutorialBench", -- until the tutorial ends at 2:45 of play the line holds 1 customer, then 2 from 2:00 (bench.tutorialSize, SpaRules.tutorialBench, SpaService); off by default
+	"petsWindow", -- the HUD's Pets button and window: the player's pets with their stars and counts, Fuse on three of the same, and who has a pet (you and each hired helper), tap a slot then a pet (UI/PetsWindow, PetsWindowController, issue 526); off by default
+	"finishNow", -- a running build's board prompt offers Finish now for Robux by the time left (5 min, 30 min, 2 h, 8 h, more; never under 15 s left), once the owner has created that tier's developer product; a saved credit covers it free (FinishRules, PurchaseService, BuildService, issue 515); off by default
+	"tubBuilds", -- the Build board sells the Second, Third and Fourth Tub, the VIP Room at its new price and the Garden; one builder; a built tub pays +2 on every hand wash and the VIP Room brings special visitors more often; with dirtLevels on, the old stations leave (BuildRules, issue 515); off by default
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 }
 
@@ -173,7 +182,16 @@ LiveFlags.OFF_BY_DEFAULT = {
 	bowTiers = true,
 	workers = true,
 	specialVisitors = true,
+	barSpacing = true,
+	boardKeys = true,
+	lineSwap = true,
 	pets = true,
+	tubBuilds = true,
+	benchGrow = true,
+	tutorialBench = true,
+	crateWindow = true,
+	petsWindow = true,
+	finishNow = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

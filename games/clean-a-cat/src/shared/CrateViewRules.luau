@@ -1,0 +1,226 @@
+--!strict
+-- CrateViewRules: what the crate window (UI/CrateWindow, switch crateWindow, issue 526) shows, from CrateRules. Every
+-- pet in the crate with its chance and its boost, read from CrateRules.odds, the very list the server rolls from, so a
+-- shown chance is always the real one. Pure, so tests/specs/CrateViewRules.spec.luau covers it.
+local CrateRules = require(script.Parent:WaitForChild("CrateRules"))
+
+local CrateViewRules = {}
+
+CrateViewRules.FLAG = "crateWindow"
+CrateViewRules.SUM_LINE = "The chances add up to 100%. " .. CrateRules.ODDS_NOTE
+
+export type Row = {
+	pet: string,
+	rarity: string,
+	chance: string, -- "25%", or one decimal place when it is not whole ("12.5%")
+	boost: string, -- "+5%"
+	owned: boolean, -- the player has this pet already (an unowned one draws as a shadow)
+}
+
+-- A percent as the window writes it: whole numbers plain, anything else to one decimal place.
+function CrateViewRules.percentText(percent: number): string
+	local tenths = math.floor(percent * 10 + 0.5)
+	if tenths % 10 == 0 then
+		return `{tenths // 10}%`
+	end
+	return `{tenths / 10}%`
+end
+
+-- One row per pet in crate `kind`, Common first, rarest last. `owned` holds the kinds of the pets the player has.
+function CrateViewRules.rows(kind: string, owned: { [string]: boolean }): { Row }
+	local out: { Row } = {}
+	for _, entry in CrateRules.odds(kind) do
+		table.insert(out, {
+			pet = entry.pet,
+			rarity = entry.rarity,
+			chance = CrateViewRules.percentText(entry.percent),
+			boost = `+{math.floor(entry.boost * 100 + 0.5)}%`,
+			owned = owned[entry.pet] == true,
+		})
+	end
+	return out
+end
+
+-- The chances of crate `kind` added up (100 for every kind: CrateRules.CHANCES).
+function CrateViewRules.total(kind: string): number
+	local sum = 0
+	for _, entry in CrateRules.odds(kind) do
+		sum += entry.percent
+	end
+	return sum
+end
+
+function CrateViewRules.title(kind: string): string
+	return if kind == "good" then "Good crate" else "Crate"
+end
+
+-- The line under the crate: how many of this kind the player holds. The good crate is the day 2 gift.
+function CrateViewRules.haveLine(kind: string, count: number): string
+	if count <= 0 then
+		return "No crates yet"
+	end
+	if kind == "good" then
+		return if count == 1 then "Your day 2 gift" else `You have {count} good crates`
+	end
+	return if count == 1 then "You have 1 crate" else `You have {count} crates`
+end
+
+-- The kinds of every pet in a Pets list (the server's Pets remote), for `rows`.
+function CrateViewRules.ownedKinds(pets: { CrateRules.Pet }): { [string]: boolean }
+	local out: { [string]: boolean } = {}
+	for _, pet in pets do
+		out[pet.kind] = true
+	end
+	return out
+end
+
+-- The pets window (UI/PetsWindow, switch petsWindow): the player's pets grouped by kind and star, and the slots.
+
+CrateViewRules.PETS_FLAG = "petsWindow"
+CrateViewRules.HELPERS = table.freeze({ "Jo", "Sam", "Lou" }) :: { string } -- WorkerRules.WORKERS, in hiring order
+
+export type Group = {
+	key: string, -- "<kind>:<star>"
+	kind: string,
+	rarity: string,
+	star: number,
+	count: number,
+	ids: { number }, -- the pets' ids, the ones in a slot first (a fuse keeps the first, so a slotted pet stays put)
+	free: { number }, -- the ids not in any slot
+	slots: { string }, -- the slots holding one of these
+	canFuse: boolean, -- three or more, below the top star
+}
+
+export type SlotRow = {
+	slot: string,
+	who: string, -- "You" or the helper's name
+	helper: string?, -- the helper's id, nil for the player
+	pet: CrateRules.Pet?,
+	say: string, -- "Cozy: tips +5%", "Koi, 2 stars: pay +18%", "No pet yet", "Comes when Lou is hired"
+	locked: boolean,
+}
+
+local RARITY_ORDER: { [string]: number } =
+	{ Legendary = 1, Epic = 2, Rare = 3, Uncommon = 4, Common = 5 }
+
+local function boostPercent(kind: string, star: number): string
+	return `+{math.floor(CrateRules.boost(kind, star) * 100 + 0.5)}%`
+end
+
+-- The player's pets as one group per kind and star: rarest first, then the higher star, then by name.
+function CrateViewRules.groups(pets: { CrateRules.Pet }): { Group }
+	local byKey: { [string]: Group } = {}
+	local out: { Group } = {}
+	for _, pet in pets do
+		local rarity = CrateRules.rarityOf(pet.kind)
+		if rarity then
+			local key = `{pet.kind}:{pet.star}`
+			local group = byKey[key]
+			if group == nil then
+				group = {
+					key = key,
+					kind = pet.kind,
+					rarity = rarity,
+					star = pet.star,
+					count = 0,
+					ids = {},
+					free = {},
+					slots = {},
+					canFuse = false,
+				}
+				byKey[key] = group
+				table.insert(out, group)
+			end
+			group.count += 1
+			if pet.slot then
+				table.insert(group.ids, 1, pet.id)
+				table.insert(group.slots, pet.slot)
+			else
+				table.insert(group.ids, pet.id)
+				table.insert(group.free, pet.id)
+			end
+		end
+	end
+	for _, group in out do
+		group.canFuse = group.count >= CrateRules.FUSE_COUNT and group.star < CrateRules.MAX_STAR
+	end
+	table.sort(out, function(a: Group, b: Group): boolean
+		local ra, rb = RARITY_ORDER[a.rarity] or 9, RARITY_ORDER[b.rarity] or 9
+		if ra ~= rb then
+			return ra < rb
+		end
+		if a.star ~= b.star then
+			return a.star > b.star
+		end
+		return a.kind < b.kind
+	end)
+	return out
+end
+
+-- The three ids a Fuse on `group` sends, or nil when it cannot fuse.
+function CrateViewRules.fuseIds(group: Group): { number }?
+	if not group.canFuse then
+		return nil
+	end
+	return { group.ids[1], group.ids[2], group.ids[3] }
+end
+
+-- What a pet in a slot says: its name (and stars past the first) and what it boosts.
+function CrateViewRules.petLine(pet: CrateRules.Pet, slot: string): string
+	local name = if pet.star > 1 then `{pet.kind}, {pet.star} stars` else pet.kind
+	local what = if slot == CrateRules.PLAYER_SLOT then "tips" else "pay"
+	return `{name}: {what} {boostPercent(pet.kind, pet.star)}`
+end
+
+-- The slots in order: the player, then each helper. A helper not hired yet shows locked. `hired` holds the hired
+-- helpers' ids (the server's WorkerLevel_<id> attributes).
+function CrateViewRules.slotRows(
+	pets: { CrateRules.Pet },
+	hired: { [string]: boolean }
+): { SlotRow }
+	local inSlot: { [string]: CrateRules.Pet } = {}
+	for _, pet in pets do
+		if pet.slot then
+			inSlot[pet.slot] = pet
+		end
+	end
+	local rows: { SlotRow } = {}
+	local function add(slot: string, who: string, helper: string?, locked: boolean)
+		local pet = inSlot[slot]
+		local say = if locked
+			then `Comes when {who} is hired`
+			elseif pet then CrateViewRules.petLine(pet, slot)
+			else "No pet yet"
+		table.insert(rows, {
+			slot = slot,
+			who = who,
+			helper = helper,
+			pet = if locked then nil else pet,
+			say = say,
+			locked = locked,
+		})
+	end
+	add(CrateRules.PLAYER_SLOT, "You", nil, false)
+	for _, id in CrateViewRules.HELPERS do
+		add(`{id}1`, id, id, hired[id] ~= true)
+	end
+	return rows
+end
+
+-- The pet id a tap on `group` places in `slot`, and where it goes: the group's pet already in that slot comes off
+-- (to nil, the pen); otherwise a free one goes in, or the group's slotted one moves over. Nil when there is none.
+function CrateViewRules.placeFor(
+	group: Group,
+	slot: string,
+	pets: { CrateRules.Pet }
+): (number?, string?)
+	for _, pet in pets do
+		if pet.slot == slot and `{pet.kind}:{pet.star}` == group.key then
+			return pet.id, nil
+		end
+	end
+	local id = group.free[1] or group.ids[1]
+	return id, slot
+end
+
+return CrateViewRules

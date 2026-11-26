@@ -30,6 +30,10 @@ local GAMEPAD_NAMES: { [Enum.KeyCode]: string } = {
 	[Enum.KeyCode.ButtonB] = "B",
 	[Enum.KeyCode.ButtonX] = "X",
 	[Enum.KeyCode.ButtonY] = "Y",
+	[Enum.KeyCode.ButtonL1] = "LB",
+	[Enum.KeyCode.ButtonR1] = "RB",
+	[Enum.KeyCode.ButtonL2] = "LT",
+	[Enum.KeyCode.DPadUp] = "Up",
 }
 
 local PromptController = {}

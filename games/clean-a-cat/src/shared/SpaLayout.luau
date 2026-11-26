@@ -95,6 +95,11 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	WorkerLou = at(7.5, 0.5, 6.5, 0),
 	-- Not in the model: where a crate the player holds waits, on the floor between the spawn and the Tools board.
 	Crate = at(1.5, 0.5, -7, 0),
+	-- Not in the model: the bench's places 4 to 6 once tubs are built (switch benchGrow, issue 515), along the pavement
+	-- beside the line's last mat. Model-Agent may move them when the extra mats are modelled.
+	SpotBench4 = at(-1, 0.5, -21.5, TURNED),
+	SpotBench5 = at(3, 0.5, -21.5, TURNED),
+	SpotBench6 = at(7, 0.5, -21.5, TURNED),
 }) :: { [string]: Spot }
 
 -- Model-Agent's fixed props, placed with the plot (PlotService) into its PROPS_FOLDER, each with its pivot (its
@@ -125,6 +130,10 @@ SpaLayout.STATIONS = table.freeze({
 	-- #267: drawn only while their BuildRules switch (bubbleBath, pawdicure) is on
 	{ id = "BubbleBath", asset = "CleanACat_Station_BubbleBath", spot = "SpotStation4" },
 	{ id = "Pawdicure", asset = "CleanACat_Station_Pawdicure", spot = "SpotStation5" },
+	-- issue 515 (switch tubBuilds, with dirtLevels): the tubs stand where the old stations did, which are gone then
+	{ id = "SecondTub", asset = "CleanACat_Station_Tub", spot = "SpotStation2" },
+	{ id = "ThirdTub", asset = "CleanACat_Station_Tub", spot = "SpotStation3" },
+	{ id = "FourthTub", asset = "CleanACat_Station_Tub", spot = "SpotStation4" },
 }) :: { Station }
 -- The VIP Room's door at SpotVipDoor until the room is built: VIP_LOCKED_ASSET before its build starts,
 -- VIP_BUILDING_ASSET while it runs, nothing once it is done (StationService).
@@ -309,6 +318,15 @@ function SpaLayout.spawnSpot(slot: number): CFrame
 			* CFrame.Angles(0, math.pi, 0)
 	end
 	return spotIn("SpotSpawn", slot)
+end
+
+-- Where the line's place `index` stands (switch benchGrow): places 4 to 6 on SpotBench<index>, the rest as lineSpot.
+function SpaLayout.benchSpot(index: number, player: Player?): CFrame
+	local name = `SpotBench{index}`
+	if SpaLayout.PLOT_SPOTS[name] and SpaLayout.onPlot(player) then
+		return SpaLayout.spot(name, player)
+	end
+	return SpaLayout.lineSpot("SpotQueue", index, player)
 end
 
 -- The `index`th spot of a line. Past the last listed spot the line goes on, one step (the gap between the last

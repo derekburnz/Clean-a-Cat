@@ -50,7 +50,7 @@ Pay = base × stars × early pick × dirt, rounded, then + bow + tip + tub bonus
 | `pay.stars` | 1 star ×1.0, 2 stars ×1.1, 3 stars ×1.2 | Speed is a bonus, never a cut: a slow young player still gets full base pay | 2026-11-25 |
 | `pay.starTimes` | 3 stars at 12 s or less per step on average, 2 stars at 20 s or less, else 1 | Per step so a 10 step cat is not harder to star. The clock runs only while a hand step (scrub, brush, lather, rinse, dry, claws) is on screen; the cat landing, the bow, the photo and any tip or card are not counted (Review-QA on PR 545) | 2026-11-25 |
 | `pay.starsTutorial` | Suds and the first two customers always get 3 stars | The tutorial teaches, it never grades | 2026-11-25 |
-| `pay.early` | ×1.25 when taken in the first 10% of its heart bar | Derek: a big bonus for an early pick; a normal wait costs nothing | 2026-11-25 |
+| `pay.early` | ×1.25 when taken in the first 10% of its heart bar. With barSpacing, a bar that starts late (spaced behind the one ahead) shows full until it starts, and a pick while it is full counts as early | Derek: a big bonus for an early pick; a normal wait costs nothing. A full bar reads as early to the player, so it pays as early (Review-QA, PR 578) | 2026-11-26 |
 | `pay.dirt` | L1 ×1.0, L2 ×1.25, L3 ×1.6, L4 ×2.0 | More steps pay more per cat and about the same per second | 2026-11-25 |
 | `pay.bow` | plain ribbon +2 | Every hand washed cat gets a bow | 2026-11-25 |
 | `pay.friend` | +10% per friend in the server, at most +30% | "About 10% for each friend" | 2026-11-25 |

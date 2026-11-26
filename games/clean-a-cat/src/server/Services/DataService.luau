@@ -10,6 +10,10 @@
 --   DataService.onLoaded:Connect(fn)      fn(player, save) once the save is ready
 --   DataService.beforeRelease(fn)         fn(player, save) runs, in order, just before the save is written for the
 --                                         last time; use it to fold session numbers into the save
+--   DataService.saveAndConfirm(player, check, timeout)
+--                                         writes the save now and yields until a write whose saved copy passes
+--                                         check(saved) lands, at most timeout seconds; true when one did. For a Robux
+--                                         grant, which must be stored before Roblox is told it went through
 --
 -- Studio uses its own store (name + "_dev"), so a playtest with API access on never touches live saves. Without
 -- "Enable Studio Access to API Services", ProfileStore runs on a mock store: the game works, nothing persists.
@@ -47,6 +51,30 @@ end
 
 function DataService.beforeRelease(fn: (player: Player, save: Save) -> ())
 	table.insert(finalizers, fn)
+end
+
+function DataService.saveAndConfirm(
+	player: Player,
+	check: (saved: { [string]: any }) -> boolean,
+	timeout: number
+): boolean
+	local session = sessions[player]
+	if session == nil or not session.profile:IsActive() then
+		return false
+	end
+	local done = false
+	local connection = session.profile.OnAfterSave:Connect(function(saved: any)
+		if type(saved) == "table" and check(saved) then
+			done = true
+		end
+	end)
+	session.profile:Save()
+	local deadline = os.clock() + timeout
+	while not done and os.clock() < deadline do
+		task.wait(0.1)
+	end
+	connection:Disconnect()
+	return done
 end
 
 local function finalize(player: Player, session: Session)

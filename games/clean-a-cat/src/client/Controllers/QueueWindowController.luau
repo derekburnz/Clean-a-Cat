@@ -63,8 +63,12 @@ local function show()
 	local pickOn = allOn(PICK_FLAGS)
 	local served = player:GetAttribute(SERVED) == true
 	local pickable: { [number]: boolean } = {}
-	for place = 1, SpaRules.QUEUE_SIZE do
-		pickable[place] = QueueViewRules.canPick(place, pickOn, served)
+	local size = SpaRules.benchSize(
+		player:GetAttribute(SpaRules.BENCH_ATTRIBUTE),
+		LiveFlags.isOn(SpaRules.BENCH_FLAG)
+	)
+	for place = 1, size do
+		pickable[place] = QueueViewRules.canPick(place, pickOn, served, size)
 	end
 	local tier = CatRules.cleanTier(player:GetAttribute(CatRules.TIER_ATTRIBUTE))
 	UI.setQueue(cards, QueueViewRules.headline(cards, tier), pickable)
@@ -99,6 +103,7 @@ function QueueWindowController.Start()
 	end
 	local player = Players.LocalPlayer
 	player:GetAttributeChangedSignal(SERVED):Connect(show)
+	player:GetAttributeChangedSignal(SpaRules.BENCH_ATTRIBUTE):Connect(show)
 	player:GetAttributeChangedSignal(CatRules.TIER_ATTRIBUTE):Connect(show)
 	SpaLayout.changed(show) -- the plot came or went: which stations stand changed
 	show()

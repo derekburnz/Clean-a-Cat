@@ -6,6 +6,9 @@
 -- With `longBuildOffer` on as well, a running build of an hour or more gets a bell prompt, "Tell me when it's
 -- done": only a tap on it asks Roblox for the notification opt-in prompt (#38). A player Roblox would not ask sees
 -- "Ready in 8 h. Come back to see it!" on the board instead. What happened goes to the server as ReportOptIn.
+-- With `finishNow` on as well, a running build's prompt reads "Finish now for 35 Robux" (the product's price on
+-- Roblox) once its product exists, or "Finish now, free" when a saved credit covers it; never under 15 s left. A tap
+-- asks the server (RequestFinish), which opens Roblox's purchase prompt; waiting stays free.
 --
 --   BuildBoardController.finished:Connect(fn)  fn(id) when a build finishes (also one that finished while away),
 --                                              for the celebration effects and the builder panel
@@ -17,8 +20,10 @@ local BoardProp = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild(
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
+local FinishRules = require(Shared:WaitForChild("FinishRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local NotifyRules = require(Shared:WaitForChild("NotifyRules"))
+local Products = require(Shared:WaitForChild("Products"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local Signal = require(Shared:WaitForChild("Signal"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -43,6 +48,8 @@ local connections: { RBXScriptConnection } = {}
 local ticker: thread? = nil
 local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
+local credits: { [string]: number } = {} -- Finish now credits by tier, as the server last sent them
+local finishing: { [string]: string } = {} -- id -> slot of a build whose prompt is a Finish now right now
 local clockOffset = 0 -- server os.time() minus local os.time(), so countdowns use the server's clock
 local bell: ProximityPrompt? = nil
 local comeBack: BillboardGui? = nil
@@ -96,18 +103,46 @@ local function refreshBell(now: number)
 	end
 end
 
+-- The Finish now line for a build with `left` seconds to go, or nil when there is none to show.
+local function finishText(left: number): string?
+	if not LiveFlags.isOn(FinishRules.FLAG) then
+		return nil
+	end
+	local tier = FinishRules.tier(left)
+	if tier == nil then
+		return nil
+	end
+	if FinishRules.creditFor(credits, tier) then
+		return "Finish now, free"
+	end
+	local key = FinishRules.TIERS[tier].key
+	local price = ReplicatedStorage:GetAttribute(Products.PRICE_PREFIX .. key)
+	if Products.id(key) == nil or type(price) ~= "number" then
+		return nil
+	end
+	return `Finish now for {price} Robux`
+end
+
 local function refreshPrompts()
 	local now = os.time() + clockOffset
 	refreshBell(now)
+	table.clear(finishing)
 	for id, prompt in prompts do
-		local item = BuildRules.ITEMS[id]
+		local item = BuildRules.item(id, LiveFlags.isOn) :: BuildRules.Item
 		local running: BuildRules.Build? = builds[item.slot]
 		if built[id] then
 			prompt.Enabled = false
 		elseif running and running.item == id then
 			prompt.Enabled = true
-			prompt.ActionText = `Building {item.name}`
-			prompt.ObjectText = countdown(running.endsAt - now)
+			local finish = finishText(running.endsAt - now)
+			if finish then
+				finishing[id] = item.slot
+				prompt.ActionText = finish
+				prompt.ObjectText = `{item.name}, {countdown(running.endsAt - now)} left`
+			else
+				prompt.ActionText = `Building {item.name}`
+				prompt.ObjectText = countdown(running.endsAt - now)
+			end
 		else
 			prompt.Enabled = true
 			prompt.ActionText = `Build {item.name}`
@@ -116,8 +151,9 @@ local function refreshPrompts()
 	end
 end
 
-local function onBuilds(rawBuilds: unknown, rawBuilt: unknown, rawNow: unknown)
+local function onBuilds(rawBuilds: unknown, rawBuilt: unknown, rawNow: unknown, rawCredits: unknown)
 	builds = BuildRules.cleanBuilds(rawBuilds)
+	credits = FinishRules.cleanCredits(rawCredits)
 	table.clear(built)
 	if type(rawBuilt) == "table" then
 		for _, id in rawBuilt :: { unknown } do
@@ -141,6 +177,7 @@ local function enable()
 	for index, id in offered do
 		local spot = made.rows[index]
 		local prompt = Instance.new("ProximityPrompt")
+		BoardProp.rowKeys(prompt, index)
 		prompt.HoldDuration = 0
 		prompt.MaxActivationDistance = BuildRules.PROMPT_REACH
 		prompt.RequiresLineOfSight = false
@@ -149,13 +186,19 @@ local function enable()
 		table.insert(
 			connections,
 			prompt.Triggered:Connect(function()
-				Remotes.event("RequestBuild"):FireServer(id)
+				local slot = finishing[id]
+				if slot then
+					Remotes.event("RequestFinish"):FireServer(slot)
+				else
+					Remotes.event("RequestBuild"):FireServer(id)
+				end
 			end)
 		)
 	end
 	-- The bell and the come back line, by the model's bell (at the slab's foot).
 	local foot = made.bell
 	local bellPrompt = Instance.new("ProximityPrompt")
+	BoardProp.rowKeys(bellPrompt, #offered + 1)
 	bellPrompt.ActionText = "Tell me when it's done"
 	bellPrompt.HoldDuration = 0
 	bellPrompt.MaxActivationDistance = BuildRules.PROMPT_REACH
@@ -264,15 +307,12 @@ function BuildBoardController.Init(_controllers: { [string]: any }) end
 function BuildBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	-- An item's own switch (the Bubble Bath's, the Pawdicure's) changed: the board is drawn again with or without it.
-	for _, id in BuildRules.IDS do
-		local itemFlag = BuildRules.ITEMS[id].flag
-		if itemFlag then
-			ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. itemFlag)
-				:Connect(function()
-					disable()
-					refresh()
-				end)
-		end
+	for _, itemFlag in BuildRules.itemFlags() do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. itemFlag)
+			:Connect(function()
+				disable()
+				refresh()
+			end)
 	end
 	-- The plot placed or taken away: the board moves to its spot.
 	SpaLayout.changed(function()
