@@ -109,7 +109,9 @@ local function span(screen: Vector2, scale: number): (number, number)
 	end
 	hi -= CLOSE / 2 * scale -- the X hangs half over the card's right edge
 	local width = math.max(0, math.min(MAX_WIDTH * scale, hi - lo))
-	local centre = math.clamp(screen.X / 2, lo + width / 2, hi - width / 2)
+	-- at join the viewport can still be 0 wide (issue 608): then hi is below lo, and the card just centres
+	local left, right = lo + width / 2, hi - width / 2
+	local centre = if right >= left then math.clamp(screen.X / 2, left, right) else screen.X / 2
 	return centre, width
 end
 
