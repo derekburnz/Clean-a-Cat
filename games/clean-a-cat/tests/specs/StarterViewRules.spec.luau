@@ -28,6 +28,12 @@ return function()
 			expect(StarterViewRules.buyText(299)).to.equal("299 Robux · Get pack")
 		end)
 
+		it("rounds the saving down at Derek's 199 price (63.6 shows as 63)", function()
+			local total, percent = StarterViewRules.saving(StarterViewRules.items(price), 199)
+			expect(total).to.equal(547)
+			expect(percent).to.equal(63)
+		end)
+
 		it("hides the saving when a price is missing or nothing is saved", function()
 			local some = StarterViewRules.items(function(key: string): unknown
 				return if key == "DoubleCoins" then nil else 100
