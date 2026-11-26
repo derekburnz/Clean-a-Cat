@@ -74,7 +74,7 @@ local SIZES = {
 		badge = 80,
 		pad = 12,
 		gap = 12,
-		boxW = 190,
+		boxW = 170, -- 20 px narrower than before so a Legendary row keeps its boost clear of the chance (issue 836)
 		gift = 72,
 		have = 19,
 		open = 60,
@@ -159,12 +159,24 @@ end
 
 -- The rarity tag beside a pet's name.
 -- Width in design px of `text` drawn in Kit.FONT at `size` (never under the text floor, which Kit.minText keeps).
+-- design px spare on a pet's line: measured text is right to about 10%, and the boost is drawn in the body face,
+-- wider than Kit.FONT measures, so a line that only just fits ran into the chance on a small phone (issue 836)
+local FIT_SLACK = 14
+local BOOST_NOTE = "+% is the pet's boost." -- said once when the rows drop the word (issue 836)
+
 local function measure(text: string, size: number): number
 	local drawn = math.max(size, TEXT_FLOOR)
 	return math.ceil(TextService:GetTextSize(text, drawn, Kit.FONT, Vector2.new(10000, 1000)).X)
 end
 
-local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: Sizes, cellW: number)
+-- Draws one pet's card; true when its boost had to drop the word "boost" to fit beside the pill (issue 836).
+local function drawRow(
+	row: CrateViewRules.Row,
+	grid: Frame,
+	order: number,
+	s: Sizes,
+	cellW: number
+): boolean
 	local card = frame(`Pet{order}`, grid)
 	card.LayoutOrder = order
 	card.BackgroundTransparency = 0
@@ -218,7 +230,7 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 	name.Size = UDim2.fromOffset(0, s.name + 4)
 	name.Text = row.pet
 	-- the pill goes beside the name when both fit, else under it beside the boost, so it never reaches the chance
-	local besideName = measure(row.pet, s.name) + 8 + Kit.chipWidth(row.rarity) <= whoW
+	local besideName = measure(row.pet, s.name) + 8 + Kit.chipWidth(row.rarity) + FIT_SLACK <= whoW
 	local second: Frame = who
 	if not besideName then
 		second = frame("Bottom", who)
@@ -227,11 +239,18 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 		list(second, true, 6).VerticalAlignment = Enum.VerticalAlignment.Center
 		top.Size = UDim2.new(1, 0, 0, s.name + 4)
 	end
+	-- under the pill on a narrow phone the full "+5% boost" ran into the chance (issue 836): it drops the word, and
+	-- the line under the grid says once what the number is; the pill packs tighter if even that is too wide
+	local full = `{row.boost} boost`
+	local fits = besideName
+		or Kit.chipWidth(row.rarity) + 6 + measure(full, s.boost) + FIT_SLACK <= whoW
+	local chipRoom = if besideName then nil else whoW - 6 - measure(row.boost, s.boost) - FIT_SLACK
 	Kit.rarityChip(
 		if besideName then top else second,
 		row.rarity,
 		s.chip,
-		if besideName then 2 else 1
+		if besideName then 2 else 1,
+		if fits then nil else chipRoom
 	)
 	local boost = words("Boost", second, s.boost)
 	boost.LayoutOrder = 2
@@ -244,7 +263,8 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 		boost.AutomaticSize = Enum.AutomaticSize.X
 		boost.Size = UDim2.fromOffset(0, s.boost + 4)
 	end
-	boost.Text = `{row.boost} boost`
+	boost.Text = if fits then full else row.boost
+	return not fits
 end
 
 -- One Robux row: "5 crates" over its price on a button the width of the box.
@@ -338,13 +358,18 @@ local function redraw()
 	p.gridLayout.CellSize = UDim2.fromOffset(cellW, s.rowH)
 	p.gridLayout.CellPadding = UDim2.fromOffset(s.rowGap, s.rowGap)
 	clearGrid(p.grid)
+	local shortBoost = false
 	for index, row in rows do
-		drawRow(row, p.grid, index, s, cellW)
+		if drawRow(row, p.grid, index, s, cellW) then
+			shortBoost = true
+		end
 	end
 	local lines = math.ceil(#rows / 2)
 	p.grid.Size = UDim2.new(1, 0, 0, lines * s.rowH + math.max(lines - 1, 0) * s.rowGap)
 	p.sum.TextSize = s.sum
-	p.sum.Text = CrateViewRules.SUM_LINE
+	p.sum.Text = if shortBoost
+		then `{CrateViewRules.SUM_LINE} {BOOST_NOTE}`
+		else CrateViewRules.SUM_LINE
 end
 
 function CrateWindow.set(kind: string, count: number, newRows: { CrateViewRules.Row })

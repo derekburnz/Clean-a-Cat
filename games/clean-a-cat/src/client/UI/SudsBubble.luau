@@ -18,6 +18,7 @@
 -- is 70 px at x 25 on a phone, 120 px at x 50 on a tablet) and left of the jump button (x W-95 on a phone, W-170 on a
 -- tablet), with the X's overhang counted. At most 560 design px wide.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TextService = game:GetService("TextService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -60,6 +61,7 @@ local SIZES = {
 }
 local MAX_WIDTH = 560
 local PAD = 14 -- design px inside the card's edge
+local LINE_SLACK = 1.12 -- the body font draws a little taller than the measuring font
 local GAP = 12 -- design px between the face, the words and the button
 local CLOSE = 60 -- design px: the X's press area (45 real px at the smallest scale, over the 44 px floor)
 local CLOSE_DOT = 40 -- design px: the X's drawn circle inside it
@@ -134,27 +136,34 @@ local function redraw()
 	local centre, width = span(screen, scale)
 	local designWidth = width / scale
 	p.scale.Scale = scale
-	p.card.Size = UDim2.fromOffset(designWidth, s.height)
+	local wordsLeft = PAD + s.face + GAP
+	local wordsWidth = math.max(0, designWidth - wordsLeft - GAP - s.buttonWidth - PAD)
+	-- the card grows to hold the whole line when it wraps past two rows on a narrow phone (#835)
+	local lineH = TextService:GetTextSize(
+		current.line,
+		s.line,
+		Kit.FONT,
+		Vector2.new(math.max(wordsWidth, 1), 2000)
+	).Y * LINE_SLACK
+	local height = math.max(s.height, math.ceil(PAD * 2 + s.title + 4 + lineH))
+	p.card.Size = UDim2.fromOffset(designWidth, height)
 	p.card.Position = UDim2.new(0, centre, 1, -BOTTOM_GAP - lift)
 
 	p.face.Size = UDim2.fromOffset(s.face, s.face)
 	-- The face sits on the card's left with its top s.poke above the card's top edge.
 	p.face.Position = UDim2.fromOffset(PAD, -s.poke)
 
-	local wordsLeft = PAD + s.face + GAP
-	local wordsWidth = math.max(0, designWidth - wordsLeft - GAP - s.buttonWidth - PAD)
 	p.title.Position = UDim2.fromOffset(wordsLeft, PAD - 2)
 	p.title.Size = UDim2.fromOffset(wordsWidth, s.title + 6)
 	p.title.Text = current.title
 	Kit.shrinkToFit(p.title, s.title)
 	p.line.Position = UDim2.fromOffset(wordsLeft, PAD + s.title + 4)
-	p.line.Size = UDim2.fromOffset(wordsWidth, s.height - PAD * 2 - s.title - 4)
+	p.line.Size = UDim2.fromOffset(wordsWidth, height - PAD * 2 - s.title - 4)
 	p.line.Text = current.line
 	p.line.TextSize = s.line
 
 	p.button.Size = UDim2.fromOffset(s.buttonWidth, s.button)
-	p.button.Position =
-		UDim2.fromOffset(designWidth - PAD - s.buttonWidth, s.height - PAD - s.button)
+	p.button.Position = UDim2.fromOffset(designWidth - PAD - s.buttonWidth, height - PAD - s.button)
 	p.button.Text = current.button or if current.showMe then BubbleRules.SHOW_ME else BubbleRules.OK
 	p.button.TextSize = if short then 24 else 26
 end

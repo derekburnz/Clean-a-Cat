@@ -36,6 +36,8 @@ local PICKED = Color3.fromHex("4FCF93")
 local SLOT_FILL = Color3.fromHex("E8F7FF")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 4 -- design px below the middle on a short screen (Window's default is 33)
+local TOPBAR = 58 -- real px of Roblox's top bar
+local ROOM = 40 -- design px kept clear above and below the window, so both lists fit the screen (#834)
 
 -- Sizes in design pixels: full, then compact for a short screen (a phone held sideways).
 local SIZES = {
@@ -107,7 +109,7 @@ type Parts = {
 	rightHead: Frame,
 	rightTitle: TextLabel,
 	rightNote: TextLabel,
-	slots: Frame,
+	slots: ScrollingFrame,
 	slotList: UIListLayout,
 }
 
@@ -165,6 +167,12 @@ local function screenWidth(scale: number): number
 	local camera = Workspace.CurrentCamera
 	local width = if camera then camera.ViewportSize.X else 1280
 	return width / scale
+end
+
+local function screenHeight(scale: number): number
+	local camera = Workspace.CurrentCamera
+	local height = if camera then camera.ViewportSize.Y else 720
+	return height / scale
 end
 
 -- A transparent button over the whole of `parent`, so the card under it takes the tap.
@@ -314,7 +322,7 @@ local function drawTile(
 	end
 end
 
-local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, container: Frame)
+local function drawSlot(row: CrateViewRules.SlotRow, order: number, s: Sizes, container: GuiObject)
 	local card = frame(`Slot{order}`, container)
 	card.LayoutOrder = order
 	card.Size = UDim2.new(1, 0, 0, s.slotH)
@@ -488,7 +496,13 @@ function PetsWindow.redraw()
 	local tileH = tileHeight(s)
 	p.grid.CellSize = UDim2.fromOffset(cellW, tileH)
 	p.grid.CellPadding = UDim2.fromOffset(s.tileGap, s.tileGap)
-	p.scroll.Size = UDim2.new(1, 0, 0, s.listH)
+	-- both lists stop above the screen's bottom edge and scroll past it (#834): the tallest a list may be is the
+	-- screen under the top bar less the window's band, padding and heading
+	local room = math.floor(
+		screenHeight(scale) - TOPBAR / scale - ROOM * 2 - s.band - s.pad * 2 - s.head - 8
+	)
+	local listH = math.max(tileH, math.min(s.listH, room))
+	p.scroll.Size = UDim2.new(1, 0, 0, listH)
 	local lines = math.ceil(#groups / s.cols)
 	p.scroll.CanvasSize =
 		UDim2.fromOffset(0, lines * tileH + math.max(lines - 1, 0) * s.tileGap + 4)
@@ -513,6 +527,11 @@ function PetsWindow.redraw()
 	for index, row in rows do
 		drawSlot(row, index, s, p.slots)
 	end
+	local slotsH = #rows * s.slotH + math.max(#rows - 1, 0) * s.slotGap + 8
+	local shownH = math.max(s.slotH + 8, math.min(slotsH, room))
+	p.slots.Size = UDim2.new(1, 0, 0, shownH)
+	p.slots.CanvasSize = UDim2.fromOffset(0, slotsH)
+	p.slots.ScrollingEnabled = slotsH > shownH
 end
 
 function PetsWindow.set(
@@ -617,10 +636,20 @@ function PetsWindow.build(root: Instance): Frame
 	list(right, false, 8)
 	local rightHead, rightTitle, rightNote =
 		heading(right, "Who has a pet", "Tap a slot, then a pet")
-	local slots = frame("List", right)
+	local slots = Instance.new("ScrollingFrame") -- scrolls when the helpers' rows outgrow a phone screen (#834)
+	slots.Name = "List"
 	slots.LayoutOrder = 2
+	slots.BackgroundTransparency = 1
+	slots.BorderSizePixel = 0
+	slots.ScrollBarThickness = 8
+	slots.ScrollBarImageColor3 = Kit.INK_SOFT
+	slots.ScrollingDirection = Enum.ScrollingDirection.Y
 	slots.Size = UDim2.fromScale(1, 0)
-	slots.AutomaticSize = Enum.AutomaticSize.Y
+	slots.Parent = right
+	local slotsPad = Instance.new("UIPadding") -- room for the rows' outlines inside the list's edge
+	slotsPad.PaddingLeft, slotsPad.PaddingTop = UDim.new(0, 4), UDim.new(0, 4)
+	slotsPad.PaddingRight, slotsPad.PaddingBottom = UDim.new(0, 4), UDim.new(0, 4)
+	slotsPad.Parent = slots
 	local slotList = list(slots, false, 10)
 
 	parts = {
