@@ -352,6 +352,16 @@ function SpaLayout.lineSpot(prefix: string, index: number, player: Player?): CFr
 	return cframe + (cframe.Position - SpaLayout.spot(before, player).Position) * past
 end
 
+-- (switch counterLine, issue 746) The plot's Attachment `<prefix><index>` (CounterRules: SpotCounter, SpotCounterCat)
+-- in plot `slot`, while the street is placed; nil when the plot has none.
+function SpaLayout.counterSpot(prefix: string, index: number, slot: number): CFrame?
+	if not placed() then
+		return nil
+	end
+	local attachment = placedAttachment(`{prefix}{index}`, slot)
+	return if attachment then attachment.WorldCFrame else nil
+end
+
 -- fn() when the street is placed or taken away, or the local player gets their slot.
 function SpaLayout.changed(fn: () -> ())
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(fn)

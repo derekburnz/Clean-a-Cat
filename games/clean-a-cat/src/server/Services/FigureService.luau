@@ -18,7 +18,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
+local CounterRules = require(Shared:WaitForChild("CounterRules"))
 local HeartRules = require(Shared:WaitForChild("HeartRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -57,6 +59,12 @@ local function maxShown(): number
 end
 
 local FigureService = {}
+
+-- (switch counterLine, issue 746) Waiting customers stand at the counter window with their cat on the counter in front
+-- of them, their carrier empty in their hand.
+local function counterOn(): boolean
+	return LiveFlags.isOn(CounterRules.FLAG) and LiveFlags.isOn(CarryRules.FLAG)
+end
 
 type Look = {
 	name: string,
@@ -216,7 +224,8 @@ local function carrierFor(
 	hand: Instance?,
 	kind: string,
 	lookNumber: number,
-	looks: number
+	looks: number,
+	empty: boolean?
 ): Model?
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	-- stepped past the figure looks, so one figure look does not always carry the same carrier
@@ -245,7 +254,7 @@ local function carrierFor(
 		CFrame.new((hand :: Attachment).WorldPosition) * facing * CFrame.new(-gripLocal)
 	)
 	setAll(carrier, true)
-	local cat = asset(`CleanACat_Cat_{kind}_Dirty`)
+	local cat = if empty then nil else asset(`CleanACat_Cat_{kind}_Dirty`)
 	if cat and seat and seat:IsA("Attachment") then
 		local copy = cat:Clone() :: Model
 		local scale = carrier:GetAttribute("CatScale")
@@ -284,11 +293,79 @@ end
 -- Where the customer at place `index` of plot `slot` stands: on the mats, or with benchGrow places 4 to 6 on
 -- SpotBench<index> (SpaLayout.benchSpot for a slot).
 local function queueSpot(index: number, slot: number): CFrame
+	local counter = if counterOn()
+		then SpaLayout.counterSpot(CounterRules.SPOT_PREFIX, index, slot)
+		else nil
+	if counter then
+		return counter -- (switch counterLine) at the counter window
+	end
 	local bench = `SpotBench{index}`
 	if LiveFlags.isOn(SpaRules.BENCH_FLAG) and SpaLayout.PLOT_SPOTS[bench] then
 		return SpaLayout.slotSpot(bench, slot)
 	end
 	return lineSpotOf(index, slot)
+end
+
+-- (switch counterLine) Where the cat of the customer at place `index` of plot `slot` sits on the counter: the plot's
+-- SpotCounterCat<index>, else CounterRules.CAT_UP and CAT_FORWARD from where they stand.
+local function catSpot(index: number, slot: number): CFrame
+	return SpaLayout.counterSpot(CounterRules.CAT_SPOT_PREFIX, index, slot)
+		or queueSpot(index, slot)
+			* CFrame.new(0, CounterRules.CAT_UP, -CounterRules.CAT_FORWARD)
+end
+
+-- (switch counterLine) The dirty cat of `kind` on the counter for the customer of `lookNumber` at `place`, pivoted at
+-- `at`: anchored, never colliding, with its place and its customer's look for Design's card and the take prompt.
+local function counterCat(kind: string, lookNumber: number, place: number, at: CFrame): Model?
+	local base = asset(`CleanACat_Cat_{kind}_Dirty`)
+	if base == nil then
+		return nil
+	end
+	local cat = base:Clone() :: Model
+	cat.Name = CounterRules.CAT_NAME
+	cat:ScaleTo(CounterRules.CAT_SCALE)
+	cat:PivotTo(at)
+	setAll(cat, true)
+	for _, part in cat:GetDescendants() do
+		if part:IsA("BasePart") then
+			(part :: BasePart).CanCollide = false
+			(part :: BasePart).CanTouch = false
+		end
+	end
+	cat:SetAttribute(CounterRules.PLACE_ATTRIBUTE, place)
+	cat:SetAttribute(CounterRules.LOOK_ATTRIBUTE, lookNumber)
+	cat:SetAttribute(CounterRules.KIND_ATTRIBUTE, kind)
+	return cat
+end
+
+-- A figure's place in the line as shown, on it and on its cat on the counter.
+local function setPlace(figure: Model, index: number)
+	figure:SetAttribute(PLACE_ATTRIBUTE, index)
+	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
+	if cat then
+		cat:SetAttribute(CounterRules.PLACE_ATTRIBUTE, index)
+	end
+end
+
+-- A leaving customer picks their cat up off the counter: it goes back in their carrier, so it walks off with them.
+local function packCat(figure: Model)
+	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
+	if cat == nil or not cat:IsA("Model") then
+		return
+	end
+	local carrier = figure:FindFirstChild("Carrier", true)
+	local seat = if carrier then carrier:FindFirstChild("CatSeat", true) else nil
+	if carrier == nil or seat == nil or not seat:IsA("Attachment") then
+		cat:Destroy()
+		return
+	end
+	local scale = carrier:GetAttribute("CatScale")
+	local model = cat :: Model
+	model:ScaleTo(if type(scale) == "number" and scale > 0 then scale else 0.8)
+	model:PivotTo((seat :: Attachment).WorldCFrame)
+	model:SetAttribute(CounterRules.PLACE_ATTRIBUTE, nil)
+	model.Name = "PackedCat"
+	model.Parent = carrier
 end
 
 -- Look numbers first, first + 1, ... for `count` customers.
@@ -302,7 +379,13 @@ end
 
 -- One of Model-Agent's townsfolk for look number `lookNumber`, holding the carrier with a cat of `kind`, standing on
 -- `spot` (its pivot is on the floor between its feet, front -Z, as a spot's).
-local function townsfolkFor(lookNumber: number, kind: string, spot: CFrame): Model?
+local function townsfolkFor(
+	lookNumber: number,
+	kind: string,
+	spot: CFrame,
+	place: number?,
+	slot: number?
+): Model?
 	local special = CatRules.isSpecial(kind)
 	-- a special visitor is one of Model-Agent's three special customers (#476), each always with the same cat
 	local look = if special
@@ -316,11 +399,22 @@ local function townsfolkFor(lookNumber: number, kind: string, spot: CFrame): Mod
 	figure:PivotTo(spot)
 	setAll(figure, true)
 	local grip = figure:FindFirstChild("Grip", true)
-	local carrier = carrierFor(figure, grip, kind, lookNumber, #TOWNSFOLK)
+	local onCounter = counterOn() and place ~= nil and slot ~= nil
+	local carrier = carrierFor(figure, grip, kind, lookNumber, #TOWNSFOLK, onCounter)
 	if carrier then
 		-- under the arm's joint Model, so the carrier sways with the arm Motion-FX turns
 		local arm = if grip then grip:FindFirstAncestorWhichIsA("Model") else nil
 		carrier.Parent = if arm and arm ~= (figure :: Instance) then arm else figure
+	end
+	if onCounter then
+		-- the cat on the counter, placed from where the figure stands now as it will be from their place, so it lands
+		-- on the counter as the figure arrives there (CustomerWalkController moves the whole figure)
+		local mat = queueSpot(place :: number, slot :: number)
+		local relative = mat:ToObjectSpace(catSpot(place :: number, slot :: number))
+		local cat = counterCat(kind, lookNumber, place :: number, spot * relative)
+		if cat then
+			cat.Parent = figure
+		end
 	end
 	figure:SetAttribute("CatKind", kind)
 	if special then
@@ -356,9 +450,9 @@ local function buildTownsfolk(
 		elseif was ~= nil and was ~= index then
 			start = queueSpot(was, slot)
 		end
-		local figure = townsfolkFor(lookNumbers[index] or index, kinds[index], start)
+		local figure = townsfolkFor(lookNumbers[index] or index, kinds[index], start, index, slot)
 		if figure then
-			figure:SetAttribute(PLACE_ATTRIBUTE, index)
+			setPlace(figure, index)
 			figure:SetAttribute(LOOK_ATTRIBUTE, lookNumbers[index] or index)
 			if start ~= mat then
 				figure:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
@@ -408,13 +502,25 @@ local function buildFolder(
 				figure:FindFirstChild("RightGripAttachment", true),
 				kinds[index],
 				lookNumbers[index] or index,
-				#LOOKS
+				#LOOKS,
+				counterOn()
 			)
 			if carrier then
 				carrier.Parent = figure
 			end
+			if counterOn() then
+				local cat = counterCat(
+					kinds[index],
+					lookNumbers[index] or index,
+					index,
+					catSpot(index, slot)
+				)
+				if cat then
+					cat.Parent = figure
+				end
+			end
 			figure:SetAttribute("CatKind", kinds[index])
-			figure:SetAttribute(PLACE_ATTRIBUTE, index)
+			setPlace(figure, index)
 			figure.Parent = folder
 		end
 	end
@@ -470,7 +576,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			end
 			continue
 		end
-		local made = townsfolkFor(look, kind, lineSpotOf(WalkRules.STREET_PLACE, slot))
+		local made = townsfolkFor(look, kind, lineSpotOf(WalkRules.STREET_PLACE, slot), index, slot)
 		if redraws[player] ~= mine then
 			if made then
 				made:Destroy()
@@ -481,7 +587,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 			return -- a newer redraw took over while this one loaded a figure
 		end
 		if made then
-			made:SetAttribute(PLACE_ATTRIBUTE, index)
+			setPlace(made, index)
 			made:SetAttribute(LOOK_ATTRIBUTE, look)
 			made:SetAttribute(WalkRules.TO_ATTRIBUTE, mat)
 			made:SetAttribute(WalkRules.AT_ATTRIBUTE, walkIn + arrivals * WalkRules.FILE_GAP)
@@ -514,7 +620,7 @@ local function redrawInPlace(player: Player, slot: number, line: LineLooks.Line,
 		end
 	end
 	for _, step in stepUps do
-		step.figure:SetAttribute(PLACE_ATTRIBUTE, step.index)
+		setPlace(step.figure, step.index)
 		step.figure:SetAttribute(WalkRules.FILE_ATTRIBUTE, nil)
 		step.figure:SetAttribute(WalkRules.TO_ATTRIBUTE, step.mat)
 		-- set last: a client starts the walk when the start time changes
@@ -629,6 +735,9 @@ function FigureService.left(player: Player, index: number, linger: boolean?)
 			then
 				-- never taken for a newcomer with the same look; its place stays, for CustomerLeft's copy on the device
 				figure:SetAttribute(LEAVING_ATTRIBUTE, true)
+				if figure:IsA("Model") then
+					packCat(figure :: Model) -- (switch counterLine) they take their cat off the counter with them
+				end
 				if linger and not lingering[figure] then
 					lingering[figure] = true
 					figure.Destroying:Once(function()
@@ -702,6 +811,12 @@ local function drawAll()
 	end
 end
 
+-- (switch counterLine) Where the cat at shown place `index` sits on the counter in plot `slot`, for SpaService's reach
+-- check on a take.
+function FigureService.counterCatSpot(index: number, slot: number): CFrame
+	return catSpot(index, slot)
+end
+
 function FigureService.Init(_services: { [string]: any }) end
 
 function FigureService.Start()
@@ -717,6 +832,17 @@ function FigureService.Start()
 		:Connect(drawAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. TOWNSFOLK_FLAG)
 		:Connect(drawAll)
+	-- the counter on or off changes how every figure is dressed: those lines are built again, not redrawn in place
+	for _, flag in { CounterRules.FLAG, CarryRules.FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(function()
+				for _, player in Players:GetPlayers() do
+					clear(player)
+					shown[player] = nil
+				end
+				drawAll()
+			end)
+	end
 end
 
 return FigureService

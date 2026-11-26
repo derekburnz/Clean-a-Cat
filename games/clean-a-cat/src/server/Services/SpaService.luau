@@ -29,6 +29,7 @@ local BowRules = require(Shared:WaitForChild("BowRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
+local CounterRules = require(Shared:WaitForChild("CounterRules"))
 local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local HeartRules = require(Shared:WaitForChild("HeartRules"))
@@ -709,21 +710,77 @@ local function standsNear(player: Player, spot: Vector3, reach: number): boolean
 		and CarryRules.within((root :: BasePart).Position, spot, reach)
 end
 
--- The player takes the cat from the front customer (switch customerCarry): it is in their arms, and that customer
--- leaves the line. Only while the cat is at the door and the player stands by the front of the line.
-local function onTakeCat(player: Player)
+-- (switch counterLine, issue 746) The player takes the cat at counter place `place` (2 or more) while the front
+-- customer holds `cat` at the door: that customer's cat goes back on the counter at the front of the line, with a
+-- full heart bar, and the cat at `place` is the one handed over, with its order, as a pick would (#201). True when
+-- it was taken.
+local function takeFromCounter(player: Player, cat: SpaRules.Cat, place: number): boolean
+	local save = DataService.get(player)
+	-- a new spa's first customer is the guaranteed common cat: as with picks, the counter opens once one is served
+	if save == nil or save.stars <= 0 or cat.kind == nil then
+		return false
+	end
+	local line = queueFor(player, true)
+	local orders = ordersFor(player)
+	local entry = CounterRules.entryFor(place, true, #line)
+	if entry == nil or entry < 1 then
+		return false
+	end
+	local kind = cat.kind :: string
+	local now = Workspace:GetServerTimeNow()
+	local back: Order = {
+		needs = (cat.needs or CatRules.needs(kind)) :: any,
+		dirt = cat.dirt or 1,
+		since = now, -- their bar was held full at the door
+		lasts = HeartRules.lasts(kind, played(player)),
+		tutorial = cat.tutorial == true,
+		special = cat.special,
+		-- the player put them back: workers leave them for a moment, as for a pick (tuning worker.reserve)
+		reservedUntil = os.clock() + WorkerRules.RESERVE_SECONDS,
+	}
+	local taken, order = CounterRules.swapIn(line, orders, entry, { kind = kind, order = back })
+	if taken == nil or order == nil then
+		return false
+	end
+	cat.kind = taken
+	cat.needs = order.needs :: any
+	cat.dirt = order.dirt
+	cat.tutorial = order.tutorial
+	cat.special = order.special
+	cat.early = order.early == true or HeartRules.early(order.since, order.lasts, now)
+	-- the figures follow: the one taken goes first (with their look), so served takes them and not the one put back
+	FigureService.picked(player, place)
+	return true
+end
+
+-- The player takes a cat (switch customerCarry): it is in their arms, and that customer leaves the line. Only while
+-- the next cat is at the door and the player stands by it: the front of the line, or with counterLine on the cat at
+-- counter place `rawPlace` (1, the front, when nil), which may be any place in the line as shown (issue 746).
+local function onTakeCat(player: Player, rawPlace: unknown)
 	local cat = cats[player]
 	if
 		not (LiveFlags.isOn(FLAG) and LiveFlags.isOn(CarryRules.FLAG))
 		or carrying[player] ~= CarryRules.DOOR
 		or cat == nil
 		or cat.kind == nil
-		or not standsNear(
-			player,
-			SpaLayout.lineSpot("SpotQueue", 1, player).Position,
-			CarryRules.TAKE_REACH
-		)
 	then
+		return
+	end
+	local counter = LiveFlags.isOn(CounterRules.FLAG)
+	local place = if rawPlace == nil then 1 else Guard.int(rawPlace, 1, SpaRules.MAX_QUEUE + 1)
+	if place == nil or (place > 1 and not counter) then
+		return
+	end
+	local slot = SpaLayout.slotOf(player)
+	local spot = if counter
+			and slot
+			and SpaLayout.onPlot(player)
+		then FigureService.counterCatSpot(place, slot).Position
+		else SpaLayout.lineSpot("SpotQueue", place, player).Position
+	if not standsNear(player, spot, CarryRules.TAKE_REACH) then
+		return
+	end
+	if place > 1 and not takeFromCounter(player, cat, place) then
 		return
 	end
 	carrying[player] = "arms" -- CarryRules.ARMS
