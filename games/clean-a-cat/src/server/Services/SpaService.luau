@@ -1000,6 +1000,18 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		lines.bowTier = tier
 		extra = lines
 	end
+	-- (issue 530) the events of a finished wash, and a special visitor's
+	Telemetry.event(player, "wash_done", 1, {
+		tostring(if dirtOn then cat.dirt or 0 else 0),
+		tostring(#(cat.needs or {})),
+		tostring(math.floor(cat.washSeconds or (os.clock() - (cat.washFrom or os.clock())))),
+	})
+	if cat.special then
+		Telemetry.event(player, "visitor_result", 1, {
+			"washed",
+			tostring(save.asks[SpecialRules.FIRST_DONE] ~= true),
+		})
+	end
 	-- A special visitor's cat may leave a crate (switch specialVisitors): always the first of a save, then rarely.
 	if cat.special and LiveFlags.isOn(SpecialRules.FLAG) then
 		local firstDone = save.asks[SpecialRules.FIRST_DONE] == true
@@ -1008,6 +1020,7 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 			local kind = SpecialRules.CRATE_KIND
 			save.crates[kind] = (save.crates[kind] or 0) + 1
 			player:SetAttribute(SpecialRules.CRATES_ATTRIBUTE, save.crates[kind])
+			Telemetry.event(player, "crate_earned", 1, { "visitor" })
 			PetService.show(player)
 			NetService.notice(player, `{cat.kind} left you a crate!`)
 		end
@@ -1125,6 +1138,19 @@ local function customerLeaves(player: Player, place: number)
 	local kind = if line then line[place] else nil
 	if line == nil or kind == nil then
 		return
+	end
+	-- (issue 530) a cat lost to an empty heart bar, and a special visitor missed
+	local lost = ordersFor(player)[place]
+	Telemetry.event(player, "cat_lost", 1, {
+		tostring(if lost then lost.dirt else 0),
+		CatRules.rarityOf(kind) or "Common",
+	})
+	if CatRules.isSpecial(kind) then
+		local save = DataService.get(player)
+		Telemetry.event(player, "visitor_result", 1, {
+			"missed",
+			tostring(save ~= nil and save.asks[SpecialRules.FIRST_DONE] ~= true),
+		})
 	end
 	local shownPlace = place + (if carrying[player] == CarryRules.DOOR then 1 else 0)
 	-- In place (lineReuse), the device hears it after the redraw, so it gets the newcomer and the leave in the same
