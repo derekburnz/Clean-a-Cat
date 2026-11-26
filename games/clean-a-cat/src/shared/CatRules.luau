@@ -39,6 +39,12 @@ CatRules.TIERS = table.freeze({
 	}),
 }) :: { Tier }
 CatRules.TIER_ATTRIBUTE = "ChanceTier" -- Player attribute the server sets, so the board shows the player's tier
+-- The wash's grade is the stars it earns (switch gradeStars, issue 868). The owner on 2026-11-26, of the recap's
+-- "+1 star" over "Quick wash, 3 stars": "it should be +3 stars if I got a 3 star". A customer gives the wash's 1 to 3
+-- stars plus its rarity's extra (gradeStars), so a spa earns about three times the stars; the tiers start three times
+-- higher (STAR_SCALE) and still come at about the 15th and 40th customer.
+CatRules.GRADE_STARS_FLAG = "gradeStars"
+CatRules.STAR_SCALE = 3
 
 -- The cats, by rarity; each name matches Model-Agent's ReplicatedStorage.Assets.CleanACat_Cat_<Name>... models.
 CatRules.ROSTER = table.freeze({
@@ -135,11 +141,26 @@ function CatRules.rank(rarity: string): number?
 	return table.find(CatRules.ALL_RARITIES, rarity)
 end
 
--- The star tier (an index into TIERS) for a spa with `stars` stars.
-function CatRules.tierFor(stars: number): number
+-- How many times the tier thresholds are multiplied: STAR_SCALE with the switch gradeStars on, else 1.
+function CatRules.starScale(isOn: ((flag: string) -> boolean)?): number
+	return if isOn ~= nil and isOn(CatRules.GRADE_STARS_FLAG) then CatRules.STAR_SCALE else 1
+end
+
+-- The stars a customer gives for a wash graded `grade` (1 to 3) when its rarity gives `rarityStars` (CatRules.PAY):
+-- the grade, plus the rarity's stars over a Common's 1. A missing or odd grade gives the rarity's stars.
+function CatRules.gradeStars(rarityStars: number, grade: number?): number
+	if type(grade) ~= "number" or grade ~= grade or grade % 1 ~= 0 or grade < 1 or grade > 3 then
+		return rarityStars
+	end
+	return grade + math.max(rarityStars - 1, 0)
+end
+
+-- The star tier (an index into TIERS) for a spa with `stars` stars; the thresholds times starScale(isOn).
+function CatRules.tierFor(stars: number, isOn: ((flag: string) -> boolean)?): number
 	local tier = 1
+	local scale = CatRules.starScale(isOn)
 	for index, entry in CatRules.TIERS do
-		if stars >= entry.stars then
+		if stars >= entry.stars * scale then
 			tier = index
 		end
 	end
@@ -159,10 +180,10 @@ function CatRules.chancesAt(tier: number?): { [string]: number }
 	return CatRules.TIERS[CatRules.cleanTier(tier)].chances
 end
 
--- The stars the next tier starts at, or nil at the top tier.
-function CatRules.nextTierStars(tier: number?): number?
+-- The stars the next tier starts at (times starScale(isOn)), or nil at the top tier.
+function CatRules.nextTierStars(tier: number?, isOn: ((flag: string) -> boolean)?): number?
 	local following = CatRules.TIERS[CatRules.cleanTier(tier) + 1]
-	return if following then following.stars else nil
+	return if following then following.stars * CatRules.starScale(isOn) else nil
 end
 
 -- One customer's cat. `random()` returns a number in [0, 1) (Random.new():NextNumber in the game). `tier` is the

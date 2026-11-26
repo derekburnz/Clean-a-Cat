@@ -104,6 +104,23 @@ return function()
 			expect(CatRules.tierFor(0 / 0)).to.equal(1)
 			expect(CatRules.nextTierStars(1)).to.equal(CatRules.TIERS[2].stars)
 			expect(CatRules.nextTierStars(#CatRules.TIERS)).to.equal(nil)
+			-- gradeStars (issue 868): the tiers start three times higher
+			local function graded(flag: string): boolean
+				return flag == CatRules.GRADE_STARS_FLAG
+			end
+			expect(CatRules.tierFor(CatRules.TIERS[2].stars, graded)).to.equal(1)
+			expect(CatRules.tierFor(CatRules.TIERS[2].stars * 3, graded)).to.equal(2)
+			expect(CatRules.nextTierStars(1, graded)).to.equal(CatRules.TIERS[2].stars * 3)
+		end)
+
+		it("gives the wash's grade in stars, plus a rarer cat's extra", function()
+			expect(CatRules.gradeStars(1, 3)).to.equal(3)
+			expect(CatRules.gradeStars(1, 1)).to.equal(1)
+			expect(CatRules.gradeStars(2, 3)).to.equal(4)
+			expect(CatRules.gradeStars(5, 2)).to.equal(6)
+			expect(CatRules.gradeStars(2, nil)).to.equal(2)
+			expect(CatRules.gradeStars(1, 0)).to.equal(1)
+			expect(CatRules.gradeStars(1, 0 / 0)).to.equal(1)
 		end)
 
 		it("sums to 100 at every tier and never lowers a rarer chance", function()
