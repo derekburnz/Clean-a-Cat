@@ -25,6 +25,7 @@ local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
 local SpaService = require(script.Parent:WaitForChild("SpaService"))
+local StaffNameService = require(script.Parent:WaitForChild("StaffNameService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
@@ -287,7 +288,7 @@ local function onHire(player: Player, rawId: unknown)
 	WalletService.show(player)
 	WorkerService.refresh(player)
 	PetService.show(player) -- the worker brings a pet slot
-	NetService.notice(player, `{WorkerRules.WORKERS[id].name} works here now`)
+	NetService.notice(player, `{StaffNameService.nameOf(player, id)} works here now`)
 	Telemetry.economy(player, "coins", "sink", spent, save.coins, "Shop", `Worker{id}`)
 	Telemetry.event(
 		player,
@@ -320,7 +321,10 @@ local function onLevel(player: Player, rawId: unknown)
 	end
 	WalletService.show(player)
 	player:SetAttribute(`WorkerLevel_{id}`, save.workers[id].level)
-	NetService.notice(player, `{WorkerRules.WORKERS[id].name} is level {save.workers[id].level}`)
+	NetService.notice(
+		player,
+		`{StaffNameService.nameOf(player, id)} is level {save.workers[id].level}`
+	)
 	Telemetry.economy(player, "coins", "sink", spent, save.coins, "Shop", `WorkerLevel{id}`)
 end
 
@@ -356,7 +360,10 @@ local function finish(player: Player, id: string, job: Job)
 	save.coins += coins
 	WalletService.show(player)
 	IndexService.stamp(player, job.kind, "washed")
-	NetService.notice(player, `+{coins} coins: {WorkerRules.WORKERS[id].name} washed {job.kind}`)
+	NetService.notice(
+		player,
+		`+{coins} coins: {StaffNameService.nameOf(player, id)} washed {job.kind}`
+	)
 	Telemetry.economy(player, "coins", "source", coins, save.coins, "Gameplay", `Worker{id}`)
 	restUntil[player] = restUntil[player] or {}
 	restUntil[player][id] = os.clock() + REST_SECONDS
