@@ -34,3 +34,21 @@
 | Camera by the frame | 35% (33% tilted), the same at the right frame. Unchanged |
 | Pet and workers | Unchanged by a height change. The pet beside the player has no solid parts, and the workers never come near the gate (checked on bccd28f) |
 | Console | Only the known lines |
+
+## Recheck on ebf6489 (PR 742, slabs 12 studs tall, top y 12.5)
+- The same place with the Garden model from ebf6489. The gift changes in PRs 732 and 733 are not loaded; they don't touch the gate. Phone frame.
+- Jumps were scripted, not pressed as keys: the player controls were turned off, then Humanoid:MoveTo toward a point past the slab, with Humanoid.Jump set 0.1 to 0.25 s in.
+- The tries:
+  - into each slab from 1 stud away and across the 4-stud gateway, at z 2, 3 and 4;
+  - from behind each leaf back toward the gateway;
+  - double jumps from beside each post, whose 0.7 x 0.7 caps at y 4.94 are the highest place a player can stand near the gate.
+- Walks used the qaWalk helper.
+
+| Check | Result |
+|---|---|
+| Moving jumps, R15, 20 tries (14 left the ground) | PASS. None got onto or over a slab. The highest root reached y 12.1, below the slab top at 12.5. One try from behind the right leaf at z 3.5 came out into the gateway, but it went round the leaf's free end (the slab ends at z 4.3) and not over it |
+| Moving jumps, R6, 20 tries (17 left the ground) | PASS. None got onto or over a slab; the highest root reached y 11.0. A jump can land on a post cap (root about y 8), but a second jump from there does not reach the slab top |
+| Gate in and out with qaWalk, 3 times | PASS: 9 of 9 walks reached by path, 0.1 to 1.1 s |
+| Carrying a customer's cat (Take with E), in and out twice | PASS: 6 of 6 walks reached by path, still carrying |
+| Camera by the frames | 35% left, 33% tilted, 35% right. Unchanged |
+| Console | Only the known lines |
