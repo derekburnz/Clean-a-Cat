@@ -74,7 +74,8 @@ local function tintMats()
 		end
 	end
 	for part, color in matColors do
-		if want[part] == nil then
+		local wanted: Color3? = want[part]
+		if wanted == nil then
 			if part.Parent then
 				part.Color = color
 			end
@@ -82,7 +83,8 @@ local function tintMats()
 		end
 	end
 	for part, color in want do
-		if matColors[part] == nil then
+		local own: Color3? = matColors[part]
+		if own == nil then
 			matColors[part] = part.Color
 		end
 		part.Color = color
