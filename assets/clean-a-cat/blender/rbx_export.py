@@ -147,9 +147,9 @@ def _part(cls, name, pos, rot, size, swatch, shape=None, mesh=None):
 
 def _cyl_parts(name, M4, swatch, fr):
     """A cylinder band (or several for a cone): Roblox cylinders run along local X."""
-    f0, f1 = fr
+    f0, f1, *most = fr                 # a light twin's cone (common.LITE) names the most bands it may cost
     taper = abs(f0 - f1)
-    n = 1 if taper < 0.12 else (2 if taper < 0.35 else 3)
+    n = min([1 if taper < 0.12 else (2 if taper < 0.35 else 3), *most])
     out = []
     for i in range(n):
         t = (i + 0.5) / n
@@ -203,9 +203,10 @@ def prim_parts(name, kind, M4, swatch, extra):
         return _tri_parts(name, M4, swatch, extra)
     if kind == "pyramid":
         out = []
-        for i in range(3):
-            t = (i + 0.5) / 3
-            band = M4 @ Matrix.Translation((0, 0, -0.5 + t)) @ Matrix.Diagonal((1 - t, 1 - t, 1 / 3, 1.0))
+        n = extra or 3                 # stacked boxes: three, or a light twin's two (common.LITE)
+        for i in range(n):
+            t = (i + 0.5) / n
+            band = M4 @ Matrix.Translation((0, 0, -0.5 + t)) @ Matrix.Diagonal((1 - t, 1 - t, 1 / n, 1.0))
             pos, rot, (sx, sy, sz) = _to_rbx(band)
             out.append(_part("Part", name, pos, rot, (sx, sz, sy), swatch))
         return out

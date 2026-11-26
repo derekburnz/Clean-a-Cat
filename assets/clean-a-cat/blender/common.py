@@ -161,6 +161,29 @@ def _mat(center, size=(1, 1, 1), rot=None):
     return m @ Matrix.Diagonal((*size, 1.0))
 
 
+# A light twin of an asset (#688): while LITE is a function (object name, kind, matrix, swatch, extra) -> bool,
+# every Builder leaves out the primitives it returns True for, and its shapes cost fewer Parts: a five point star
+# is 6 WedgeParts in place of 10, a pyramid 2 Parts in place of 3 and a cone 2 at most. `prim_size` gives a
+# primitive's three sizes; `lite()` is for builders with a cheaper way to draw a piece.
+LITE = None
+PENTAGRAM = 0.382           # a true pentagram's inner radius over its outer one
+
+
+def lite():
+    return LITE is not None
+
+
+def prim_size(kind, matrix, extra):
+    """A logged primitive's sizes along its own axes, largest first."""
+    if kind == "tri":
+        (p0, p1, p2), height = extra
+        xs, ys = [p[0] for p in (p0, p1, p2)], [p[1] for p in (p0, p1, p2)]
+        dims = [max(xs) - min(xs), max(ys) - min(ys), height]
+    else:
+        dims = [matrix.col[i].xyz.length for i in range(3)]
+    return sorted(dims, reverse=True)
+
+
 class Builder:
     """Accumulates primitives into one mesh, tagging each face with a swatch.
 
@@ -176,6 +199,9 @@ class Builder:
         self.bev = self.bm.edges.layers.int.new("bev")
         self.prims = []
         self.remap = remap              # swatch -> swatch, for a recoloured twin (a golden crate)
+        self.grp = self.bm.verts.layers.int.new("grp")   # which primitive call a vertex came from, 1 up (0: none)
+        self.groups = []                # per primitive call: its range of self.prims
+        self._grouped = 0
 
     def _log(self, kind, matrix, swatch, extra=None):
         self.prims.append((kind, matrix.copy(), self.remap(swatch) if self.remap else swatch, extra))
@@ -183,8 +209,11 @@ class Builder:
     # -- tagging ------------------------------------------------------------
     def _tag(self, verts, swatch, bevel):
         i = palette.idx(self.remap(swatch) if self.remap else swatch)
+        self.groups.append((self._grouped, len(self.prims)))
+        self._grouped = len(self.prims)
         faces, edges = set(), set()
         for v in verts:
+            v[self.grp] = len(self.groups)
             faces.update(v.link_faces)
             edges.update(v.link_edges)
         for f in faces:
@@ -212,7 +241,7 @@ class Builder:
         r2 = radius if radius2 is None else radius2
         rmax = max(radius, r2)
         self._log("cyl", _mat(center, scale, rot) @ Matrix.Diagonal((2 * rmax, 2 * rmax, height, 1.0)), swatch,
-                  (radius / rmax, r2 / rmax))
+                  (radius / rmax, r2 / rmax, 2) if LITE is not None else (radius / rmax, r2 / rmax))
         r = bmesh.ops.create_cone(self.bm, cap_ends=True, cap_tris=False, segments=segments,
                                   radius1=radius, radius2=r2, depth=height,
                                   matrix=_mat(center, scale, rot))
@@ -268,6 +297,9 @@ class Builder:
 
     def star(self, center, outer, inner, height, swatch, points=5, rot=None):
         """Star prism lying flat (rot stands it up), first point toward +Y."""
+        light = LITE is not None and points == 5 and 0.3 <= inner / outer <= 0.6
+        if light:
+            inner = outer * PENTAGRAM
         pts = []
         for k in range(points * 2):
             a = math.pi / 2 + math.pi * k / points
@@ -275,6 +307,15 @@ class Builder:
             pts.append((r * math.cos(a), r * math.sin(a)))
         if points != 5 or not 0.3 <= inner / outer <= 0.6:
             return self.prism(center, pts, height, swatch, rot=rot)
+        if light:
+            # A light twin's star (#688) is a true pentagram, which is three triangles: each has two tips and the
+            # dip across from the tip between them, and holds both arms and the middle. Two WedgeParts a
+            # triangle, 6 a star. Each a touch thinner than the last, as below.
+            m = _mat(center, (1, 1, 1), rot)
+            for j, (a, c) in enumerate(((0, 2), (1, 3), (4, 1))):
+                dip = pts[(2 * ((a + 1) % 5) + 5) % 10]
+                self._log("tri", m, swatch, ((pts[2 * a], pts[2 * c], dip), height * (1 - 0.015 * j)))
+            return self.prism(center, pts, height, swatch, rot=rot, log=False)
         # Parts (#3743): each tip as two right triangles from the centre, one WedgePart each, 10 a star instead of
         # the 20 a fan of 10 triangles costs. Each runs from the centre out to the tip and sideways along the tip's
         # edge, extended inward, to where it crosses the line through the centre square to the tip. They overlap
@@ -317,7 +358,7 @@ class Builder:
     def pyramid(self, base_center, size, height, swatch, bevel=False, rot=None):
         """Square pyramid standing on base_center. size = base width."""
         c = (base_center[0], base_center[1], base_center[2] + height / 2)
-        self._log("pyramid", _mat(c, (size, size, height), rot), swatch)
+        self._log("pyramid", _mat(c, (size, size, height), rot), swatch, 2 if LITE is not None else None)
         r = bmesh.ops.create_cone(self.bm, cap_ends=True, cap_tris=False, segments=4,
                                   radius1=size / math.sqrt(2), radius2=0.0, depth=height,
                                   matrix=_mat(c, (1, 1, 1), rot) @ Matrix.Rotation(math.radians(45), 4, "Z"))
@@ -366,8 +407,21 @@ class Builder:
         return self._tag(allv, swatch, bevel)
 
     # -- finish -------------------------------------------------------------
+    def _drop_small(self, name):
+        """LITE: take out every primitive call the rule drops, from the mesh and from the Part list alike."""
+        drop_groups, drop_prims = set(), set()
+        for g, (a, c) in enumerate(self.groups, start=1):
+            if c > a and all(LITE(name, *self.prims[i]) for i in range(a, c)):
+                drop_groups.add(g)
+                drop_prims.update(range(a, c))
+        if drop_groups:
+            bmesh.ops.delete(self.bm, geom=[v for v in self.bm.verts if v[self.grp] in drop_groups], context="VERTS")
+            self.prims = [p for i, p in enumerate(self.prims) if i not in drop_prims]
+
     def finalize(self, name, mat, bevel=BEVEL, location=(0, 0, 0)):
         bm = self.bm
+        if LITE is not None:
+            self._drop_small(name)
         bev_edges = [e for e in bm.edges if e[self.bev]]
         if bev_edges and bevel > 0:
             bmesh.ops.bevel(bm, geom=bev_edges, offset=bevel, offset_type="OFFSET",

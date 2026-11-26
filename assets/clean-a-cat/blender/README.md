@@ -23,13 +23,13 @@ Flags: `--only Smudge,Tux` (name fragments; a partial build leaves the manifest 
 |---|---|
 | `build_all.py` | builds every asset: FBX, Part model, manifest, gates, previews; exits 1 on a gate FAIL |
 | `palette.py` | every swatch (style guide section 2), the palette texture writer and `CLEAR_SWATCHES`, the swatches drawn see-through (a soap bubble, #111) |
-| `common.py` | `Builder` primitives tagged with a swatch, FBX export, previews (library port); `render_still` draws objects of soap bubbles see-through in pictures only |
+| `common.py` | `Builder` primitives tagged with a swatch, FBX export, previews (library port); `render_still` draws objects of soap bubbles see-through in pictures only; while `LITE` is set every Builder leaves out the pieces it names and draws stars, pyramids and cones with fewer Parts (#688) |
 | `rbx_export.py` | Part-built `.model.json` from the Builder's log; Clean a Cat's collision, tag and naming tables at the top |
 | `rbx_zfight.py` | finds and fixes faces that would flicker in the Part models, and finds see-through parts that overlap (the export stops the build on one); `python3 rbx_zfight.py` reports both, as `zfight N` and `glass N` |
 | `gates.py` | PASS or FAIL per asset: budget, transforms, material, UVs, naming, and the `blender-asset-qa` skill's `qa_check.py` (roblox profile) |
 | `camera_rest_check.py` | #670: rests a camera against the spa room's walls the way Roblox's pull-in does and counts the screen covered by walk-through parts and piece edges close to the eye. Run it after changing anything on a wall; it prints PASS when no view up to 8 studs high is more than half covered |
 | `contact_sheet.py` | tiles previews into sheets |
-| `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`) |
+| `cats.py` | the cat bodies (A walking, B sitting) from the library and Clean a Cat's roster of ten coats (`ROSTER`); `build_cat_lite` builds a special cat's light sitting twin `..._Sit_Lite` (#688) |
 | `dirt.py` | the dirty cats (#12): the mud coat (#113: 20 pieces that wrap the cat's own blocks, listed once per body), tangles and the hidden fluffed look (#14) placed by casting rays at each built cat, and the hidden long claws (#23); root attributes for the scrub, brush and dryer |
 | `stations.py` | the spa stations: the wash tub (#13), the brush table, its upgrade and the hood dryer with its `Nozzle` (#18), the bubble bath with its `Spout` and the pawdicure (#23), each with a `CatSeat` attachment |
 | `tools.py` | hand tools: the three sponges (#13), the brush (#14) with its fluffy and golden upgrades and the rain and golden showers (#142), and drafts for the other wash steps (#123: shower, comb, tweezers, towel, nail clipper, hand dryer, shampoo), each with a `Handle` part |
