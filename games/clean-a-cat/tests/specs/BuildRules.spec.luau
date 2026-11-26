@@ -276,5 +276,11 @@ return function()
 			expect(BuildRules.leftText(23 * 3600 + 59 * 60 + 44)).to.equal("24h 0m left")
 			expect(BuildRules.leftText(2 * 3600 + 14 * 60 + 10)).to.equal("2h 15m left")
 		end)
+
+		it("ships the Build window's reach behind a switch that starts off", function()
+			local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+			expect(table.find(LiveFlags.KEYS, BuildRules.WINDOW_FLAG)).to.be.ok()
+			expect(LiveFlags.OFF_BY_DEFAULT[BuildRules.WINDOW_FLAG]).to.equal(true)
+		end)
 	end)
 end

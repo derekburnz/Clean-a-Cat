@@ -140,7 +140,9 @@ local function onBuild(player: Player, rawId: unknown)
 	end
 	local id = Guard.oneOf(rawId, BuildRules.offered(LiveFlags.isOn)) -- an item whose switch is off is refused
 	local save = DataService.get(player)
-	if id == nil or save == nil or not nearBoard(player) then
+	-- the Build window (switch buildWindow, issue 751) starts a build from anywhere; every other check stays
+	local reach = LiveFlags.isOn(BuildRules.WINDOW_FLAG) or nearBoard(player)
+	if id == nil or save == nil or not reach then
 		return
 	end
 	local state = stateOf(save)
