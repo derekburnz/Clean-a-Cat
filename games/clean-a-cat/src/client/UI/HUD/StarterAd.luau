@@ -17,6 +17,7 @@
 -- stays well above the jump button.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -35,6 +36,13 @@ local FLAGS = { "gameHud", "hudTidy", StarterRules.FLAG, "passes" }
 
 local EDGE = 22 -- design px from the root's right edge, as the coins
 local TOP = 108 -- design px from the root's top: under the coin pill and the friend tag
+-- Issue 857: in a small Studio window or on a short phone the card ran off the bottom of the screen. It shrinks to fit
+-- the room between TOP and the bottom edge (on a touch screen, above the jump button's corner), and hides when even
+-- MIN_FIT of its size would not fit; the Shop still sells the pack.
+local BOTTOM_ROOM = 120 -- design px kept clear above the bottom edge on a touch screen: the jump button's top
+local BOTTOM_EDGE = 16 -- design px kept clear with a mouse or a controller, where no jump button is drawn
+local CHIP_HANG = 13 -- design px: the time chip hangs half its height under the card
+local MIN_FIT = 0.6
 local RED = Color3.fromHex("E0475B")
 local GREEN = Color3.fromHex("2E9E46")
 local RIBBON_TOP, RIBBON_BOTTOM = Color3.fromHex("FF9CC6"), Color3.fromHex("FF6FA8")
@@ -86,6 +94,7 @@ local pack: number? = nil
 local noteText: string? = nil
 local aside = false
 local drawn: { string } = {}
+local tooSmall = false -- true while the card would not fit even at MIN_FIT
 
 local function allOn(): boolean
 	for _, name in FLAGS do
@@ -116,6 +125,39 @@ local function label(name: string, parent: Instance, size: number, colour: Color
 	return l
 end
 
+-- Shrinks the card so it ends above BOTTOM_ROOM, or hides it when it would have to go under MIN_FIT (issue 857).
+-- The card's own height in design px is its drawn height over the scale it is drawn at, so a new scale never feeds
+-- back into the next measure.
+local function fit()
+	local p = parts
+	if p == nil then
+		return
+	end
+	local root = p.holder.Parent
+	if root == nil or not root:IsA("GuiObject") then
+		return
+	end
+	local scale = Kit.screenScale()
+	local drawnAt = math.max(p.scale.Scale, 0.01)
+	local natural = p.card.AbsoluteSize.Y / drawnAt + CHIP_HANG
+	if natural <= CHIP_HANG then
+		return -- not laid out yet
+	end
+	local bottom = root.AbsolutePosition.Y + root.AbsoluteSize.Y
+	local clear = if UserInputService.TouchEnabled then BOTTOM_ROOM else BOTTOM_EDGE
+	local room = (bottom - root.AbsolutePosition.Y) / scale - TOP - clear
+	local k = math.min(1, room / natural)
+	local small = k < MIN_FIT
+	if small ~= tooSmall then
+		tooSmall = small
+		p.holder.Visible = allOn() and not aside and not tooSmall
+	end
+	local want = scale * math.max(k, MIN_FIT)
+	if math.abs(p.scale.Scale - want) > 0.001 then
+		p.scale.Scale = want
+	end
+end
+
 local function redraw()
 	local p = parts
 	if p == nil then
@@ -123,8 +165,7 @@ local function redraw()
 	end
 	local scale, short = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
-	p.scale.Scale = scale
-	p.holder.Visible = allOn() and not aside
+	p.holder.Visible = allOn() and not aside and not tooSmall
 	p.holder.Position = UDim2.new(1, -EDGE * scale, 0, TOP * scale)
 	p.holder.Size = UDim2.fromOffset(s.width, 0)
 	p.card.Size = UDim2.fromOffset(s.width, 0)
@@ -182,6 +223,7 @@ local function redraw()
 			then `Starter Pack: {pack} Robux instead of {total}, save {percent} percent`
 			else "Starter Pack"
 	)
+	fit()
 end
 
 function StarterAd.set(newItems: { StarterViewRules.Item }, newPack: number?)
@@ -386,6 +428,7 @@ function StarterAd.build(root: Instance, open: () -> ())
 			:Connect(redraw)
 	end
 	Players.LocalPlayer:GetAttributeChangedSignal(StarterRules.ENDS_ATTRIBUTE):Connect(redraw)
+	card:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit) -- the pictures and prices settle after a redraw
 	local camera = Workspace.CurrentCamera
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)
