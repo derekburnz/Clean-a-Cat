@@ -30,6 +30,11 @@ return function()
 				expect(ToolRules.TOOLS[id]).to.be.ok()
 			end
 		end)
+
+		it("buys only on a short hold, so a tap for another prompt never buys (issue 908)", function()
+			expect(ToolRules.BUY_HOLD >= 0.3).to.equal(true)
+			expect(ToolRules.BUY_HOLD <= 0.6).to.equal(true)
+		end)
 	end)
 
 	describe("ToolRules.spongeRadius", function()
