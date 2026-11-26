@@ -844,7 +844,11 @@ local function showNextToast()
 	toastToken += 1
 	local token = toastToken
 	label.Text = nextToast.text
-	ToastCard.style(label, nextToast.text, nextToast.kind, nextToast.icon) -- our card with toastCards, else the dark bar
+	local around = HUD.topRight() -- the coin pill and friend tag, then the starter ad: the card keeps clear (issue 925)
+	for _, piece in StarterAd.boxes() do
+		table.insert(around, piece)
+	end
+	ToastCard.style(label, nextToast.text, nextToast.kind, nextToast.icon, around) -- our card, else the dark bar
 	label.Visible = true
 	toastShownAt = os.clock()
 	task.spawn(function()
