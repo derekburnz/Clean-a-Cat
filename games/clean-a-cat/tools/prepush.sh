@@ -7,8 +7,8 @@
 #
 # Works on a cloud thread with no Rokit: missing tools are fetched once from their GitHub release pages at the
 # rokit.toml versions into ~/.cache/cleanacat-tools/<tool>-<version>. On a PC with Rokit, Rokit's own tools are used.
-# Selene needs Roblox's API list on its first run; where the network blocks that (cloud threads), Selene is skipped
-# with a warning and GitHub judges it. Every other step must pass.
+# Selene needs Roblox's API list (roblox.yml). Where the network blocks Selene's own fetch (cloud threads), the copy
+# main keeps is downloaded; only when that fails too is Selene skipped with a warning. Every other step must pass.
 #
 #   bash games/clean-a-cat/tools/prepush.sh            # from anywhere in the repo
 #   bash games/clean-a-cat/tools/prepush.sh --no-merge # skip step 1 (only when main was merged a moment ago)
@@ -87,16 +87,21 @@ done
 
 # The gate job, as CI runs it. Selene alone may be skipped when Roblox's API list cannot be fetched.
 cd "$GAME"
-# a cloud thread cannot generate Selene's Roblox list itself: take the one main's last check run kept
-# (taken again once a day, since GitHub makes a fresh one on every run)
-if [ -f roblox.yml ] && [ -n "$(find roblox.yml -mmin +1440 2>/dev/null)" ]; then
-	rm -f roblox.yml
-fi
-if ! [ -f roblox.yml ] && command -v gh >/dev/null 2>&1; then
-	RUN=$(gh run list -R derekburnz/Clean-a-Cat --workflow check --branch main --event push --status success -L 1 \
-		--json databaseId -q '.[0].databaseId' 2>/dev/null || true)
-	if [ -n "$RUN" ]; then
-		gh run download "$RUN" -R derekburnz/Clean-a-Cat -n selene-roblox-std -D . >/dev/null 2>&1 || true
+# a cloud thread cannot generate Selene's Roblox list itself: take the copy main's check run keeps as the asset
+# roblox.yml of the GitHub release selene-std (check.yml, job keep-selene-std; run artifacts are not reachable from a
+# cloud thread). Taken again once a day, and an old copy is replaced only when the new download worked.
+if ! [ -f roblox.yml ] || [ -n "$(find roblox.yml -mmin +1440 2>/dev/null)" ]; then
+	if command -v gh >/dev/null 2>&1; then
+		ASSET=$(gh api repos/derekburnz/Clean-a-Cat/releases/tags/selene-std \
+			-q '.assets[] | select(.name == "roblox.yml") | .url' 2>/dev/null || true)
+		if [ -n "$ASSET" ]; then
+			NEW=$(mktemp)
+			if gh api -H "Accept: application/octet-stream" "$ASSET" >"$NEW" 2>/dev/null && [ -s "$NEW" ]; then
+				mv "$NEW" roblox.yml
+			else
+				rm -f "$NEW"
+			fi
+		fi
 	fi
 fi
 if ! [ -f roblox.yml ] && ! selene generate-roblox-std >/dev/null 2>&1; then
