@@ -10,6 +10,12 @@ local CueRules = require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild
 
 local AudioController = {}
 
+-- Effects/PhotoFx, required lazily (issue 862): true while its photo beat plays its own shutter
+local PhotoFx: any = nil
+local function photoFxPlaying(): boolean
+	return PhotoFx ~= nil and PhotoFx.playing()
+end
+
 local MUSIC_FLAG = "spaMusic"
 local UI_SOUNDS_FLAG = "uiSounds" -- issue 800: window and More tray open and close sounds
 
@@ -109,7 +115,10 @@ local HANDLERS: { [string]: (...any) -> () } = {
 		Audio.play("bowPop")
 	end,
 	PhotoTaken = function()
-		Audio.play("camera")
+		-- with photoFx the shutter plays at its flash instead (Effects/PhotoFx, issue 862)
+		if not photoFxPlaying() then
+			Audio.play("camera")
+		end
 	end,
 	-- The opening's kitten is named and his collar pops on: the bell jingles at the collar.
 	SudsNamed = function(cat: any)
@@ -258,6 +267,11 @@ function AudioController.Start()
 		require(script.Parent.Parent:WaitForChild("Audio"):WaitForChild("SudsVoice")) :: any
 	SudsVoice.start(function(): boolean
 		return LiveFlags.isOn("sudsVoice")
+	end)
+	-- issue 862: the photo moment's blink, flash and print
+	PhotoFx = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("PhotoFx")) :: any
+	PhotoFx.start(function(): boolean
+		return LiveFlags.isOn("photoFx")
 	end)
 	-- issue 826: the coin pill bumps, counts up and gives one coinPop on a gain
 	local CoinBump =
