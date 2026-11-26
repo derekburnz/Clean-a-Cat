@@ -111,6 +111,8 @@ The Bows card in the Tools window sells the next bow tier from section 5 (the mo
 | `worker.maxLevel` | 5 | | 2026-11-25 |
 | `worker.modes` | about to leave, rarest, dirtiest, first in line (default first in line) | | 2026-11-25 |
 | `worker.nameLength` | 3 to 16 letters, filtered | | 2026-11-25 |
+| `worker.reserve` | a customer the player picked (Who's next? or Wash next) is kept for the player for 15 s or until it reaches the player's tub; workers take the next one by their mode | A worker never takes the cat the player is walking to (Review-QA on PR 562) | 2026-11-26 |
+| `worker.windowFromHud` | the Helpers window opens from its HUD button anywhere in the spa; Picks and Level up work from there with no distance check (the server still checks ownership, coins and the rate limit) | A menu choice is not a world interaction; a greyed button that asks the player to walk to a station would read as broken | 2026-11-26 |
 | `worker.count` | 3 at most (Jo, Sam and Lou) | | 2026-11-25 |
 | `worker.petCap` | a worker's pet boosts add together and are capped at +30% | Two pets with the second slot pass, star ups included, never pass the cap | 2026-11-25 |
 | `worker.doubleCoins` | 2x Coins and the Golden Sponge apply only to cats washed by hand, never to worker pay or the tip jar | Keeps the guard rail true for pass owners | 2026-11-25 |
