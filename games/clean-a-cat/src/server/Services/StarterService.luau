@@ -83,7 +83,7 @@ local function show(player: Player)
 end
 
 -- Starts the 72 hours once, the first join with the switch on.
-local function stamp(player: Player, save: SaveSchema.Save)
+local function stamp(_player: Player, save: SaveSchema.Save)
 	if not on() or save.starterEndsAt ~= 0 then
 		return
 	end
