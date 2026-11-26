@@ -146,6 +146,7 @@ Drafts, not wired into the game. Each follows the sponge's rules: one Model of P
 - `CleanACat_Tool_Clipper` (trim a claw): two mint blades open at the front, each ending in a metal jaw, a pale mint lever on a pin with a sky thumb pad.
 - `CleanACat_Tool_Dryer` (blow dry): a bubblegum barrel, a cream nozzle, a darker pink grip with a cream switch. Attachment `Air` at the nozzle's mouth, its +Y along the air.
 - `CleanACat_Tool_Shampoo` (lather): a lilac pump bottle, a cream label with a pink paw, a white pump with its spout to the front.
+- `CleanACat_Tool_SoapBar` (the foam step, #888; Derek 2026-11-26: "it should be like a soap bar and it be like foam up the cat"): a bubblegum bar shaped like a pill from above (flat sides, round ends), a deeper pink worn panel on top with a cream paw, three balls of white lather on its left end. 1.1 x 0.58 x 0.34 studs, about the sponge's size; the bar is `Handle`, the flat bottom rubs the fur, front -Z. 380 triangles, 12 parts.
 
 ### Draft upgrade tiers for the brush and the shower (#142)
 Upgrades follow the sponge's pattern: tier 2 is a step up in shape and colour that reads at phone size, tier 3 is tier 2 in gold. A tier keeps its tool's grip, `Handle` and attachments, so the game swaps the model without moving the hand. Drafts, not wired.
