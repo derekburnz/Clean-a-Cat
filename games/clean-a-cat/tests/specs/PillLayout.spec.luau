@@ -16,6 +16,30 @@ return function()
 	end
 
 	describe("PillLayout.keep", function()
+		it("shows at most `limit` pills, nearest first, with a winner first of all", function()
+			local kept = PillLayout.keep({
+				pill("a", 0, 0, 3),
+				pill("b", 0, 100, 1),
+				pill("c", 0, 200, 2),
+				pill("take", 0, 300, 9, true),
+			}, 2)
+			expect(kept.take).to.equal(true)
+			expect(kept.b).to.equal(true)
+			expect(kept.c).to.equal(nil)
+			expect(kept.a).to.equal(nil)
+		end)
+
+		it("leaves out pills past `near`, unless they win", function()
+			local kept = PillLayout.keep(
+				{ pill("near", 0, 0, 4), pill("far", 0, 100, 14), pill("take", 0, 200, 20, true) },
+				nil,
+				10
+			)
+			expect(kept.near).to.equal(true)
+			expect(kept.far).to.equal(nil)
+			expect(kept.take).to.equal(true)
+		end)
+
 		it("shows pills that stand apart", function()
 			local kept = PillLayout.keep({ pill("crate", 100, 100, 6), pill("brush", 100, 200, 4) })
 			expect(kept.crate).to.equal(true)

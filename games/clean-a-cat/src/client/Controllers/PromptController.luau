@@ -31,6 +31,7 @@ local PillLayout = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
 
 local FLAG = "smallPrompts"
+local FEWER_FLAG = "fewerPills" -- at most two pills, the nearest, within 10 studs (Spa/PillLayout, issue 745)
 local HEIGHT = 44 -- real px: a thumb's reach, and no bigger
 local TEXT = 20 -- real px
 local KEY = 28 -- real px: the key chip
@@ -260,7 +261,12 @@ local function settle()
 			})
 		end
 	end
-	local kept = PillLayout.keep(pills)
+	local fewer = LiveFlags.isOn(FEWER_FLAG)
+	local kept = PillLayout.keep(
+		pills,
+		if fewer then PillLayout.FEW else nil,
+		if fewer then PillLayout.NEAR else nil
+	)
 	for _, pill in pills do
 		local gui = drawn[pill.key]
 		local visible = kept[pill.key] == true
