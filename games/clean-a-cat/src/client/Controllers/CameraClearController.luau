@@ -3,13 +3,14 @@
 -- Roblox's own camera stops in front of parts players collide with, but not in front of ones they walk through
 -- (CanCollide off). On a returning join the camera rests on the spa's back wall right behind the spawn, where the
 -- framed picture (part of CleanACat_Area_SpaPlot_Decor, which players walk through) hangs, so the first frame was the
--- picture's light blue face. For SETTLE_SECONDS after each spawn, after the camera has moved in a frame, this checks
--- the line from the camera's focus to the camera: if it passes into a part the camera ignores, the camera turns
--- around its focus by the smallest of TURNS that gives a clear line. Only the turn is set; the camera keeps its own
--- distance and tilt and the player can turn it freely after. With the line clear nothing changes, so the opening's
--- shots and any good first frame stay exactly as they were. The moment the player turns or zooms the camera
--- themselves (a drag on the screen, the right mouse button, the wheel, the right stick or the arrow keys), the check
--- stops for that spawn, so it never fights them.
+-- picture's light blue face. For SETTLE_SECONDS after each spawn, every frame after the camera has moved, this checks
+-- the line from the camera's focus to the camera: if it passes into a part the camera ignores, or the camera sits
+-- behind or inside a solid wall, the camera turns around its focus by the smallest of TURNS that gives a clear line,
+-- in front of the first wall on it. It keeps its tilt and finds its own distance again from the next frame, and the
+-- check goes on for the whole window, since the camera can reset itself after a turn. With the line clear nothing
+-- changes, so the opening's shots and any good first frame stay exactly as they were. The moment the player turns or
+-- zooms the camera themselves (a drag on the screen, the right mouse button, the wheel, the right stick or the arrow
+-- keys), the check stops for that spawn, so it never fights them.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -25,6 +26,9 @@ local SETTLE_SECONDS = 2 -- how long after a spawn the camera is checked
 local NEAR = 0.3 -- past the camera along the line: the near plane draws this close
 local REACH = 12.5 -- the camera's default distance, used when testing a turn
 local SEE_THROUGH = 0.95 -- a part at least this transparent does not count
+local WALL_GAP = 0.25 -- a solid hit this much short of the camera means the camera is behind or inside it
+local WALL_MARGIN = 0.5 -- a turned camera stops this far in front of a wall
+local MIN_DISTANCE = 1.5 -- a turn that leaves the camera nearer the player than this is not used
 local TURNS = { 20, -20, 35, -35, 50, -50, 70, -70, 90, -90 } -- degrees around the focus, smallest first
 
 local CameraClearController = {}
@@ -32,21 +36,21 @@ local CameraClearController = {}
 local params = RaycastParams.new()
 params.FilterType = Enum.RaycastFilterType.Exclude
 
--- Distance along `direction` (a unit vector) from `from` to the first part the camera would show from inside: one
--- players walk through, not see through. Nil when the first thing in the way is solid (the camera stops in front of
--- it by itself) or nothing is within `length`.
-local function blockedAt(
+-- What the line from `from` along `direction` (a unit vector) meets within `length`, skipping see-through parts: the
+-- distance to a part players walk through that the camera would show from inside (the first thing it meets), or else
+-- the distance to the first solid part, where the camera's own pull-in stops it. Both nil when nothing is in the way.
+local function scan(
 	from: Vector3,
 	direction: Vector3,
 	length: number,
 	skip: { Instance }
-): number?
+): (number?, number?)
 	local ignore = table.clone(skip)
 	for _ = 1, 6 do
 		params.FilterDescendantsInstances = ignore
 		local hit = Workspace:Raycast(from, direction * length, params)
 		if hit == nil then
-			return nil
+			return nil, nil
 		end
 		local part = hit.Instance
 		if part.Transparency >= SEE_THROUGH then
@@ -54,11 +58,11 @@ local function blockedAt(
 			continue
 		end
 		if part.CanCollide then
-			return nil
+			return nil, hit.Distance
 		end
-		return hit.Distance
+		return hit.Distance, nil
 	end
-	return nil
+	return nil, nil
 end
 
 local function check(character: Model)
@@ -80,14 +84,21 @@ local function check(character: Model)
 		return -- first person: nothing to clear
 	end
 	local skip: { Instance } = { character }
-	if blockedAt(focus, offset.Unit, distance + NEAR, skip) == nil then
+	local through, solid = scan(focus, offset.Unit, distance + NEAR, skip)
+	-- in the clear: nothing walk-through in front of the camera, and not behind or inside a solid wall
+	if through == nil and (solid == nil or (solid :: number) >= distance - WALL_GAP) then
 		return
 	end
 	for _, degrees in TURNS do
 		local turned = CFrame.Angles(0, math.rad(degrees), 0):VectorToWorldSpace(offset.Unit)
-		if blockedAt(focus, turned, math.max(distance, REACH) + NEAR, skip) == nil then
-			-- this frame shows the turned view; from the next one the camera keeps the turn and finds its own distance
-			camera.CFrame = CFrame.lookAt(focus + turned * distance, focus)
+		local turnedThrough, wall = scan(focus, turned, math.max(distance, REACH) + NEAR, skip)
+		if turnedThrough ~= nil then
+			continue
+		end
+		-- the camera goes in front of the first wall itself, so this frame never shows the inside of one
+		local at = if wall then math.min(distance, (wall :: number) - WALL_MARGIN) else distance
+		if at >= MIN_DISTANCE then
+			camera.CFrame = CFrame.lookAt(focus + turned * at, focus)
 			return
 		end
 	end
@@ -115,15 +126,24 @@ local function onInput(input: InputObject, processed: boolean)
 end
 
 local function watch(character: Model)
+	local player = Players.LocalPlayer
 	RunService:UnbindFromRenderStep(BIND_NAME)
 	local started = os.clock()
 	playerTurned = false
 	RunService:BindToRenderStep(BIND_NAME, Enum.RenderPriority.Camera.Value + 1, function()
-		if os.clock() - started > SETTLE_SECONDS or character.Parent == nil or playerTurned then
+		-- checked every frame for the whole window: the camera can reset itself after a turn (a respawn does at
+		-- about 0.33 s), and a character not yet in the world is waited for, not given up on
+		if
+			os.clock() - started > SETTLE_SECONDS
+			or playerTurned
+			or player.Character ~= character
+		then
 			RunService:UnbindFromRenderStep(BIND_NAME)
 			return
 		end
-		check(character)
+		if character:IsDescendantOf(Workspace) then
+			check(character)
+		end
 	end)
 end
 
