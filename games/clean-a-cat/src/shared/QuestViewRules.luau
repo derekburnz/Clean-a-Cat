@@ -106,7 +106,7 @@ function QuestViewRules.crateLine(taken: boolean): string
 	if taken then
 		return "Yours this week! A new one next week."
 	end
-	return "A pet for finishing every weekly quest"
+	return "A crate for finishing every weekly quest"
 end
 
 function QuestViewRules.doneCount(weekly: { Entry }): number
