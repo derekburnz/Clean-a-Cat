@@ -40,13 +40,18 @@ function Telemetry.endSession(player: Player)
 	sessions[player] = nil
 end
 
--- Seconds this save has been played, this session included; nil before its save loaded.
+-- Seconds this save has been played, this session included; nil before its save loaded. Also
+-- Telemetry.played(player), for the check in card's first wait.
 local function playedSeconds(player: Player): number?
 	local session = sessions[player]
 	if session == nil then
 		return nil
 	end
 	return session.play + math.max(0, os.time() - session.at)
+end
+
+function Telemetry.played(player: Player): number?
+	return playedSeconds(player)
 end
 
 local function remember(line: string)

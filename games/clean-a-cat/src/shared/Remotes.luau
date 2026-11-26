@@ -51,6 +51,10 @@ Remotes.ClientToServer = {
 	-- Tip jar (JarService, behind tipJar).
 	"RequestCollectJar", -- ()  1 a second; switch on, save loaded, the character within JarRules.SERVER_REACH studs of the
 	-- player's SpotTipJar, coins in the jar: pays them and empties the jar
+	-- Check in card (CheckinService, behind checkinCard).
+	"RequestCheckin", -- ()  1 a second; switch on, save loaded, today's day not taken yet (and for a save that never
+	-- took one, 3:45 of play): gives that day's reward once
+	"ReportTimeZone", -- (hours: int -12..14)  1 a second; switch on, save loaded, no time zone saved yet: saves it once
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side
