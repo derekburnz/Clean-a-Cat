@@ -53,8 +53,23 @@ local function preferredTransparency(): number?
 	return if ok and type(value) == "number" then value else nil
 end
 
-local backdrops: { [GuiObject]: number } = setmetatable({}, { __mode = "k" }) :: any
-local growers: { [GuiObject]: boolean } = setmetatable({}, { __mode = "k" }) :: any
+-- Strong tables, each entry let go when its object is destroyed: a weak key on an Instance can drop out while the
+-- object still exists, and the update would then skip it (Review-QA on #679).
+local backdrops: { [GuiObject]: number } = {}
+local growers: { [GuiObject]: boolean } = {}
+local tracked: { [GuiObject]: boolean } = {}
+
+local function forgetOnDestroy(object: GuiObject)
+	if tracked[object] then
+		return
+	end
+	tracked[object] = true
+	object.Destroying:Connect(function()
+		backdrops[object] = nil
+		growers[object] = nil
+		tracked[object] = nil
+	end)
+end
 local watching = false
 
 local function reapply()
@@ -79,12 +94,14 @@ end
 
 function Comfort.backdrop(object: GuiObject, base: number)
 	backdrops[object] = base
+	forgetOnDestroy(object)
 	object.BackgroundTransparency = Comfort.backdropValue(base, preferredTransparency())
 	watch()
 end
 
 function Comfort.autoHeight(object: GuiObject)
 	growers[object] = true
+	forgetOnDestroy(object)
 	object.AutomaticSize = if enabled() then Enum.AutomaticSize.Y else Enum.AutomaticSize.None
 	watch()
 end
