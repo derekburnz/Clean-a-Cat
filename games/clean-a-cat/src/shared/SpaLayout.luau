@@ -125,6 +125,10 @@ SpaLayout.STATIONS = table.freeze({
 	-- #267: drawn only while their BuildRules switch (bubbleBath, pawdicure) is on
 	{ id = "BubbleBath", asset = "CleanACat_Station_BubbleBath", spot = "SpotStation4" },
 	{ id = "Pawdicure", asset = "CleanACat_Station_Pawdicure", spot = "SpotStation5" },
+	-- issue 515 (switch tubBuilds, with dirtLevels): the tubs stand where the old stations did, which are gone then
+	{ id = "SecondTub", asset = "CleanACat_Station_Tub", spot = "SpotStation2" },
+	{ id = "ThirdTub", asset = "CleanACat_Station_Tub", spot = "SpotStation3" },
+	{ id = "FourthTub", asset = "CleanACat_Station_Tub", spot = "SpotStation4" },
 }) :: { Station }
 -- The VIP Room's door at SpotVipDoor until the room is built: VIP_LOCKED_ASSET before its build starts,
 -- VIP_BUILDING_ASSET while it runs, nothing once it is done (StationService).

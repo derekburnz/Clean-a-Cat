@@ -28,6 +28,15 @@ return function()
 			)
 		end)
 
+		it("brings them every 5 to 10 minutes with the VIP Room built", function()
+			expect(SpecialRules.dueAt(1000, 0, true, always(0), true)).to.equal(1000 + 300)
+			expect(SpecialRules.dueAt(1000, 0, true, always(0.999999), true) < 1000 + 600 + 0.01).to.equal(
+				true
+			)
+			-- the scripted first one is not moved by the room
+			expect(SpecialRules.dueAt(10, 0, false, always(0), true)).to.equal(240)
+		end)
+
 		it("always gives the first visitor's crate, then about one in twenty", function()
 			expect(SpecialRules.dropsCrate(false, always(0.99))).to.equal(true)
 			expect(SpecialRules.dropsCrate(true, always(0.04))).to.equal(true)

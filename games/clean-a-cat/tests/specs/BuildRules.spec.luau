@@ -53,8 +53,8 @@ return function()
 		end)
 
 		it("offers the Bubble Bath and Pawdicure only with their switches on (#267)", function()
-			local function on(_flag: string): boolean
-				return true
+			local function on(flag: string): boolean
+				return flag ~= "tubBuilds" -- every switch but the tubs' (those are below)
 			end
 			local function off(_flag: string): boolean
 				return false
@@ -77,8 +77,8 @@ return function()
 		end)
 
 		it("adds pay bonuses only for built stations", function()
-			local allOn = function()
-				return true
+			local allOn = function(flag: string): boolean
+				return flag ~= "tubBuilds" -- with the tubs on the old stations stop paying (below)
 			end
 			expect(BuildRules.payBonus({}, allOn)).to.equal(0)
 			expect(BuildRules.payBonus({ BrushTable = true, Dryer = true }, allOn)).to.equal(
@@ -137,6 +137,109 @@ return function()
 			local s = state(1000)
 			BuildRules.start(s, "BrushTable", 0)
 			expect(BuildRules.longRunningAt(s, 1)).to.equal(false)
+		end)
+	end)
+	describe("BuildRules tubs, VIP Room and Garden (tubBuilds)", function()
+		local function onWith(flags: { string }): (string) -> boolean
+			return function(flag: string): boolean
+				return table.find(flags, flag) ~= nil
+			end
+		end
+		local all = onWith({ "tubBuilds", "dirtLevels", "bubbleBath", "pawdicure" })
+		local off = onWith({ "bubbleBath", "pawdicure" })
+
+		it(
+			"offers the tubs in place of the old stations only with tubBuilds and dirtLevels on",
+			function()
+				local offered = BuildRules.offered(all)
+				expect(table.find(offered, "SecondTub")).to.be.ok()
+				expect(table.find(offered, "Garden")).to.be.ok()
+				expect(table.find(offered, "VipRoom")).to.be.ok()
+				expect(table.find(offered, "BrushTable")).to.equal(nil)
+				expect(table.find(offered, "Pawdicure")).to.equal(nil)
+				local before = BuildRules.offered(off)
+				expect(table.find(before, "SecondTub")).to.equal(nil)
+				expect(table.find(before, "Garden")).to.equal(nil)
+				expect(table.find(before, "BrushTable")).to.be.ok()
+				-- tubBuilds without dirtLevels: the old stations stay and the tubs wait
+				local half = BuildRules.offered(onWith({ "tubBuilds" }))
+				expect(table.find(half, "BrushTable")).to.be.ok()
+				expect(table.find(half, "SecondTub")).to.equal(nil)
+			end
+		)
+
+		it("builds the tubs in order, one build at a time", function()
+			local s = state(100000)
+			expect(BuildRules.start(s, "ThirdTub", 0, all)).to.equal(0) -- the Second Tub first
+			expect(BuildRules.start(s, "SecondTub", 0, all)).to.equal(90)
+			expect(s.builds.station.endsAt).to.equal(15)
+			-- one builder: the Garden waits though it is a room
+			local ok = BuildRules.canStart(s, "Garden", all)
+			expect(ok).to.equal(false)
+			BuildRules.finish(s, 15)
+			expect(BuildRules.start(s, "Garden", 15, all)).to.equal(25000)
+			expect(s.builds.room.endsAt).to.equal(15 + 24 * 3600)
+			-- with the switch off, a room and a station still build together
+			expect(BuildRules.canStart(s, "ThirdTub", off)).to.equal(true)
+		end)
+
+		it(
+			"gives the VIP Room its new price and time and no first build under tubBuilds",
+			function()
+				local vip = BuildRules.item("VipRoom", all) :: BuildRules.Item
+				expect(vip.price).to.equal(15000)
+				expect(vip.seconds).to.equal(12 * 3600)
+				expect(vip.requires).to.equal(nil)
+				expect((BuildRules.item("VipRoom", off) :: BuildRules.Item).price).to.equal(100)
+				local s = state(15000)
+				expect(BuildRules.start(s, "VipRoom", 0, all)).to.equal(15000)
+				expect(BuildRules.longRunningAt(s, 11 * 3600, all)).to.equal(true)
+			end
+		)
+
+		it("grows the bench, shortens the refill and pays the hand bonus per built tub", function()
+			local stations: { [string]: boolean } = {}
+			expect(BuildRules.benchSize(stations, all)).to.equal(3)
+			expect(BuildRules.refillSeconds(stations, all)).to.equal(6)
+			expect(BuildRules.handBonus(stations, all)).to.equal(0)
+			stations.SecondTub = true
+			stations.ThirdTub = true
+			stations.FourthTub = true
+			expect(BuildRules.benchSize(stations, all)).to.equal(6)
+			expect(BuildRules.refillSeconds(stations, all)).to.equal(3)
+			expect(BuildRules.handBonus(stations, all)).to.equal(6)
+			expect(BuildRules.payBonus(stations, all)).to.equal(0) -- never in the pay every cat gets
+			-- the switch off takes it all away
+			expect(BuildRules.benchSize(stations, off)).to.equal(3)
+			expect(BuildRules.handBonus(stations, off)).to.equal(0)
+		end)
+
+		it("stops the old stations paying once they leave the board", function()
+			local stations = { BrushTable = true, Dryer = true }
+			expect(BuildRules.payBonus(stations, off)).to.equal(7)
+			expect(BuildRules.payBonus(stations, all)).to.equal(0)
+		end)
+
+		it("makes the jar hold 12 hours and fill 25% faster with the Garden", function()
+			local hours, times = BuildRules.jar({}, all)
+			expect(hours).to.equal(8)
+			expect(times).to.equal(1)
+			hours, times = BuildRules.jar({ Garden = true }, all)
+			expect(hours).to.equal(12)
+			expect(times).to.equal(1.25)
+			expect(BuildRules.hasVip({ VipRoom = true }, all)).to.equal(true)
+			expect(BuildRules.hasVip({ VipRoom = true }, off)).to.equal(false)
+		end)
+
+		it("lists every switch the items depend on once", function()
+			local flags = BuildRules.itemFlags()
+			expect(table.find(flags, "tubBuilds")).to.be.ok()
+			expect(table.find(flags, "dirtLevels")).to.be.ok()
+			local seen: { [string]: boolean } = {}
+			for _, flag in flags do
+				expect(seen[flag]).to.equal(nil)
+				seen[flag] = true
+			end
 		end)
 	end)
 end

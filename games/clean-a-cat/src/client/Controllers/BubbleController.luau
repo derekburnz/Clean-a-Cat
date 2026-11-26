@@ -75,7 +75,13 @@ local function canBuild(id: string): boolean
 	if not table.find(BuildRules.offered(LiveFlags.isOn), id) then
 		return false
 	end
-	return (BuildRules.canStart({ coins = coins(), stations = built, builds = builds }, id))
+	return (
+		BuildRules.canStart(
+			{ coins = coins(), stations = built, builds = builds },
+			id,
+			LiveFlags.isOn
+		)
+	)
 end
 
 local function facts(): { [string]: boolean }
@@ -88,7 +94,10 @@ local function facts(): { [string]: boolean }
 		newSoap = LiveFlags.isOn(TOOLS_FLAG) and player:GetAttribute(
 			ToolRules.ATTRIBUTE_PREFIX .. SOAP
 		) ~= true and coins() >= soap.price,
-		build = canBuild("BrushTable"),
+		-- with the tubs on (tubBuilds), the first build is the Second Tub
+		build = canBuild(
+			if BuildRules.shown("SecondTub", LiveFlags.isOn) then "SecondTub" else "BrushTable"
+		),
 		longBuild = canBuild("VipRoom"),
 	}
 end
