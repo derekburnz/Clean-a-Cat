@@ -610,7 +610,10 @@ def build_bow(name, mat):
 # trim, like the tool tiers (Review-QA, #142): tier 2 `Double` is wider with a second, cream bow layered behind and above the first, tier 3
 # `Royal` is that and wider again, with gold rims, a gold knot with a small lit gem and a crown of three gold points. Each
 # comes in the three colours, so the player keeps the colour pick. Same pivot and `BowSlot` as the plain bow.
-TIERS = ("Double", "Royal")
+# Tier 4 `Golden` (the game's tuning has four tiers; asked for by Gameplay-Engineer and Review-QA after PR 559) turns
+# the scheme round, so it is not a Royal with more trim: the loops are gold, the knot and a tall fan of five rays
+# behind it are the player's colour, and the tails are gold with tips in the colour. The fan nearly doubles its height.
+TIERS = ("Double", "Royal", "Golden")
 BOW_TIERS = {f"{n}{t}": (sw, t) for n, sw in BOWS.items() for t in TIERS}
 BOW_GEM = {"bow_pink": "eye_sky", "bow_mint": "neon_pink", "bow_sky": "neon_pink"}   # deep colours only (#491)
 TIER_BUDGET = 520
@@ -667,12 +670,56 @@ def _tier_bow(b, g, sw, tier, c=(0.0, 0.0, 0.0), k=1.0, face=False):
                   bevel=False, rot=rot)                                                     # a tip in the trim colour
 
 
+GOLDEN_RAYS = ((0, 0.4), (-27, 0.34), (27, 0.34), (-54, 0.26), (54, 0.26))    # degrees from upright, length
+
+
+def _golden_bow(b, g, sw, c=(0.0, 0.0, 0.0), k=1.0, face=False):
+    """Draw the Golden bow with its knot's base at `c`, scaled by `k`; `face` and `g` as in `_tier_bow`."""
+    cx, cy, cz = c
+    r, off, lz = 0.24 * k, 0.28 * k, cz + 0.135 * k
+    for sx in (1, -1):
+        tip = _ry_deg(-18 * sx)
+        b.sphere((cx + sx * off, cy, lz), r, GOLD, segments=8, rings=4, scale=(1.0, 0.5, 0.72), rot=tip)
+        b.sphere((cx + sx * (off + 0.015 * k), cy - 0.035 * k, lz + 0.01 * k), r * 0.5, "gold_light", segments=8,
+                 rings=4, scale=(1.0, 0.5, 0.72), rot=tip)                     # a pale heart in each loop: its shine
+    kn = (0.18 * k, (0.22 if face else 0.15) * k, 0.16 * k)
+    b.box_base((cx, cy, cz), kn, sw)                                            # the knot, in the player's colour
+    for j, (deg, ln) in enumerate(GOLDEN_RAYS):                                 # the fan behind, longest in the middle
+        rot = _ry_deg(deg)
+        d = rot @ Vector((0, 0, 1))
+        at = Vector((cx, cy + (0.07 + 0.012 * j) * k, cz + 0.1 * k)) + d * (0.1 + ln / 2) * k
+        b.box(tuple(at), (0.085 * k, (0.045 - 0.003 * j) * k, ln * k), sw, bevel=False, rot=rot)
+    if g is not None:                                                           # the gem, proud of the knot
+        g.box((cx, cy - kn[1] / 2 - 0.012 * k, cz + kn[2] / 2), (0.085 * k, 0.04 * k, 0.085 * k), BOW_GEM[sw],
+              bevel=False, rot=_ry_deg(45))
+    ln = 0.36 * k
+    for sx in (1, -1):
+        if face:
+            rot = _ry_deg(-34 * sx)
+            d = rot @ Vector((0, 0, -1))
+            at = Vector((cx + sx * 0.06 * k, cy + (0.02 + 0.006 * sx) * k, cz + 0.04 * k))
+            b.box(tuple(at + d * ln / 2), (0.11 * k, 0.05 * k, ln), GOLD, bevel=False, rot=rot)
+            b.box(tuple(at + d * (ln + 0.03 * k)), (0.12 * k, 0.056 * k, 0.07 * k), sw, bevel=False, rot=rot)
+        else:
+            rot = Matrix.Rotation(math.radians(22 * sx), 3, "Z")
+            d = rot @ Vector((0, 1, 0))
+            at = Vector((cx + sx * 0.075 * k, cy + 0.02 * k, cz + (0.03 + 0.005 * sx) * k))
+            b.box(tuple(at + d * ln / 2), (0.1 * k, ln, 0.035 * k), GOLD, bevel=False, rot=rot)
+            b.box(tuple(at + d * (ln + 0.025 * k)), (0.11 * k, 0.06 * k, 0.041 * k), sw, bevel=False, rot=rot)
+
+
+GEM_TIERS = ("Royal", "Golden")
+
+
 def build_tier_bow(name, mat):
     sw, tier = BOW_TIERS[name]
     b, g = Builder(), Builder()
-    _tier_bow(b, g, sw, tier)
+    if tier == "Golden":
+        _golden_bow(b, g, sw)
+    else:
+        _tier_bow(b, g, sw, tier)
     objs = [b.finalize(name, mat)]
-    if tier == "Royal":
+    if tier in GEM_TIERS:
         objs.append(g.finalize(name + "_Gem_Glow", mat))
     return objs
 
@@ -687,8 +734,8 @@ _FACING = (math.radians(90), "X")           # a disc stood up, its face to the f
 
 
 TIER_BUTTONS = {"CleanACat_Prop_BowButton" + n[len("CleanACat_Bow_"):]: v for n, v in BOW_TIERS.items()}
-TIER_FIT = {"Double": 1.0, "Royal": 0.86}        # the bow's size on the button, so each fills the face alike
-TIER_FACE = {"Double": "pastel_lilac", "Royal": "velvet_lilac"}   # lilac faces (tier 2 is lilac on the tools too): the
+TIER_FIT = {"Double": 1.0, "Royal": 0.86, "Golden": 0.74}        # the bow's size on the button, so each fills the face alike
+TIER_FACE = {"Double": "pastel_lilac", "Royal": "velvet_lilac", "Golden": "fur_indigo"}   # lilac faces (tier 2 is lilac on the tools too): the
                                                                   # bow's cream layer would vanish on a cream face
 
 
@@ -697,11 +744,14 @@ def build_tier_bow_button(name, mat):
     a gold rim and the faces are lilac, pale then deep, so the three tiers' buttons differ at a glance as well."""
     sw, tier = TIER_BUTTONS[name]
     b, g = Builder(), Builder()
-    b.cyl((0, 0.03, 0), BUTTON_R, 0.16, GOLD if tier == "Royal" else sw, segments=16, rot=_FACING)   # the rim
+    b.cyl((0, 0.03, 0), BUTTON_R, 0.16, GOLD if tier in GEM_TIERS else sw, segments=16, rot=_FACING)   # the rim
     b.cyl((0, -0.06, 0), BUTTON_R - 0.09, 0.06, TIER_FACE[tier], segments=16, rot=_FACING, bevel=False)  # the face
-    _tier_bow(b, g, sw, tier, c=(0.0, -0.17, -0.04), k=TIER_FIT[tier], face=True)
+    if tier == "Golden":
+        _golden_bow(b, g, sw, c=(0.0, -0.17, -0.1), k=TIER_FIT[tier], face=True)
+    else:
+        _tier_bow(b, g, sw, tier, c=(0.0, -0.17, -0.04), k=TIER_FIT[tier], face=True)
     objs = [_tris(b.finalize(name, mat))]
-    if tier == "Royal":
+    if tier in GEM_TIERS:
         objs.append(g.finalize(name + "_Gem_Glow", mat))
     return objs
 

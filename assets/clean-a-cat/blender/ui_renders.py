@@ -60,6 +60,7 @@ ICONS = {
     "CleanACat_Bow_Pink": (0, 20), "CleanACat_Bow_Mint": (0, 20), "CleanACat_Bow_Sky": (0, 20),
     "CleanACat_Bow_PinkDouble": (0, 20), "CleanACat_Bow_MintDouble": (0, 20), "CleanACat_Bow_SkyDouble": (0, 20),
     "CleanACat_Bow_PinkRoyal": (0, 20), "CleanACat_Bow_MintRoyal": (0, 20), "CleanACat_Bow_SkyRoyal": (0, 20),
+    "CleanACat_Bow_PinkGolden": (0, 20), "CleanACat_Bow_MintGolden": (0, 20), "CleanACat_Bow_SkyGolden": (0, 20),
     "CleanACat_Prop_Coin": (18, 8), "CleanACat_Prop_Star": (14, 6), "CleanACat_Prop_CoinStack": (35, 20),
     "CleanACat_NPC_BuilderKitten": (18, 8), "CleanACat_NPC_Helper": (18, 8),
     "CleanACat_NPC_Helper2": (18, 8), "CleanACat_NPC_Helper3": (18, 8),

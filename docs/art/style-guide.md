@@ -64,7 +64,7 @@ If phone playtests show the cat too small at the tub, the game scales the Model 
 | Station or furniture | 300 to 1,500 (the tub 1,040 without its foam); later stations up to 1,200 (brush tables 440 and 1,152, dryer 968, bubble bath 676 without its foam, pawdicure 528). The two baths get up to 2,500 with lather and bubbles (tub 2,472, bubble bath 2,032): each ball of lather and each soap bubble is a Ball part that Roblox draws itself, so its triangles are only the preview mesh (#107, #111) | up to 75 for the two baths (the tub 71, the bubble bath 68: a soap bubble is two parts, the ball and its glint, #111), up to 60 for the rest (the upgraded table 40) |
 | Small prop or tool | 50 to 400 (sponges 134 to 390; hard hat, hammer and toolbox 388 together; the #123 wash tools 156 to 392) | up to 20 (sponges 6 to 10; the #123 wash tools 5 to 12) |
 | Brush, bow | up to 200 (brush 108, bows 164) | up to 10 |
-| Bow, tier 2 and 3 | up to 520 (296 and 428) | up to 16 (10 and 15) |
+| Bow, tier 2 to 4 | up to 520 (296, 428 and 356) | up to 16 (10, 15 and 15) |
 | A worker's wash stand (#527) | up to 2,500 (1,872 to 2,380, much of it Ball parts) | up to 60 (47 to 58) |
 | VIP Room locked or building (#21) | up to 2,000 | up to 80 |
 | One spa plot, full | under 25,000 | about 250 instances |
@@ -110,18 +110,19 @@ Pieces of one model never share a plane: neighbours are staggered by 0.012 studs
 `props.py` builds `CleanACat_Bow_Pink`, `CleanACat_Bow_Mint` and `CleanACat_Bow_Sky` (`bow_pink`, `bow_mint`, `bow_sky`): two puffed loops, a knot and two tails lying back over the crown. Pivot at the base of the knot, with an Attachment `BowSlot` there. To put one on, line the bow's `BowSlot` up with the cat Head's `BowSlot`, weld it to the Head, and `ScaleTo` it by the cat's `Scale` attribute.
 
 ### Bow tiers (#501), a draft
-The owner on 2026-11-25: "make better bow upgrades that add money". In the agreed design a bow is the easy last step of every cat washed by hand, and a better bow bought with coins raises its bonus. Three tiers, each in the three colours, so the player keeps the colour pick. What a tier costs and pays is the game's, not in the model.
+The owner on 2026-11-25: "make better bow upgrades that add money". In the agreed design a bow is the easy last step of every cat washed by hand, and a better bow bought with coins raises its bonus. Four tiers (the game calls them Ribbon, Silk, Satin and Golden), each in the three colours, so the player keeps the colour pick. What a tier costs and pays is the game's, not in the model.
 
 | Tier | Models | What it is | Width | Triangles, parts |
 |---|---|---|---|---|
 | 1 | `CleanACat_Bow_Pink`, `_Mint`, `_Sky` | the plain bow above | 0.74 | 164, 5 |
 | 2 | `CleanACat_Bow_PinkDouble`, `_MintDouble`, `_SkyDouble` | a wider bow with a second, cream bow layered behind and above it, a cream button on the knot and cream tips on longer tails | 0.86 | 296, 10 |
 | 3 | `CleanACat_Bow_PinkRoyal`, `_MintRoyal`, `_SkyRoyal` | tier 2 wider again, each loop in a gold rim, a gold knot under a crown of three gold points with one small lit gem (`..._Gem_Glow`), gold tips on the tails | 1.04 | 428, 15 |
+| 4 | `CleanACat_Bow_PinkGolden`, `_MintGolden`, `_SkyGolden` | the scheme turned round: gold loops with a pale gold heart, a knot in the player's colour with one small lit gem (`..._Gem_Glow`), a tall fan of five rays in the player's colour behind the knot, gold tails with tips in the colour | 1.02, and 0.63 tall where the Royal is 0.46 | 356, 15 |
 
-- **Each tier changes shape and size as well as trim**, like the tool tiers (#142): a second layer at tier 2, a rim and a crown at tier 3. Gold is kept for tier 3.
+- **Each tier changes shape and size as well as trim**, like the tool tiers (#142): a second layer at tier 2, a rim and a crown at tier 3, and at tier 4 a fan that makes the bow a third taller. Gold trim starts at tier 3; only tier 4 is a gold bow, so it is not a Royal with more trim and the two differ at 64 px (asked for by Gameplay-Engineer and Review-QA after the game's fourth tier wore the Royal look).
 - **Same contract as the plain bow.** Pivot at the base of the knot with `BowSlot` there, in the biggest part. The game's id is the name's tail: `BowPinkDouble` gives `CleanACat_Bow_PinkDouble`, which is how `BowFit` already finds a bow, so a new tier needs a new id and no new fitting code.
 - **The gem follows the Neon rule (#491):** 0.075 studs, deep sky on the pink bow and deep pink on the mint and sky ones.
-- **Buttons.** `CleanACat_Prop_BowButton<Colour><Tier>` is the plain button (#441) with that tier's bow on its face, the same size, pivot and `BowId` attribute. The face is lilac, pale at tier 2 and deep at tier 3 (tier 2 is lilac on the tools too), because the bow's cream layer vanishes on a cream face; tier 3 has a gold rim. 544 and 676 triangles, 12 and 17 parts.
+- **Buttons.** `CleanACat_Prop_BowButton<Colour><Tier>` is the plain button (#441) with that tier's bow on its face, the same size, pivot and `BowId` attribute. The face is lilac, pale at tier 2 and deep at tier 3 (tier 2 is lilac on the tools too), because the bow's cream layer vanishes on a cream face; tier 3 has a gold rim. Tier 4 has a gold rim and a deep indigo face, so the gold bow stands out. 544, 676 and 588 triangles; 12, 17 and 17 parts.
 - **On a special cat** the bow sits on the head's front corner. The plain bow clears the head pieces; the wider tiers touch Stardust's stalk gem and brush Rosette's crown. Rare cat, rare bow: left as it is until it is seen in game.
 
 ### Draft tools for the other wash steps (#123)
