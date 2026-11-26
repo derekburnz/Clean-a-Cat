@@ -730,16 +730,22 @@ BOW_TIP = 75.0      # degrees a bow leans out on a cat with a head piece (60 unt
 BOW_OUT = 0.015     # how far past the head's side its knot sits, and
 BOW_DOWN = 0.12     # how far under the head's top: it was 0.03 inside the side and 0.03 under the top, where a wide
                     # bow's upper loop reached into Rosette's crown and Stardust's stalks (Sync-Agent in Studio, #773)
+# Three cats whose head piece reaches where that spot puts a wide bow, each with its own (out, down, tip), found by
+# rbx_bowfit.py on the Roblox parts (Sync-Agent's second look, #782): Bathtile's cap frill is as wide as the head, so
+# the bow stands straight up beside it; Stardust's corner stalk and its gem lean out over the side, so the bow stands
+# straight and lower, under the gem; Djinn's ear ring is just under the spot, so the bow sits further out, over it.
+BOW_OWN = {"Bathtile": (0.035, 0.12, 90.0), "Stardust": (0.035, 0.27, 90.0), "Djinn": (0.05, 0.12, 75.0)}
 
 
-def bow_corner(spec, body):
+def bow_corner(spec, body, cat=None):
     """Where a bow sits on a cat whose crown is taken by a head piece (#486, #782): on the side of the head at the
     cat's left, just under the top front corner, tipped BOW_TIP degrees out so it hangs down the side like a hair
-    clip and its upper loop stands beside the head piece. Relative to the neck and unscaled, with the turn the
-    Attachment carries. Every special cat's head piece keeps this corner clear."""
+    clip and its upper loop stands beside the head piece. `cat` is the cat's name, for the three in BOW_OWN.
+    Relative to the neck and unscaled, with the turn the Attachment carries. `rbx_bowfit.py` checks every bow on
+    every such cat after a build."""
+    out, down, tip = BOW_OWN.get(cat, (BOW_OUT, BOW_DOWN, BOW_TIP))
     h = cats.dims(spec, body)["head"]
-    return ((round(h["s"][0] / 2 + BOW_OUT, 4), round(h["fy"] + 0.13, 4), round(h["top"] - BOW_DOWN, 4)),
-            _ry(BOW_TIP))
+    return ((round(h["s"][0] / 2 + out, 4), round(h["fy"] + 0.13, 4), round(h["top"] - down, 4)), _ry(tip))
 
 
 def slot(name):
