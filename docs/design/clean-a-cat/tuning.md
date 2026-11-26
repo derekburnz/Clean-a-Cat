@@ -30,7 +30,7 @@ Each row of chances adds up to 100.
 | key | value | why | changed |
 |---|---|---|---|
 | `rarity.chance` | Common 60, Uncommon 25, Rare 11, Epic 3.5, Legendary 0.5 | Unchanged from the current `CatRules.CHANCES`; the star tiers stay as they are | 2026-11-25 |
-| `bench.size` | 3 at the start, 4 from 15 spa stars | "Three or four cats wait" | 2026-11-25 |
+| `bench.size` | 3 at the start, plus one per built tub (`build.tub.effect`), at most 6 | "Three or four cats wait" | 2026-11-25 |
 | `bench.refillSeconds` | 6 | A new customer walks in about 6 s after one is taken | 2026-11-25 |
 | `bench.tutorialSize` | 1, then 2 at 2:00 | Matches the first session timeline | 2026-11-25 |
 
@@ -131,7 +131,16 @@ Guard rail check (must stay true, with margin): a player washing Common level 2 
 | `build.slots` | 1 builder; 2 with the Second Builder pass | | 2026-11-25 |
 | `finishNow.price` | ≤5 min 5, ≤30 min 15, ≤2 h 35, ≤8 h 75, more 99 Robux | From the design; waiting is always free | 2026-11-25 |
 
-Today's `BuildRules` stations (Brush Table, Dryer, Bubble Bath, Pawdicure) become steps that every cat can need from the start, so their build rows go away once the dirt level build lands.
+What each build does once finished (answers Gameplay-Engineer on issue 515, 2026-11-26):
+
+| key | value | why | changed |
+|---|---|---|---|
+| `build.tub.effect` | each built tub adds one bench place (3 at the start, then 4, 5, 6), takes 1 s off `bench.refillSeconds` (6, 5, 4, 3) and adds +2 coins to every customer's pay | More cats to choose from and a busier spa as the player and workers wash more; the bench never goes past 6 | 2026-11-26 |
+| `build.VipRoom.effect` | special visitors come every 5 to 10 min of play instead of 8 to 15, and the room shows the player's washed special cats as residents | The rare visitors are the best part, so the big build brings more of them | 2026-11-26 |
+| `build.Garden.effect` | the tip jar holds 12 hours instead of 8 and fills 25% faster; the player's and workers' pets play there | The longest build pays off the next morning, the day 2 reason | 2026-11-26 |
+| `build.oldStations` | Brush Table, Dryer, Bubble Bath and Pawdicure leave the Build board while `dirtLevels` is on (every step is in from the start); with it off they stay as they are | No build that is only a hidden pay bonus | 2026-11-26 |
+
+`bench.size` above becomes 3 plus one per built tub. The guard rail in section 7 holds: tubs add bench places, not washers.
 
 ## 9. Special visitors
 
