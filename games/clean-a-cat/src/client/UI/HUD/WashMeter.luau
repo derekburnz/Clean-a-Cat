@@ -13,7 +13,8 @@
 --
 -- The look: a cream track with the kit's ink edge, filled in the step's colour with a soft shine, the percent in
 -- outlined white at its right end, and the step's need icon (mud, tangles...) in a round white badge over its left
--- end. A short cheer pops under it as it fills: "Keep going!" at half, "Almost!" at 80 percent and the step's own
+-- end. A short cheer pops on the bar itself, in place of the percent, as it fills (issue 542: under the bar it sat
+-- on the cat's ears in the wash view): "Keep going!" at half, "Almost!" at 80 percent and the step's own
 -- word when full ("Squeaky clean!"), each once per step. Reduced Motion (Comfort) shows the cheer without the pop.
 local TweenService = game:GetService("TweenService")
 local Workspace = game:GetService("Workspace")
@@ -52,8 +53,7 @@ local STROKE = 4 -- the kit's ink edge
 local INSET = 4 -- the fill sits this far inside the track's edge
 local FILL_LEFT = BADGE / 2 - 6 -- in the track: the fill starts just under the badge's right edge, so a started bar shows
 local PERCENT_TEXT = 24
-local CHEER_TEXT = 30
-local CHEER_GAP = 2 -- under the badge
+local CHEER_TEXT = 26 -- on the 30 px bar, outlined
 local GAP = 8 -- between the step line (or tip pill) and the bar
 local CHEER_SECONDS = 1.3
 local FILL_SECONDS = 0.15 -- the fill eases to each new value, so a drag reads smooth
@@ -99,6 +99,7 @@ local function popCheer(say: string)
 	p.cheer.Text = say
 	p.cheer.TextTransparency = 0
 	p.cheer.Visible = true
+	p.percent.Visible = false
 	if Comfort.reducedMotion() then
 		p.cheerScale.Scale = 1
 	else
@@ -115,12 +116,14 @@ local function popCheer(say: string)
 		end
 		if Comfort.reducedMotion() then
 			p.cheer.Visible = false
+			p.percent.Visible = true
 			return
 		end
 		local fade = TweenService:Create(p.cheer, TweenInfo.new(0.3), { TextTransparency = 1 })
 		fade.Completed:Connect(function()
 			if token == cheerToken then
 				p.cheer.Visible = false
+				p.percent.Visible = true
 			end
 		end)
 		fade:Play()
@@ -157,6 +160,7 @@ local function redraw()
 	p.holder.Visible = value ~= nil
 	if value == nil then
 		p.cheer.Visible = false
+		p.percent.Visible = true
 		cheerToken += 1
 		return
 	end
@@ -269,9 +273,11 @@ function WashMeter.build(root: Instance)
 	iconBox.ZIndex = 4
 	iconBox.Parent = badge
 
-	local cheer = Kit.outlined("Cheer", holder)
-	cheer.AnchorPoint = Vector2.new(0.5, 0)
-	cheer.Position = UDim2.new(0.5, TRACK_LEFT / 2, 1, CHEER_GAP)
+	-- on the track, centred on the part right of the badge, over the fill and in place of the percent
+	local cheer = Kit.outlined("Cheer", track)
+	cheer.AnchorPoint = Vector2.new(0.5, 0.5)
+	cheer.Position = UDim2.new(0.5, BADGE / 4, 0.5, 0)
+	cheer.ZIndex = 3
 	cheer.TextColor3 = Kit.GOLD_TEXT
 	cheer.TextSize = CHEER_TEXT
 	cheer.Visible = false
