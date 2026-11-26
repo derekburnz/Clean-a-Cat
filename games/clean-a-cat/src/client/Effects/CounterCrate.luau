@@ -1,0 +1,431 @@
+--!strict
+-- CounterCrate: a customer brings their cat to the counter in its crate (Derek, 2026-11-26: "make the customers walk
+-- up with the cats in their cat crate place them on the table and have the cats walk out and sit then the crate
+-- disappear slowly"; issue #757, with Gameplay's counter line #746 behind counterCrate and counterLine).
+--
+-- Gameplay draws each customer at the counter with their cat on the counter (the figure's child Model CounterCat) and,
+-- for a newcomer, the cat in the carrier on their arm too. On the CounterCat it sets two server times: CounterSetAt
+-- (the customer reaches the counter) and CounterReadyAt (the cat may be taken). On this device:
+--
+--   before    the counter cat is hidden: the customer walks up with the cat in the crate on their arm
+--   set       at CounterSetAt the carrying arm reaches forward and the crate (a local copy; the real one is hidden)
+--             arcs from the hand onto the counter just behind the cat's spot, door towards it, with a soft puff
+--   door      the crate's door (_Door_Swing) swings open by the crate's DoorOpenDegrees
+--   walk      the cat steps out of the crate to its spot with a little bob in each step, grows to its counter size and
+--             the real counter cat takes over where it stops
+--   fade      the crate fades away slowly and is gone by CounterReadyAt
+--   after     the customer has no crate (the real one stays hidden) until Gameplay packs the cat back into it for a
+--             leave (a PackedCat in the carrier), when it shows again so they walk off with their cat in it
+--   comfort   Reduced Motion: no arc, swing or walk; the crate and the cat are simply on the counter and the crate fades
+--
+-- Client only and cosmetic; every player sees the same, since all go by server time. A late joiner or a figure drawn
+-- already at its place joins at the right step (past CounterReadyAt: no crate at all). Hiding is by each part's own
+-- Transparency, put back exactly: the walk-in writes LocalTransparencyModifier at the moment the crate is set down.
+--
+-- API
+--   CounterCrate.start()                         watches the counter cats in Workspace
+--   CounterCrate.at(t, total) -> (set, door, walk, fade)   pure: each step's share (0 to 1) at `t` seconds after
+--                                                 CounterSetAt, for a sequence of `total` seconds
+--   CounterCrate.arcAt(share) -> number          pure: the crate's lift (studs) along its arc
+--   CounterCrate.reachAt(t) -> number            pure: the carrying arm's forward turn (radians) at `t` seconds
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local Effects = require(script.Parent)
+
+local CounterCrate = {}
+
+-- CounterRules.CAT_NAME and Gameplay's two times (copied, so the specs load this without the shared rules)
+CounterCrate.CAT_NAME = "CounterCat"
+CounterCrate.SET_AT = "CounterSetAt"
+CounterCrate.READY_AT = "CounterReadyAt"
+CounterCrate.PACKED_NAME = "PackedCat"
+CounterCrate.REACH_ATTRIBUTE = "CounterReachAt" -- local, on the figure: CustomerMotion reaches the carrying arm
+
+-- The steps as Gameplay's 2.4 s (CounterRules.SETTLE_SECONDS) splits them; a longer or shorter total scales them.
+CounterCrate.TOTAL = 2.4
+CounterCrate.SET = { 0, 0.5 }
+CounterCrate.DOOR = { 0.5, 0.8 }
+CounterCrate.WALK = { 0.8, 1.6 }
+CounterCrate.FADE = { 1.6, 2.4 }
+CounterCrate.LIFT = 0.6 -- studs over the straight line, mid arc
+CounterCrate.BACK = 1.3 -- studs from the cat's spot back towards the customer, where the crate's seat lands
+CounterCrate.BOB = 0.08 -- studs, each step of the walk out
+CounterCrate.STEPS = 4
+CounterCrate.REACH = math.rad(50)
+CounterCrate.REACH_SECONDS = 0.7
+CounterCrate.DOOR_DEGREES = 110 -- when the crate has no DoorOpenDegrees
+
+local function share(t: number, span: { number }, scale: number): number
+	local from, to = span[1] * scale, span[2] * scale
+	if to <= from then
+		return if t >= to then 1 else 0
+	end
+	return math.clamp((t - from) / (to - from), 0, 1)
+end
+
+function CounterCrate.at(t: number, total: number): (number, number, number, number)
+	local scale = if total > 0 then total / CounterCrate.TOTAL else 1
+	return share(t, CounterCrate.SET, scale),
+		share(t, CounterCrate.DOOR, scale),
+		share(t, CounterCrate.WALK, scale),
+		share(t, CounterCrate.FADE, scale)
+end
+
+function CounterCrate.arcAt(u: number): number
+	local s = math.clamp(u, 0, 1)
+	return CounterCrate.LIFT * 4 * s * (1 - s)
+end
+
+function CounterCrate.reachAt(t: number): number
+	if t <= 0 or t >= CounterCrate.REACH_SECONDS then
+		return 0
+	end
+	return CounterCrate.REACH * math.sin(math.pi * t / CounterCrate.REACH_SECONDS)
+end
+
+local function smooth(u: number): number
+	return u * u * (3 - 2 * u)
+end
+
+-- Hiding by each part's own Transparency, remembered so it goes back exactly.
+local saved: { [Instance]: number } = {}
+
+local function hide(root: Instance)
+	local function one(d: Instance)
+		if d:IsA("BasePart") or d:IsA("Decal") then
+			local item = d :: any
+			if saved[d] == nil then
+				saved[d] = item.Transparency
+			end
+			item.Transparency = 1
+		end
+	end
+	one(root)
+	for _, d in root:GetDescendants() do
+		one(d)
+	end
+end
+
+local function show(root: Instance)
+	local function one(d: Instance)
+		local was = saved[d]
+		if was ~= nil then
+			saved[d] = nil
+			if d.Parent then
+				(d :: any).Transparency = was
+			end
+		end
+	end
+	one(root)
+	for _, d in root:GetDescendants() do
+		one(d)
+	end
+end
+
+local function fade(root: Instance, seen: number)
+	for _, d in root:GetDescendants() do
+		if d:IsA("BasePart") or d:IsA("Decal") then
+			(d :: any).LocalTransparencyModifier = seen
+		end
+	end
+end
+
+local FOLDER_NAME = "CleanACat_Fx_CounterCrate"
+local function folder(): Folder
+	local found = Workspace:FindFirstChild(FOLDER_NAME)
+	if found and found:IsA("Folder") then
+		return found :: Folder
+	end
+	local made = Instance.new("Folder")
+	made.Name = FOLDER_NAME
+	made.Parent = Workspace
+	return made
+end
+
+type Entry = {
+	cat: Model,
+	figure: Model,
+	phase: "before" | "playing" | "after",
+	crate: Model?,
+	walker: Model?,
+	walkFrom: CFrame?,
+	walkScale: number,
+	crateFrom: CFrame?,
+	crateTo: CFrame?,
+	door: PVInstance?,
+	doorClosed: CFrame?,
+	doorAngle: number,
+	landed: boolean,
+	handedOver: boolean,
+}
+
+local entries: { [Model]: Entry } = {}
+local stepping: RBXScriptConnection? = nil
+
+local function carrierOf(figure: Model): Model?
+	local found = figure:FindFirstChild("Carrier", true)
+	return if found and found:IsA("Model") then found :: Model else nil
+end
+
+local function catIn(crate: Model): Model?
+	for _, child in crate:GetChildren() do
+		if
+			child:IsA("Model")
+			and string.sub(child.Name, 1, #"CleanACat_Cat_") == "CleanACat_Cat_"
+		then
+			return child :: Model
+		end
+	end
+	return nil
+end
+
+local function doorOf(crate: Model): PVInstance?
+	for _, child in crate:GetChildren() do
+		if child:IsA("PVInstance") and string.sub(child.Name, -#"_Door_Swing") == "_Door_Swing" then
+			return child :: PVInstance
+		end
+	end
+	return nil
+end
+
+local function clean(entry: Entry)
+	if entry.walker then
+		entry.walker:Destroy()
+		entry.walker = nil
+	end
+	if entry.crate then
+		entry.crate:Destroy()
+		entry.crate = nil
+	end
+end
+
+local function settle(entry: Entry)
+	-- the end state: the real cat on the counter, no crate on the arm (until it is packed for a leave)
+	clean(entry)
+	entry.phase = "after"
+	show(entry.cat)
+	local carrier = carrierOf(entry.figure)
+	if carrier and carrier:FindFirstChild(CounterCrate.PACKED_NAME) == nil then
+		hide(carrier)
+	end
+end
+
+-- Where the crate lands: its seat BACK studs behind the cat's spot towards the customer, base on the counter top,
+-- facing the way the customer faces (the door at its front, towards the cat's spot).
+local function landing(entry: Entry, crate: Model, seat: Attachment?): CFrame
+	local spot = entry.cat:GetPivot()
+	local facing = entry.figure:GetPivot().Rotation
+	local back = -facing.LookVector
+	local pivot = crate:GetPivot()
+	local box, size = crate:GetBoundingBox()
+	local bottom = pivot.Position.Y - (box.Position.Y - size.Y / 2)
+	local seatLocal = if seat then pivot:PointToObjectSpace(seat.WorldPosition) else Vector3.zero
+	local seatAt = spot.Position + back * CounterCrate.BACK
+	local base = CFrame.new(seatAt.X, spot.Position.Y + bottom, seatAt.Z) * facing
+	-- move it so its seat, not its pivot, is over seatAt
+	local offset = facing:VectorToWorldSpace(Vector3.new(seatLocal.X, 0, seatLocal.Z))
+	return base - offset
+end
+
+local function begin(entry: Entry, carrier: Model)
+	local still = Effects.reducedMotion()
+	hide(entry.cat) -- a customer drawn already at the counter: the cat comes out of the crate all the same
+	local copy = carrier:Clone() :: Model -- before hiding, so the copy keeps each part's own look
+	copy.Name = "CleanACat_Fx_CounterCrate"
+	for _, d in copy:GetDescendants() do
+		if d:IsA("BasePart") then
+			local p = d :: BasePart
+			p.Anchored = true
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+		elseif d:IsA("ProximityPrompt") or d:IsA("Script") or d:IsA("LocalScript") then
+			d:Destroy()
+		end
+	end
+	fade(copy, 0)
+	local seatFound = copy:FindFirstChild("CatSeat", true)
+	local seat = if seatFound and seatFound:IsA("Attachment") then seatFound :: Attachment else nil
+	entry.crateFrom = carrier:GetPivot()
+	entry.crateTo = landing(entry, copy, seat)
+	copy:PivotTo(if still then entry.crateTo :: CFrame else entry.crateFrom :: CFrame)
+	copy.Parent = folder()
+	hide(carrier)
+	entry.crate = copy
+	entry.door = doorOf(copy)
+	if entry.door then
+		entry.doorClosed = copy:GetPivot():ToObjectSpace((entry.door :: PVInstance):GetPivot())
+	end
+	local degrees = copy:GetAttribute("DoorOpenDegrees")
+	entry.doorAngle =
+		math.rad(if type(degrees) == "number" then degrees else CounterCrate.DOOR_DEGREES)
+	if not still then
+		entry.figure:SetAttribute(CounterCrate.REACH_ATTRIBUTE, os.clock())
+	end
+	entry.phase = "playing"
+end
+
+local function step()
+	local now = Workspace:GetServerTimeNow()
+	local still = Effects.reducedMotion()
+	for cat, entry in entries do
+		if cat.Parent == nil or entry.figure.Parent == nil then
+			clean(entry)
+			entries[cat] = nil
+			continue
+		end
+		local setAt = cat:GetAttribute(CounterCrate.SET_AT)
+		local readyAt = cat:GetAttribute(CounterCrate.READY_AT)
+		if type(setAt) ~= "number" or type(readyAt) ~= "number" then
+			continue -- the crate switch is off: Gameplay's counter as it was
+		end
+		if entry.phase == "after" then
+			continue
+		end
+		if now < setAt then
+			hide(cat)
+			continue
+		end
+		if now >= readyAt then
+			settle(entry)
+			continue
+		end
+		if entry.phase == "before" then
+			local carrier = carrierOf(entry.figure)
+			if carrier == nil then
+				settle(entry)
+				continue
+			end
+			begin(entry, carrier :: Model)
+		end
+		local crate = entry.crate
+		if crate == nil then
+			settle(entry)
+			continue
+		end
+		local total = readyAt - setAt
+		local t = now - setAt
+		local set, door, walk, fadeShare = CounterCrate.at(t, total)
+		if still then
+			set, door, walk = 1, 1, 1
+		end
+		local from, to = entry.crateFrom :: CFrame, entry.crateTo :: CFrame
+		local u = smooth(set)
+		local cf = from:Lerp(to, u) + Vector3.new(0, CounterCrate.arcAt(set), 0)
+		crate:PivotTo(cf)
+		if set >= 1 and not entry.landed then
+			entry.landed = true
+			if not still then
+				local box, size = crate:GetBoundingBox()
+				Effects.burst("roadDust", box.Position - Vector3.new(0, size.Y / 2, 0))
+			end
+		end
+		local hinge, closed = entry.door, entry.doorClosed
+		if hinge and closed then
+			hinge:PivotTo(
+				crate:GetPivot() * closed * CFrame.Angles(entry.doorAngle * smooth(door), 0, 0)
+			)
+		end
+		if walk > 0 and not entry.handedOver then
+			local walker = entry.walker
+			if walker == nil then
+				local inside = catIn(crate)
+				if inside then
+					walker = inside
+					entry.walker = inside
+					entry.walkFrom = inside:GetPivot()
+					entry.walkScale = inside:GetScale()
+					inside.Parent = folder()
+				end
+			end
+			local spot = cat:GetPivot()
+			if walker and entry.walkFrom then
+				local target = cat:GetScale()
+				local w = smooth(walk)
+				local bob = CounterCrate.BOB
+					* math.abs(math.sin(math.pi * CounterCrate.STEPS * walk))
+				walker:ScaleTo(entry.walkScale + (target - entry.walkScale) * w)
+				walker:PivotTo(
+					(entry.walkFrom :: CFrame):Lerp(spot, w) + Vector3.new(0, bob * (1 - walk), 0)
+				)
+			end
+			if walk >= 1 then
+				entry.handedOver = true
+				if entry.walker then
+					entry.walker:Destroy()
+					entry.walker = nil
+				end
+				show(cat)
+			end
+		end
+		if fadeShare > 0 then
+			fade(crate, fadeShare)
+		end
+	end
+	if next(entries) == nil and stepping then
+		stepping:Disconnect()
+		stepping = nil
+	end
+end
+
+local function watch(instance: Instance)
+	if not instance:IsA("Model") or instance.Name ~= CounterCrate.CAT_NAME then
+		return
+	end
+	local cat = instance :: Model
+	local figure = cat.Parent
+	if entries[cat] or figure == nil or not figure:IsA("Model") then
+		return
+	end
+	local entry: Entry = {
+		cat = cat,
+		figure = figure :: Model,
+		phase = "before",
+		crate = nil,
+		walker = nil,
+		walkFrom = nil,
+		walkScale = 1,
+		crateFrom = nil,
+		crateTo = nil,
+		door = nil,
+		doorClosed = nil,
+		doorAngle = 0,
+		landed = false,
+		handedOver = false,
+	}
+	entries[cat] = entry
+	-- a leave: Gameplay packs the cat back into the carrier, so the crate shows again round it
+	local carrier = carrierOf(figure :: Model)
+	if carrier then
+		carrier.ChildAdded:Connect(function(child)
+			if child.Name == CounterCrate.PACKED_NAME then
+				show(carrier :: Model)
+			end
+		end)
+	end
+	cat.AncestryChanged:Connect(function()
+		if cat.Parent ~= entry.figure then
+			clean(entry)
+			show(cat)
+			entries[cat] = nil
+		end
+	end)
+	if stepping == nil then
+		stepping = RunService.RenderStepped:Connect(step)
+	end
+end
+
+local started = false
+function CounterCrate.start()
+	if started then
+		return
+	end
+	started = true
+	for _, d in Workspace:GetDescendants() do
+		watch(d)
+	end
+	Workspace.DescendantAdded:Connect(watch)
+end
+
+return CounterCrate
