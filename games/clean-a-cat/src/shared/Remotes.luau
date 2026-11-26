@@ -34,9 +34,10 @@ Remotes.ClientToServer = {
 	"RequestPlaceCat", -- ()  1 a second (burst 2); the cat is in their arms (CarryCat "arms") and the character within
 	-- CarryRules.PLACE_REACH studs of their tub: the cat is in the tub and CatReady follows
 	-- Tools board (ToolService, behind toolsBoard).
-	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board, enough coins, not owned
+	"RequestBuyTool", -- (toolId: one of ToolRules.IDS)  1 a second; switch on, save loaded, near the board (or anywhere
+	-- with buildWindow), enough coins, not owned
 	"RequestBuyBow", -- (tier: one of BowRules.TIERS)  1 a second; switches toolsBoard and bowTiers on, save loaded, near
-	-- the board, the next tier in order, enough coins
+	-- the board (or anywhere with buildWindow), the next tier in order, enough coins
 	-- Workers (WorkerService, behind workers, scrubPrototype and customers). Each needs the save loaded; hiring also
 	-- needs the character within WorkerRules.SERVER_REACH studs of that worker's pad (mode and level come from the HUD).
 	"RequestHireWorker", -- (id: one of WorkerRules.IDS)  1 a second; near the pad, not a pass worker, not hired, coins
@@ -47,7 +48,8 @@ Remotes.ClientToServer = {
 	"RequestPlacePet", -- (petId: int, slot: string?)  2 a second; one of CrateRules.slots, or nil for the pen
 	"RequestFusePets", -- (a: int, b: int, c: int)  1 a second; three different pets, same kind and star, below star 3
 	-- Builds (BuildService, behind builds).
-	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board, slot free, order, coins
+	"RequestBuild", -- (id: one of BuildRules.IDS)  1 a second; switch on, save loaded, near the board (or anywhere with
+	-- buildWindow), slot free, order, coins
 	"RequestFinish", -- (slot: one of BuildRules.SLOTS)  1 a second; switches builds and finishNow on, save loaded, near the
 	-- board, a build running there with FinishRules.HIDE_UNDER seconds or more left: a saved credit that covers its
 	-- tier finishes it at once, else Roblox's purchase prompt opens for that tier (PurchaseService grants it)

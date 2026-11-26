@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BowRules = require(Shared:WaitForChild("BowRules"))
+local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -39,13 +40,18 @@ local function nearBoard(player: Player): boolean
 	return offset.Magnitude <= ToolRules.SERVER_REACH
 end
 
+-- Near the board, or anywhere with the Build window (switch buildWindow, issue 751); every other check stays.
+local function inReach(player: Player): boolean
+	return LiveFlags.isOn(BuildRules.WINDOW_FLAG) or nearBoard(player)
+end
+
 local function onBuy(player: Player, rawId: unknown)
 	if not LiveFlags.isOn(FLAG) then
 		return
 	end
 	local id = Guard.oneOf(rawId, ToolRules.offered(LiveFlags.isOn)) -- a tool whose switch is off is refused
 	local save = DataService.get(player)
-	if id == nil or save == nil or not nearBoard(player) then
+	if id == nil or save == nil or not inReach(player) then
 		return
 	end
 	local ok, reason = ToolRules.canBuy(save, id)
@@ -75,7 +81,7 @@ local function onBuyBow(player: Player, rawTier: unknown)
 	end
 	local tier = Guard.oneOf(rawTier, BowRules.TIERS)
 	local save = DataService.get(player)
-	if tier == nil or save == nil or not nearBoard(player) then
+	if tier == nil or save == nil or not inReach(player) then
 		return
 	end
 	local ok, reason = BowRules.canBuy(save, tier)
