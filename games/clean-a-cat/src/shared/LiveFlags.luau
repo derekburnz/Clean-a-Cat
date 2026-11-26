@@ -112,6 +112,7 @@ LiveFlags.KEYS = {
 	"lineReuse", -- with townsfolk on, the door line is redrawn in place: each waiting customer keeps their figure and steps up 1.2 s after a leaver goes, a new one walks in and a leaver is taken away, so nothing blinks or doubles (FigureService, CustomerWalkController, issues 571 and 570); off by default
 	"checkinCard", -- the seven day check in card: one reward for each day played (not days in a row), the first at 3:45 of the first session; the server keeps CheckinReady and CheckinDays on the player for Design's card, and saves the player's time zone once (CheckinRules, CheckinService, issue 517); off by default
 	"passes", -- the five game passes (2x Coins, Second Builder, Golden Sponge, Lou, Second pet slot): each can be bought once the owner has created it, and works the moment it is bought and on every join (Passes, PassService, issue 518); off by default
+	"crateShop", -- normal crates for Robux (one for 49, five for 199), the same crate and chances as an earned one, shown only to players whose PolicyService info allows paid random items, with the chances shown before any buy (CrateRules.SHOP, CrateShopService, issue 514); needs pets on too; off by default
 	"starterPack", -- the starter pack: one Robux product giving the Golden Sponge, the Second pet slot and 2x Coins, offered for 72 hours from first join (from the first join after this ships for older saves) to players who own none of the three, from the end of the tutorial; never restarts (StarterRules, StarterService, issue 519); needs passes on too; off by default
 	"quests", -- the quest book: two daily quests from the pool each day of the player's own calendar and three weekly ones from Monday 00:00 UTC, counted from each customer's cat washed by hand and paid at once, with a normal crate for all three weekly ones (QuestRules, QuestService, issue 516); off by default
 	"tubBuilds", -- the Build board sells the Second, Third and Fourth Tub, the VIP Room at its new price and the Garden; one builder; a built tub pays +2 on every hand wash and the VIP Room brings special visitors more often; with dirtLevels on, the old stations leave (BuildRules, issue 515); off by default
@@ -204,6 +205,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	quests = true,
 	passes = true,
 	starterPack = true,
+	crateShop = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

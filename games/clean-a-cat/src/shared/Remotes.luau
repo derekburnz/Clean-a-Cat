@@ -58,6 +58,9 @@ Remotes.ClientToServer = {
 	-- Game passes (PassService, behind passes).
 	"RequestPass", -- (key: one of Passes.KEYS)  1 a second; switch on, save loaded, the pass created and priced, not
 	-- owned yet: opens Roblox's purchase prompt for it (the only way one opens)
+	-- Robux crates (CrateShopService, behind crateShop and pets).
+	"RequestBuyCrate", -- (key: one of CrateRules.SHOP_KEYS)  1 a second; switches on, save loaded, this player's
+	-- PolicyService info allows paid random items, the product created and priced: opens Roblox's purchase prompt
 	-- Starter pack (StarterService, behind starterPack and passes).
 	"RequestStarter", -- ()  1 a second; switches on, save loaded, the pack offered (StarterRules.offered) and its product
 	-- created and priced: opens Roblox's purchase prompt for it (PurchaseService grants it)
