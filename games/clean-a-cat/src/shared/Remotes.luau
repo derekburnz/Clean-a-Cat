@@ -115,6 +115,8 @@ Remotes.ServerToClient = {
 	"Quests", -- (quests: { { id, text, goal, progress, coins, weekly: boolean, done: boolean } }, weeklyCrate: boolean)  the open
 	-- quests, today's daily ones first, and whether this week's crate is taken (switch quests)
 	"CrateOpened", -- (kind: string, pet: { id, kind, star })  the crate the player tapped and the pet in it (switch pets)
+	"HelperPaid", -- (id: one of WorkerRules.IDS, coins: number)  that helper just finished a cat and paid this many coins
+	-- into the save: a popup over their stand, only for the owner (switch helperPopups, issue 743)
 	"PetFused", -- (pet: { id, kind, star })  three pets fused into this one, a star higher (switch pets)
 	"Pets", -- (pets: { { id, kind, star, slot? } })  every pet the player owns, after each change (switch pets)
 	"CatStage", -- (catId: number, seq: number, stage: SpaRules.Stage, strokes: number, photoWaiting: boolean)  the server's view

@@ -65,6 +65,8 @@ local CUSTOMERS_FLAG = "customers"
 local STRAYS_FLAG = "strays"
 local PICK_FLAG = "queuePick"
 local RECAP_FLAG = "recapCard"
+-- Per cat toasts that repeat what the screen shows (the coin counter, the recap card, the line) are left out (issue 743)
+local QUIET_FLAG = "helperPopups"
 local QUEUE_SIZE = SpaRules.QUEUE_SIZE
 local BOARD_LIT = "ChanceBoardLit" -- Player attribute: true once a customer has been served, so the board shows
 local MAX_CAT_ID = 2 ^ 31
@@ -875,17 +877,23 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		WalletService.show(player)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
 		local moved = WindowService.addResident(player, kind, cat.bow)
-		NetService.notice(
-			player,
-			if moved then `+{coins} coins. {kind} moved into your window` else `+{coins} coins`
-		)
+		if not LiveFlags.isOn(QUIET_FLAG) then
+			NetService.notice(
+				player,
+				if moved then `+{coins} coins. {kind} moved into your window` else `+{coins} coins`
+			)
+		elseif moved then
+			NetService.notice(player, `{kind} moved into your window`) -- a one-off: the window has a new cat
+		end
 		return
 	end
 	if kind == nil then
 		save.coins += coins
 		WalletService.show(player)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
-		NetService.notice(player, `+{coins} coins`)
+		if not LiveFlags.isOn(QUIET_FLAG) then
+			NetService.notice(player, `+{coins} coins`)
+		end
 		return
 	end
 	-- A customer's cat goes home: the customer pays coins plus a tip, and the spa earns stars.
@@ -1000,10 +1008,12 @@ local function payPhoto(player: Player, cat: SpaRules.Cat)
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins, recap)
 	else
 		NetService.fire(player, "PhotoPaid", cat.id, coins, save.coins)
-		NetService.notice(
-			player,
-			`+{coins} coins, +{pay.stars} {if pay.stars == 1 then "star" else "stars"}`
-		)
+		if not LiveFlags.isOn(QUIET_FLAG) then
+			NetService.notice(
+				player,
+				`+{coins} coins, +{pay.stars} {if pay.stars == 1 then "star" else "stars"}`
+			)
+		end
 	end
 end
 
@@ -1069,7 +1079,9 @@ local function customerLeaves(player: Player, place: number)
 	if after then
 		NetService.fire(player, "CustomerLeft", shownPlace, kind)
 	end
-	NetService.notice(player, `{kind} went home`)
+	if not LiveFlags.isOn(QUIET_FLAG) then
+		NetService.notice(player, `{kind} went home`)
+	end
 end
 
 -- Once a second (switch heartBar): bars drain, a customer whose bar is empty leaves (one a second at most), and each

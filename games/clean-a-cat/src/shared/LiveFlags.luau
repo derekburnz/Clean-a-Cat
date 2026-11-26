@@ -129,6 +129,8 @@ LiveFlags.KEYS = {
 	"leaveLines", -- while Roblox's menu is open, two big friendly lines above and below its leave screen, each true for this player now (the tip jar with a helper hired, tomorrow's check in gift) or left out; no guilt or hurry (UI/LeaveLines, LeaveLineRules, issue 726); off by default
 	"spawnSide", -- with spawnView on, the player spawns on the same spot turned a quarter to face the door line's side of the room, so the camera behind them starts in open room and not on the back wall's art (SpaLayout.spawnSpot, PlotService, issue 670); off by default
 	"freeRewards", -- the gift card's Free Rewards rows: like the game (asked, never checked: Claim 10 s after the ask, 150 coins either way) and 30 minutes of play (one normal crate), each paid once per save by the server, beside the favourite plus group row for Starcoat; needs giftStand and pets on too (FreeRewardRules, FreeRewardService, UI/GiftCard, issue 730); off by default
+	"helperPopups", -- a helper finishing a cat sends HelperPaid to the owner (a popup over their stand, Design's) instead of the "+N coins: NAME washed CAT" toast, and the per cat toasts that repeat the screen ("+N coins", "+N coins, +S stars", "CAT went home") are left out; one-off toasts stay (WorkerService, SpaService, issue 743); off by default
+	"hudTidy", -- the phone HUD tidy (Design's HUD, issue 738); on the server's side of it, the helper stand's Level up prompt leaves the world, since the Helpers window has Level up (WorkerController); off by default
 	"respawnCamera", -- for 2 s after a respawn, while the player stands still and has not moved the camera, a camera looking more than 30 degrees from the new character's facing is made Scriptable for one frame behind the character, then Custom again, so Roblox's camera module drops its stale last transform and carries on from there (on a respawn the module's own turn is lost and the camera keeps its old yaw) (RespawnCameraController, issue 670); off by default
 }
 
@@ -232,6 +234,8 @@ LiveFlags.OFF_BY_DEFAULT = {
 	spawnSide = true,
 	respawnCamera = true,
 	freeRewards = true,
+	helperPopups = true,
+	hudTidy = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

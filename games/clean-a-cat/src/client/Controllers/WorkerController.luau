@@ -103,7 +103,8 @@ local function build(id: string)
 		main.ObjectText = `{nameOf(id)}, tap to change`
 		local cost =
 			WorkerRules.levelCost({ level = WorkerRules.cleanLevel(attribute("WorkerLevel", id)) })
-		level.Enabled = cost ~= nil
+		-- with hudTidy on, levels are bought in the Helpers window only (issue 738)
+		level.Enabled = cost ~= nil and not LiveFlags.isOn(WorkerRules.HUD_TIDY_FLAG)
 		level.ActionText = "Level up"
 		level.ObjectText = if cost then `{nameOf(id)}, {cost} coins` else ""
 	end
@@ -196,6 +197,13 @@ function WorkerController.Init(_controllers: { [string]: any }) end
 function WorkerController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.FLAG)
 		:Connect(refresh)
+	ReplicatedStorage
+		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.HUD_TIDY_FLAG)
+		:Connect(function()
+			for _, show in shows do
+				show()
+			end
+		end)
 	-- the plot placed or taken away: the prompts move with the stations
 	SpaLayout.changed(function()
 		for id, anchor in anchors do
