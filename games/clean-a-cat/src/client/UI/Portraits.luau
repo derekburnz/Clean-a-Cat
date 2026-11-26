@@ -21,14 +21,17 @@ Portraits.GLYPHS = {
 
 local TILE_TINT = 0.55 -- how far the stand-in tile's rarity colour is lightened toward white
 
--- The picture for `cat`, at dirt level `dirt` (1 to 4, DirtRules) when given and uploaded as "<Cat>_Dirty<n>"; else
--- the clean picture; "" when there is none yet (the stand-in draws). Issue 794.
+-- The picture for `cat` at dirt level `dirt` (1 to 4, DirtRules): "<Cat>_Dirty<n>" when uploaded, else the nearest
+-- lower level that is, else the clean picture; "" when there is none yet (the stand-in draws). Issue 794: levels 2 to
+-- 4 wait for the re-render after issue 791, so they show level 1 until then.
 function Portraits.imageFor(cat: string, dirt: number?): string
-	if dirt then
-		local dirty: string? = Portraits.IMAGES[`{cat}_Dirty{dirt}`]
+	local level = dirt or 0
+	while level >= 1 do
+		local dirty: string? = Portraits.IMAGES[`{cat}_Dirty{level}`]
 		if dirty ~= nil and dirty ~= "" then
 			return dirty
 		end
+		level -= 1
 	end
 	return Portraits.IMAGES[cat] or ""
 end
