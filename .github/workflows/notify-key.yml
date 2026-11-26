@@ -1,7 +1,8 @@
 # The build finished notification's key (Derek, 2026-11-26, q2-notifykey: reuse a key he already has, paste nothing).
 # check: asks Roblox what OWNER_KEY and ROBLOX_GROUP_KEY may do and lists their scope names in the run summary.
 # install: also saves the first key that can send user notifications as the experience secret CleanACat_NotifyKey,
-# which NotifyService reads in game, usable only for apis.roblox.com. No key is printed. install on live runs only on
+# which NotifyService reads in game, usable only for apis.roblox.com. string: finds or makes the build_done
+# notification string (Open Cloud, experimental) and shows its id, which is public, for NotifyRules.MESSAGE_IDS. No key is printed. install on live runs only on
 # the owner's own word, as flags and publishes do. Script: games/clean-a-cat/tools/opencloud/notify-key.py.
 name: notify-key
 
@@ -14,9 +15,9 @@ on:
         options: [dev, live]
         default: dev
       action:
-        description: "check: list what each key may do. install: also save the notification key as the game's secret"
+        description: "check: list what each key may do. install: also save the notification key as the game's secret. string: find or make the build_done notification string and show its id"
         type: choice
-        options: [check, install]
+        options: [check, install, string]
         default: check
 
 permissions:

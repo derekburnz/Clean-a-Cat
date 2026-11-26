@@ -9,7 +9,9 @@ is enabled, and its scope names and operations.
 
   KEY_OWNER, KEY_GROUP   the keys (either may be empty)
   UNIVERSE_ID            the experience id (not secret)
-  ACTION                 check (default) or install
+  ACTION                 check (default), install, or string: find or make the notification string STRING_NAME
+                         (the open cloud notification-string API, experimental) and print its id, which is public
+                         and goes in NotifyRules.MESSAGE_IDS
 """
 import base64
 import json
@@ -17,11 +19,16 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 SECRET_ID = "CleanACat_NotifyKey"
 # The only host NotifyService calls: a script that tries to send the secret anywhere else is refused (Review-QA on #769).
 SECRET_DOMAIN = "apis.roblox.com"
+STRING_NAME = "build_done"
+# NotifyService fills {buildName}; 99 characters at most, no false urgency (Roblox's notification guidelines).
+STRING_CONTENT = "Your {buildName} is ready! Come back and show it off."
+MAX_PAGES = 10  # the list is only a handful of strings; a cap keeps a bad cursor from looping
 API = "https://apis.roblox.com"
 
 
@@ -63,6 +70,7 @@ def scopes_of(info):
 
 
 def can(scopes, word, op_words=("write", "create", "post")):
+    # `word` must name the scope itself: "user.user-notification" (sending), "universe.secret", "notification-string"
     for name, ops in scopes:
         if word in name.lower():
             if not ops or any(any(w in op.lower() for w in op_words) for op in ops):
@@ -73,10 +81,12 @@ def can(scopes, word, op_words=("write", "create", "post")):
 def main():
     universe = os.environ.get("UNIVERSE_ID", "").strip()
     action = os.environ.get("ACTION", "check").strip()
-    keys = [("OWNER_KEY", os.environ.get("KEY_OWNER", "")), ("ROBLOX_GROUP_KEY", os.environ.get("KEY_GROUP", ""))]
+    # the group's key first: it is the one saved in the game, so the owner's own key stays out of it when it can
+    keys = [("ROBLOX_GROUP_KEY", os.environ.get("KEY_GROUP", "")), ("OWNER_KEY", os.environ.get("KEY_OWNER", ""))]
     summary = []
     notify_key = None
     secret_key = None
+    string_key = None
     for label, key in keys:
         if not key:
             summary.append(f"- {label}: not set")
@@ -87,11 +97,13 @@ def main():
             continue
         scopes = scopes_of(info)
         usable = info.get("enabled", True) and not info.get("expired", False)
-        notify = usable and can(scopes, "notification")
-        secrets = usable and can(scopes, "secret")
+        notify = usable and can(scopes, "user.user-notification")
+        secrets = usable and can(scopes, "universe.secret")
+        strings = usable and can(scopes, "notification-string")
         summary.append(
             f"- {label} ({info.get('name', '?')}): enabled {info.get('enabled')}, expired {info.get('expired')}, "
-            f"notifications {'yes' if notify else 'no'}, secrets store {'yes' if secrets else 'no'}"
+            f"notifications {'yes' if notify else 'no'}, secrets store {'yes' if secrets else 'no'}, "
+            f"notification strings {'yes' if strings else 'no'}"
         )
         for name, ops in scopes:
             summary.append(f"  - {name}: {', '.join(ops) if ops else '(all)'}")
@@ -99,6 +111,8 @@ def main():
             notify_key = (label, key)
         if secrets and secret_key is None:
             secret_key = (label, key)
+        if strings and string_key is None:
+            string_key = (label, key)
 
     result = 0
     if notify_key is None:
@@ -147,6 +161,63 @@ def main():
                 else:
                     summary.append(f"Saving the secret failed (HTTP {status}: {answer.get('message', '')}).")
                     result = 1
+
+    if action == "string":
+        if string_key is None:
+            summary.append("No key can write notification strings: add universe.notification-string to one of them.")
+            result = 1
+        else:
+            base = f"{API}/notifications/v1/developer-configuration"
+            # Look through every page of the list first. Make the string only when the list answered fully and had
+            # no build_done: a failed or cut short list must never make a duplicate on each run.
+            found = None
+            listed_ok = True
+            cursor = ""
+            seen = set()
+            for _ in range(MAX_PAGES):
+                query = f"UniverseId={universe}&Count=50" + (f"&Cursor={urllib.parse.quote(cursor)}" if cursor else "")
+                status, listed = call("GET", f"{base}/experience-notifications-list?{query}", key=string_key[1])
+                if status != 200:
+                    summary.append(
+                        f"Could not list the notification strings (HTTP {status}: {listed.get('message', '')}),"
+                        " so nothing was made."
+                    )
+                    listed_ok = False
+                    break
+                for item in listed.get("notificationStringConfigs") or []:
+                    if item.get("name") == STRING_NAME:
+                        found = item
+                cursor = listed.get("nextPageToken") or listed.get("nextPageCursor") or ""
+                if found is not None or not cursor:
+                    break
+                if cursor in seen:
+                    summary.append("The notification string list repeated a page, so nothing was made.")
+                    listed_ok = False
+                    break
+                seen.add(cursor)
+            else:
+                summary.append(f"The notification string list ran past {MAX_PAGES} pages, so nothing was made.")
+                listed_ok = False
+            if not listed_ok:
+                result = 1
+            if found is None and listed_ok:
+                status, made = call(
+                    "POST",
+                    f"{base}/create-notification",
+                    key=string_key[1],
+                    body={"name": STRING_NAME, "content": STRING_CONTENT, "universeId": int(universe)},
+                )
+                if status == 200 and made.get("id"):
+                    found = {"id": made["id"], "name": STRING_NAME, "content": STRING_CONTENT}
+                    summary.append(f"Made the notification string {STRING_NAME} (with {string_key[0]}).")
+                else:
+                    summary.append(f"Making the notification string failed (HTTP {status}: {made.get('message', '')}).")
+                    result = 1
+            elif found is not None:
+                summary.append(f"The notification string {STRING_NAME} already exists.")
+            if found is not None:
+                summary.append(f"Message id for NotifyRules.MESSAGE_IDS[{universe}]: {found['id']}")
+                summary.append(f"Text: {found.get('content', '')}")
 
     text = "\n".join(summary)
     print(text)
