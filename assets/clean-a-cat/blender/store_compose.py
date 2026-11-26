@@ -288,11 +288,13 @@ def soft_shadow_edges(im, frac=0.3):
     return out
 
 
-def compose_spa(raw_dir, final=False):
+def compose_spa(raw_dir, final=False, key="thumb-spa"):
+    """The title on the left and a render on the right: the bath (`thumb-spa`), the bath with a special cat in it
+    (`thumb-spa-<Name>`) or the stray in his box (`thumb-box`)."""
     size = (1920, 1080) if final else (1280, 720)
     w, h = size
     bg = bubble_backdrop(size)
-    art = soft_shadow_edges(crop_to_content(Image.open(os.path.join(raw_dir, "raw-thumb-spa.png")).convert("RGBA")))
+    art = soft_shadow_edges(crop_to_content(Image.open(os.path.join(raw_dir, f"raw-{key}.png")).convert("RGBA")))
     art = fit(art, w * 0.6, h * 0.97)                     # the bath as big as the frame allows (Derek: "blown up")
     bg.alpha_composite(art, (int(w * 0.99 - art.width), int(h * 0.99 - art.height)))
     title = title_block(int(w * 0.44))
@@ -399,6 +401,88 @@ def compose_split(raw_dir, final=False):
     return bg
 
 
+def _split_art(raw_dir):
+    """The two split renders joined on the cat's middle line: (picture, the line's x, the cat's box without shadow)."""
+    dirty = Image.open(os.path.join(raw_dir, "raw-split-dirty.png")).convert("RGBA")
+    clean = Image.open(os.path.join(raw_dir, "raw-split-clean.png")).convert("RGBA")
+    rm = dirty.width // 2
+    art = clean.copy()
+    art.paste(dirty.crop((0, 0, rm, dirty.height)), (0, 0))
+    return art, rm, dirty.getchannel("A").point(lambda a: 255 if a >= 250 else 0).getbbox()
+
+
+def icon_split(raw_dir, size=512):
+    """An icon from the split thumbnail's renders (#106): the cat's face filling the square, its left half muddy on
+    the drab backdrop and its right half clean on the bubbles, the thin line between. No words."""
+    art, rm, solid = _split_art(raw_dir)
+    bg = bubble_backdrop((size, size), seed=9)
+    mid = size // 2
+    bg.paste(mud_backdrop((size * 2, size), seed=7).crop((0, 0, mid, size)), (0, 0))
+    k = size * 1.3 / (solid[3] - solid[1])                 # the head fills the square, the chest runs out under it
+    art = art.resize((int(art.width * k), int(art.height * k)), Image.LANCZOS)
+    bg.alpha_composite(art, (int(mid - rm * k), int(size * 0.1 - solid[1] * k)))
+    fx = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(fx)
+    for fxr, fyr, r in ((0.9, 0.1, 0.07), (0.92, 0.62, 0.05), (0.7, 0.9, 0.04)):
+        sparkle(d, fxr * size, fyr * size, r * size, (255, 255, 255, 235))
+        sparkle(d, fxr * size, fyr * size, r * size * 0.5, (255, 244, 176, 255))
+    bg.alpha_composite(fx)
+    line = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    lw = max(2, int(size * 0.006))
+    ImageDraw.Draw(line).rectangle((mid - lw - 2, 0, mid + lw + 2, size), fill=(40, 30, 60, 90))
+    line = line.filter(ImageFilter.GaussianBlur(lw * 0.8))
+    ImageDraw.Draw(line).rectangle((mid - lw, 0, mid + lw - 1, size), fill=SPLIT_LINE + (255,))
+    bg.alpha_composite(line)
+    return bg
+
+
+def icon_plain(raw_dir, key, seed=9, shadow=1.0):
+    """A 512 icon from a close square render: the bubble backdrop and no words. `shadow` under 1 thins the floor's
+    see-through shadow (the box's flap throws a dark wedge into the corner)."""
+    bg = bubble_backdrop((512, 512), seed=seed)
+    art = Image.open(os.path.join(raw_dir, f"raw-{key}.png")).convert("RGBA")
+    if shadow < 1.0:
+        art.putalpha(art.getchannel("A").point(lambda v: v if v >= 250 else int(v * shadow)))
+    art = art.resize((512, 512), Image.LANCZOS)
+    bg.alpha_composite(art, (0, 0))
+    return bg
+
+
+def compose_lineup(raw_dir, final=False, key="thumb-lineup"):
+    """A wide render under the name on one line (#106): the wedge of special cats (`thumb-lineup`) or the workers
+    at their wash stands (`thumb-busy`), across the frame's foot."""
+    size = (1920, 1080) if final else (1280, 720)
+    w, h = size
+    bg = bubble_backdrop(size, seed=11)
+    art = crop_to_content(Image.open(os.path.join(raw_dir, f"raw-{key}.png")).convert("RGBA"))
+    art = fit(art, w * 0.99, h * 0.76)
+    bg.alpha_composite(art, ((w - art.width) // 2, int(h * 0.995 - art.height)))
+    fx = Image.new("RGBA", size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(fx)
+    for fxr, fyr, r in ((0.05, 0.3, 0.035), (0.95, 0.26, 0.04), (0.2, 0.1, 0.022), (0.82, 0.08, 0.024)):
+        sparkle(d, fxr * w, fyr * h, r * h, (255, 255, 255, 235))
+        sparkle(d, fxr * w, fyr * h, r * h * 0.5, (255, 244, 176, 255))
+    bg.alpha_composite(fx)
+    title = title_block(int(w * 0.62), lines=(("CLEAN A CAT", (255, 255, 255), (255, 132, 180)),), tilt=0)
+    title = fit(title, w * 0.6, h * 0.25)
+    bg.alpha_composite(title, ((w - title.width) // 2, int(h * 0.012)))
+    return bg
+
+
+def compose_box(raw_dir, final=False):
+    """The stray in his box (#106): the title on the left, the box close on the right and running out of the frame's
+    foot."""
+    size = (1920, 1080) if final else (1280, 720)
+    w, h = size
+    bg = bubble_backdrop(size, seed=5)
+    art = Image.open(os.path.join(raw_dir, "raw-thumb-box.png")).convert("RGBA").resize(size, Image.LANCZOS)
+    bg.alpha_composite(art, (0, 0))                       # the render is the whole frame
+    title = title_block(int(w * 0.4))
+    title = fit(title, w * 0.42, h * 0.8)
+    bg.alpha_composite(title, (int(w * 0.225 - title.width / 2), int(h * 0.4 - title.height / 2)))
+    return bg
+
+
 def icon_spa(raw_dir):
     """The matching 512 icon: the bubble backdrop and no words. With the close shot (raw-icon-spa.png) the cat's
     face fills about half the square and the render bleeds off the edges; without it, the whole bath."""
@@ -429,5 +513,20 @@ if __name__ == "__main__":
         icon_spa(raw_dir).convert("RGB").save(os.path.join(out_dir, "icon-spa.png"))
     if os.path.exists(os.path.join(raw_dir, "raw-split-dirty.png")):
         compose_split(raw_dir, final).convert("RGB").save(os.path.join(out_dir, "thumb-split.png"))
+    for name in sorted(os.listdir(raw_dir)):                 # the second set (#106)
+        key = name[4:-4]
+        if name.startswith("raw-icon-spa-") or key == "icon-box":
+            icon_plain(raw_dir, key, shadow=0.3 if key == "icon-box" else 1.0).convert("RGB").save(
+                os.path.join(out_dir, f"{key}.png"))
+        elif name.startswith("raw-thumb-spa-"):
+            compose_spa(raw_dir, final, key).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
+        elif key == "thumb-box":
+            compose_box(raw_dir, final).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
+        elif key == "thumb-busy":
+            compose_lineup(raw_dir, final, key).convert("RGB").save(os.path.join(out_dir, f"{key}.png"))
+    if os.path.exists(os.path.join(raw_dir, "raw-split-dirty.png")):
+        icon_split(raw_dir).convert("RGB").save(os.path.join(out_dir, "icon-split.png"))
+    if os.path.exists(os.path.join(raw_dir, "raw-thumb-lineup.png")):
+        compose_lineup(raw_dir, final).convert("RGB").save(os.path.join(out_dir, "thumb-lineup.png"))
     if len(args) > 2:
         sheet(made, args[2])
