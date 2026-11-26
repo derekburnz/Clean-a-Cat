@@ -118,6 +118,24 @@ local Cues: { [string]: Cue } = {
 		voices = 2,
 		preload = true,
 	},
+	-- owner's Cat Cafe CatCafe_Ui_Open as CleanACat_Ui_Open: a window or the More tray opens (Audio/UiSounds, #800)
+	uiOpen = {
+		ids = {},
+		group = "Ui",
+		volume = 0.3,
+		pitch = { 0.98, 1.02 },
+		minGap = 0.08,
+		voices = 1,
+	},
+	-- owner's Cat Cafe CatCafe_Ui_Close as CleanACat_Ui_Close: the last window or the More tray closes (#800)
+	uiClose = {
+		ids = {},
+		group = "Ui",
+		volume = 0.25,
+		pitch = { 0.98, 1.02 },
+		minGap = 0.08,
+		voices = 1,
+	},
 	-- synth: CleanACat_Sfx_DryerHum (seamless 2 s loop); played at the dryer (3D) while a cat dries
 	dryerHum = {
 		ids = { "rbxassetid://105566818572862" },
