@@ -1754,6 +1754,55 @@
         "CFrame": {
          "CFrame": {
           "position": [
+           -0.219,
+           1.1751,
+           -0.623
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1317,
+         0.2054,
+         0.0585
+        ],
+        "Color": [
+         0.1686,
+         0.1686,
+         0.2078
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Phoenix_Sit_Eye1",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
            -0.1601,
            1.2769,
            -0.6317
@@ -1918,9 +1967,58 @@
         "CFrame": {
          "CFrame": {
           "position": [
+           0.219,
+           1.1751,
+           -0.6304
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1317,
+         0.2054,
+         0.0735
+        ],
+        "Color": [
+         0.1686,
+         0.1686,
+         0.2078
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Phoenix_Sit_Eye2",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
            0.2589,
            1.2769,
-           -0.6317
+           -0.6573
           ],
           "orientation": [
            [
@@ -1944,7 +2042,7 @@
         "Size": [
          0.0658,
          0.0768,
-         0.0285
+         0.0797
         ],
         "Color": [
          1.0,

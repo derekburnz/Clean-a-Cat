@@ -139,8 +139,9 @@ SPECIAL_CATS = {
     # "names and designs from cats for catcafe especially for rare customers as catcafes detailed cats have some
     # really cool designs"). Colourways as there, tuned to this game's palette and its Neon rule.
     # reborn from the embers: copper fading to red and gold, a two colour mane, a pale gold tail tip
+    # (its gold eyes have pupils: without them gold on copper is 1.66:1 and the eyes vanish on a 40 px card)
     "Phoenix":   dict(rarity="Special", fur="eye_copper", second="bowl_red", third="eye_amber", eyes="eye_gold",
-                      pattern="gradient", muzzle=None, nose="nose_dark", glow_eyes=True, tip="sparkle",
+                      pattern="gradient", muzzle=None, nose="nose_dark", tip="sparkle",
                       socks="bowl_red", mane=("eye_amber", "bowl_red"), eye_k=1.1,
                       mark=("drop", ("bowl_red", "eye_amber", "sparkle"), 1.6),
                       face=((0.38, 0.1, 0.1, 0.05, "bowl_red"), (0.36, 0.0, 0.14, 0.05, "eye_amber"),
