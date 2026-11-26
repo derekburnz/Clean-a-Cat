@@ -132,6 +132,13 @@ local function clearCat(job: Job)
 	local cat = job.cat
 	job.cat = nil
 	if cat then
+		local id = cat:GetAttribute(WorkerRules.WORKER_ATTRIBUTE)
+		local staff = if cat.Parent and type(id) == "string"
+			then cat.Parent:FindFirstChild(`CleanACat_NPC_Staff_{id}`)
+			else nil
+		if staff then
+			staff:SetAttribute(WorkerRules.WASHING_ATTRIBUTE, false)
+		end
 		cat:Destroy()
 	end
 end
@@ -177,6 +184,11 @@ local function seatCat(player: Player, id: string, job: Job, clean: boolean)
 	cat:SetAttribute(WorkerRules.PROGRESS_ATTRIBUTE, if clean then 1 else 0)
 	cat.Parent = station
 	job.cat = cat
+	-- the worker reaches and scrubs while this is true (Motion-FX's staff motion, PR 563)
+	local staff = station:FindFirstChild(`CleanACat_NPC_Staff_{id}`)
+	if staff then
+		staff:SetAttribute(WorkerRules.WASHING_ATTRIBUTE, not clean)
+	end
 end
 
 -- Draws the player's worker stations and pads. A job in progress keeps going; its cat is seated again.
@@ -217,6 +229,7 @@ function WorkerService.refresh(player: Player)
 				local copy = staff:Clone() :: Model
 				anchorAll(copy)
 				copy:PivotTo(spot * STAFF_OFFSET)
+				copy:SetAttribute(WorkerRules.WASHING_ATTRIBUTE, false)
 				copy.Parent = station
 			end
 		else

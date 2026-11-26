@@ -4,6 +4,7 @@
 -- they take next (a tap steps through the modes) and another takes them up a level. The server checks everything and
 -- shows the result on the Player attributes WorkerMode_<id> and WorkerLevel_<id>; the prompts only follow them.
 -- Lou comes with a game pass, so he has no hire prompt. Nothing opens by itself.
+-- It also fires Moments.WorkerFinished(cat) when a worker's clean cat sits down in their tub, on any plot.
 -- Behind the LiveFlags switch `workers`.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -11,6 +12,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
@@ -133,6 +135,18 @@ local function refresh()
 	end
 end
 
+-- A worker's clean cat, which the server parents with WorkerProgress already 1 (WorkerService.seatCat).
+local function watchFinished(instance: Instance)
+	if
+		instance:IsA("Model")
+		and instance:GetAttribute(WorkerRules.WORKER_ATTRIBUTE) ~= nil
+		and instance:GetAttribute("Cat") ~= nil
+		and instance:GetAttribute(WorkerRules.PROGRESS_ATTRIBUTE) == 1
+	then
+		Moments.WorkerFinished:Fire(instance :: Model)
+	end
+end
+
 function WorkerController.Init(_controllers: { [string]: any }) end
 
 function WorkerController.Start()
@@ -145,6 +159,7 @@ function WorkerController.Start()
 				* CFrame.new(0, ANCHOR_HEIGHT, 0)
 		end
 	end)
+	Workspace.DescendantAdded:Connect(watchFinished)
 	refresh()
 end
 

@@ -70,6 +70,9 @@ local heartLow: Signal<Model> = Signal.new()
 -- (customer): (switch heartBar) a waiting customer's bar ran out and they leave with their cat; fired just before the
 -- server redraws the line, so the figure is still there for a moment.
 local catLeft: Signal<Model> = Signal.new()
+-- (cat): (switch workers) a worker finished a cat: the clean model has just sat down in their tub, WorkerProgress 1.
+-- Fired on every device that sees it, for any spa on the street.
+local workerFinished: Signal<Model> = Signal.new()
 
 local Moments = {
 	ScrubStart = scrubStart,
@@ -100,6 +103,7 @@ local Moments = {
 	RinseSpray = rinseSpray,
 	HeartLow = heartLow,
 	CatLeft = catLeft,
+	WorkerFinished = workerFinished,
 
 	-- Every moment name, in the order they happen in a first session. Tests and tools read this list.
 	NAMES = table.freeze({
@@ -131,6 +135,7 @@ local Moments = {
 		"CatReturned",
 		"HeartLow",
 		"CatLeft",
+		"WorkerFinished",
 	}),
 }
 

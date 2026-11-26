@@ -17,6 +17,7 @@ local WorkerRules = {}
 WorkerRules.FLAG = "workers"
 WorkerRules.PROGRESS_ATTRIBUTE = "WorkerProgress" -- 0 to 1 on the cat a worker washes (Motion-FX's WorkerBar)
 WorkerRules.WORKER_ATTRIBUTE = "Worker" -- the worker's id on that cat and on their station
+WorkerRules.WASHING_ATTRIBUTE = "Washing" -- true on the staff model while they wash a cat (Motion-FX's staff motion)
 WorkerRules.FOLDER = "Workers" -- each plot's folder of worker stations and pads
 WorkerRules.PROMPT_REACH = 10 -- studs; the station's prompts show within this distance
 WorkerRules.SERVER_REACH = 16 -- studs; the server's distance check, with room for lag
