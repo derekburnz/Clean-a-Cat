@@ -108,6 +108,8 @@ local toastLabel: TextLabel? = nil
 local revealRecap: RBXScriptConnection? = nil -- shows the recap again when the window over it closes
 local openedListeners: { (name: string) -> () } = {}
 local toastToken = 0
+local washFocus = false -- UI.setWashFocus (issue 856)
+local refitScreen: (() -> ())? = nil -- Init's fitScreen, run again when washFocus changes
 local controlsHidden = false -- true while this module has Roblox's touch controls hidden
 
 local function corner(parent: Instance, radius: number)
@@ -267,9 +269,10 @@ function UI.init()
 		-- for the whole wash: with five or more buttons it reached the step line's title (issue 625, Sync's B5), and
 		-- the windows are for between washes.
 		local listShown = HUD.listShown()
-		SideButtons.setAside(listShown or HUD.washing())
-		menu.Visible = not SideButtons.any() and not listShown
+		SideButtons.setAside(listShown or HUD.washing() or washFocus)
+		menu.Visible = not SideButtons.any() and not listShown and not washFocus
 	end
+	refitScreen = fitScreen
 	fitScreen()
 	Comfort.onTenFootChanged(fitScreen)
 	HUD.onActiveChanged(fitScreen)
@@ -867,7 +870,34 @@ function UI.toast(text: string, kind: ("info" | "warning")?)
 	while #toastQueue > TOAST_QUEUE do
 		table.remove(toastQueue, 1)
 	end
-	if not toastBusy then
+	if not toastBusy and not washFocus then
+		showNextToast()
+	end
+end
+
+-- The wash on its own screen (issue 856, Gameplay-Engineer's WashScreenController, switch washScreen): true hides the
+-- regular HUD (the coin pill and friend tag, the side buttons and starter ad, the waiting faces, Suds's bubble and
+-- toasts, which wait in their queue); the wash's own step line, meter and tool tray stay. False brings them back.
+function UI.setWashFocus(on: boolean)
+	if washFocus == on then
+		return
+	end
+	washFocus = on
+	HUD.setFocus(on)
+	Waiting.setFocus(on)
+	SudsBubble.setFocus(on)
+	local refit = refitScreen -- the side buttons, starter ad and starter Menu step aside (fitScreen reads washFocus)
+	if refit then
+		refit()
+	end
+	local label = toastLabel
+	if on then
+		toastToken += 1 -- the toast on screen stops; the rest wait
+		toastBusy = false
+		if label then
+			label.Visible = false
+		end
+	elseif not toastBusy then
 		showNextToast()
 	end
 end
