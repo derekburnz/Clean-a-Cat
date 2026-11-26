@@ -12,7 +12,8 @@ present that reads as a gift from across the room, its heart balloon stands 7 st
 the pet on it is the pet the player gets (`CleanACat_Pet_Starcoat`, pets.py). A draft: when and how the pet is given is the game's design.
 
 Objects: the stand itself (it collides, so nobody walks through the present), `_Decor` (the bow, two small presents
-at its foot, the board's dots and the balloon on its string: walk-through) and `_Lamp`, one ball in deep gold whose part is named `Lamp`.
+at its foot and the board's dots: walk-through), `_Balloon` (the heart balloon, its string and its knot, a child
+Model whose pivot is the knot on the lid, so the game can sway it about that point; walk-through) and `_Lamp`, one ball in deep gold whose part is named `Lamp`.
 The lamp is plain SmoothPlastic; the game may light it (the design lights the stand at about minute 7).
 
 Attachments in the stand's first part: `PetSeat` (the cushion's top, facing the front), `Prompt` (in front of the
@@ -55,7 +56,7 @@ def _present(b, c, s, box, ribbon):
 
 def build_gift_stand(mat, balloon=True):
     """`balloon=False` leaves the balloon off: the card picture's look, where it would shrink the present."""
-    b, dec, lamp = Builder(), Builder(), Builder()
+    b, dec, lamp, bal = Builder(), Builder(), Builder(), Builder()
     b.box_base((0, 0, 0), (W, D, H), BOX)                                               # the present
     b.box_base((0, 0, 0.01), (0.42, D + 0.05, H - 0.004), RIBBON, bevel=False)          # its ribbon, front to back
     b.box_base((0, 0, 0.016), (W + 0.05, 0.42, H - 0.004), RIBBON, bevel=False)         # and side to side
@@ -100,18 +101,20 @@ def build_gift_stand(mat, balloon=True):
     kx, ky, kz = 0.98, 0.5, H + LID
     tx, ty, tz = BALLOON
     run = math.hypot(tx - kx, tz - kz)
+    out = [_tris(b.finalize(NAME, mat)), _tris(dec.finalize(NAME + "_Decor", mat)), lamp.finalize(NAME + "_Lamp", mat)]
     if balloon:
-        dec.ico((kx, ky, kz + 0.05), 0.09, "gold_light")
-        dec.box(((kx + tx) / 2, ky, (kz + tz) / 2), (0.05, 0.05, run), "gold_light", bevel=False,
-                rot=Matrix.Rotation(math.atan2(tx - kx, tz - kz), 3, "Y"))
-        dec.cyl((tx, ty, tz + 0.4), 0.06, 0.8, "fur_strawberry", segments=10, bevel=False, radius2=0.66,
+        ux, uy, uz = tx - kx, ty - ky, tz - kz        # the balloon's tip from the knot: this object is built about the knot
+        bal.ico((0, 0, 0.05), 0.09, "gold_light")
+        bal.box((ux / 2, 0, uz / 2), (0.05, 0.05, run), "gold_light", bevel=False,
+                rot=Matrix.Rotation(math.atan2(ux, uz), 3, "Y"))
+        bal.cyl((ux, uy, uz + 0.4), 0.06, 0.8, "fur_strawberry", segments=10, bevel=False, radius2=0.66,
                 scale=(1.0, 0.62, 1.0))
         for sx in (1, -1):
-            dec.sphere((tx + sx * 0.31, ty, tz + 0.83), 0.4, "fur_strawberry", segments=8, rings=5,
+            bal.sphere((ux + sx * 0.31, uy, uz + 0.83), 0.4, "fur_strawberry", segments=8, rings=5,
                        scale=(1.0, 0.7, 1.0))
-        dec.sphere((tx - 0.42, ty - 0.2, tz + 0.98), 0.1, "fur_rose", segments=6, rings=4, scale=(1.0, 0.6, 1.3))
-    return [_tris(b.finalize(NAME, mat)), _tris(dec.finalize(NAME + "_Decor", mat)),
-            lamp.finalize(NAME + "_Lamp", mat)]
+        bal.sphere((ux - 0.42, uy - 0.2, uz + 0.98), 0.1, "fur_rose", segments=6, rings=4, scale=(1.0, 0.6, 1.3))
+        out.append(_tris(bal.finalize(NAME + "_Balloon", mat, location=(kx, ky, kz))))
+    return out
 
 
 def gift_stand_rbx_extras():
