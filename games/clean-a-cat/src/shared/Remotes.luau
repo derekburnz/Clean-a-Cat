@@ -48,6 +48,9 @@ Remotes.ClientToServer = {
 	"RequestFinish", -- (slot: one of BuildRules.SLOTS)  1 a second; switches builds and finishNow on, save loaded, near the
 	-- board, a build running there with FinishRules.HIDE_UNDER seconds or more left: a saved credit that covers its
 	-- tier finishes it at once, else Roblox's purchase prompt opens for that tier (PurchaseService grants it)
+	-- Tip jar (JarService, behind tipJar).
+	"RequestCollectJar", -- ()  1 a second; switch on, save loaded, the character within JarRules.SERVER_REACH studs of the
+	-- player's SpotTipJar, coins in the jar: pays them and empties the jar
 	-- Funnel (FunnelService, behind onboardingFunnel).
 	"ReportStep", -- (step: one of TelemetryRules.CLIENT_STEPS) or (name, detail: a pair in TelemetryRules.CLIENT_EVENTS)
 	-- 2 a second (burst 4); logged once per save (first_move also once per session as playtime_v1's moved), side
