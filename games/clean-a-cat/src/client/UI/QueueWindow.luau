@@ -482,8 +482,8 @@ local function drawCard(
 	if short then
 		whoList.HorizontalAlignment = Enum.HorizontalAlignment.Left
 	end
-	local rarityChip =
-		chip("Rarity", who, Kit.RARITY[card.rarity] or Kit.RARITY.Common, card.rarity, s.chip, whoW)
+	-- the shared pill, measured with its outline so the words stay inside it and the card (issue 609)
+	local rarityChip = Kit.rarityChip(who, card.rarity, s.chip, 1, whoW)
 	rarityChip.LayoutOrder = if short then 2 else 1
 	local name = words("Name", who, s.nameText)
 	name.LayoutOrder = if short then 1 else 2
