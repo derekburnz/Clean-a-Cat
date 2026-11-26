@@ -189,6 +189,9 @@ function BoardProp.showDisplay(board: Board, name: string, shown: boolean)
 end
 
 BoardProp.KEYS_FLAG = "boardKeys"
+BoardProp.PILL_STEP_ATTRIBUTE = "PillStep" -- a prompt's pill moves this many pill heights up (down when below 0)
+BoardProp.PILL_SPREAD = 1.15 -- pill heights between rows' small prompts, on top of the rows' own spacing
+BoardProp.DEFAULT_SPREAD = 80 -- pixels between rows' Roblox prompts
 -- Row 1 first. E is the game's usual key; G and the R2 trigger are taken (a worker's pet, the scrub).
 local ROW_KEYS = {
 	Enum.KeyCode.E,
@@ -214,6 +217,12 @@ function BoardProp.rowKeys(prompt: ProximityPrompt, row: number)
 	local at = math.clamp(row, 1, #ROW_KEYS)
 	prompt.KeyboardKeyCode = ROW_KEYS[at]
 	prompt.GamepadKeyCode = ROW_BUTTONS[at]
+	-- The rows stand only ROW_STEP apart, so their pills would overlap on screen (bug hunt B3, issue 574): each pill
+	-- moves off its row by its row's distance from the middle, in pill heights for the small prompts (PromptController
+	-- reads PillStep) and in pixels for Roblox's own.
+	local fromMiddle = at - (#ROW_KEYS + 1) / 2
+	prompt:SetAttribute(BoardProp.PILL_STEP_ATTRIBUTE, -fromMiddle * BoardProp.PILL_SPREAD)
+	prompt.UIOffset = Vector2.new(0, fromMiddle * BoardProp.DEFAULT_SPREAD)
 	if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
 		-- a tap picks one pill, so showing them all never buys two things at once
 		prompt.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow

@@ -24,9 +24,11 @@ type Walk = {
 	duration: number,
 	facing: CFrame, -- the turn the customer walks with
 	hidden: boolean,
+	file: boolean, -- a new customer in the file from the pavement: hidden until they set off
 }
 
 local walks: { [Model]: Walk } = {}
+local watched: { [Model]: boolean } = {} -- figures whose WalkAt is listened to
 
 local function setHidden(walk: Walk, hidden: boolean)
 	if walk.hidden == hidden then
@@ -49,10 +51,29 @@ local function finish(walk: Walk)
 end
 
 local function begin(instance: Instance)
-	if not instance:IsA("Model") or walks[instance :: Model] then
+	if not instance:IsA("Model") then
 		return
 	end
 	local figure = instance :: Model
+	if not watched[figure] then
+		-- a line redrawn in place gives a figure a new walk: it starts again from where it stands now
+		watched[figure] = true
+		figure:GetAttributeChangedSignal(WalkRules.AT_ATTRIBUTE):Connect(function()
+			local old = walks[figure]
+			if old then
+				walks[figure] = nil
+				setHidden(old, false)
+			end
+			begin(figure)
+		end)
+		figure.Destroying:Connect(function()
+			watched[figure] = nil
+			walks[figure] = nil
+		end)
+	end
+	if walks[figure] then
+		return
+	end
 	local to = figure:GetAttribute(WalkRules.TO_ATTRIBUTE)
 	local at = figure:GetAttribute(WalkRules.AT_ATTRIBUTE)
 	if typeof(to) ~= "CFrame" or type(at) ~= "number" then
@@ -75,11 +96,9 @@ local function begin(instance: Instance)
 		duration = WalkRules.duration(distance, if type(speed) == "number" then speed else nil),
 		facing = facing,
 		hidden = false,
+		file = figure:GetAttribute(WalkRules.FILE_ATTRIBUTE) == true,
 	}
 	walks[figure] = walk
-	figure.Destroying:Connect(function()
-		walks[figure] = nil
-	end)
 end
 
 local function step()
@@ -95,7 +114,8 @@ local function step()
 		local elapsed = now - walk.at
 		local progress = WalkRules.progress(elapsed, walk.duration)
 		if progress == nil then
-			setHidden(walk, true) -- waiting behind the customer ahead in the file
+			-- a new customer waits hidden behind the one ahead in the file; one stepping up stands on their mat
+			setHidden(walk, walk.file)
 			continue
 		end
 		if progress >= 1 then
