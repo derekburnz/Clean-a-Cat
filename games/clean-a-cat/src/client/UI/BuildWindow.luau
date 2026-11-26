@@ -81,6 +81,10 @@ local parts: Parts? = nil
 local buildRows: { BuildViewRules.Row } = {}
 local upgradeRows: { BuildViewRules.Row } = {}
 local pressListeners: { (kind: string, id: string) -> () } = {}
+-- Each drawn row's words and button by "<kind>_<id>", so a ticking countdown changes only its words (issue 822): a
+-- row rebuilt every second costs a phone a full redraw and can drop a tap whose button is replaced mid press.
+local drawnSays: { [string]: TextLabel } = {}
+local drawnButtons: { [string]: GuiButton } = {}
 
 local function frame(name: string, parent: Instance): Frame
 	local f = Instance.new("Frame")
@@ -164,6 +168,7 @@ local function drawRow(row: BuildViewRules.Row, order: number, s: Sizes, parent:
 		button.Size = UDim2.fromOffset(width, buttonH)
 		button.TextSize = s.buttonText
 		button:SetAttribute("Says", `{action} {row.name}, {row.say}`)
+		drawnButtons[card.Name] = button
 		local kind, id = row.kind, row.id
 		button.Activated:Connect(function()
 			for _, listener in pressListeners do
@@ -201,6 +206,7 @@ local function drawRow(row: BuildViewRules.Row, order: number, s: Sizes, parent:
 	say.Size = UDim2.new(1, 0, 0, s.say + 6)
 	Kit.shrinkToFit(say, s.say)
 	say.Text = row.say
+	drawnSays[card.Name] = say
 	return height
 end
 
@@ -223,6 +229,8 @@ local function redraw()
 			child:Destroy()
 		end
 	end
+	table.clear(drawnSays)
+	table.clear(drawnButtons)
 	local total = 0
 	local order = 0
 	local function add(height: number)
@@ -252,11 +260,33 @@ local function redraw()
 	p.scroller.ScrollingEnabled = total > shown
 end
 
+-- Changes only the words of rows already drawn; false when one is missing and the window must draw again.
+local function retext(rows: { BuildViewRules.Row }): boolean
+	for _, row in rows do
+		local key = `{row.kind}_{row.id}`
+		local say: TextLabel? = drawnSays[key]
+		if say == nil or say.Parent == nil then
+			return false
+		end
+		say.Text = row.say
+		local button: GuiButton? = drawnButtons[key]
+		local action = row.action
+		if button and action then
+			button:SetAttribute("Says", `{action} {row.name}, {row.say}`)
+		end
+	end
+	return true
+end
+
 function BuildWindow.set(builds: { BuildViewRules.Row }, upgrades: { BuildViewRules.Row })
+	local same = BuildViewRules.sameShape(buildRows, builds)
+		and BuildViewRules.sameShape(upgradeRows, upgrades)
 	buildRows, upgradeRows = builds, upgrades
 	local p = parts
 	if p and p.window.layer.Visible then
-		redraw()
+		if not (same and retext(builds) and retext(upgrades)) then
+			redraw()
+		end
 	end
 end
 

@@ -30,6 +30,28 @@ export type Row = {
 
 type IsOn = (flag: string) -> boolean
 
+-- True when `a` and `b` hold the same rows in the same order and only their `say` words differ, as when a countdown
+-- ticks: the Build window then changes those words in place instead of drawing every row again (issue 822).
+function BuildViewRules.sameShape(a: { Row }, b: { Row }): boolean
+	if #a ~= #b then
+		return false
+	end
+	for i, row in a do
+		local other = b[i]
+		if
+			row.kind ~= other.kind
+			or row.id ~= other.id
+			or row.name ~= other.name
+			or row.state ~= other.state
+			or row.action ~= other.action
+			or row.icon ~= other.icon
+		then
+			return false
+		end
+	end
+	return true
+end
+
 -- "45s", "5m", "1h 30m", "8h", "1d 2h": the largest two parts, never more.
 function BuildViewRules.time(seconds: number): string
 	local s = math.max(0, math.ceil(seconds))
