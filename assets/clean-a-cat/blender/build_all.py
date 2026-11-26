@@ -21,6 +21,7 @@ library, derekburnz/Roblox-Asset-Library, models/blender-generators (the Cat Caf
 
 import argparse
 import json
+import math
 import os
 import sys
 
@@ -92,7 +93,11 @@ def cat_rbx_extras(name):
     joints = cats.joints(spec, body)
     look = cats.loaf_look if body == "loaf" else Vector       # a loaf's head is turned, and its spots turn with it
     carry = Vector(joints["Head"]) + look(cats.carry_at(spec, body)) * k
-    bow = Vector(joints["Head"]) + look(cats.bow_at(spec, body)) * k
+    bow_spot, bow_tip = cats.bow_side(spec, body)     # the head's top corner, tipped (#764); it was the crown
+    bow_turn = Matrix.Rotation(math.radians(bow_tip), 4, "Y")
+    if body == "loaf":
+        bow_turn = cats.loaf_look_matrix(4) @ bow_turn
+    bow = Matrix.Translation(Vector(joints["Head"]) + look(bow_spot) * k) @ bow_turn
     attributes = {"Scale": {"Float64": float(spec.get("scale", 1.0))}, "Rarity": spec["rarity"], "Cat": cat}
     if spec.get("mascot"):                            # not a Cat Index cat (cats.EXTRA_CATS): the game must not list it
         attributes["Mascot"] = True
@@ -100,7 +105,6 @@ def cat_rbx_extras(name):
         attributes["Special"] = True
     if name.endswith(cats.LITE):                      # a light twin (cats.build_cat_lite): for cats seen across a room
         attributes["Lite"] = True
-    bow = Matrix.Translation(bow)
     slot = props.slot(cat)
     if slot in ("Head", "Face"):                      # the game leaves a bow's `_Fan` off such a cat (BowFit): the
         attributes["HeadPiece"] = True                # Golden bow's fan would cross the head piece

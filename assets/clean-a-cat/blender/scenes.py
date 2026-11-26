@@ -369,7 +369,9 @@ def groom(mat, out, name="Smudge", close=False):
     """Left to right: an avatar, the rinsed cat with its tangles, fluffed after the brush, and with each bow."""
     spec = cats.ROSTER[name]
     k = cats.scale_of(spec, "sit")
-    bow = Vector(cats.joints(spec, "sit")["Head"]) + Vector(cats.bow_at(spec, "sit")) * k
+    bow_spot, bow_tip = cats.bow_side(spec, "sit")
+    bow = (Matrix.Translation(Vector(cats.joints(spec, "sit")["Head"]) + Vector(bow_spot) * k)
+           @ Matrix.Rotation(math.radians(bow_tip), 4, "Y") @ Matrix.Scale(k, 4))
     allo = [] if close else [avatar(mat, (-2.2, 0.4, 0.0))]
     stages = [("tangled", None), ("fluffed", None)] + [("bow", n) for n in props.BOWS]
     for i, (stage, bow_name) in enumerate(stages):
@@ -379,7 +381,8 @@ def groom(mat, out, name="Smudge", close=False):
             o.hide_render = False                       # the fluff ships hidden
         if bow_name:
             b = props.build_bow(bow_name, mat)
-            _move(b, bow, k)
+            for o in b:
+                o.matrix_world = bow @ o.matrix_basis
             objs += b
         _move(objs, (i * 1.7, 0, 0))
         for o in objs:

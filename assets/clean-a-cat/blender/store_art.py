@@ -519,6 +519,9 @@ def _face_mud(mat, cat):
     return _fresh([b.finalize("FaceMud", mat, bevel=0)])
 
 
+BOW_K = 0.85        # the split's bow is a little smaller than the game's, so all of it clears the dividing line
+
+
 def _split(mat, out, res, state):
     """One half of the split thumbnail (#500): Muffin sitting, seen straight on and close, with the camera on its
     middle line. `state` 'dirty' is the whole cat muddy, 'clean' the whole cat clean with a bow by its ear, lather
@@ -544,10 +547,16 @@ def _split(mat, out, res, state):
     if state == "clean":
         spec = cats.ROSTER["Muffin"]
         k = cats.scale_of(spec, "sit")
-        at = Vector(cats.joints(spec, "sit")["Head"]) + Vector(cats.bow_at(spec, "sit")) * k
-        at.x += cats.dims(spec, "sit")["head"]["s"][0] * k * 0.27   # by the ear on the clean half: a whole bow, not
-        bow = props.build_bow(list(props.BOWS)[0], mat)             # half of one (tipped out on the corner like a
-        _move(bow, at, 1.0, -8)                                     # special cat's, it stopped reading as a bow)
+        # The owner, 2026-11-26: "angle the bow to the top right of head so it doesn't get cutoff by line". It sat by
+        # the ear and the line cut its inner loop. Now it sits on the head's top corner on the clean half, a little
+        # smaller and tipped so its outer loop drops past the corner, all of it on the clean half.
+        bow_spot, bow_tip = cats.bow_side(spec, "sit")              # the game's own spot and tip (#764)
+        at = Vector(cats.joints(spec, "sit")["Head"]) + Vector(bow_spot) * k
+        bow = props.build_bow(list(props.BOWS)[0], mat)
+        turn = (Matrix.Translation(at) @ Matrix.Rotation(math.radians(bow_tip), 4, "Y")
+                @ Matrix.Rotation(math.radians(-8), 4, "Z") @ Matrix.Scale(BOW_K, 4))
+        for o in bow:
+            o.matrix_world = turn @ o.matrix_basis
         objs += _fresh(bow)
         fm = Builder()
         for x, y, r in ((hi.x + 0.12, -0.3, 0.24), (hi.x + 0.3, 0.05, 0.2)):
