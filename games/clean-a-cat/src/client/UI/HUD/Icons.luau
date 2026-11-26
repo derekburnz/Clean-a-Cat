@@ -43,9 +43,7 @@ Icons.IMAGES = {
 	Shop = "rbxassetid://75206569453389", -- a shopfront with a striped awning; soft below 48 px, so keep it 48+
 	Pets = "rbxassetid://112809586144557", -- a lilac cat's head in a collar with a bell
 	Crate = "rbxassetid://79856687835511", -- the pet crate with cat ears and a paw latch
-	-- the staff's cream bib apron, pink paw, mint pocket with sponge and brush, no face, so the button never reads as
-	-- one helper (CleanACat_Icon_Hud_Staff, Model-Agent, issue 929; was Jo's head, 86032284297873)
-	Helpers = "rbxassetid://70378908998679",
+	Helpers = "rbxassetid://86032284297873", -- Jo's head with the headband, round cheeks (#784)
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")

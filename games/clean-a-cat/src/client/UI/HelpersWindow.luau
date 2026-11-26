@@ -41,10 +41,11 @@ local SOFT_TOP, SOFT_BOTTOM = Color3.fromHex("FFF6EC"), Color3.fromHex("ECDCCA")
 local GOLD_TOP, GOLD_BOTTOM = Color3.fromHex("FFE9A8"), Color3.fromHex("FFC94D")
 local WHO_FILL = Color3.fromHex("E8F7FF")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
-local SHORT_SHIFT = 22 -- design px below the middle on a short screen: the X clears the coin pill (issue 873)
+local SHORT_SHIFT = 44 -- design px below the middle on a short screen: the X clears the coin pill (issue 873)
 local MIN_TAP = 44 -- real px
 local BUTTON_PAD = 28 -- design px of face beside a button's words
-local BUTTON_GAP = 16 -- design px between a row's buttons, so Takes and Level up never read as one (issue 929)
+local BUTTON_GAP = 14 -- design px between a row's buttons, so Takes and Level up never read as one (issue 929)
+local NAME_ROOM = 150 -- design px a name keeps at most before the buttons take two lines each
 
 -- Sizes in design pixels: full, then compact for a short screen (a phone held sideways).
 local SIZES = {
@@ -160,7 +161,30 @@ local function levelWidth(s: Sizes): number
 	return math.ceil(widest) + BUTTON_PAD
 end
 
-local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent: Frame)
+-- The Takes and Level up widths on two lines ("Takes:" over the mode, "Level up" over the coins).
+local function narrowModeWidth(s: Sizes): number
+	local widest = measure("Takes:", s.buttonText)
+	for _, mode in WorkerRules.MODES do
+		widest = math.max(widest, measure(WorkerRules.MODE_NAMES[mode], s.buttonText))
+	end
+	return math.ceil(widest) + BUTTON_PAD
+end
+
+local function narrowLevelWidth(s: Sizes): number
+	local widest = measure("Level up", s.buttonText)
+	for _, cost in WorkerRules.LEVEL_COST do
+		widest = math.max(widest, measure(tostring(cost), s.buttonText))
+	end
+	return math.ceil(widest) + BUTTON_PAD
+end
+
+local function drawRow(
+	row: HelperViewRules.Row,
+	order: number,
+	s: Sizes,
+	parent: Frame,
+	rowW: number
+)
 	local scale = Kit.screenScale()
 	local tap = math.ceil(MIN_TAP / scale)
 	local buttonH = math.max(s.button, tap)
@@ -230,11 +254,21 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 	rightList.Padding = UDim.new(0, BUTTON_GAP)
 	rightList.Parent = right
 	local used = 0
-	if
-		row.hired
+	-- on a narrow window (a phone with bigger text) the pet box, Takes and Level up leave the name too little room, so
+	-- Takes and Level up go on two lines each: the name is never cut with "..." (issue 838)
+	local petShown = row.hired
 		and LiveFlags.isOn(HelperViewRules.PETS_FLAG)
 		and LiveFlags.isOn(CrateRules.FLAG)
-	then
+	local wide = (if petShown then buttonH + BUTTON_GAP else 0)
+		+ modeWidth(s)
+		+ levelWidth(s)
+		+ 2 * BUTTON_GAP
+	local nameW = math.min(
+		math.max(measure(row.name, s.name), measure(HelperViewRules.say(row), s.say)),
+		NAME_ROOM
+	)
+	local twoLines = row.hired and rowW - (s.who + 12 + 4) - wide < nameW
+	if petShown then
 		-- the pet box: their pet, or a paw; a tap opens Pets with this helper's slot picked
 		local pet = HelperViewRules.petOf(id, pets)
 		local box = frame("Pet", right)
@@ -271,14 +305,20 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 		used += buttonH + BUTTON_GAP
 	end
 	if row.hired then
-		local mode =
-			Window.button("Mode", HelperViewRules.modeText(row), right, SOFT_TOP, SOFT_BOTTOM)
+		local modeText = HelperViewRules.modeText(row)
+		local mode = Window.button(
+			"Mode",
+			if twoLines then (string.gsub(modeText, ": ", ":\n", 1)) else modeText,
+			right,
+			SOFT_TOP,
+			SOFT_BOTTOM
+		)
 		mode.LayoutOrder = 1
 		mode.TextColor3 = Kit.INK
 		mode.TextStrokeTransparency = 1
 		mode.TextSize = s.buttonText
 		mode.TextWrapped = true -- if the font still runs wide, two lines rather than a cut word (issue 698)
-		local modeW = modeWidth(s)
+		local modeW = if twoLines then narrowModeWidth(s) else modeWidth(s)
 		mode.Size = UDim2.fromOffset(modeW, buttonH)
 		mode:SetAttribute("Says", `{row.name} takes {row.modeName}. Tap to change`)
 		mode.Activated:Connect(function()
@@ -287,10 +327,17 @@ local function drawRow(row: HelperViewRules.Row, order: number, s: Sizes, parent
 		used += modeW + BUTTON_GAP
 		local levelText = HelperViewRules.levelText(row)
 		if levelText then
-			local level = Window.button("Level", levelText, right, GREEN_TOP, GREEN_BOTTOM)
+			local level = Window.button(
+				"Level",
+				if twoLines then (string.gsub(levelText, " · ", "\n", 1)) else levelText,
+				right,
+				GREEN_TOP,
+				GREEN_BOTTOM
+			)
 			level.LayoutOrder = 2
 			level.TextSize = s.buttonText
-			local levelW = levelWidth(s)
+			level.TextWrapped = twoLines
+			local levelW = if twoLines then narrowLevelWidth(s) else levelWidth(s)
 			level.Size = UDim2.fromOffset(levelW, buttonH)
 			level:SetAttribute("Says", `Level up {row.name} for {row.nextCost} coins`)
 			level.Activated:Connect(function()
@@ -356,7 +403,7 @@ local function redraw()
 		end
 	end
 	for index, row in rows do
-		drawRow(row, index, s, p.rowsFrame)
+		drawRow(row, index, s, p.rowsFrame, width - 2 * s.pad - 20)
 	end
 end
 
