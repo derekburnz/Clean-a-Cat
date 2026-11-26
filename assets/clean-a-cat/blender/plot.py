@@ -55,7 +55,8 @@ a cream parapet, a round rug under the tub, three warm pendant lamps, a towel sh
 flower box under the window, two lamp posts on the pavement apron and a grassy back yard with a low white fence. The
 room pass (#214) added the floor check you can see, the cap rail and the wall decor: a mirror, a tool board, three
 framed cats and a towel rail. Decor (`_Decor`, `_Glow`, `_Flowers`) does not
-collide; the floors, walls, roof and window seat do.
+collide; the floors, walls, roof and window seat do, and so do the back plates of what hangs on the walls
+(`_WallArt`, #670), so the camera stops in front of a picture instead of inside it.
 """
 
 import math
@@ -281,17 +282,45 @@ def _tiles(b):
         b.box_base(((x0 + x1) / 2, y, FLOOR + 0.005), (x1 - x0 - 2 * t - 0.02, t, 0.055), "spa_bubblegum", bevel=False)
 
 
-def _wall_decor(b):
-    """#214: things to look at on the walls, none of them near the floor or behind the cat in the tub as the play
-    camera sees it. Back wall: a round mirror with a shelf (right of the tub) and a tool board under the clock.
-    Left wall: three framed cats over the stray box. Right wall: a rail of hanging towels."""
+def _wall_art(b):
+    """The back plate of everything that hangs flat on a wall inside: the mirror's frame, the tool board, the three
+    picture frames, the poster, the clock and the strays sign. Its own object, `_WallArt`, and solid (#670).
+
+    Roblox's camera stops only at parts a player collides with. While these were walk-through decor, a camera
+    pushed back to a wall stopped 0.09 studs in front of the wall itself, behind the mirror's pale glass, and the
+    whole screen went light blue. With the plate solid the camera stops in front of it. Rules for anything new on
+    a wall: (1) one plate covers the whole piece and is at most 0.2 studs proud of the wall, so a character pressed
+    to it still reaches the wall and Roblox never reads the plate as a ladder rung; (2) what sits on the plate
+    stays in `_wall_decor`, walk-through, with its back face no more than 0.1 in front of the plate's front; (3) a
+    piece with no plate (the towels) reaches back to the wall, so there is no back face to look at."""
     F = FLOOR
     x0, x1 = ROOM_X
     y1 = ROOM_Y[1]
     rx = Matrix.Rotation(math.pi / 2, 3, "X")
-    # the mirror: a gold frame, a pale glass (solid, never see-through: #176) and two glints
+    b.cyl((0.0, y1 - 0.09, F + 6.3), 1.75, 0.18, "gold_mid", segments=20, bevel=False, rot=rx)   # the mirror's frame
+    b.box((14.5, y1 - 0.08, F + 5.9), (5.0, 0.16, 3.0), "wood_light", bevel=False)               # the tool board
+    for k, y in enumerate(FRAMES_Y):                                                             # three frames
+        b.box((x0 + 0.08, y, F + 6.9 + (0.25 if k == 1 else 0.0)), (0.16, 2.2, 2.6), "wood_light", bevel=False)
+    b.box((x1 - 0.12, 2.0, F + 7.0), (0.12, 4.0, 3.0), "spa_sky", bevel=False)                   # the paw poster
+    b.cyl((14.5, y1 - 0.12, F + 9.5), 1.2, 0.16, "spa_mint", segments=16, bevel=False, rot=rx)   # the clock
+    bx = (BACK_DOOR[0] + BACK_DOOR[1]) / 2
+    b.box((bx, y1 - 0.12, F + DOOR_H + 1.3), (3.6, 0.1, 1.4), "cardboard", bevel=False)          # the strays sign
+
+
+FRAMES_Y = (2.4, 5.2, 8.0)        # the three framed cats on the left wall
+
+
+def _wall_decor(b):
+    """#214: things to look at on the walls, none of them near the floor or behind the cat in the tub as the play
+    camera sees it. Back wall: a round mirror with a shelf (right of the tub), a tool board under the clock and
+    the strays sign over the back door. Left wall: three framed cats over the stray box. Right wall: a rail of
+    hanging towels and a paw poster. Each piece's back plate is in `_wall_art`; this is what sits on the plates."""
+    F = FLOOR
+    x0, x1 = ROOM_X
+    y1 = ROOM_Y[1]
+    rx = Matrix.Rotation(math.pi / 2, 3, "X")
+    # the mirror: a pale glass (solid colour, never see-through: #176) and two glints on its gold frame
     mx, mz = 0.0, F + 6.3
-    b.cyl((mx, y1 - 0.09, mz), 1.75, 0.18, "gold_mid", segments=20, bevel=False, rot=rx)
     b.cyl((mx, y1 - 0.16, mz), 1.48, 0.12, "pastel_sky", segments=20, bevel=False, rot=rx)
     tilt = Matrix.Rotation(math.radians(35), 3, "Y")
     b.box((mx - 0.45, y1 - 0.23, mz + 0.3), (0.2, 0.04, 1.3), "foam", bevel=False, rot=tilt)
@@ -299,10 +328,9 @@ def _wall_decor(b):
     b.box((mx, y1 - 0.42, mz - 2.5), (3.2, 0.8, 0.18), "wood_light", bevel=False)                  # its shelf
     b.cyl_base((mx - 1.0, y1 - 0.45, mz - 2.41), 0.24, 0.8, "spa_bubblegum", segments=8, bevel=False)
     b.cyl_base((mx - 0.4, y1 - 0.45, mz - 2.41), 0.2, 0.6, "spa_mint", segments=8, bevel=False)
-    b.box_base((mx + 0.8, y1 - 0.45, mz - 2.41), (1.0, 0.62, 0.42), "offwhite")                    # a folded towel
-    # the tool board: a wooden board with a cream face and three tools hung on it
+    b.box_base((mx + 0.8, y1 - 0.395, mz - 2.41), (1.0, 0.73, 0.42), "offwhite")                   # a folded towel, back to the wall
+    # the tool board's cream face and the three tools hung on it
     tx, tz = 14.5, F + 5.9
-    b.box((tx, y1 - 0.08, tz), (5.0, 0.16, 3.0), "wood_light", bevel=False)
     b.box((tx, y1 - 0.14, tz), (4.6, 0.1, 2.6), "spa_cream", bevel=False)
     b.box((tx - 1.5, y1 - 0.26, tz + 0.2), (1.0, 0.16, 0.56), "spa_bubblegum", bevel=False)        # a brush
     b.box((tx - 1.5, y1 - 0.26, tz - 0.36), (0.9, 0.14, 0.5), "offwhite", bevel=False)
@@ -310,26 +338,42 @@ def _wall_decor(b):
     b.box((tx + 0.42, y1 - 0.25, tz + 0.0), (0.5, 0.12, 0.9), "offwhite", bevel=False)
     b.box((tx + 1.5, y1 - 0.3, tz), (1.1, 0.24, 0.8), "pastel_butter")                             # a sponge
     b.box((tx + 1.5, y1 - 0.3, tz + 0.5), (1.14, 0.28, 0.24), "spa_mint", bevel=False)
-    # three framed cats on the left wall, over the stray box
+    # the clock's hands, on its mint face
+    cx, cz = 14.5, F + 9.5
+    b.box((cx, y1 - 0.215, cz + 0.25), (0.12, 0.04, 0.6), "fur_charcoal", bevel=False)
+    b.box((cx + 0.2, y1 - 0.235, cz + 0.01), (0.5, 0.04, 0.1), "fur_charcoal", bevel=False)   # not in line with the other hand's end
+    # the three framed cats on the left wall, over the stray box: a card and a cat's face in each frame
     turn = Matrix.Rotation(math.radians(45), 3, "X")
-    for k, (y, card, coat) in enumerate(((2.4, "spa_sky", "fur_orange"), (5.2, "spa_bubblegum", "fur_charcoal"),
-                                         (8.0, "pastel_butter", "fur_grey"))):
+    for k, (y, card, coat) in enumerate(zip(FRAMES_Y, ("spa_sky", "spa_bubblegum", "pastel_butter"),
+                                            ("fur_orange", "fur_charcoal", "fur_grey"))):
         z = F + 6.9 + (0.25 if k == 1 else 0.0)
-        b.box((x0 + 0.08, y, z), (0.16, 2.2, 2.6), "wood_light", bevel=False)
         b.box((x0 + 0.13, y, z), (0.1, 1.8, 2.2), card, bevel=False)
         b.sphere((x0 + 0.2, y, z - 0.25), 0.62, coat, segments=8, rings=5, scale=(0.22, 1, 0.9))
         for sy in (-1, 1):
             b.box((x0 + 0.22, y + sy * 0.36, z + 0.22), (0.1, 0.36, 0.36), coat, bevel=False, rot=turn)
-    # a rail of three towels on the right wall, between the chance board and the stations
+    # a rail of three towels on the right wall, between the chance board and the stations: no plate, so the towels
+    # reach back to the wall
     b.box((x1 - 0.14, -7.0, F + 6.6), (0.28, 5.2, 0.24), "wood_light", bevel=False)
     for y, sw in ((-8.7, "spa_bubblegum"), (-7.0, "spa_sky"), (-5.3, "spa_mint")):
-        b.box((x1 - 0.2, y, F + 5.45), (0.2, 1.3, 2.3), sw)
+        b.box((x1 - 0.155, y, F + 5.45), (0.29, 1.3, 2.3), sw)
+    # the paw poster's white card and its paw
+    px = x1 - 0.12
+    b.box((px - 0.05, 2.0, F + 7.0), (0.1, 3.4, 2.4), "offwhite", bevel=False)
+    b.sphere((px - 0.12, 2.0, F + 6.7), 0.55, "spa_bubblegum", segments=8, rings=4, scale=(0.3, 1, 0.85))
+    for dy, dz in ((-0.65, 0.65), (-0.22, 0.95), (0.22, 0.95), (0.65, 0.65)):
+        b.sphere((px - 0.12, 2.0 + dy, F + 6.7 + dz), 0.22, "spa_bubblegum", segments=6, rings=4, scale=(0.3, 1, 1))
+    # the strays sign's paw
+    bx = (BACK_DOOR[0] + BACK_DOOR[1]) / 2
+    b.sphere((bx, y1 - 0.2, F + DOOR_H + 1.2), 0.38, "spa_cream", segments=8, rings=4, scale=(1, 0.3, 0.85))
+    for dx, dz in ((-0.45, 0.42), (0.0, 0.58), (0.45, 0.42)):
+        b.sphere((bx + dx, y1 - 0.2, F + DOOR_H + 1.2 + dz), 0.15, "spa_cream", segments=6, rings=4,
+                 scale=(1, 0.3, 1))
 
 
 def _decor(b):
-    """Inside: the tub rug, a towel shelf, a clock, a paw poster, two plants, three pendant lamps and the wall
-    decor of #214. Outside: the
-    flower box under the window, two pots at the entrance, two lamp posts and the yard fence. None of it collides."""
+    """Inside: the tub rug, a towel shelf, two plants, three pendant lamps and the wall decor of #214. Outside:
+    the flower box under the window, two pots at the entrance, two lamp posts and the yard fence. None of it
+    collides. The wall pieces' back plates are `_wall_art`, which does (#670)."""
     F = FLOOR
     x0, x1 = ROOM_X
     y0, y1 = ROOM_Y
@@ -347,20 +391,7 @@ def _decor(b):
             for k, yy in enumerate((-2.6, -1.9)):
                 b.cyl_base((sx, yy, F + z + 0.1), 0.22, 0.75 - 0.1 * k, "spa_sky" if k else "spa_bubblegum",
                            segments=8, bevel=False)
-    # a clock on the back wall right of the VIP Room door, and a paw poster on the right wall
-    rx = Matrix.Rotation(math.pi / 2, 3, "X")
-    cx, cz = 14.5, F + 9.5
-    b.cyl((cx, y1 - 0.12, cz), 1.0, 0.16, "offwhite", segments=16, bevel=False, rot=rx)
-    b.cyl((cx, y1 - 0.2, cz), 1.2, 0.1, "spa_mint", segments=16, bevel=False, rot=rx)
-    b.box((cx, y1 - 0.24, cz + 0.25), (0.12, 0.04, 0.6), "fur_charcoal", bevel=False)
-    b.box((cx + 0.2, y1 - 0.26, cz + 0.01), (0.5, 0.04, 0.1), "fur_charcoal", bevel=False)   # not in line with the other hand's end
     _wall_decor(b)
-    px = x1 - 0.12
-    b.box((px, 2.0, F + 7.0), (0.12, 4.0, 3.0), "spa_sky", bevel=False)
-    b.box((px - 0.05, 2.0, F + 7.0), (0.1, 3.4, 2.4), "offwhite", bevel=False)
-    b.sphere((px - 0.12, 2.0, F + 6.7), 0.55, "spa_bubblegum", segments=8, rings=4, scale=(0.3, 1, 0.85))
-    for dy, dz in ((-0.65, 0.65), (-0.22, 0.95), (0.22, 0.95), (0.65, 0.65)):
-        b.sphere((px - 0.12, 2.0 + dy, F + 6.7 + dz), 0.22, "spa_bubblegum", segments=6, rings=4, scale=(0.3, 1, 1))
     # Plants in two corners: the back right one, and a smaller one in the front right corner beside the chance board.
     # The front one stood by the left wall in front of the window seat until the Studio playtest (#298): there it
     # filled the follow camera on the walk back from the Bubble Bath.
@@ -372,13 +403,6 @@ def _decor(b):
     for x, y in LAMPS:
         b.cyl((x, y, F + WALL_H - 1.0), 0.05, 2.0, "fur_charcoal", segments=6, bevel=False)
         b.cyl_base((x, y, F + WALL_H - 2.6), 0.9, 0.6, "spa_mint", segments=12, bevel=False, radius2=0.35)
-    # the strays sign over the back door
-    bx = (BACK_DOOR[0] + BACK_DOOR[1]) / 2
-    b.box((bx, y1 - 0.12, F + DOOR_H + 1.3), (3.6, 0.1, 1.4), "cardboard", bevel=False)
-    b.sphere((bx, y1 - 0.2, F + DOOR_H + 1.2), 0.38, "spa_cream", segments=8, rings=4, scale=(1, 0.3, 0.85))
-    for dx, dz in ((-0.45, 0.42), (0.0, 0.58), (0.45, 0.42)):
-        b.sphere((bx + dx, y1 - 0.2, F + DOOR_H + 1.2 + dz), 0.15, "spa_cream", segments=6, rings=4,
-                 scale=(1, 0.3, 1))
     # outside: the flower box under the window, pots by the entrance, lamp posts on the apron
     yo = y0 - WALL_T
     a, c = WINDOW
@@ -438,7 +462,7 @@ def build_plot(mat):
     name = "CleanACat_Area_SpaPlot"
     parts = [("", lambda b: (_floor(b), _yard(b))), ("_Wall", _walls), ("_WindowSeat", _window_seat),
              ("_Glass", _glass), ("_Roof", _roof), ("_Canopy", _canopy), ("_Trim", _trim), ("_Bands", _bands),
-             ("_Tiles", _tiles), ("_Decor", _decor), ("_Glow", _glow), ("_Flowers", _flowers)]
+             ("_Tiles", _tiles), ("_Decor", _decor), ("_WallArt", _wall_art), ("_Glow", _glow), ("_Flowers", _flowers)]
     objs = []
     for suffix, fn in parts:
         b = Builder()

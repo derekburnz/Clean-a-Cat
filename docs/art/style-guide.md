@@ -161,7 +161,9 @@ Gameplay spots are Attachments in the floor slab, named `SpotTub`, `SpotSpawn`, 
 - Outside: a flower box under the window, two potted plants at the entrance and two lamp posts on the apron.
 - A grassy back yard with a low white fence, set 0.5 studs inside the plot edge so neighbours never overlap.
 
-Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `_Flowers`, `_Trim`, `_Bands`, `_Tiles`) does not. The plot is 4,564 triangles and 220 parts (161 before #214; it is built six times on the street, so the target is under 240).
+Floors, walls, the roof and the window seat collide. Decor (`_Decor`, `_Glow`, `_Flowers`, `_Trim`, `_Bands`, `_Tiles`) does not. The plot is 4,504 triangles and 219 parts (161 before #214; it is built six times on the street, so the target is under 240).
+
+**Wall pieces have a solid back plate (#670).** Roblox's camera stops only at parts a player collides with. While everything on the walls was walk-through decor, a camera pushed back to a wall stopped just in front of the wall itself, behind the mirror's pale glass, and the whole screen went light blue. So the back plate of each piece that hangs flat on a wall is in its own child Model, `CleanACat_Area_SpaPlot_WallArt`, with collision on: the mirror's gold frame, the tool board, the three picture frames, the poster, the clock's face and the strays sign (8 parts). The camera now stops in front of the plate. What sits on a plate (the glass and its glints, the tools, the cats' faces, the paws, the clock's hands) stays in `_Decor`. Three rules for anything new on a wall: one plate covers the whole piece and is at most 0.2 studs proud of the wall, so a character pressed to it still reaches the wall and the plate is never read as a ladder rung; what sits on the plate has its back face no more than 0.1 in front of the plate's front; a piece with no plate reaches back to the wall, as the three towels on the right wall's rail now do. The mirror's shelf, the towel shelves on the left wall and the plants stay walk-through: a camera behind one sees that thing close up, not a blank screen.
 
 `street.py` builds `CleanACat_Area_Street`, which holds everything round the six plots:
 - Grass ground and a pavement in front of the plots, level with their floor (0.5).
@@ -498,4 +500,5 @@ The owner on 2026-11-24: "we should pick him up out of crate". The player lifts 
 - Original IP only: no Cat Cafe character, name or coat is reused, and nothing from other games.
 - Pictures promise only what the first minutes show.
 - Models are solid from every side a player can reach.
+- Anything that hangs flat on a wall has a solid back plate at most 0.2 studs proud, or reaches back to the wall (section 14, #670): the camera must never come to rest between a wall and a part's back face.
 - Rooms are roomy: 6 stud gaps at least.

@@ -278,7 +278,7 @@ def _props(p, asset, uid):
                and max(p["size"]) >= THIN_LONG - 1e-3)
     collide = ((asset.startswith(COLLIDE_PREFIXES) and (min(p["size"]) >= MIN_COLLIDE or thin_ok)
                 and not p["name"].endswith(NO_COLLIDE_OBJECTS) and not see_through)
-               or (asset.startswith("CleanACat_Area_") and p["name"].endswith(("_Wall", "_Glass")))
+               or (asset.startswith("CleanACat_Area_") and p["name"].endswith(("_Wall", "_Glass", "_WallArt")))
                or p["name"].endswith("_Bars") or p["name"].endswith(BARRIER_OBJECTS) or climb)
     if BACKDROP in asset or (KEEPER_CAT in p["name"] and asset not in KEEPER_CAT_SOLID):
         collide = False
