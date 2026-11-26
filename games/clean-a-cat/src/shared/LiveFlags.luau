@@ -126,6 +126,7 @@ LiveFlags.KEYS = {
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 	"cameraClear", -- for 2 s after each spawn, a camera resting inside a part players walk through (the back wall's picture behind a returning player's spawn) turns around the player to the nearest clear view, keeping its own distance and tilt (CameraClearController, issue 670); off by default
 	"helpersWindow", -- a Helpers button on the HUD, shown once a helper is hired, opens one row per helper: their name, level with Level up and its price, the line they wash first (tap to change) and Rename; a helper not hired yet shows their price at their pad, and Lou his pass in the Shop (UI/HelpersWindow, HelperViewRules, issue 526 item 3); off by default
+	"spawnSide", -- with spawnView on, the player spawns on the same spot turned a quarter to face the door line's side of the room, so the camera behind them starts in open room and not on the back wall's art (SpaLayout.spawnSpot, PlotService, issue 670); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -224,6 +225,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	staffRename = true,
 	cameraClear = true,
 	helpersWindow = true,
+	spawnSide = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
