@@ -70,5 +70,13 @@ return function()
 				)
 			).to.equal(nil)
 		end)
+
+		it("keeps the stand's gift while Starcoat or a row is left", function()
+			expect(FreeRewardRules.giftLeft(false, false, false, false)).to.equal(true)
+			expect(FreeRewardRules.giftLeft(true, false, false, false)).to.equal(false)
+			expect(FreeRewardRules.giftLeft(true, true, false, true)).to.equal(true)
+			expect(FreeRewardRules.giftLeft(true, true, true, false)).to.equal(true)
+			expect(FreeRewardRules.giftLeft(true, true, true, true)).to.equal(false)
+		end)
 	end)
 end
