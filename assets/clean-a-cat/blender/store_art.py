@@ -654,39 +654,14 @@ def thumb_lineup(mat, out, res):
 
 
 BUSY = (("Lou", "Cotton", "dirty"), ("Sam", "Muffin", "half"), ("Jo", "Sherbet", "plain"))
-BUSY_BOW = "CleanACat_Bow_SkyRoyal"    # the finished cat wears a bow, as a wash ends: sky with gold rims, to stand off
-                                      # the pink cat and the mint uniform behind it
-
-
-def worn_bow(bow, cat, mat, at, k):
-    """A bow on a sitting cat standing at `at`, scaled `k`, as the game wears it (Spa/BowFit.luau): on the head's
-    `BowSlot` and at the cat's own scale. A sitting cat is built a little smaller than its bow, as in the game."""
-    special = cat in cats.SPECIAL_CATS
-    spec = cats.SPECIAL_CATS[cat] if special else cats.ROSTER[cat]
-    if special and props.slot(cat) in ("Head", "Face"):
-        spot, turn = props.bow_corner(spec, "sit", cat)
-        turn = turn.to_4x4()
-    else:
-        spot, tip = cats.bow_side(spec, "sit")
-        turn = Matrix.Rotation(math.radians(tip), 4, "Y")
-    slot = Vector(cats.joints(spec, "sit")["Head"]) + Vector(spot) * cats.scale_of(spec, "sit")
-    m = Matrix.Translation(Vector(at)) @ Matrix.Scale(k, 4) @ Matrix.Translation(slot) @ turn
-    objs = props.build_bow(bow, mat) if bow in props.BOWS else props.build_tier_bow(bow, mat)
-    if special:                                           # the game leaves a tier bow's fan off a cat with a head piece
-        for o in [o for o in objs if o.name.endswith("_Fan")]:
-            objs.remove(o)
-            _remove(o)
-    for o in objs:
-        o.matrix_world = m @ o.matrix_basis
-    return _fresh(objs)
 
 
 def thumb_busy(mat, out, res):
     """Thumbnail: the busy spa. The three wash stands in front, each with a cat a step further along: a muddy one,
-    one half washed and a special visitor's cat clean with its bow on (the owner, 2026-11-26: "update busy spaw
-    thumbnail 3 to have the cat uodates etc"). The workers stand behind and between the stands, facing the
-    camera, so the cats are the biggest things in the frame (Review-QA on #106: with the staff beside the cats it
-    read as a game about people)."""
+    one half washed and one clean. No bow on the clean cat: the owner, 2026-11-26, on a sky Royal bow tried there,
+    "remove the giant blue bow that appeared on pink cats head". The workers stand behind and between the stands,
+    facing the camera, so the cats are the biggest things in the frame (Review-QA on #106: with the staff beside the
+    cats it read as a game about people)."""
     import spa_staff
     import worker_stations as ws
     objs = []
@@ -696,8 +671,6 @@ def thumb_busy(mat, out, res):
         _move(stand, (x, 0, 0))
         objs += _fresh(stand)
         objs += cat_state(cat, mat, "sit", state, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
-        if state == "plain":                              # the last step: a bow, where the game puts it (#764, #782)
-            objs += worn_bow(BUSY_BOW, cat, mat, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
         staff = spa_staff.build_staff(who, mat)
         _move(staff, (x + 2.25, 3.4, 0), 1.0, -6 * (i - 1))
         objs += _fresh(staff)
