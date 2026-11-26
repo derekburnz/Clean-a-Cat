@@ -85,7 +85,7 @@ function LikeAskService.moment(player: Player, kind: LikeAskRules.Moment)
 		return
 	end
 	local now = os.clock()
-	local at = LikeAskRules.dueAt(kind, now)
+	local at = LikeAskRules.dueAt(kind, now, LiveFlags.isOn(LikeAskRules.PURCHASE_FLAG))
 	if at == nil then
 		return
 	elseif at <= now then

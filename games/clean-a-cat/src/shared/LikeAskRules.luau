@@ -3,7 +3,7 @@
 -- A game cannot read or prompt a like, so the ask is our own small card (Design's), and its "Like the game" opens the
 -- gift card's like row; the card never mentions coins. His rule, as the server applies it:
 --   - only after a good moment (MOMENTS): a special visitor's cat finished, a crate opened, a three star card, a
---     helper hired, and (his "maybe", AFTER_PURCHASE) a completed purchase, PURCHASE_DELAY seconds later;
+--     helper hired, and (his "maybe", its own switch PURCHASE_FLAG) a completed purchase, PURCHASE_DELAY seconds later;
 --   - one ask a visit; after a "no", none for NO_VISITS visits; never once the like row is paid;
 --   - never within GUARD_SECONDS of a lost cat or a cancelled purchase.
 -- Review-QA's pressure limits on top (review of Design PR 774): never again after a "yes" or after MAX_NOS "no"s, and
@@ -16,7 +16,8 @@ LikeAskRules.FLAG = "likeAsk"
 LikeAskRules.ATTRIBUTE = "LikeAskDue" -- Player attribute: the moment's name while the ask is due, nil otherwise
 LikeAskRules.MOMENTS =
 	table.freeze({ "special", "crate", "stars", "helper", "purchase" }) :: { string }
-LikeAskRules.AFTER_PURCHASE = true -- Derek's "maybe also after a purchase just a little bit after"
+-- Derek's "maybe also after a purchase just a little bit after", confirmed 2026-11-26 with its own switch (issue 813)
+LikeAskRules.PURCHASE_FLAG = "likeAskPurchase"
 LikeAskRules.PURCHASE_DELAY = 120 -- seconds from a completed purchase to its ask, so it is never on the purchase screen
 LikeAskRules.GUARD_SECONDS = 120 -- no ask this long after a lost cat or a cancelled purchase
 LikeAskRules.NO_VISITS = 3 -- visits with no ask after a "no"
@@ -64,10 +65,11 @@ function LikeAskRules.blocked(state: State): boolean
 	return state.now - state.lastBadAt < LikeAskRules.GUARD_SECONDS
 end
 
--- When `moment` at `now` makes the ask due: now, PURCHASE_DELAY later for a purchase, or nil when it never does.
-function LikeAskRules.dueAt(moment: Moment, now: number): number?
+-- When `moment` at `now` makes the ask due: now, PURCHASE_DELAY later for a purchase while `afterPurchase` (the
+-- switch PURCHASE_FLAG) is on, or nil when it never does.
+function LikeAskRules.dueAt(moment: Moment, now: number, afterPurchase: boolean?): number?
 	if moment == "purchase" then
-		return if LikeAskRules.AFTER_PURCHASE then now + LikeAskRules.PURCHASE_DELAY else nil
+		return if afterPurchase then now + LikeAskRules.PURCHASE_DELAY else nil
 	end
 	return now
 end
