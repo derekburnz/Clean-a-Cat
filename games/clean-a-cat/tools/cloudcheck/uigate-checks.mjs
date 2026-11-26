@@ -573,7 +573,9 @@ function sceneSvg(profile, result) {
     }
     if (n.text !== undefined) {
       const anchor = n.tx === 'Left' ? 'start' : n.tx === 'Right' ? 'end' : 'middle';
-      const tx = n.tx === 'Left' ? n.x : n.tx === 'Right' ? n.x + n.w : n.x + n.w / 2;
+      // the words sit inside the label's UIPadding, as Roblox draws them (wordsRect)
+      const [pl, pr] = n.pad || [0, 0];
+      const tx = n.tx === 'Left' ? n.x + pl : n.tx === 'Right' ? n.x + n.w - pr : n.x + pl + (n.w - pl - pr) / 2;
       const clipped = n.clip !== undefined;
       let open = '';
       if (clipped) {

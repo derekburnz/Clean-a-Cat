@@ -926,6 +926,25 @@ local SCENES = {
 			UI.showBubble(BubbleRules.get("longBuild"))
 		end,
 	},
+	-- A notice at its longest (UI.toast): the old dark bar, then (switch toastCards, issue 877) the small card with
+	-- the visitor's portrait, at the top right clear of the wash's meter.
+	{
+		"Toast",
+		function()
+			hud(true)
+			UI.setCoins(1240)
+			UI.toast("859 more coins to hire Sam", "warning")
+		end,
+	},
+	{
+		"ToastCard",
+		function()
+			hud(true)
+			flag("toastCards", true)
+			UI.setCoins(1240)
+			UI.toast("Marshmallow is here! Only you can wash their cat", "info", "Marshmallow")
+		end,
+	},
 	-- Suds's like ask after a special visitor (switch likeAsk, q2-likeask): his own "Sure!" button, no reward named.
 	{
 		"LikeAsk",

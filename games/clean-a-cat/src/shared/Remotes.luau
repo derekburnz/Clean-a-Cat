@@ -110,7 +110,7 @@ Remotes.ClientToServer = {
 
 -- Server -> client.
 Remotes.ServerToClient = {
-	"Notice", -- (kind: "info" | "warning", text: string)  a short line the client shows as a toast
+	"Notice", -- (kind: "info" | "warning", text: string, icon: string?)  a short line the client shows as a toast; icon is a cat name
 	"CatReady", -- (catId: number, kind: string?, needs: { CatRules.Need }?, locked: { CatRules.Need }?, stray: boolean?, brushStrokes: number, dirt: number?)
 	-- a dirty cat is in the tub; kind and needs come with a customer's cat or a stray, locked lists needs whose station
 	-- is not built, stray is true for a stray (switch strays) that moves into the window once clean; kind is SudsRules.NAME
