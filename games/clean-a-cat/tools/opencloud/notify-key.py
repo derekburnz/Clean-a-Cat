@@ -20,6 +20,8 @@ import urllib.error
 import urllib.request
 
 SECRET_ID = "CleanACat_NotifyKey"
+# The only host NotifyService calls: a script that tries to send the secret anywhere else is refused (Review-QA on #769).
+SECRET_DOMAIN = "apis.roblox.com"
 API = "https://apis.roblox.com"
 
 
@@ -121,19 +123,27 @@ def main():
             else:
                 box = public.SealedBox(public.PublicKey(base64.b64decode(pk["secret"])))
                 sealed = base64.b64encode(box.encrypt(notify_key[1].encode())).decode()
-                body = {"id": SECRET_ID, "secret": sealed, "key_id": pk.get("key_id")}
+                body = {"id": SECRET_ID, "secret": sealed, "key_id": pk.get("key_id"), "domain": SECRET_DOMAIN}
                 status, answer = call("POST", f"{API}/cloud/v2/universes/{universe}/secrets", key=secret_key[1], body=body)
                 if status == 409 or (status >= 400 and "exist" in json.dumps(answer).lower()):
                     status, answer = call(
                         "PATCH",
                         f"{API}/cloud/v2/universes/{universe}/secrets/{SECRET_ID}",
                         key=secret_key[1],
-                        body={"secret": sealed, "key_id": pk.get("key_id")},
+                        body={"secret": sealed, "key_id": pk.get("key_id"), "domain": SECRET_DOMAIN},
                     )
                 if 200 <= status < 300:
                     summary.append(
-                        f"Saved {notify_key[0]} as the experience secret {SECRET_ID} of {universe} (with {secret_key[0]})."
+                        f"Saved {notify_key[0]} as the experience secret {SECRET_ID} of {universe} (with {secret_key[0]}), "
+                        f"usable only for {SECRET_DOMAIN}."
                     )
+                elif status == 400 and "domain" in json.dumps(answer).lower():
+                    # Never saved without its domain: a secret without one could be sent to any host.
+                    summary.append(
+                        f"Roblox refused the domain field (HTTP 400: {answer.get('message', '')}). Nothing was saved. "
+                        f"Create the secret {SECRET_ID} by hand with domain {SECRET_DOMAIN} instead."
+                    )
+                    result = 1
                 else:
                     summary.append(f"Saving the secret failed (HTTP {status}: {answer.get('message', '')}).")
                     result = 1
