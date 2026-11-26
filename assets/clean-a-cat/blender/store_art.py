@@ -66,9 +66,14 @@ def _remove(o):
     bpy.data.objects.remove(o, do_unlink=True)
 
 
+TUFTS = False     # no tangle clumps and no fluff puffs in store art. The owner, 2026-11-26, on icon E: "fix the sides
+                  # of E having orange sticking out the side of the model", then on thumbnail 3: "the cats still have
+                  # the random skin sticking out their sides". At picture size both read as flaps, not fur.
+
+
 def cat_state(name, mat, body, state, at=(0, 0, 0), k=1.0, rot_z=0.0):
-    """A roster cat: state 'dirty', 'half' (mud and tangles gone on its left, +X, where the fluff shows), 'clean'
-    (fluffed) or 'plain' (no dirt, no fluff). Claws never show here."""
+    """A roster cat: state 'dirty', 'half' (mud gone on its left, +X), 'clean' or 'plain' (no dirt). With TUFTS on,
+    a dirty side also has its tangles and a clean side its fluff ('plain' never has fluff). Claws never show here."""
     objs, _, _ = dirt.build_dirty(name, mat, body)
     keep = []
     bpy.context.view_layer.update()
@@ -76,6 +81,9 @@ def cat_state(name, mat, body, state, at=(0, 0, 0), k=1.0, rot_z=0.0):
         n = o.name
         cleanside = _centre(o).x > 0.02
         if "_Claw" in n:
+            _remove(o)
+            continue
+        if not TUFTS and ("_Tangle" in n or "_Fluff" in n):
             _remove(o)
             continue
         if "_Mud" in n or "_Tangle" in n:
@@ -650,9 +658,10 @@ BUSY = (("Lou", "Cotton", "dirty"), ("Sam", "Muffin", "half"), ("Jo", "Sherbet",
 
 def thumb_busy(mat, out, res):
     """Thumbnail: the busy spa. The three wash stands in front, each with a cat a step further along: a muddy one,
-    one half washed and a special visitor's cat clean. The workers stand behind and between the stands, facing the
-    camera, so the cats are the biggest things in the frame (Review-QA on #106: with the staff beside the cats it
-    read as a game about people)."""
+    one half washed and one clean. No bow on the clean cat: the owner, 2026-11-26, on a sky Royal bow tried there,
+    "remove the giant blue bow that appeared on pink cats head". The workers stand behind and between the stands,
+    facing the camera, so the cats are the biggest things in the frame (Review-QA on #106: with the staff beside the
+    cats it read as a game about people)."""
     import spa_staff
     import worker_stations as ws
     objs = []
