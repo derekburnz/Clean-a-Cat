@@ -282,7 +282,7 @@ local function queueFor(player: Player, keepOnly: boolean?): { string }
 				-- contextAsks (issue 877): our card with the visitor's portrait; Suds's guide card trails the way
 				NetService.notice(
 					player,
-					`{visitor} is here! Only you can wash their cat`,
+					`A special visitor brought {CatRules.displayName(visitor)}! Only you can wash them`,
 					nil,
 					visitor
 				)
