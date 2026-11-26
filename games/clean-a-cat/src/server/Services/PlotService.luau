@@ -363,6 +363,8 @@ function PlotService.Start()
 		LiveFlags.waitForRead()
 		refresh()
 	end)
+	-- a first read that ends after that wait places it then (place does nothing a second time; Review-QA on #898)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.READ_ATTRIBUTE):Connect(refresh)
 end
 
 return PlotService
