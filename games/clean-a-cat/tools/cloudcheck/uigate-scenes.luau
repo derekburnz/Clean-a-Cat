@@ -945,6 +945,17 @@ local SCENES = {
 			UI.toast("Marshmallow is here! Only you can wash their cat", "info", "Marshmallow")
 		end,
 	},
+	-- The card beside the starter pack ad (issue 925): with the tidy HUD the ad sits at the top right, so the card
+	-- moves left of it and never covers its ribbon.
+	{
+		"ToastCardAd",
+		function()
+			allButtons(true)
+			flag("toastCards", true)
+			UI.setCoins(1240)
+			UI.toast("New in the Cat Index: Marshmallow", "info")
+		end,
+	},
 	-- Suds's like ask after a special visitor (switch likeAsk, q2-likeask): his own "Sure!" button, no reward named.
 	{
 		"LikeAsk",

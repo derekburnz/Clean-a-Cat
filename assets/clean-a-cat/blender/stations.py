@@ -5,10 +5,10 @@
                           four gold claw feet, white bubbles painted on the front, a brass gooseneck tap on the
                           back rim and a striped mint towel over the front. Deep blue water (_Water) stands just
                           under the rim, with lather (_Foam), soap bubbles (_Bubbles) and the tap's stream
-                          (_Stream). 4.6 wide and 3.5 deep, so the cat fills most of a phone screen; the design
-                          asks for the cat bigger than life at the tub.
-                          Attachment `CatSeat` 1.5 studs up, facing the player (-Z in Roblox): put the sitting
-                          cat's pivot there. The body collides; the rim, water and foam do not.
+                          (_Stream). Built 4.6 wide and 3.5 deep, then grown 1.3 times (#878, Derek: "make our
+                          tub bigger"): 5.98 wide, 4.55 deep, the rim 2.38 up, so the 1.5 scale cat sits in it with
+                          room round him. Attachment `CatSeat` 2.03 studs up (TUB_SEAT), facing the player
+                          (-Z in Roblox): put the sitting cat's pivot there. The body collides; the rim, water and foam do not.
 
   CleanACat_Station_BubbleBath    the wash tub's upgrade (#23, reworked by #172 to look the better bath of the two):
                                   a round bubblegum slipper bath on a cream and gold plinth, its back sweeping up
@@ -58,6 +58,11 @@ RIM_W = 0.42                     # the rim's width
 BODY_R = END_R - 0.13            # the body under the rim
 TAP_X = -1.25                    # the tap stands off centre on the back rim, so its stream shows past the cat
 E = 0.012                        # pieces are staggered by this so no two faces share a plane (the QA gate)
+# Derek on dev, 2026-11-26 (#878): "honestly make our tub bigger also". The tub is built at the sizes above and then
+# grown TUB_K times about its pivot (common.scale_object), so it keeps its exact look; the cat stays at its 1.5 scale
+# and sits with room round it. The CatSeat follows the water so the water still stands 0.27 up the cat.
+TUB_K = 1.3
+TUB_SEAT = round(TUB_K * WATER_Z - 0.27, 3)       # the grown tub's CatSeat
 
 
 def _pill(b, z, h, r, swatch, segments=16):
@@ -282,7 +287,8 @@ def _tris(ob):
     return ob
 
 
-def build_tub(mat):
+def build_tub(mat, grow=True):
+    """`grow` False builds it at the old size (the store art, which Derek has signed off)."""
     name = "CleanACat_Station_Tub"
     b = Builder()
     _tub_shell(b)
@@ -294,13 +300,13 @@ def build_tub(mat):
             common.shade_smooth(_foam().finalize(name + "_Foam", mat)),
             common.shade_smooth(_bubbles(SOAP_BUBBLES).finalize(name + "_Bubbles", mat, bevel=0)),
             _stream().finalize(name + "_Stream", mat, bevel=0)]
-    return objs
+    return [common.scale_object(ob, TUB_K) for ob in objs] if grow else objs
 
 
 def tub_rbx_extras():
     """CatSeat: the sitting cat's pivot, on the inner floor, facing the player."""
-    return {"attachments": [("CleanACat_Station_Tub", "CatSeat", Matrix.Translation((0.0, 0.0, SEAT_Z)))],
-            "attributes": {"SeatHeight": {"Float64": SEAT_Z}}}
+    return {"attachments": [("CleanACat_Station_Tub", "CatSeat", Matrix.Translation((0.0, 0.0, TUB_SEAT)))],
+            "attributes": {"SeatHeight": {"Float64": TUB_SEAT}}}
 
 
 # -- #18 brush tables and dryer ---------------------------------------------------------------------------------

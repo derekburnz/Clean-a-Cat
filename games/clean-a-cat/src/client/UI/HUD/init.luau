@@ -62,9 +62,15 @@ local PILL_LIFT = 12 -- design px the pill and the friend tag sit higher than th
 -- only for a cat whose wash takes it (setPlan).
 type Step = { stage: string, icon: string, say: string, later: boolean? }
 
--- A step's words now: the Bubble Bath reads "Foam up the cat" with switch foamStep (WashDraft.bathSay, issue 888).
+-- A step's words now: the Bubble Bath reads "Foam up the cat" with switch foamStep (WashDraft.bathSay, issue 888), and
+-- the bow step "Drag a bow onto the cat" with bowDrag (issue 889).
 local function sayOf(step: Step): string
-	return if step.stage == "bath" then WashDraft.bathSay(LiveFlags.isOn).bath else step.say
+	if step.stage == "bath" then
+		return WashDraft.bathSay(LiveFlags.isOn).bath
+	elseif step.stage == "fluffed" and LiveFlags.isOn("bowDrag") then
+		return "Drag a bow onto the cat"
+	end
+	return step.say
 end
 HUD.STEPS = {
 	{ stage = "dirty", icon = "Sponge", say = "Scrub the mud" },
@@ -612,6 +618,22 @@ end
 
 function HUD.listShown(): boolean
 	return StepList.isShown()
+end
+
+-- The pieces at the top right (the coin pill and the friend tag), so a notice card can sit clear of them
+-- (ToastCard, issue 925). Hidden ones are left out.
+function HUD.topRight(): { GuiObject }
+	local p = pieces
+	local out: { GuiObject } = {}
+	if p == nil then
+		return out
+	end
+	for _, piece in { p.coins, p.friends } do
+		if piece.Visible then
+			table.insert(out, piece)
+		end
+	end
+	return out
 end
 
 -- True while a wash is under way and the HUD is on: the step line has the top of the screen.

@@ -21,7 +21,7 @@ WashScreenRules.ROOM_NAME = "CleanACat_WashRoom" -- the drawn room, in Workspace
 -- The room around the shot's spot, in studs: HALF wide each way from the spot along the floor, from the floor up to
 -- HEIGHT. The wash camera sits about 6 studs out and 4.5 up from the cat (Effects/WashCamera's scene), so 10 keeps it
 -- inside with room to spare at every station.
-WashScreenRules.HALF = 10
+WashScreenRules.HALF = 13 -- the front camera (issue 924) stands about 9 studs out, 1.5 beyond the tub: kept inside
 WashScreenRules.HEIGHT = 12
 WashScreenRules.WALL = 1 -- the placeholder walls' thickness
 WashScreenRules.FLOOR_LIFT = 0.05 -- the placeholder floor sits this far over the spot, clear of the plot's floor
@@ -54,6 +54,23 @@ end
 WashScreenRules.FRONT_PITCH = 10
 WashScreenRules.EYE_ABOVE = 0.3
 WashScreenRules.MAX_PITCH = 20 -- never steeper than this, even for a cat whose eyes sit far over his middle
+
+-- How big the cat is framed (issue 924, Sync-Agent on iPhone 13: at 44% of the screen height the step dots sat over his
+-- head and the tub's lower half was cut off). His bounding box fills FRONT_FILL of the screen height and its middle
+-- sits FRONT_DROP of the screen height under the screen's middle: his head clears the step dots (about the top third)
+-- and the tub's rim stays above the tool tray.
+WashScreenRules.FRONT_FILL = 0.35
+WashScreenRules.FRONT_DROP = 0.04
+
+-- The camera's distance from a cat whose box is `boxHeight` tall, for a vertical field of view of `fov` degrees.
+function WashScreenRules.frontDistance(boxHeight: number, fov: number): number
+	return boxHeight / (WashScreenRules.FRONT_FILL * 2 * math.tan(math.rad(fov) / 2))
+end
+
+-- How far over the box's middle the camera looks, at `distance` with `fov`, so the cat sits FRONT_DROP lower.
+function WashScreenRules.frontLookUp(distance: number, fov: number): number
+	return WashScreenRules.FRONT_DROP * 2 * distance * math.tan(math.rad(fov) / 2)
+end
 
 -- Where the camera stands for a front view that looks at `look`: `distance` studs out along `facing` (flattened), at
 -- height `eyeY` + EYE_ABOVE when given, else FRONT_PITCH degrees above `look`; the slope is held to MAX_PITCH. Spa/
