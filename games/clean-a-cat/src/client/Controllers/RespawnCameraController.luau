@@ -1,17 +1,20 @@
 --!strict
 -- RespawnCameraController: after a respawn the camera starts behind the new character, as it does on a join
--- (issue 670, switch respawnCamera). Roblox's camera module turns the camera behind the character once each time a
--- character is added, but on a respawn it does so before the new character's root part has arrived. It then has no
--- facing to use and falls back to looking along world -Z, which in a spa plot puts the camera on the back wall, with
--- the wall picture right in front of it. Sync's retest on cf511f0 logged this on 8 of 8 respawns: the character
--- stood turned, and the camera stayed at a yaw of about 0.
--- For WINDOW_SECONDS after a respawn (not the first character of the visit, whose camera is already right), this asks
--- the camera module to turn the camera behind the character again: once the root part is there, and again if the
--- server then moves or turns the character onto its plot spot. It asks through the module's own reset flag, so the
--- module turns the camera itself and keeps that turn. Because the module's own state is used, nothing fights it
--- afterwards, which is where CameraClearController's held turn failed. Only the plain follow camera is touched:
--- never a scripted shot such as the opening or the wash view. The moment the player turns or zooms the camera, it
--- is theirs.
+-- (issue 670, switch respawnCamera). Roblox's camera module (PlayerModule ClassicCamera, which serves the classic and
+-- follow modes) means to turn the camera behind each new character: CharacterAdded sets its resetCameraAngle flag.
+-- But its next Update clears that flag first and only uses it once the character has a subject position, so on a
+-- respawn, where the first Update comes before the new character is ready, the turn is lost and the camera keeps
+-- whatever yaw it had (Sync, fe114a4: 41, 5 and 67 degrees off). Spawning turned toward open room (spawnSide) then
+-- leaves the camera on the back wall art. PR 704's first try set the flag once the HumanoidRootPart child was there,
+-- but the module looks the root up as Humanoid.RootPart, which can still be nil then, and falls back to world -Z (a
+-- yaw of about 0, 89 to 108 degrees off the character on 8 of 8 respawns).
+-- So for WINDOW_SECONDS after a respawn (not the first character of the visit, whose camera is already right), while
+-- the camera is the plain follow camera on this humanoid, the character stands still and the camera looks more
+-- than OFF away from the character's facing, this hands the module the root (Humanoid.RootPart) and sets its flag,
+-- then looks again a few frames later, at most MAX_ASKS times. The module turns the camera itself, with its own
+-- state, so nothing fights the turn afterwards (where CameraClearController's held turn failed). A scripted shot
+-- such as the opening or the wash view is never touched, and the moment the player turns or zooms the camera, it is
+-- theirs.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -23,9 +26,11 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 
 local FLAG = "respawnCamera"
 local BIND_NAME = "CleanACatRespawnCamera"
-local WINDOW_SECONDS = 2 -- how long after a respawn the character's facing is followed
-local JUMP = 2 -- a root that moved this far (studs, flat) in one frame was put there, not walked there
-local TURN = math.rad(20) -- a root that turned this much in one frame was turned by the server
+local WINDOW_SECONDS = 2 -- how long after a respawn the camera is checked
+local OFF = math.rad(30) -- a camera looking this far from the character's facing is turned behind it
+local MAX_ASKS = 6 -- how many times one respawn asks the module to turn the camera
+local ASK_GAP = 3 -- frames between asks, so the module has run before the camera is looked at again
+local STILL = 0.1 -- a MoveDirection shorter than this is a character standing still
 local FALLBACK_DISTANCE = 12.5 -- the camera's default distance, used only if the module cannot be reached
 local FALLBACK_RISE = 0.27 -- about the module's own 15 degree tilt, used with the fallback
 
@@ -46,10 +51,12 @@ local function activeCamera(): any
 	return if ok and type(found) == "table" then found else nil
 end
 
--- Turns the camera behind `root`: through the module's reset flag when it has one, else by placing it once.
+-- Turns the camera behind `root`: through the module's own reset (handing it the root, which it would otherwise look
+-- up as Humanoid.RootPart) when it has one, else by placing the camera once.
 local function reset(camera: Camera, root: BasePart)
 	local controller = activeCamera()
 	if controller ~= nil and controller.resetCameraAngle ~= nil then
+		controller.humanoidRootPart = root
 		controller.resetCameraAngle = true
 		return
 	end
@@ -91,8 +98,7 @@ local function onInput(input: InputObject, processed: boolean)
 	end
 end
 
-local function flatLook(part: BasePart): Vector3?
-	local look = part.CFrame.LookVector
+local function flat(look: Vector3): Vector3?
 	local level = Vector3.new(look.X, 0, look.Z)
 	return if level.Magnitude > 1e-3 then level.Unit else nil
 end
@@ -105,43 +111,47 @@ local function watch(character: Model)
 	end
 	local started = os.clock()
 	playerTurned = false
-	local lastAt: Vector3? = nil
-	local lastLook: Vector3? = nil
-	-- before the camera module's own step, so the reset it is asked for lands on this same frame
+	local asks = 0
+	local pause = 0
+	-- before the camera module's own step, so a reset asked for lands on this same frame
 	RunService:BindToRenderStep(BIND_NAME, Enum.RenderPriority.Camera.Value - 1, function()
 		if
 			os.clock() - started > WINDOW_SECONDS
 			or playerTurned
+			or asks >= MAX_ASKS
 			or player.Character ~= character
 		then
 			RunService:UnbindFromRenderStep(BIND_NAME)
 			return
 		end
+		if pause > 0 then
+			pause -= 1
+			return
+		end
 		local camera = Workspace.CurrentCamera
-		local found = character:FindFirstChild("HumanoidRootPart")
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		local root = if humanoid then humanoid.RootPart else nil
 		if
 			camera == nil
-			or found == nil
-			or not found:IsA("BasePart")
+			or humanoid == nil
+			or root == nil
 			or not character:IsDescendantOf(Workspace)
+			or not following(camera, character)
+			or humanoid.MoveDirection.Magnitude > STILL
 		then
 			return
 		end
-		local root = found :: BasePart
-		local at = root.Position
-		local look = flatLook(root)
-		local moved = lastAt == nil
-		if not moved and lastAt then
-			local step = at - lastAt
-			moved = Vector3.new(step.X, 0, step.Z).Magnitude > JUMP
+		local facing = flat(root.CFrame.LookVector)
+		local looking = flat(camera.CFrame.LookVector)
+		if facing == nil or looking == nil then
+			return
 		end
-		if not moved and look and lastLook then
-			moved = math.acos(math.clamp(look:Dot(lastLook), -1, 1)) > TURN
+		if math.acos(math.clamp(facing:Dot(looking), -1, 1)) <= OFF then
+			return
 		end
-		lastAt, lastLook = at, look
-		if moved and following(camera, character) then
-			reset(camera, root)
-		end
+		reset(camera, root)
+		asks += 1
+		pause = ASK_GAP
 	end)
 end
 

@@ -3,8 +3,8 @@
 -- room is built, the special visitors' cats the player has washed live there as residents, one on each of
 -- Model-Agent's seats (CleanACat_Area_VipRoom: Attachments SpotResident1 to SpotResident<ResidentSeats>, filled in
 -- number order, so the room fills from the floor up). With more washed special cats than seats, the first ones in
--- CatRules.SPECIAL_CATS order sit (the save keeps no wash times, so "newest" cannot be told; with six special cats
--- and eight seats it does not come up yet). Pure, so tests/specs/VipRules.spec.luau covers it.
+-- CatRules.SPECIAL_CATS order sit (the save keeps no wash times, so "newest" cannot be told). With ten special cats
+-- and the room's eight seats, the last two in that order wait for more seats (a ResidentSeats change on the model). Pure, so tests/specs/VipRules.spec.luau covers it.
 local CatRules = require(script.Parent:WaitForChild("CatRules"))
 
 local VipRules = {}
