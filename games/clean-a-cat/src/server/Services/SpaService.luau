@@ -226,8 +226,11 @@ local function mayJoin(player: Player, length: number): boolean
 	return true
 end
 
--- The player's door queue, filled to its bench size (benchSize), so there is always a customer waiting.
-local function queueFor(player: Player): { string }
+-- The player's door queue, filled to its bench size (benchSize), so there is always a customer waiting. With
+-- `keepOnly` it only keeps the orders in step and lets nobody join: a newcomer must always go out with sendQueue, so
+-- a caller that does not send (the heart bars, the workers' look at the line) never fills the line unseen (bug hunt
+-- B4, issue 595: the line filled in tickHearts, then the bench loop saw it full and never sent it).
+local function queueFor(player: Player, keepOnly: boolean?): { string }
 	local queue = queues[player]
 	if queue == nil then
 		queue = {}
@@ -242,7 +245,7 @@ local function queueFor(player: Player): { string }
 	while #o > #q do
 		table.remove(o)
 	end
-	local size = waitingSize(player)
+	local size = if keepOnly then 0 else waitingSize(player)
 	while #q < size and mayJoin(player, #q) do
 		local visitor = visitorPending[player]
 		if visitor then
@@ -1006,7 +1009,7 @@ local function tickHearts()
 		if save == nil or player.Parent ~= Players then
 			continue
 		end
-		queueFor(player) -- keeps the orders in step with the line
+		queueFor(player, true) -- keeps the orders in step with the line
 		local orders = ordersFor(player)
 		local playTime = played(player)
 		local paused = save.stars <= 0
@@ -1110,7 +1113,7 @@ function SpaService.lineForWorkers(player: Player): { WorkerRules.Entry }
 	if save == nil or save.stars <= 0 or line == nil then
 		return {}
 	end
-	queueFor(player) -- keeps the orders in step with the line
+	queueFor(player, true) -- keeps the orders in step with the line
 	local now = Workspace:GetServerTimeNow()
 	local out: { WorkerRules.Entry } = {}
 	for place, order in ordersFor(player) do
