@@ -140,6 +140,7 @@ LiveFlags.KEYS = {
 	"likeAsk", -- with askQueue: after a good moment (a special visitor's cat finished, a crate opened, a three star card, a helper hired, or two minutes after a completed purchase) the server sets LikeAskDue and Design's small card asks for a like, once a visit, none for three visits after a no, never within two minutes of a lost cat or a cancelled purchase, never once the like row is paid (LikeAskRules, LikeAskService, LikeAskController); off by default
 	"likeAskPurchase", -- with likeAsk: the like ask may also come two minutes after a completed purchase, never on the buy screen (Derek, 2026-11-26, q2-purchaseask; LikeAskRules.PURCHASE_FLAG, issue 813); off by default
 	"notifyAsk", -- with askQueue, sudsBubble and longBuildOffer: from 1:45 of play Suds asks once a save, in his bubble, whether to be told when a build is done; only a tap on Sure! opens Roblox's opt-in prompt, and players Roblox would not prompt (under 13, already opted in) never see it (NotifyAskRules, NotifyAskService, NotifyAskController, issue 814); off by default
+	"favouriteAsk", -- with askQueue, sudsBubble, giftStand and pets: a player whose favourite the gift stand does not have gets one reminder in Suds's bubble on the second visit or after 10 hand washes in a visit; only a tap on Favourite opens Roblox's favourite prompt, no reward named, once a save (FavouriteAskRules, FavouriteAskService, FavouriteAskController, issue 815); off by default
 	"helperPopups", -- a helper finishing a cat sends HelperPaid to the owner (a popup over their stand, Design's) instead of the "+N coins: NAME washed CAT" toast, and the per cat toasts that repeat the screen ("+N coins", "+N coins, +S stars", "CAT went home") are left out; one-off toasts stay (WorkerService, SpaService, issue 743); off by default
 	"counterLine", -- waiting customers stand at an open counter window by the desk with their cat on the counter in front of them (their carrier empty), and the player takes any cat from its counter place, no walk to the back of the line; another place than the front works as a pick, the front customer's cat going back on the counter; a leaving customer packs their cat back up (CounterRules, SpaService, FigureService, CarryController, issue 746); needs customers and customerCarry; off by default
 	"counterCards", -- with counterLine and heartBar: a small card over each cat on the counter, a round chip in its owner's shirt colour and its heart bar, and that cat's mat washed in the same colour, so it is plain whose cat it is; client only, the Take prompt stays the tap (CounterCardRules, UI/CounterCard, CounterCardController, issue 745); off by default
@@ -258,6 +259,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	likeAsk = true,
 	likeAskPurchase = true,
 	notifyAsk = true,
+	favouriteAsk = true,
 	spawnSide = true,
 	respawnCamera = true,
 	helperPopups = true,

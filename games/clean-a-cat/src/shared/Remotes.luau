@@ -85,6 +85,8 @@ Remotes.ClientToServer = {
 	-- clears it; "no" saves the visit, so it is not asked again for three visits (LikeAskService)
 	"RequestNotifyAskSeen", -- ()  1 a second; only while NotifyAskDue is set: saves Suds's notification ask as shown
 	-- for good and clears it (NotifyAskService, switch notifyAsk)
+	"RequestFavouriteAskSeen", -- ()  1 a second; only while FavouriteAskDue is set: saves the favourite reminder as
+	-- shown for good and clears it (FavouriteAskService, switch favouriteAsk)
 	"RequestFreeReward", -- (key: "like" | "play")  1 a second; switches on, save loaded, that row not paid yet; like:
 	-- asked FreeRewardRules.LIKE_WAIT (10) or more seconds ago, pays 150 coins; play: 1800 s of play in total, gives
 	-- one normal crate. Each once per save
