@@ -4,7 +4,8 @@
 --
 --   GiftCard.build(root)          makes the window once and returns its layer ("Gift")
 --   GiftCard.set(state)           draws GiftViewRules' steps for GiftController.state()
---   GiftCard.onStep(fn)           fn(key) when a step's button is pressed ("favourite" or "group")
+--   GiftCard.onStep(fn)           fn(key) when a step's button is pressed ("favourite" or "group"; with the free
+--                                 rewards rows, issue 730: "like", "likeClaim" and "playClaim")
 --   GiftCard.onClaim(fn)          fn() when Get Starcoat is pressed
 --
 -- The free pet on the left (its portrait, name, rarity and "A free pet, yours to keep"); on the right the steps:
@@ -191,12 +192,29 @@ local function drawStep(
 	local action = step.action
 	if action then
 		local key = step.key
-		local button = Window.button("Action", action, row, BLUE_TOP, BLUE_BOTTOM)
+		local style = step.style or "ask"
+		local top, bottom = BLUE_TOP, BLUE_BOTTOM
+		if style == "claim" then
+			top, bottom = GREEN_TOP, GREEN_BOTTOM
+		elseif style == "wait" then
+			top, bottom = WAIT_TOP, WAIT_BOTTOM
+		end
+		local button = Window.button("Action", action, row, top, bottom)
+		if style == "wait" then
+			-- a countdown, not a button: nothing to press until the gift is ready
+			button.AutoButtonColor = false
+			button.Active = false
+			button.TextColor3 = Kit.INK_SOFT
+			button.TextStrokeTransparency = 1
+		end
 		button.AnchorPoint = Vector2.new(1, 0.5)
 		button.Position = UDim2.fromScale(1, 0.5)
 		button.Size = UDim2.fromOffset(s.actionW, math.max(s.rowH - 16, math.ceil(MIN_TAP / scale)))
 		button.TextSize = s.actionText
 		button.Activated:Connect(function()
+			if style == "wait" then
+				return
+			end
 			for _, listener in stepListeners do
 				task.spawn(listener, key)
 			end
@@ -219,6 +237,7 @@ local function redraw()
 	local s: Sizes = if short then SIZES.short else SIZES.full
 	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
 	Window.fit(p.window, width, s.band, s.title, s.badge, if short then SHORT_SHIFT else nil)
+	p.window.title.Text = if state.free then GiftViewRules.FREE_TITLE else GiftViewRules.TITLE
 	local pad = UDim.new(0, s.pad)
 	p.pad.PaddingLeft, p.pad.PaddingRight, p.pad.PaddingTop, p.pad.PaddingBottom =
 		pad, pad, UDim.new(0, s.pad + 2), pad
@@ -263,6 +282,9 @@ local function redraw()
 		else ColorSequence.new(WAIT_TOP, WAIT_BOTTOM)
 	local waitLine = GiftViewRules.waitLine(state)
 	p.wait.Visible = waitLine ~= nil
+	-- with the free rewards rows (four of them) the steps left for Starcoat sit under the pet, so the card fits a phone
+	p.wait.Parent = if state.free then p.pet else p.right
+	p.wait.LayoutOrder = if state.free then 5 else 3
 	p.wait.TextSize = s.wait
 	p.wait.Size = UDim2.new(1, 0, 0, s.wait + 4)
 	p.wait.Text = waitLine or ""

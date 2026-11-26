@@ -8,12 +8,20 @@
 --   * Get Starcoat asks for the pet (GiftController.claim); the server answers with a notice, and once the pet is
 --     saved the card shows "Starcoat is yours!" and closes a moment later;
 --   * once the stand lights (GiftLit) and the pet is not claimed, Suds's "A gift for you!" waits its turn in the ask
---     line (AskController's "gift", switch askQueue); "Show me" opens the card. A "no" there is final for the visit.
+--     line (AskController's "gift", switch askQueue); "Show me" opens the card. A "no" there is final for the visit;
+--   * with the switch freeRewards (issue 730) the card also has the free rewards rows (GiftViewRules, FreeRewardRules):
+--     Like asks the server to stamp the ask (RequestLikeAsk) and counts down to its Claim; Claim on the like or the
+--     play row sends RequestFreeReward(key). The rows read the server's Player attributes only, and the gift never
+--     depends on a like, which no game can read.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
+local FreeRewardRules = require(Shared:WaitForChild("FreeRewardRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
+local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Remotes = require(Shared:WaitForChild("Remotes"))
 
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
 
@@ -28,11 +36,68 @@ local asks: any = nil -- AskController
 local asked = false -- the ask was put in the line this visit
 local wasClaimed = false
 
-local function state(): GiftViewRules.State
-	if gift == nil then
-		return { lit = false, favourite = false, group = false, claimed = false }
+local player = Players.LocalPlayer
+local ticking = false -- the like's countdown redraws the card each second while it shows
+
+local function number(raw: unknown): number
+	return if type(raw) == "number" and raw == raw then raw else 0
+end
+
+local function freeOn(): boolean
+	return LiveFlags.isOn(FreeRewardRules.FLAG) and LiveFlags.isOn(GiftViewRules.FLAG)
+end
+
+local function free(): GiftViewRules.Free?
+	if not freeOn() then
+		return nil
 	end
-	return gift.state()
+	local readyAt = number(player:GetAttribute(FreeRewardRules.LIKE_READY_ATTRIBUTE))
+	local now = workspace:GetServerTimeNow()
+	return {
+		likeAsked = readyAt > 0,
+		likeIn = if readyAt > 0 then math.max(0, math.ceil(readyAt - now)) else 0,
+		likeClaimed = player:GetAttribute(FreeRewardRules.CLAIMED_PREFIX .. "like") == true,
+		played = number(player:GetAttribute(FreeRewardRules.PLAYED_ATTRIBUTE)),
+		playClaimed = player:GetAttribute(FreeRewardRules.CLAIMED_PREFIX .. "play") == true,
+	}
+end
+
+local function state(): GiftViewRules.State
+	local now: GiftViewRules.State = if gift == nil
+		then { lit = false, favourite = false, group = false, claimed = false }
+		else gift.state()
+	return {
+		lit = now.lit,
+		favourite = now.favourite,
+		group = now.group,
+		claimed = now.claimed,
+		free = free(),
+	}
+end
+
+-- While the like counts down and the card shows, redraw it each second.
+local function tick()
+	if ticking then
+		return
+	end
+	ticking = true
+	task.spawn(function()
+		while true do
+			local f = free()
+			if
+				f == nil
+				or not f.likeAsked
+				or f.likeIn <= 0
+				or not UI.isOpen(GiftViewRules.WINDOW)
+			then
+				break
+			end
+			UI.setGift(state())
+			task.wait(1)
+		end
+		ticking = false
+		UI.setGift(state())
+	end)
 end
 
 local function open()
@@ -103,6 +168,37 @@ function GiftCardController.Start()
 			gift.favourite()
 		elseif key == "group" then
 			gift.join()
+		elseif freeOn() then
+			local f = free()
+			if key == "like" and f and not f.likeAsked then
+				Remotes.event("RequestLikeAsk"):FireServer()
+			elseif key == "likeClaim" and f and not f.likeClaimed then
+				Remotes.event("RequestFreeReward"):FireServer("like")
+			elseif key == "playClaim" and f and not f.playClaimed then
+				Remotes.event("RequestFreeReward"):FireServer("play")
+			end
+		end
+	end)
+	for _, name in
+		{
+			FreeRewardRules.LIKE_READY_ATTRIBUTE,
+			FreeRewardRules.PLAYED_ATTRIBUTE,
+			FreeRewardRules.CLAIMED_PREFIX .. "like",
+			FreeRewardRules.CLAIMED_PREFIX .. "play",
+		}
+	do
+		player:GetAttributeChangedSignal(name):Connect(function()
+			UI.setGift(state())
+			tick()
+		end)
+	end
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FreeRewardRules.FLAG)
+		:Connect(function()
+			UI.setGift(state())
+		end)
+	UI.onOpened(function(name: string)
+		if name == GiftViewRules.WINDOW then
+			tick()
 		end
 	end)
 	UI.onGiftClaim(function()
