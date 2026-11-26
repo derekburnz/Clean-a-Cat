@@ -11,6 +11,9 @@
   "Special": true,
   "Lite": true,
   "HeadPiece": true,
+  "BowScale": {
+   "Float64": 0.6
+  },
   "PropSlot": "Head",
   "PropSlot2": "Back"
  },
@@ -461,19 +464,19 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.4703,
-           0.1045,
-           -0.2165
+           -0.3614,
+           0.361,
+           -0.226
           ],
           "orientation": [
            [
-            0.0,
-            -1.0,
+            0.866,
+            -0.5,
             0.0
            ],
            [
-            1.0,
-            0.0,
+            0.5,
+            0.866,
             0.0
            ],
            [

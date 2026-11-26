@@ -10,6 +10,9 @@
   "Cat": "Bathtile",
   "Special": true,
   "HeadPiece": true,
+  "BowScale": {
+   "Float64": 0.6
+  },
   "PropSlot": "Head",
   "PropSlot2": "Back"
  },
@@ -1342,19 +1345,19 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.535,
-           0.3,
-           -0.27
+           -0.41,
+           0.54,
+           -0.28
           ],
           "orientation": [
            [
-            0.0,
-            -1.0,
+            0.866,
+            -0.5,
             0.0
            ],
            [
-            1.0,
-            0.0,
+            0.5,
+            0.866,
             0.0
            ],
            [
