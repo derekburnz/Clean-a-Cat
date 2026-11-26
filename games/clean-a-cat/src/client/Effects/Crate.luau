@@ -8,7 +8,8 @@
 --   open     CrateOpened: on the tap, the lid swings open at once with a small overshoot and a burst of sparkles
 --            from the open top. THE SAME EVERY TIME, whatever is inside: no shaking, no wait, no build-up, nothing
 --            that spins past rarer pets or teases a near miss (monetization-policy; Planning-Agent's rule in #528)
---   reveal   PetRevealed: the pet pops up from its seat with a soft overshoot, a sparkle burst and a happy wiggle.
+--   reveal   PetRevealed: the pet pops up from its seat with a soft overshoot, a sparkle burst and a happy wiggle
+--            (a side to side turn of the whole pet, Crate.wiggleAt).
 --            One reveal for every rarity; the card and its chance show the rarity, not a bigger show
 --   starUp   PetStarUp: three of the same pet fused, the result turns once on the spot with a little hop, a gold
 --            glow and a burst
@@ -41,6 +42,8 @@ Crate.LID_OVER = 0.08 -- share of the open angle it swings past before settling
 Crate.LID_SETTLE = 0.18
 Crate.POP_SECONDS = 0.4
 Crate.SPIN_SECONDS = 0.6
+Crate.WIGGLE_SECONDS = 0.6
+Crate.WIGGLE = math.rad(9) -- each way, a happy side to side turn after the pop
 Crate.HOP = 0.5 -- studs
 Crate.LID_DEGREES = 110 -- when the crate has no LidOpenDegrees attribute
 local GOLD = Color3.fromRGB(255, 214, 120)
@@ -99,6 +102,16 @@ function Crate.spinAt(t: number): (number, number)
 	local u = t / Crate.SPIN_SECONDS
 	local turn = u * u * (3 - 2 * u)
 	return turn, Crate.HOP * 4 * u * (1 - u)
+end
+
+-- The pet's happy wiggle after the pop: a side to side turn that dies away (Sync's pass on dc51ecb: the cats'
+-- own wiggle never reaches a pet, which has no cat rig).
+function Crate.wiggleAt(t: number): number
+	if t <= 0 or t >= Crate.WIGGLE_SECONDS then
+		return 0
+	end
+	local u = t / Crate.WIGGLE_SECONDS
+	return Crate.WIGGLE * math.sin(3 * 2 * math.pi * u * 0.5) * (1 - u)
 end
 
 -- Runs `step(t)` each frame for `seconds`, then `done()`. Stops early, still calling `done()`, when `model` leaves
@@ -209,12 +222,28 @@ export type Motion = { hold: (Model) -> (), release: (Model) -> (), wiggle: (Mod
 
 function Crate.reveal(pet: Model, motion: Motion?)
 	local final = pet:GetScale()
+	local function wiggle()
+		if motion then
+			motion.wiggle(pet) -- a cat rig, if the pet has one
+		end
+		if Effects.reducedMotion() or pet.Parent == nil then
+			return
+		end
+		local rest = pet:GetPivot()
+		run(pet, Crate.WIGGLE_SECONDS, function(t)
+			pet:PivotTo(rest * CFrame.Angles(0, Crate.wiggleAt(t), 0))
+		end, function()
+			if pet.Parent then
+				pet:PivotTo(rest)
+			end
+		end)
+	end
 	local function done()
 		pet:ScaleTo(final)
 		if motion then
 			motion.release(pet)
-			motion.wiggle(pet)
 		end
+		wiggle()
 		burstAt(pet, "Burst")
 	end
 	if Effects.reducedMotion() then
