@@ -31,11 +31,11 @@ export type Info = {
 -- key -> pass id, per experience; the shop's order is KEYS.
 Passes.IDS_BY_GAME = table.freeze({
 	[Products.DEV_GAME_ID] = table.freeze({
-		DoubleCoins = 0,
-		SecondBuilder = 0,
-		GoldenSponge = 0,
-		Lou = 0,
-		SecondPetSlot = 0,
+		DoubleCoins = 2098734880,
+		SecondBuilder = 2098968783,
+		GoldenSponge = 2102105899,
+		Lou = 2100252843,
+		SecondPetSlot = 2098518803,
 	}),
 	[Products.LIVE_GAME_ID] = table.freeze({
 		DoubleCoins = 0,
