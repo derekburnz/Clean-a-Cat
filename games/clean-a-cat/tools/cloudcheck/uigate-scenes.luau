@@ -236,6 +236,35 @@ local SCENES = {
 			UI.open("Queue")
 		end,
 	},
+	-- The bench cards with dirt levels and heart bars (dirtLevels, heartBar): a fresh cat in its quick bonus, one half
+	-- way, a grumpy one, and a level 4 special visitor's cat.
+	{
+		"QueueHearts",
+		function()
+			flag("queueWindow", true)
+			local QueueViewRules = UIShim.require("ReplicatedStorage.Shared.QueueViewRules")
+			local now = game:GetService("Workspace"):GetServerTimeNow()
+			local function heart(left: number)
+				return { since = now - 240 * (1 - left), lasts = 240, stops = false, paused = false }
+			end
+			local DirtRules = UIShim.require("ReplicatedStorage.Shared.DirtRules")
+			local cats = { "Muffin", "Patches", "Toffee", "Bathtile" }
+			local rolled = {}
+			for place, cat in cats do
+				rolled[place] = DirtRules.needs(cat, place)
+			end
+			local cards = QueueViewRules.cards(
+				cats,
+				indexEntries(),
+				{},
+				rolled,
+				{ [1] = 1, [2] = 2, [3] = 3, [4] = 4 },
+				{ [1] = heart(0.97), [2] = heart(0.6), [3] = heart(0.2), [4] = heart(0.8) }
+			)
+			UI.setQueue(cards, QueueViewRules.headline(cards, 1), { [2] = true, [3] = true, [4] = true })
+			UI.open("Queue")
+		end,
+	},
 	{
 		"QueueVip",
 		function()
