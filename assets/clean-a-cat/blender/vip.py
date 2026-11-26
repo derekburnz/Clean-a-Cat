@@ -20,6 +20,10 @@ CanQuery off) keeps players out of the building site in the yard.
                               floor to stand on, lilac and gold decor (`_Decor`, not solid), a chandelier, and the
                               Attachments SpotVipEnter, SpotVipStation, SpotVipQueue and SpotVipWait. The name plate
                               inside the top of the opening has the `Screen` part. No barrier: players walk in.
+                              Eight seats for the room's residents, the player's washed special cats (#579):
+                              Attachments SpotResident1 to SpotResident8, each the top of a lilac pad and turned to
+                              face the room, climbing each back corner like steps: a floor cushion, a perch on a
+                              post, a shelf under the back window and a shelf under the side window.
 """
 
 import math
@@ -186,6 +190,18 @@ FLOOR_UP = 0.08                   # the room's floor over the spa's: above the y
 STATION = (0.0, 8.4)              # where a VIP wash station goes
 WAIT = (6.85, 6.9)                # the chaise a VIP customer waits on, along the right wall under its window
 QUEUE = (-5.0, 6.8)               # the gold mat a VIP customer stands on, clear of the open door leaves
+# The residents' seats (#579): the player's washed special cats sit in the room. Four on each side, low to high,
+# mirrored about the runner: a floor cushion under the back window, a perch on a post in the back corner, a shelf
+# under the back window and a shelf under the side window. Every seat is past the open door leaves, so all eight
+# show from the way in. (kind, x on the right side, y, the pad's top, the turn on the right side in degrees)
+RESIDENT_SCALE = 1.2              # a sitting cat at this scale fits a pad
+PAD_R = 1.08
+_SEATS = (("cushion", 4.4, 10.6, FLOOR_UP + 0.3, -15.0),
+          ("perch", 6.8, 10.8, 2.9, -40.0),
+          ("shelf_back", 4.6, 10.95, 5.84, -12.0),
+          ("shelf_side", 6.95, 7.05, 5.84, -90.0))
+# SpotResident1..8: right then left at each height, so the room fills evenly from the floor up
+RESIDENTS = [(kind, sx * x, y, z, sx * turn) for kind, x, y, z, turn in _SEATS for sx in (1, -1)]
 _RZ = lambda deg: Matrix.Rotation(math.radians(deg), 3, "Z")      # noqa: E731
 _STAND = Matrix.Rotation(math.pi / 2, 3, "X")                     # a disc lying flat stood up to face -Y
 
@@ -327,8 +343,8 @@ def _decor(b):
     b.box((qx, qy + 0.12, z + 0.075), (0.5, 0.36, 0.03), "pearl", bevel=False)
     for dx, dy in ((-0.38, -0.2), (-0.13, -0.42), (0.13, -0.42), (0.38, -0.2)):
         b.box((qx + dx, qy + dy, z + 0.075), (0.2, 0.2, 0.03), "pearl", bevel=False)
-    for sx in (1, -1):                                                # a plant in each back corner
-        px, py = sx * (RX - RWT - 1.0), RY1 - RWT - 1.0
+    for sx in (1, -1):                # a plant in each front corner, behind the open leaves (the back corners are
+        px, py = sx * (RX - RWT - 1.1), RY0 + 1.5                     # the residents' since #579)
         b.cyl_base((px, py, z - 0.09 - 0.004 * sx), 0.5, 0.99 + 0.004 * sx, "gold_mid", segments=8, bevel=False, radius2=0.65)
         b.sphere((px, py, z + 1.6), 0.85, "leaf_green", segments=8, rings=5)
         b.sphere((px + 0.3 * sx, py - 0.2, z + 2.4), 0.6, "leaf_dark", segments=8, rings=5)
@@ -345,6 +361,49 @@ def _decor(b):
         b.box((lx + 0.1, y, 3.05), (0.06, 0.8, 0.7), sw, bevel=False)                                        # a head
         for dy in (-0.25, 0.25):                                                                              # its ears
             b.box((lx + 0.106, y + dy, 3.4), (0.06, 0.3, 0.3), sw, bevel=False, rot=Matrix.Rotation(math.pi / 4, 3, "X"))
+
+
+def _pad(b, x, y, top, r=PAD_R):
+    """A resident's lilac pad, its top at `top`, sunk a little into what carries it."""
+    b.cyl_base((x, y, top - 0.2), r, 0.2, "velvet_lilac", segments=10, bevel=False)
+
+
+def _residents(b):
+    """The eight seats (RESIDENTS), none of it solid. Pieces that share a floor or a wall start at different depths,
+    so no two faces share a plane."""
+    for i, (kind, x, y, top, _turn) in enumerate(RESIDENTS):
+        sx = 1 if x > 0 else -1
+        e = 0.004 * (i % 2)
+        if kind == "cushion":                        # a gold rim on the floor and the pad in it
+            b.cyl_base((x, y, FLOOR_UP - 0.11 - e), PAD_R + 0.09, 0.27 + e, "gold_mid", segments=10, bevel=False)
+            b.cyl_base((x, y, FLOOR_UP - 0.1 - e), PAD_R, top - FLOOR_UP + 0.1 + e, "velvet_lilac", segments=10,
+                       bevel=False)
+        elif kind == "perch":                        # a lilac post with gold bands, a pearl plate and the pad
+            plate = top - 0.39
+            b.cyl_base((x, y, FLOOR_UP - 0.12 - e), 0.72, 0.3 + e, "gold_mid", segments=10, bevel=False)
+            b.cyl_base((x, y, FLOOR_UP - 0.13 - e), 0.36, plate - FLOOR_UP + 0.16 + e, "velvet_lilac", segments=8,
+                       bevel=False)
+            b.cyl_base((x, y, plate - 0.26), 0.52, 0.24, "gold_mid", segments=8, bevel=False)
+            b.cyl_base((x, y, plate), PAD_R + 0.07, 0.2, "pearl", segments=10, bevel=False)
+            _pad(b, x, y, top)
+            # a gold star hangs from the plate's edge on the room's side: something to bat at
+            hx, hy = x - sx * 0.8, y - 0.62
+            b.box((hx, hy, plate - 0.3), (0.05, 0.05, 0.64), "gold_mid", bevel=False)
+            b.star((hx, hy, plate - 0.8), 0.27, 0.12, 0.08, "gold_mid", rot=_STAND)
+        else:                                        # a pearl shelf on two gold brackets, the pad on it
+            plate = top - 0.39
+            b.cyl_base((x, y, plate), PAD_R + 0.12, 0.2, "pearl", segments=10, bevel=False)
+            _pad(b, x, y, top)
+            lean = math.atan2(0.75, 1.1)
+            for k, d in enumerate((-0.7, 0.7)):
+                if kind == "shelf_back":             # the wall is behind (+Y): the brackets run back and down to it
+                    wall = RY1 - RWT
+                    b.box((x + d, (y + wall) / 2 + 0.02, plate - 0.37 - 0.003 * k), (0.16, 1.36, 0.16), "gold_mid",
+                          bevel=False, rot=Matrix.Rotation(-lean, 3, "X"))
+                else:                                # the wall is to the side
+                    wall = sx * (RX - RWT)
+                    b.box(((x + wall) / 2 + sx * 0.02, y + d, plate - 0.37 - 0.003 * k), (1.36, 0.16, 0.16),
+                          "gold_mid", bevel=False, rot=Matrix.Rotation(sx * lean, 3, "Y"))
 
 
 def _lamp(name, mat):
@@ -371,6 +430,7 @@ def build_vip_room(mat):
     main = _tris(b.finalize(ROOM, mat))
     d = Builder()
     _decor(d)
+    _residents(d)
     decor = _tris(d.finalize(ROOM + "_Decor", mat))
     s = Builder()                                    # the room's name plate over the way in, inside the opening
     s.box_base((0, 0.0, DOOR_H - 1.25), (4.6, 0.3, 1.2), "spa_mint")
@@ -384,13 +444,17 @@ def build_vip_room(mat):
 def vip_room_rbx_extras():
     def at(x, y, z=FLOOR_UP):
         return Matrix.Translation((x, y, z))
+    seats = [(ROOM, f"SpotResident{i + 1}", at(x, y, top) @ Matrix.Rotation(math.radians(turn), 4, "Z"))
+             for i, (_kind, x, y, top, turn) in enumerate(RESIDENTS)]
     return {"attachments": [(ROOM, "SpotVipStation", at(*STATION)),
                             (ROOM, "SpotVipWait", at(WAIT[0], WAIT[1], FLOOR_UP + 0.9)),
                             (ROOM, "SpotVipQueue", at(*QUEUE)),
-                            (ROOM, "SpotVipEnter", at(0.0, RY0 + 1.6))],
-            # which way each spot faces is the game's to set: the station's front is the door (-Z), the chaise
-            # faces the room (-X here, +X in Roblox)
-            "attributes": {"FloorUp": {"Float64": FLOOR_UP}}}
+                            (ROOM, "SpotVipEnter", at(0.0, RY0 + 1.6))] + seats,
+            # which way each of the first four faces is the game's to set: the station's front is the door (-Z),
+            # the chaise faces the room (-X here, +X in Roblox). A resident's seat is turned already: its front
+            # (-Z in Roblox) looks into the room.
+            "attributes": {"FloorUp": {"Float64": FLOOR_UP}, "ResidentSeats": len(RESIDENTS),
+                           "ResidentScale": {"Float64": RESIDENT_SCALE}}}
 
 
 ASSETS = {"CleanACat_Area_VipLocked": (build_vip_locked, 2000),

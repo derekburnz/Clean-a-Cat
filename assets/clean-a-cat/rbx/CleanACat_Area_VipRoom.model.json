@@ -5,6 +5,10 @@
   "PartBuilt": true,
   "FloorUp": {
    "Float64": 0.08
+  },
+  "ResidentSeats": 8,
+  "ResidentScale": {
+   "Float64": 1.2
   }
  },
  "children": [
@@ -208,6 +212,262 @@
           0.0,
           0.0,
           1.0
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident1",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -4.4,
+         0.5,
+         4.16
+        ],
+        "orientation": [
+         [
+          0.9659,
+          0.0,
+          -0.2588
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.2588,
+          0.0,
+          0.9659
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident2",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         4.4,
+         0.5,
+         4.16
+        ],
+        "orientation": [
+         [
+          0.9659,
+          0.0,
+          0.2588
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.2588,
+          0.0,
+          0.9659
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident3",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.8,
+         3.02,
+         4.36
+        ],
+        "orientation": [
+         [
+          0.766,
+          0.0,
+          -0.6428
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.6428,
+          0.0,
+          0.766
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident4",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.8,
+         3.02,
+         4.36
+        ],
+        "orientation": [
+         [
+          0.766,
+          0.0,
+          0.6428
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.6428,
+          0.0,
+          0.766
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident5",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -4.6,
+         5.96,
+         4.51
+        ],
+        "orientation": [
+         [
+          0.9781,
+          0.0,
+          -0.2079
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.2079,
+          0.0,
+          0.9781
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident6",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         4.6,
+         5.96,
+         4.51
+        ],
+        "orientation": [
+         [
+          0.9781,
+          0.0,
+          0.2079
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.2079,
+          0.0,
+          0.9781
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident7",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.95,
+         5.96,
+         0.61
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      }
+     }
+    },
+    {
+     "name": "SpotResident8",
+     "className": "Attachment",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.95,
+         5.96,
+         0.61
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
          ]
         ]
        }
@@ -5306,9 +5566,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -7.0,
+         -6.9,
          1.68,
-         11.0
+         2.0
         ],
         "orientation": [
          [
@@ -5350,9 +5610,9 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         7.0,
+         6.9,
          -1.68,
-         -11.0
+         -2.0
         ],
         "orientation": [
          [
@@ -7513,9 +7773,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -7.0,
+         -6.9,
          0.2345,
-         11.0
+         2.0
         ],
         "orientation": [
          [
@@ -7563,9 +7823,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -7.0,
+         -6.9,
          0.7315,
-         11.0
+         2.0
         ],
         "orientation": [
          [
@@ -7613,9 +7873,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -7.3,
+         -7.2,
          2.48,
-         10.8
+         1.8
         ],
         "orientation": [
          [
@@ -7663,9 +7923,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         7.0,
+         6.9,
          0.2405,
-         11.0
+         2.0
         ],
         "orientation": [
          [
@@ -7713,9 +7973,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         7.0,
+         6.9,
          0.7335,
-         11.0
+         2.0
         ],
         "orientation": [
          [
@@ -7763,9 +8023,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         7.0,
+         6.9,
          1.68,
-         11.0
+         2.0
         ],
         "orientation": [
          [
@@ -7813,9 +8073,9 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         7.3,
+         7.2,
          2.48,
-         10.8
+         1.8
         ],
         "orientation": [
          [
@@ -9127,6 +9387,2576 @@
       "CanCollide": false,
       "CanTouch": false,
       "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -4.4,
+         0.105,
+         10.6
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.27,
+       2.34,
+       2.34
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -4.4,
+         0.18,
+         10.6
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.4,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         4.4,
+         0.103,
+         10.6
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.274,
+       2.34,
+       2.34
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         4.4,
+         0.178,
+         10.6
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.404,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.8,
+         0.11,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.3,
+       1.44,
+       1.44
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.8,
+         1.245,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       2.59,
+       0.72,
+       0.72
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.8,
+         2.37,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.24,
+       1.04,
+       1.04
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.8,
+         2.61,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.3,
+       2.3
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.8,
+         2.8,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.0,
+         2.21,
+         10.18
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.64,
+       0.05
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.0551,
+         1.845,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.08,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -5.9449,
+         1.845,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0788,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -5.8886,
+         1.8041,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.9511,
+          0.309
+         ],
+         [
+          0.0,
+          0.309,
+          -0.9511
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0776,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -5.8546,
+         1.6993,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.9511,
+          -0.309
+         ],
+         [
+          0.0,
+          0.309,
+          0.9511
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0764,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -5.8761,
+         1.6332,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5878,
+          -0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          -0.5878
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0752,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -5.9652,
+         1.5684,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5878,
+          0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          0.5878
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.074,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.0348,
+         1.5684,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5878,
+          -0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          0.5878
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0728,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.1239,
+         1.6332,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5878,
+          0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          -0.5878
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0716,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.1454,
+         1.6993,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.9511,
+          0.309
+         ],
+         [
+          0.0,
+          0.309,
+          0.9511
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0704,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.1114,
+         1.8041,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.9511,
+          -0.309
+         ],
+         [
+          0.0,
+          0.309,
+          -0.9511
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0692,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.8,
+         0.108,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.304,
+       1.44,
+       1.44
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.8,
+         1.243,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       2.594,
+       0.72,
+       0.72
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.8,
+         2.37,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.24,
+       1.04,
+       1.04
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.8,
+         2.61,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.3,
+       2.3
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.8,
+         2.8,
+         10.8
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.0,
+         2.21,
+         10.18
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.64,
+       0.05
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         5.9449,
+         1.845,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.08,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.0551,
+         1.845,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0788,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.1114,
+         1.8041,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.9511,
+          0.309
+         ],
+         [
+          0.0,
+          0.309,
+          -0.9511
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0776,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.1454,
+         1.6993,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.9511,
+          -0.309
+         ],
+         [
+          0.0,
+          0.309,
+          0.9511
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0764,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.1239,
+         1.6332,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5878,
+          -0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          -0.5878
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0752,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.0348,
+         1.5684,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.5878,
+          0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          0.5878
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.074,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         5.9652,
+         1.5684,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5878,
+          -0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          0.5878
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0728,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         5.8761,
+         1.6332,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.5878,
+          0.809
+         ],
+         [
+          0.0,
+          -0.809,
+          -0.5878
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0716,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         5.8546,
+         1.6993,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.9511,
+          0.309
+         ],
+         [
+          0.0,
+          0.309,
+          0.9511
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0704,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "WedgePart",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         5.8886,
+         1.8041,
+         10.18
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.9511,
+          -0.309
+         ],
+         [
+          0.0,
+          0.309,
+          -0.9511
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.0692,
+       0.27,
+       0.1101
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -4.6,
+         5.55,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.4,
+       2.4
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -4.6,
+         5.74,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -3.9,
+         5.08,
+         11.495
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.8262,
+          -0.5633
+         ],
+         [
+          0.0,
+          0.5633,
+          0.8262
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.16,
+       0.16,
+       1.36
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -5.3,
+         5.077,
+         11.495
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.8262,
+          -0.5633
+         ],
+         [
+          0.0,
+          0.5633,
+          0.8262
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.16,
+       0.16,
+       1.36
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         4.6,
+         5.55,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.4,
+       2.4
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         4.6,
+         5.74,
+         10.95
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         5.3,
+         5.08,
+         11.495
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.8262,
+          -0.5633
+         ],
+         [
+          0.0,
+          0.5633,
+          0.8262
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.16,
+       0.16,
+       1.36
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         3.9,
+         5.077,
+         11.495
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.8262,
+          -0.5633
+         ],
+         [
+          0.0,
+          0.5633,
+          0.8262
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.16,
+       0.16,
+       1.36
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.95,
+         5.55,
+         7.05
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.4,
+       2.4
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -6.95,
+         5.74,
+         7.05
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -7.495,
+         5.08,
+         6.35
+        ],
+        "orientation": [
+         [
+          0.8262,
+          -0.5633,
+          0.0
+         ],
+         [
+          0.5633,
+          0.8262,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.36,
+       0.16,
+       0.16
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -7.495,
+         5.077,
+         7.75
+        ],
+        "orientation": [
+         [
+          0.8262,
+          -0.5633,
+          0.0
+         ],
+         [
+          0.5633,
+          0.8262,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.36,
+       0.16,
+       0.16
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.95,
+         5.55,
+         7.05
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.4,
+       2.4
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         6.95,
+         5.74,
+         7.05
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.2,
+       2.16,
+       2.16
+      ],
+      "Color": [
+       0.5804,
+       0.4745,
+       0.7451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         7.495,
+         5.08,
+         6.35
+        ],
+        "orientation": [
+         [
+          0.8262,
+          0.5633,
+          0.0
+         ],
+         [
+          -0.5633,
+          0.8262,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.36,
+       0.16,
+       0.16
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_VipRoom_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         7.495,
+         5.077,
+         7.75
+        ],
+        "orientation": [
+         [
+          0.8262,
+          0.5633,
+          0.0
+         ],
+         [
+          -0.5633,
+          0.8262,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.36,
+       0.16,
+       0.16
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "Metal",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
