@@ -322,7 +322,7 @@ local SCENES = {
 			flag("crateWindow", true)
 			flag("crateShop", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
-			local prices: { [string]: number } = { CrateOne = 49, CrateFive = 199 }
+			local prices: { [string]: number } = { CrateOne = 99, CrateFive = 399 } -- the widest prices (issue 650)
 			UI.setCrateShop(CrateViewRules.shopRows("normal", true, function(key: string): unknown
 				return prices[key]
 			end))
@@ -334,6 +334,7 @@ local SCENES = {
 		function()
 			flag("crateWindow", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.setCrateShop({}) -- the Robux rows are on the normal crate only (CrateWindowController)
 			UI.showCrate("good", 1, CrateViewRules.rows("good", {}))
 		end,
 	},

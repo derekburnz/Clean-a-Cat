@@ -35,6 +35,8 @@ local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F
 local BOX_TOP, BOX_EDGE = Color3.fromHex("FFF6D6"), Color3.fromHex("F0CF6B")
 local BUY_TOP, BUY_BOTTOM = Color3.fromHex("8FD8FF"), Color3.fromHex("4FB3F0") -- quieter than Open crate's green
 local MIN_TAP = 44 -- real px
+local LABEL_GAP = 2 -- design px between a Robux row's label and its price button
+local TEXT_FLOOR = 19 -- Kit's MIN_TEXT: no text is drawn smaller
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 4 -- design px below the middle on a short screen (Window's default is 33)
 
@@ -238,7 +240,7 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 	boost.Text = `{row.boost} boost`
 end
 
--- One Robux row: "5 crates" on the left, its price on a button filling the rest.
+-- One Robux row: "5 crates" over its price on a button the width of the box.
 local function drawBuy(
 	row: CrateViewRules.ShopRow,
 	order: number,
@@ -248,19 +250,20 @@ local function drawBuy(
 )
 	local line = frame(row.key, parent)
 	line.LayoutOrder = order
+	-- the label sits over its price button and the button takes the box's whole width, so "399 Robux" fits (bug hunt
+	-- B7, issue 650: side by side the button was 68 px on a phone and the price 81)
+	local labelH = math.max(s.buyLabel, TEXT_FLOOR) + 4
 	local height = math.max(s.buyH, math.ceil(MIN_TAP / scale))
-	line.Size = UDim2.new(1, 0, 0, height)
+	line.Size = UDim2.new(1, 0, 0, labelH + LABEL_GAP + height)
 	local label = words("Label", line, s.buyLabel)
-	label.AnchorPoint = Vector2.new(0, 0.5)
-	label.Position = UDim2.fromScale(0, 0.5)
-	label.Size = UDim2.new(0.46, -4, 1, 0)
+	label.Size = UDim2.new(1, 0, 0, labelH)
 	label.TextXAlignment = Enum.TextXAlignment.Left
 	Kit.shrinkToFit(label, s.buyLabel)
 	label.Text = row.label
 	local button = Window.button("Buy", `{row.price} Robux`, line, BUY_TOP, BUY_BOTTOM)
-	button.AnchorPoint = Vector2.new(1, 0.5)
-	button.Position = UDim2.fromScale(1, 0.5)
-	button.Size = UDim2.fromScale(0.54, 1)
+	button.AnchorPoint = Vector2.new(0, 1)
+	button.Position = UDim2.fromScale(0, 1)
+	button.Size = UDim2.new(1, 0, 0, height)
 	button.TextSize = s.buyText
 	local key = row.key
 	button.Activated:Connect(function()
