@@ -214,13 +214,11 @@ function AudioController.Start()
 	local shared = ReplicatedStorage:WaitForChild("Shared")
 	-- the spa songs play only while the spaMusic switch is on (issue 529), with the off switch as instant rollback
 	local LiveFlags = require(shared:WaitForChild("LiveFlags")) :: any
-	local function musicOn(): boolean
-		return LiveFlags.OFF_BY_DEFAULT[MUSIC_FLAG] == true and LiveFlags.isOn(MUSIC_FLAG)
-	end
-	Audio.applySettings({ music = musicOn(), sound = true })
+	Audio.allowMusic(LiveFlags.isOn(MUSIC_FLAG))
+	Audio.applySettings({ music = true, sound = true }) -- the start-up default; SettingsController owns it after
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. MUSIC_FLAG)
 		:Connect(function()
-			Audio.applySettings({ music = musicOn(), sound = true })
+			Audio.allowMusic(LiveFlags.isOn(MUSIC_FLAG))
 		end)
 	local existing = shared:FindFirstChild("Moments")
 	if existing then
