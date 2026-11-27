@@ -14,6 +14,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local CounterRules = require(Shared:WaitForChild("CounterRules"))
 local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
@@ -84,6 +85,16 @@ local function asset(name: string): Model?
 		warn(`[WorkerService] {name} is missing from ReplicatedStorage.Assets`)
 	end
 	return nil
+end
+
+-- (switch helperFetch) The model a helper carries a cat of `kind` as: its held loaf under loafCarry (issue 1138)
+-- when Assets has one, else its sitting body; dirty on the fetch, clean on the walk back.
+local function carriedName(kind: string, clean: boolean): string
+	local assets = ReplicatedStorage:FindFirstChild("Assets")
+	local name = CarryRules.helperModelName(kind, clean, function(wanted: string): boolean
+		return assets ~= nil and assets:FindFirstChild(wanted) ~= nil
+	end, LiveFlags.isOn(CarryRules.LOAF_FLAG))
+	return name
 end
 
 local function anchorAll(model: Model)
@@ -442,7 +453,7 @@ local function finish(player: Player, id: string, job: Job)
 	-- (helperFetch) the helper carries the clean cat out to where they picked it up, and it goes home from there
 	local pickAt = job.pickAt
 	local back = if pickAt and LiveFlags.isOn(HelperFetchRules.FLAG)
-		then walkHelper(player, id, "return", `CleanACat_Cat_{job.kind}_Sit`, pickAt, nil)
+		then walkHelper(player, id, "return", carriedName(job.kind, true), pickAt, nil)
 		else 0
 	local save = DataService.get(player)
 	if save == nil or player.Parent ~= Players then
@@ -545,7 +556,7 @@ local function tickPlayer(player: Player)
 							player,
 							id,
 							"fetch",
-							`CleanACat_Cat_{kind}_Dirty_Sit`,
+							carriedName(kind, false),
 							heldAt.Position,
 							held
 						)
