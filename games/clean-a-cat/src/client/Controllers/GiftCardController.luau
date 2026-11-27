@@ -24,6 +24,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local FreeRewardRules = require(Shared:WaitForChild("FreeRewardRules"))
+local GiftRules = require(Shared:WaitForChild("GiftRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
@@ -81,6 +82,7 @@ local function state(): GiftViewRules.State
 		group = now.group,
 		claimed = now.claimed,
 		free = free(),
+		groupOnly = LiveFlags.isOn(GiftRules.GROUP_ONLY_FLAG), -- issue 1068: the group join alone
 	}
 end
 
@@ -216,10 +218,12 @@ function GiftCardController.Start()
 			tick()
 		end)
 	end
-	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FreeRewardRules.FLAG)
-		:Connect(function()
-			UI.setGift(state())
-		end)
+	for _, flag in { FreeRewardRules.FLAG, GiftRules.GROUP_ONLY_FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(function()
+				UI.setGift(state())
+			end)
+	end
 	UI.onOpened(function(name: string)
 		if name == GiftViewRules.WINDOW then
 			tick()

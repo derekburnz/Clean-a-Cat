@@ -47,6 +47,22 @@ return function()
 			expect(GiftViewRules.ready(state(true, true, true))).to.equal(false)
 		end)
 
+		it(
+			"with giftGroupOnly needs the group join alone, and asks the favourite with no gift tied",
+			function()
+				local only = state(false, false)
+				only.groupOnly = true
+				expect(GiftViewRules.ready(only)).to.equal(false)
+				expect(GiftViewRules.waitLine(only)).to.equal("One step to go")
+				expect(GiftViewRules.steps(only)[1].line).to.equal(GiftViewRules.FAVOURITE_ASK)
+				only.group = true
+				expect(GiftViewRules.ready(only)).to.equal(true)
+				expect(GiftViewRules.waitLine(only)).to.equal(nil)
+				only.claimed = true
+				expect(GiftViewRules.ready(only)).to.equal(false)
+			end
+		)
+
 		it("says how many steps are left in plain words", function()
 			expect(GiftViewRules.waitLine(state(false, false))).to.equal("Two steps to go")
 			expect(GiftViewRules.waitLine(state(true, false))).to.equal("One step to go")
