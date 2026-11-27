@@ -154,7 +154,12 @@ local function add(cat: Instance, figure: Model)
 		end
 	end
 	local entry: Shown = {
-		card = CounterCard.new(adornee :: BasePart, guiParent :: Instance, motion),
+		card = CounterCard.new(
+			adornee :: BasePart,
+			guiParent :: Instance,
+			motion,
+			LiveFlags.isOn(CounterCardRules.SLIM_FLAG)
+		),
 		figure = figure,
 		connections = {},
 	}
@@ -288,7 +293,7 @@ function CounterCardController.Start()
 	for _, figure in CollectionService:GetTagged(WalkRules.TAG) do
 		watch(figure)
 	end
-	local flags = { CounterCardRules.FLAG }
+	local flags = { CounterCardRules.FLAG, CounterCardRules.SLIM_FLAG }
 	for _, flag in CounterCardRules.NEEDS do
 		table.insert(flags, flag)
 	end

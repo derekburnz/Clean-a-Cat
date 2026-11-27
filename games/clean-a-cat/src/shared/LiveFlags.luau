@@ -40,6 +40,7 @@ LiveFlags.KEYS = {
 	"uiSounds", -- soft open and close sounds for windows and the More tray (Audio/UiSounds, issue 800); off by default
 	"helperPopFx", -- the helper pay popup pops in with one soft coin sound (UI/HelperPopup, issue 801); off by default
 	"counterCardFx", -- the counter cards grow and fade in, fade out and ease their heart bar (UI/CounterCard, issue 803); off by default
+	"counterSlim", -- the counter card is only a small heart bar sized in studs, all in one row, so neighbours never collide (UI/CounterCard, Derek 2026-11-27); off by default
 	"joPrice", -- Jo costs 300 coins, not 150, so the first helper still comes near cat 15 (WorkerRules.JO_PRICE, issue 841); off by default
 	"washPace", -- each wash step takes about 4 to 5 seconds: more brush strokes, more lather, a narrower rinse, a longer claw hold (WashPace, issue 865); off by default
 	"gradeStars", -- a wash earns its grade in spa stars (1 to 3, plus a rarer cat's extra) and the star tiers start 3 times higher (CatRules.gradeStars, issue 868); off by default
@@ -216,6 +217,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	contextAsks = true,
 	openingBonus = true,
 	counterCardFx = true,
+	counterSlim = true,
 	helperPopFx = true,
 	catMotion = true,
 	dryEffects = true,
