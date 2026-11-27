@@ -97,3 +97,9 @@ stand-ins-1054-every-icon-swapped-69b9548.jpg: the HUD and Pets window show emoj
 ## Revert 1059 (main a7da269) and PR 1060 head 880d0cb2
 - Revert, PASS (revert-1059-pictures-back-a7da269.jpg): real HUD art again, with 105 rbxassetid ImageLabels in PlayerGui after 30 s.
 - PR 1060 at 880d0cb2, PASS. Real ids stay pictures: 105 rbxassetid ImageLabels after 30 s, and Shop, Build and Helpers keep their images (pr1060-880d0cb-real-icons.jpg). With Icons.IMAGES.Build set to rbxassetid://1 in the local copy (fetch status Failure), only Build swaps to its 🔨 stand-in. Shop and Helpers stay pictures, with 98 rbxassetid ImageLabels left (pr1060-880d0cb-bad-build-id-stand-in.jpg).
+
+## 1041 unlock, 1057 open look and 1056 Reset my game, main a7da269
+- Unlock, PASS with every window closed. Standing 6.0 studs from SpotGardenDoor, E on "Unlock · 1500 coins" took coins from 60007 to 58507 and set ExpansionUnlocked true. On cbdcdb6 it would not fire while the Helpers window was still open, because the HUD hides prompts under an open window.
+- Open look, PASS (back-door-open-1057-a7da269.jpg): BackDoor now holds CleanACat_Area_BackDoorOpen. A ray through the doorway hits nothing, and the path from inside to behind the door is 13.0 studs straight through (it was 119 studs round the outside while locked). The door leaf (5.9 x 8.9 x 0.4) stands at (12.9, 5.0, 7.1), swung about 180 degrees flat against the yard side of the wall, clear of the doorway.
+- Reset my game, PASS (reset-confirm-1056-a7da269.jpg): the red "Reset my game" button at the bottom of Settings turns into "Tap again to wipe it all" on the first tap, with coins unchanged. The second tap shows "Resetting..." and the server drops the player (Players 0).
+- Not tested: the Garden behind the open door, and an old save with the Garden built.
