@@ -125,6 +125,12 @@ local function onRequest(player: Player, rawKey: unknown)
 	if key == nil or save == nil or PassService.owns(player, key) then
 		return
 	end
+	local function owns(other: string): boolean
+		return PassService.owns(player, other)
+	end
+	if not Passes.offered(key, owns, LiveFlags.isOn) then
+		return -- 3x Coins before 2x (coinLadder, issue 1031): its card does not show either
+	end
 	local id = Passes.id(key)
 	if id == nil or priceOf(key) == nil then
 		return -- not created or not priced yet: its button should not have shown
