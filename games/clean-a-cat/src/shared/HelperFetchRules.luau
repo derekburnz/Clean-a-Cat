@@ -19,6 +19,9 @@ HelperFetchRules.AT_ATTRIBUTE = "FetchAt" -- number: server time they set off
 HelperFetchRules.CAT_ATTRIBUTE = "FetchCat" -- string: the cat model they carry (ReplicatedStorage.Assets)
 HelperFetchRules.WAY_ATTRIBUTE = "FetchWay" -- "fetch": out empty, back with the cat; "return": out with it, back empty
 HelperFetchRules.HELD_NAME = "FetchCat" -- the cat left on the counter for the helper, until they pick it up
+HelperFetchRules.PATH_ATTRIBUTE = "FetchPath" -- string: the corners walked between FROM and TO, "x,y,z;x,y,z" (none:
+-- a straight line). On the big spa the walk keeps to the aisles (route) so no helper walks through a tub (Sync on
+-- 844315b: Jo's straight line crossed the third tub and the mascot)
 
 HelperFetchRules.SPEED = 9 -- studs a second
 HelperFetchRules.PICK_SECONDS = 0.6 -- the stop at the counter to pick the cat up or set it down
@@ -41,20 +44,139 @@ function HelperFetchRules.stopFor(from: Vector3, cat: Vector3): Vector3
 	return from + along.Unit * (distance - HelperFetchRules.SHORT_OF)
 end
 
--- Seconds one way from `from` to `to`.
-function HelperFetchRules.walkSeconds(from: Vector3, to: Vector3): number
-	local seconds = (to - from).Magnitude / HelperFetchRules.SPEED
+export type Aisle = {
+	front: number, -- the Z of the cross aisle in front of the helpers' stands
+	lane: number, -- the X of the lane down the room, between the second station and the player's tub
+	counter: number, -- the Z the helper stands at behind the counter, SHORT_OF studs from the cats
+	cats: number, -- the Z of the cats on the counter
+}
+
+-- The aisles of a big spa from its spots: a helper's stand, the second station, the player's tub and the first
+-- counter cat, all world positions on one plot (the plots are never turned, so X and Z are the room's own).
+function HelperFetchRules.aisle(
+	stand: Vector3,
+	station: Vector3,
+	tub: Vector3,
+	counterCat: Vector3
+): Aisle
+	local toward = if stand.Z >= counterCat.Z then 1 else -1
+	return {
+		front = (stand.Z + station.Z) / 2,
+		lane = (station.X + tub.X) / 2,
+		counter = counterCat.Z + toward * HelperFetchRules.SHORT_OF,
+		cats = counterCat.Z,
+	}
+end
+
+-- (big spa) The walk from `from` to a cat at `cat` along `aisle`: out to the cross aisle in front of the stands,
+-- along it to the lane, down the lane to behind the counter and along the counter to the cat. Returns the corners
+-- and the stop, on the floor at `from`'s height. A cat not on the counter row (the door line), or no aisle: the
+-- straight line (no corners, stopFor).
+function HelperFetchRules.route(from: Vector3, cat: Vector3, aisle: Aisle?): ({ Vector3 }, Vector3)
+	if aisle == nil or math.abs(cat.Z - aisle.cats) > 1 then
+		return {}, HelperFetchRules.stopFor(from, cat)
+	end
+	local y = from.Y
+	local stop = Vector3.new(cat.X, y, aisle.counter)
+	local wanted = {
+		Vector3.new(from.X, y, aisle.front),
+		Vector3.new(aisle.lane, y, aisle.front),
+		Vector3.new(aisle.lane, y, aisle.counter),
+	}
+	local corners: { Vector3 } = {}
+	local last = from
+	for _, point in wanted do
+		if (point - last).Magnitude > 0.05 and (point - stop).Magnitude > 0.05 then
+			table.insert(corners, point)
+			last = point
+		end
+	end
+	return corners, stop
+end
+
+-- The corners as the FetchPath text, and back. Bad text reads as no corners.
+function HelperFetchRules.encode(corners: { Vector3 }): string
+	local parts = {}
+	for _, point in corners do
+		table.insert(parts, string.format("%.2f,%.2f,%.2f", point.X, point.Y, point.Z))
+	end
+	return table.concat(parts, ";")
+end
+
+function HelperFetchRules.decode(text: unknown): { Vector3 }
+	local corners: { Vector3 } = {}
+	if type(text) ~= "string" or text == "" or #text > 400 then
+		return corners
+	end
+	for _, piece in string.split(text, ";") do
+		local x, y, z = string.match(piece, "^(-?[%d%.]+),(-?[%d%.]+),(-?[%d%.]+)$")
+		local nx, ny, nz = tonumber(x), tonumber(y), tonumber(z)
+		if nx == nil or ny == nil or nz == nil then
+			return {}
+		end
+		table.insert(corners, Vector3.new(nx, ny, nz))
+	end
+	return corners
+end
+
+-- The corners a staff model's walk keeps to (its FetchPath).
+function HelperFetchRules.viaOf(model: Instance): { Vector3 }
+	return HelperFetchRules.decode(model:GetAttribute(HelperFetchRules.PATH_ATTRIBUTE))
+end
+
+local function pointsOf(from: Vector3, to: Vector3, via: { Vector3 }?): { Vector3 }
+	local points = { from }
+	for _, point in via or {} do
+		table.insert(points, point)
+	end
+	table.insert(points, to)
+	return points
+end
+
+local function lengthOf(points: { Vector3 }): number
+	local total = 0
+	for i = 2, #points do
+		total += (points[i] - points[i - 1]).Magnitude
+	end
+	return total
+end
+
+local function flatUnit(v: Vector3, fallback: Vector3): Vector3
+	local flat = Vector3.new(v.X, 0, v.Z)
+	return if flat.Magnitude > 1e-6 then flat.Unit else fallback
+end
+
+-- Where `distance` studs along `points` is, and the flat way that stretch goes.
+local function along(points: { Vector3 }, distance: number): (Vector3, Vector3)
+	local left = math.max(distance, 0)
+	local way = Vector3.zAxis
+	for i = 2, #points do
+		local a, b = points[i - 1], points[i]
+		local stretch = (b - a).Magnitude
+		way = flatUnit(b - a, way)
+		if left <= stretch or i == #points then
+			local u = if stretch > 1e-6 then math.clamp(left / stretch, 0, 1) else 1
+			return a:Lerp(b, u), way
+		end
+		left -= stretch
+	end
+	return points[#points], way
+end
+
+-- Seconds one way from `from` to `to`, by way of the corners `via`.
+function HelperFetchRules.walkSeconds(from: Vector3, to: Vector3, via: { Vector3 }?): number
+	local seconds = lengthOf(pointsOf(from, to, via)) / HelperFetchRules.SPEED
 	return math.clamp(seconds, HelperFetchRules.MIN_WALK, HelperFetchRules.MAX_WALK)
 end
 
 -- Seconds from setting off to being back at the stand.
-function HelperFetchRules.totalSeconds(from: Vector3, to: Vector3): number
-	return 2 * HelperFetchRules.walkSeconds(from, to) + HelperFetchRules.PICK_SECONDS
+function HelperFetchRules.totalSeconds(from: Vector3, to: Vector3, via: { Vector3 }?): number
+	return 2 * HelperFetchRules.walkSeconds(from, to, via) + HelperFetchRules.PICK_SECONDS
 end
 
 -- Seconds from setting off to the pick up (or the set down): the middle of the stop at the counter.
-function HelperFetchRules.pickAt(from: Vector3, to: Vector3): number
-	return HelperFetchRules.walkSeconds(from, to) + HelperFetchRules.PICK_SECONDS / 2
+function HelperFetchRules.pickAt(from: Vector3, to: Vector3, via: { Vector3 }?): number
+	return HelperFetchRules.walkSeconds(from, to, via) + HelperFetchRules.PICK_SECONDS / 2
 end
 
 export type Pose = {
@@ -64,18 +186,28 @@ export type Pose = {
 	done: boolean, -- back at the stand
 }
 
--- Where the helper is `elapsed` seconds after setting off on `way` ("fetch" or "return") between `from` and `to`.
-function HelperFetchRules.pose(way: string, from: Vector3, to: Vector3, elapsed: number): Pose
-	local walk = HelperFetchRules.walkSeconds(from, to)
+-- Where the helper is `elapsed` seconds after setting off on `way` ("fetch" or "return") between `from` and `to`, by
+-- way of the corners `via` (out along them, back the same way).
+function HelperFetchRules.pose(
+	way: string,
+	from: Vector3,
+	to: Vector3,
+	elapsed: number,
+	via: { Vector3 }?
+): Pose
+	local walk = HelperFetchRules.walkSeconds(from, to, via)
 	local pick = HelperFetchRules.PICK_SECONDS
-	local flat = Vector3.new(to.X - from.X, 0, to.Z - from.Z)
-	local out = if flat.Magnitude > 1e-6 then flat.Unit else Vector3.zAxis
+	local points = pointsOf(from, to, via)
+	local total = lengthOf(points)
+	local _, first = along(points, 0)
+	local _, last = along(points, total)
 	local fetching = way ~= "return"
 	local t = if elapsed == elapsed then elapsed else 0
 	if t < walk then
+		local position, facing = along(points, total * math.max(t, 0) / walk)
 		return {
-			position = from:Lerp(to, math.max(t, 0) / walk),
-			facing = out,
+			position = position,
+			facing = facing,
 			holding = not fetching,
 			done = false,
 		}
@@ -83,19 +215,20 @@ function HelperFetchRules.pose(way: string, from: Vector3, to: Vector3, elapsed:
 		local before = t < walk + pick / 2
 		return {
 			position = to,
-			facing = out,
+			facing = last,
 			holding = if fetching then not before else before,
 			done = false,
 		}
 	elseif t < 2 * walk + pick then
+		local position, facing = along(points, total * (1 - (t - walk - pick) / walk))
 		return {
-			position = to:Lerp(from, (t - walk - pick) / walk),
-			facing = -out,
+			position = position,
+			facing = -facing,
 			holding = fetching,
 			done = false,
 		}
 	end
-	return { position = from, facing = -out, holding = false, done = true }
+	return { position = from, facing = -first, holding = false, done = true }
 end
 
 return table.freeze(HelperFetchRules)

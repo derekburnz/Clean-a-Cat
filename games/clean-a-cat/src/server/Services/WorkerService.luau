@@ -14,6 +14,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CounterRules = require(Shared:WaitForChild("CounterRules"))
 local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local HelperFetchRules = require(Shared:WaitForChild("HelperFetchRules"))
@@ -220,6 +221,25 @@ local function staffSpot(station: Model, spot: CFrame): CFrame
 	return spot * STAFF_OFFSET
 end
 
+-- (switch helperFetch, issue 884) The aisles of `player`'s big spa for a helper's walk, or nil on the small one (the
+-- walk is then a straight line to the door line).
+local function aisleFor(player: Player): HelperFetchRules.Aisle?
+	local slot = SpaLayout.slotOf(player)
+	if slot == nil or not SpaLayout.big() or not SpaLayout.onPlot(player) then
+		return nil
+	end
+	local counterCat = SpaLayout.counterSpot(CounterRules.CAT_SPOT_PREFIX, 1, slot)
+	if counterCat == nil then
+		return nil
+	end
+	return HelperFetchRules.aisle(
+		SpaLayout.slotSpot(WorkerRules.WORKERS.Jo.spot, slot).Position,
+		SpaLayout.slotSpot("SpotStation2", slot).Position,
+		SpaLayout.slotSpot("SpotTub", slot).Position,
+		counterCat.Position
+	)
+end
+
 -- (switch helperFetch, issue 884) The helper `id` sets off on a walk to `to` and back (HelperFetchRules): marks their
 -- staff model for every client, keeps `held` (the cat left on the counter) there until the pick up, and returns the
 -- seconds until they are back at the stand, or 0 when there is no staff model to walk.
@@ -241,22 +261,23 @@ local function walkHelper(
 		return 0
 	end
 	local from = (staff :: Model):GetPivot().Position
-	local stop = HelperFetchRules.stopFor(from, to)
+	local via, stop = HelperFetchRules.route(from, to, aisleFor(player))
 	staff:SetAttribute(HelperFetchRules.FROM_ATTRIBUTE, from)
 	staff:SetAttribute(HelperFetchRules.TO_ATTRIBUTE, stop)
+	staff:SetAttribute(HelperFetchRules.PATH_ATTRIBUTE, HelperFetchRules.encode(via))
 	staff:SetAttribute(HelperFetchRules.CAT_ATTRIBUTE, catName)
 	staff:SetAttribute(HelperFetchRules.WAY_ATTRIBUTE, way)
 	staff:SetAttribute(HelperFetchRules.AT_ATTRIBUTE, Workspace:GetServerTimeNow())
 	if held then
 		held.Name = HelperFetchRules.HELD_NAME
 		held.Parent = station
-		task.delay(HelperFetchRules.pickAt(from, stop), function()
+		task.delay(HelperFetchRules.pickAt(from, stop, via), function()
 			if held.Parent then
 				held:Destroy()
 			end
 		end)
 	end
-	return HelperFetchRules.totalSeconds(from, stop)
+	return HelperFetchRules.totalSeconds(from, stop, via)
 end
 
 -- Draws the player's worker stations and pads. A job in progress keeps going; its cat is seated again.

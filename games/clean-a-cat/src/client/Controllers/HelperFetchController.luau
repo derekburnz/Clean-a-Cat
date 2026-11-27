@@ -24,6 +24,7 @@ type Walk = {
 	way: string,
 	from: Vector3,
 	to: Vector3,
+	via: { Vector3 },
 	at: number,
 	catName: string,
 	held: Model?,
@@ -77,7 +78,7 @@ local function advance()
 			stop(walk)
 			continue
 		end
-		local pose = HelperFetchRules.pose(walk.way, walk.from, walk.to, now - walk.at)
+		local pose = HelperFetchRules.pose(walk.way, walk.from, walk.to, now - walk.at, walk.via)
 		if pose.done then
 			stop(walk)
 			continue
@@ -148,6 +149,7 @@ local function begin(staff: Model)
 		way = way,
 		from = from :: Vector3,
 		to = to :: Vector3,
+		via = HelperFetchRules.viaOf(staff),
 		at = at :: number,
 		catName = catName :: string,
 		held = nil,
