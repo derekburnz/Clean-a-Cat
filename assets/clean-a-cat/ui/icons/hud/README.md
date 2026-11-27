@@ -53,10 +53,11 @@ and a mint pocket with the yellow sponge and the sky brush standing in it. Revie
 
 ## The like how-to pictures (issue 869)
 
-Four pictures for Design-Agent's two second loop that shows how to like the game (Growth-Agent's spec,
-2026-11-26). `CleanACat_Icon_Hud_ThumbsUp.png` is a thumbs up in a soft grey with a pale cuff, not yet pressed.
-`CleanACat_Icon_Hud_ThumbsUpFilled.png` is the same hand in the heart's pink with a white glint, pressed.
-`CleanACat_Icon_Hud_TapHand.png` is a cream hand pointing up with one finger, the one that taps.
-`CleanACat_Icon_Hud_RingPuff.png` is a pink ring with eight short butter rays, the burst where it taps. All are
-original art drawn as our own fist and hand, with no Roblox logo or button. Made by `hud_icons.py` (`ThumbsUp`,
-`ThumbsUpFilled`, `TapHand`, `RingPuff`) and checked at 48 px.
+`CleanACat_Icon_Hud_RingPuff.png` is a pink ring with eight short butter rays, the burst where the like how-to's
+tap lands (Growth-Agent's spec, 2026-11-26). Made by `hud_icons.py` (`RingPuff`) and checked at 48 px.
+
+**No hands, ever (2026-11-27).** The first like how-to pictures were hands: a thumbs up, the same thumbs up pressed,
+and a hand pointing one finger. Roblox moderation misread the pressed one (asset 135826908608436) and suspended
+Derek's account. All three were removed from the repo and from `hud_icons.py`, and their sha256s are on
+`.github/upload-blocked.txt`, so the upload workflow refuses them under any name. Draw no hand, finger or gesture
+in any picture; use hearts, dots and rings instead.

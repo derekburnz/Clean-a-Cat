@@ -4,6 +4,11 @@
 # unmerged branch. The job log and the run summary show each id. Every upload makes a new asset, so upload a file
 # once and commit its id.
 #
+# Approved files only (2026-11-27, after Derek's Roblox account was suspended over a like icon misread as rude): a
+# file uploads only when its sha256 and path are on .github/upload-allow.txt as main has it, which Review-QA-Agent
+# adds to after looking at the picture; any file whose sha256 is on .github/upload-blocked.txt is refused for good,
+# under any name. The run must start on main, so a branch with an older copy of this workflow cannot skip the check.
+#
 # Who owns the upload: the group in the repo variable ROBLOX_GROUP_ID when it is set (use this when a group owns
 # the game), otherwise the user in ROBLOX_OWNER_USER_ID. The key is the secret ROBLOX_GROUP_KEY when it is set,
 # otherwise ROBLOX_PUBLISH_KEY; it needs asset:read and asset:write and must be created by that owner
@@ -101,6 +106,36 @@ jobs:
             echo "Taking $path from ${ASSET_BRANCH:-$GITHUB_REF_NAME} ($(git rev-parse --short "$rev"))"
           done
           printf '%s\n' "${paths[@]}" >"$RUNNER_TEMP/upload-paths"
+
+      # Every file must be approved (its sha256 and path on main's .github/upload-allow.txt) and none blocked (its
+      # sha256 on main's .github/upload-blocked.txt). All are checked before anything is uploaded.
+      - name: Check every file is approved and none is blocked
+        run: |
+          if [ "$GITHUB_REF" != refs/heads/main ]; then
+            echo "::error::start this workflow on main (it runs main's approval check); the files can still come from a branch"
+            exit 1
+          fi
+          git fetch --no-tags --depth 1 origin main
+          git show FETCH_HEAD:.github/upload-allow.txt >"$RUNNER_TEMP/allow" 2>/dev/null || : >"$RUNNER_TEMP/allow"
+          git show FETCH_HEAD:.github/upload-blocked.txt >"$RUNNER_TEMP/blocked" 2>/dev/null || : >"$RUNNER_TEMP/blocked"
+          mapfile -t paths <"$RUNNER_TEMP/upload-paths"
+          refused=0
+          for path in "${paths[@]}"; do
+            sum=$(sha256sum "$path" | cut -d' ' -f1)
+            if grep -v '^#' "$RUNNER_TEMP/blocked" | grep -q "^$sum"; then
+              echo "::error::$path is BLOCKED ($sum is on .github/upload-blocked.txt) and is never uploaded"
+              refused=$((refused + 1))
+            elif ! grep -v '^#' "$RUNNER_TEMP/allow" | grep -qx "$sum  $path"; then
+              echo "::error::$path is not approved: add the line '$sum  $path' to .github/upload-allow.txt (Review-QA-Agent, after checking the picture) and merge it first"
+              refused=$((refused + 1))
+            else
+              echo "Approved: $path ($sum)"
+            fi
+          done
+          if [ "$refused" -gt 0 ]; then
+            echo "::error::$refused file(s) refused; nothing was uploaded"
+            exit 1
+          fi
 
       # One file at a time; one that fails does not stop the rest, and the run fails at the end if any did.
       - name: Upload
