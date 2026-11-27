@@ -194,3 +194,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## ButtonInk write counter (PR 1118) on main f27874d, iphone_13, 2026-11-27
 
 `1118-<piece>-iphone13.jpg` shows Sam's Level up and the Build Buy buttons after TextTransparency was set from the client (1, then 0, then three quick 1/0 toggles). The words stay outlined.
+
+## groupVerify fix (issue 1111, PR 1120) on main 6360b8c, iphone_13, 2026-11-27
+
+`1120-<step>-iphone13.jpg`: group membership was set with the game's own Studio-only TestInGroup player attribute. No group was changed.
