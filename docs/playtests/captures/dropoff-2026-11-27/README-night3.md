@@ -17,3 +17,6 @@ leave-7e033d1-kit-packed-cat-in-carrier.jpg: the PackedCat stays in the carrier,
 
 ## 948 Stardust bows, main 208dc9d: PASS
 Across 12 bow looks on Stardust_Sit and Stardust_Dirty_Sit, 0 bow parts overlap Prop or Prop2 (the wand).
+
+## 884 close-out, main c2eeb78 (PR 1011): PASS
+helpers-884-route-c2eeb78-clear.jpg: a top view with Jo in red and Sam in yellow. Both routes are (stand) > (x, -4.8) > (8.1, -4.8) > (8.1, -22.3) > (1.6, -22.3), with the lane between the player's tub and station 4. Each stop is at place 2's own spot: dX 0.00, dZ 2.60 behind the cat, 1.30 studs from the counter edge (z -23.60). Sweeping a 2 x 3.2 x 2 body box along every segment crossed nothing solid: no tools board, tub, stand or counter.
