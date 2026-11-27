@@ -112,3 +112,9 @@ arm-out-1062-from-behind-41da07f.jpg: the three customers standing at the counte
 | Mo | true | 19.6 | 19.6 | true | 0/213 | 19.6 | 0.0 |
 | Pip | true | 27.1 | 27.1 | true | 0/193 | 27.1 | 0.0 |
 The carrier is hidden and CarrierHidden is true, yet ArmR stays turned out by exactly CarryArmOut. CustomerMotion.armIn should turn it back in by that much, so it is not being applied on this client.
+
+## PR 1064 (issue 1062), main f701af9: FAIL, arms still out
+customerWalk is on (CustomerMotion enabled) and the ArmR joint is recognised. Sampled every 0.2 s for 150 s, 18 customer figures at most at once.
+- Standing customers with no carrier showing (CarrierHidden true), near (8 to 59 studs) and far (60 to 95): Sunny's ArmR stays at 32.4 degrees, Rae's at 21.5 and Juno's at 21.5. That is exactly their CarryArmOut, never 0. 2139 failing samples.
+- Walking customers with a carrier showing, 67 to 76 studs away: Juno at 21.5 degrees and Pearl at 32.4, so the arm stays out there as it should. The arm-to-leg gap measured -0.47 and -0.70 studs (my sideways estimate, so they may touch).
+- Not reached: a leave with a PackedCat (no heart ran out in the window), and a figure-budget effect (the arms are out for every figure anyway).
