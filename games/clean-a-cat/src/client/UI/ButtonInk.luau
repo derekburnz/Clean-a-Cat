@@ -37,6 +37,9 @@ local OWN_TEXT = "Ink_TextTransparency" -- attribute: the button's own text tran
 local OWN_STROKE = "Ink_TextStrokeTransparency"
 local OWN_COLOUR = "Ink_TextColor3" -- attribute: a label's own text colour while the switch is on
 local OWN_SEQUENCE = "Ink_Color" -- attribute: a soft button gradient's own colours while the switch is on
+-- The button's own words are parked at this, not 1: it still draws nothing, and a window's own write of 1 (to hide
+-- the words) is always a change, so its listener hears it and the outlined label hides too (Review-QA on 1118).
+local PARKED = 0.999
 
 -- Properties the outlined label copies from its button, so it always draws the same words in the same place.
 local MIRROR = {
@@ -129,7 +132,7 @@ local function outline(button: TextButton, on: boolean)
 			button:SetAttribute(OWN_TEXT, button.TextTransparency)
 			button:SetAttribute(OWN_STROKE, button.TextStrokeTransparency)
 		end
-		setText(button, 1)
+		setText(button, PARKED)
 		button.TextStrokeTransparency = 1
 	else
 		if label then
@@ -231,7 +234,7 @@ local function follow(piece: Instance)
 			-- label follows it (gone while hidden, back when shown again)
 			if button:FindFirstChild(LABEL) then
 				button:SetAttribute(OWN_TEXT, button.TextTransparency)
-				setText(button, 1)
+				setText(button, PARKED)
 			end
 			again()
 		end)

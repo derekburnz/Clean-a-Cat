@@ -16,6 +16,11 @@ return function()
 			expect(GiftFlowRules.stage(true, true)).to.equal(3)
 			-- an old save that took the play crate before the welcome gift still has the welcome gift to claim
 			expect(GiftFlowRules.stage(false, true)).to.equal(1)
+			-- (groupVerify) the board stays while the verified join's coins are owed
+			expect(GiftFlowRules.stage(true, false, true)).to.equal(1)
+			expect(GiftFlowRules.stage(true, true, true)).to.equal(1)
+			expect(GiftFlowRules.stage(true, false, false)).to.equal(2)
+			expect(GiftFlowRules.stage(true, true, nil)).to.equal(3)
 			expect(GiftFlowRules.standStays(1)).to.equal(true)
 			expect(GiftFlowRules.standStays(2)).to.equal(true)
 			expect(GiftFlowRules.standStays(3)).to.equal(false)

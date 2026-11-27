@@ -204,6 +204,7 @@ LiveFlags.KEYS = {
 	"expansionDoor", -- the back door is a building site (caution tape, planks, paint pots) with one prompt, "Unlock · 1500 coins" (50 on dev); the server saves the unlock and the door stands open; the Garden shows there only behind the open door once built (ExpansionRules, ExpansionService, ExpansionController, issue 1041); off by default
 	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
 	"starterCard", -- the starter pack's HUD card is dark with one big picture, the true price and a round "i" for the breakdown; a tap on the card asks for the purchase prompt; no bob, no sparkles and no time chip (HUD/StarterAd, issue 1080); off by default
+	"starterFloat", -- with starterCard: no card around the starter pack ad, a bigger Midas floats on his glow with his price, the struck total (only when true) and the round "i", all in outlined words (HUD/StarterAd, issue 1119); off by default
 	"shopRevamp", -- the shop's new layout: one featured card, the rest in a two by two grid, big pictures, one short line each and the price in white words with an ink outline (ShopWindow, ShopViewRules.arrange, issue 1030); off by default
 	"menuContrast2", -- every window's cream card turns a deeper lilac, the cards in it white, their edges and the soft body text ink (UI/Contrast, issue 1029); off by default
 	"menuContrast3", -- the white words on every window's buttons (Buy, Build, Level up, Claim, Favourite, Like, Reset, the X) get a thick ink outline, and the tick green and gold words turn deeper (UI/ButtonInk, issue 1096); off by default
@@ -376,6 +377,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	petSingles = true,
 	expansionDoor = true,
 	starterCard = true,
+	starterFloat = true,
 	shopRevamp = true,
 	menuContrast2 = true,
 	menuContrast3 = true,

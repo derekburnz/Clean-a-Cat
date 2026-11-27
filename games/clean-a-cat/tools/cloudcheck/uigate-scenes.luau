@@ -930,6 +930,33 @@ local SCENES = {
 			UI.open("Gift")
 		end,
 	},
+	-- The gift already theirs from before groupVerify (PR 1120: stage 1, GiftClaimed true, coins unpaid).
+	{
+		"GiftVerifyOwned",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("groupVerify", true)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = false,
+				claimed = true,
+				stage = 1,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+				verify = "",
+				coinsPaid = false,
+			})
+			UI.open("Gift")
+		end,
+	},
 	{
 		"GiftVerifyNotYet",
 		function()
@@ -1259,6 +1286,25 @@ local SCENES = {
 			allButtons(true)
 			flag("starterCard", true)
 			flag("starterPet", true)
+		end,
+	},
+	-- starterFloat (issue 1119): no card, a bigger floating Midas with outlined words; then with no price known yet.
+	{
+		"HudStarterFloat",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+			flag("starterPet", true)
+			flag("starterFloat", true)
+		end,
+	},
+	{
+		"HudStarterFloatNoPrice",
+		function()
+			allButtons(false)
+			flag("starterCard", true)
+			flag("starterPet", true)
+			flag("starterFloat", true)
 		end,
 	},
 	-- starterNoClock (issue 1069): the starter ad's chip says "New player offer" instead of the time left.

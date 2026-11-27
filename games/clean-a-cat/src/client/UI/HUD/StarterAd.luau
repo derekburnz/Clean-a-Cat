@@ -30,6 +30,12 @@
 -- or crate or something crazy"): the big picture is Midas, the golden pet the pack gives (found nowhere else), with gold
 -- rays turning slowly behind him and his glow pulsing. With Reduced Motion, Less screen shake or Less sparkle the rays
 -- and the glow stand still. The card itself never moves.
+--
+-- Switch starterFloat (issue 1119, Derek 2026-11-27: "make the starter pack a bigger cat image and no box just the
+-- floating cat and price with price slash and infoo"), with starterCard: no card. A bigger Midas floats on his glow
+-- with a soft shadow under him, the words "Starter Pack" and the prices are drawn in outlined words so they read over
+-- any background, the struck shop total shows only when StarterViewRules.saving says it is true, and the round "i"
+-- stays. A tap on Midas or his price asks for the purchase prompt, the "i" opens the breakdown. Nothing bobs.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -50,6 +56,7 @@ local StarterAd = {}
 
 StarterAd.FLAG = "hudTidy"
 StarterAd.CARD_FLAG = "starterCard"
+StarterAd.FLOAT_FLAG = "starterFloat"
 StarterAd.HERO = "Sponge" -- the one big picture: the Golden Sponge, the pack's best item
 local FLAGS = { "gameHud", "hudTidy", StarterRules.FLAG, "passes" }
 local MIN_REACH = 48 -- design px: the "i" button's tap area, at least REACH_REAL real px however small the card is drawn
@@ -92,6 +99,8 @@ local SIZES = {
 		was = 21,
 		tag = 20,
 		hero = 96,
+		float = 140, -- starterFloat: Midas's size with no card around him
+		floatWidth = 200,
 	},
 	full = {
 		width = 204,
@@ -103,6 +112,8 @@ local SIZES = {
 		was = 20,
 		tag = 19,
 		hero = 84,
+		float = 124,
+		floatWidth = 176,
 	},
 }
 type Sizes = typeof(SIZES.short)
@@ -126,6 +137,11 @@ type Parts = {
 	info: TextButton,
 	tint: UIGradient,
 	edge: UIStroke,
+	ribbonInk: UIStroke,
+	pad: UIPadding,
+	stack: UIListLayout,
+	shadow: Frame,
+	inks: { UIStroke },
 }
 
 local parts: Parts? = nil
@@ -161,6 +177,11 @@ end
 -- Whether the dark card with one picture and the buy tap is on (switch starterCard).
 function StarterAd.calm(): boolean
 	return LiveFlags.isOn(StarterAd.CARD_FLAG)
+end
+
+-- Whether that card is gone and Midas floats with his price (switch starterFloat, which needs starterCard).
+function StarterAd.floating(): boolean
+	return StarterAd.calm() and LiveFlags.isOn(StarterAd.FLOAT_FLAG)
 end
 
 function StarterAd.onBuy(fn: () -> ())
@@ -200,8 +221,9 @@ local function fit()
 	end
 	local scale = Kit.screenScale()
 	local drawnAt = math.max(p.scale.Scale, 0.01)
-	local natural = p.card.AbsoluteSize.Y / drawnAt + CHIP_HANG
-	if natural <= CHIP_HANG then
+	local hang = if StarterAd.floating() then 0 else CHIP_HANG -- starterFloat: no time chip under it
+	local natural = p.card.AbsoluteSize.Y / drawnAt + hang
+	if natural <= hang then
 		return -- not laid out yet
 	end
 	local bottom = root.AbsolutePosition.Y + root.AbsoluteSize.Y
@@ -214,7 +236,8 @@ local function fit()
 		p.holder.Visible = allOn() and not aside and not tooSmall
 	end
 	local want = scale * math.max(k, MIN_FIT)
-	if math.abs(p.scale.Scale - want) > 0.001 then
+	-- a 1% step is not visible, and a smaller one let the floored text sizes flip it back and forth every frame
+	if math.abs(p.scale.Scale - want) > 0.01 then
 		p.scale.Scale = want
 	end
 	-- the "i" keeps a real 46 px tap area when the card is drawn small (a short phone, issue 857's shrink)
@@ -231,16 +254,21 @@ local function redraw()
 	local s: Sizes = if short then SIZES.short else SIZES.full
 	p.holder.Visible = allOn() and not aside and not tooSmall
 	p.holder.Position = UDim2.new(1, -EDGE * scale, 0, TOP * scale)
-	p.holder.Size = UDim2.fromOffset(s.width, 0)
-	p.card.Size = UDim2.fromOffset(s.width, 0)
+	local float = StarterAd.floating()
+	local width = if float then s.floatWidth else s.width
+	p.holder.Size = UDim2.fromOffset(width, 0)
+	p.card.Size = UDim2.fromOffset(width, 0)
 
-	p.ribbon.Size = UDim2.new(1, 0, 0, s.ribbon)
+	local ribbonHeight = if float then s.ribbonText + 4 else s.ribbon -- starterFloat: just the outlined words
+	p.ribbon.Size = UDim2.new(1, 0, 0, ribbonHeight)
 	p.ribbon.TextSize = s.ribbonText
 
 	local calm = StarterAd.calm()
 	p.icons.Visible = not calm
 	p.hero.Visible = calm
-	p.hero.Size = UDim2.fromOffset(s.hero, s.hero)
+	local heroSize = if float then s.float else s.hero
+	p.hero.Size = UDim2.fromOffset(heroSize, heroSize)
+	p.shadow.Visible = float
 	local heroName = StarterAd.heroIcon()
 	if heroName ~= heroDrawn then
 		heroDrawn = heroName
@@ -284,10 +312,28 @@ local function redraw()
 		p.glow.Size = UDim2.fromScale(1.1, 1.1)
 	end
 	p.info.Visible = calm
-	p.info.Position = UDim2.new(1, -8, 0, 6 + s.ribbon + 8) -- inside the card, under the ribbon's right end
-	p.tint.Enabled = calm
+	p.info.Position = UDim2.new(1, -8, 0, 6 + ribbonHeight + 8) -- inside the card, under the ribbon's right end
+	-- starterFloat: the SAVE tag sits by Midas's top-left, under the words, not over them
+	p.tag.Position = if float
+		then UDim2.fromOffset(-6, ribbonHeight + 6)
+		else UDim2.fromOffset(-12, 0)
+	p.tint.Enabled = calm and not float
 	p.card.BackgroundColor3 = if calm then Kit.WHITE else Kit.CREAM
 	p.edge.Color = if calm then Kit.GOLD else Kit.line()
+	-- starterFloat: no card, no ribbon pill; the words carry their own ink outline instead
+	p.card.BackgroundTransparency = if float then 1 else 0
+	p.card.AutoButtonColor = not float
+	p.edge.Enabled = not float
+	p.ribbon.BackgroundTransparency = if float then 1 else 0
+	p.ribbonInk.Thickness = if float then 3 else 2
+	for _, ink in p.inks do
+		ink.Enabled = float
+	end
+	local inset = if float then 0 else 6
+	p.pad.PaddingTop, p.pad.PaddingLeft, p.pad.PaddingRight =
+		UDim.new(0, inset), UDim.new(0, inset), UDim.new(0, inset)
+	p.pad.PaddingBottom = UDim.new(0, if float then 0 else 18)
+	p.stack.Padding = UDim.new(0, if float then 2 else 6)
 
 	-- the three things in the pack, redrawn only when they change
 	local keys: { string } = {}
@@ -507,6 +553,19 @@ function StarterAd.build(root: Instance, open: () -> ())
 		fade.Parent = bar
 		bar.Parent = rays
 	end
+	-- starterFloat: a soft shadow under Midas, so he floats over the floor
+	local shadow = Instance.new("Frame")
+	shadow.Name = "Shadow"
+	shadow.BorderSizePixel = 0
+	shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+	shadow.Position = UDim2.fromScale(0.5, 0.97)
+	shadow.Size = UDim2.fromScale(0.62, 0.12)
+	shadow.BackgroundColor3 = Kit.INK
+	shadow.BackgroundTransparency = 0.72
+	shadow.Visible = false
+	shadow.ZIndex = 1
+	Kit.corner(shadow, UDim.new(0.5, 0))
+	shadow.Parent = hero
 	local glow = Instance.new("Frame")
 	glow.Name = "Glow"
 	glow.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -554,6 +613,21 @@ function StarterAd.build(root: Instance, open: () -> ())
 	strike.Parent = was
 	local now = label("Now", prices, 28, GREEN)
 	now.LayoutOrder = 2
+	-- starterFloat: ink outlines on the prices and the strike, so they read over the spa floor, the sky or a wall
+	local inks: { UIStroke } = {}
+	for _, piece in { was, now, strike } :: { GuiObject } do
+		local ink = Instance.new("UIStroke")
+		ink.Name = "FloatInk"
+		ink.Color = Kit.INK
+		ink.Thickness = if piece == (strike :: GuiObject) then 2 else 3
+		ink.LineJoinMode = Enum.LineJoinMode.Round
+		ink.ApplyStrokeMode = if piece == strike :: GuiObject
+			then Enum.ApplyStrokeMode.Border
+			else Enum.ApplyStrokeMode.Contextual
+		ink.Enabled = false
+		ink.Parent = piece
+		table.insert(inks, ink)
+	end
 
 	-- the saving: a sunny tag on the card's top-left corner
 	local tag = Instance.new("TextLabel")
@@ -669,12 +743,24 @@ function StarterAd.build(root: Instance, open: () -> ())
 		info = info,
 		tint = tint,
 		edge = edge,
+		ribbonInk = ribbonInk,
+		pad = pad,
+		stack = stack,
+		shadow = shadow,
+		inks = inks,
 	}
 	for _, name in FLAGS do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
 			:Connect(redraw)
 	end
-	for _, name in { StarterAd.CARD_FLAG, StarterViewRules.PET_FLAG, StarterRules.BUILDER_FLAG } do
+	for _, name in
+		{
+			StarterAd.CARD_FLAG,
+			StarterAd.FLOAT_FLAG,
+			StarterViewRules.PET_FLAG,
+			StarterRules.BUILDER_FLAG,
+		}
+	do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
 			:Connect(redraw)
 	end
