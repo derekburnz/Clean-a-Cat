@@ -240,3 +240,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## Helper wash with tools (PR 1136, issue 1135) at 71c68bc, desktop frame, 2026-11-27
 
 `1136-<step>.jpg` shows the shampoo, brush, shower with its water line and the towel at the helpers' right hands (Jo, Sam and Lou hired), plus a wide shot.
+
+## Helper wash recheck (PR 1136 at 559f490), desktop frame, 2026-11-27
+
+`1136b-*`: the aimed shampoo and shower, and the wider brush patches.
