@@ -15,6 +15,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local FreeRewardRules = require(Shared:WaitForChild("FreeRewardRules"))
+local GiftFlowRules = require(Shared:WaitForChild("GiftFlowRules"))
 local GiftRules = require(Shared:WaitForChild("GiftRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SaveSchema = require(Shared:WaitForChild("SaveSchema"))
@@ -105,6 +106,16 @@ local function onClaim(player: Player, rawKey: unknown)
 		played = played(player, save),
 		now = os.time(),
 	}, key)
+	-- (giftFlow, issue 919) the playtime gift opens only once the welcome gift is claimed
+	local flow = LiveFlags.isOn(GiftFlowRules.FLAG)
+	if
+		refusal == nil
+		and flow
+		and key == "play"
+		and not GiftFlowRules.playOpen(GiftFlowRules.stage(save.giftClaimed, save.freeRewards.play))
+	then
+		refusal = "notYet"
+	end
 	if refusal ~= nil then
 		show(player) -- the card falls back to the server's view
 		return
@@ -125,7 +136,9 @@ local function onClaim(player: Player, rawKey: unknown)
 		NetService.notice(player, `+{FreeRewardRules.LIKE_COINS} coins. Thank you for playing!`)
 	else
 		save.freeRewards.play = true
-		PetService.give(player, FreeRewardRules.PLAY_CRATE, FreeRewardRules.PLAY_CRATES)
+		-- (giftFlow) a good crate, the second crate of the first session
+		local kind = if flow then GiftFlowRules.PLAY_CRATE else FreeRewardRules.PLAY_CRATE
+		PetService.give(player, kind, FreeRewardRules.PLAY_CRATES)
 		Telemetry.event(player, "crate_earned", FreeRewardRules.PLAY_CRATES, { "free_play" })
 		NetService.notice(
 			player,
@@ -144,7 +157,7 @@ function FreeRewardService.Start()
 	DataService.onLoaded:Connect(function(player: Player, _save: SaveSchema.Save)
 		show(player)
 	end)
-	for _, flag in { FreeRewardRules.FLAG, GiftRules.FLAG, CrateRules.FLAG } do
+	for _, flag in { FreeRewardRules.FLAG, GiftRules.FLAG, CrateRules.FLAG, GiftFlowRules.FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do
