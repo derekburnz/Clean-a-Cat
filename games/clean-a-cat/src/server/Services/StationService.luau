@@ -354,7 +354,7 @@ local function drawInto(
 		builds: any,
 		index: any?,
 		pets: any?,
-		expansionUnlocked: boolean?,
+		expansionUnlocked: any?,
 	},
 	isOn: (flag: string) -> boolean
 )
