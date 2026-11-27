@@ -42,6 +42,7 @@ DEPTH = 720.0                      # the ground's ellipse, front to back; its wi
 RIM = 0.9                          # the rim of hills closes the ground in at this share of the ellipse (#885)
 RIM_N = 34
 PEAK_AT, PEAK_N = 1.06, 20         # the mountains stand just past the ground's edge
+FIELD_SLABS = False                # off: the few fields left between the hills read as pale slabs from above (#885)
 FIELDS = ("fur_fern", "pastel_butter", "spa_mint", "leaf_green", "fur_sand", "fur_fern", "pastel_butter")
 
 WALLS = ("spa_sky", "pastel_butter", "spa_mint", "pastel_lilac", "spa_bubblegum", "spa_cream")
@@ -244,16 +245,30 @@ def _ellipse(t, k=1.0):
     return CX + A * k * math.cos(t), YC + B * k * math.sin(t)
 
 
+def _ring(k, n, b, size):
+    """One ring of hills round the ellipse at share `k`, as hill() arguments: (x, y, along, across, rise, turn)."""
+    per = 2 * math.pi * math.sqrt((A * A + B * B) / 2) * k / n              # the ring's length per hill
+    out = []
+    for i in range(n):
+        t = 2 * math.pi * (i + 0.3 * _hash(i, b)) / n
+        x, y = _ellipse(t, k)
+        turn = math.degrees(math.atan2(B * math.cos(t), -A * math.sin(t)))
+        along = per * (size[0] + 0.25 * _hash(i, b, 1))
+        out.append((x, y, along, size[1] + 14 * _hash(i, b, 2), size[2] + size[3] * _hash(i, b, 3), turn))
+    return out
+
+
+def _rim_hills():
+    """The rim ring, for the street size being built (A, B, CX and YC are set per size by _derive)."""
+    return _ring(RIM, RIM_N, 7, (0.78, 46, 34, 26))
+
+
 def _rim(far, peaks):
     """The rim ring of hills (in the far hills' paler look) and the mountains past it."""
-    for ring, k, n, b, size in ((far, RIM, RIM_N, 7, (0.78, 46, 34, 26)), (peaks, PEAK_AT, PEAK_N, 9, (0.9, 90, 110, 60))):
-        per = 2 * math.pi * math.sqrt((A * A + B * B) / 2) * k / n          # the ring's length per hill
-        for i in range(n):
-            t = 2 * math.pi * (i + 0.3 * _hash(i, b)) / n
-            x, y = _ellipse(t, k)
-            turn = math.degrees(math.atan2(B * math.cos(t), -A * math.sin(t)))
-            along = per * (size[0] + 0.25 * _hash(i, b, 1))
-            hill(ring, x, y, along, size[1] + 14 * _hash(i, b, 2), size[2] + size[3] * _hash(i, b, 3), turn)
+    for h in _rim_hills():
+        hill(far, *h)
+    for h in _ring(PEAK_AT, PEAK_N, 9, (0.9, 90, 110, 60)):
+        hill(peaks, *h)
 
 
 def _clear(x, y, r=0.0):
@@ -262,7 +277,8 @@ def _clear(x, y, r=0.0):
         return False
     if X0 - REACH - 70 < x < X1 + REACH + 70 and Y_BEHIND - 112 < y < street.BACK + 112:
         return False
-    return all(hill_top(x + dx, y + dy, NEAR + FAR) <= GROUND_Z + 0.01 for dx in (-r, 0, r) for dy in (-r, 0, r))
+    hills = list(NEAR) + list(FAR) + _rim_hills()       # the rim hills too, so nothing is laid on a rim hill's foot
+    return all(hill_top(x + dx, y + dy, hills) <= GROUND_Z + 0.01 for dx in (-r, 0, r) for dy in (-r, 0, r))
 
 
 def _fields(b):
@@ -291,7 +307,7 @@ def _fields(b):
                     tree(b, x + (_hash(i, j, k, 5) - 0.5) * 30, y + (_hash(i, j, k, 6) - 0.5) * 22,
                          1.5 + 1.2 * _hash(i, j, k, 7), LEAVES[(i + j + k) % len(LEAVES)], crowns=1 + k % 2)
                 continue
-            if h < 0.4:                                                             # plain grass
+            if h < 0.4 or not FIELD_SLABS:                                          # plain grass
                 continue
             sw = FIELDS[int(_hash(i, j, 32) * len(FIELDS)) % len(FIELDS)]
             top = GROUND_Z + 0.04 + 0.003 * ((i * 3 + j) % 7)

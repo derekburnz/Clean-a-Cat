@@ -11,9 +11,9 @@
    "CleanACat_Area_Backdrop_HillsFar",
    "CleanACat_Area_Backdrop_Peaks"
   ],
-  "triangles": 21496,
+  "triangles": 20424,
   "budget": 40000,
-  "parts": 696,
+  "parts": 669,
   "size_studs": {
    "x": 1492.56,
    "y": 1006.38,
@@ -39,10 +39,10 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "21496/40000 tris",
+    "budget": "20424/40000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "15574 faces on swatch centers",
+    "uv": "14898 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-677.95 (want 0)",
     "centered": "footprint center x=-22.09 y=-15.46",
@@ -64,9 +64,9 @@
    "CleanACat_Area_BackdropBig_HillsFar",
    "CleanACat_Area_BackdropBig_Peaks"
   ],
-  "triangles": 21244,
+  "triangles": 20424,
   "budget": 40000,
-  "parts": 698,
+  "parts": 669,
   "size_studs": {
    "x": 1571.54,
    "y": 1006.38,
@@ -92,10 +92,10 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "21244/40000 tris",
+    "budget": "20424/40000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "15408 faces on swatch centers",
+    "uv": "14898 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-677.95 (want 0)",
     "centered": "footprint center x=-26.75 y=-15.46",
@@ -117,9 +117,9 @@
    "CleanACat_Area_BackdropWide_HillsFar",
    "CleanACat_Area_BackdropWide_Peaks"
   ],
-  "triangles": 23232,
+  "triangles": 21320,
   "budget": 40000,
-  "parts": 767,
+  "parts": 690,
   "size_studs": {
    "x": 1757.4,
    "y": 1006.39,
@@ -145,10 +145,10 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "23232/40000 tris",
+    "budget": "21320/40000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "16630 faces on swatch centers",
+    "uv": "15478 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-677.95 (want 0)",
     "centered": "footprint center x=-36.82 y=-15.46",
