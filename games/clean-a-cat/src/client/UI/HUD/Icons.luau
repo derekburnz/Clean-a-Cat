@@ -67,6 +67,9 @@ Icons.IMAGES = {
 	ShopBuilder2 = "rbxassetid://79901743380915",
 	ShopGoldenSponge = "rbxassetid://89559848537020",
 	ShopPetSlot2 = "rbxassetid://114149856510592",
+	-- Midas, the starter pack's golden pet, whole with sparkles (issue 1090, Model-Agent's PR 1093, group upload run
+	-- 46012351823 after Review-QA's image gate)
+	ShopStarterPet = "rbxassetid://75389504028903",
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
@@ -128,6 +131,7 @@ local STAND_INS: { [string]: StandIn } = {
 		bare = true,
 	},
 	ShopPetSlot2 = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopStarterPet = { glyph = "🐱", fill = Color3.fromHex("FFE98F"), round = true, bare = true },
 	Tools = { glyph = "🧴", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Build = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 }
