@@ -11,8 +11,13 @@
 --   Kit.stroke(parent, thickness)               an ink UIStroke
 --   Kit.outlined(name, parent)                  white words with an ink outline and no box (the screens' .outlined)
 --   Kit.minText(label)                          the 14 real px floor at the smallest scale
+--   Kit.line()                                  the edge of a card or row inside a window: the pale LINE, or with the
+--                                               switch menuContrast a lilac that stands 3 to 1 against the window
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextService = game:GetService("TextService")
 local Workspace = game:GetService("Workspace")
+
+local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 
 local Kit = {}
 
@@ -25,6 +30,15 @@ Kit.INK_SOFT = Color3.fromHex("6C4F86")
 Kit.WHITE = Color3.new(1, 1, 1)
 Kit.CREAM = Color3.fromHex("FFF6EC")
 Kit.LINE = Color3.fromHex("ECDCCA")
+-- The card edge with menuContrast (issue 928, the owner on 2026-11-26: "fix the contrast with the background for a lot
+-- of the menus so its easier to differentiate"): 3.4 to 1 on white, 3.2 to 1 on cream (WCAG's 3 to 1 for a shape's
+-- edge); LINE was 1.3 to 1, so white rows melted into the cream window.
+Kit.LINE_STRONG = Color3.fromHex("9A7FBA")
+Kit.CONTRAST_FLAG = "menuContrast"
+
+function Kit.line(): Color3
+	return if LiveFlags.isOn(Kit.CONTRAST_FLAG) then Kit.LINE_STRONG else Kit.LINE
+end
 Kit.GOLD = Color3.fromHex("FFC94D")
 Kit.GOLD_INK = Color3.fromHex("8F5A00")
 Kit.GOLD_TEXT = Color3.fromHex("FFE98F")

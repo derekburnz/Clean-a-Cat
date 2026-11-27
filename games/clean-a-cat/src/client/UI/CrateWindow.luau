@@ -176,7 +176,7 @@ local function drawRow(row: CrateViewRules.Row, grid: Frame, order: number, s: S
 	card.BackgroundColor3 = Kit.WHITE
 	Kit.corner(card, UDim.new(0, 16))
 	local edge = Kit.stroke(card, 3)
-	edge.Color = Kit.LINE
+	edge.Color = Kit.line()
 	local inset = math.floor((s.rowH - s.pic) / 2)
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, inset), UDim.new(0, 12)

@@ -162,7 +162,7 @@ local function drawStep(
 	row.BackgroundColor3 = Kit.WHITE
 	Kit.corner(row, UDim.new(0, 16))
 	local edge = Kit.stroke(row, 3)
-	edge.Color = if step.done then TICK_FILL else Kit.LINE
+	edge.Color = if step.done then TICK_FILL else Kit.line()
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
 	pad.Parent = row
@@ -339,7 +339,7 @@ function GiftCard.build(root: Instance): Frame
 	tint.Parent = pet
 	Kit.corner(pet, UDim.new(0, 18))
 	local petEdge = Kit.stroke(pet, 3)
-	petEdge.Color = Kit.LINE
+	petEdge.Color = Kit.line()
 	local petPad = Instance.new("UIPadding")
 	petPad.PaddingLeft, petPad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
 	petPad.PaddingTop, petPad.PaddingBottom = UDim.new(0, 12), UDim.new(0, 12)

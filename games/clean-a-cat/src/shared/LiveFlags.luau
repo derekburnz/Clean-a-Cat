@@ -153,6 +153,7 @@ LiveFlags.KEYS = {
 	"helperPets", -- each hired helper's row in the Helpers window has a pet box: their pet, or a paw when empty; a tap opens Pets with that helper's slot picked (owner 2026-11-26, issue 929). The world "Give a pet" prompt going away is petMenuOnly's job; off by default
 	"recapEvery", -- the full recap card after every customer, not only the first ones and rarer cats (RecapRules.EVERY_FLAG; owner's plan page answer of 2026-11-25, issue 890); off by default
 	"petLines", -- each pet says what it gives: "+5% tips or pay" on its tile in Pets and on its row in the crate's chance list, true numbers from CrateRules (CrateViewRules.effectText; owner 2026-11-26, issue 927); off by default
+	"menuContrast", -- the cards and rows inside every window get a lilac edge that stands 3 to 1 against the window, not the pale line that melted into it (Kit.line; owner 2026-11-26, issue 928); off by default
 	"buttonArrive", -- a HUD button that unlocks while the player is in the game arrives with Motion-FX's small pop, tilt and twinkle, once (Effects/Arrive from UI/HUD/SideButtons, issue 528); buttons already there on join simply show; off by default
 	"fewerPills", -- with smallPrompts: at most two prompt pills show at once, the nearest within 10 studs (a winning one such as the door's Take cat at any distance); every key still works (Spa/PillLayout, issue 745); off by default
 	"buildWindow", -- with hudTidy: a Build button in the HUD grid opens "Build and upgrades", every build with its price and time (or its countdown, what it waits for, or Built) and every tool and the next bow with Buy; the server skips only the distance to the board for RequestBuild, RequestBuyTool and RequestBuyBow, while Finish now still needs the board (BuildService, ToolService, BuildViewRules, UI/BuildWindow, BuildWindowController, issue 751); off by default
@@ -305,6 +306,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helperPets = true,
 	recapEvery = true,
 	petLines = true,
+	menuContrast = true,
 	buttonArrive = true,
 	leaveLines = true,
 	hudTidy = true,
