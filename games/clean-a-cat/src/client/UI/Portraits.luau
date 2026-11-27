@@ -114,10 +114,10 @@ Portraits.IMAGES = {
 	WhiteTiger_Dirty3 = "rbxassetid://105265029405232",
 	WhiteTiger_Dirty4 = "rbxassetid://123255647273640",
 	-- the eight crate pets under their new names (issue 883, Model-Agent's PR 962), group owned
-	Clover = "rbxassetid://87691200049996",
+	Clover = "rbxassetid://77963078642728", -- redrawn 2026-11-27 (Model-Agent PR 997)
 	Ghost = "rbxassetid://85397860599687",
 	Ooze = "rbxassetid://129987399664489",
-	Glitch = "rbxassetid://115707461545852",
+	Glitch = "rbxassetid://80341127367421", -- redrawn 2026-11-27 (Model-Agent PR 997)
 	Angler = "rbxassetid://107617453014958",
 	Nebula = "rbxassetid://118688157626872",
 	Dragon = "rbxassetid://119730475255717",
