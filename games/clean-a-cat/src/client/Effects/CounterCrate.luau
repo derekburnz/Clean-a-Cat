@@ -127,12 +127,17 @@ function CounterCrate.walking(position: Vector3, mat: Vector3?): boolean
 end
 
 -- The set-down's two times on this device: as the server gave them, or, for a customer seen walking in who arrived
--- after `setAt`, moved later so the crate goes down from the moment they arrived (`arrivedAt`).
+-- after `setAt`, moved later so the crate goes down from the moment they arrived (`arrivedAt`). Sync's walk-in on
+-- 792d2dd: a newcomer filed in at the back had both times set to the moment they were drawn, so the cat was "settled"
+-- and shown on the counter spot that rides with the walking figure.
 function CounterCrate.shifted(setAt: number, readyAt: number, arrivedAt: number?): (number, number)
 	if arrivedAt == nil or arrivedAt <= setAt then
 		return setAt, readyAt
 	end
-	return arrivedAt, readyAt + (arrivedAt - setAt)
+	-- a customer drawn with no walk time gets CounterRules.settleTimes(nil, now): both times "now", no set-down at
+	-- all; one seen walking in still gets the whole set-down when they arrive
+	local span = readyAt - setAt
+	return arrivedAt, arrivedAt + (if span > 0 then span else CounterCrate.TOTAL)
 end
 
 function CounterCrate.arcAt(u: number): number
