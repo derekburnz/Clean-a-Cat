@@ -179,6 +179,7 @@ LiveFlags.KEYS = {
 	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
 	"giftFlow", -- the gift stand in three stages: one Claim all pays the like row's 150 coins and the welcome gift together, then a good crate at 30 minutes of play once that is claimed, then the stand leaves the spa (GiftFlowRules, GiftService, FreeRewardService, issue 919); off by default
 	"likeHowTo", -- after Like is tapped on the gift card, its picture side shows once a visit how to like the game: a thumbs up a hand taps, "Tap the thumbs up on the game's page", the gift either way, Got it; never says the like is checked (LikeHowToRules, UI/GiftCard, issue 869); off by default
+	"wideStreet", -- with the big spa, the six plots stand 84 studs apart instead of 56 on Model-Agent's longer street (CleanACat_Area_StreetWide, with scenery between them), read at the street's placement like bigSpa; the big street while the asset is missing (SpaLayout, PlotService, BackdropController, issue 887); off by default
 	"petMenuOnly", -- a hired helper's stand drops its "Give a pet" prompt while the Pets menu (petsWindow) is on: pets are given to the player and each helper there (WorkerRules.givePrompt, WorkerController, issue 930); off by default
 	"washSides", -- half way through the scrub, the lather and the rinse the cat turns once so the player works on another side, then turns back to the front as he shakes (WashSidesRules, ScrubController, issue 899); off by default
 	"showerAim", -- the rinse's shower head is held off the fur, above and in front of the touch, its nozzle aimed at it (ToolOnCat.nozzle for the spray, issue 899); off by default
@@ -334,6 +335,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	giftCrate = true,
 	giftFlow = true,
 	likeHowTo = true,
+	wideStreet = true,
 	petMenuOnly = true,
 	washSides = true,
 	showerAim = true,

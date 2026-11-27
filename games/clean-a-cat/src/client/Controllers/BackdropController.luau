@@ -40,8 +40,15 @@ local function place()
 	end
 	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
 	-- (switch bigSpa) the wider street's own backdrop while the big spa is placed, else the small one's
-	local big = if SpaLayout.big() and assets
-		then assets:FindFirstChild(SpaLayout.BIG_BACKDROP_ASSET)
+	-- (switch wideStreet) the longer street's own backdrop while it is placed, the big one's while that is missing
+	local wide = if SpaLayout.wide() and assets
+		then assets:FindFirstChild(SpaLayout.WIDE_BACKDROP_ASSET)
+		else nil
+	local big = if wide
+		then wide
+		elseif SpaLayout.big() and assets then assets:FindFirstChild(
+			SpaLayout.BIG_BACKDROP_ASSET
+		)
 		else nil
 	local asset = if big then big elseif assets then assets:FindFirstChild(ASSET) else nil
 	if asset == nil or not asset:IsA("Model") then
@@ -76,10 +83,12 @@ function BackdropController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(refresh)
 	-- the street placed again as the other size: the backdrop that fits it
-	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.BIG_ATTRIBUTE):Connect(function()
-		remove()
-		refresh()
-	end)
+	for _, attribute in { SpaLayout.BIG_ATTRIBUTE, SpaLayout.WIDE_ATTRIBUTE } do
+		ReplicatedStorage:GetAttributeChangedSignal(attribute):Connect(function()
+			remove()
+			refresh()
+		end)
+	end
 	refresh()
 end
 
