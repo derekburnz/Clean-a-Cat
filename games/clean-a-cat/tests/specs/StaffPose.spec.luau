@@ -47,4 +47,58 @@ return function()
 			expect(math.abs(p.armL - (0.2 + StaffPose.REACH) / 2) < 1e-9).to.equal(true)
 		end)
 	end)
+
+	describe("StaffPose.carry (helperFetch, issue 884)", function()
+		it("leaves the pose alone at no amount", function()
+			local p = pose()
+			StaffPose.carry(p, 0)
+			expect(p.armL).to.equal(0.2)
+		end)
+		it("holds both arms forward under the cat and looks down, legs untouched", function()
+			local p = pose()
+			StaffPose.carry(p, 1)
+			expect(p.armL).to.equal(StaffPose.CARRY)
+			expect(p.armR).to.equal(StaffPose.CARRY)
+			expect(p.headPitch).to.equal(-StaffPose.CARRY_LOOK)
+			expect(p.legL).to.equal(0.1)
+		end)
+	end)
+
+	describe("StaffPose.hammer (humanBuilder, issue 891)", function()
+		it("lifts slowly and strikes fast, from the work to the top and back", function()
+			expect(StaffPose.hammerLift(0)).to.equal(0)
+			expect(math.abs(StaffPose.hammerLift(1 - StaffPose.HAMMER_STRIKE) - 1) < 1e-9).to.equal(
+				true
+			)
+			expect(math.abs(StaffPose.hammerLift(0.999999)) < 1e-4).to.equal(true)
+			for i = 0, 100 do
+				local h = StaffPose.hammerLift(i / 100)
+				expect(h >= -1e-9 and h <= 1 + 1e-9).to.equal(true)
+			end
+		end)
+		it("keeps the right arm between the work and the top, the left steadying", function()
+			for i = 0, 60 do
+				local p = pose()
+				StaffPose.hammer(p, i / 23, 0.3, 1, false)
+				expect(
+					p.armR >= StaffPose.HAMMER_DOWN - 1e-9 and p.armR <= StaffPose.HAMMER_UP + 1e-9
+				).to.equal(true)
+				expect(p.armL).to.equal(StaffPose.STEADY)
+				expect(p.headPitch).to.equal(-StaffPose.HAMMER_LOOK)
+				expect(p.legR).to.equal(-0.1)
+			end
+		end)
+		it(
+			"holds the hammer still halfway under Reduced Motion, and nothing at no amount",
+			function()
+				local p = pose()
+				StaffPose.hammer(p, 0.4, 0, 1, true)
+				local mid = (StaffPose.HAMMER_UP + StaffPose.HAMMER_DOWN) / 2
+				expect(math.abs(p.armR - mid) < 1e-9).to.equal(true)
+				local q = pose()
+				StaffPose.hammer(q, 0.4, 0, 0, false)
+				expect(q.armR).to.equal(0)
+			end
+		)
+	end)
 end

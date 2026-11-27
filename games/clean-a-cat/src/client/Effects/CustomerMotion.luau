@@ -15,10 +15,16 @@
 -- The spa staff (CleanACat_NPC_Staff_*, same joints) walk the same way with both arms swinging, and while their
 -- Washing attribute is true (Gameplay, workers #509) they stand and scrub (StaffPose.scrub, issue #528).
 --
+-- A helper carrying a cat on Gameplay's walk to the counter (helperFetch, the Fetch attributes read by server time)
+-- holds it in both arms (StaffPose.carry). The builder (a model named "Builder" with Role "Builder", issue 891) moves
+-- the same way, and while his Building attribute is true he hammers (StaffPose.hammer); his Hammer, held at his right
+-- hand, follows that arm.
+--
 -- Budget: 30 updates a second near the camera, 15 past 30 studs, none past 60 (back to rest), at most MAX customers.
 --
 -- API
 --   CustomerMotion.start(isOn)     isOn() is read once a second; when false every customer goes back to rest
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
@@ -26,11 +32,16 @@ local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Co
 local CounterCrate = require(script.Parent:WaitForChild("CounterCrate"))
 local CustomerPose = require(script.Parent:WaitForChild("CustomerPose"))
 local StaffPose = require(script.Parent:WaitForChild("StaffPose"))
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+local HelperFetchRules = require(Shared:WaitForChild("HelperFetchRules"))
+local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 
 local CustomerMotion = {}
 
 CustomerMotion.PREFIX = "CleanACat_NPC_Customer_"
 CustomerMotion.STAFF_PREFIX = "CleanACat_NPC_Staff_"
+CustomerMotion.BUILDER_NAME = "Builder" -- StationService's name for the human builder (issue 891)
+CustomerMotion.BUILDER_ROLE = "Builder" -- his model's Role attribute
 CustomerMotion.MAX = 10
 CustomerMotion.NEAR = 30 -- studs: full rate inside
 CustomerMotion.FAR = 60 -- studs: no motion past
@@ -57,7 +68,30 @@ type Rig = {
 	staff: boolean,
 	wash: number, -- the wash pose's blend, 0 to 1 (staff only)
 	armIn: number, -- radians the carrying arm is turned back in from the server's CarryArmOut (empty hand)
+	carry: number, -- the carry pose's blend, 0 to 1 (staff only)
+	builder: boolean,
+	hammer: number, -- the hammering pose's blend, 0 to 1 (builder only)
+	tool: Joint?, -- the builder's Hammer, its rest in the right arm's frame
 }
+
+-- Whether a helper is holding the cat on Gameplay's walk at server time `now` (HelperFetchRules.pose).
+function CustomerMotion.holding(model: Model, now: number): boolean
+	local from = model:GetAttribute(HelperFetchRules.FROM_ATTRIBUTE)
+	local to = model:GetAttribute(HelperFetchRules.TO_ATTRIBUTE)
+	local at = model:GetAttribute(HelperFetchRules.AT_ATTRIBUTE)
+	local way = model:GetAttribute(HelperFetchRules.WAY_ATTRIBUTE)
+	if
+		typeof(from) ~= "Vector3"
+		or typeof(to) ~= "Vector3"
+		or type(at) ~= "number"
+		or type(way) ~= "string"
+	then
+		return false
+	end
+	local pose =
+		HelperFetchRules.pose(way :: string, from :: Vector3, to :: Vector3, now - (at :: number))
+	return pose.holding and not pose.done
+end
 
 -- Gameplay turns the carrying arm out by the figure's CarryArmOut degrees on the server so the carrier hangs clear of
 -- the body (issues 871 and 874). While the carrier is hidden (CounterCrate's CarrierHidden, after the reach that sets
@@ -90,12 +124,18 @@ local function isStaff(name: string): boolean
 	return string.sub(name, 1, #CustomerMotion.STAFF_PREFIX) == CustomerMotion.STAFF_PREFIX
 end
 
+local function isBuilder(instance: Instance): boolean
+	return instance.Name == CustomerMotion.BUILDER_NAME
+		and instance:GetAttribute("Role") == CustomerMotion.BUILDER_ROLE
+end
+
 local function isCustomer(instance: Instance?): boolean
 	return instance ~= nil
 		and instance:IsA("Model")
 		and (
 			string.sub(instance.Name, 1, #CustomerMotion.PREFIX) == CustomerMotion.PREFIX
 			or isStaff(instance.Name)
+			or isBuilder(instance)
 		)
 end
 
@@ -132,6 +172,14 @@ local function attach(model: Model)
 	if next(joints) == nil then
 		return
 	end
+	local builder = isBuilder(model)
+	local tool: Joint? = nil
+	local hammer = if builder then model:FindFirstChild("Hammer") else nil
+	local arm = joints.ArmR
+	if hammer and hammer:IsA("PVInstance") and arm then
+		local pv = hammer :: PVInstance
+		tool = { instance = pv, rest = arm.rest:Inverse() * bodyCF:ToObjectSpace(pv:GetPivot()) }
+	end
 	local legLength = model:GetAttribute("LegLength")
 	seedCount += 1
 	local x = math.sin(seedCount * 12.9898) * 43758.5453
@@ -149,9 +197,13 @@ local function attach(model: Model)
 		updatedAt = os.clock(),
 		appliedAt = body.CFrame,
 		moved = false,
-		staff = isStaff(model.Name),
+		staff = isStaff(model.Name) or builder,
 		wash = 0,
 		armIn = 0,
+		carry = 0,
+		builder = builder,
+		hammer = 0,
+		tool = tool,
 	}
 end
 
@@ -168,7 +220,13 @@ local function apply(rig: Rig, pose: CustomerPose.Pose)
 	turn(rig, "LegL", bodyCF, CFrame.Angles(pose.legL, 0, 0))
 	turn(rig, "LegR", bodyCF, CFrame.Angles(pose.legR, 0, 0))
 	turn(rig, "ArmL", bodyCF, CFrame.Angles(pose.armL, 0, 0))
-	turn(rig, "ArmR", bodyCF, CFrame.Angles(0, 0, -rig.armIn) * CFrame.Angles(pose.armR, 0, 0))
+	local armR = CFrame.Angles(0, 0, -rig.armIn) * CFrame.Angles(pose.armR, 0, 0)
+	turn(rig, "ArmR", bodyCF, armR)
+	local tool = rig.tool
+	local arm = rig.joints.ArmR
+	if tool and arm and tool.instance.Parent then
+		tool.instance:PivotTo(bodyCF * arm.rest * armR * tool.rest)
+	end
 	turn(
 		rig,
 		"Head",
@@ -222,6 +280,16 @@ local function update(rig: Rig, now: number)
 		local washing = rig.model:GetAttribute("Washing") == true
 		rig.wash = CustomerPose.approach(rig.wash, if washing then 1 else 0, StaffPose.BLEND, dt)
 		StaffPose.scrub(rig.pose, now, rig.seed, rig.wash * (1 - rig.amount), still)
+		local carrying = LiveFlags.isOn(HelperFetchRules.FLAG)
+			and CustomerMotion.holding(rig.model, Workspace:GetServerTimeNow())
+		rig.carry = CustomerPose.approach(rig.carry, if carrying then 1 else 0, StaffPose.BLEND, dt)
+		StaffPose.carry(rig.pose, rig.carry)
+	end
+	if rig.builder then
+		local building = rig.model:GetAttribute("Building") == true
+		rig.hammer =
+			CustomerPose.approach(rig.hammer, if building then 1 else 0, StaffPose.BLEND, dt)
+		StaffPose.hammer(rig.pose, now, rig.seed, rig.hammer * (1 - rig.amount), still)
 	end
 	-- a customer setting their cat's crate down on the counter reaches the carrying arm forward (issue #757)
 	local reachAt = rig.model:GetAttribute(CounterCrate.REACH_ATTRIBUTE)
