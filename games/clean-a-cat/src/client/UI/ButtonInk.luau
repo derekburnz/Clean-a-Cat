@@ -87,10 +87,17 @@ end
 -- Our own TextTransparency writes on each button that its listener has not seen yet.
 local pending: { [TextButton]: number? } = {}
 
+-- Whether writing `value` over `current` would change nothing. Roblox keeps TextTransparency as a 32-bit float, so
+-- after a write of 0.999 it reads back 0.9990000129: an exact == never matched, each re-park counted a write that
+-- fired no signal, and the leaked count swallowed the window's own later writes (Sync on 1124).
+function ButtonInk.unchanged(current: number, value: number): boolean
+	return math.abs(current - value) < 1e-4
+end
+
 -- Writes the button's text transparency, counted so its listener knows the write is ours. A write that changes
 -- nothing fires no signal, so it is not counted.
 local function setText(button: TextButton, value: number)
-	if button.TextTransparency == value then
+	if ButtonInk.unchanged(button.TextTransparency, value) then
 		return
 	end
 	pending[button] = (pending[button] or 0) + 1

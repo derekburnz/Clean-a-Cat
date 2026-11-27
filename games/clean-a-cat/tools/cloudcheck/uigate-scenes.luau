@@ -1886,6 +1886,40 @@ do
 	end
 end
 
+-- ButtonInk's parked words (Sync on 1124): re-park an outlined button twice, then let the window hide its words with
+-- 1. The outline must go too; a leaked write count used to swallow the hide and leave the outline showing.
+table.insert(SCENES, {
+	"SettingsFeedbackResetInkHide",
+	function()
+		for _, scene in SCENES do
+			if scene[1] == "SettingsFeedbackResetContrast3" then
+				scene[2]()
+			end
+		end
+		local gui = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerGui")
+		local target: TextButton? = nil
+		for _, piece in (gui :: Instance):GetDescendants() do
+			if piece:IsA("TextButton") and piece:FindFirstChild("InkWords") then
+				target = piece :: TextButton
+				break
+			end
+		end
+		assert(target, "no outlined button to test")
+		local button = target :: TextButton
+		local words = button.Text
+		button.Text = words .. " "
+		button.Text = words
+		button.TextTransparency = 1
+		if button:FindFirstChild("InkWords") then
+			error("ButtonInk: the outline stayed after the window hid the words")
+		end
+		button.TextTransparency = 0
+		if not button:FindFirstChild("InkWords") then
+			error("ButtonInk: the outline did not come back when the words showed again")
+		end
+	end,
+})
+
 -- Fewer words (issue 1027, switch shortText): the windows with the most text, with their long lines cut or hidden.
 for _, name in
 	{
