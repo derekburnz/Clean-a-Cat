@@ -13,14 +13,16 @@ lit and glass parts, the ears) twice:
 A gap is the widest clear space between the two shapes over 900 directions (both are convex, so that is their
 distance); under zero is how deep they overlap. `head` is the same for the head itself: every bow should touch it
 (at or under zero) and not be buried. `ear` is the cat's ears: since #845 these cats wear the bow on the head's top
-corner like every other cat, in front of the left ear's base, so up to EAR_OK into an ear is the look. On Bathtile
-and Djinn (PINNED) the head piece covers the whole top, so the bow is pinned to its front corner instead: it must
-touch the piece, at most PIN_DEEP into it, and need not touch the head.
+corner like every other cat, in front of the left ear's base, so up to EAR_OK into an ear is the look. Bathtile's
+cap covers the whole top, so since #948 its bow sits low on the head's side against the head, below the cap.
+
+Since #948 the query gap counts too: no bow part may overlap the head piece by either shape, because Studio's part
+check (what Sync-Agent runs) sees the block, not the drawn ball.
 
   python3 rbx_bowfit.py [--only Stardust,Bathtile] [--all]
 
 Prints one row per cat model and bow tier (the worst of the three colours, which share their shapes) and ends with
-exit code 1 when a seen gap is under zero. `--all` lists every model; without it, twins with the same numbers fold
+exit code 1 when a seen or a query gap is under zero. `--all` lists every model; without it, twins with the same numbers fold
 into one row. Needs numpy.
 """
 
@@ -39,8 +41,6 @@ COLOURS = ("Pink", "Mint", "Sky")
 ON_HEAD = ("_Prop", "_Glow", "_Glass", "_Ear")        # Models under the Head whose parts a bow must clear
 BURIED = -0.09                                        # a bow sunk further than this into the head is lost in it
 EAR_OK = -0.09         # every cat's corner bow stands in front of its left ear's base, about 0.08 into it (#845)
-PINNED = {"Bathtile", "Djinn"}   # the cap and the turban cover the whole top: the bow is pinned to the piece's front
-PIN_DEEP = -0.065      # corner (#845), touching it and at most this far into it
 
 
 def _cframe(props):
@@ -170,14 +170,13 @@ def main():
             s = min(res, key=lambda r: r["seen"][0])["seen"]
             q = min(res, key=lambda r: r["query"][0])["query"]
             flag = ""
-            pinned = attrs.get("Cat") in PINNED
-            if pinned and not PIN_DEEP <= s[0] <= 0.004:
-                flag, bad = " NOT PINNED " + s[1], bad + 1
-            elif not pinned and s[0] < 0:
+            if s[0] < 0:
                 flag, bad = " CUTS " + s[1], bad + 1
+            elif q[0] < 0:
+                flag, bad = " CUTS BY QUERY " + q[1], bad + 1
             elif s[3] < EAR_OK:
                 flag, bad = " CUTS THE EAR", bad + 1
-            elif not pinned and s[2] > 0.004:
+            elif s[2] > 0.004:
                 flag, bad = " OFF THE HEAD", bad + 1
             elif s[2] < BURIED:
                 flag, bad = " BURIED", bad + 1
@@ -189,7 +188,7 @@ def main():
         seen_rows.add(tuple(key))
         print(f"{name[len('CleanACat_Cat_'):]:<22} " + " | ".join(cells))
     print(f"{rows} cat models with a head piece, {len(TIERS)} tiers in {len(COLOURS)} colours: "
-          + ("every bow clears the head piece (Bathtile and Djinn: pinned to it) and touches the head" if not bad else f"{bad} to fix"))
+          + ("every bow clears the head piece by both shapes and touches the head" if not bad else f"{bad} to fix"))
     return 1 if bad else 0
 
 
