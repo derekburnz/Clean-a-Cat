@@ -132,7 +132,7 @@ return function()
 			function()
 				local tiles = CrateViewRules.tiles(pets, true)
 				expect(#tiles).to.equal(5)
-				local clovers = {}
+				local clovers: { CrateViewRules.Group } = {}
 				for _, tile in tiles do
 					expect(tile.count).to.equal(1)
 					if tile.kind == "Clover" then
