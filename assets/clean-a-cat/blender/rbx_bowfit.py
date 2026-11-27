@@ -13,8 +13,9 @@ lit and glass parts, the ears) twice:
 A gap is the widest clear space between the two shapes over 900 directions (both are convex, so that is their
 distance); under zero is how deep they overlap. `head` is the same for the head itself: every bow should touch it
 (at or under zero) and not be buried. `ear` is the cat's ears: since #845 these cats wear the bow on the head's top
-corner like every other cat, in front of the left ear's base, so up to EAR_OK into an ear is the look. Bathtile's
-cap covers the whole top, so since #948 its bow sits low on the head's side against the head, below the cap.
+corner like every other cat, in front of the left ear's base, so up to EAR_OK into an ear is the look. On Bathtile
+(PINNED) the cap covers the whole top, so its smaller bow rests on the cap's front corner instead: clear of the cap by
+both shapes, at most PIN_GAP off it by the drawn one, and it need not touch the head.
 
 Since #948 the query gap counts too: no bow part may overlap the head piece by either shape, because Studio's part
 check (what Sync-Agent runs) sees the block, not the drawn ball.
@@ -41,6 +42,8 @@ COLOURS = ("Pink", "Mint", "Sky")
 ON_HEAD = ("_Prop", "_Glow", "_Glass", "_Ear")        # Models under the Head whose parts a bow must clear
 BURIED = -0.09                                        # a bow sunk further than this into the head is lost in it
 EAR_OK = -0.09         # every cat's corner bow stands in front of its left ear's base, about 0.08 into it (#845)
+PINNED = {"Bathtile"}  # the cap covers the whole top: the bow rests on its front corner (#845, #948)
+PIN_GAP = 0.05         # at most this far off the cap, as drawn
 
 
 def _cframe(props):
@@ -170,13 +173,16 @@ def main():
             s = min(res, key=lambda r: r["seen"][0])["seen"]
             q = min(res, key=lambda r: r["query"][0])["query"]
             flag = ""
-            if s[0] < 0:
+            pinned = attrs.get("Cat") in PINNED
+            if pinned and not (0 <= s[0] <= PIN_GAP and q[0] >= 0):
+                flag, bad = " NOT RESTING " + (q[1] if q[0] < 0 else s[1]), bad + 1
+            elif s[0] < 0:
                 flag, bad = " CUTS " + s[1], bad + 1
             elif q[0] < 0:
                 flag, bad = " CUTS BY QUERY " + q[1], bad + 1
             elif s[3] < EAR_OK:
                 flag, bad = " CUTS THE EAR", bad + 1
-            elif s[2] > 0.004:
+            elif not pinned and s[2] > 0.004:
                 flag, bad = " OFF THE HEAD", bad + 1
             elif s[2] < BURIED:
                 flag, bad = " BURIED", bad + 1
@@ -188,7 +194,7 @@ def main():
         seen_rows.add(tuple(key))
         print(f"{name[len('CleanACat_Cat_'):]:<22} " + " | ".join(cells))
     print(f"{rows} cat models with a head piece, {len(TIERS)} tiers in {len(COLOURS)} colours: "
-          + ("every bow clears the head piece by both shapes and touches the head" if not bad else f"{bad} to fix"))
+          + ("every bow clears the head piece by both shapes and touches the head (Bathtile: rests on the cap)" if not bad else f"{bad} to fix"))
     return 1 if bad else 0
 
 

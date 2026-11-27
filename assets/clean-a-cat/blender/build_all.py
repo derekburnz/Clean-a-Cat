@@ -113,7 +113,7 @@ def cat_rbx_extras(name):
         top = props.head_top(cat, spec, body, cats.dims(spec, body))   # above it, the bow on the head's front corner
         carry.z = max(carry.z, joints["Head"][2] + (top + 0.03) * k)
         at, turn = props.bow_corner(spec, body, cat)
-        attributes["BowScale"] = {"Float64": props.BOW_SCALE}   # a smaller bow beside the head piece (#845)
+        attributes["BowScale"] = {"Float64": props.bow_scale(cat)}   # a smaller bow beside the head piece (#845)
         bow = Matrix.Translation(Vector(joints["Head"]) + Vector(at) * k) @ turn.to_4x4()
     extras = {"attachments": [("_Head", "Carry", Matrix.Translation(carry)), ("_Head", "BowSlot", bow)],
               "attributes": attributes}
