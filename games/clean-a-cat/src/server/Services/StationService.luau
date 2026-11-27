@@ -549,21 +549,16 @@ local function drawInto(
 	elseif isOn(ExpansionRules.FLAG) then
 		drawBackDoor(folder, assets :: Instance, slot, unlocked)
 	end
-	if not BuildRules.shown(GardenRules.ID, isOn) then
-		-- no Garden under these switches
-	elseif HotelRules.gardenAtSide(isOn) then
-		-- (catHotel) the Garden stands in the side yard, wherever the back door is; only once the plot has that spot
-		if SpaLayout.PLOT_SPOTS[HotelRules.GARDEN_SPOT] ~= nil then
-			drawGarden(
-				folder,
-				assets :: Instance,
-				slot,
-				save,
-				running,
-				isOn,
-				HotelRules.GARDEN_SPOT
-			)
+	if BuildRules.shown(GardenRules.ID, isOn) then
+		if HotelRules.gardenAtSide(isOn) then
+			-- (catHotel) the Garden stands in the side yard, wherever the back door is; only once the plot has that spot
+			if SpaLayout.PLOT_SPOTS[HotelRules.GARDEN_SPOT] ~= nil then
+				drawGarden(folder, assets :: Instance, slot, save, running, isOn, HotelRules.GARDEN_SPOT)
+			end
+		elseif ExpansionRules.showGarden(isOn, unlocked, gardenBuilt) then
+			drawGarden(folder, assets :: Instance, slot, save, running, isOn, GardenRules.SPOT)
 		end
+	end
 	elseif ExpansionRules.showGarden(isOn, unlocked, gardenBuilt) then
 		drawGarden(folder, assets :: Instance, slot, save, running, isOn, GardenRules.SPOT)
 	end
