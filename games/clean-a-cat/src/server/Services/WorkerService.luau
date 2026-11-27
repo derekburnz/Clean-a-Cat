@@ -11,10 +11,12 @@
 -- Behind the LiveFlags switch `workers` (and `scrubPrototype` and `customers`), off by default.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
+local HelperFetchRules = require(Shared:WaitForChild("HelperFetchRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
@@ -49,6 +51,8 @@ type Job = {
 	seconds: number,
 	cat: Model?,
 	done: boolean,
+	fetching: boolean, -- (helperFetch) the helper is still walking the cat to their stand
+	pickAt: Vector3?, -- (helperFetch) where the cat was picked up, where the helper carries it back to
 }
 
 local jobs: { [Player]: { [string]: Job } } = {}
@@ -216,6 +220,45 @@ local function staffSpot(station: Model, spot: CFrame): CFrame
 	return spot * STAFF_OFFSET
 end
 
+-- (switch helperFetch, issue 884) The helper `id` sets off on a walk to `to` and back (HelperFetchRules): marks their
+-- staff model for every client, keeps `held` (the cat left on the counter) there until the pick up, and returns the
+-- seconds until they are back at the stand, or 0 when there is no staff model to walk.
+local function walkHelper(
+	player: Player,
+	id: string,
+	way: string,
+	catName: string,
+	to: Vector3,
+	held: Model?
+): number
+	local folder = folderOf(player, false)
+	local station = if folder then folder:FindFirstChild(id) else nil
+	local staff = if station then station:FindFirstChild(`CleanACat_NPC_Staff_{id}`) else nil
+	if station == nil or staff == nil or not staff:IsA("Model") then
+		if held then
+			held:Destroy()
+		end
+		return 0
+	end
+	local from = (staff :: Model):GetPivot().Position
+	local stop = HelperFetchRules.stopFor(from, to)
+	staff:SetAttribute(HelperFetchRules.FROM_ATTRIBUTE, from)
+	staff:SetAttribute(HelperFetchRules.TO_ATTRIBUTE, stop)
+	staff:SetAttribute(HelperFetchRules.CAT_ATTRIBUTE, catName)
+	staff:SetAttribute(HelperFetchRules.WAY_ATTRIBUTE, way)
+	staff:SetAttribute(HelperFetchRules.AT_ATTRIBUTE, Workspace:GetServerTimeNow())
+	if held then
+		held.Name = HelperFetchRules.HELD_NAME
+		held.Parent = station
+		task.delay(HelperFetchRules.pickAt(from, stop), function()
+			if held.Parent then
+				held:Destroy()
+			end
+		end)
+	end
+	return HelperFetchRules.totalSeconds(from, stop)
+end
+
 -- Draws the player's worker stations and pads. A job in progress keeps going; its cat is seated again.
 function WorkerService.refresh(player: Player)
 	local old = folderOf(player, false)
@@ -267,7 +310,9 @@ function WorkerService.refresh(player: Player)
 	end
 	local running: { [string]: Job } = jobs[player] or {}
 	for id, job in running do
-		seatCat(player, id, job, job.done)
+		if not job.fetching then
+			seatCat(player, id, job, job.done)
+		end
 	end
 end
 
@@ -368,6 +413,11 @@ local function finish(player: Player, id: string, job: Job)
 	end
 	own[id] = nil
 	clearCat(job)
+	-- (helperFetch) the helper carries the clean cat out to where they picked it up, and it goes home from there
+	local pickAt = job.pickAt
+	local back = if pickAt and LiveFlags.isOn(HelperFetchRules.FLAG)
+		then walkHelper(player, id, "return", `CleanACat_Cat_{job.kind}_Sit`, pickAt, nil)
+		else 0
 	local save = DataService.get(player)
 	if save == nil or player.Parent ~= Players then
 		return
@@ -389,7 +439,7 @@ local function finish(player: Player, id: string, job: Job)
 	end
 	Telemetry.economy(player, "coins", "source", coins, save.coins, "Gameplay", `Worker{id}`)
 	restUntil[player] = restUntil[player] or {}
-	restUntil[player][id] = os.clock() + REST_SECONDS
+	restUntil[player][id] = os.clock() + back + REST_SECONDS
 end
 
 local function tickPlayer(player: Player)
@@ -428,7 +478,9 @@ local function tickPlayer(player: Player)
 			local place = WorkerRules.pick(worker.mode, line)
 			local entry = if place then line[place] else nil
 			if place and entry then
-				local kind, dirt = SpaService.takeForWorker(player, place, entry.kind)
+				local fetch = LiveFlags.isOn(HelperFetchRules.FLAG)
+				local kind, dirt, held, heldAt =
+					SpaService.takeForWorker(player, place, entry.kind, fetch)
 				if kind and dirt then
 					local level = WorkerRules.cleanLevel(worker.level)
 					local fresh: Job = {
@@ -439,9 +491,37 @@ local function tickPlayer(player: Player)
 						seconds = WorkerRules.washSeconds(dirt, level),
 						cat = nil,
 						done = false,
+						fetching = false,
+						pickAt = nil,
 					}
 					mine[id] = fresh
-					seatCat(player, id, fresh, false)
+					-- (helperFetch) the helper walks for the cat first; the wash starts when they are back
+					local travel = if fetch and heldAt
+						then walkHelper(
+							player,
+							id,
+							"fetch",
+							`CleanACat_Cat_{kind}_Dirty_Sit`,
+							heldAt.Position,
+							held
+						)
+						else 0
+					if travel > 0 and heldAt then
+						fresh.fetching = true
+						fresh.pickAt = heldAt.Position
+						fresh.started = now + travel
+						task.delay(travel, function()
+							if jobs[player] == mine and mine[id] == fresh and fresh.fetching then
+								fresh.fetching = false
+								seatCat(player, id, fresh, false)
+							end
+						end)
+					else
+						if held then
+							held:Destroy()
+						end
+						seatCat(player, id, fresh, false)
+					end
 				end
 			end
 			-- one take a tick per spa, so two idle workers never empty the line at once
