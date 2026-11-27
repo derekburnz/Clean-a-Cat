@@ -81,17 +81,6 @@ local function copy(button: TextButton, label: TextLabel)
 	end
 end
 
--- Buttons this module is writing TextTransparency on right now, so the listener can tell its own writes apart.
-local hiding: { [TextButton]: boolean } = {}
-
--- Hides the button's own words under the label.
-local function hide(button: TextButton)
-	hiding[button] = true
-	button.TextTransparency = 1
-	button.TextStrokeTransparency = 1
-	hiding[button] = nil
-end
-
 -- The button's own text transparency: kept in an attribute while its words are drawn by the label.
 local function ownTransparency(button: TextButton): number
 	local kept = button:GetAttribute(OWN_TEXT)
@@ -127,7 +116,8 @@ local function outline(button: TextButton, on: boolean)
 			button:SetAttribute(OWN_TEXT, button.TextTransparency)
 			button:SetAttribute(OWN_STROKE, button.TextStrokeTransparency)
 		end
-		hide(button)
+		button.TextTransparency = 1
+		button.TextStrokeTransparency = 1
 	else
 		if label then
 			label:Destroy()
@@ -135,9 +125,7 @@ local function outline(button: TextButton, on: boolean)
 		local text = button:GetAttribute(OWN_TEXT)
 		local stroke = button:GetAttribute(OWN_STROKE)
 		if typeof(text) == "number" then
-			hiding[button] = true
 			button.TextTransparency = text
-			hiding[button] = nil
 		end
 		if typeof(stroke) == "number" then
 			button.TextStrokeTransparency = stroke
@@ -219,16 +207,12 @@ local function follow(piece: Instance)
 		end
 		button:GetPropertyChangedSignal("TextColor3"):Connect(again)
 		button:GetPropertyChangedSignal("TextTransparency"):Connect(function()
-			if hiding[button] then
-				return -- our own write
-			end
-			-- the window set its own transparency (1 included, to hide the words): it is the button's own, and the
-			-- label follows it (gone while hidden, back when shown again)
-			if button:FindFirstChild(LABEL) then
+			if button.TextTransparency ~= 1 and button:FindFirstChild(LABEL) then
+				-- the window set its own transparency: keep it as the button's own, still hidden under the label
 				button:SetAttribute(OWN_TEXT, button.TextTransparency)
-				hide(button)
+				button.TextTransparency = 1
+				again()
 			end
-			again()
 		end)
 	elseif piece:IsA("TextLabel") and piece.Name ~= LABEL then
 		local label = piece :: TextLabel
