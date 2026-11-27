@@ -25,6 +25,7 @@
 --   Attention.length(bobs) -> number       pure: seconds until it is all over, the last sparkle's fade included
 --   Attention.bob(t) -> number             pure: the scale at `t` seconds
 --   Attention.sparkle(t, index) -> (scale, transparency, degrees)   pure: sparkle `index` (1 to 3) at `t` seconds
+--   Attention.starCap(size, scale) -> number   pure: the most px a star of share `size` at pop `scale` may be across
 local RunService = game:GetService("RunService")
 
 local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
@@ -47,6 +48,16 @@ Attention.SPOTS = table.freeze({
 	{ x = 1.0, y = 0.42, size = 0.28 },
 	{ x = 0.1, y = 0.94, size = 0.24 },
 })
+
+-- A star is sized as a share of its button's height, so on a tall button (the starter ad card with hudTidy, about
+-- 220 px) star 1 came out about 75 px across and filled the panel (issue 1015). Each star is capped at what it would
+-- be on a button of BUTTON_MAX px: the 88 px HUD button, where star 1 is 30 px. The cap scales with the pop, so a star
+-- on a tall button still grows and shrinks the same way and the HUD buttons are unchanged.
+Attention.BUTTON_MAX = 88
+
+function Attention.starCap(size: number, scale: number): number
+	return math.max(0, Attention.BUTTON_MAX * size * scale)
+end
 
 function Attention.bob(t: number): number
 	return 1 + Attention.BOB_SIZE * 0.5 * (1 - math.cos(2 * math.pi * t / Attention.BOB_SECONDS))
@@ -85,7 +96,7 @@ end
 
 export type Handle = { stop: () -> () }
 
-type Star = { holder: ImageLabel }
+type Star = { holder: ImageLabel, cap: UISizeConstraint }
 
 local function makeStar(button: GuiObject, i: number): Star
 	local spot = Attention.SPOTS[i]
@@ -101,13 +112,19 @@ local function makeStar(button: GuiObject, i: number): Star
 	holder.Image = Icons.IMAGES.Sparkle
 	holder.ImageTransparency = 1
 	holder.ZIndex = button.ZIndex + 2
+	local cap = Instance.new("UISizeConstraint")
+	local most = Attention.starCap(spot.size, 1)
+	cap.MaxSize = Vector2.new(most, most)
+	cap.Parent = holder
 	holder.Parent = button
-	return { holder = holder }
+	return { holder = holder, cap = cap }
 end
 
 local function show(star: Star, i: number, scale: number, seen: number, degrees: number)
 	local size = Attention.SPOTS[i].size * scale
 	star.holder.Size = UDim2.fromScale(size, size)
+	local most = Attention.starCap(Attention.SPOTS[i].size, scale)
+	star.cap.MaxSize = Vector2.new(most, most)
 	star.holder.Rotation = degrees
 	star.holder.ImageTransparency = seen
 end
