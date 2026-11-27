@@ -26,3 +26,6 @@ like-howto-869-c2eeb78-desktop.jpg: after Like on the gift card, the how-to show
 
 ## 883 Clover and Glitch portraits, main c2eeb78: PASS
 portraits-883-pets-menu-c2eeb78.jpg and portraits-883-good-crate-c2eeb78.jpg: Clover 77963078642728 and Glitch 80341127367421 report IsLoaded true and FetchStatus Success in the Pets menu (73 px) and in the Good crate chances (62 px). Both draw in full colour. The save was seeded with one of each.
+
+## 869 rerun, main fb23dab (PR 1013): PASS
+HowTo.Art holds the frames Outline, Filled, Ring and Tap. No frame is named Hand, and all four images report IsLoaded true. Sampling every 0.1 s over 4.1 s gave grey 0.0 to 0.2, pink 0.3 to 1.4, grey 1.5 to 2.3, pink 2.4 to 3.5, grey 3.6 to 4.1. That is one loop of about 2.1 s with grey about 0.9 s and pink about 1.2 s, and exactly one heart showing at every sample (like-howto-869-fb23dab-loop.jpg). With the game's Less screen shake set On before tapping Like, all 31 samples were pink, and the tap dot and ring never moved (like-howto-869-fb23dab-reduced-motion.jpg).
