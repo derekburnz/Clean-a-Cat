@@ -187,7 +187,34 @@ def pet_slot(mat, makers):
     return objs
 
 
+def starter_pet(mat, makers):
+    """The starter pack's card (#1090): Midas whole, wings out, with a burst of four point sparkles round him."""
+    objs = []
+    for ob in pets.build_pet("Midas", mat):
+        if ob.name.endswith(("_Star2", "_Star3", "_Star3_Glow")):
+            bpy.data.objects.remove(ob, do_unlink=True)
+            continue
+        objs.append(ob)
+    bpy.context.view_layer.update()
+    for ob in objs:
+        ob.matrix_world = Matrix.Rotation(math.radians(-22), 4, "Z") @ ob.matrix_world
+    bpy.context.view_layer.update()
+    lo, hi = common.bounds(objs)
+    b = common.Builder()
+    w, h = hi.x - lo.x, hi.z - lo.z
+    y = lo.y - 0.25
+    for fx, fz, r in ((-0.02, 0.98, 0.34), (0.98, 0.9, 0.26), (1.04, 0.3, 0.2), (-0.08, 0.36, 0.22), (0.5, 1.1, 0.16)):
+        c = (lo.x + w * fx, y, lo.z + h * fz)
+        b.box(c, (r * 2, 0.06, r * 0.36), WHITE, bevel=False)
+        b.box((c[0], c[1] + 0.004, c[2]), (r * 0.36, 0.06, r * 2), WHITE, bevel=False)
+        b.box((c[0], c[1] - 0.02, c[2]), (r * 0.62, 0.06, r * 0.62), "gold_light", bevel=False,
+              rot=Matrix.Rotation(math.radians(45), 4, "Y"))
+    objs.append(b.finalize("StarterSparkles", mat, bevel=0))
+    return objs
+
+
 SHOTS = {
+    "shop_StarterPet": starter_pet,
     "shop_Coins2x": lambda mat, makers: coins(mat, 2),
     "shop_Coins3x": lambda mat, makers: coins(mat, 3),
     "shop_Builder2": builder,
