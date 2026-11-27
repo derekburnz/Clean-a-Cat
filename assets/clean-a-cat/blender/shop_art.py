@@ -5,7 +5,7 @@
 Derek's playtest, 2026-11-27: the shop's pictures "kinda suck and suck at selling it". Each card's picture now shows
 what the player gets, big and at once:
 
-  shop_Coins2x       a heap of gold coins with a big "2x" in front
+  shop_Coins2x       a heap of gold coins (a star on each, no money sign) with a big "2x" in front
   shop_Coins3x       a bigger heap with "3x" (#1031)
   shop_Builder2      the builder in his hard hat and dungarees with his toolbox, and "+1": a second build at once
   shop_GoldenSponge  the golden sponge with sparkles round it
@@ -95,19 +95,14 @@ def sparkle(b, at, size, swatch=STAR, turn=None):
 
 
 def _coin(b, at, tilt=(0.0, 0.0), yaw=0.0):
-    """One thick gold coin with a raised pale face and a dollar sign (the HUD coin's look)."""
+    """One thick gold coin with a raised pale face and a star on it. No money sign: Review-QA's gate (#1030)
+    keeps real-money symbols off a Robux card's picture."""
     rot = Matrix.Rotation(yaw, 3, "Z") @ Matrix.Rotation(tilt[0], 3, "X") @ Matrix.Rotation(tilt[1], 3, "Y")
     c = Vector(at)
     up = rot @ Vector((0, 0, 1))
     b.cyl(tuple(c), 0.5, 0.16, "gold_mid", segments=28, rot=rot)
     b.cyl(tuple(c + up * 0.085), 0.4, 0.02, "gold_light", segments=28, bevel=False, rot=rot)
-    return c + up * 0.1, rot
-
-
-def _dollar(at, rot, mat):
-    ob = _text("$", 0.5, "gold_dark", mat, depth=0.03, name="CleanACat_Coin_Mark")
-    ob.matrix_world = Matrix.Translation(at) @ rot.to_4x4() @ Matrix.Rotation(-math.pi / 2, 4, "X")
-    return ob
+    b.star(tuple(c + up * 0.105), 0.27, 0.12, 0.03, "gold_dark", rot=rot)
 
 
 def coins(mat, mult):
@@ -115,7 +110,7 @@ def coins(mat, mult):
     rng = random.Random(7 * mult)
     R, H, n = (1.5, 0.9, 48) if mult == 2 else (1.9, 1.35, 84)
     b = common.Builder()
-    objs, marks = [], []
+    objs = []
     placed = []
     for i in range(n * 4):
         if len(placed) >= n:
@@ -129,22 +124,16 @@ def coins(mat, mult):
         slope = 2 * H * r / (R * R)
         tilt = (math.atan(slope) * math.sin(a) * -0.8 + rng.uniform(-0.15, 0.15),
                 math.atan(slope) * math.cos(a) * 0.8 + rng.uniform(-0.15, 0.15))
-        top, rot = _coin(b, (x, y, z), tilt, rng.random() * math.pi)
-        if r > R * 0.35 or rng.random() < 0.5:
-            marks.append((top, rot))
+        _coin(b, (x, y, z), tilt, rng.random() * math.pi)
     fill = common.Builder()                            # the heap's inside, so no gap shows between the coins
     fill.sphere((0, 0, 0.0), 1.0, "gold_mid", segments=24, rings=12, scale=(R * 0.8, R * 0.64, H * 0.85))
     for x in (-0.95 * R, 0.95 * R):                     # two coins standing on edge, faces to the camera
-        top, rot = _coin(b, (x, -R * 0.55, 0.5), (math.pi / 2 - 0.25, 0.0), math.radians(VIEW[0]) + rng.uniform(-0.2, 0.2))
-        marks.append((top, rot))
+        _coin(b, (x, -R * 0.55, 0.5), (math.pi / 2 - 0.25, 0.0), math.radians(VIEW[0]) + rng.uniform(-0.2, 0.2))
     if mult == 3:                                      # 3x: two tall stacks behind the heap as well
         for x, k in ((-R * 0.55, 7), (R * 0.6, 9)):
             for j in range(k):
-                _, rot = _coin(b, (x + rng.uniform(-0.04, 0.04), R * 0.45, 0.1 + 0.17 * j), (0.0, 0.0),
-                               rng.random() * math.pi)
-            marks.append((Vector((x, R * 0.45, 0.1 + 0.17 * (k - 1) + 0.1)), rot))
+                _coin(b, (x + rng.uniform(-0.04, 0.04), R * 0.45, 0.1 + 0.17 * j), (0.0, 0.0), rng.random() * math.pi)
     objs += [b.finalize("CleanACat_Coins", mat), fill.finalize("CleanACat_CoinsFill", mat, bevel=0)]
-    objs += [_dollar(t, r_, mat) for t, r_ in marks]
     objs += word(f"{mult}x", 1.6 if mult == 2 else 1.8, (R * 0.5, -R - 0.2, 0.5), mat)
     s = common.Builder()
     sparkle(s, (-R * 0.7, -0.4, H + 0.7), 0.32)

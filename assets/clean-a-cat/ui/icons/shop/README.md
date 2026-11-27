@@ -6,7 +6,7 @@ the ink outline all round). Render, don't edit by hand.
 
 | File | Card |
 |---|---|
-| `CleanACat_UI_Shop_Coins2x.png` | 2x coins: a heap of gold coins with "2x" |
+| `CleanACat_UI_Shop_Coins2x.png` | 2x coins: a heap of gold coins with "2x". The coins carry a star, never a money sign (Review-QA's gate) |
 | `CleanACat_UI_Shop_Coins3x.png` | 3x coins (#1031): a bigger heap with "3x" |
 | `CleanACat_UI_Shop_Builder2.png` | the second builder: the builder with his toolbox and "+1" |
 | `CleanACat_UI_Shop_GoldenSponge.png` | the golden sponge with sparkles |
