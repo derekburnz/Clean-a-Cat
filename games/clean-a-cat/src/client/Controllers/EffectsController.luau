@@ -119,6 +119,7 @@ function EffectsController.Start()
 			CatMotion.shake(cat)
 			Effects.stopStream(foamPreset)
 			Effects.stopStream("rinseSpray")
+			Effects.stopStream("showerStream")
 			local preset = if step == "scrub"
 				then "shakeFlecks"
 				elseif step == "rinse" then "shakeDroplets"
@@ -138,6 +139,24 @@ function EffectsController.Start()
 			end
 		end)
 	end
+	-- Gameplay-Engineer's switch showerAim and ToolOnCat.nozzle() (issue 899): the shower held off the fur, aimed in
+	local ShowerStream =
+		require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("ShowerStream")) :: any
+	local function aimOn(): boolean
+		return LiveFlags.OFF_BY_DEFAULT["showerAim"] == true and LiveFlags.isOn("showerAim")
+	end
+	local function showerNozzle(): CFrame?
+		local ok, at = pcall(function()
+			local ToolOnCat =
+				require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("ToolOnCat")) :: any
+			local nozzle = (ToolOnCat :: any).nozzle :: (() -> any)?
+			if nozzle == nil then
+				return nil
+			end
+			return (nozzle :: () -> any)()
+		end)
+		return if ok and typeof(at) == "CFrame" then at :: CFrame else nil
+	end
 	if Moments.RinseSpray then
 		local sprayAt = 0
 		Moments.RinseSpray:Connect(function(_cat: Model, point: Vector3, normal: Vector3)
@@ -146,12 +165,22 @@ function EffectsController.Start()
 			end
 			-- the emitter sprays along its +Y, so turn the look-along-normal frame to point +Y out of the fur
 			local aim = CFrame.lookAt(point, point + normal) * CFrame.Angles(-math.pi / 2, 0, 0)
-			Effects.streamFrom("rinseSpray", aim, 1)
+			-- (showerAim, issue 899) the water comes from the shower's nozzle into the fur: a thin line and fast drops
+			-- along it, and only a small splash where it lands
+			local nozzle = if aimOn() then showerNozzle() else nil
+			if nozzle then
+				ShowerStream.show(nozzle.Position, point)
+				Effects.streamFrom("showerStream", nozzle, 1)
+				Effects.streamFrom("rinseSpray", aim, 0.4)
+			else
+				Effects.streamFrom("rinseSpray", aim, 1)
+			end
 			local now = os.clock()
 			sprayAt = now
 			task.delay(SPRAY_HOLD, function()
 				if sprayAt == now then
 					Effects.stopStream("rinseSpray")
+					Effects.stopStream("showerStream")
 				end
 			end)
 		end)
