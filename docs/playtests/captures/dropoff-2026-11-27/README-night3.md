@@ -66,3 +66,6 @@ Camera held at the default follow position: 12.5 studs behind the player, 20 deg
 
 ## 1024 rewardPop, main b92db46, iphone_13
 reward-pop-1024-crate-nebula-iphone13-b92db46.jpg: opening a good crate shows "You got Nebula!" in the middle, with the Nebula portrait on gold rays, "Rare, +12% on your tips" and "Tap to close". The screen is dimmed behind it, and it closes by itself within a few seconds. Two look notes: the dim covers only the area below the 58 px top inset, so the top strip stays bright; and the tutorial hint card ("Bring the cat to the tub") and the starter ad draw on top of the dim, with the hint card covering the area under "Tap to close".
+
+## 1040 bigger spa, main b92db46 (the sha published to dev at 12:16 UTC, with bigSpa on in dev)
+big-spa-1040-room-wide-b92db46.jpg, roof hidden. I checked this in a local place built from that sha, not on a dev server. CleanACat_Area_SpaPlotBig is placed. The walls give an inside room of 48 x 32 studs: walls at x -29.5 and 19.5, z -26.5 and 6.5. The player's tub (CleanACat_Station_Tub) is 1.30x its pre-PR-922 size (rbx model bounds 4.49 -> 5.84 wide). The wash stands are Jo 1.35x (5.89 -> 7.96), Sam 1.35x (4.00 -> 5.40) and Lou 1.35x (4.55 -> 6.14). The counter window (CleanACat_Area_SpaPlotBig_Counter, 20.8 x 2.8 x 4.1) is there, with six customers at it.
