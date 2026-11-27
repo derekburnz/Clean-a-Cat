@@ -198,3 +198,10 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## groupVerify fix (issue 1111, PR 1120) on main 6360b8c, iphone_13, 2026-11-27
 
 `1120-<step>-iphone13.jpg`: group membership was set with the game's own Studio-only TestInGroup player attribute. No group was changed.
+
+## starterFloat (issue 1119, PR 1121) on main 139a6a2, 2026-11-27
+
+`1119-<point>-<device>.jpg` covers:
+- The floating Midas with no card, on iphone_13, ipad_10th_generation and iphone_7.
+- The text over a roof, the floor, the sky and a wall.
+- The Midas tap and the "i" breakdown.
