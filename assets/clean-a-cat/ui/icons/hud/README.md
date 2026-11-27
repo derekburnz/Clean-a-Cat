@@ -53,13 +53,10 @@ and a mint pocket with the yellow sponge and the sky brush standing in it. Revie
 
 ## The like how-to pictures (issue 869)
 
-Pictures for Design-Agent's two second loop that shows how to like the game (Growth-Agent's spec, 2026-11-26).
-`CleanACat_Icon_Hud_HeartOutline.png` is a heart in a soft grey with a pale inset, not yet pressed; pressed, the loop
-shows the `Heart` icon. `CleanACat_Icon_Hud_TapDot.png` is a soft round cream dot on a pink rim, where the tap lands.
-`CleanACat_Icon_Hud_RingPuff.png` is a pink ring with eight short butter rays, the burst where it taps. Made by
-`hud_icons.py` (`HeartOutline`, `TapDot`, `RingPuff`) and checked at 48 px.
-
-No picture here is a hand. The first set (2026-11-26) used a thumbs up and a hand pointing up with one finger, and
-Open Cloud answered "User is moderated" minutes after they were uploaded; a fist with one tall raised digit can read
-as a rude gesture to an image check at icon size. Those three files were removed on 2026-11-27. Draw no hand
-gestures for in-game icons.
+Four pictures for Design-Agent's two second loop that shows how to like the game (Growth-Agent's spec,
+2026-11-26). `CleanACat_Icon_Hud_ThumbsUp.png` is a thumbs up in a soft grey with a pale cuff, not yet pressed.
+`CleanACat_Icon_Hud_ThumbsUpFilled.png` is the same hand in the heart's pink with a white glint, pressed.
+`CleanACat_Icon_Hud_TapHand.png` is a cream hand pointing up with one finger, the one that taps.
+`CleanACat_Icon_Hud_RingPuff.png` is a pink ring with eight short butter rays, the burst where it taps. All are
+original art drawn as our own fist and hand, with no Roblox logo or button. Made by `hud_icons.py` (`ThumbsUp`,
+`ThumbsUpFilled`, `TapHand`, `RingPuff`) and checked at 48 px.
