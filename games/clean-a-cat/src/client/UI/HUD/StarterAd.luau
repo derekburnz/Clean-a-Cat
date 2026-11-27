@@ -519,7 +519,7 @@ function StarterAd.build(root: Instance, open: () -> ())
 	local dot = Instance.new("TextLabel")
 	dot.Name = "Dot"
 	dot.AnchorPoint = Vector2.new(1, 0)
-	dot.Position = UDim2.new(1, 0, 0, 0)
+	dot.Position = UDim2.fromScale(1, 0)
 	dot.Size = UDim2.fromOffset(INFO_SIZE, INFO_SIZE)
 	dot.BackgroundColor3 = Kit.WHITE
 	dot.Font = Kit.FONT
