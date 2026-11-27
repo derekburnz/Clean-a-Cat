@@ -4,7 +4,7 @@
 -- price; the total struck through and the saving, both worked out from the live prices and hidden if any price is
 -- missing (so the saving is always true); one green "Get pack" button with the pack's price. The countdown is calm:
 -- days, hours and minutes on the HUD (never seconds), seconds only inside the window, and nothing changes near the
--- end. No words say "hurry", "limited" or "72 hours". Pure, so tests/specs/StarterViewRules.spec.luau covers it.
+-- end; with starterNoClock no time shows at all. No words say "hurry", "limited" or "72 hours". Pure, so tests/specs/StarterViewRules.spec.luau covers it.
 local StarterRules = require(script.Parent:WaitForChild("StarterRules"))
 
 local StarterViewRules = {}
@@ -12,6 +12,10 @@ local StarterViewRules = {}
 StarterViewRules.WINDOW = "Starter"
 StarterViewRules.TITLE = "Spa Starter Pack"
 StarterViewRules.FINE = "Nothing random. All three are yours to keep."
+-- Switch starterNoClock (issue 1069, Derek's plan answer of 2026-11-27, "same offer, no clock shown"): the offer still
+-- ends 72 hours after the first join, but nothing on screen counts down; the chip and the window say NO_CLOCK.
+StarterViewRules.NO_CLOCK_FLAG = "starterNoClock"
+StarterViewRules.NO_CLOCK = "New player offer"
 
 export type Item = {
 	key: string, -- a Passes key
@@ -125,6 +129,16 @@ end
 -- nothing ticks in front of the player (Review-QA on PR 620).
 function StarterViewRules.windowText(seconds: number): string
 	return `Ends in {StarterViewRules.hudText(seconds)}`
+end
+
+-- The HUD chip with the switch starterNoClock in `calm`: NO_CLOCK, else the time left (hudText).
+function StarterViewRules.hudNote(seconds: number, calm: boolean): string
+	return if calm then StarterViewRules.NO_CLOCK else StarterViewRules.hudText(seconds)
+end
+
+-- The window's line the same way: NO_CLOCK, else "Ends in ..." (windowText).
+function StarterViewRules.windowNote(seconds: number, calm: boolean): string
+	return if calm then StarterViewRules.NO_CLOCK else StarterViewRules.windowText(seconds)
 end
 
 -- How many times the HUD button bobs as it appears this visit: 3 on the first visit, 1 on the next two, and never

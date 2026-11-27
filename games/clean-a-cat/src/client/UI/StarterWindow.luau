@@ -275,7 +275,10 @@ local function tick()
 	end
 	p.timer.Visible = ends ~= nil
 	if ends then
-		p.timer.Text = StarterViewRules.windowText(StarterViewRules.left(ends, os.time()))
+		p.timer.Text = StarterViewRules.windowNote(
+			StarterViewRules.left(ends, os.time()),
+			LiveFlags.isOn(StarterViewRules.NO_CLOCK_FLAG)
+		)
 	end
 end
 
