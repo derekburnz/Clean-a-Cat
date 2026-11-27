@@ -306,13 +306,18 @@ def compose_spa(raw_dir, final=False, key="thumb-spa"):
 # The second thumbnail (#500; Derek 2026-11-25: yes to "a half dirty, half clean picture"): one cat, straight on, the
 # picture's left half muddy on a drab backdrop and its right half clean on the bubble backdrop, a thin line between.
 SPLIT_LINE = (255, 250, 240)
+MUD_SPLATS = False                                                # off for the image gate (2026-11-27)
 
 
 def mud_backdrop(size, seed=7):
-    """The muddy half's backdrop: a drab brown glow with soft mud splats. No stink wisps (Derek, 2026-11-25)."""
-    import random
+    """The muddy half's backdrop: a dull dusty glow, no splats. No stink wisps (Derek, 2026-11-25). The mud is only on
+    the cat: floating brown splats round it failed the image gate, and a tan field reads near a skin tone (Review-QA,
+    2026-11-27), so the glow is a cool dusty grey."""
     w, h = size
-    bg = backdrop_plain(size, (196, 176, 150), (124, 102, 80))
+    bg = backdrop_plain(size, (184, 180, 172), (116, 112, 108))
+    if not MUD_SPLATS:
+        return bg
+    import random
     layer = Image.new("RGBA", size, (0, 0, 0, 0))
     rnd = random.Random(seed)
     s = min(w, h)

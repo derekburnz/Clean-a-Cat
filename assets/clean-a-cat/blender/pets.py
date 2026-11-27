@@ -118,21 +118,21 @@ def _blossom(P, c, r, sw, heart="pastel_butter", rot=None):
 
 
 def clover_crown(ctx):
-    """Clover (Common): a four leaf clover on a short stalk between its ears, each leaf a heart of two lobes, a small
-    lit gem at its heart (the object `_Glow`), and a gold horseshoe standing behind it, open end up. From Lucky
-    Clover's clover_crown, without the coins that turned in the air."""
+    """Clover (Common): a four leaf clover lying low on its head between its ears, tipped toward the face like a hair
+    clip, each leaf a heart of two lobes, a small lit gem at its heart (the object `_Glow`), and a gold horseshoe
+    standing behind it, open end up. From Lucky Clover's clover_crown, without the coins that turned in the air.
+    No stalk: a clover held up on a stem made a tall knob on a stick in the portrait's outline (image gate, 2026-11-27)."""
     P = ctx.pen("head")
     G = ctx.piece("Glow", "head", (0, 0.02, 0.4))
-    c = Vector((0, 0.02, 0.4))
-    P.bar((0, 0.02, -0.03), tuple(c), 0.06, 0.06, "leaf_dark", up=(0, 1, 0))
+    c, tip = Vector((0, -0.04, 0.16)), _rx(45)                                          # low, its face tipped forward
     for k in range(4):
         a = math.radians(45 + 90 * k)
-        at = c + Vector((0.16 * math.cos(a), 0, 0.16 * math.sin(a)))
+        at = c + tip @ Vector((0.1 * math.cos(a), 0.1 * math.sin(a), 0))
         for s in (-1, 1):
             b = math.radians(45 + 90 * k + s * 30)
-            P.ico(tuple(at + Vector((0.075 * math.cos(b), 0.008 * (2 * k + (s > 0)), 0.075 * math.sin(b)))), 0.11,
-                  ("leaf_green", "eye_green")[(k + (s > 0)) % 2], scale=(1, 0.42, 1))
-    G.ico(tuple(c + Vector((0, -0.05, 0))), 0.07, NEON_GOLD)
+            P.ico(tuple(at + tip @ Vector((0.075 * math.cos(b), 0.075 * math.sin(b), 0.008 * (2 * k + (s > 0))))),
+                  0.11, ("leaf_green", "eye_green")[(k + (s > 0)) % 2], scale=(1, 1, 0.42), rot=tip)
+    G.ico(tuple(c), 0.1, NEON_GOLD)                                                     # set in among the leaves
     _arc(P, (0, 0.2, 0.2), 0.2, 200, 340, 6, (0.12, 0.08, 0.08), GOLD)                  # the horseshoe, on the head
 
 
@@ -186,19 +186,18 @@ def slime_jar(ctx):
 
 
 def pixel_crown(ctx):
-    """Glitch (Uncommon): it is coming apart into pixels. A staircase of cubes climbs off its left ear, each cube
-    lapping the one before (lit pink ones in the object `_Glow`), and two bright slices of its head have slid out
-    sideways like a torn scanline. From Glitch's glitch_pixels, the loose pixels joined into a stair."""
+    """Glitch (Uncommon): it is coming apart into pixels. A broken row of cubes sits along the top of its head, each a
+    little higher or lower than the next and the end ones slipping off past the ears (lit pink ones in the object
+    `_Glow`), and two bright slices of its head have slid out sideways like a torn scanline. From Glitch's
+    glitch_pixels. Low and wide on purpose: a stair of cubes climbing off one ear read as a raised finger in the
+    portrait's outline (image gate, 2026-11-27)."""
     P, w, d = ctx.pen("head"), ctx.hw, ctx.hd
     G = ctx.piece("Glow", "head", (0, 0, 0.1))
-    at, prev = Vector((0.3, 0.02, 0.06)), 0.22
-    for k, (sz, sw) in enumerate(((0.22, "eye_mint"), (0.19, "fur_bubblegum"), (0.16, "eye_mint"),
-                                  (0.13, "coat_inky"), (0.1, "fur_bubblegum"))):
-        if k:
-            step = (prev + sz) / 2 * 0.72
-            at = at + Vector((step, 0.01 * (-1) ** k, step))
-        (G if sw == "fur_bubblegum" else P).box(tuple(at), (sz, sz, sz), sw)
-        prev = sz
+    P.box((0.01, 0.0, 0.0), (2 * w + 0.2, 0.11, 0.05), "coat_inky")                    # the torn scanline they sit on
+    for k, (x, z, sz, sw) in enumerate(((-w - 0.04, 0.02, 0.13, "fur_bubblegum"), (-0.24, 0.11, 0.2, "eye_mint"),
+                                        (0.0, 0.06, 0.16, "coat_inky"), (0.22, 0.12, 0.2, "fur_bubblegum"),
+                                        (w + 0.06, 0.04, 0.14, "eye_mint"))):
+        (G if sw == "fur_bubblegum" else P).box((x, 0.02 * (-1) ** k, z), (sz, sz, sz), sw)
     for sx, z, edge, y in ((1, -0.2, "fur_bubblegum", -0.05), (-1, -0.44, "eye_sky", 0.05)):
         P.box((sx * (w + 0.05), y, z), (0.16, 2 * d - 0.08, 0.12), "eye_mint")          # a slice, slid out
         G.box((sx * (w + 0.15), y, z), (0.05, 2 * d - 0.08, 0.12), edge)                # its bright torn edge

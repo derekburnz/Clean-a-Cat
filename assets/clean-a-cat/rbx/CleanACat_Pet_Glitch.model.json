@@ -99,7 +99,7 @@
        "CFrame": {
         "position": [
          0.0,
-         1.7904,
+         1.4091,
          -0.64
         ],
         "orientation": [
@@ -2318,7 +2318,7 @@
           "position": [
            -0.2792,
            1.6122,
-           -0.46
+           -0.4682
           ],
           "orientation": [
            [
@@ -2342,7 +2342,7 @@
         "Size": [
          0.2667,
          0.1,
-         0.2667
+         0.2831
         ],
         "Color": [
          0.451,
@@ -2361,7 +2361,7 @@
           "position": [
            -0.0312,
            -0.0467,
-           0.0
+           0.0082
           ],
           "orientation": [
            [
@@ -2445,7 +2445,7 @@
           "position": [
            -0.3208,
            1.8078,
-           -0.46
+           -0.4448
           ],
           "orientation": [
            [
@@ -2469,7 +2469,7 @@
         "Size": [
          0.0533,
          0.1,
-         0.0533
+         0.0837
         ],
         "Color": [
          0.451,
@@ -2494,7 +2494,7 @@
           "position": [
            -0.3187,
            1.65,
-           -0.604
+           -0.585
           ],
           "orientation": [
            [
@@ -2518,7 +2518,7 @@
         "Size": [
          0.1152,
          0.114,
-         0.0876
+         0.0496
         ],
         "Color": [
          0.8784,
@@ -2580,7 +2580,7 @@
           "position": [
            0.2792,
            1.6122,
-           -0.46
+           -0.4682
           ],
           "orientation": [
            [
@@ -2604,7 +2604,7 @@
         "Size": [
          0.2667,
          0.1,
-         0.2667
+         0.2831
         ],
         "Color": [
          0.451,
@@ -2623,7 +2623,7 @@
           "position": [
            0.0312,
            -0.0467,
-           0.0
+           0.0082
           ],
           "orientation": [
            [
@@ -2756,7 +2756,7 @@
           "position": [
            0.3187,
            1.65,
-           -0.5918
+           -0.5752
           ],
           "orientation": [
            [
@@ -2780,7 +2780,7 @@
         "Size": [
          0.1152,
          0.114,
-         0.0631
+         0.03
         ],
         "Color": [
          0.8784,
@@ -2919,7 +2919,111 @@
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.3261,
+           -0.0109,
+           1.59,
+           -0.52
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         1.2174,
+         0.0543,
+         0.1196
+        ],
+        "Color": [
+         0.1843,
+         0.1765,
+         0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": true,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Glitch_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2609,
+           1.7096,
+           -0.5417
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2174,
+         0.2174,
+         0.2174
+        ],
+        "Color": [
+         0.451,
+         0.8667,
+         0.7059
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Glitch_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
            1.6552,
            -0.4983
           ],
@@ -2943,118 +3047,66 @@
          }
         },
         "Size": [
-         0.2391,
-         0.2391,
-         0.2391
-        ],
-        "Color": [
-         0.451,
-         0.8667,
-         0.7059
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Glitch_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.6235,
-           1.9526,
-           -0.5106
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
          0.1739,
          0.1739,
-         0.1494
-        ],
-        "Color": [
-         0.451,
-         0.8667,
-         0.7059
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Glitch_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.737,
-           2.0661,
-           -0.5091
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1413,
-         0.1413,
-         0.1413
+         0.1739
         ],
         "Color": [
          0.1843,
          0.1765,
          0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Glitch_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.5652,
+           1.6212,
+           -0.486
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1522,
+         0.1767,
+         0.1276
+        ],
+        "Color": [
+         0.451,
+         0.8667,
+         0.7059
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -3133,9 +3185,9 @@
           "CFrame": {
            "CFrame": {
             "position": [
-             -0.4865,
-             1.8157,
-             -0.4819
+             -0.2391,
+             1.7204,
+             -0.5417
             ],
             "orientation": [
              [
@@ -3157,9 +3209,9 @@
            }
           },
           "Size": [
-           0.2065,
-           0.2065,
-           0.152
+           0.2174,
+           0.2174,
+           0.2174
           ],
           "Color": [
            0.9686,
@@ -3176,9 +3228,9 @@
           "PivotOffset": {
            "CFrame": {
             "position": [
-             0.4865,
-             -0.117,
-             -0.0381
+             0.2391,
+             -0.0217,
+             0.0217
             ],
             "orientation": [
              [
@@ -3212,9 +3264,9 @@
           "CFrame": {
            "CFrame": {
             "position": [
-             -0.827,
-             2.1561,
-             -0.4983
+             0.5435,
+             1.6117,
+             -0.4887
             ],
             "orientation": [
              [
@@ -3236,9 +3288,9 @@
            }
           },
           "Size": [
-           0.1087,
-           0.1087,
-           0.1087
+           0.1413,
+           0.1413,
+           0.1221
           ],
           "Color": [
            0.9686,
