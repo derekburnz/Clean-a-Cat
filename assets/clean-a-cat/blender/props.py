@@ -749,7 +749,7 @@ BOW_OWN = {
     "Djinn": (-0.12, 0.08, 0.0, 60.0),        # leaned out past the turban's rim, on the head's corner
     "Prism": (-0.12, 0.0, 0.0, 75.0),         # leaned out past the horn's lit gem
     "Rosette": (0.0, 0.16, -0.03, 45.0),      # in front of the crown's corner point
-    "Stardust": (-0.04, 0.08, 0.0, 30.0),     # in front of the corner stalk's gem
+    "Stardust": (-0.1, 0.18, 0.0, 45.0),      # on the corner in front of the right wand stick (Sync, #948)
     "Jade": (-0.04, 0.0, 0.0, 60.0),          # leaned out past the lotus horn
     "Sherbet": (-0.08, 0.0, 0.0, 75.0),       # leaned out past the sundae's rim
     "WhiteTiger": (-0.08, 0.0, 0.0, 60.0),    # leaned out past the circlet's spike
