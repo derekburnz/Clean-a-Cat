@@ -147,6 +147,8 @@ local function keepOnScreen(w: Window)
 		local middle = clearTop + (over + (designH - OVERHANG) / 2) * scale
 		-- never past the bottom: if even that is too tall, the bottom wins over the coin pill
 		middle = math.min(middle, bottom - (designH - OVERHANG) / 2 * scale)
+		-- and never above the top bar's edge, as before
+		middle = math.max(middle, top + (over + (designH - OVERHANG) / 2) * scale)
 		shift = (middle - (layerTop + layerH / 2)) / scale
 	else
 		-- it fits: moved down only as far as its X needs to clear the coin pill
