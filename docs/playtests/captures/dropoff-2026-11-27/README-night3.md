@@ -34,3 +34,24 @@ HowTo.Art holds the frames Outline, Filled, Ring and Tap. No frame is named Hand
 - Frame rate, iphone_13 (749 x 388), bigSpa and wideStreet on, standing behind counter place 3 with six customers: 235.1 fps average over 1411 frames (PC cap 240), worst frame 14.6 ms, 213 draw calls, 290,294 triangles, quality 21. A real phone is not tested.
 - Bows on plain cats (BowFit.wear at scale 1.5): Muffin and Toffee with Pink, PinkDouble, PinkGolden, PinkRoyal, Mint and SkyRoyal. Every bow sits on the head's top corner: centre at x -0.56 to -0.67 against a head half width of 0.66, and y +0.35 to +0.63 against a half height of 0.74 to 0.82. None touches the eyes, body, legs or tail. The Golden and Royal looks are centred on the head's edge, so about half the bow overhangs the side of the head (dev-look-773-bows-muffin-golden-toffee-royal-fb23dab.jpg). Display window and walk-out: not tested in this run.
 - Faces (dev-look-773-faces-toffee-dirty-moonstag-suds-fb23dab.jpg plus the bow picture): Muffin, Toffee, Toffee dirty, Suds and Moonstag (special) all show round pink cheeks. No bar at the eyes, and no brown block under Toffee's nose (Toffee has a white muzzle). Moonstag's blue stripe between the eyes is its coat marking.
+
+## 40 and 531, fresh save, main fb23dab (desktop frame; the iphone_13 simulator mirrors every click, so taps were done at desktop size)
+Times from the join:
+- 0:18 the truck arrives and the box lands. The console logged "[Opening] truck moving 0.34 s after the join".
+- 0:36 box opened with E, then "1/3 Pick him up"; Suds picked up.
+- 0:48 walk to the tub (path, 4.1 s).
+- 1:04 Suds in the tub, 3 steps. Scrub and brush were finished with the Studio test hook; the photo was a real click.
+- 1:39 "Meet Suds!" (3 stars), Open the spa: Suds kept.
+- 2:39 the first cat after Suds was the stray Muffin. Bow dragged, photo, it moved into the window (dev-look-773-window-bow-muffin-fb23dab.jpg).
+- 3:20 first counter customer, Cotton, served. Recap +286, including the Grand opening gift +267 (loop-40-first-customer-recap-fb23dab.jpg).
+- 4:00 Bubble Soap bought at the tools board, 30 coins.
+- 4:11 Second Tub started from the build board, 60 coins.
+- 5:04 customer Patches served. The wash now has 5 steps, the extra one from Bubble Soap.
+- 6:11 customer Cotton served. Coins 279.
+
+Not reached in a fresh save: Brush Table and dryer (not on this build board), the VIP Room (15000 coins and the Third Tub first). One Take attempt right after closing a recap found no prompt in reach; a retry worked. Rejoin, timers and DataStore are not testable in a local place.
+
+Console (531) from our scripts: no errors. The only lines are local-place limits: ProfileStore and DataStore unavailable, and NotifyService line 54 "You must publish this place to use MemoryStoreService" (twice). Outside our scripts: "rbxassetid://203785492 failed due to: Asset type does not match requested type" (3 times). That id is not in the repo; it is most likely the Studio test avatar.
+
+## 773 bow on, main fb23dab
+In the display window, Muffin wears its bow on the head's top corner (WornBow under the head). During a served customer's walk-out I saw no PackedCat with a bow: served cats go home through the tub's going-home effect. Not conclusive for the carrier walk-out.
