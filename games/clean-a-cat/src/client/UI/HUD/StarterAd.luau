@@ -45,6 +45,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local Passes = require(Shared:WaitForChild("Passes"))
 local StarterRules = require(Shared:WaitForChild("StarterRules"))
 local StarterViewRules = require(Shared:WaitForChild("StarterViewRules"))
 
@@ -176,7 +177,23 @@ local function allOn(): boolean
 		end
 	end
 	local ends = Players.LocalPlayer:GetAttribute(StarterRules.ENDS_ATTRIBUTE)
-	return ends ~= nil and ends ~= false
+	if ends == nil or ends == false then
+		return false
+	end
+	-- owning any of the pack's passes takes the ad away at once, as the server's StarterRules.offered does a moment
+	-- later, so it never shows again after a purchase (Derek 2026-11-27: "make sure starter pack hud disappears and
+	-- never appears again after purchase")
+	for _, key in StarterRules.contents(LiveFlags.isOn) do
+		if Players.LocalPlayer:GetAttribute(Passes.ATTRIBUTE_PREFIX .. key) == true then
+			return false
+		end
+	end
+	-- starterFloat: with no card behind it, a missing price would leave Midas over an empty space and his shadow
+	-- (Derek's Studio test of 2026-11-27); no price, no ad, and the Shop still sells the pack
+	if pack == nil and StarterAd.floating() then
+		return false
+	end
+	return true
 end
 
 -- Whether the dark card with one picture and the buy tap is on (switch starterCard).
@@ -590,9 +607,9 @@ function StarterAd.build(root: Instance, open: () -> ())
 	shadow.BorderSizePixel = 0
 	shadow.AnchorPoint = Vector2.new(0.5, 0.5)
 	shadow.Position = UDim2.fromScale(0.5, 0.97)
-	shadow.Size = UDim2.fromScale(0.62, 0.12)
+	shadow.Size = UDim2.fromScale(0.5, 0.08)
 	shadow.BackgroundColor3 = Kit.INK
-	shadow.BackgroundTransparency = 0.72
+	shadow.BackgroundTransparency = 0.86 -- soft: at 0.72 it read as a dark bar on the light floor (Derek, Sync on 1141)
 	shadow.Visible = false
 	shadow.ZIndex = 1
 	Kit.corner(shadow, UDim.new(0.5, 0))
@@ -839,6 +856,11 @@ function StarterAd.build(root: Instance, open: () -> ())
 			:Connect(redraw)
 	end
 	Players.LocalPlayer:GetAttributeChangedSignal(StarterRules.ENDS_ATTRIBUTE):Connect(redraw)
+	Players.LocalPlayer.AttributeChanged:Connect(function(name: string)
+		if string.sub(name, 1, #Passes.ATTRIBUTE_PREFIX) == Passes.ATTRIBUTE_PREFIX then
+			redraw() -- a pass of the pack bought on its own, or granted by the pack
+		end
+	end)
 	card:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit) -- the pictures and prices settle after a redraw
 	local camera = Workspace.CurrentCamera
 	if camera then
