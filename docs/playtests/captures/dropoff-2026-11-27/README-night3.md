@@ -219,3 +219,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 `1125-*`:
 - The SAVE tag now sits under "STARTER PACK" on iphone_13 and the iPad.
 - The iphone_7 gap above the jump button, in a fresh play session and after a device switch during play.
+
+## ButtonInk float32 fix (PR 1129) on main 3e4c12b, iphone_13, 2026-11-27
+
+`1129-*`: the very first TextTransparency = 1 on a freshly drawn button now hides the words and the outline (Sam's Level up, Bubble Soap Buy), and a write of 0 brings them back outlined.
