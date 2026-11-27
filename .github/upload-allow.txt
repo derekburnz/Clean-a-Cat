@@ -43,3 +43,4 @@ dd75eeead6e361d69059f39d3063a696c0ffda7001bdcc0f5f0150a8ec70f716  assets/clean-a
 1a30d91b867894379f98627aaab51af8b1dc667eac77e2cee36a1b61f33d7931  assets/clean-a-cat/ui/icons/shop/CleanACat_UI_Shop_Finish5.png
 e7016558ed6dcf1982f69b26e5760fe91f6ac6f0d3994145c1e4d89a7f26405d  assets/clean-a-cat/ui/icons/shop/CleanACat_UI_Shop_Coins2x.png
 e91ebf00d41b9af52d294045efb245aa85e48e798f2f9969456c9f42b92510fd  assets/clean-a-cat/ui/icons/shop/CleanACat_UI_Shop_Coins3x.png
+52fe8468441b66e7cb9b5d34cc51e1d12b79b4b55d590745448dece4eeb18b11  assets/clean-a-cat/ui/icons/hud/CleanACat_Icon_Hud_Coins.png
