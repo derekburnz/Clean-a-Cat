@@ -510,6 +510,85 @@ def helpers(mat):
     return _fin(b, "Helpers", mat, ink=k)
 
 
+def _staff_head(b, k, at, s, skin, hair, bun=False, blush="nose_bubblegum"):
+    """One helper for the team pictures: mint shoulders with the cream bib, a head in the cream headband, a short
+    crop or a bun, eyes and a smile in ink (`k`). `at` is the foot of the shoulders, `s` the size."""
+    ox, oy, oz = at
+    up = Matrix.Rotation(math.radians(90), 3, "X")
+
+    def P(x, y, z):
+        return (ox + x * s, oy + y * s, oz + z * s)
+
+    def Z(w, d, h):
+        return (w * s, d * s, h * s)
+
+    b.box(P(0, 0, 0.5), Z(2.2, 1.2, 0.68), "spa_mint")
+    b.box(P(0, -0.6, 0.42), Z(1.2, 0.1, 0.56), "spa_cream")
+    _paw(b, ox, oy - 0.67 * s, oz + 0.4 * s, 0.13 * s, "nose_bubblegum", rot=up, depth=0.05)
+    b.box(P(0, 0, 1.62), Z(1.5, 1.4, 1.5), skin)
+    b.box(P(0, 0.02, 2.42), Z(1.7, 1.6, 0.34), hair)
+    for sx in (-1, 1):
+        b.box(P(sx * 0.8, 0.02, 1.82), Z(0.2, 1.52, 0.9), hair)
+    b.box(P(0, 0.78, 1.6), Z(1.7, 0.16, 1.3), hair)
+    b.box(P(0, -0.72, 2.12), Z(1.3, 0.16, 0.2), hair)
+    if bun:
+        b.ico(P(0, 0.2, 2.8), 0.52 * s, hair, subdivisions=2)
+    b.box(P(0, 0, 2.2), Z(1.86, 1.76, 0.3), "spa_cream")
+    _paw(b, ox, oy - 0.9 * s, oz + 2.19 * s, 0.085 * s, "nose_bubblegum", rot=up, depth=0.05)
+    fy = -0.72
+    for sx in (-1, 1):
+        k.box(P(sx * 0.3, fy, 1.5), Z(0.19, 0.04, 0.34), "coat_inky", bevel=False)
+        b.box(P(sx * 0.3 + 0.04, fy - 0.03, 1.6), Z(0.07, 0.04, 0.09), "foam", bevel=False)
+        b.cyl(P(sx * 0.47, fy, 1.18), 0.1 * s, 0.04 * s, blush, segments=10, bevel=False, rot=X)
+        k.box(P(sx * 0.21, fy, 1.15), Z(0.09, 0.04, 0.09), "coat_inky", bevel=False)
+    k.box(P(0, fy, 1.06), Z(0.42, 0.04, 0.09), "coat_inky", bevel=False)
+
+
+def helpers_team(mat):
+    """Helpers, option A (#1110): two helpers side by side, so the button says "your staff" and is nobody in
+    particular. One with a brown bun in front, one with a dark crop behind and to the right."""
+    b, k = Builder(), Builder()
+    _staff_head(b, k, (1.0, 0.9, 0.3), 0.88, "skin_tan", "fur_charcoal")
+    _staff_head(b, k, (-0.7, 0.0, 0.0), 1.0, "skin_light", "fur_brown", bun=True)
+    return _fin(b, "HelpersTeam", mat, ink=k)
+
+
+def helpers_apron(mat):
+    """Helpers, option B (#1110): the staff apron again, fat this time: a wide mint apron with a thick pink neck
+    loop and waist bow, a big cream pocket with a pink paw, and the sponge and brush standing in it. As heavy as the
+    Shop and Build pictures (the first apron, `Staff`, was thin beside them)."""
+    b = Builder()
+    up = Matrix.Rotation(math.radians(90), 3, "X")
+    b.box((0, 0, 2.3), (1.5, 0.5, 1.3), "spa_mint")                                     # the bib
+    b.prism((0, 0, 0.95), [(-1.5, -0.95), (1.5, -0.95), (1.2, 0.95), (-1.2, 0.95)], 0.5, "spa_mint", bevel=True, rot=X)
+    b.box((0, 0, 1.78), (2.5, 0.6, 0.34), "nose_bubblegum")                             # the waistband
+    for sx in (-1, 1):
+        b.box((sx * 1.62, 0, 1.78), (0.7, 0.44, 0.7), "nose_bubblegum", rot=(math.radians(45), "Y"))   # its bow ends
+        b.box((sx * 0.56, 0, 3.22), (0.26, 0.4, 0.7), "nose_bubblegum")                 # the neck loop's sides
+    b.box((0, 0, 3.6), (1.38, 0.4, 0.26), "nose_bubblegum")                             # and its top
+    b.box((0, -0.3, 0.72), (1.7, 0.2, 1.0), "spa_cream")                                # the pocket
+    _paw(b, 0, -0.42, 0.66, 0.22, "nose_bubblegum", rot=up, depth=0.06)
+    b.box((-0.45, -0.3, 1.42), (0.7, 0.24, 0.6), "pastel_butter")                       # a sponge in it
+    b.box((0.5, -0.3, 1.5), (0.24, 0.2, 0.9), "spa_sky")                                # and a brush
+    b.box((0.5, -0.3, 2.06), (0.66, 0.26, 0.34), "spa_sky")
+    for dx in (-0.2, 0.0, 0.2):
+        b.box((0.5 + dx, -0.3, 2.32), (0.1, 0.14, 0.2), "foam", bevel=False)
+    return _fin(b, "HelpersApron", mat)
+
+
+def helpers_badge(mat):
+    """Helpers, option C (#1110): a staff badge. A fat cream card on a pink clip with one smiling helper on it and a
+    pink name bar."""
+    b, k = Builder(), Builder()
+    b.box((0, 0.3, 1.85), (3.3, 0.5, 3.6), "spa_cream")                                 # the card
+    b.box((0, 0.3, 3.86), (1.2, 0.6, 0.7), "nose_bubblegum")                            # the clip
+    b.box((0, 0.3, 4.28), (0.66, 0.5, 0.34), "pastel_lilac")
+    b.box((0, 0.02, 0.42), (2.7, 0.16, 0.44), "nose_bubblegum")                         # the name bar
+    b.box((0, -0.08, 0.42), (1.6, 0.06, 0.14), "foam", bevel=False)
+    _staff_head(b, k, (0, -0.25, 0.7), 1.0, "skin_tan", "fur_brown", bun=True)
+    return _fin(b, "HelpersBadge", mat, ink=k)
+
+
 def quests(mat):
     """Quests: a lilac clipboard with a gold clip, cream paper and one big green tick. A list of jobs to tick off."""
     b = Builder()
@@ -662,6 +741,9 @@ BUILDERS = {                                       # name -> (builder, (yaw, pit
     "Tools": (tools, (-24.0, 20.0)),
     "Helper": (helper, (-18.0, 10.0)),
     "Build": (build, (-14.0, 8.0)),
+    "HelpersTeam": (helpers_team, (-16.0, 10.0)),    # three options for the Helpers button (#1110)
+    "HelpersApron": (helpers_apron, (-16.0, 10.0)),
+    "HelpersBadge": (helpers_badge, (-16.0, 10.0)),
     "Camera": (camera, (-18.0, 12.0)),               # the small pictures (#251)
     "Paw": (paw, (-14.0, 8.0)),
     "Heart": (heart, (-14.0, 8.0)),
