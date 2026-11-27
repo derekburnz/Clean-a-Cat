@@ -68,19 +68,19 @@ local function quietOne(item: Instance)
 	if wanted[item] ~= nil then
 		return
 	end
-	local enabled = (item :: any).Enabled
-	if enabled ~= true then
+	local it: any = item
+	if it.Enabled ~= true then
 		return -- already off: its owner put it away, so it stays theirs
 	end
 	wanted[item] = true
-	(item :: any).Enabled = false
-	-- its owner may switch it on or off meanwhile: that is what it gets back
+	it.Enabled = false
+	-- its owner may switch it on meanwhile: it is switched off again, and gets that back at the end
 	table.insert(
 		watch,
-		item:GetPropertyChangedSignal("Enabled"):Connect(function()
-			if active and wanted[item] ~= nil and (item :: any).Enabled == true then
+		it:GetPropertyChangedSignal("Enabled"):Connect(function()
+			if active and wanted[item] ~= nil and it.Enabled == true then
 				wanted[item] = true
-				(item :: any).Enabled = false
+				it.Enabled = false
 			end
 		end)
 	)
@@ -174,7 +174,8 @@ function WashQuiet.stop()
 	table.clear(watch)
 	for item, enabled in wanted do
 		if item.Parent then
-			(item :: any).Enabled = enabled
+			local it: any = item
+			it.Enabled = enabled
 		end
 	end
 	table.clear(wanted)
