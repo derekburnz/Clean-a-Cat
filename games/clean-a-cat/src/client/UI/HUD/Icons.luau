@@ -11,7 +11,8 @@ local Icons = {}
 
 -- name -> "rbxassetid://<id>" once uploaded under the group (rule 18); "" draws the stand-in.
 Icons.IMAGES = {
-	Coins = "rbxassetid://116447888023490",
+	-- the HUD coin with a star on its face (Model-Agent, Derek 2026-11-27 12:50 PM ET: "star is fine"; upload run 46046127946)
+	Coins = "rbxassetid://108922632736355",
 	Index = "rbxassetid://121227338658862",
 	Settings = "rbxassetid://118282050361608",
 	Sponge = "",
