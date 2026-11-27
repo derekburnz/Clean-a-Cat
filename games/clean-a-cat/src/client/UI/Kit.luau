@@ -70,13 +70,17 @@ local DESIGN = Vector2.new(1280, 720)
 local SCALE_MIN, SCALE_MAX = 0.75, 1.3
 Kit.SCALE_MIN = SCALE_MIN -- below it the 14 px text floor no longer holds
 local SHORT_BELOW = 560 -- design pixels of height
+-- design pixels of height: below it the screen is very short (a small Android phone such as a Galaxy A06 in
+-- landscape, 338 real px under the top bar at the 0.75 floor), and the tallest windows drop a line (issue 988)
+local TINY_BELOW = 470
 local MIN_TEXT = 19 -- design pixels: 14 real px at the smallest scale (0.75), the screens' floor
 
-function Kit.screenScale(): (number, boolean)
+-- The screen scale, whether the screen is short, and whether it is very short (TINY_BELOW).
+function Kit.screenScale(): (number, boolean, boolean)
 	local camera = Workspace.CurrentCamera
 	local size = if camera then camera.ViewportSize else DESIGN
 	local scale = math.clamp(math.min(size.X / DESIGN.X, size.Y / DESIGN.Y), SCALE_MIN, SCALE_MAX)
-	return scale, size.Y / scale < SHORT_BELOW
+	return scale, size.Y / scale < SHORT_BELOW, size.Y / scale < TINY_BELOW
 end
 
 function Kit.corner(parent: Instance, radius: UDim)

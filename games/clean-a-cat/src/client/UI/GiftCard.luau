@@ -102,6 +102,7 @@ type Parts = {
 	petRarity: TextLabel,
 	petLine: TextLabel,
 	right: Frame,
+	rightList: UIListLayout,
 	rows: Frame,
 	rowList: UIListLayout,
 	claim: TextButton,
@@ -265,8 +266,13 @@ local function redraw()
 		return
 	end
 	local state = shownState()
-	local scale, short = Kit.screenScale()
+	local scale, short, tiny = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
+	if tiny then
+		-- a very short screen (a small Android phone): tighter gaps, so the claim button keeps on screen (issue 988)
+		s = table.clone(s)
+		s.rowGap = 4
+	end
 	if short and state.free then
 		-- four free rewards rows put Get Starcoat a few px under a small phone's bottom edge (issue 837): the rows
 		-- sit a little closer, the same rows at the same text sizes
@@ -279,7 +285,8 @@ local function redraw()
 	p.window.title.Text = GiftViewRules.title(state)
 	local pad = UDim.new(0, s.pad)
 	p.pad.PaddingLeft, p.pad.PaddingRight, p.pad.PaddingTop, p.pad.PaddingBottom =
-		pad, pad, UDim.new(0, s.pad + 2), pad
+		pad, pad, UDim.new(0, if tiny then 4 else s.pad + 2), if tiny then UDim.new(0, 4) else pad
+	p.rightList.Padding = UDim.new(0, if tiny then 4 else 10)
 	p.columns.Padding = UDim.new(0, s.gap)
 
 	-- the pet
@@ -542,7 +549,7 @@ function GiftCard.build(root: Instance): Frame
 	local right = frame("Steps", columnsFrame)
 	right.LayoutOrder = 2
 	right.AutomaticSize = Enum.AutomaticSize.Y
-	list(right, false, 10)
+	local rightList = list(right, false, 10)
 	local rows = frame("Rows", right)
 	rows.LayoutOrder = 1
 	rows.Size = UDim2.fromScale(1, 0)
@@ -574,6 +581,7 @@ function GiftCard.build(root: Instance): Frame
 		petRarity = petRarity,
 		petLine = petLine,
 		right = right,
+		rightList = rightList,
 		rows = rows,
 		rowList = rowList,
 		claim = claim,
