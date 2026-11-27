@@ -37,26 +37,19 @@ local function onUnlock(player: Player)
 	if save == nil or not near(player) then
 		return
 	end
-	local ok, reason = ExpansionRules.canUnlock(save.expansionUnlocked == true, save.coins)
+	local price = ExpansionRules.priceIn(game.GameId)
+	local ok, reason = ExpansionRules.canUnlock(save.expansionUnlocked == true, save.coins, price)
 	if not ok then
 		NetService.notice(player, reason or "Can't unlock yet", "warning")
 		return
 	end
-	save.coins -= ExpansionRules.PRICE
+	save.coins -= price
 	save.expansionUnlocked = true
 	player:SetAttribute(ExpansionRules.ATTRIBUTE, true)
 	WalletService.show(player)
 	StationService.refresh(player)
 	NetService.notice(player, "The back door is open!")
-	Telemetry.economy(
-		player,
-		"coins",
-		"sink",
-		ExpansionRules.PRICE,
-		save.coins,
-		"Shop",
-		"Expansion"
-	)
+	Telemetry.economy(player, "coins", "sink", price, save.coins, "Shop", "Expansion")
 end
 
 function ExpansionService.Init(_services: { [string]: any }) end

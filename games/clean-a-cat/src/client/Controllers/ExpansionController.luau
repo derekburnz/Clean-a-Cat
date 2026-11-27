@@ -1,6 +1,6 @@
 --!strict
 -- ExpansionController: the prompt at the player's own back door while it is locked (ExpansionRules, issue 1041),
--- behind the switch expansionDoor. It shows "Unlock · 500 coins" until the server's Player attribute
+-- behind the switch expansionDoor. It shows "Unlock · 1500 coins" (50 on dev) until the server's Player attribute
 -- ExpansionUnlocked is true; a tap asks the server (RequestUnlockExpansion), which checks the coins and the distance
 -- and opens the door. Nothing opens by itself, and the prompt never says "hurry".
 local Players = game:GetService("Players")
@@ -38,7 +38,7 @@ local function refresh()
 		part.CanTouch = false
 		place(part)
 		local made = Instance.new("ProximityPrompt")
-		made.ActionText = ExpansionRules.promptText()
+		made.ActionText = ExpansionRules.promptText(ExpansionRules.priceIn(game.GameId))
 		made.ObjectText = "Back door"
 		made.HoldDuration = 0.3
 		made.MaxActivationDistance = ExpansionRules.PROMPT_REACH
