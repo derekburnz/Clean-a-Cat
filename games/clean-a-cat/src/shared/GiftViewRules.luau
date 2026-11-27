@@ -8,6 +8,9 @@ local FreeRewardRules = require(script.Parent:WaitForChild("FreeRewardRules"))
 local GiftViewRules = {}
 
 -- What each free row gives, in words for the card.
+-- The favourite row's line with giftGroupOnly (issue 1068): an ask in its own right, never a step to the gift.
+GiftViewRules.FAVOURITE_ASK = "If you enjoy the spa"
+
 local function rewardText(key: string): string
 	return if key == "like" then `{FreeRewardRules.LIKE_COINS} coins` else "A free crate"
 end
@@ -45,6 +48,9 @@ export type State = {
 	-- (switch giftFlow, issue 968) the stand's stage from the Player attribute GiftStage: 1 the welcome gifts with one
 	-- Claim all, 2 the playtime gift, nil with the switch off (the card as before)
 	stage: number?,
+	-- (switch giftGroupOnly, issue 1068) the gift needs the group join only: the favourite row is still asked, as a
+	-- plain ask with no gift tied to it
+	groupOnly: boolean?,
 }
 
 export type Step = {
@@ -170,6 +176,7 @@ function GiftViewRules.steps(state: State): { Step }
 			favourite = state.favourite,
 			group = state.group,
 			claimed = state.claimed,
+			groupOnly = state.groupOnly,
 		})
 		return { likeAsk(free), base[1], base[2] }
 	end
@@ -180,6 +187,7 @@ function GiftViewRules.steps(state: State): { Step }
 			favourite = state.favourite,
 			group = state.group,
 			claimed = state.claimed,
+			groupOnly = state.groupOnly,
 		})
 		return { likeStep(free), base[1], base[2], playStep(free) }
 	end
@@ -188,7 +196,10 @@ function GiftViewRules.steps(state: State): { Step }
 			key = "favourite",
 			icon = "Star",
 			title = "Favourite the game",
-			line = if state.favourite then "Done, thank you!" else "So you can find the spa again",
+			line = if state.favourite
+				then "Done, thank you!"
+				elseif state.groupOnly then GiftViewRules.FAVOURITE_ASK
+				else "So you can find the spa again",
 			done = state.favourite,
 			action = if state.favourite then nil else "Favourite",
 		},
@@ -211,9 +222,9 @@ function GiftViewRules.steps(state: State): { Step }
 	}
 end
 
--- The pet comes once both checked steps are done, and only once.
+-- The pet comes once both checked steps are done (the group alone with groupOnly), and only once.
 function GiftViewRules.ready(state: State): boolean
-	return state.favourite and state.group and not state.claimed
+	return (state.favourite or state.groupOnly == true) and state.group and not state.claimed
 end
 
 -- (giftFlow) The card's title at each stage.
@@ -286,7 +297,8 @@ function GiftViewRules.waitLine(state: State): string?
 	if state.claimed or GiftViewRules.ready(state) then
 		return nil
 	end
-	local left = (if state.favourite then 0 else 1) + (if state.group then 0 else 1)
+	local left = (if state.favourite or state.groupOnly then 0 else 1)
+		+ (if state.group then 0 else 1)
 	return if left == 1 then "One step to go" else "Two steps to go"
 end
 
