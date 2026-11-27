@@ -125,9 +125,11 @@ function HelperFetchRules.viaOf(model: Instance): { Vector3 }
 end
 
 local function pointsOf(from: Vector3, to: Vector3, via: { Vector3 }?): { Vector3 }
-	local points = { from }
-	for _, point in via or {} do
-		table.insert(points, point)
+	local points: { Vector3 } = { from }
+	if via then
+		for _, point in via do
+			table.insert(points, point)
+		end
 	end
 	table.insert(points, to)
 	return points
