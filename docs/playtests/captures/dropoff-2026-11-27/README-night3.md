@@ -227,3 +227,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## Starter ad and the Suds tip (PR 1130) on main 31ebf1a, 2026-11-27
 
 `1130-<state>-<device>.jpg`: a fresh play session per device, with the tip up and then closed.
+
+## Buy pictures (PR 1131, issue 1122) on main 734d1d7, iphone_13, 2026-11-27
+
+`1131-*`: the Build window rows, a QA sheet of all 18 new pictures (each drawn in its own ImageLabel), the Shop, and the Starter window.
