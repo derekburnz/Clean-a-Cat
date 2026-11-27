@@ -118,3 +118,9 @@ customerWalk is on (CustomerMotion enabled) and the ArmR joint is recognised. Sa
 - Standing customers with no carrier showing (CarrierHidden true), near (8 to 59 studs) and far (60 to 95): Sunny's ArmR stays at 32.4 degrees, Rae's at 21.5 and Juno's at 21.5. That is exactly their CarryArmOut, never 0. 2139 failing samples.
 - Walking customers with a carrier showing, 67 to 76 studs away: Juno at 21.5 degrees and Pearl at 32.4, so the arm stays out there as it should. The arm-to-leg gap measured -0.47 and -0.70 studs (my sideways estimate, so they may touch).
 - Not reached: a leave with a PackedCat (no heart ran out in the window), and a figure-budget effect (the arms are out for every figure anyway).
+
+## 1063 noVipRoom, VIP door fill and tape, main 61dff0a (seeded save with stations.VipRoom = true)
+- The VIP doorway at SpotVipDoor (-12, 0.5, 6.5) is filled by CleanACat_Area_VipDoorFill (8 x 9.05 x 1, 11 parts). From inside (vip-door-fill-1063-inside-61dff0a.jpg and the room view) it reads as plain wall with the teal dado, the pink skirting and a framed paw print. From outside (vip-door-fill-1063-outside-61dff0a.jpg) it is plain grey wall over the pink band. The back wall shows only the expansion door.
+- The VIP Room is gone from the Build window (Second Tub, Third Tub, Fourth Tub and Garden under Builds; Bubble Soap, Pro Brush and Silk bow under Upgrades). No VIP prompt or VIP text remains in the world.
+- The back door tape and building site have no pink. The visible part colours are #fff6ec, #fff9f2, #f2c14e, #f09640, #a8e6cf, #8fd3fe, #f6dfa0, #363c4c, #e3c49c, #a9afb8 and #c98a4b (0 pinkish parts).
+- Refund: coins went from 60000 to 75003 at join (+15000, plus 3 from Jo). The notice had gone by the time I read the GUI, so I did not see its text. A second join cannot be tested here, since a local place has no DataStore.
