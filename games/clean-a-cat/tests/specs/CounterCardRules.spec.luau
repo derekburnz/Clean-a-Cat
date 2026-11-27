@@ -59,5 +59,10 @@ return function()
 				expect(CounterCardRules.up(nil)).to.equal(CounterCardRules.UP)
 			end
 		)
+		it("keeps every slim bar in one row, narrower than the gap between places", function()
+			expect(CounterCardRules.up(1, true)).to.equal(CounterCardRules.SLIM_UP)
+			expect(CounterCardRules.up(2, true)).to.equal(CounterCardRules.SLIM_UP)
+			expect(CounterCardRules.SLIM_SIZE.X < 3.2).to.equal(true)
+		end)
 	end)
 end
