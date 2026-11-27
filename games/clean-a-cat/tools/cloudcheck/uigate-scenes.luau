@@ -806,6 +806,34 @@ local SCENES = {
 			UI.open("Gift")
 		end,
 	},
+	-- giftGroupOnly (issue 1068): the welcome gifts need the group join alone; the favourite row is a plain ask.
+	{
+		"GiftGroupOnly",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			flag("giftFlow", true)
+			flag("giftGroupOnly", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", 1)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = false,
+				claimed = false,
+				groupOnly = true,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 500,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
 	-- The gift stand in stages (switch giftFlow, issue 968): the welcome gifts with one Claim all, then the playtime gift.
 	{
 		"GiftWelcome",
@@ -1568,6 +1596,7 @@ function Scenes.close()
 	flag("giftFlow", false)
 	flag("likeHowTo", false)
 	game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", nil)
+	flag("giftGroupOnly", false)
 	flag("menuContrast", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)
