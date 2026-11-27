@@ -6,7 +6,7 @@ Rules behind it (CLAUDE.md rules 16 to 18): dev first, then live on his word; a 
 
 ## 0. Before the day (all on dev, all green)
 1. Derek has played the dev game on his iPhone 12 and said it is good. The tested commit is the sha printed in that dev publish run's summary. Write the full sha here before anything else: `____`.
-2. Review-QA has a pass on every PR in that sha and `docs/reviews/` has a current policy check of everything sold (`2026-11-26-policy-check.md`, recheck once real live ids exist).
+2. Review-QA has a pass on every PR in that sha and `docs/reviews/` has a current policy check of everything sold (`docs/reviews/2026-11-27-policy-check.md`, recheck once real live ids exist).
 3. Speed: `docs/playtests/speed-budget.md` passes on the iPhone 12, including `wideStreet` and `bigSpa` (30 fps or better; see that page). They are read when the street is placed, so each needs a new server once flipped.
 4. Every image that will go live passed the image gate (`Review-QA-Agent/image-gate.md`) and is on `.github/upload-allow.txt`. No promo image or video shows the fur clumps or puffs.
 5. The Roblox account that holds the keys is clear, and the secrets work: one introspect run per key says "not moderated".
@@ -36,7 +36,7 @@ Run `flags.yml` one run at a time, `target` live, then `action: show` to confirm
 Order, and why:
 1. **Quiet foundations:** `onboardingFunnel` (analytics; Growth-Agent writes the stop lines before the first read), `askQueue`, `landscapeLock`, `comfortSettings`, `streetLoadTest` stays off.
 2. **The first minutes:** `openingBox`, `carryHold`, `sudsMascot`, `sudsWash`, `washView`, `washScene`, `washScreen`, `washChecklist`, the tutorial switches (`tutorialDim`, `tutorialTip`, `tutorialTrail`, `trailLine`, `contextAsks`), `openingBonus`, `recapCard`. Every tutorial and first-session change is one of these, so Derek's own run on dev must have covered them.
-3. **Customers and the spa:** `customers`, `townsfolk`, `customerWalk`, `customerCarry`, `heartBar`, `dirtLevels`, `bowTiers`, `bowDrag`, `workers`, `helpersWindow`, `helperFetch`, `stations`.
+3. **Customers and the spa:** `customers`, `townsfolk`, `customerWalk`, `customerCarry`, `counterLine`, `counterCrate`, `counterCards`, `heartBar`, `dirtLevels`, `bowTiers`, `bowDrag`, `workers`, `helpersWindow`, `helperFetch`, `stations`.
 4. **Look, sound and feel:** the effects and sound switches (`scrubEffects`, `revealEffects`, `fluffEffects`, `spaMusic`, `uiSounds`, `claimFx`, `counterSounds`, `coinBump`, `catMotion`, `catWalkOut`, `photoFx`, `springUi`).
 5. **HUD and menus:** `hudTidy`, `fewerPills`, `helperPopups`, `menuContrast`, `toastCards`, `settingsCard`, `queueWindow`, `catIndexWindow`.
 6. **Builds and progress:** `builds`, then `tubBuilds` only after the old station refund has run (`oldRefunds`), then `quests`, `checkinCard` (only where `pets` will be on), `visiting`, `friendBonus`.
@@ -44,7 +44,7 @@ Order, and why:
    - `passes` after the live passes and their ids exist.
    - `finishNow` after the five Finish now products exist.
    - `pets` and `crateShop` after the questionnaire is in, the live crate products exist and the policy check is current. `giftStand`, `giftCrate`, `giftFlow` with `freeRewards` and the like asks (`likeAsk`, then `likeAskPurchase` last, each its own switch).
-   - the Starter Pack switch last of all, so its 72 hour clock only starts for players who see everything it buys.
+   - the `starterPack` switch last of all, so its 72 hour clock only starts for players who see everything it buys.
 8. **Held until they pass the iPhone 12:** `wideStreet`, `bigSpa`, `worldBackdrop`. They need a new server once flipped.
 
 Never on: `toolCursor`, `stinkEffects` (deleted). `gradeStars` is set once, before public release, and is never a rollback switch: stars saved under one setting count differently under the other.
