@@ -16,11 +16,12 @@
 --
 -- The tools touch the coat (issue 1137, Derek: "the helper should pretty much be actually touching the cat with the
 -- brush make the helper lean over if needed"): each step names spots on the cat (HelperWash.target), a ray finds the
--- coat under them, and a small solve (HelperWash.solve) sets the waist's lean and the arm's raise and sideways turn so
--- the brush's bristles, the towel's underside, or the hand over the back for the shampoo and shower, meet that spot.
--- The helper leans only as far as the arm cannot reach. CustomerMotion drives it: HelperWash.pose gives the turns and
--- the lean, CustomerMotion leans the torso about the hips (legs planted), then HelperWash.place puts the tool at the
--- hand and runs the effects.
+-- coat under them, and a small solve (HelperWash.solve) steps the helper in toward the tub (never into it) and sets
+-- the arm's raise and sideways turn, with at most a slight bend at the waist, so the brush's bristles, the towel's
+-- underside, or the hand over the back for the shampoo and shower, meet that spot (Derek, 2:28 PM ET: "stands close
+-- enough that its arms can reach over and actually scrub it", not bending into the cat). CustomerMotion drives it:
+-- HelperWash.pose gives the turns, the step and the lean, CustomerMotion moves and leans the figure (legs with it),
+-- then HelperWash.place puts the tool at the hand and runs the effects.
 -- Budget: effects and sounds only for helpers within NEAR studs, one small emitter and one beam each; Less sparkle
 -- halves the puffs; Reduced Motion holds each step's pose with the tool still and keeps only the water line.
 --
@@ -69,13 +70,20 @@ HelperWash.POUR_HOVER = 0.8 -- studs: the hand over the back while pouring, the 
 HelperWash.SPRAY_HOVER = 1.1 -- the hand over the coat while rinsing, the head about a stud off
 HelperWash.PAT_LIFT = 0.3 -- studs a towel pat lifts
 
--- The solve (issue 1137): lean at the waist, raise and turn the arm, so the tool's contact point meets the spot.
-HelperWash.LEAN_MAX = math.rad(45)
-HelperWash.LEAN_COST = 0.5 -- studs of miss one radian of lean is worth: the arm reaches first, the waist bends when
--- it must
+-- The solve (issue 1137): step in toward the tub, raise and turn the arm, and bend at the waist only a little, so
+-- the tool's contact point meets the spot. Derek on the first lean (2026-11-27 2:28 PM ET): "the helper bends over and
+-- puts its model inside the cats face just make it so it stands close enough that its arms can reach over and actually
+-- scrub it". So the helper steps up to the tub (never into it: ROOM finds how far it can go) and reaches with the arms;
+-- the waist bends at most LEAN_MAX, the head stays well clear of the cat.
+HelperWash.STEP_MAX = 2 -- studs the helper may step in from the server's spot
+HelperWash.CLEAR = 0.3 -- studs left between the helper's front and the tub (or the cat) after stepping in
+HelperWash.LEAN_MAX = math.rad(12)
+HelperWash.LEAN_COST = 3 -- studs of miss one radian of lean is worth: bending is the last resort
+HelperWash.STEP_COST = 0.08 -- per stud stepped in: cheap, so the helper walks up rather than bends
 HelperWash.ARM_MIN = 0
 HelperWash.ARM_MAX = math.rad(140)
 HelperWash.SIDE_MAX = math.rad(45)
+HelperWash.ROOM_SECONDS = 1 -- how often the room in front of the helper is measured again
 
 HelperWash.TOOLS = table.freeze({
 	soap = "CleanACat_Tool_Shampoo",
@@ -346,21 +354,33 @@ export type State = {
 	strokes: number,
 	spotR: Vector3?, -- the worked spots, eased (world)
 	spotL: Vector3?,
-	qR: { number }, -- the right side's solve: lean, arm raise, sideways turn (radians), warm started each frame
-	qL: { number }, -- the left arm's: raise, sideways turn (the lean is the right side's)
+	qR: { number }, -- the right side's solve: step in (studs), lean, arm raise, sideways turn (radians), warm started
+	qL: { number }, -- the left arm's: raise, sideways turn (the step and lean are the right side's)
+	room: number, -- studs the helper can step in before reaching the tub
+	roomAt: number, -- when room was measured
+	roomRay: RaycastParams?,
 	contact: Vector3, -- the tool's contact point in the Grip's frame (the bristles' face, the towel's underside)
 }
 
 -- CustomerMotion's forward reach for one staff rig: the Grip's world frame (right hand, or GripL when `left`) with the
 -- waist leaned `lean` and that arm raised `arm` and turned `side`; nil when the rig has no such hand.
-export type Reach = (lean: number, arm: number, side: number, left: boolean) -> CFrame?
+export type Reach = {
+	-- the Grip's world frame (right hand, or GripL when `left`) with the helper stepped in `step` studs, the waist
+	-- leaned `lean` and that arm raised `arm` and turned `side`; nil when the rig has no such hand
+	hand: (step: number, lean: number, arm: number, side: number, left: boolean) -> CFrame?,
+	home: () -> CFrame, -- the Body part's frame where the server put the helper (no step, no lean)
+	depth: number, -- studs from the Body part's middle to its front
+}
 
 function HelperWash.new(): State
 	return {
 		beatWas = false,
 		strokes = 0,
-		qR = { 0, HelperWash.REACH, 0 },
+		qR = { 0, 0, HelperWash.REACH, 0 },
 		qL = { HelperWash.REACH, 0 },
+		room = 0,
+		roomAt = -math.huge,
+		roomRay = nil,
 		contact = Vector3.new(0, -0.25, 0),
 	}
 end
@@ -422,17 +442,62 @@ local function follow(from: Vector3?, to: Vector3, dt: number): Vector3
 	return to + ((from :: Vector3) - to) * math.exp(-HelperWash.FOLLOW * dt)
 end
 
-local LO_R, HI_R = table.freeze({ 0, 0, 0 }), table.freeze({ 0, 0, 0 }) -- built on first use (no math at load)
+local LO_R, HI_R = table.freeze({ 0, 0, 0, 0 }), table.freeze({ 0, 0, 0, 0 }) -- built on first use (no math at load)
 local LO_L, HI_L = table.freeze({ 0, 0 }), table.freeze({ 0, 0 })
 local bounds = false
 local function setBounds()
 	if not bounds then
 		bounds = true
-		LO_R = table.freeze({ 0, HelperWash.ARM_MIN, -HelperWash.SIDE_MAX })
-		HI_R = table.freeze({ HelperWash.LEAN_MAX, HelperWash.ARM_MAX, HelperWash.SIDE_MAX })
+		LO_R = table.freeze({ 0, 0, HelperWash.ARM_MIN, -HelperWash.SIDE_MAX })
+		HI_R = table.freeze({
+			HelperWash.STEP_MAX,
+			HelperWash.LEAN_MAX,
+			HelperWash.ARM_MAX,
+			HelperWash.SIDE_MAX,
+		})
 		LO_L = table.freeze({ HelperWash.ARM_MIN, -HelperWash.SIDE_MAX })
 		HI_L = table.freeze({ HelperWash.ARM_MAX, HelperWash.SIDE_MAX })
 	end
+end
+
+-- How far the helper can step in toward the tub: rays forward from their spot at hip and knee height (the tub's rim
+-- or side, or the cat), less the body's half depth and CLEAR. Measured once a ROOM_SECONDS: the stand never moves.
+local function roomOf(state: State, staff: Model, reach: Reach, now: number): number
+	if now - state.roomAt < HelperWash.ROOM_SECONDS then
+		return state.room
+	end
+	state.roomAt = now
+	local params = state.roomRay
+	if params == nil then
+		local made = RaycastParams.new()
+		made.FilterType = Enum.RaycastFilterType.Exclude
+		state.roomRay = made
+		params = made
+	end
+	local p = params :: RaycastParams
+	local skip: { Instance } = { staff }
+	if state.tool then
+		table.insert(skip, state.tool :: Model)
+	end
+	p.FilterDescendantsInstances = skip
+	local home = reach.home()
+	local ahead = Vector3.new(home.LookVector.X, 0, home.LookVector.Z)
+	if ahead.Magnitude < 1e-3 then
+		state.room = 0
+		return 0
+	end
+	ahead = ahead.Unit
+	local far = HelperWash.STEP_MAX + reach.depth + HelperWash.CLEAR + 0.5
+	local nearest = far
+	for _, drop in { 0.6, 1.5 } do
+		local from = home.Position - Vector3.yAxis * drop
+		local hit = Workspace:Raycast(from, ahead * far, p)
+		if hit then
+			nearest = math.min(nearest, hit.Distance)
+		end
+	end
+	state.room = math.clamp(nearest - reach.depth - HelperWash.CLEAR, 0, HelperWash.STEP_MAX)
+	return state.room
 end
 
 -- Lays the step over `pose` by `amount`: the spots on the coat this frame, then the lean and arm turns that put the
@@ -448,12 +513,12 @@ function HelperWash.pose(
 	still: boolean,
 	dt: number,
 	reach: Reach
-): (number?, number?, number?)
+): (number?, number?, number?, number?)
 	local cat = catOf(staff)
 	local progress = if cat then cat:GetAttribute(WorkerRules.PROGRESS_ATTRIBUTE) else nil
 	if cat == nil or type(progress) ~= "number" then
 		state.cat = nil
-		return nil, nil, nil
+		return nil, nil, nil, nil
 	end
 	local catModel = cat :: Model
 	state.cat = catModel
@@ -474,23 +539,25 @@ function HelperWash.pose(
 	local contact = if phase == "soap" or phase == "rinse" then Vector3.zero else state.contact
 	local tr = state.spotR :: Vector3
 	local hit = true
-	HelperWash.solve(state.qR, LO_R, HI_R, function(q: { number }): { number }
-		local grip = reach(q[1], q[2], q[3], false)
+	local hi = table.clone(HI_R)
+	hi[1] = roomOf(state, staff, reach, now)
+	HelperWash.solve(state.qR, LO_R, hi, function(q: { number }): { number }
+		local grip = reach.hand(q[1], q[2], q[3], q[4], false)
 		if grip == nil then
 			hit = false
-			return { tr.X, tr.Y, tr.Z, 0 }
+			return { tr.X, tr.Y, tr.Z, 0, 0 }
 		end
 		local p = grip * contact
-		return { p.X, p.Y, p.Z, q[1] * HelperWash.LEAN_COST }
-	end, { tr.X, tr.Y, tr.Z, 0 }, 2)
+		return { p.X, p.Y, p.Z, q[1] * HelperWash.STEP_COST, q[2] * HelperWash.LEAN_COST }
+	end, { tr.X, tr.Y, tr.Z, 0, 0 }, 2)
 	if not hit then
 		state.cat = nil
-		return nil, nil, nil
+		return nil, nil, nil, nil
 	end
-	local lean = state.qR[1]
+	local stepIn, lean = state.qR[1], state.qR[2]
 	local tl = state.spotL :: Vector3
 	HelperWash.solve(state.qL, LO_L, HI_L, function(q: { number }): { number }
-		local grip = reach(lean, q[1], q[2], true)
+		local grip = reach.hand(stepIn, lean, q[1], q[2], true)
 		if grip == nil then
 			return { tl.X, tl.Y, tl.Z }
 		end
@@ -498,11 +565,11 @@ function HelperWash.pose(
 		return { p.X, p.Y, p.Z }
 	end, { tl.X, tl.Y, tl.Z }, 2)
 	local a = math.clamp(amount, 0, 1)
-	pose.armR += (state.qR[2] - pose.armR) * a
+	pose.armR += (state.qR[3] - pose.armR) * a
 	pose.armL += (state.qL[1] - pose.armL) * a
 	pose.headPitch += (want.headPitch - pose.headPitch) * a
 	pose.headYaw += (want.headYaw - pose.headYaw) * a
-	return state.qL[2] * a, state.qR[3] * a, lean * a
+	return state.qL[2] * a, state.qR[4] * a, lean * a, stepIn * a
 end
 
 local function dropTool(state: State)

@@ -85,8 +85,10 @@ type Rig = {
 	sideR: number,
 	near: boolean, -- within HelperWash.NEAR of the camera this frame
 	lean: number, -- radians the torso leans forward at the hips (HelperWash, issue 1137); 0 otherwise
-	leanWritten: number, -- the lean last written to the torso parts
-	leaned: boolean, -- staff that have leaned at least once (only they are ever straightened by baseOf)
+	step: number, -- studs the helper steps in toward the tub while washing (HelperWash, Derek 2026-11-27); 0 otherwise
+	leanWritten: number, -- the lean plus step last written (0: the figure stands where the server put it)
+	leaned: boolean, -- staff that have leaned or stepped at least once (only they are ever straightened by baseOf)
+	server: CFrame, -- staff: the Body part's frame as the server (or a walk) last put it, before any step or lean
 	torso: { { part: BasePart, offset: CFrame } }, -- staff: the torso's other parts, in the Body part's frame
 	hip: CFrame, -- the lean's pivot in the Body part's frame: the bottom of the torso
 	grips: { [string]: CFrame }, -- each hand's Grip in its arm's pivot frame, by arm key, found once
@@ -95,7 +97,8 @@ type Rig = {
 }
 
 -- A staff rig's forward reach (set below, used by the closure attach gives each staff rig).
-local reachOf: (rig: Rig, lean: number, arm: number, side: number, left: boolean) -> CFrame?
+local reachOf: (rig: Rig, step: number, lean: number, arm: number, side: number, left: boolean) -> CFrame?
+local baseOf: (rig: Rig) -> CFrame
 
 -- Whether a helper is holding the cat on Gameplay's walk at server time `now` (HelperFetchRules.pose).
 function CustomerMotion.holding(model: Model, now: number): boolean
@@ -278,8 +281,10 @@ local function attach(model: Model)
 		sideR = 0,
 		near = false,
 		lean = 0,
+		step = 0,
 		leanWritten = 0,
 		leaned = false,
+		server = body.CFrame,
 		torso = torso,
 		hip = CFrame.new(0, -body.Size.Y / 2, 0),
 		grips = {},
@@ -288,9 +293,21 @@ local function attach(model: Model)
 	}
 	local rig = rigs[model]
 	if staff then
-		rig.reach = function(lean: number, arm: number, side: number, left: boolean): CFrame?
-			return reachOf(rig, lean, arm, side, left)
-		end
+		rig.reach = {
+			hand = function(
+				step: number,
+				lean: number,
+				arm: number,
+				side: number,
+				left: boolean
+			): CFrame?
+				return reachOf(rig, step, lean, arm, side, left)
+			end,
+			home = function(): CFrame
+				return baseOf(rig)
+			end,
+			depth = body.Size.Z / 2,
+		}
 	end
 	local names = {}
 	for key in joints do
@@ -300,23 +317,41 @@ local function attach(model: Model)
 	model:SetAttribute(CustomerMotion.RIG_ATTRIBUTE, "rig " .. table.concat(names, " "))
 end
 
--- The Body part's frame standing straight. Staff always stand upright, and the lean turns about the hip, which stays
--- put, so the upright frame comes back from the leaned one: the hip point and the facing, flattened. That also undoes a
--- lean a walk or a move copied from a leaned pivot (HelperFetchController takes the model's pivot as home).
-local function baseOf(rig: Rig): CFrame
+-- The Body part's frame where the server (or a walk) put it: no step in and no lean. A write that is not ours (the
+-- body moved since apply wrote it) is the new home. Staff always stand upright, so a rig that has leaned also
+-- straightens a home copied from a leaned pivot, about the hip (which a lean leaves in place) with the facing flattened.
+-- Customers are never stepped or leaned: theirs is the body as it is.
+baseOf = function(rig: Rig): CFrame
 	local cf = rig.body.CFrame
-	-- only a rig that has leaned is ever straightened: a figure built or placed a little off upright stays as it is
-	if not rig.leaned or (rig.leanWritten == 0 and cf.UpVector.Y > 0.9995) then
+	if not rig.staff then
 		return cf
 	end
-	local hip = cf * rig.hip.Position
-	local look = cf.LookVector
-	local flat = Vector3.new(look.X, 0, look.Z)
-	if flat.Magnitude < 1e-3 then
-		local up = cf.UpVector
-		flat = Vector3.new(up.X, 0, up.Z) -- leaned past level: the top points the way they face
+	if cf ~= rig.appliedAt then
+		rig.server = cf
 	end
-	return CFrame.lookAt(hip, hip + flat.Unit) * rig.hip:Inverse()
+	local home = rig.server
+	if rig.leaned and home.UpVector.Y <= 0.9995 then
+		local hip = home * rig.hip.Position
+		local look = home.LookVector
+		local flat = Vector3.new(look.X, 0, look.Z)
+		if flat.Magnitude < 1e-3 then
+			local up = home.UpVector
+			flat = Vector3.new(up.X, 0, up.Z) -- leaned past level: the top points the way they face
+		end
+		home = CFrame.lookAt(hip, hip + flat.Unit) * rig.hip:Inverse()
+		rig.server = home
+	end
+	return home
+end
+
+-- The model's pivot as the server put it, before any step in or lean: a walk takes this as its home
+-- (HelperFetchController), so a helper never walks off and back with this frame's lean or step baked in.
+function CustomerMotion.restPivot(model: Model): CFrame
+	local rig = rigs[model]
+	if rig == nil or not rig.staff or rig.body.Parent == nil then
+		return model:GetPivot()
+	end
+	return baseOf(rig) * rig.body.CFrame:ToObjectSpace(model:GetPivot())
 end
 
 -- The Body part's frame leaned `lean` forward (their -Z) about the hip.
@@ -333,13 +368,7 @@ local torsoFrames: { CFrame } = {}
 -- Moves the Body part and the torso's other parts to `bodyCF` (staff only, and only when the lean changed or a move
 -- straightened them), all in one BulkMoveTo.
 local function writeTorso(rig: Rig, bodyCF: CFrame)
-	if #rig.torso == 0 and not rig.staff then
-		return
-	end
-	if rig.lean == 0 and rig.leanWritten == 0 and rig.body.CFrame == bodyCF then
-		return
-	end
-	if rig.lean == rig.leanWritten and rig.body.CFrame == bodyCF then
+	if not rig.staff or rig.body.CFrame == bodyCF then
 		return
 	end
 	table.clear(torsoParts)
@@ -353,8 +382,8 @@ local function writeTorso(rig: Rig, bodyCF: CFrame)
 		end
 	end
 	Workspace:BulkMoveTo(torsoParts, torsoFrames, Enum.BulkMoveMode.FireCFrameChanged)
-	rig.leanWritten = rig.lean
-	if rig.lean ~= 0 then
+	rig.leanWritten = rig.lean + rig.step
+	if rig.leanWritten ~= 0 then
 		rig.leaned = true
 	end
 end
@@ -380,13 +409,20 @@ local function gripIn(rig: Rig, left: boolean): CFrame?
 end
 
 -- Where a hand's Grip would be with the waist leaned `lean` and that arm at `arm` and `side` (as apply turns it).
-reachOf = function(rig: Rig, lean: number, arm: number, side: number, left: boolean): CFrame?
+reachOf = function(
+	rig: Rig,
+	step: number,
+	lean: number,
+	arm: number,
+	side: number,
+	left: boolean
+): CFrame?
 	local joint = rig.joints[if left then "ArmL" else "ArmR"]
 	local inArm = gripIn(rig, left)
 	if joint == nil or inArm == nil then
 		return nil
 	end
-	local bodyCF = leaned(rig, baseOf(rig), lean)
+	local bodyCF = leaned(rig, baseOf(rig) * CFrame.new(0, 0, -step), lean)
 	local rotation = if left
 		then CFrame.Angles(0, -side, 0) * CFrame.Angles(arm, 0, 0)
 		else CFrame.Angles(0, 0, -rig.armIn) * CFrame.Angles(0, side, 0) * CFrame.Angles(
@@ -406,6 +442,9 @@ end
 
 local function apply(rig: Rig, pose: CustomerPose.Pose)
 	local base = baseOf(rig)
+	if rig.step ~= 0 then
+		base *= CFrame.new(0, 0, -rig.step) -- stepped in toward the tub, facing it (their -Z)
+	end
 	local bodyCF = leaned(rig, base, rig.lean)
 	writeTorso(rig, bodyCF)
 	rig.appliedAt = rig.body.CFrame
@@ -474,6 +513,7 @@ local function stopHelper(rig: Rig)
 	rig.sideL = 0
 	rig.sideR = 0
 	rig.lean = 0
+	rig.step = 0
 end
 
 local function toRest(rig: Rig)
@@ -499,7 +539,7 @@ local function update(rig: Rig, now: number)
 	local dt = math.min(now - rig.updatedAt, 0.25)
 	rig.updatedAt = now
 	-- the hip, which a lean leaves in place, so leaning over the tub never reads as a step
-	local position = rig.body.CFrame * rig.hip.Position
+	local position = baseOf(rig) * rig.hip.Position
 	local moved = Vector3.new(position.X - rig.last.X, 0, position.Z - rig.last.Z).Magnitude
 	rig.last = position
 	if moved > 20 then
@@ -532,12 +572,12 @@ local function update(rig: Rig, now: number)
 		local washing = rig.model:GetAttribute("Washing") == true
 		rig.wash = CustomerPose.approach(rig.wash, if washing then 1 else 0, StaffPose.BLEND, dt)
 		local amount = rig.wash * (1 - rig.amount)
-		local sideL, sideR, lean = nil, nil, nil
+		local sideL, sideR, lean, stepIn = nil, nil, nil, nil
 		local reach = rig.reach
 		if washing and reach and HelperWash.on() then
 			local helper = rig.helper or HelperWash.new()
 			rig.helper = helper
-			sideL, sideR, lean = HelperWash.pose(
+			sideL, sideR, lean, stepIn = HelperWash.pose(
 				helper,
 				rig.model,
 				rig.pose,
@@ -549,7 +589,7 @@ local function update(rig: Rig, now: number)
 				reach
 			)
 		end
-		if sideL == nil or sideR == nil or lean == nil then
+		if sideL == nil or sideR == nil or lean == nil or stepIn == nil then
 			-- no step to show (switch off, no cat in the stand, or the wash just ended): the plain rub
 			stopHelper(rig)
 			StaffPose.scrub(rig.pose, now, rig.seed, amount, still)
@@ -557,6 +597,7 @@ local function update(rig: Rig, now: number)
 			rig.sideL = sideL
 			rig.sideR = sideR
 			rig.lean = lean
+			rig.step = stepIn
 		end
 		local carrying = LiveFlags.isOn(HelperFetchRules.FLAG)
 			and CustomerMotion.holding(rig.model, Workspace:GetServerTimeNow())
@@ -609,7 +650,7 @@ local function step()
 		local distance = (rig.body.Position - from).Magnitude
 		if distance > CustomerMotion.FAR or budget <= 0 then
 			toRest(rig)
-			rig.last = rig.body.CFrame * rig.hip.Position
+			rig.last = baseOf(rig) * rig.hip.Position
 			rig.updatedAt = now
 			continue
 		end
@@ -647,7 +688,7 @@ function CustomerMotion.carryArms(model: Model): (CFrame?, { Vector3 }?)
 	local out: { Vector3 } = {}
 	for _, left in { true, false } do
 		local joint = rig.joints[if left then "ArmL" else "ArmR"]
-		local grip = reachOf(rig, 0, if left then rig.pose.armL else rig.pose.armR, 0, left)
+		local grip = reachOf(rig, 0, 0, if left then rig.pose.armL else rig.pose.armR, 0, left)
 		if joint == nil or grip == nil then
 			return nil, nil
 		end
