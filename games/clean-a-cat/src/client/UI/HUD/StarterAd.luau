@@ -39,6 +39,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
@@ -69,6 +70,7 @@ local TOP = 108 -- design px from the root's top: under the coin pill and the fr
 -- MIN_FIT of its size would not fit; the Shop still sells the pack.
 local BOTTOM_ROOM = 120 -- design px kept clear above the bottom edge on a touch screen: the jump button's top
 local BOTTOM_EDGE = 16 -- design px kept clear with a mouse or a controller, where no jump button is drawn
+local FLOAT_ROOM = 8 -- starterFloat: design px more above the jump button (they touched on an iPhone 7, Sync on 1119)
 local CHIP_HANG = 13 -- design px: the time chip hangs half its height under the card
 local MIN_FIT = 0.6
 local RED = Color3.fromHex("E0475B")
@@ -142,6 +144,8 @@ type Parts = {
 	stack: UIListLayout,
 	shadow: Frame,
 	inks: { UIStroke },
+	hit: TextButton,
+	press: UIScale,
 }
 
 local parts: Parts? = nil
@@ -228,6 +232,9 @@ local function fit()
 	end
 	local bottom = root.AbsolutePosition.Y + root.AbsoluteSize.Y
 	local clear = if UserInputService.TouchEnabled then BOTTOM_ROOM else BOTTOM_EDGE
+	if StarterAd.floating() then
+		clear += FLOAT_ROOM
+	end
 	local room = (bottom - root.AbsolutePosition.Y) / scale - TOP - clear
 	local k = math.min(1, room / natural)
 	local small = k < MIN_FIT
@@ -313,10 +320,16 @@ local function redraw()
 	end
 	p.info.Visible = calm
 	p.info.Position = UDim2.new(1, -8, 0, 6 + ribbonHeight + 8) -- inside the card, under the ribbon's right end
-	-- starterFloat: the SAVE tag sits by Midas's top-left, under the words, not over them
+	-- starterFloat: the SAVE tag hangs from just under the words by Midas's top-left, never over them (Sync on 1119)
+	p.tag.AnchorPoint = if float then Vector2.new(0, 0) else Vector2.new(0, 0.5)
 	p.tag.Position = if float
-		then UDim2.fromOffset(-6, ribbonHeight + 6)
+		then UDim2.fromOffset(-6, ribbonHeight + 2)
 		else UDim2.fromOffset(-12, 0)
+	-- starterFloat: the taps land on a still hit area over the whole ad, so a press never shrinks the price out from
+	-- under the finger (the card's press scale pulled its bottom 12 px away and cancelled the tap, Sync on 1119)
+	p.hit.Visible = float
+	p.card.Active = not float
+	p.card.Selectable = not float
 	p.tint.Enabled = calm and not float
 	p.card.BackgroundColor3 = if calm then Kit.WHITE else Kit.CREAM
 	p.edge.Color = if calm then Kit.GOLD else Kit.line()
@@ -393,6 +406,7 @@ local function redraw()
 			then `Starter Pack: {pack} Robux instead of {total}, save {percent} percent`
 			else "Starter Pack"
 	)
+	p.hit:SetAttribute("Says", p.card:GetAttribute("Says"))
 	fit()
 end
 
@@ -584,6 +598,10 @@ function StarterAd.build(root: Instance, open: () -> ())
 	picture.Size = UDim2.fromScale(0.86, 0.86)
 	picture.ZIndex = 3
 	picture.Parent = hero
+	-- starterFloat: Midas dips a little around his middle while pressed
+	local press = Instance.new("UIScale")
+	press.Name = "Press"
+	press.Parent = picture
 
 	-- the struck shop total, then the pack's price
 	local prices = Instance.new("Frame")
@@ -712,15 +730,52 @@ function StarterAd.build(root: Instance, open: () -> ())
 	end)
 
 	card.Parent = holder
+	-- starterFloat: one still, see-through button over the whole ad takes the taps (the "i" stays above it)
+	local hit = Instance.new("TextButton")
+	hit.Name = "Hit"
+	hit.Text = ""
+	hit.AutoButtonColor = false
+	hit.BackgroundTransparency = 1
+	hit.Size = UDim2.fromScale(1, 1)
+	hit.ZIndex = 3
+	hit.Selectable = true
+	hit.Visible = false
+	hit.Parent = holder
 	holder.Parent = root
 	Motion.press(card)
-	card.Activated:Connect(function()
+	local function tapped()
 		if StarterAd.calm() and pack ~= nil and #buyHandlers > 0 then
 			for _, fn in buyHandlers do
 				fn()
 			end
 		else
 			open() -- the price is not known yet: the window explains the pack instead
+		end
+	end
+	card.Activated:Connect(tapped)
+	hit.Activated:Connect(tapped)
+	local function dip(to: number)
+		if to < 1 and Comfort.reducedMotion() then
+			return
+		end
+		TweenService
+			:Create(press, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Scale = to,
+			})
+			:Play()
+	end
+	local function pressing(input: InputObject): boolean
+		local kind = input.UserInputType
+		return kind == Enum.UserInputType.Touch or kind == Enum.UserInputType.MouseButton1
+	end
+	hit.InputBegan:Connect(function(input: InputObject)
+		if pressing(input) then
+			dip(0.92)
+		end
+	end)
+	hit.InputEnded:Connect(function(input: InputObject)
+		if pressing(input) then
+			dip(1)
 		end
 	end)
 
@@ -748,6 +803,8 @@ function StarterAd.build(root: Instance, open: () -> ())
 		stack = stack,
 		shadow = shadow,
 		inks = inks,
+		hit = hit,
+		press = press,
 	}
 	for _, name in FLAGS do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
