@@ -183,6 +183,9 @@ return function()
 				end
 				expect(count).to.equal(8)
 				expect(CrateRules.renamed("Starcoat")).to.equal("Starcoat")
+				-- a pet name a build does not know (an older dev server meeting a renamed pet): no rarity, no boost
+				expect(CrateRules.rarityOf("NotAPet")).to.equal(nil)
+				expect(CrateRules.boost("NotAPet", 2)).to.equal(0)
 				for _, kind in CrateRules.KINDS do
 					for _, entry in CrateRules.odds(kind) do
 						expect(CrateRules.RENAMED[entry.pet]).to.equal(nil)
