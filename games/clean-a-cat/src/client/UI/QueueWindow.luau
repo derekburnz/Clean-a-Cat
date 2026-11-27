@@ -126,6 +126,9 @@ type Parts = {
 }
 
 local parts: Parts? = nil
+-- a very short screen (Kit.screenScale): the special card drops its "Only you can wash" line, which the headline
+-- above the cards already says (issue 988)
+local tiny = false
 local cards: { QueueViewRules.Card } = {}
 local headline = "Pick a cat to wash"
 local pickable: { [number]: boolean } = {}
@@ -415,7 +418,7 @@ local function drawCard(
 		+ s.act
 		+ 2 * s.stackGap
 		+ (if heart then HEART_H + s.stackGap else 0)
-		+ (if card.special then ONLY_H + s.stackGap else 0)
+		+ (if card.special and not tiny then ONLY_H + s.stackGap else 0)
 
 	local box = frame(`Customer{card.place}`, row)
 	box.LayoutOrder = card.place
@@ -493,7 +496,7 @@ local function drawCard(
 	Kit.shrinkToFit(name, s.nameText)
 
 	-- What the cat needs and what it pays: stacked on a tall screen, one row on a short one.
-	if card.special then
+	if card.special and not tiny then
 		-- one plain line: workers never take a special visitor's cat (SpecialRules)
 		local only = words("Only", box, 19)
 		only.LayoutOrder = 2
@@ -603,7 +606,8 @@ local function redraw()
 	if p == nil then
 		return
 	end
-	local scale, short = Kit.screenScale()
+	local scale, short, isTiny = Kit.screenScale()
+	tiny = isTiny
 	local s: Sizes = if short then SIZES.short else SIZES.full
 	-- the line is 3 long at first and grows to 6 with more tubs (benchGrow): the window widens to fit, and past
 	-- the screen's width the cards scroll sideways
@@ -633,7 +637,8 @@ local function redraw()
 		if (short and stacked) or tall then STACKED_SHIFT else nil
 	)
 	p.pad.PaddingLeft, p.pad.PaddingRight = UDim.new(0, s.pad), UDim.new(0, s.pad)
-	p.pad.PaddingTop, p.pad.PaddingBottom = UDim.new(0, s.pad - 8), UDim.new(0, s.pad - 2)
+	p.pad.PaddingTop, p.pad.PaddingBottom =
+		UDim.new(0, s.pad - 8), UDim.new(0, if tiny then 4 else s.pad - 2)
 
 	p.headRow.Size = UDim2.new(1, 0, 0, s.headline)
 	local vip = false
@@ -654,7 +659,7 @@ local function redraw()
 		tallest = math.max(tallest, drawCard(card, p.row, s, short, stacked))
 	end
 	local bar = if scrolls then SCROLL_BAR + 4 else 0
-	p.row.Size = UDim2.new(1, 0, 0, tallest + s.room + 4 + bar)
+	p.row.Size = UDim2.new(1, 0, 0, tallest + s.room + (if tiny and scrolls then 0 else 4) + bar)
 	p.row.CanvasSize = UDim2.fromOffset(if scrolls then content else 0, 0)
 	p.row.ScrollBarThickness = if scrolls then SCROLL_BAR else 0
 	p.rowList.HorizontalAlignment = if scrolls
