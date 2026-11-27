@@ -142,7 +142,7 @@ local CHIP_TEXT = 19 -- design px: the floor, so the words never shrink
 local CHIP_PAD = 9 -- design px each side inside the pill
 local CHIP_PAD_TIGHT = 3 -- when the room is short
 local CHIP_OUTLINE = 3 -- the words' own ink outline (Kit.outlined), each side
-local CHIP_SLACK = 4 -- design px for the font's own side bearings
+local CHIP_SLACK = 6 -- design px for the font's own side bearings (4 left "Uncommon" 1 px past its pill on an iPhone 13)
 
 -- The rarity pill's width in design px: its words as drawn, their outline and the padding. Issue 609: an automatic
 -- width left out the outline, so "Uncommon" ran 7 px past its pill on a phone.

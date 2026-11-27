@@ -237,6 +237,11 @@ function Window.new(name: string, title: string, badgeIcon: string, root: Instan
 	Kit.corner(band, UDim.new(0, 22))
 	local heading = Kit.outlined("Title", band)
 	heading.AnchorPoint = Vector2.new(0, 0.5)
+	-- room for the words' own outline and the phone font's side bearings: "Check in" drew 84 px wide in a 79 px box
+	-- on an iPhone 13 (Sync, 2026-11-27)
+	local headingPad = Instance.new("UIPadding")
+	headingPad.PaddingLeft, headingPad.PaddingRight = UDim.new(0, 3), UDim.new(0, 3)
+	headingPad.Parent = heading
 	heading.Text = title
 
 	local body = frame("Body", stack)
