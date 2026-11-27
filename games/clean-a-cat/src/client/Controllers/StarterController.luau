@@ -65,7 +65,7 @@ local function refresh()
 	local pack = StarterViewRules.packPrice(
 		ReplicatedStorage:GetAttribute(Products.PRICE_PREFIX .. StarterRules.PRODUCT)
 	)
-	UI.setStarter(StarterViewRules.items(passPrice), pack, endsAt())
+	UI.setStarter(StarterViewRules.items(passPrice, LiveFlags.isOn), pack, endsAt())
 end
 
 local function setNote(force: boolean)

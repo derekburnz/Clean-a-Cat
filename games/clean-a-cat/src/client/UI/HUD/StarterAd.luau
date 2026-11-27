@@ -139,11 +139,13 @@ local buyHandlers: { () -> () } = {}
 local heroDrawn = "" -- the Icons name the big picture shows now
 local shine: RBXScriptConnection? = nil -- starterPet: turns the rays and pulses the glow while the card shows
 
--- The big picture's Icons name: Midas with starterPet, else the Golden Sponge.
+-- The big picture's Icons name: Midas with starterPet, else the Second Builder's picture once it replaced the Golden
+-- Sponge in the pack (starterBuilder, issue 1097), else the Golden Sponge.
 function StarterAd.heroIcon(): string
-	return if LiveFlags.isOn(StarterViewRules.PET_FLAG)
-		then StarterViewRules.PET_ICON
-		else StarterAd.HERO
+	if LiveFlags.isOn(StarterViewRules.PET_FLAG) then
+		return StarterViewRules.PET_ICON
+	end
+	return if LiveFlags.isOn(StarterRules.BUILDER_FLAG) then "ShopBuilder2" else StarterAd.HERO
 end
 
 local function allOn(): boolean
@@ -251,8 +253,20 @@ local function redraw()
 	local running: RBXScriptConnection? = shine
 	if moving and not running then
 		local started = os.clock()
-		local glow, rays = p.glow, p.rays
+		local glow, rays, holder, hero = p.glow, p.rays, p.holder, p.hero
 		shine = RunService.Heartbeat:Connect(function()
+			-- hidden or Reduced Motion turned on since: stop here, still, without waiting for a redraw (Review-QA on 1100)
+			if not holder.Visible or not hero.Visible or Comfort.reducedMotion() then
+				local stop = shine
+				shine = nil
+				if stop then
+					stop:Disconnect()
+				end
+				rays.Rotation = 0
+				glow.BackgroundTransparency = GLOW_STILL
+				glow.Size = UDim2.fromScale(1.1, 1.1)
+				return
+			end
 			local t = os.clock() - started
 			rays.Rotation = (t * RAY_TURN) % 360
 			local wave = math.sin(t * 2 * math.pi / PULSE_SECONDS)
@@ -660,7 +674,7 @@ function StarterAd.build(root: Instance, open: () -> ())
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
 			:Connect(redraw)
 	end
-	for _, name in { StarterAd.CARD_FLAG, StarterViewRules.PET_FLAG } do
+	for _, name in { StarterAd.CARD_FLAG, StarterViewRules.PET_FLAG, StarterRules.BUILDER_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
 			:Connect(redraw)
 	end

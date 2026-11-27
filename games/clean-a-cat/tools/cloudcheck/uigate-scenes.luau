@@ -607,6 +607,36 @@ local SCENES = {
 			UI.open("Starter")
 		end,
 	},
+	-- starterBuilder (issue 1097): the Second Builder in place of the Golden Sponge, with Midas, at regular prices.
+	{
+		"StarterBuilder",
+		function()
+			flag("passes", true)
+			flag("starterPack", true)
+			flag("starterPet", true)
+			flag("starterBuilder", true)
+			local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+			local LiveFlags = UIShim.require("ReplicatedStorage.Shared.LiveFlags")
+			local prices: { [string]: number } =
+				{ SecondPetSlot = 249, DoubleCoins = 50, SecondBuilder = 299 }
+			UI.setStarter(
+				StarterViewRules.items(function(key: string): unknown
+					return prices[key]
+				end, LiveFlags.isOn),
+				199,
+				os.time() + 44 * 3600
+			)
+			UI.open("Starter")
+		end,
+	},
+	{
+		"HudStarterBuilder",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+			flag("starterBuilder", true)
+		end,
+	},
 	-- starterNoClock (issue 1069): the window's band line says "New player offer", no time left.
 	{
 		"StarterNoClock",
@@ -1621,6 +1651,7 @@ function Scenes.close()
 	flag("windowClear", false)
 	flag("starterCard", false)
 	flag("starterPet", false)
+	flag("starterBuilder", false)
 	flag("menuContrast2", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)

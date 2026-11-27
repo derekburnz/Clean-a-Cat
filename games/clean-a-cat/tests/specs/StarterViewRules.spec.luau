@@ -20,6 +20,29 @@ return function()
 			expect(items[1].price).to.equal(prices[StarterRules.CONTENTS[1]])
 		end)
 
+		it(
+			"follows the pack's contents: Second Builder in place of the Golden Sponge (issue 1097)",
+			function()
+				local live: { [string]: number } =
+					{ SecondPetSlot = 249, DoubleCoins = 50, SecondBuilder = 299 }
+				local items = StarterViewRules.items(function(key: string): unknown
+					return live[key]
+				end, function(flag: string): boolean
+					return flag == StarterRules.BUILDER_FLAG
+				end)
+				expect(#items).to.equal(3)
+				local names: { string } = {}
+				for _, item in items do
+					table.insert(names, item.key)
+					expect(item.key).never.to.equal("GoldenSponge")
+				end
+				expect(table.find(names, "SecondBuilder")).never.to.equal(nil)
+				local total, percent = StarterViewRules.saving(items, 199)
+				expect(total).to.equal(598)
+				expect(percent).to.equal(66)
+			end
+		)
+
 		it("works the saving out from the live prices", function()
 			local total, percent = StarterViewRules.saving(StarterViewRules.items(price), 299)
 			expect(total).to.equal(547)
