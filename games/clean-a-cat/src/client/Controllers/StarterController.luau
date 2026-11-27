@@ -75,7 +75,10 @@ local function setNote(force: boolean)
 	noteAt = now
 	local ends = endsAt()
 	local text: string? = if on() and ends
-		then StarterViewRules.hudText(StarterViewRules.left(ends, os.time()))
+		then StarterViewRules.hudNote(
+			StarterViewRules.left(ends, os.time()),
+			LiveFlags.isOn(StarterViewRules.NO_CLOCK_FLAG)
+		)
 		else nil
 	if text ~= lastNote then
 		UI.setSideNote(WINDOW, text)
@@ -155,7 +158,7 @@ function StarterController.Start()
 	for _, key in StarterRules.CONTENTS do
 		ReplicatedStorage:GetAttributeChangedSignal(Passes.PRICE_PREFIX .. key):Connect(refresh)
 	end
-	for _, flag in { StarterRules.FLAG, Passes.FLAG } do
+	for _, flag in { StarterRules.FLAG, Passes.FLAG, StarterViewRules.NO_CLOCK_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				refresh()
