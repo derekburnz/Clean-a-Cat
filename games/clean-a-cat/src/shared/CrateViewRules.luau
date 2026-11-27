@@ -162,6 +162,7 @@ export type Group = {
 	free: { number }, -- the ids not in any slot
 	slots: { string }, -- the slots holding one of these
 	canFuse: boolean, -- three or more, below the top star
+	own: number?, -- with petSingles: the one pet this tile is (its id), nil for a stacked tile
 }
 
 export type SlotRow = {
@@ -192,7 +193,7 @@ function CrateViewRules.groups(pets: { CrateRules.Pet }): { Group }
 			local key = `{pet.kind}:{pet.star}`
 			local group = byKey[key]
 			if group == nil then
-				group = {
+				local made: Group = {
 					key = key,
 					kind = pet.kind,
 					rarity = rarity,
@@ -202,9 +203,11 @@ function CrateViewRules.groups(pets: { CrateRules.Pet }): { Group }
 					free = {},
 					slots = {},
 					canFuse = false,
+					own = nil,
 				}
-				byKey[key] = group
-				table.insert(out, group)
+				group = made
+				byKey[key] = made
+				table.insert(out, made)
 			end
 			group.count += 1
 			if pet.slot then
@@ -229,6 +232,57 @@ function CrateViewRules.groups(pets: { CrateRules.Pet }): { Group }
 		end
 		return a.kind < b.kind
 	end)
+	return out
+end
+
+CrateViewRules.SINGLES_FLAG = "petSingles"
+
+-- Whether a tile draws stars for `star` (issue 1035, Derek: "default should just be no star"): with petSingles a one
+-- star pet shows none, so stars mean it has been fused up.
+function CrateViewRules.showStars(star: number, singles: boolean): boolean
+	return star > (if singles then 1 else 0)
+end
+
+-- The Pets window's tiles. Stacked (the old way): one per pet and star with its count. With `singles` (switch
+-- petSingles, issue 1035, Derek: "they shouldnt stack like 2x copies"): one tile per pet, in the same order, each
+-- counting 1. Its ids start with its own, then its twins', so Fuse on it fuses this pet with two of the same; only the
+-- first tile of three or more twins shows Fuse, so a row of three has one Fuse and not three.
+function CrateViewRules.tiles(pets: { CrateRules.Pet }, singles: boolean): { Group }
+	local groups = CrateViewRules.groups(pets)
+	if not singles then
+		return groups
+	end
+	local slotOf: { [number]: string } = {}
+	for _, pet in pets do
+		local slot: string? = pet.slot
+		if slot ~= nil then
+			slotOf[pet.id] = slot
+		end
+	end
+	local out: { Group } = {}
+	for _, group in groups do
+		for index, id in group.ids do
+			local ids = { id }
+			for _, other in group.ids do
+				if other ~= id then
+					table.insert(ids, other)
+				end
+			end
+			local slot: string? = slotOf[id]
+			table.insert(out, {
+				key = group.key,
+				kind = group.kind,
+				rarity = group.rarity,
+				star = group.star,
+				count = 1,
+				ids = ids,
+				free = if slot == nil then { id } else {},
+				slots = if slot ~= nil then { slot } else {},
+				canFuse = group.canFuse and index == 1,
+				own = id,
+			})
+		end
+	end
 	return out
 end
 
@@ -310,6 +364,16 @@ function CrateViewRules.placeFor(
 	slot: string,
 	pets: { CrateRules.Pet }
 ): (number?, string?)
+	local own = group.own
+	if own ~= nil then
+		-- one pet's tile: a tap takes that pet off the picked slot, else puts that pet in it
+		for _, pet in pets do
+			if pet.id == own then
+				return own, if pet.slot == slot then nil else slot
+			end
+		end
+		return nil, nil
+	end
 	for _, pet in pets do
 		if pet.slot == slot and `{pet.kind}:{pet.star}` == group.key then
 			return pet.id, nil
