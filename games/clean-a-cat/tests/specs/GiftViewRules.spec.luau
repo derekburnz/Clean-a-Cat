@@ -53,6 +53,13 @@ return function()
 			expect(GiftViewRules.waitLine(state(true, true))).to.equal(nil)
 			expect(GiftViewRules.claimText(state(true, true))).to.equal("Get Starcoat")
 			expect(GiftViewRules.claimText(state(true, true, true))).to.equal("Starcoat is yours!")
+			-- with giftCrate (issue 859) the stand gives a crate to open
+			expect(GiftViewRules.claimText(state(true, true), true)).to.equal(
+				"Open your gift crate"
+			)
+			expect(GiftViewRules.claimText(state(true, true, true), true)).to.equal(
+				"Your gift crate is here!"
+			)
 		end)
 	end)
 
@@ -116,6 +123,52 @@ return function()
 		it("keeps Starcoat on favourite and group only", function()
 			local s = free(true, 0, true, 5000, true)
 			expect(GiftViewRules.ready(s)).to.equal(false)
+		end)
+		describe("GiftViewRules with giftFlow", function()
+			local free = {
+				likeAsked = false,
+				likeIn = 10,
+				likeClaimed = false,
+				played = 600,
+				playClaimed = false,
+			}
+			it("shows the welcome gifts as one Claim all", function()
+				local st: GiftViewRules.State = {
+					lit = true,
+					favourite = true,
+					group = true,
+					claimed = false,
+					free = free,
+					stage = 1,
+				}
+				local steps = GiftViewRules.steps(st)
+				expect(#steps).to.equal(3)
+				expect(steps[1].key).to.equal("like")
+				expect(steps[1].action).to.equal("Like")
+				expect(GiftViewRules.claimText(st, true)).to.equal("Claim all")
+				expect(GiftViewRules.hasClaim(st)).to.equal(true)
+				expect(GiftViewRules.title(st)).to.equal("Welcome gifts")
+				expect(GiftViewRules.prize(st, true).line).to.equal(
+					"A free pet inside, plus 150 coins"
+				)
+			end)
+			it("shows the playtime gift alone at stage 2", function()
+				local st: GiftViewRules.State = {
+					lit = true,
+					favourite = true,
+					group = true,
+					claimed = true,
+					free = free,
+					stage = 2,
+				}
+				local steps = GiftViewRules.steps(st)
+				expect(#steps).to.equal(1)
+				expect(steps[1].key).to.equal("play")
+				expect(steps[1].line).to.equal("A good crate · 20 min to go")
+				expect(GiftViewRules.hasClaim(st)).to.equal(false)
+				expect(GiftViewRules.title(st)).to.equal("Playtime gift")
+				expect(GiftViewRules.prize(st, true).name).to.equal("Good crate")
+			end)
 		end)
 	end)
 end

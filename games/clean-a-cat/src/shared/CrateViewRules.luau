@@ -7,6 +7,39 @@ local CrateRules = require(script.Parent:WaitForChild("CrateRules"))
 local CrateViewRules = {}
 
 CrateViewRules.FLAG = "crateWindow"
+-- With the switch petLines (issue 927, the owner on 2026-11-26: "have a little description under the pets what they
+-- give/do"), a pet's boost says what it boosts: the player's tips beside the player, a helper's pay beside a helper.
+CrateViewRules.LINES_FLAG = "petLines"
+
+-- Whether a boost is more than a helper's pets may add to their pay (CrateRules.PET_CAP).
+function CrateViewRules.overCap(share: number): boolean
+	return share > CrateRules.PET_CAP + 1e-9
+end
+
+-- A share as shown: 0.05 is "+5%".
+local function plus(share: number): string
+	return `+{math.floor(share * 100 + 0.5)}%`
+end
+
+-- What a pet's boost (a share, 0.05 is +5%) does, for its tile and its crate row: "+5% tips or pay" with petLines,
+-- else "+5% boost". A helper's pets together raise their pay by at most CrateRules.PET_CAP, so a boost over the cap
+-- says both true numbers: "+40% tips, +30% pay" (Review-QA on PR 953).
+function CrateViewRules.effectText(share: number, isOn: ((flag: string) -> boolean)?): string
+	local on = isOn ~= nil and isOn(CrateViewRules.LINES_FLAG)
+	if not on then
+		return `{plus(share)} boost`
+	end
+	if CrateViewRules.overCap(share) then
+		return `{plus(share)} tips, {plus(CrateRules.PET_CAP)} pay`
+	end
+	return `{plus(share)} tips or pay`
+end
+
+-- A pet's boost as shown: "+5%" for `kind` at `star`.
+function CrateViewRules.boostText(kind: string, star: number): string
+	return plus(CrateRules.boost(kind, star))
+end
+
 CrateViewRules.SUM_LINE = "The chances add up to 100%. " .. CrateRules.ODDS_NOTE
 
 export type Row = {
@@ -14,6 +47,7 @@ export type Row = {
 	rarity: string,
 	chance: string, -- "25%", or one decimal place when it is not whole ("12.5%")
 	boost: string, -- "+5%"
+	share: number, -- the same boost as a share (0.05), for CrateViewRules.effectText
 	owned: boolean, -- the player has this pet already (an unowned one draws as a shadow)
 }
 
@@ -34,7 +68,8 @@ function CrateViewRules.rows(kind: string, owned: { [string]: boolean }): { Row 
 			pet = entry.pet,
 			rarity = entry.rarity,
 			chance = CrateViewRules.percentText(entry.percent),
-			boost = `+{math.floor(entry.boost * 100 + 0.5)}%`,
+			boost = plus(entry.boost),
+			share = entry.boost,
 			owned = owned[entry.pet] == true,
 		})
 	end
@@ -51,6 +86,9 @@ function CrateViewRules.total(kind: string): number
 end
 
 function CrateViewRules.title(kind: string): string
+	if kind == CrateRules.GIFT_KIND then
+		return "Gift crate" -- the gift stand's crate (switch giftCrate, issue 859)
+	end
 	return if kind == "good" then "Good crate" else "Crate"
 end
 
@@ -131,7 +169,7 @@ export type SlotRow = {
 	who: string, -- "You" or the helper's name
 	helper: string?, -- the helper's id, nil for the player
 	pet: CrateRules.Pet?,
-	say: string, -- "Cozy: tips +5%", "Koi, 2 stars: pay +18%", "No pet yet", "Comes when Lou is hired"
+	say: string, -- "Clover: tips +5%", "Angler, 2 stars: pay +18%", "No pet yet", "Comes when Lou is hired"
 	locked: boolean,
 	slot2: string?, -- the second slot beside the first, with the Second pet slot pass ("player2", "<id>2")
 	pet2: CrateRules.Pet?,
@@ -209,7 +247,7 @@ function CrateViewRules.petLine(pet: CrateRules.Pet, slot: string): string
 	return `{name}: {what} {boostPercent(pet.kind, pet.star)}`
 end
 
--- A pet's short boost for a row holding two: "Cozy +5%".
+-- A pet's short boost for a row holding two: "Clover +5%".
 local function shortLine(pet: CrateRules.Pet): string
 	return `{pet.kind} {boostPercent(pet.kind, pet.star)}`
 end

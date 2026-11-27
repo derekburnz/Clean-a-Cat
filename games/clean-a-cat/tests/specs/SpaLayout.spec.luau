@@ -2,6 +2,21 @@
 return function()
 	local SpaLayout = require(game:GetService("ReplicatedStorage").Shared.SpaLayout)
 
+	describe("SpaLayout builder (humanBuilder, issue 891)", function()
+		it(
+			"ships the human builder behind a switch that starts off, a little further from the board",
+			function()
+				local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+				expect(table.find(LiveFlags.KEYS, SpaLayout.BUILDER_FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[SpaLayout.BUILDER_FLAG]).to.equal(true)
+				expect(SpaLayout.BUILDER_ASSET).to.equal("CleanACat_NPC_Builder")
+				expect(SpaLayout.BUILDER_OFFSET.Magnitude >= SpaLayout.KITTEN_OFFSET.Magnitude).to.equal(
+					true
+				)
+			end
+		)
+	end)
+
 	describe("SpaLayout.place", function()
 		it("keeps the tub where the placeholder room had it", function()
 			local room = SpaLayout.place("SpotTub", false)

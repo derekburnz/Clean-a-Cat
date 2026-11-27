@@ -17,6 +17,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
+local FreeRewardRules = require(Shared:WaitForChild("FreeRewardRules"))
+local GiftFlowRules = require(Shared:WaitForChild("GiftFlowRules"))
 local GiftRules = require(Shared:WaitForChild("GiftRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SaveSchema = require(Shared:WaitForChild("SaveSchema"))
@@ -26,6 +28,7 @@ local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PetService = require(script.Parent:WaitForChild("PetService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
+local WalletService = require(script.Parent:WaitForChild("WalletService"))
 
 local CHECK_SECONDS = 5 -- how often the stands are looked at again (the 7:00 light, a plot changing hands)
 local SAVE_WAIT = 10 -- seconds a claim waits for the save holding the pet to be written
@@ -37,6 +40,14 @@ local claiming: { [Player]: boolean } = {}
 
 local function on(): boolean
 	return LiveFlags.isOn(GiftRules.FLAG) and LiveFlags.isOn(CrateRules.FLAG)
+end
+
+-- (switch giftFlow, issue 919) The save's gift stage, or nil with the switch off.
+local function stageOf(save: any): number?
+	if save == nil or not LiveFlags.isOn(GiftFlowRules.FLAG) then
+		return nil
+	end
+	return GiftFlowRules.stage(save.giftClaimed == true, save.freeRewards.play == true)
 end
 
 local function setAttribute(player: Player, name: string, value: boolean)
@@ -166,6 +177,11 @@ local function drawStands()
 			continue
 		end
 		local stand: Model? = if found and found:IsA("Model") then found :: Model else nil
+		local holder = ownerOf(slot)
+		local finished = if holder then stageOf(DataService.get(holder)) else nil
+		if stand == nil and finished and not GiftFlowRules.standStays(finished) then
+			continue
+		end
 		if stand == nil then
 			local base = asset(GiftRules.STAND_ASSET)
 			if base == nil then
@@ -182,8 +198,26 @@ local function drawStands()
 		end
 		local owner = ownerOf(slot)
 		local save = if owner then DataService.get(owner) else nil
+		-- (giftFlow) both gifts claimed: the stand leaves this spa for good, after a moment for the puff
+		local stage = stageOf(save)
+		if stage and not GiftFlowRules.standStays(stage) then
+			local leaving = stand :: Model
+			if leaving:GetAttribute(GiftFlowRules.LEAVING_ATTRIBUTE) ~= true then
+				leaving:SetAttribute(GiftFlowRules.LEAVING_ATTRIBUTE, true)
+				task.delay(GiftFlowRules.LEAVE_SECONDS, function()
+					if leaving.Parent then
+						leaving:Destroy()
+					end
+				end)
+			end
+			continue
+		end
 		light(stand :: Model, owner ~= nil and owner:GetAttribute(GiftRules.LIT_ATTRIBUTE) == true)
-		seatPet(stand :: Model, save == nil or not save.giftClaimed)
+		-- (giftCrate) Starcoat is no longer the gift, only a chance in the crate: he leaves the stand
+		seatPet(
+			stand :: Model,
+			(save == nil or not save.giftClaimed) and not LiveFlags.isOn(CrateRules.GIFT_FLAG)
+		)
 	end
 end
 
@@ -198,6 +232,10 @@ local function show(player: Player)
 		active and save ~= nil and save.giftFavourite
 	)
 	setAttribute(player, GiftRules.CLAIMED_ATTRIBUTE, active and save ~= nil and save.giftClaimed)
+	local stage = if active then stageOf(save) else nil
+	if player:GetAttribute(GiftFlowRules.STAGE_ATTRIBUTE) ~= stage then
+		player:SetAttribute(GiftFlowRules.STAGE_ATTRIBUTE, stage)
+	end
 	if not active then
 		setAttribute(player, GiftRules.GROUP_ATTRIBUTE, false)
 	end
@@ -264,12 +302,34 @@ local function onClaim(player: Player)
 		end
 		return
 	end
-	local pet = GiftRules.give(save :: any, CrateRules.PLAYER_SLOT)
-	if pet == nil then
+	-- (switch giftCrate, issue 859) a gift crate to open, with its chances shown, instead of Starcoat straight away
+	local crate = LiveFlags.isOn(CrateRules.GIFT_FLAG)
+	local given = if crate
+		then GiftRules.giveCrate(save :: any, CrateRules.GIFT_KIND)
+		else GiftRules.give(save :: any, CrateRules.PLAYER_SLOT) ~= nil
+	if not given then
 		claiming[player] = nil
 		return
 	end
-	Telemetry.event(player, "gift_claimed", 1)
+	Telemetry.event(player, "gift_claimed", 1, { if crate then "crate" else "pet" })
+	-- (giftFlow) Claim all: the like row's coins come in the same tap, once, if they were not taken before
+	local flow = LiveFlags.isOn(GiftFlowRules.FLAG)
+	local likeCoins = flow and not save.freeRewards.like
+	if likeCoins then
+		save.freeRewards.like = true
+		save.coins += FreeRewardRules.LIKE_COINS
+		WalletService.show(player)
+		Telemetry.economy(
+			player,
+			"coins",
+			"source",
+			FreeRewardRules.LIKE_COINS,
+			save.coins,
+			"Gameplay",
+			"free_like"
+		)
+		player:SetAttribute(FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE, true)
+	end
 	PetService.show(player)
 	-- the pet is the player's from now on; the card hears it once the save holding it is written (or after SAVE_WAIT,
 	-- when the next save carries it)
@@ -282,7 +342,14 @@ local function onClaim(player: Player)
 	end
 	show(player)
 	drawStands()
-	NetService.notice(player, "Starcoat is yours! Thank you for joining us")
+	local gift = if crate then "a gift crate" else "Starcoat"
+	NetService.notice(
+		player,
+		if likeCoins
+			then `+{FreeRewardRules.LIKE_COINS} coins and {gift}! Thank you for joining us`
+			elseif crate then "Your gift crate is here! Thank you for joining us"
+			else "Starcoat is yours! Thank you for joining us"
+	)
 end
 
 function GiftService.Init(_services: { [string]: any }) end
@@ -300,7 +367,7 @@ function GiftService.Start()
 		claiming[player] = nil
 		task.defer(drawStands)
 	end)
-	for _, flag in { GiftRules.FLAG, CrateRules.FLAG } do
+	for _, flag in { GiftRules.FLAG, CrateRules.FLAG, CrateRules.GIFT_FLAG, GiftFlowRules.FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do

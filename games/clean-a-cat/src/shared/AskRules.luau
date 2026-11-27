@@ -25,6 +25,7 @@ AskRules.IDS = table.freeze({
 	"favourite", -- the favourite ask
 	"likeAsk", -- the like ask after a good moment (LikeAskRules, switch likeAsk)
 	"likeAskPurchase", -- the like ask PURCHASE_DELAY seconds after a completed purchase (own id, so reads split)
+	"likeHowTo", -- the like how-to on the gift card after Like is tapped (LikeHowToRules, switch likeHowTo, issue 869)
 	"bubble", -- Suds's help bubble, except the opening's own (BubbleRules.OPENING)
 	"menu_index", -- each new HUD button with its tip
 	"menu_quests",

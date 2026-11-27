@@ -378,7 +378,7 @@ local function infoRow(
 	row.BackgroundColor3 = Kit.WHITE
 	Kit.corner(row, UDim.new(0, 12))
 	local edge = Kit.stroke(row, 2)
-	edge.Color = Kit.LINE
+	edge.Color = Kit.line()
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 12), UDim.new(0, 14)
 	pad.Parent = row
