@@ -40,7 +40,7 @@ Rules for the whole session: one ask at a time and at least a minute apart, noth
 | Hire your first helper | Jo is affordable and not hired (issue 913, with Jo walking up) | Jo's pad | nothing |
 | Buy the Bubble Soap | the soap is affordable | the Tools board | "New soap!" |
 | Build an upgrade / Build a dryer | the first build is affordable, or a wet cat needs a dryer | the Build board | "Let's build!", "Wet cat!" |
-| Start the Third Tub (or VIP Room) | the long build is affordable | the Build board | "Before you go" |
+| Start the Third Tub | the long build is affordable | the Build board | "Before you go" |
 | Want a heads up? (notification ask) | after the first build is started or done | none | at 1:45, before any build |
 | Cut: Let's open the spa!, It's ready!, Quests! | | | announced only |
 | Kept as they are | the check in card (a reward), the like ask (after a good moment), the favourite ask (second visit), the gift stand, the starter button's bob | | |
@@ -100,7 +100,7 @@ Rules for the whole session: one ask at a time and at least a minute apart, noth
 | Second pet slot | Game pass | 249 | For the player and every worker |
 | Crate | Developer product, random | 49, or 5 for 199 | The chance of every pet shows as a percentage before buying. PolicyService is read per player and the Robux crate is hidden where paid random items are restricted. The same crate can be earned. |
 | Finish now on any build | Developer product | 5, 15, 35, 75 or 99 by time left | The price is on the button, no pop up, waiting is always free |
-| Starter pack | Developer product, fixed | 199 | Golden Sponge, second pet slot and 2x Coins, worth 547, so the ad shows a true saving of 63% (the owner lowered it from 299 on 2026-11-26). A real countdown of 72 hours from first join, kept on the server, then gone for good. |
+| Starter pack | Developer product, fixed | 199 | Second pet slot, 2x Coins and Second Builder, plus Midas, a golden Epic pet found only in this pack (2026-11-27: the owner took the Golden Sponge out, "it seems lame", and asked for "a golden flashing pet"; switches starterBuilder and starterPet). Worth 598 at regular prices (249 + 50 + 299; Midas has no price and is never counted), so the card shows a true saving of 66%; in the launch sale both sides halve. The offer still ends 72 hours after first join on the server, but no clock is shown ("New player offer", the owner's plan answer of 2026-11-27). The ad is a dark card with Midas on turning gold rays; a tap buys, the "i" opens the item by item breakdown. |
 | Private server | Roblox setting | 25 a month | Requires Robux is set at 25 on the game's page, once, on the day the owner promotes the game. He lowered it from 100 on 2026-11-26 and gave 50 or 25; 25 is our pick. Roblox Plus subscribers get paid private servers at no cost as a platform benefit, so no second price is needed. Changing the price later cancels every active private server. |
 
 Rules that hold everywhere: no Robux product gives coins. Fusing pets is free with a fixed result. Nothing is ever sold to keep or bring back a cat that is leaving, and no price shows when a cat is about to leave. A no is final for that visit.
@@ -124,6 +124,7 @@ Rules that hold everywhere: no Robux product gives coins. Fusing pets is free wi
 | 12 | First session | The timeline with its ask queue and one button at a time | M | Design-Agent, Gameplay-Engineer |
 | 13 | Saving | Every new piece saved with a session lock, shaped for a later reopening | M | Gameplay-Engineer |
 | 14 | Look, feel and sound | Bow tiers, gift stand and pet, crate, quest and shop art, soft and cosy effects, the sound batch | M | Model-Agent, Motion-FX-Agent |
+| 16 | Cat hotel | The back door unlock as a timed build, two rooms with 1, 4 or 8 hour stays that pay out offline, a gift at check out with its chances shown, rooms 3 and 4 to buy | M | Gameplay-Engineer, Model-Agent, Design-Agent |
 | 15 | Numbers and checks | Events for each new piece, the store page, a review and a playtest of every pull request | S each | Growth-Agent, Review-QA-Agent |
 
 The game is playtest worthy when a new player can run the whole first session on a phone, the data saves and Review-QA finds no blocker.
