@@ -38,6 +38,26 @@ local LOOK: { [string]: Look } = {
 	SecondPetSlot = { icon = "ShopPetSlot2", short = "A second pet for you and helpers" },
 }
 
+-- Switch shopRevamp (issue 1030, Derek's playtest of 2026-11-27: "monetization shop needs a complete revamp and the
+-- robux text is hard to read ... do better mono pics in shop they kinda suck and suck at selling it properly"; Growth's
+-- docs/growth/shop-layout-research.md): one featured card, bigger, on the left; the rest in a two by two grid beside
+-- it; each with its picture large, its name, ONE short line of what it does, and the price in white words with an ink
+-- outline on the green button. No "best value" ribbons, no stock counters, nothing that says hurry.
+ShopViewRules.REVAMP_FLAG = "shopRevamp"
+-- What each pass does, in one short line (the picture shows the x2, x3 or +1).
+ShopViewRules.LINE = table.freeze({
+	DoubleCoins = "2x coins",
+	TripleCoins = "3x coins",
+	SecondBuilder = "2 builds at once",
+	GoldenSponge = "+20% washes",
+	Lou = "A third helper",
+	SecondPetSlot = "A 2nd pet each",
+}) :: { [string]: string }
+-- The passes that can be the featured card, best first: what a new player feels at once (Growth: "passes ordered by
+-- what a new player needs first"). The first one priced and not owned is featured; else the first card not owned.
+ShopViewRules.FEATURE_ORDER =
+	table.freeze({ "DoubleCoins", "TripleCoins", "SecondBuilder" }) :: { string }
+
 local function whole(raw: unknown): number?
 	if type(raw) ~= "number" or raw ~= raw or raw <= 0 or raw == math.huge then
 		return nil
@@ -74,6 +94,40 @@ function ShopViewRules.cards(
 		end
 	end
 	return out
+end
+
+-- The featured card (or nil when every pass is owned) and the rest: the passes not owned in shop order, then the
+-- owned ones, so what can still be bought comes first.
+function ShopViewRules.arrange(cards: { Card }): (Card?, { Card })
+	local featured: Card? = nil
+	for _, key in ShopViewRules.FEATURE_ORDER do
+		for _, card in cards do
+			if featured == nil and card.key == key and not card.owned then
+				featured = card
+			end
+		end
+	end
+	if featured == nil then
+		for _, card in cards do
+			if featured == nil and not card.owned then
+				featured = card
+			end
+		end
+	end
+	local rest: { Card } = {}
+	for _, owned in { false, true } do
+		for _, card in cards do
+			if card ~= featured and card.owned == owned then
+				table.insert(rest, card)
+			end
+		end
+	end
+	return featured, rest
+end
+
+-- A card's one line with shopRevamp.
+function ShopViewRules.lineOf(card: Card): string
+	return ShopViewRules.LINE[card.key] or card.text
 end
 
 -- The price on a card's button, in words every font draws: "199 Robux" (Roblox's private-use Robux sign is not in
