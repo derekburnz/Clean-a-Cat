@@ -27,6 +27,29 @@ These numbers come from Roblox's performance pages (read 2026-11-24). Roblox cal
 
 Reference points, 2026-11-24, PC numbers: the street's worst view was about 186,000 triangles and 106 draw calls. The draft backdrop (`worldBackdrop`) adds up to 71,900 triangles on its own, so it stays off live until it passes the iPhone 12 run.
 
+## Numbers for the street (added by Growth-Agent, 2026-11-27; issue 182)
+Counts are BasePart counts in the workspace from Sync-Agent's Studio runs and Review-QA's notes of 2026-11-26. They are PC and Studio counts, not phone results. The frame rate and memory rows below stay empty until the first iPhone 12 run.
+
+| View | Parts | Source |
+|---|---|---|
+| Small spa street, six plots, first draft | 5,471 (about 980 on each customer plot) | street frame check, 2026-11-24 |
+| `bigSpa` world (six plots) | 2,585, against 2,222 with the small plot | issue 773, PRs 753 to 765 |
+| `wideStreet` on | 4,369 | Sync-Agent, 2026-11-26 |
+| `wideStreet` on with six customers | 7,572 | Sync-Agent, 2026-11-26 |
+
+The floors we hold the iPhone 12 to. These are our own rules of thumb, not Roblox's (Roblox gives only 16.67 ms a frame and the example draw call and triangle sizes in the table above), and the first iPhone 12 run may reset them openly in a PR:
+
+| Check | Pass | Flag |
+|---|---|---|
+| Frame rate in the wash (the most common view) | 60 fps, 5 or fewer frames over 14 ms in 100 | any minute below 45 fps |
+| Frame rate on the full street with six customers (`wideStreet`, `bigSpa`) | 30 fps or better (Review-QA's gate for flipping them on live) | below 30 fps at any point, or a drop of more than 25 percent from the same view without them |
+| Parts in the workspace, six customers | up to 8,000 | above 8,000 needs a note in the PR; above 9,000 fails until a cheaper version or a streaming plan exists |
+| Draw calls, worst view | 150 (the existing interim) | a rise of 25 percent between milestones |
+| Triangles, worst view | 200,000 (the existing interim) | a rise of 25 percent between milestones |
+| Client memory | flat over 20 minutes; flag over 900 MB | growth of more than 10 percent between minute 0 and minute 20 |
+
+Run order for Derek's iPhone 12 test: lowest graphics quality first, the wash, then the full street with six customers, then the same at the highest quality; start and minute 20 each time. Record the build sha and the numbers in the playtest report's Speed line. Until that run exists, `wideStreet`, `bigSpa` and `worldBackdrop` stay off on live.
+
 ## How to read the numbers on the phone (plain steps)
 **Memory (Developer Console):** in the game, type `/console` in the chat box and send it. Or open the Roblox menu (the Roblox logo, top left), go to Settings, find Developer Console and tap Open. Pick **Memory** in the dropdown, then **Client**. Take a screenshot of the list at the start and after 20 minutes and send both; Review-QA adds them up. For a quick single number, Settings > Performance Stats shows an overlay with FPS, memory and ping.
 
