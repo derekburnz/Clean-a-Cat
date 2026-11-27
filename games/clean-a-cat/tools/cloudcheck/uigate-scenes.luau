@@ -240,6 +240,37 @@ local SCENES = {
 			UI.open("Settings")
 		end,
 	},
+	-- Settings with "Reset my game" (issue 1037): shown only for the dev game, Studio or the group's owner.
+	{
+		"SettingsReset",
+		function()
+			flag("settingsCard", true)
+			UI.setCanReset(true)
+			UI.open("Settings")
+		end,
+	},
+	-- The Helpers window with menuOnly (issue 1033): Jo and Sam not hired yet, each with a Hire button.
+	{
+		"HelpersHire",
+		function()
+			hud(true)
+			UI.setCoins(1240)
+			flag("helpersWindow", true)
+			flag("workers", true)
+			flag("menuOnly", true)
+			local HelperViewRules = UIShim.require("ReplicatedStorage.Shared.HelperViewRules")
+			UI.setHelpers(
+				HelperViewRules.rows(function(_name)
+					return nil
+				end, {}, function(name: string): boolean
+					return name == "menuOnly" or name == "workers" or name == "helpersWindow"
+				end),
+				true,
+				true
+			)
+			UI.open("Helpers")
+		end,
+	},
 	{
 		"HudFriends",
 		function()
@@ -1369,6 +1400,8 @@ function Scenes.close()
 	flag("helperPets", false)
 	flag("petLines", false)
 	flag("petSingles", false)
+	flag("menuOnly", false)
+	UI.setCanReset(false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
 	flag("likeHowTo", false)

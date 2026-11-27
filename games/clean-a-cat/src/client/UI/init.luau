@@ -423,6 +423,16 @@ function UI.setVisitors(allowed: boolean?)
 end
 
 -- fn(allowed) when the visitors switch is pressed.
+-- Whether Settings shows "Reset my game" (the server's CanResetSave, issue 1037).
+function UI.setCanReset(allowed: boolean)
+	SettingsCard.setCanReset(allowed)
+end
+
+-- fn() when "Reset my game" is pressed twice in Settings.
+function UI.onResetSave(fn: () -> ())
+	SettingsCard.onReset(fn)
+end
+
 function UI.onVisitors(fn: (allowed: boolean) -> ())
 	SettingsCard.onVisitors(fn)
 end
@@ -638,6 +648,11 @@ end
 -- fn(helperId) when a helper's Takes button is pressed in the Helpers window.
 function UI.onHelperMode(fn: (id: string) -> ())
 	HelpersWindow.onMode(fn)
+end
+
+-- fn(helperId) when a helper's Hire is pressed in the Helpers window (menuOnly, issue 1033).
+function UI.onHelperHire(fn: (id: string) -> ())
+	HelpersWindow.onHire(fn)
 end
 
 -- fn(helperId) when a helper's Level up is pressed in the Helpers window.

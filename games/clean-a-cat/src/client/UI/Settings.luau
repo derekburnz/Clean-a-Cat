@@ -137,13 +137,28 @@ type Row = {
 	check: Frame?,
 }
 
-type Parts = { window: Window.Window, pad: UIPadding, columns: { Frame }, rows: { Row } }
+type Parts = {
+	window: Window.Window,
+	pad: UIPadding,
+	columns: { Frame },
+	rows: { Row },
+	reset: TextButton,
+}
 
 local parts: Parts? = nil
 local current: Settings = SettingsRules.defaults()
 local changed: ((Settings) -> ())? = nil
 local visitors: boolean? = nil -- the server's VisitorsAllowed; nil hides the row
 local visitorListeners: { (allowed: boolean) -> () } = {}
+-- "Reset my game" (issue 1037, switch resetSave): shown only while the server says CanResetSave; the first tap arms it,
+-- a second tap within ARM_SECONDS asks the server, so one stray tap never wipes a save
+local canReset = false
+local resetListeners: { () -> () } = {}
+local armedAt: number? = nil
+local ARM_SECONDS = 4
+local RESET_TOP, RESET_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")
+local RESET_TEXT = "Reset my game"
+local RESET_SURE = "Tap again to wipe it all"
 
 -- A switch row's value: the visitors row reads the server's, the others the saved settings.
 local function toggleOn(key: string): boolean
@@ -471,6 +486,28 @@ redraw = function()
 			check.Position = UDim2.new(1, -14, 0.5, 0)
 		end
 	end
+	-- the reset button goes under the shorter column, so it never pushes the window off a short screen
+	p.reset.Parent = p.columns[if short then 2 else 1]
+	p.reset.Size = UDim2.new(1, 0, 0, if short then 60 else 64) -- 44 real px at the smallest scale
+	p.reset.Visible = canReset
+end
+
+-- The server's CanResetSave: whether the "Reset my game" button shows (issue 1037).
+function SettingsCard.setCanReset(allowed: boolean)
+	canReset = allowed
+	redraw()
+	local p = parts
+	if p then
+		if not allowed then
+			armedAt = nil
+			p.reset.Text = RESET_TEXT
+		end
+	end
+end
+
+-- fn() when "Reset my game" is pressed twice.
+function SettingsCard.onReset(fn: () -> ())
+	table.insert(resetListeners, fn)
 end
 
 -- The server's VisitorsAllowed (nil hides the row).
@@ -520,7 +557,33 @@ function SettingsCard.build(root: Instance, onChange: (Settings) -> ()): Frame
 		rows[index] = buildRow(spec, columns[1], index)
 	end
 
-	parts = { window = window, pad = pad, columns = columns, rows = rows }
+	local reset = Window.button("Reset", RESET_TEXT, columns[1], RESET_TOP, RESET_BOTTOM)
+	reset.LayoutOrder = 999
+	reset.TextSize = 22
+	reset.Visible = false
+	reset:SetAttribute("Says", "Reset my game: wipes the save and starts again from the beginning")
+	reset.Activated:Connect(function()
+		local at = armedAt
+		if at and os.clock() - at <= ARM_SECONDS then
+			armedAt = nil
+			reset.Text = "Resetting..."
+			for _, listener in resetListeners do
+				task.spawn(listener)
+			end
+			return
+		end
+		local mine = os.clock()
+		armedAt = mine
+		reset.Text = RESET_SURE
+		task.delay(ARM_SECONDS, function()
+			if armedAt == mine then
+				armedAt = nil
+				reset.Text = RESET_TEXT
+			end
+		end)
+	end)
+
+	parts = { window = window, pad = pad, columns = columns, rows = rows, reset = reset }
 	local camera = Workspace.CurrentCamera
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)
