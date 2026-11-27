@@ -343,7 +343,8 @@ function UI.init()
 		-- on a short screen the starter ad steps aside while the bubble is up, so the bubble's X never sits by the
 		-- ad's price (Sync on 1125, iPhone 7)
 		local Kit = require(script:WaitForChild("Kit"))
-		local bubble = root:WaitForChild("SudsBubble") :: GuiObject?
+		local found = root:WaitForChild("SudsBubble")
+		local bubble: GuiObject? = if found:IsA("GuiObject") then found :: GuiObject else nil
 		local function hushAd()
 			local _, short = Kit.screenScale()
 			StarterAd.setHush(bubble ~= nil and bubble.Visible and short)
