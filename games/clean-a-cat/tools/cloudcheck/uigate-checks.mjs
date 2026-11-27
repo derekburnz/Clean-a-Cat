@@ -50,7 +50,7 @@ export const LIMITS = {
 };
 
 // gate: fails the run when new; warn: in the report only
-const GATED = new Set(['closecoins', 'tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke', 'cut']);
+const GATED = new Set(['corners', 'closecoins', 'tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke', 'cut']);
 
 // The HUD's buttons (a tile can sit on its neighbours, or a key badge half under one): a Components/Button is a holder with a Depth frame (the outlined shape) and a Face. What a
 // tile draws is every piece under it, each grown by its outline (UIStroke Border draws outside the box): the
@@ -486,6 +486,25 @@ export function checkScene(profile, scene) {
   for (const j of scene.jitter || []) {
     const owner = boxes.get(j.path) || boxes.get(j.path.split('/').slice(0, -1).join('/')) || null;
     add('jitter', owner, `${j.prop} changed ${j.changes} times in 1 s between ${j.distinct} values`, `${j.path}.${j.prop}`);
+  }
+
+  // corners (issue 1062, Derek: "ui that is supposed to be circular has problem around the edges ... because its a
+  // rectangle"): Roblox never clips a child to its parent's UICorner, so a filled child that sits in a rounded
+  // parent's corner with a smaller corner of its own pokes square ends out past the round edge (a slider's fill)
+  for (const n of scene.nodes) {
+    if (n.bgT === undefined || n.bgT > 0.9 || n.w < 4 || n.h < 4) continue;
+    const parent = byPath.get(n.path.slice(0, n.path.lastIndexOf('/')));
+    if (!parent || !parent.r || parent.r < 4 || parent.bgT === undefined || parent.bgT > 0.9) continue;
+    const own = n.r || 0;
+    if (own >= parent.r - 2) continue;
+    const near = 1.5;
+    const left = Math.abs(n.x - parent.x) <= near;
+    const right = Math.abs(n.x + n.w - (parent.x + parent.w)) <= near;
+    const top = Math.abs(n.y - parent.y) <= near;
+    const bottom = Math.abs(n.y + n.h - (parent.y + parent.h)) <= near;
+    if ((left || right) && (top || bottom)) {
+      add('corners', n, `square corner ${own.toFixed(0)} px in a parent rounded ${parent.r.toFixed(0)} px: give it its own UICorner`);
+    }
   }
 
   for (const e of scene.errors) {

@@ -477,6 +477,7 @@ function CatIndex.build(root: Instance): Frame
 	local barFill = frame("Fill", barTrack)
 	barFill.BackgroundTransparency = 0
 	barFill.BackgroundColor3 = Kit.GOLD
+	Kit.corner(barFill, UDim.new(0.5, 0)) -- round like its track: a corner never clips a child (issue 1062)
 	local barCount = words("Count", barRow, Kit.FONT, Kit.INK)
 	barCount.LayoutOrder = 5
 	barCount.TextSize = 22
