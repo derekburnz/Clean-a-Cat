@@ -22,6 +22,8 @@ Icons.IMAGES = {
 	-- grey heart and the tap dot get their ids once uploads resume (their stand-ins below until then)
 	HeartFilled = "rbxassetid://76458853696811",
 	RingPuff = "rbxassetid://113448726935917",
+	HeartOutline = "rbxassetid://98146759736466", -- the like how-to's empty heart, no hands (issue 869)
+	TapDot = "rbxassetid://112847264343092", -- the like how-to's tap dot (issue 869)
 	Station = "rbxassetid://123888181775346",
 	Gear = "rbxassetid://118282050361608", -- the Settings render
 	Gift = "rbxassetid://111988171087116",
