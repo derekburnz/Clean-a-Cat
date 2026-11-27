@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local ExpansionRules = require(Shared:WaitForChild("ExpansionRules"))
+local GardenRules = require(Shared:WaitForChild("GardenRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
@@ -29,6 +30,14 @@ local function near(player: Player): boolean
 	return ((root :: BasePart).Position - spot.Position).Magnitude <= ExpansionRules.SERVER_REACH
 end
 
+-- Saved as unlocked, or the Garden behind the door already built (ExpansionRules.isUnlocked).
+local function unlockedIn(save: any): boolean
+	return ExpansionRules.isUnlocked(
+		save.expansionUnlocked == true,
+		save.stations[GardenRules.ID] == true
+	)
+end
+
 local function onUnlock(player: Player)
 	if not LiveFlags.isOn(ExpansionRules.FLAG) then
 		return
@@ -38,7 +47,7 @@ local function onUnlock(player: Player)
 		return
 	end
 	local price = ExpansionRules.priceIn(game.GameId)
-	local ok, reason = ExpansionRules.canUnlock(save.expansionUnlocked == true, save.coins, price)
+	local ok, reason = ExpansionRules.canUnlock(unlockedIn(save), save.coins, price)
 	if not ok then
 		NetService.notice(player, reason or "Can't unlock yet", "warning")
 		return
@@ -57,7 +66,7 @@ function ExpansionService.Init(_services: { [string]: any }) end
 function ExpansionService.Start()
 	NetService.on(ExpansionRules.REMOTE, { perSecond = 1, burst = 2 }, onUnlock)
 	DataService.onLoaded:Connect(function(player: Player, save)
-		player:SetAttribute(ExpansionRules.ATTRIBUTE, save.expansionUnlocked == true)
+		player:SetAttribute(ExpansionRules.ATTRIBUTE, unlockedIn(save))
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. ExpansionRules.FLAG)
 		:Connect(function()

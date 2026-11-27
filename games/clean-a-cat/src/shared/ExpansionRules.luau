@@ -28,6 +28,12 @@ ExpansionRules.DEV_PRICE = 50 -- coins on the dev game, for testing (Derek: "gol
 ExpansionRules.PROMPT_REACH = 10 -- studs
 ExpansionRules.SERVER_REACH = 14 -- studs, a little more than the prompt's for lag
 
+-- Whether the door counts as unlocked: saved as unlocked, or the Garden behind it already built (a save from before
+-- this switch that built it keeps it, never pays for the door; Review-QA on #1053).
+function ExpansionRules.isUnlocked(saved: boolean, gardenBuilt: boolean): boolean
+	return saved or gardenBuilt
+end
+
 -- The price in the experience `gameId` (game.GameId): DEV_PRICE on the dev game, PRICE everywhere else.
 function ExpansionRules.priceIn(gameId: number): number
 	return if gameId == Products.DEV_GAME_ID then ExpansionRules.DEV_PRICE else ExpansionRules.PRICE

@@ -426,13 +426,14 @@ local function drawInto(
 	elseif isOn(BuildRules.TUBS_FLAG) then
 		drawVipRoom(folder, assets :: Instance, slot, save.index)
 	end
-	local unlocked = save.expansionUnlocked == true
+	local gardenBuilt = save.stations[GardenRules.ID] == true
+	local unlocked = ExpansionRules.isUnlocked(save.expansionUnlocked == true, gardenBuilt)
 	if isOn(ExpansionRules.FLAG) then
 		drawBackDoor(folder, assets :: Instance, slot, unlocked)
 	end
 	if
 		BuildRules.shown(GardenRules.ID, isOn)
-		and ExpansionRules.showGarden(isOn, unlocked, save.stations[GardenRules.ID] == true)
+		and ExpansionRules.showGarden(isOn, unlocked, gardenBuilt)
 	then
 		drawGarden(folder, assets :: Instance, slot, save, running, isOn)
 	end
