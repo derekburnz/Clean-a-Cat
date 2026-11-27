@@ -259,12 +259,7 @@ def paw(mat):
 def heart(mat):
     """A fat pink heart with one white glint."""
     b = Builder()
-    pts = []
-    for i in range(28):                              # the usual heart curve, anticlockwise from the top notch
-        t = -2 * math.pi * i / 28
-        pts.append((16 * math.sin(t) ** 3 / 15.0,
-                    (13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t)) / 15.0))
-    b.prism((0, 0, 0), pts, 0.6, "nose_bubblegum", bevel=True, rot=X)
+    b.prism((0, 0, 0), _heart_pts(), 0.6, "nose_bubblegum", bevel=True, rot=X)
     b.cyl((-0.52, -0.31, 0.42), 0.17, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(1.5, 1, 1))
     return _fin(b, "Heart", mat)
 
@@ -622,6 +617,34 @@ def staff_apron(mat):
     return _fin(b, "Staff", mat)
 
 
+def _heart_pts():
+    """The usual heart curve, anticlockwise from the top notch, about 2.1 wide."""
+    pts = []
+    for i in range(28):
+        t = -2 * math.pi * i / 28
+        pts.append((16 * math.sin(t) ** 3 / 15.0,
+                    (13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t)) / 15.0))
+    return pts
+
+
+def heart_outline(mat):
+    """The like how-to (#869): a heart in a soft grey with a paler inset, not yet pressed; pressed, it is the
+    Heart icon. It replaced a thumbs up on 2026-11-27, so no picture in the how-to is a hand."""
+    b = Builder()
+    pts = _heart_pts()
+    b.prism((0, 0, 0), pts, 0.6, "fur_grey", bevel=True, rot=X)
+    b.prism((0, -0.3, 0.06), [(0.62 * x, 0.62 * y) for x, y in pts], 0.08, "fur_mist", bevel=False, rot=X)
+    return _fin(b, "HeartOutline", mat)
+
+
+def tap_dot(mat):
+    """The like how-to (#869): where to tap, a soft round cream dot on a pink rim, no hand."""
+    b = Builder()
+    b.cyl((0, 0.06, 0), 1.0, 0.36, "spa_bubblegum", segments=32, rot=X)
+    b.sphere((0, -0.1, 0), 0.74, "spa_cream", segments=24, rings=12, scale=(1, 0.45, 1))
+    return _fin(b, "TapDot", mat)
+
+
 def ring_puff(mat):
     """The like how-to (#869): a small ring burst where the finger taps, a pink ring and eight short butter rays."""
     b = Builder()
@@ -659,7 +682,9 @@ BUILDERS = {                                       # name -> (builder, (yaw, pit
     "Bow": (bow, (-10.0, 6.0)),
     "Helpers": (helpers, (-18.0, 10.0)),
     "Staff": (staff_apron, (-18.0, 10.0)),          # the Helpers button with no face (#929)
-    "RingPuff": (ring_puff, (0.0, 0.0)),             # the like how-to's tap burst (#869); its hand pictures were removed 2026-11-27
+    "HeartOutline": (heart_outline, (-14.0, 8.0)),   # the like how-to's pictures (#869), no hands
+    "TapDot": (tap_dot, (-10.0, 6.0)),
+    "RingPuff": (ring_puff, (0.0, 0.0)),             # the hand pictures were removed 2026-11-27
     "Crown": (crown, TINY_VIEW, TINY_OUTLINE),       # the tiny pictures (#255)
     "Lock": (lock, TINY_VIEW, TINY_OUTLINE),
     "Mud": (mud, TINY_VIEW, TINY_OUTLINE),

@@ -53,11 +53,15 @@ and a mint pocket with the yellow sponge and the sky brush standing in it. Revie
 
 ## The like how-to pictures (issue 869)
 
-`CleanACat_Icon_Hud_RingPuff.png` is a pink ring with eight short butter rays, the burst where the like how-to's
-tap lands (Growth-Agent's spec, 2026-11-26). Made by `hud_icons.py` (`RingPuff`) and checked at 48 px.
+Pictures for Design-Agent's two second loop that shows how to like the game (Growth-Agent's spec, 2026-11-26).
+`CleanACat_Icon_Hud_HeartOutline.png` is a heart in a soft grey with a pale inset, not yet pressed; pressed, the loop
+shows the `Heart` icon. `CleanACat_Icon_Hud_TapDot.png` is a soft round cream dot on a pink rim, where the tap lands.
+`CleanACat_Icon_Hud_RingPuff.png` is a pink ring with eight short butter rays, the burst where it taps. Made by
+`hud_icons.py` (`HeartOutline`, `TapDot`, `RingPuff`) and checked at 48 px.
 
-**No hands, ever (2026-11-27).** The first like how-to pictures were hands: a thumbs up, the same thumbs up pressed,
-and a hand pointing one finger. Roblox moderation misread the pressed one and suspended
-Derek's account. All three were removed from the repo and from `hud_icons.py`, and their sha256s are on
-`.github/upload-blocked.txt`, so the upload workflow refuses them under any name. Draw no hand, finger or gesture
-in any picture; use hearts, dots and rings instead.
+No picture here is a hand. The first set (2026-11-26) used a thumbs up and a hand pointing up with one finger, and
+Open Cloud answered "User is moderated" minutes after they were uploaded; a fist with one tall raised digit can read
+as a rude gesture to an image check at icon size. Roblox moderation misread the pressed thumbs up and
+suspended Derek's account. All three were removed on 2026-11-27, and their sha256s are on
+`.github/upload-blocked.txt`, so the upload workflow refuses them under any name. Draw no hand, finger or gesture in
+any picture; use hearts, dots and rings instead.
