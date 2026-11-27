@@ -428,6 +428,23 @@ local function step()
 	end
 end
 
+-- Runs fn() with `model`'s joints back at the server's rest: no swing, and the carrying arm as FigureService turned it
+-- out. Then it puts this frame's pose back. CustomerLeave clones the figure inside it, so the walk-off copy's rig takes
+-- the true rest (Sync on 1082, issue 1062: a copy cloned with the arm turned in walked off with it turned in).
+function CustomerMotion.atRest(model: Model, fn: () -> ())
+	local rig = rigs[model]
+	if rig == nil or rig.body.Parent == nil then
+		fn()
+		return
+	end
+	local armIn = rig.armIn
+	rig.armIn = 0
+	apply(rig, restPose)
+	fn() -- the caller keeps it from erroring (CustomerLeave clones inside its own pcall)
+	rig.armIn = armIn
+	apply(rig, rig.pose)
+end
+
 -- With streaming on, a customer's joints can arrive after the Model; a late one rebuilds the rig from rest.
 local function consider(instance: Instance)
 	if isCustomer(instance) then

@@ -1457,6 +1457,36 @@ for _, name in { "Shop", "Build", "Quests", "Helpers", "Pets", "Crate" } do
 	end
 end
 
+-- Light on light no more (issue 1029, switch menuContrast2): every main window with the deeper panel, white cards, ink
+-- edges and ink body text.
+for _, name in
+	{
+		"Shop",
+		"Build",
+		"Quests",
+		"Helpers",
+		"Pets",
+		"Crate",
+		"Settings",
+		"CatIndex",
+		"Checkin",
+		"Starter",
+	}
+do
+	for _, scene in table.clone(SCENES) do
+		if scene[1] == name then
+			local open = scene[2]
+			table.insert(SCENES, {
+				name .. "Contrast2",
+				function()
+					flag("menuContrast2", true)
+					open()
+				end,
+			})
+		end
+	end
+end
+
 Scenes.names = {}
 for _, scene in SCENES do
 	table.insert(Scenes.names, scene[1])
@@ -1493,6 +1523,7 @@ function Scenes.close()
 	UI.setCanReset(false)
 	flag("windowClear", false)
 	flag("starterCard", false)
+	flag("menuContrast2", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
 	flag("likeHowTo", false)
