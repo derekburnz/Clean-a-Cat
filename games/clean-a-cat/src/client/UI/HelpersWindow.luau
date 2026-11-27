@@ -98,6 +98,7 @@ local levelListeners: { (id: string) -> () } = {}
 local renameListeners: { (id: string) -> () } = {}
 local passListeners: { () -> () } = {}
 local petListeners: { (id: string) -> () } = {}
+local hireListeners: { (id: string) -> () } = {}
 local pets: { CrateRules.Pet } = {}
 
 local function frame(name: string, parent: Instance): Frame
@@ -346,6 +347,20 @@ local function drawRow(
 			end)
 			used += levelW + BUTTON_GAP
 		end
+	elseif HelperViewRules.hireText(row) ~= nil then
+		-- menuOnly (issue 1033, Derek: "it should just be hire new worker through menu"): hire right here
+		local hireText = HelperViewRules.hireText(row) :: string
+		local hire = Window.button("Hire", hireText, right, GREEN_TOP, GREEN_BOTTOM)
+		hire.LayoutOrder = 1
+		hire.TextSize = s.buttonText
+		local hireW =
+			math.max(math.ceil(measure(hireText, s.buttonText)) + BUTTON_PAD, levelWidth(s))
+		hire.Size = UDim2.fromOffset(hireW, buttonH)
+		hire:SetAttribute("Says", `Hire {row.name} for {row.price or 0} coins`)
+		hire.Activated:Connect(function()
+			tell(hireListeners, id)
+		end)
+		used += hireW + BUTTON_GAP
 	elseif row.pass and canShop then
 		local text = "See the pass"
 		local pass = Window.button("Pass", text, right, GOLD_TOP, GOLD_BOTTOM)
@@ -418,6 +433,10 @@ end
 
 function HelpersWindow.onMode(fn: (id: string) -> ())
 	table.insert(modeListeners, fn)
+end
+
+function HelpersWindow.onHire(fn: (id: string) -> ())
+	table.insert(hireListeners, fn)
 end
 
 function HelpersWindow.onLevel(fn: (id: string) -> ())

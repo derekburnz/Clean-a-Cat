@@ -62,6 +62,12 @@ function HelpersController.Start()
 			Remotes.event("RequestWorkerMode"):FireServer(id, mode)
 		end
 	end)
+	UI.onHelperHire(function(id: string)
+		-- the same remote as the hire pad; the server checks the coins and the switch (issue 1033)
+		if on() and not hired(id) then
+			Remotes.event("RequestHireWorker"):FireServer(id)
+		end
+	end)
 	UI.onHelperLevel(function(id: string)
 		if on() and hired(id) then
 			Remotes.event("RequestWorkerLevel"):FireServer(id)
