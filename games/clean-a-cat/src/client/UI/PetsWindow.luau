@@ -458,6 +458,9 @@ local function drawSlot(
 			icon.Position = UDim2.fromScale(0.5, 0.5)
 			icon.Size = UDim2.fromScale(0.6, 0.6)
 			Icons.draw(if row.locked then "Lock" else "Paw", icon, true)
+			if not row.locked then
+				Kit.plusBadge(box)
+			end
 		end
 		return box
 	end
