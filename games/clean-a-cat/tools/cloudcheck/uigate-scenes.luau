@@ -1143,6 +1143,37 @@ local SCENES = {
 			UI.toast("Marshmallow is here! Only you can wash their cat", "info", "Marshmallow")
 		end,
 	},
+	-- (issue 1024) every notice with its picture: a crate's icon in the card's tab; then the big reward popup for a
+	-- crate pet (its portrait on the sunburst, rarity colour) and for a crate bought (the crate icon).
+	{
+		"ToastCardIcon",
+		function()
+			hud(true)
+			flag("toastCards", true)
+			UI.setCoins(1240)
+			UI.toast("Ginger left you a crate!", "info")
+		end,
+	},
+	{
+		"RewardPopPet",
+		function()
+			hud(true)
+			flag("toastCards", true)
+			flag("rewardPop", true)
+			UI.setCoins(1240)
+			UI.toast("You got Dragon! Epic, +12% when it sits beside you or a helper", "info")
+		end,
+	},
+	{
+		"RewardPopCrate",
+		function()
+			hud(true)
+			flag("toastCards", true)
+			flag("rewardPop", true)
+			UI.setCoins(1240)
+			UI.toast("A crate is yours! Tap it to open", "info")
+		end,
+	},
 	-- The card beside the starter pack ad (issue 925): with the tidy HUD the ad sits at the top right, so the card
 	-- moves left of it and never covers its ribbon.
 	{
