@@ -11,6 +11,8 @@
 -- ServerStorage attribute NotifyMessageId) and an Open Cloud key with user notification write access, saved as the
 -- experience secret SECRET_NAME (the notify-key workflow saves one of the owner's keys there, never printed).
 -- Without them nothing is sent and the log says so once.
+-- (hotelNotify, issue 1049) Leaving with Cat Hotel guests asleep queues "Your hotel guests are ready to check out"
+-- the same way (NotifyRules.hotelDueAtLeave); only one message is queued, the one that comes first.
 local HttpService = game:GetService("HttpService")
 local MemoryStoreService = game:GetService("MemoryStoreService")
 local Players = game:GetService("Players")
@@ -22,6 +24,8 @@ local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local NotifyRules = require(Shared:WaitForChild("NotifyRules"))
+
+local HotelRules = require(Shared:WaitForChild("HotelRules"))
 
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
@@ -71,19 +75,30 @@ local function queueAtLeave(player: Player, save: any)
 		return
 	end
 	local now = os.time()
-	local due = NotifyRules.dueAtLeave(BuildRules.cleanBuilds(save.builds), now)
+	local due: NotifyRules.Due? = NotifyRules.dueAtLeave(BuildRules.cleanBuilds(save.builds), now)
+	if
+		LiveFlags.isOn(NotifyRules.HOTEL_FLAG)
+		and LiveFlags.isOn(HotelRules.FLAG)
+		and type(save.hotel) == "table"
+	then
+		due = NotifyRules.first(
+			due,
+			NotifyRules.hotelDueAtLeave(HotelRules.cleanStays(save.hotel.stays), now)
+		)
+	end
 	if due == nil then
 		return
 	end
+	local queued: NotifyRules.Due = due
 	local wait =
-		math.clamp(due.endsAt - now + NotifyRules.DAY_SECONDS, 60, NotifyRules.MAX_WAIT_SECONDS)
+		math.clamp(queued.endsAt - now + NotifyRules.DAY_SECONDS, 60, NotifyRules.MAX_WAIT_SECONDS)
 	local map = maps()
 	local ok, err = pcall(function()
 		map:SetAsync(
 			tostring(player.UserId),
-			{ item = due.item, endsAt = due.endsAt },
+			{ item = queued.item, endsAt = queued.endsAt, kind = queued.kind },
 			wait,
-			due.endsAt
+			queued.endsAt
 		)
 	end)
 	if not ok then
@@ -99,14 +114,18 @@ local function unqueue(player: Player)
 	end)
 end
 
-local function send(userId: number, item: string): boolean
-	local listed = NotifyRules.MESSAGE_IDS[game.GameId]
-	local messageId = if type(listed) == "string" and listed ~= ""
+local function send(userId: number, due: NotifyRules.Due): boolean
+	local hotel = due.kind == NotifyRules.HOTEL_KIND
+	local listed = NotifyRules.messageId(due.kind, game.GameId)
+	local messageId = if listed ~= ""
 		then listed
+		elseif hotel then nil
 		else ServerStorage:GetAttribute(MESSAGE_ATTRIBUTE)
 	if type(messageId) ~= "string" or messageId == "" then
 		warnOnce(
-			`no message id: set the ServerStorage attribute {MESSAGE_ATTRIBUTE} to the notification's id`
+			if hotel
+				then "no hotel_ready message id in NotifyRules.HOTEL_MESSAGE_IDS"
+				else `no message id: set the ServerStorage attribute {MESSAGE_ATTRIBUTE} to the notification's id`
 		)
 		return false
 	end
@@ -117,15 +136,19 @@ local function send(userId: number, item: string): boolean
 		warnOnce(`no Open Cloud key: add the experience secret {SECRET_NAME}`)
 		return false
 	end
+	local category = if hotel then "hotel_ready" else "build_done"
+	local payload: { [string]: any } = {
+		message_id = messageId,
+		type = "MOMENT",
+		join_experience = { launch_data = category },
+		analytics_data = { category = category },
+	}
+	if not hotel then
+		payload.parameters = { buildName = { string_value = BuildRules.ITEMS[due.item].name } }
+	end
 	local body = HttpService:JSONEncode({
 		source = { universe = `universes/{game.GameId}` },
-		payload = {
-			message_id = messageId,
-			type = "MOMENT",
-			parameters = { buildName = { string_value = BuildRules.ITEMS[item].name } },
-			join_experience = { launch_data = "build_done" },
-			analytics_data = { category = "build_done" },
-		},
+		payload = payload,
 	})
 	local ok, response = pcall(function()
 		return HttpService:RequestAsync({
@@ -185,7 +208,7 @@ local function sendDue()
 			return sentMap:GetAsync(key)
 		end)
 		local lastSent = if okLast and type(last) == "number" then last else nil
-		if NotifyRules.canSend(lastSent, now) and send(userId, due.item) then
+		if NotifyRules.canSend(lastSent, now) and send(userId, due) then
 			pcall(function()
 				sentMap:SetAsync(key, now, 2 * NotifyRules.DAY_SECONDS)
 			end)

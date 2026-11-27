@@ -52,5 +52,62 @@ return function()
 			expect(NotifyRules.cleanDue({ item = "VipRoom", endsAt = 0 / 0 })).to.equal(nil)
 			expect(NotifyRules.cleanDue("junk")).to.equal(nil)
 		end)
+
+		describe("hotelNotify", function()
+			local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+
+			it("is a switch, off by default, with a string slot for dev and live", function()
+				expect(table.find(LiveFlags.KEYS, NotifyRules.HOTEL_FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[NotifyRules.HOTEL_FLAG]).to.equal(true)
+				expect(type(NotifyRules.HOTEL_MESSAGE_IDS[10778775478])).to.equal("string")
+				expect(type(NotifyRules.HOTEL_MESSAGE_IDS[10778773655])).to.equal("string")
+				expect(NotifyRules.messageId(nil, 10778775478)).to.equal(
+					NotifyRules.MESSAGE_IDS[10778775478]
+				)
+				expect(NotifyRules.messageId(nil, 1)).to.equal("")
+			end)
+
+			it("queues the hotel for when its last guest is ready", function()
+				expect(NotifyRules.hotelDueAtLeave({}, 100)).to.equal(nil)
+				local stays = {
+					["1"] = { endsAt = 4000 },
+					["2"] = { endsAt = 9000 },
+					["3"] = { endsAt = 50 },
+				}
+				local due = NotifyRules.hotelDueAtLeave(stays, 100) :: NotifyRules.Due
+				expect(due.kind).to.equal(NotifyRules.HOTEL_KIND)
+				expect(due.item).to.equal(NotifyRules.HOTEL_ITEM)
+				expect(due.endsAt).to.equal(9000)
+				expect(NotifyRules.hotelDueAtLeave(stays, 9000)).to.equal(nil) -- all ready already
+			end)
+
+			it("queues only the message that comes first", function()
+				local build: NotifyRules.Due = { item = "VipRoom", endsAt = 30000, kind = nil }
+				local hotel: NotifyRules.Due =
+					{ item = NotifyRules.HOTEL_ITEM, endsAt = 9000, kind = NotifyRules.HOTEL_KIND }
+				expect(NotifyRules.first(build, hotel)).to.equal(hotel)
+				expect(NotifyRules.first(build, nil)).to.equal(build)
+				expect(NotifyRules.first(nil, hotel)).to.equal(hotel)
+				expect(NotifyRules.first(nil, nil)).to.equal(nil)
+			end)
+
+			it("reads a queued hotel message back through a check", function()
+				local due = NotifyRules.cleanDue({
+					item = NotifyRules.HOTEL_ITEM,
+					endsAt = 77,
+					kind = NotifyRules.HOTEL_KIND,
+				}) :: NotifyRules.Due
+				expect(due.kind).to.equal(NotifyRules.HOTEL_KIND)
+				expect(due.endsAt).to.equal(77)
+				expect(NotifyRules.cleanDue({
+					item = "VipRoom",
+					endsAt = 77,
+					kind = NotifyRules.HOTEL_KIND,
+				})).to.equal(nil)
+				expect(NotifyRules.cleanDue({ item = "VipRoom", endsAt = 77, kind = "other" })).to.equal(
+					nil
+				)
+			end)
+		end)
 	end)
 end

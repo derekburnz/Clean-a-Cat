@@ -196,6 +196,7 @@ LiveFlags.KEYS = {
 	"windowClear", -- a window's round badge sits inside its title band (no overhang over the first row or the HUD), and the HUD's buttons step aside while a window is open (UI/Window, UI init, issue 1038); off by default
 	"menuOnly", -- a choice with a menu is made only there: no helper hire pads or Hire and Takes prompts at the stands (Helpers window), no Buy and Build prompts on the boards (Build window), no Wash next prompts (Who's next?), each only while its window is on; guide cards open the window (MenuRules, issues 1028 and 1033); off by default
 	"noVipRoom", -- the VIP Room leaves the game: not on the board or in the Build window, no special visitor boost, and Model-Agent's wall piece fills its door so the back wall has one door; a save that built it keeps it for when the switch goes off (BuildRules.shown, StationService, issue 1063); off by default
+	"hotelNotify", -- leaving with Cat Hotel guests asleep queues one "Your hotel guests are ready to check out" notification for 13 and over who said yes, sharing build_done's queue and once-a-day cap (NotifyRules.hotelDueAtLeave, NotifyService, issue 1049); needs longBuildOffer and catHotel; off by default
 	"starterBuilder", -- the starter pack gives Second pet slot, 2x Coins and the Second Builder in place of the Golden Sponge, still 199 Robux; a save that bought either pack gets Midas (StarterRules.contents, StarterService, issue 1097, Derek 2026-11-27; the card is Design-Agent's); off by default
 	"starterPet", -- the starter pack also gives Midas, a starter-only golden Epic pet (never from a crate), once per save; a save that bought the pack before gets it on join (StarterRules.givePet, StarterService, issue 1090; the card is Design-Agent's); off by default
 	"catHotel", -- the Cat Hotel behind the back door (needs expansionDoor and builds): the door opens through a 20 minute build (1,500 coins), rooms 1 and 2 open, rooms 3 and 4 are builds; a guest waits at the desk while a room is free and sleeps 1, 4 or 8 hours of server time, then pays its coins and a gift; the Garden moves to the side yard (HotelRules, HotelService, StationService, issue 1049; the stay card is Design-Agent's, issue 1051); off by default
@@ -380,6 +381,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	catHotel = true,
 	starterPet = true,
 	starterBuilder = true,
+	hotelNotify = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

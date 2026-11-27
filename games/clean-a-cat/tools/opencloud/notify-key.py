@@ -11,7 +11,8 @@ is enabled, and its scope names and operations.
   UNIVERSE_ID            the experience id (not secret)
   ACTION                 check (default), install, or string: find or make the notification string STRING_NAME
                          (the open cloud notification-string API, experimental) and print its id, which is public
-                         and goes in NotifyRules.MESSAGE_IDS
+                         and goes in NotifyRules.MESSAGE_IDS (build_done) or HOTEL_MESSAGE_IDS (hotel_ready)
+  STRING_NAME            string: which string, a key of STRINGS (default build_done)
 """
 import base64
 import json
@@ -25,9 +26,17 @@ import urllib.request
 SECRET_ID = "CleanACat_NotifyKey"
 # The only host NotifyService calls: a script that tries to send the secret anywhere else is refused (Review-QA on #769).
 SECRET_DOMAIN = "apis.roblox.com"
-STRING_NAME = "build_done"
-# NotifyService fills {buildName}; 99 characters at most, no false urgency (Roblox's notification guidelines).
-STRING_CONTENT = "Your {buildName} is ready! Come back and show it off."
+# The strings NotifyService sends, by name: 99 characters at most, no false urgency (Roblox's notification
+# guidelines). NotifyService fills {buildName}; hotel_ready (issue 1049, switch hotelNotify) has no parameters.
+STRINGS = {
+    "build_done": "Your {buildName} is ready! Come back and show it off.",
+    "hotel_ready": "Your hotel guests are ready to check out! Come back to say goodbye.",
+}
+STRING_NAME = (os.environ.get("STRING_NAME") or "build_done").strip()
+if STRING_NAME not in STRINGS:
+    print(f"STRING_NAME must be one of {', '.join(STRINGS)}")
+    sys.exit(1)
+STRING_CONTENT = STRINGS[STRING_NAME]
 MAX_PAGES = 10  # the list is only a handful of strings; a cap keeps a bad cursor from looping
 API = "https://apis.roblox.com"
 
@@ -216,7 +225,8 @@ def main():
             elif found is not None:
                 summary.append(f"The notification string {STRING_NAME} already exists.")
             if found is not None:
-                summary.append(f"Message id for NotifyRules.MESSAGE_IDS[{universe}]: {found['id']}")
+                table = "HOTEL_MESSAGE_IDS" if STRING_NAME == "hotel_ready" else "MESSAGE_IDS"
+                summary.append(f"Message id for NotifyRules.{table}[{universe}]: {found['id']}")
                 summary.append(f"Text: {found.get('content', '')}")
 
     text = "\n".join(summary)
