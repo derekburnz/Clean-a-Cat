@@ -5,8 +5,8 @@
 Derek's playtest, 2026-11-27: the shop's pictures "kinda suck and suck at selling it". Each card's picture now shows
 what the player gets, big and at once:
 
-  shop_Coins2x       a heap of gold coins (a star on each, no money sign) with a big "2x" in front
-  shop_Coins3x       a bigger heap with "3x" (#1031)
+  shop_Coins2x       two stacks of gold coins (a star on each, no money sign) with a big "2x"; drawn by buy_art.py
+  shop_Coins3x       a chest of coins with "3x"; buy_art.py too (#1122: the two heaps here read as one picture)
   shop_Builder2      the builder in his hard hat and dungarees with his toolbox, and "+1": a second build at once
   shop_GoldenSponge  the golden sponge with sparkles round it
   shop_ExtraWorker   Lou, the extra worker, with "+1" (never Jo's picture)

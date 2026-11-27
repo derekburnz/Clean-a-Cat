@@ -42,6 +42,7 @@ import palette  # noqa: E402
 import pets  # noqa: E402
 import scenes  # noqa: E402
 import shop_art  # noqa: E402
+import buy_art  # noqa: E402
 import staff_busts  # noqa: E402
 import townsfolk  # noqa: E402
 
@@ -211,12 +212,15 @@ def staff_portrait(name, mat, out):
     return path
 
 
+SHOP_SHOTS = {**shop_art.SHOTS, **buy_art.SHOTS}       # buy_art's two coin pictures replace the heaps
+
+
 def shop_picture(key, mat, out, makers):
-    """One shop card's picture (#1030), framed on all of it."""
-    objs = shop_art.SHOTS[key](mat, makers)
+    """One shop card's picture (#1030) or one buyable thing's (#1122, buy_art.py), framed on all of it."""
+    objs = SHOP_SHOTS[key](mat, makers)
     bpy.context.view_layer.update()
     path = os.path.join(out, key + ".png")
-    shot(objs, path, PORTRAIT_RAW, shop_art.VIEW, pad=1.04)
+    shot(objs, path, PORTRAIT_RAW, buy_art.VIEWS.get(key, shop_art.VIEW), pad=1.04)
     _clear()
     return path
 
@@ -308,7 +312,7 @@ def main(argv):
     for name in staff_busts.LOOKS:
         if want("portrait_Staff_" + name):
             print("ui:", staff_portrait(name, mat, out))
-    for key in shop_art.SHOTS:
+    for key in SHOP_SHOTS:
         if want(key):
             print("ui:", shop_picture(key, mat, out, makers))
     for name in {**pets.PETS, **pets.STARTER_PETS}:
