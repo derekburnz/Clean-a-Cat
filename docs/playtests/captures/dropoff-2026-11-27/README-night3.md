@@ -205,3 +205,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 - The floating Midas with no card, on iphone_13, ipad_10th_generation and iphone_7.
 - The text over a roof, the floor, the sky and a wall.
 - The Midas tap and the "i" breakdown.
+
+## Gift board words (PR 1123) on main f27b5c4, iphone_13, 2026-11-27
+
+`1123-6b-*`: a save that already owns the Starcoat, with the group coins unpaid. Membership was set with the TestInGroup Studio hook.
