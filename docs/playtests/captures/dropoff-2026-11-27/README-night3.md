@@ -223,3 +223,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## ButtonInk float32 fix (PR 1129) on main 3e4c12b, iphone_13, 2026-11-27
 
 `1129-*`: the very first TextTransparency = 1 on a freshly drawn button now hides the words and the outline (Sam's Level up, Bubble Soap Buy), and a write of 0 brings them back outlined.
+
+## Starter ad and the Suds tip (PR 1130) on main 31ebf1a, 2026-11-27
+
+`1130-<state>-<device>.jpg`: a fresh play session per device, with the tip up and then closed.
