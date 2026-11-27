@@ -135,21 +135,35 @@ Guard rail check (must stay true, with margin): a player washing Common level 2 
 | `build.SecondTub` | 60 coins, 15 s (was 90) | The first short station build, after about 5 cats (about 5:30), so the first session shows a real upgrade inside its first minutes. Sync's fresh save on 6fcbac1 earned about 16 coins a cat, not 23, and reached 90 only at 8:20 (issue 660). Must stay 15 s or less: Finish now hides under 15 s left, so no Robux price shows in the first minutes (Review-QA, issue 531); a longer time goes to Derek first | 2026-11-26 |
 | `build.ThirdTub` | 1,000 coins, 30 min | The first long build, offered about minute 15 | 2026-11-25 |
 | `build.FourthTub` | 5,000 coins, 4 h | "Up to four tubs" | 2026-11-25 |
-| `build.VipRoom` | 15,000 coins, 12 h | | 2026-11-25 |
+| `build.VipRoom` | removed | Derek, 2026-11-27 (issue 1063): "remove the vip room entirely and switch it to just be one door at the back". The back wall keeps one door, the cat hotel's (issue 1049). Special visitors stay and are served in the main spa | 2026-11-27 |
 | `build.Garden` | 25,000 coins, 24 h | Never more than 24 h | 2026-11-25 |
 | `build.slots` | 1 builder; 2 with the Second Builder pass | | 2026-11-25 |
-| `finishNow.price` | ≤2 min 5, ≤1 h 15, ≤4 h 35, ≤12 h 75, more 99 Robux; hidden under 15 s left | The edges Derek picked on the plan page (q2-skipprice, 2026-11-25); the code had 5 min, 30 min, 2 h and 8 h until issue 881. A fresh Third Tub (30 min) costs 15, a Fourth Tub (4 h) 35, the VIP Room (12 h) 75, the Garden (24 h) 99. Waiting is always free | 2026-11-26 |
+| `finishNow.price` | ≤2 min 5, ≤1 h 15, ≤4 h 35, ≤12 h 75, more 99 Robux; hidden under 15 s left | The edges Derek picked on the plan page (q2-skipprice, 2026-11-25); the code had 5 min, 30 min, 2 h and 8 h until issue 881. A fresh Third Tub (30 min) costs 15, a Fourth Tub (4 h) 35, the Garden (24 h) 99. Waiting is always free | 2026-11-26 |
 
 What each build does once finished (answers Gameplay-Engineer on issue 515, 2026-11-26):
 
 | key | value | why | changed |
 |---|---|---|---|
 | `build.tub.effect` | each built tub adds one bench place (3 at the start, then 4, 5, 6), takes 1 s off `bench.refillSeconds` (6, 5, 4, 3) and adds +2 coins to each cat the player washes by hand (after rounding, with the bow and tip; never to worker pay or the tip jar) | More cats to choose from and a busier spa as the player and workers wash more; the bench never goes past 6 | 2026-11-26 |
-| `build.VipRoom.effect` | special visitors come every 5 to 10 min of play instead of 8 to 15, and the room shows the player's washed special cats as residents | The rare visitors are the best part, so the big build brings more of them | 2026-11-26 |
+| `build.VipRoom.effect` | removed with the room | Special visitors keep their normal pace (every 8 to 15 min of play). Their washed cats still fill the special visitors' page in the Cat Index, so nothing a player earns is lost (issue 1063) | 2026-11-27 |
 | `build.Garden.effect` | the tip jar (`jar.cap`, `jar.rate` in section 13) holds 12 hours instead of 8 and fills 25% faster (30 → 37.5 coins an hour per hired worker); the player's and workers' pets play there | The longest build pays off the next morning, the day 2 reason | 2026-11-26 |
 | `build.oldStations` | Brush Table, Dryer, Bubble Bath and Pawdicure leave the Build board while `dirtLevels` is on (every step is in from the start); with it off they stay as they are | No build that is only a hidden pay bonus | 2026-11-26 |
 
 `bench.size` above becomes 3 plus one per built tub. `bench.tutorialSize` wins until the tutorial ends; only then does `bench.size` apply (a first-session change, so behind its own switch, rule 16). The guard rail in section 7 holds: tubs add bench places, not washers.
+
+### The cat hotel behind the back door (issues 1042, 1049 to 1051, switch catHotel, needs expansionDoor)
+
+Derek picked it on the plan page (2026-11-27, q2-expansion2) and took these starting numbers (q2-hotelnums), with his note "Make it take construction time also like other builds". It is tuned after he plays it on dev. The full spec is in the shared files: Design-Agent/cat-hotel/cat-hotel-spec.md.
+
+| key | value | why | changed |
+|---|---|---|---|
+| `hotel.unlock` | 1,500 coins (50 on dev), a timed build of 20 min | The back door's coin unlock. The build card, timer and Finish now are the same as every other build | 2026-11-27 |
+| `hotel.rooms` | 2 at the unlock; room 3 is 3,000 coins and 30 min, room 4 is 8,000 coins and 1 h | More rooms make a long goal | 2026-11-27 |
+| `hotel.stay` | 1 h, 4 h or 8 h, picked at check in | Picking a stay before leaving and coming back to collect is the day 2 reason to return | 2026-11-27 |
+| `hotel.pay` | 60, 200 or 360 coins × rarity (Common 1, Uncommon 1.25, Rare 1.5, Epic 2, Legendary 3) | Pays out at check out, even offline; less an hour than washing by hand, so playing stays best | 2026-11-27 |
+| `hotel.gift` | one gift at check out, chances shown: 1 h bonus coins 90%, bow 8%, crate 2%; 4 h 75/18/7; 8 h 65/23/12 | Free and earned, never bought, so no Robux and nothing paid sits inside the hotel | 2026-11-27 |
+| `hotel.guests` | normal cats only, never special visitors; one wash at check in | Special visitors stay in the main spa | 2026-11-27 |
+| `build.Garden.spot` | the Garden stands on the old VIP site, right of the hotel, and is reached through a side gate in the hotel's right wall (SpotGardenSide) | The back wall keeps one door, as Derek asked (issue 1063); the strips beside the spa are only 3 studs wide, so there is no side yard. Model-Agent's option A, picked by Design-Agent 2026-11-27; Derek can still pick a second back door instead | 2026-11-27 |
 
 ## 9. Special visitors
 
@@ -214,7 +228,7 @@ Days played, not days in a row. Missing a day loses nothing.
 | `pass.GoldenSponge` | 99 | 2026-11-25 |
 | `pass.Lou` | 249 | 2026-11-25 |
 | `pass.SecondPetSlot` | 249 | 2026-11-25 |
-| `starterPack` | 299 for Golden Sponge, Second pet slot and 2x Coins (worth 547, saves 45%), 72 hours from first join on the server clock, then gone | 2026-11-25 |
+| `starterPack` | 199 for Second pet slot, 2x Coins and Second Builder plus Midas (starter-only Epic pet), worth 598 at regular prices, saves 66%; 72 hours from first join on the server clock, no clock shown, then gone. Was 299, then 199 for Golden Sponge, Second pet slot and 2x Coins | 2026-11-27 |
 
 ## 15. The pace number
 
