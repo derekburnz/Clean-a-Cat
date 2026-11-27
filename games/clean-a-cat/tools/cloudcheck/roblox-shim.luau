@@ -92,13 +92,7 @@ local function buildProxy(node, parent)
 		end
 		-- Create an empty stub service so `local RunService = game:GetService("RunService")`
 		-- works at load time. Calling methods on it errors with a clear message.
-		local stub = {
-			id = node.id .. "/" .. serviceName,
-			name = serviceName,
-			className = serviceName,
-			children = {},
-			stub = true,
-		}
+		local stub = { id = node.id .. "/" .. serviceName, name = serviceName, className = serviceName, children = {}, stub = true }
 		node.children[serviceName] = stub
 		childProxies[serviceName] = buildProxy(stub, node)
 		return childProxies[serviceName]
@@ -109,14 +103,7 @@ local function buildProxy(node, parent)
 	methods.WaitForChild = function(_, childName)
 		local child = childProxies[childName]
 		if child == nil then
-			error(
-				string.format(
-					"WaitForChild: %s has no child named %q (cloud shim never waits)",
-					fullName(node),
-					tostring(childName)
-				),
-				2
-			)
+			error(string.format("WaitForChild: %s has no child named %q (cloud shim never waits)", fullName(node), tostring(childName)), 2)
 		end
 		return child
 	end
@@ -183,25 +170,9 @@ local function buildProxy(node, parent)
 			return child
 		end
 		if node.stub then
-			error(
-				string.format(
-					"%s.%s is not available in cloud tests (the %s service is a stub). This module is Studio-only.",
-					node.name,
-					tostring(key),
-					node.name
-				),
-				2
-			)
+			error(string.format("%s.%s is not available in cloud tests (the %s service is a stub). This module is Studio-only.", node.name, tostring(key), node.name), 2)
 		end
-		error(
-			string.format(
-				'%s is not a valid member of %s "%s"',
-				tostring(key),
-				node.className,
-				fullName(node)
-			),
-			2
-		)
+		error(string.format("%s is not a valid member of %s \"%s\"", tostring(key), node.className, fullName(node)), 2)
 	end
 	meta.__newindex = function(_, key)
 		error(string.format("cannot set %s on %s in cloud tests", tostring(key), fullName(node)), 2)
@@ -241,13 +212,7 @@ local function resolveRelative(fromNode, specifier)
 		start = fromNode
 		rest = string.sub(specifier, 7)
 	else
-		error(
-			string.format(
-				"require(%q): only ./, ../ and @self/ string requires are supported",
-				specifier
-			),
-			3
-		)
+		error(string.format("require(%q): only ./, ../ and @self/ string requires are supported", specifier), 3)
 	end
 	local current = start
 	for segment in string.gmatch(rest, "[^/]+") do
@@ -257,14 +222,7 @@ local function resolveRelative(fromNode, specifier)
 			current = current and current.children and current.children[segment]
 		end
 		if current == nil then
-			error(
-				string.format(
-					"require(%q) from %s: module not found",
-					specifier,
-					fullName(fromNode)
-				),
-				3
-			)
+			error(string.format("require(%q) from %s: module not found", specifier, fullName(fromNode)), 3)
 		end
 	end
 	return current
@@ -289,20 +247,10 @@ function Shim.makeEnv(nodeId)
 		elseif nodeByProxy[target] ~= nil then
 			targetNode = nodeByProxy[target]
 		else
-			error(
-				"require: expected a ModuleScript or a relative string path, got " .. typeof(target),
-				2
-			)
+			error("require: expected a ModuleScript or a relative string path, got " .. typeof(target), 2)
 		end
 		if targetNode.className ~= "ModuleScript" then
-			error(
-				string.format(
-					"Attempted to call require with invalid argument(s): %s is a %s, not a ModuleScript",
-					fullName(targetNode),
-					targetNode.className
-				),
-				2
-			)
+			error(string.format("Attempted to call require with invalid argument(s): %s is a %s, not a ModuleScript", fullName(targetNode), targetNode.className), 2)
 		end
 		return hostRequire(targetNode.id)
 	end
@@ -364,13 +312,7 @@ _G.delay = _G.task.delay
 
 _G.Instance = {
 	new = function(className)
-		error(
-			string.format(
-				"Instance.new(%q) is not available in cloud tests; this module is Studio-only",
-				tostring(className)
-			),
-			2
-		)
+		error(string.format("Instance.new(%q) is not available in cloud tests; this module is Studio-only", tostring(className)), 2)
 	end,
 }
 
@@ -411,52 +353,27 @@ end
 function Color3.fromHex(hex)
 	hex = string.gsub(hex, "^#", "")
 	if #hex == 3 then
-		hex = string.rep(string.sub(hex, 1, 1), 2)
-			.. string.rep(string.sub(hex, 2, 2), 2)
-			.. string.rep(string.sub(hex, 3, 3), 2)
+		hex = string.rep(string.sub(hex, 1, 1), 2) .. string.rep(string.sub(hex, 2, 2), 2) .. string.rep(string.sub(hex, 3, 3), 2)
 	end
-	return Color3.fromRGB(
-		tonumber(string.sub(hex, 1, 2), 16),
-		tonumber(string.sub(hex, 3, 4), 16),
-		tonumber(string.sub(hex, 5, 6), 16)
-	)
+	return Color3.fromRGB(tonumber(string.sub(hex, 1, 2), 16), tonumber(string.sub(hex, 3, 4), 16), tonumber(string.sub(hex, 5, 6), 16))
 end
 function Color3.fromHSV(h, s, v)
 	local i = math.floor(h * 6)
 	local f = h * 6 - i
 	local p, q, t = v * (1 - s), v * (1 - f * s), v * (1 - (1 - f) * s)
 	i = i % 6
-	if i == 0 then
-		return Color3.new(v, t, p)
-	end
-	if i == 1 then
-		return Color3.new(q, v, p)
-	end
-	if i == 2 then
-		return Color3.new(p, v, t)
-	end
-	if i == 3 then
-		return Color3.new(p, q, v)
-	end
-	if i == 4 then
-		return Color3.new(t, p, v)
-	end
+	if i == 0 then return Color3.new(v, t, p) end
+	if i == 1 then return Color3.new(q, v, p) end
+	if i == 2 then return Color3.new(p, v, t) end
+	if i == 3 then return Color3.new(p, q, v) end
+	if i == 4 then return Color3.new(t, p, v) end
 	return Color3.new(v, p, q)
 end
 function Color3:Lerp(other, alpha)
-	return Color3.new(
-		self.R + (other.R - self.R) * alpha,
-		self.G + (other.G - self.G) * alpha,
-		self.B + (other.B - self.B) * alpha
-	)
+	return Color3.new(self.R + (other.R - self.R) * alpha, self.G + (other.G - self.G) * alpha, self.B + (other.B - self.B) * alpha)
 end
 function Color3:ToHex()
-	return string.format(
-		"%02X%02X%02X",
-		math.round(self.R * 255),
-		math.round(self.G * 255),
-		math.round(self.B * 255)
-	)
+	return string.format("%02X%02X%02X", math.round(self.R * 255), math.round(self.G * 255), math.round(self.B * 255))
 end
 Color3.__eq = function(a, b)
 	return a.R == b.R and a.G == b.G and a.B == b.B
@@ -487,66 +404,36 @@ local function makeVector(fields)
 		end
 		return V.new(table.unpack(out))
 	end
-	V.__add = function(a, b)
-		return map(a, b, function(x, y)
-			return x + y
-		end)
-	end
-	V.__sub = function(a, b)
-		return map(a, b, function(x, y)
-			return x - y
-		end)
-	end
-	V.__mul = function(a, b)
-		return map(a, b, function(x, y)
-			return x * y
-		end)
-	end
-	V.__div = function(a, b)
-		return map(a, b, function(x, y)
-			return x / y
-		end)
-	end
-	V.__unm = function(a)
-		return map(a, -1, function(x, y)
-			return x * y
-		end)
-	end
+	V.__add = function(a, b) return map(a, b, function(x, y) return x + y end) end
+	V.__sub = function(a, b) return map(a, b, function(x, y) return x - y end) end
+	V.__mul = function(a, b) return map(a, b, function(x, y) return x * y end) end
+	V.__div = function(a, b) return map(a, b, function(x, y) return x / y end) end
+	V.__unm = function(a) return map(a, -1, function(x, y) return x * y end) end
 	V.__eq = function(a, b)
 		for _, field in ipairs(fields) do
-			if a[field] ~= b[field] then
-				return false
-			end
+			if a[field] ~= b[field] then return false end
 		end
 		return true
 	end
 	V.__tostring = function(v)
 		local parts = {}
-		for _, field in ipairs(fields) do
-			table.insert(parts, tostring(v[field]))
-		end
+		for _, field in ipairs(fields) do table.insert(parts, tostring(v[field])) end
 		return table.concat(parts, ", ")
 	end
 	V.__index = function(self, key)
 		if key == "Magnitude" then
 			local sum = 0
-			for _, field in ipairs(fields) do
-				sum += rawget(self, field) ^ 2
-			end
+			for _, field in ipairs(fields) do sum += rawget(self, field) ^ 2 end
 			return math.sqrt(sum)
 		elseif key == "Unit" then
 			local m = self.Magnitude
-			return map(self, m == 0 and 1 or m, function(x, y)
-				return x / y
-			end)
+			return map(self, m == 0 and 1 or m, function(x, y) return x / y end)
 		end
 		return V[key]
 	end
 	function V:Dot(other)
 		local sum = 0
-		for _, field in ipairs(fields) do
-			sum += self[field] * other[field]
-		end
+		for _, field in ipairs(fields) do sum += self[field] * other[field] end
 		return sum
 	end
 	function V:Lerp(other, alpha)
@@ -568,21 +455,15 @@ UDim.__index = UDim
 function UDim.new(scale, offset)
 	return setmetatable({ Scale = scale or 0, Offset = offset or 0 }, UDim)
 end
-UDim.__eq = function(a, b)
-	return a.Scale == b.Scale and a.Offset == b.Offset
-end
+UDim.__eq = function(a, b) return a.Scale == b.Scale and a.Offset == b.Offset end
 _G.UDim = UDim
 local UDim2 = {}
 UDim2.__index = UDim2
 function UDim2.new(xScale, xOffset, yScale, yOffset)
 	return setmetatable({ X = UDim.new(xScale, xOffset), Y = UDim.new(yScale, yOffset) }, UDim2)
 end
-function UDim2.fromScale(x, y)
-	return UDim2.new(x, 0, y, 0)
-end
-function UDim2.fromOffset(x, y)
-	return UDim2.new(0, x, 0, y)
-end
+function UDim2.fromScale(x, y) return UDim2.new(x, 0, y, 0) end
+function UDim2.fromOffset(x, y) return UDim2.new(0, x, 0, y) end
 _G.UDim2 = UDim2
 local NumberRange = {}
 NumberRange.__index = NumberRange
@@ -596,9 +477,7 @@ local Random = {}
 Random.__index = Random
 function Random.new(seed)
 	local state = (seed or os.clock() * 1e6) % 4294967296
-	if state == 0 then
-		state = 88172645463325252 % 4294967296
-	end
+	if state == 0 then state = 88172645463325252 % 4294967296 end
 	return setmetatable({ _state = math.floor(state) }, Random)
 end
 function Random:_next()
@@ -611,9 +490,7 @@ function Random:_next()
 end
 function Random:NextNumber(min, max)
 	local r = self:_next()
-	if min == nil then
-		return r
-	end
+	if min == nil then return r end
 	return min + r * ((max or 1) - min)
 end
 function Random:NextInteger(min, max)

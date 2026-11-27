@@ -14,8 +14,7 @@ local tree, hostLoad = ...
 
 local Shim = {}
 
-local sqrt, abs, sin, cos, atan2, asin, huge =
-	math.sqrt, math.abs, math.sin, math.cos, math.atan2, math.asin, math.huge
+local sqrt, abs, sin, cos, atan2, asin, huge = math.sqrt, math.abs, math.sin, math.cos, math.atan2, math.asin, math.huge
 
 ------------------------------------------------------------------------------------------------------------------
 -- Vector3
@@ -232,20 +231,7 @@ CF.__index = function(self, key)
 	elseif key == "ZVector" then
 		return v3(self[6], self[9], self[12])
 	elseif key == "Rotation" then
-		return cf(
-			0,
-			0,
-			0,
-			self[4],
-			self[5],
-			self[6],
-			self[7],
-			self[8],
-			self[9],
-			self[10],
-			self[11],
-			self[12]
-		)
+		return cf(0, 0, 0, self[4], self[5], self[6], self[7], self[8], self[9], self[10], self[11], self[12])
 	end
 	return cfmethods[key]
 end
@@ -280,20 +266,7 @@ end
 local function inverse(m)
 	local a, b, c, d, e, f, g, h, i = m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12]
 	local x, y, z = m[1], m[2], m[3]
-	return cf(
-		-(a * x + d * y + g * z),
-		-(b * x + e * y + h * z),
-		-(c * x + f * y + i * z),
-		a,
-		d,
-		g,
-		b,
-		e,
-		h,
-		c,
-		f,
-		i
-	)
+	return cf(-(a * x + d * y + g * z), -(b * x + e * y + h * z), -(c * x + f * y + i * z), a, d, g, b, e, h, c, f, i)
 end
 
 CF.__mul = function(m, n)
@@ -303,36 +276,10 @@ CF.__mul = function(m, n)
 	return mulPoint(m, n)
 end
 CF.__add = function(m, v)
-	return cf(
-		m[1] + v.X,
-		m[2] + v.Y,
-		m[3] + v.Z,
-		m[4],
-		m[5],
-		m[6],
-		m[7],
-		m[8],
-		m[9],
-		m[10],
-		m[11],
-		m[12]
-	)
+	return cf(m[1] + v.X, m[2] + v.Y, m[3] + v.Z, m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12])
 end
 CF.__sub = function(m, v)
-	return cf(
-		m[1] - v.X,
-		m[2] - v.Y,
-		m[3] - v.Z,
-		m[4],
-		m[5],
-		m[6],
-		m[7],
-		m[8],
-		m[9],
-		m[10],
-		m[11],
-		m[12]
-	)
+	return cf(m[1] - v.X, m[2] - v.Y, m[3] - v.Z, m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12])
 end
 CF.__eq = function(m, n)
 	for k = 1, 12 do
@@ -343,10 +290,7 @@ CF.__eq = function(m, n)
 	return true
 end
 CF.__tostring = function(m)
-	return table.concat(
-		{ m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12] },
-		", "
-	)
+	return table.concat({ m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12] }, ", ")
 end
 
 local function rotX(t)
@@ -589,15 +533,7 @@ function cfmethods.Lerp(m, n, t)
 		wa, wb = sin((1 - t) * theta) / s, sin(t * theta) / s
 	end
 	local p = v3(m[1], m[2], m[3]):Lerp(v3(n[1], n[2], n[3]), t)
-	return CFrame.new(
-		p.X,
-		p.Y,
-		p.Z,
-		wa * ax + wb * bx,
-		wa * ay + wb * by,
-		wa * az + wb * bz,
-		wa * aw + wb * bw
-	)
+	return CFrame.new(p.X, p.Y, p.Z, wa * ax + wb * bx, wa * ay + wb * by, wa * az + wb * bz, wa * aw + wb * bw)
 end
 
 ------------------------------------------------------------------------------------------------------------------
@@ -628,11 +564,7 @@ function Color3.fromRGB(r, g, b)
 end
 function Color3.fromHex(hex)
 	hex = hex:gsub("#", "")
-	return Color3.fromRGB(
-		tonumber(hex:sub(1, 2), 16),
-		tonumber(hex:sub(3, 4), 16),
-		tonumber(hex:sub(5, 6), 16)
-	)
+	return Color3.fromRGB(tonumber(hex:sub(1, 2), 16), tonumber(hex:sub(3, 4), 16), tonumber(hex:sub(5, 6), 16))
 end
 function Color3.fromHSV(h, s, v)
 	local i = math.floor(h * 6)
@@ -695,15 +627,7 @@ local UDim = {
 }
 local UDim2 = {}
 function UDim2.new(xs, xo, ys, yo)
-	return valueType(
-		"UDim2",
-		{
-			X = UDim.new(xs, xo),
-			Y = UDim.new(ys, yo),
-			Width = UDim.new(xs, xo),
-			Height = UDim.new(ys, yo),
-		}
-	)
+	return valueType("UDim2", { X = UDim.new(xs, xo), Y = UDim.new(ys, yo), Width = UDim.new(xs, xo), Height = UDim.new(ys, yo) })
 end
 function UDim2.fromScale(x, y)
 	return UDim2.new(x, 0, y, 0)
@@ -1118,14 +1042,9 @@ local function boundingBox(self)
 			for _, sx in { -0.5, 0.5 } do
 				for _, sy in { -0.5, 0.5 } do
 					for _, sz in { -0.5, 0.5 } do
-						local p = mulPoint(
-							inv,
-							mulPoint(frame, v3(size.X * sx, size.Y * sy, size.Z * sz))
-						)
-						minX, minY, minZ =
-							math.min(minX, p.X), math.min(minY, p.Y), math.min(minZ, p.Z)
-						maxX, maxY, maxZ =
-							math.max(maxX, p.X), math.max(maxY, p.Y), math.max(maxZ, p.Z)
+						local p = mulPoint(inv, mulPoint(frame, v3(size.X * sx, size.Y * sy, size.Z * sz)))
+						minX, minY, minZ = math.min(minX, p.X), math.min(minY, p.Y), math.min(minZ, p.Z)
+						maxX, maxY, maxZ = math.max(maxX, p.X), math.max(maxY, p.Y), math.max(maxZ, p.Z)
 					end
 				end
 			end
@@ -1166,11 +1085,7 @@ InstanceMT.__index = function(self, key)
 		return mulCF(attachmentParentFrame(self), props.CFrame).Position
 	elseif key == "WorldPivot" and s.ClassName == "Model" then
 		return methods.GetPivot(self)
-	elseif
-		key == "AssemblyLinearVelocity"
-		or key == "AssemblyAngularVelocity"
-		or key == "Velocity"
-	then
+	elseif key == "AssemblyLinearVelocity" or key == "AssemblyAngularVelocity" or key == "Velocity" then
 		return v3(0, 0, 0)
 	end
 	local value = props[key]
@@ -1202,20 +1117,7 @@ InstanceMT.__newindex = function(self, key, value)
 	if key == "Position" then
 		if props.CFrame then
 			local m = props.CFrame
-			props.CFrame = cf(
-				value.X,
-				value.Y,
-				value.Z,
-				m[4],
-				m[5],
-				m[6],
-				m[7],
-				m[8],
-				m[9],
-				m[10],
-				m[11],
-				m[12]
-			)
+			props.CFrame = cf(value.X, value.Y, value.Z, m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12])
 		else
 			props.Position = value
 		end
@@ -1237,20 +1139,7 @@ InstanceMT.__newindex = function(self, key, value)
 		local parentFrame = attachmentParentFrame(self)
 		local localPos = mulPoint(inverse(parentFrame), value)
 		local m = props.CFrame
-		props.CFrame = cf(
-			localPos.X,
-			localPos.Y,
-			localPos.Z,
-			m[4],
-			m[5],
-			m[6],
-			m[7],
-			m[8],
-			m[9],
-			m[10],
-			m[11],
-			m[12]
-		)
+		props.CFrame = cf(localPos.X, localPos.Y, localPos.Z, m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12])
 		return
 	elseif key == "WorldPivot" then
 		s.worldPivot = value
@@ -1287,14 +1176,7 @@ end
 function methods.WaitForChild(self, name)
 	local child = findChild(self, name)
 	if child == nil then
-		error(
-			string.format(
-				"Infinite yield: %s has no child %s (cloud world shim)",
-				methods.GetFullName(self),
-				name
-			),
-			2
-		)
+		error(string.format("Infinite yield: %s has no child %s (cloud world shim)", methods.GetFullName(self), name), 2)
 	end
 	return child
 end
@@ -1494,20 +1376,7 @@ function methods.ScaleTo(self, factor)
 		if isA(ds.ClassName, "BasePart") then
 			local rel = mulCF(inverse(pivot), ds.props.CFrame)
 			local m = rel
-			rel = cf(
-				m[1] * factor,
-				m[2] * factor,
-				m[3] * factor,
-				m[4],
-				m[5],
-				m[6],
-				m[7],
-				m[8],
-				m[9],
-				m[10],
-				m[11],
-				m[12]
-			)
+			rel = cf(m[1] * factor, m[2] * factor, m[3] * factor, m[4], m[5], m[6], m[7], m[8], m[9], m[10], m[11], m[12])
 			ds.props.CFrame = mulCF(pivot, rel)
 			ds.props.Size = ds.props.Size * factor
 		end
@@ -1756,11 +1625,7 @@ end
 
 local RaycastParams = {
 	new = function()
-		return {
-			FilterType = Enum.RaycastFilterType.Exclude,
-			FilterDescendantsInstances = {},
-			IgnoreWater = false,
-		}
+		return { FilterType = Enum.RaycastFilterType.Exclude, FilterDescendantsInstances = {}, IgnoreWater = false }
 	end,
 }
 local OverlapParams = RaycastParams
@@ -1906,20 +1771,7 @@ baseEnv.require = requireModule
 -- Rojo JSON model properties into instance properties.
 local function toCFrame(data)
 	local p, o = data.position, data.orientation
-	return cf(
-		p[1],
-		p[2],
-		p[3],
-		o[1][1],
-		o[1][2],
-		o[1][3],
-		o[2][1],
-		o[2][2],
-		o[2][3],
-		o[3][1],
-		o[3][2],
-		o[3][3]
-	)
+	return cf(p[1], p[2], p[3], o[1][1], o[1][2], o[1][3], o[2][1], o[2][2], o[2][3], o[3][1], o[3][2], o[3][3])
 end
 
 local ENUM_PROPS = {

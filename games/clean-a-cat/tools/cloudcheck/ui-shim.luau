@@ -110,10 +110,7 @@ end
 function UDim2.new(xs, xo, ys, yo)
 	if type(xs) == "table" then
 		-- UDim2.new(UDim, UDim)
-		return setmetatable(
-			{ X = UDim.new(xs.Scale, xs.Offset), Y = UDim.new(xo.Scale, xo.Offset) },
-			UDim2MT
-		)
+		return setmetatable({ X = UDim.new(xs.Scale, xs.Offset), Y = UDim.new(xo.Scale, xo.Offset) }, UDim2MT)
 	end
 	return setmetatable({ X = UDim.new(xs, xo), Y = UDim.new(ys, yo) }, UDim2MT)
 end
@@ -135,20 +132,10 @@ UDim2MT.__eq = function(a, b)
 	return a.X == b.X and a.Y == b.Y
 end
 UDim2MT.__add = function(a, b)
-	return UDim2.new(
-		a.X.Scale + b.X.Scale,
-		a.X.Offset + b.X.Offset,
-		a.Y.Scale + b.Y.Scale,
-		a.Y.Offset + b.Y.Offset
-	)
+	return UDim2.new(a.X.Scale + b.X.Scale, a.X.Offset + b.X.Offset, a.Y.Scale + b.Y.Scale, a.Y.Offset + b.Y.Offset)
 end
 UDim2MT.__sub = function(a, b)
-	return UDim2.new(
-		a.X.Scale - b.X.Scale,
-		a.X.Offset - b.X.Offset,
-		a.Y.Scale - b.Y.Scale,
-		a.Y.Offset - b.Y.Offset
-	)
+	return UDim2.new(a.X.Scale - b.X.Scale, a.X.Offset - b.X.Offset, a.Y.Scale - b.Y.Scale, a.Y.Offset - b.Y.Offset)
 end
 UDim2MT.__tostring = function(u)
 	return string.format("{%g, %g}, {%g, %g}", u.X.Scale, u.X.Offset, u.Y.Scale, u.Y.Offset)
@@ -785,12 +772,7 @@ end
 local function layoutOf(self)
 	for _, child in childrenOf(self) do
 		local className = classOf(child)
-		if
-			className == "UIListLayout"
-			or className == "UIGridLayout"
-			or className == "UIPageLayout"
-			or className == "UITableLayout"
-		then
+		if className == "UIListLayout" or className == "UIGridLayout" or className == "UIPageLayout" or className == "UITableLayout" then
 			return child
 		end
 	end
@@ -855,200 +837,21 @@ end
 -- advance widths for printable ASCII instead (read from the Fredoka One font file, Google Fonts v15): an average
 -- under-measured "Uncommon" by a fifth and the gate passed a label that read "Uncom..." on an iPhone 14 (#262).
 local FREDOKA_ONE = { -- ems, character codes 32 (space) to 126 (~)
-	0.253,
-	0.267,
-	0.429,
-	0.749,
-	0.475,
-	0.838,
-	0.748,
-	0.208,
-	0.384,
-	0.384,
-	0.503,
-	0.527,
-	0.238,
-	0.433,
-	0.237,
-	0.526,
-	0.608,
-	0.407,
-	0.609,
-	0.608,
-	0.592,
-	0.53,
-	0.56,
-	0.561,
-	0.582,
-	0.56,
-	0.238,
-	0.237,
-	0.627,
-	0.478,
-	0.627,
-	0.512,
-	0.908,
-	0.765,
-	0.646,
-	0.679,
-	0.704,
-	0.638,
-	0.637,
-	0.714,
-	0.699,
-	0.257,
-	0.549,
-	0.639,
-	0.587,
-	0.87,
-	0.72,
-	0.775,
-	0.632,
-	0.83,
-	0.631,
-	0.583,
-	0.731,
-	0.726,
-	0.783,
-	0.999,
-	0.741,
-	0.686,
-	0.643,
-	0.348,
-	0.528,
-	0.348,
-	0.526,
-	0.826,
-	0.482,
-	0.596,
-	0.592,
-	0.517,
-	0.598,
-	0.573,
-	0.45,
-	0.585,
-	0.605,
-	0.255,
-	0.252,
-	0.536,
-	0.327,
-	0.851,
-	0.606,
-	0.6,
-	0.582,
-	0.582,
-	0.457,
-	0.489,
-	0.449,
-	0.606,
-	0.638,
-	0.793,
-	0.567,
-	0.604,
-	0.586,
-	0.381,
-	0.217,
-	0.381,
-	0.651,
+	0.253, 0.267, 0.429, 0.749, 0.475, 0.838, 0.748, 0.208, 0.384, 0.384, 0.503, 0.527, 0.238, 0.433, 0.237, 0.526,
+	0.608, 0.407, 0.609, 0.608, 0.592, 0.53, 0.56, 0.561, 0.582, 0.56, 0.238, 0.237, 0.627, 0.478, 0.627, 0.512,
+	0.908, 0.765, 0.646, 0.679, 0.704, 0.638, 0.637, 0.714, 0.699, 0.257, 0.549, 0.639, 0.587, 0.87, 0.72, 0.775,
+	0.632, 0.83, 0.631, 0.583, 0.731, 0.726, 0.783, 0.999, 0.741, 0.686, 0.643, 0.348, 0.528, 0.348, 0.526, 0.826,
+	0.482, 0.596, 0.592, 0.517, 0.598, 0.573, 0.45, 0.585, 0.605, 0.255, 0.252, 0.536, 0.327, 0.851, 0.606, 0.6,
+	0.582, 0.582, 0.457, 0.489, 0.449, 0.606, 0.638, 0.793, 0.567, 0.604, 0.586, 0.381, 0.217, 0.381, 0.651,
 }
-local NUNITO_BOLD =
-	{ -- ems, character codes 32 to 126: Nunito Bold, Google Fonts (the body font, UI/Kit.BODY_FACE)
-		0.271,
-		0.248,
-		0.448,
-		0.6,
-		0.6,
-		0.945,
-		0.726,
-		0.243,
-		0.358,
-		0.358,
-		0.453,
-		0.6,
-		0.248,
-		0.434,
-		0.248,
-		0.313,
-		0.6,
-		0.6,
-		0.6,
-		0.6,
-		0.6,
-		0.6,
-		0.6,
-		0.6,
-		0.6,
-		0.6,
-		0.248,
-		0.248,
-		0.6,
-		0.6,
-		0.6,
-		0.459,
-		0.95,
-		0.744,
-		0.688,
-		0.68,
-		0.762,
-		0.597,
-		0.562,
-		0.736,
-		0.773,
-		0.282,
-		0.354,
-		0.665,
-		0.562,
-		0.868,
-		0.748,
-		0.785,
-		0.652,
-		0.785,
-		0.686,
-		0.631,
-		0.621,
-		0.738,
-		0.713,
-		1.113,
-		0.672,
-		0.618,
-		0.605,
-		0.354,
-		0.313,
-		0.354,
-		0.6,
-		0.5,
-		0.377,
-		0.547,
-		0.6,
-		0.472,
-		0.6,
-		0.542,
-		0.364,
-		0.604,
-		0.585,
-		0.255,
-		0.259,
-		0.536,
-		0.319,
-		0.877,
-		0.585,
-		0.576,
-		0.6,
-		0.6,
-		0.392,
-		0.488,
-		0.384,
-		0.579,
-		0.527,
-		0.853,
-		0.546,
-		0.526,
-		0.474,
-		0.391,
-		0.288,
-		0.391,
-		0.6,
-	}
+local NUNITO_BOLD = { -- ems, character codes 32 to 126: Nunito Bold, Google Fonts (the body font, UI/Kit.BODY_FACE)
+	0.271, 0.248, 0.448, 0.6, 0.6, 0.945, 0.726, 0.243, 0.358, 0.358, 0.453, 0.6, 0.248, 0.434, 0.248, 0.313,
+	0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.248, 0.248, 0.6, 0.6, 0.6, 0.459,
+	0.95, 0.744, 0.688, 0.68, 0.762, 0.597, 0.562, 0.736, 0.773, 0.282, 0.354, 0.665, 0.562, 0.868, 0.748, 0.785,
+	0.652, 0.785, 0.686, 0.631, 0.621, 0.738, 0.713, 1.113, 0.672, 0.618, 0.605, 0.354, 0.313, 0.354, 0.6, 0.5,
+	0.377, 0.547, 0.6, 0.472, 0.6, 0.542, 0.364, 0.604, 0.585, 0.255, 0.259, 0.536, 0.319, 0.877, 0.585, 0.576,
+	0.6, 0.6, 0.392, 0.488, 0.384, 0.579, 0.527, 0.853, 0.546, 0.526, 0.474, 0.391, 0.288, 0.391, 0.6,
+}
 -- a family's entry is its average width in ems, or { avg, ascii } with real widths for codes 32 to 126
 local GLYPH = {
 	FredokaOne = { avg = 0.62, ascii = FREDOKA_ONE },
@@ -1062,9 +865,7 @@ local GLYPH = {
 local function familyName(self)
 	local face = rawProp(self, "FontFace")
 	local family = face and face.Family or ""
-	return string.match(family, "families/([%w]+)%.json")
-		or string.match(tostring(family), "Enum%.Font%.(%w+)")
-		or tostring(family)
+	return string.match(family, "families/([%w]+)%.json") or string.match(tostring(family), "Enum%.Font%.(%w+)") or tostring(family)
 end
 UIShim.familyName = familyName
 
@@ -1101,15 +902,7 @@ local function lineWidth(line, size, font)
 			width += 0.28
 		elseif code >= 65 and code <= 90 then
 			width += em * 1.18
-		elseif
-			code == 105
-			or code == 108
-			or code == 49
-			or code == 46
-			or code == 44
-			or code == 39
-			or code == 33
-		then
+		elseif code == 105 or code == 108 or code == 49 or code == 46 or code == 44 or code == 39 or code == 33 then
 			width += em * 0.55
 		else
 			width += em
@@ -1177,10 +970,7 @@ local function renderedTextSize(self, w, h, k)
 		while lo <= hi do
 			local mid = math.floor((lo + hi) / 2)
 			local lines, widest = wrapText(text, mid, em, if wrap then w else nil)
-			if
-				widest <= w + 0.5
-				and lines * mid * (rawProp(self, "LineHeight") or 1) <= h + 0.5
-			then
+			if widest <= w + 0.5 and lines * mid * (rawProp(self, "LineHeight") or 1) <= h + 0.5 then
 				best = mid
 				lo = mid + 1
 			else
@@ -1191,11 +981,7 @@ local function renderedTextSize(self, w, h, k)
 	end
 	local size = (rawProp(self, "TextSize") or 14) * k * TEXT_K
 	if constraint then
-		size = math.clamp(
-			size,
-			(rawProp(constraint, "MinTextSize") or 1) * k,
-			(rawProp(constraint, "MaxTextSize") or 100) * k
-		)
+		size = math.clamp(size, (rawProp(constraint, "MinTextSize") or 1) * k, (rawProp(constraint, "MaxTextSize") or 100) * k)
 	end
 	-- text draws at whole pixel sizes, so under a UIScale a row's width does not shrink smoothly with the scale. Code
 	-- that resizes from its own width can then flip between two sizes every frame (rows that shake)
@@ -1236,8 +1022,7 @@ local function contentExtent(self, aw, ah, kk)
 	if isTextObject(self) then
 		local size = renderedTextSize(self, iw, ih, kk)
 		local autoX = autoAxes(self)
-		local tw, th =
-			textExtent(self, size, if rawProp(self, "TextWrapped") and not autoX then iw else nil)
+		local tw, th = textExtent(self, size, if rawProp(self, "TextWrapped") and not autoX then iw else nil)
 		ex, ey = math.max(ex, tw), math.max(ey, th)
 	end
 	local layout = layoutOf(self)
@@ -1350,27 +1135,14 @@ function arrange(self, layout, iw, ih, kk)
 			contentW = lines * cw + math.max(0, lines - 1) * gx
 			contentH = across * ch + math.max(0, across - 1) * gy
 		end
-		local ox = if hAlign == "Center"
-			then (iw - contentW) / 2
-			elseif hAlign == "Right" then iw - contentW
-			else 0
-		local oy = if vAlign == "Center"
-			then (ih - contentH) / 2
-			elseif vAlign == "Bottom" then ih - contentH
-			else 0
+		local ox = if hAlign == "Center" then (iw - contentW) / 2 elseif hAlign == "Right" then iw - contentW else 0
+		local oy = if vAlign == "Center" then (ih - contentH) / 2 elseif vAlign == "Bottom" then ih - contentH else 0
 		for i, child in children do
 			local a, b = (i - 1) % perLine, math.floor((i - 1) / perLine)
 			local col, row = if horizontal then a else b, if horizontal then b else a
-			placed[child] = {
-				x = ox + col * (cw + gx),
-				y = oy + row * (ch + gy),
-				w = cw,
-				h = ch,
-				k = kk * uiScaleOf(child),
-			}
+			placed[child] = { x = ox + col * (cw + gx), y = oy + row * (ch + gy), w = cw, h = ch, k = kk * uiScaleOf(child) }
 		end
-		layoutInfo[layout] =
-			{ w = contentW, h = contentH, cellW = cw, cellH = ch, count = n, perLine = perLine }
+		layoutInfo[layout] = { w = contentW, h = contentH, cellW = cw, cellH = ch, count = n, perLine = perLine }
 		return placed, contentW, contentH
 	end
 	-- UIListLayout (and page or table layouts, read as a list)
@@ -1407,28 +1179,16 @@ function arrange(self, layout, iw, ih, kk)
 	end
 	local crossCursor = 0
 	if horizontal then
-		crossCursor = if vAlign == "Center"
-			then (ih - contentCross) / 2
-			elseif vAlign == "Bottom" then ih - contentCross
-			else 0
+		crossCursor = if vAlign == "Center" then (ih - contentCross) / 2 elseif vAlign == "Bottom" then ih - contentCross else 0
 	else
-		crossCursor = if hAlign == "Center"
-			then (iw - contentCross) / 2
-			elseif hAlign == "Right" then iw - contentCross
-			else 0
+		crossCursor = if hAlign == "Center" then (iw - contentCross) / 2 elseif hAlign == "Right" then iw - contentCross else 0
 	end
 	for _, line in lineList do
 		local cursor
 		if horizontal then
-			cursor = if hAlign == "Center"
-				then (iw - line.main) / 2
-				elseif hAlign == "Right" then iw - line.main
-				else 0
+			cursor = if hAlign == "Center" then (iw - line.main) / 2 elseif hAlign == "Right" then iw - line.main else 0
 		else
-			cursor = if vAlign == "Center"
-				then (ih - line.main) / 2
-				elseif vAlign == "Bottom" then ih - line.main
-				else 0
+			cursor = if vAlign == "Center" then (ih - line.main) / 2 elseif vAlign == "Bottom" then ih - line.main else 0
 		end
 		for _, child in line.items do
 			local s = sizes[child]
@@ -1436,26 +1196,14 @@ function arrange(self, layout, iw, ih, kk)
 			if horizontal then
 				x = cursor
 				local free = (if #lineList == 1 then ih else line.cross) - s.h
-				y = crossCursor
-					+ (
-						if vAlign == "Center"
-							then free / 2
-							elseif vAlign == "Bottom" then free
-							else 0
-					)
+				y = crossCursor + (if vAlign == "Center" then free / 2 elseif vAlign == "Bottom" then free else 0)
 				if #lineList == 1 then
-					y = if vAlign == "Center"
-						then (ih - s.h) / 2
-						elseif vAlign == "Bottom" then ih - s.h
-						else 0
+					y = if vAlign == "Center" then (ih - s.h) / 2 elseif vAlign == "Bottom" then ih - s.h else 0
 				end
 				cursor += s.w + gap
 			else
 				y = cursor
-				x = if hAlign == "Center"
-					then (iw - s.w) / 2
-					elseif hAlign == "Right" then iw - s.w
-					else 0
+				x = if hAlign == "Center" then (iw - s.w) / 2 elseif hAlign == "Right" then iw - s.w else 0
 				if #lineList > 1 then
 					x = crossCursor
 				end
@@ -1465,9 +1213,7 @@ function arrange(self, layout, iw, ih, kk)
 		end
 		crossCursor += line.cross + gap
 	end
-	local cw, ch =
-		if horizontal then contentMain else contentCross,
-		if horizontal then contentCross else contentMain
+	local cw, ch = if horizontal then contentMain else contentCross, if horizontal then contentCross else contentMain
 	layoutInfo[layout] = { w = cw, h = ch }
 	return placed, cw, ch
 end
@@ -1498,12 +1244,8 @@ local function placeChildren(self, x, y, aw, ah, kk, clip, inScroll, gui)
 		local autoX, autoY = autoAxes(self, "AutomaticCanvasSize")
 		if autoX or autoY then
 			-- children measure against the canvas, which is never smaller than the window
-			local ew, eh = contentExtent(
-				self,
-				if autoX then 0 else math.max(cw, aw),
-				if autoY then 0 else math.max(ch, ah),
-				kk
-			)
+			local ew, eh =
+				contentExtent(self, if autoX then 0 else math.max(cw, aw), if autoY then 0 else math.max(ch, ah), kk)
 			if autoX then
 				cw = math.max(cw, ew)
 			end
@@ -1593,18 +1335,14 @@ function place(self, x, y, aw, ah, kk, clip, inScroll, gui)
 		return -- nothing under it changed and its box is where it was
 	end
 	subDirty[self] = nil
-	cache[self] =
-		{ x = x, y = y, w = aw, h = ah, k = kk, clip = clip, scroll = inScroll, gui = gui }
+	cache[self] = { x = x, y = y, w = aw, h = ah, k = kk, clip = clip, scroll = inScroll, gui = gui }
 	placeChildren(self, x, y, aw, ah, kk, clip, inScroll, gui)
 end
 
 local INSET = profile.inset or 58
 
 local function screenRect(gui)
-	if
-		rawProp(gui, "IgnoreGuiInset") == true
-		or enumName(rawProp(gui, "ScreenInsets")) == "None"
-	then
+	if rawProp(gui, "IgnoreGuiInset") == true or enumName(rawProp(gui, "ScreenInsets")) == "None" then
 		return 0, 0, profile.width, profile.height
 	end
 	return 0, INSET, profile.width, profile.height - INSET
@@ -1621,17 +1359,7 @@ local function layoutScreenGui(gui)
 	for _, child in guiChildren(gui) do
 		local cw, ch, ck = measure(child, w, h, k)
 		local pos, ap = rawProp(child, "Position"), rawProp(child, "AnchorPoint")
-		place(
-			child,
-			x + udim(pos.X, w, k) - ap.X * cw,
-			y + udim(pos.Y, h, k) - ap.Y * ch,
-			cw,
-			ch,
-			ck,
-			nil,
-			false,
-			gui
-		)
+		place(child, x + udim(pos.X, w, k) - ap.X * cw, y + udim(pos.Y, h, k) - ap.Y * ch, cw, ch, ck, nil, false, gui)
 	end
 end
 
@@ -1728,9 +1456,7 @@ local function computed(self, key)
 	elseif key == "AbsoluteCellCount" then
 		computeAll()
 		local info = layoutInfo[self]
-		return if info and info.perLine
-			then Vector2.new(info.perLine, math.ceil(info.count / info.perLine))
-			else Vector2.zero
+		return if info and info.perLine then Vector2.new(info.perLine, math.ceil(info.count / info.perLine)) else Vector2.zero
 	elseif key == "AbsoluteCanvasSize" or key == "AbsoluteWindowSize" then
 		if className ~= "ScrollingFrame" then
 			return nil
@@ -1794,11 +1520,7 @@ InstanceMT.__index = function(self, key)
 	if own ~= nil then
 		return own
 	end
-	if
-		EVENT_NAMES[key]
-		and methods[key] == nil
-		and (GENERIC_EVENTS[key] or I.findChild(self, key) == nil)
-	then
+	if EVENT_NAMES[key] and methods[key] == nil and (GENERIC_EVENTS[key] or I.findChild(self, key) == nil) then
 		return eventOf(self, key)
 	end
 	local value = worldIndex(self, key)
@@ -2059,8 +1781,7 @@ end
 local function makeTween(instance, info, goals)
 	local tween = I.newInstance("Tween")
 	state[tween].props.PlaybackState = Enum.PlaybackState.Begin
-	state[tween].tween =
-		{ instance = instance, info = info or TweenInfo.new(), goals = goals or {} }
+	state[tween].tween = { instance = instance, info = info or TweenInfo.new(), goals = goals or {} }
 	return tween
 end
 function methods.Create(self, instance, info, goals)
@@ -2081,9 +1802,7 @@ function methods.Play(self)
 	if repeats < 0 then
 		return
 	end
-	local total = ((info.Time or 0) + (info.DelayTime or 0))
-		* (repeats + 1)
-		* (if info.Reverses then 2 else 1)
+	local total = ((info.Time or 0) + (info.DelayTime or 0)) * (repeats + 1) * (if info.Reverses then 2 else 1)
 	task.delay(total, function()
 		if state[self].props.PlaybackState == Enum.PlaybackState.Playing then
 			state[self].props.PlaybackState = Enum.PlaybackState.Completed
@@ -2110,8 +1829,7 @@ end
 function methods.GetTextSize(_, text, size, font, frameSize)
 	local em = 0.5
 	size = (size or 14) * TEXT_K
-	local lines, widest =
-		wrapText(text or "", size or 14, em, frameSize and frameSize.X < 1e6 and frameSize.X or nil)
+	local lines, widest = wrapText(text or "", size or 14, em, frameSize and frameSize.X < 1e6 and frameSize.X or nil)
 	return Vector2.new(widest, lines * (size or 14))
 end
 function methods.GetTextBoundsAsync(_, params)
@@ -2119,12 +1837,8 @@ function methods.GetTextBoundsAsync(_, params)
 	local family = face and string.match(face.Family or "", "families/([%w]+)%.json") or ""
 	local em = GLYPH[family] or 0.5
 	local width = params.Width
-	local lines, widest = wrapText(
-		params.Text or "",
-		(params.Size or 14) * TEXT_K,
-		em,
-		if width and width > 0 then width else nil
-	)
+	local lines, widest =
+		wrapText(params.Text or "", (params.Size or 14) * TEXT_K, em, if width and width > 0 then width else nil)
 	return Vector2.new(widest, lines * (params.Size or 14) * TEXT_K)
 end
 function methods.GetGuiInset()
@@ -2194,13 +1908,7 @@ function methods.GetRankInGroup()
 	return 0
 end
 function methods.GetMouse()
-	return {
-		X = profile.width / 2,
-		Y = profile.height / 2,
-		Hit = V.CFrame.new(),
-		Target = nil,
-		Icon = "",
-	}
+	return { X = profile.width / 2, Y = profile.height / 2, Hit = V.CFrame.new(), Target = nil, Icon = "" }
 end
 function methods.GetPlayerByUserId(_, userId)
 	if userId == 1 then
@@ -2363,8 +2071,7 @@ state[GuiService].props.ReducedMotionEnabled = false
 state[GuiService].props.PreferredTextSize = Enum.PreferredTextSize[profile.textSize or "Medium"]
 state[GuiService].props.PreferredTransparency = profile.transparency or 1 -- 1 is Roblox's default, 0 asks for solid
 state[GuiService].props.MenuIsOpen = false
-state[GuiService].props.TopbarInset =
-	Rect.new(Vector2.new(184, 0), Vector2.new(profile.width - 16, INSET))
+state[GuiService].props.TopbarInset = Rect.new(Vector2.new(184, 0), Vector2.new(profile.width - 16, INSET))
 state[GuiService].props.ViewportDisplaySize = Enum.DisplaySize[profile.displaySize or "Medium"] -- Large on a TV
 state[GuiService].props.TouchControlsEnabled = true -- false hides the phone's thumbstick and jump button
 
@@ -2407,14 +2114,7 @@ local function runDue(upTo)
 	while true do
 		local bestIndex, best = nil, nil
 		for index, item in queue do
-			if
-				item.at <= upTo
-				and (
-					best == nil
-					or item.at < best.at
-					or (item.at == best.at and item.seq < best.seq)
-				)
-			then
+			if item.at <= upTo and (best == nil or item.at < best.at or (item.at == best.at and item.seq < best.seq)) then
 				bestIndex, best = index, item
 			end
 		end
@@ -2426,10 +2126,7 @@ local function runDue(upTo)
 		resume(best.thread, table.unpack(best.args, 1, best.args.n))
 		guard += 1
 		if guard > 20000 then
-			note(
-				UIShim.errors,
-				"ui-shim: more than 20000 queued resumes in one frame, a loop that never waits"
-			)
+			note(UIShim.errors, "ui-shim: more than 20000 queued resumes in one frame, a loop that never waits")
 			table.clear(queue)
 			return
 		end
@@ -2490,13 +2187,7 @@ function UIShim.watch(seconds, minChanges)
 			if entry.changes >= (minChanges or 6) and entry.distinct <= 3 then
 				table.insert(
 					found,
-					table.concat(names, "/")
-						.. "\t"
-						.. key
-						.. "\t"
-						.. entry.changes
-						.. "\t"
-						.. entry.distinct
+					table.concat(names, "/") .. "\t" .. key .. "\t" .. entry.changes .. "\t" .. entry.distinct
 				)
 			end
 		end
@@ -2597,14 +2288,10 @@ local function looks(child, box)
 			out.stroke = rawProp(part, "Color")
 			out.strokeT = rawProp(part, "Transparency") or 0
 			out.strokeW = (rawProp(part, "Thickness") or 1) * box.k
-			out.strokeBorder = enumName(rawProp(part, "ApplyStrokeMode")) == "Border"
-				or not isTextObject(child)
+			out.strokeBorder = enumName(rawProp(part, "ApplyStrokeMode")) == "Border" or not isTextObject(child)
 		elseif className == "UICorner" then
 			local radius = rawProp(part, "CornerRadius") or UDim.new(0, 8)
-			out.corner = math.min(
-				radius.Scale * math.min(box.w, box.h) + radius.Offset * box.k,
-				math.min(box.w, box.h) / 2
-			)
+			out.corner = math.min(radius.Scale * math.min(box.w, box.h) + radius.Offset * box.k, math.min(box.w, box.h) / 2)
 		end
 	end
 	return out
@@ -2674,11 +2361,7 @@ function UIShim.snapshot()
 				local bg = rawProp(child, "BackgroundColor3")
 				local bgT = rawProp(child, "BackgroundTransparency") or 0
 				if type(look.gradColor) == "table" and type(bg) == "table" and bg.R then
-					bg = Color3.new(
-						bg.R * look.gradColor.R,
-						bg.G * look.gradColor.G,
-						bg.B * look.gradColor.B
-					)
+					bg = Color3.new(bg.R * look.gradColor.R, bg.G * look.gradColor.G, bg.B * look.gradColor.B)
 				end
 				if type(look.gradT) == "number" then
 					bgT = 1 - (1 - bgT) * (1 - look.gradT)
@@ -2692,28 +2375,16 @@ function UIShim.snapshot()
 					local key = if look.strokeBorder then '"bs"' else '"ts2"'
 					table.insert(
 						fields,
-						key
-							.. ':["'
-							.. hex(look.stroke)
-							.. '",'
-							.. num(look.strokeW)
-							.. ","
-							.. string.format("%.2f", (1 - look.strokeT) * alpha)
-							.. "]"
+						key .. ':["' .. hex(look.stroke) .. '",' .. num(look.strokeW) .. "," .. string.format(
+							"%.2f",
+							(1 - look.strokeT) * alpha
+						) .. "]"
 					)
 				end
 				if box.clip then
 					table.insert(
 						fields,
-						'"clip":['
-							.. num(box.clip[1])
-							.. ","
-							.. num(box.clip[2])
-							.. ","
-							.. num(box.clip[3])
-							.. ","
-							.. num(box.clip[4])
-							.. "]"
+						'"clip":[' .. num(box.clip[1]) .. "," .. num(box.clip[2]) .. "," .. num(box.clip[3]) .. "," .. num(box.clip[4]) .. "]"
 					)
 				end
 				if box.scroll then
@@ -2740,16 +2411,9 @@ function UIShim.snapshot()
 					table.insert(fields, '"image":true')
 					table.insert(
 						fields,
-						'"imageT":'
-							.. string.format(
-								"%.2f",
-								1 - (1 - (rawProp(child, "ImageTransparency") or 0)) * alpha
-							)
+						'"imageT":' .. string.format("%.2f", 1 - (1 - (rawProp(child, "ImageTransparency") or 0)) * alpha)
 					)
-					table.insert(
-						fields,
-						'"ic":"' .. hex(rawProp(child, "ImageColor3") or Color3.new(1, 1, 1)) .. '"'
-					)
+					table.insert(fields, '"ic":"' .. hex(rawProp(child, "ImageColor3") or Color3.new(1, 1, 1)) .. '"')
 				end
 				if isTextObject(child) then
 					local text = plainText(child)
@@ -2758,11 +2422,7 @@ function UIShim.snapshot()
 						local pl, pr, pt, pb = padding(child, box.w, box.h, box.k)
 						local iw, ih = math.max(0, box.w - pl - pr), math.max(0, box.h - pt - pb)
 						local size, exact = renderedTextSize(child, iw, ih, box.k)
-						local tw, th, rows = textExtent(
-							child,
-							size,
-							if rawProp(child, "TextWrapped") then iw else nil
-						)
+						local tw, th, rows = textExtent(child, size, if rawProp(child, "TextWrapped") then iw else nil)
 						table.insert(fields, '"text":' .. jsonString(string.sub(text, 1, 120)))
 						table.insert(fields, '"ts":' .. num(size))
 						table.insert(fields, '"font":' .. jsonString(familyName(child)))
@@ -2770,17 +2430,12 @@ function UIShim.snapshot()
 						table.insert(fields, '"ta":' .. string.format("%.2f", textAlpha))
 						table.insert(fields, '"tw":' .. num(tw))
 						table.insert(fields, '"th":' .. num(th))
-						table.insert(
-							fields,
-							'"tx":' .. jsonString(enumName(rawProp(child, "TextXAlignment")))
-						)
+						table.insert(fields, '"tx":' .. jsonString(enumName(rawProp(child, "TextXAlignment"))))
 						if pl + pr + pt + pb > 0 then
 							-- where the words can go inside a padded label, for the crowd check
 							table.insert(
 								fields,
-								'"pad":['
-									.. table.concat({ num(pl), num(pr), num(pt), num(pb) }, ",")
-									.. "]"
+								'"pad":[' .. table.concat({ num(pl), num(pr), num(pt), num(pb) }, ",") .. "]"
 							)
 						end
 						if rawProp(child, "TextScaled") then
@@ -2789,19 +2444,13 @@ function UIShim.snapshot()
 						if rawProp(child, "TextWrapped") then
 							table.insert(fields, '"wrap":true')
 							-- where wrapped text sits and its lines, for the pictures
-							table.insert(
-								fields,
-								'"ty":' .. jsonString(enumName(rawProp(child, "TextYAlignment")))
-							)
+							table.insert(fields, '"ty":' .. jsonString(enumName(rawProp(child, "TextYAlignment"))))
 							if #rows > 1 and not rawProp(child, "TextScaled") then
 								local quoted = {}
 								for _, row in rows do
 									table.insert(quoted, jsonString(row))
 								end
-								table.insert(
-									fields,
-									'"lines":[' .. table.concat(quoted, ",") .. "]"
-								)
+								table.insert(fields, '"lines":[' .. table.concat(quoted, ",") .. "]")
 							end
 						end
 						local truncate = enumName(rawProp(child, "TextTruncate"))
