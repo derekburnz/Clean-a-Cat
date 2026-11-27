@@ -1023,6 +1023,27 @@ local SCENES = {
 			UI.open("Pets")
 		end,
 	},
+	-- The same pets one per tile (issue 1035, switch petSingles): no "x3", no stars on one star pets, one Fuse on the
+	-- first of the three Clover.
+	{
+		"PetsSingles",
+		function()
+			flag("petsWindow", true)
+			flag("petLines", true)
+			flag("petSingles", true)
+			UI.setPets({
+				{ id = 1, kind = "Clover", star = 1, slot = "player" },
+				{ id = 2, kind = "Clover", star = 1 },
+				{ id = 3, kind = "Clover", star = 1 },
+				{ id = 4, kind = "Angler", star = 2, slot = "Jo1" },
+				{ id = 5, kind = "Ooze", star = 1 },
+				{ id = 6, kind = "Ooze", star = 1 },
+				{ id = 7, kind = "Blaze", star = 3 },
+				{ id = 8, kind = "Ghost", star = 1 },
+			}, { Jo = true })
+			UI.open("Pets")
+		end,
+	},
 	{
 		"PetsEmpty",
 		function()
@@ -1347,6 +1368,7 @@ function Scenes.close()
 	flag("helpersWindow", false)
 	flag("helperPets", false)
 	flag("petLines", false)
+	flag("petSingles", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
 	flag("likeHowTo", false)
