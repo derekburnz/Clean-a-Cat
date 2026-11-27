@@ -35,9 +35,14 @@ function WashPopsController.Init(controllers: { [string]: any })
 	scrub = controllers.ScrubController
 end
 
+-- Beside the cat's head on the screen's right (the side away from the tools), so a word sits on open space and
+-- not on the cat's face or the step title above it.
 local function headOf(cat: Model): Vector3
 	local box, size = cat:GetBoundingBox()
-	return box.Position + Vector3.new(0, size.Y / 2, 0)
+	local camera = workspace.CurrentCamera
+	local right = if camera then camera.CFrame.RightVector else box.RightVector
+	local reach = math.max(size.X, size.Z) * 0.75
+	return box.Position + Vector3.new(0, size.Y * 0.3, 0) + right * reach
 end
 
 function WashPopsController.Start()
