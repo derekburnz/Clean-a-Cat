@@ -191,6 +191,7 @@ LiveFlags.KEYS = {
 	"coinLadder", -- the shop's 3x Coins pass shows only once 2x Coins is owned, and the server prompts it only then; 3x pays in place of 2x, never both, and works once owned with this off too (Passes.offered, ShopViewRules, PassService, issue 1031); off by default
 	"launchSale", -- a pass or product whose Roblox price is below its regular price (SaleRules.REGULAR_*) shows that regular price struck through and "Launch sale: 50% off"; the prices themselves are set on Roblox by store-setup sale-prices (SaleRules, ShopViewRules, issue 1032); off by default
 	"menuOnly", -- a choice with a menu is made only there: no helper hire pads or Hire and Takes prompts at the stands (Helpers window), no Buy and Build prompts on the boards (Build window), no Wash next prompts (Who's next?), each only while its window is on; guide cards open the window (MenuRules, issues 1028 and 1033); off by default
+	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -354,6 +355,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	coinLadder = true,
 	launchSale = true,
 	menuOnly = true,
+	resetSave = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
