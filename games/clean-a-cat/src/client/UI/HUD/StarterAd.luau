@@ -405,10 +405,13 @@ local function redraw()
 	p.was.Visible = total ~= nil
 	p.was.Text = if total then tostring(total) else ""
 	p.was.TextSize = s.was
-	p.was.TextColor3 = if calm then DARK_RED else RED
+	-- (starterFloat, Derek 2026-11-27: "with a red line through old price") floating, the old price and its line are
+	-- true red with the ink edge; only the dark card keeps the pale pink
+	local pale = calm and not StarterAd.floating()
+	p.was.TextColor3 = if pale then DARK_RED else RED
 	local strike = p.was:FindFirstChild("Strike") :: Frame?
 	if strike then
-		strike.BackgroundColor3 = if calm then DARK_RED else RED
+		strike.BackgroundColor3 = if pale then DARK_RED else RED
 	end
 	p.now.Text = if pack then `{pack} Robux` else "See the pack"
 	p.now.TextSize = s.price
