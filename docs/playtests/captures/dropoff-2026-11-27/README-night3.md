@@ -150,3 +150,10 @@ customerWalk is on (CustomerMotion enabled) and the ArmR joint is recognised. Sa
 - `1080-card-see-the-pack-iphone13.jpg`: the dark plum card with no price known locally. It shows one big sponge on a gold glow, the round "i" and no time chip.
 - `1080-card-199-robux-iphone13.jpg`: with ProductPrice_StarterPack set to 199 by hand, the price reads "199 Robux" in light green. Contrast is 7.8 against the top of the plum and 11.3 against the bottom.
 - `1080-info-window-new-player-offer.jpg`: the "i" opens the Spa Starter Pack window, and its band says "New player offer".
+
+## Menu contrast, menuContrast2 (issue 1029) on main 52dfced, iphone_13, 2026-11-27
+
+`1029-<window>-iphone13.jpg` covers Shop, Build, Helpers, Check in, Pets, Cat Index, Settings, Quests, Crate and the Starter window, each opened by a tap.
+- Every window has the panel DCC8F2, white cards and ink edges (45226B).
+- No INK_SOFT text and no plain cream fills are left.
+- Body text is ink: 8.0 to 1 on the panel and 12.4 to 1 on white.
