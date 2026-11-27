@@ -34,8 +34,12 @@ API = "https://apis.roblox.com"
 
 # Our keys (Passes.KEYS and Products.IDS_BY_GAME) with the name, price and words shown on Roblox, and for a pass whose
 # name changed, the old names it may still have there: that pass is renamed, never made again (a copy cannot be deleted).
+# The price is the REGULAR one, the same list as SaleRules.REGULAR_PASSES and REGULAR_PRODUCTS in the game (change both
+# together); sale-prices sets half of it (SaleRules.salePrice), regular-prices sets it back (issue 1032).
 PASSES = [
-    ("DoubleCoins", "2x Coins", 199, "Every cat you wash by hand pays double."),
+    # Derek 2026-11-27 (issue 1031): a cheap ladder, 2x then 3x, 25 and 50 Robux on the launch sale
+    ("DoubleCoins", "2x Coins", 50, "Every cat you wash by hand pays double."),
+    ("TripleCoins", "3x Coins", 100, "Every cat you wash by hand pays triple, in place of double."),
     ("SecondBuilder", "Second Builder", 299, "Build a tub or station and a room at the same time."),
     ("GoldenSponge", "Golden Sponge", 99, "The best sponge with gold bubbles, and +20% on every cat you wash by hand."),
     # Derek 2026-11-27: the pass is "Extra Worker", not the helper's name; the dev pass made as "Lou" is renamed
@@ -237,6 +241,51 @@ def make(kind, wanted, keys, universe, confirm, summary):
     return ok
 
 
+def sale_price(regular):
+    """SaleRules.salePrice: half, rounded down, at least 1 Robux."""
+    return max(1, regular // 2)
+
+
+def set_prices(kind, wanted, keys, universe, confirm, summary, sale):
+    """Sets each made pass or product to its sale price (sale) or its regular price, then reads the list back."""
+    path = "game-passes/v1" if kind == "passes" else "developer-products/v2"
+    noun = "game-passes" if kind == "passes" else "developer-products"
+    base = f"{API}/{path}/universes/{universe}/{noun}"
+    label, key, status, first = pick_key(keys, lambda k: list_all(k, base + "/creator")[0:3:2])
+    if key is None:
+        summary.append(f"Cannot list {kind}: HTTP {status}: {short(first)}")
+        return False
+    _, have, _ = list_all(key, base + "/creator")
+    names = {name.strip().lower(): (name, ident, price) for name, ident, price in have}
+    summary.append(f"Using {label}. {kind}: {'sale' if sale else 'regular'} prices")
+    ok = True
+    for entry in wanted:
+        _, name, regular = entry[:3]
+        target = sale_price(regular) if sale else regular
+        there = names.get(name.lower())
+        if not there:
+            summary.append(f"skip {name}: not made on this experience yet")
+            continue
+        if there[2] == target:
+            summary.append(f"ok {name}: already {target} Robux")
+            continue
+        if confirm != "yes":
+            summary.append(f"would set {name} (id {there[1]}) from {there[2]} to {target} Robux")
+            continue
+        body, ctype = multipart([("price", str(target)), ("isForSale", "true")])
+        status, answer = request("PATCH", f"{base}/{there[1]}", key, body, ctype)
+        time.sleep(2)
+        _, again, _ = list_all(key, base + "/creator")
+        now = next((item for item in again if str(item[1]) == str(there[1])), None)
+        if now and now[2] == target:
+            summary.append(f"set {name} from {there[2]} to {target} Robux: id {there[1]} (HTTP {status})")
+            continue
+        seen = now[2] if now else "?"
+        summary.append(f"FAILED {name}: still {seen} Robux after HTTP {status}: {short(answer)}")
+        ok = False
+    return ok
+
+
 def server_size(keys, universe, place, confirm, summary):
     url = f"{API}/cloud/v2/universes/{universe}/places/{place}"
     label, key, status, now = pick_key(keys, lambda k: request("GET", url, k))
@@ -416,6 +465,10 @@ def main():
         ok = make("passes", PASSES, keys, universe, confirm, summary)
     elif action == "products":
         ok = make("products", PRODUCTS, keys, universe, confirm, summary)
+    elif action in ("sale-prices", "regular-prices"):
+        sale = action == "sale-prices"
+        ok = set_prices("passes", PASSES, keys, universe, confirm, summary, sale)
+        ok = set_prices("products", PRODUCTS, keys, universe, confirm, summary, sale) and ok
     elif action == "server-size":
         ok = server_size(keys, universe, place, confirm, summary)
     elif action == "description":
