@@ -379,7 +379,8 @@ local function showHeld(player: Player)
 	local model: string?, held: string? = nil, nil
 	local cat = cats[player]
 	if carrying[player] == "arms" and cat and cat.kind then
-		model, held = CarryRules.modelName(cat.kind :: string, hasAsset), "sit"
+		model, held =
+			CarryRules.modelName(cat.kind :: string, hasAsset, LiveFlags.isOn(CarryRules.LOAF_FLAG))
 	elseif player:GetAttribute(SudsRules.BOX_ATTRIBUTE) == false then
 		local loaf = SudsRules.asset("_Dirty_Loaf", hasAsset)
 		if hasAsset(loaf) then

@@ -211,6 +211,7 @@ LiveFlags.KEYS = {
 	"shortText", -- fewer words in every window: lines the picture and title already say are hidden, long lines cut short ("Hire at their pad · 1200 coins" to "1200 coins"); numbers, prices and odds stay (UI/ShortText, ShortTextRules, issue 1027); off by default
 	"starterNoClock", -- the starter pack keeps its 72 hours, but its HUD chip and window read "New player offer" instead of the time left (StarterViewRules.hudNote, issue 1069, Derek's plan answer of 2026-11-27); off by default
 	"helperWash", -- a helper washing a cat at their stand works through the steps with a tool in hand: shampoo, brush strokes with foam, the shower's water line, towel pats (Effects/HelperWash, CustomerMotion, issue 1135); client only; off by default
+	"loafCarry", -- every carried cat lies in the arms as a held loaf like Suds, a player's take and a helper's fetch and walk back, when its kind has one (CarryRules, SpaService, CarryController, WorkerService, issue 1138); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -394,6 +395,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	starterBuilder = true,
 	hotelNotify = true,
 	helperWash = true,
+	loafCarry = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

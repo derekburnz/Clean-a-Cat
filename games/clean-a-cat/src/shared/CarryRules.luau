@@ -26,8 +26,15 @@ CarryRules.CHARACTER_HELD = "CarryHeld"
 CarryRules.SHARED_FLAG = "carryShared"
 CarryRules.TAKE_REACH = 14 -- studs, flat, from the front customer's spot; the client's prompt reaches 10
 CarryRules.PLACE_REACH = 16 -- studs, flat, from the tub's spot; the client's prompt reaches 10
+-- (switch loafCarry, issue 1138) Derek 2026-11-27: every carried cat lies in the arms as a loaf, like Suds, for the
+-- player and for the helpers. A kind's held loaf is CleanACat_Cat_<Kind>_Dirty_Loaf (dirty, the take and the fetch)
+-- and CleanACat_Cat_<Kind>_Loaf (clean, a helper's walk back); a kind with none still goes as its sitting body.
+CarryRules.LOAF_FLAG = "loafCarry"
+CarryRules.LOAF = "loaf"
+CarryRules.SIT = "sit"
 
 export type Where = "door" | "arms"
+export type Held = "sit" | "loaf"
 
 -- Whether a cat of `kind` is carried in from the door: a customer's cat (it has a kind, and is no stray and not the
 -- opening's kitten) while both switches are on.
@@ -51,10 +58,39 @@ function CarryRules.within(at: Vector3, spot: Vector3, reach: number): boolean
 	return Vector3.new(offset.X, 0, offset.Z).Magnitude <= reach
 end
 
--- The Assets model a customer's cat of `kind` is carried as: its sitting body, or its dirty body when it has none.
-function CarryRules.modelName(kind: string, has: (string) -> boolean): string
+-- The Assets model a customer's cat of `kind` is carried as, and how it is held: with `loaf` (switch loafCarry) its
+-- held loaf when Assets has one ("loaf"); else its sitting body, or its dirty body when it has none ("sit").
+function CarryRules.modelName(
+	kind: string,
+	has: (string) -> boolean,
+	loaf: boolean?
+): (string, Held)
+	local held = `CleanACat_Cat_{kind}_Dirty_Loaf`
+	if loaf == true and has(held) then
+		return held, "loaf"
+	end
 	local sit = `CleanACat_Cat_{kind}_Dirty_Sit`
-	return if has(sit) then sit else `CleanACat_Cat_{kind}_Dirty`
+	return if has(sit) then sit else `CleanACat_Cat_{kind}_Dirty`, "sit"
+end
+
+-- The Assets model a helper carries a cat of `kind` as (switch helperFetch): dirty on the fetch from the counter,
+-- clean on the walk back. With `loaf` (switch loafCarry) its held loaf when Assets has one, else its sitting body.
+function CarryRules.helperModelName(
+	kind: string,
+	clean: boolean,
+	has: (string) -> boolean,
+	loaf: boolean?
+): (string, Held)
+	local base = if clean then `CleanACat_Cat_{kind}` else `CleanACat_Cat_{kind}_Dirty`
+	if loaf == true and has(`{base}_Loaf`) then
+		return `{base}_Loaf`, "loaf"
+	end
+	return `{base}_Sit`, "sit"
+end
+
+-- Whether an Assets model name is a held loaf (a helper's client reads the carried name off the staff model).
+function CarryRules.isLoaf(name: string): boolean
+	return string.sub(name, -5) == "_Loaf"
 end
 
 -- The door line as the player sees it: while the cat is still with its customer at the door, that customer is at the

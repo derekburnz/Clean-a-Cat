@@ -61,6 +61,7 @@ local TIP_FLAG = "tipTake"
 local pendingPlace: number? = nil -- (switch tipTake) the counter place tapped while the next cat waited on a tip
 local pendingAt = 0 -- os.clock() of that tap: a tap whose cat never came to the door (a stray's turn) is dropped
 local PENDING_SECONDS = 8
+local HELD_ATTRIBUTE = "CarryHeldAs" -- on the client's own copy: how it is held, from the model it was made from
 
 local prompt: BasePart? = nil -- the anchor of the current prompt ("Take" at the door or "Put in tub")
 local carried: Model? = nil -- the client-only copy of the cat
@@ -396,9 +397,9 @@ local function copyOf(kind: string): Model?
 	local assets = ReplicatedStorage:WaitForChild("Assets", ASSET_WAIT_SECONDS)
 	local found = assets :: Instance
 	local asset = if assets
-		then found:FindFirstChild(CarryRules.modelName(kind, function(name: string): boolean
+		then found:FindFirstChild((CarryRules.modelName(kind, function(name: string): boolean
 			return found:FindFirstChild(name) ~= nil
-		end))
+		end, LiveFlags.isOn(CarryRules.LOAF_FLAG))))
 		else nil
 	if not (asset and asset:IsA("Model")) then
 		warn(`CarryController: ReplicatedStorage.Assets has no dirty model for {kind}`)
@@ -406,6 +407,10 @@ local function copyOf(kind: string): Model?
 	end
 	local model = asset:Clone() :: Model
 	model.Name = "CleanACat_CarriedCat"
+	model:SetAttribute(
+		HELD_ATTRIBUTE,
+		if CarryRules.isLoaf(asset.Name) then CarryRules.LOAF else CarryRules.SIT
+	)
 	for _, item in model:GetDescendants() do
 		if item:IsA("BasePart") then
 			local part = item :: BasePart
@@ -452,7 +457,11 @@ local function lift(kind: string, from: CFrame?, reach: boolean)
 	if before then
 		before.destroy()
 	end
-	held = Carry.hold(character, model, "sit", reach)
+	-- (switch loafCarry) a held loaf lies across the arms like Suds; any other body sits on them
+	local heldAs: Carry.Held = if model:GetAttribute(HELD_ATTRIBUTE) == CarryRules.LOAF
+		then "loaf"
+		else "sit"
+	held = Carry.hold(character, model, heldAs, reach)
 	placing = false
 	leadToTub()
 end
