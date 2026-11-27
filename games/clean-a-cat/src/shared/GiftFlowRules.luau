@@ -18,8 +18,15 @@ GiftFlowRules.LEAVING_ATTRIBUTE = "Leaving" -- on the stand for LEAVE_SECONDS be
 GiftFlowRules.LEAVE_SECONDS = 0.8
 
 -- The stage a save is at: 1 until the welcome gift is claimed, 2 until the playtime gift is, then 3.
-function GiftFlowRules.stage(giftClaimed: boolean, playClaimed: boolean): number
-	if not giftClaimed then
+-- (groupVerify, issue 1111) `coinsOwed`: the verified join's 150 coins are not paid yet, so the board with Verify (stage
+-- 1) stays even for a save that already has the gift; the playtime gift's own check passes no `coinsOwed`, so it
+-- never waits on the group.
+function GiftFlowRules.stage(
+	giftClaimed: boolean,
+	playClaimed: boolean,
+	coinsOwed: boolean?
+): number
+	if not giftClaimed or coinsOwed == true then
 		return 1
 	end
 	return if playClaimed then 3 else 2
