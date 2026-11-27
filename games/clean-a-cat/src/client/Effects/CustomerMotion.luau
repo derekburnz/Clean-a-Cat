@@ -88,8 +88,13 @@ function CustomerMotion.holding(model: Model, now: number): boolean
 	then
 		return false
 	end
-	local pose =
-		HelperFetchRules.pose(way :: string, from :: Vector3, to :: Vector3, now - (at :: number))
+	local pose = HelperFetchRules.pose(
+		way :: string,
+		from :: Vector3,
+		to :: Vector3,
+		now - (at :: number),
+		HelperFetchRules.viaOf(model)
+	)
 	return pose.holding and not pose.done
 end
 

@@ -930,14 +930,24 @@ function FigureService.handOver(player: Player, index: number): (Model?, CFrame?
 			and figure:GetAttribute(PLACE_ATTRIBUTE) == index
 			and figure:GetAttribute(LEAVING_ATTRIBUTE) ~= true
 		then
+			-- where the cat sits on this player's screen: on the server every counter cat and figure keeps its holding
+			-- spot on the pavement, and only clients seat them (Sync on 844315b: every helper walked to the door)
+			local slot = SpaLayout.slotOf(player)
 			local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
 			if cat and cat:IsA("Model") then
 				local model = cat :: Model
+				local seat: unknown = model:GetAttribute(CounterRules.SPOT_AT_ATTRIBUTE)
+				local at = if typeof(seat) == "CFrame"
+					then seat :: CFrame
+					elseif slot then catSpot(index, slot)
+					else model:GetPivot()
 				model:SetAttribute(CounterRules.PLACE_ATTRIBUTE, nil)
 				model.Parent = nil
-				return model, model:GetPivot()
+				-- seated there for every client, as the helper's cat left on the counter until the pick up
+				model:PivotTo(at)
+				return model, at
 			end
-			return nil, (figure :: Model):GetPivot()
+			return nil, if slot then queueSpot(index, slot) else (figure :: Model):GetPivot()
 		end
 	end
 	return nil, nil
