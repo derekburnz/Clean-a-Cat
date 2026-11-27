@@ -162,6 +162,11 @@ SpaLayout.VIP_BUILDING_ASSET = "CleanACat_Area_VipBuilding"
 -- The builder kitten (#20) stands beside the builder board at SpotBuilder, the toolbox beside it.
 SpaLayout.BUILDER_SPOT = "SpotBuilder"
 SpaLayout.KITTEN_OFFSET = Vector3.new(4, 0, 0) -- in the spot's frame
+-- (switch humanBuilder, issue 891) Derek's q2-builder: a human builder in overalls (Model-Agent's CleanACat_NPC_Builder,
+-- about 6.3 studs tall, his hard hat part of his head) stands there instead of the kitten, a little further out.
+SpaLayout.BUILDER_FLAG = "humanBuilder"
+SpaLayout.BUILDER_ASSET = "CleanACat_NPC_Builder"
+SpaLayout.BUILDER_OFFSET = Vector3.new(4.5, 0, 0) -- in the spot's frame
 SpaLayout.TOOLBOX_OFFSET = Vector3.new(5.6, 0, 0.4)
 
 -- The placeholder room before the plot, in world space: the spawn at the origin and everything facing it (+Z).
