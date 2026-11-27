@@ -664,6 +664,57 @@ local SCENES = {
 			UI.open("Gift")
 		end,
 	},
+	-- The gift stand in stages (switch giftFlow, issue 968): the welcome gifts with one Claim all, then the playtime gift.
+	{
+		"GiftWelcome",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			flag("giftFlow", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", 1)
+			UI.setGift({
+				lit = true,
+				favourite = true,
+				group = false,
+				claimed = false,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 500,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
+	{
+		"GiftPlaytime",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			flag("giftFlow", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", 2)
+			UI.setGift({
+				lit = true,
+				favourite = true,
+				group = true,
+				claimed = true,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
 	-- The leave lines (issue 726, switch leaveLines) at their longest, as Roblox's menu opens over the HUD.
 	{
 		"LeaveLines",
@@ -1207,6 +1258,8 @@ function Scenes.close()
 	flag("helperPets", false)
 	flag("petLines", false)
 	flag("giftCrate", false)
+	flag("giftFlow", false)
+	game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", nil)
 	flag("menuContrast", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)
