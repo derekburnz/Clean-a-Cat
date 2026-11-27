@@ -39,6 +39,7 @@ import bpy
 from mathutils import Matrix, Vector
 
 import cats
+import common
 import dirt
 from common import PRIMS, Builder, scale_mesh
 
@@ -99,10 +100,10 @@ def _turn(ob, pivot, turn):
     ob.data.update()
 
 
-def build_loaf(name, mat, dirty):
+def build_loaf(name, mat, dirty, suffix="_Loaf"):
     """(objects, nest map for rbx_export, root attributes) of one cat's loaf."""
     spec = cats.spec_of(name)
-    base = f"CleanACat_Cat_{name}{'_Dirty' if dirty else ''}_Loaf"
+    base = f"CleanACat_Cat_{name}{'_Dirty' if dirty else ''}{suffix}"
     if dirty:
         objs, nest, _attrs = dirt.build_dirty(name, mat, "walk", base=base)
     else:
@@ -198,7 +199,36 @@ def build_loaf(name, mat, dirty):
     return out, nest, attributes
 
 
+def build_sleep(name, mat):
+    """A customer cat asleep (#1050, the Cat Hotel's guests), `CleanACat_Cat_<Name>_Loaf_Lite`: the loaf (legs tucked
+    under, chin on its paws) with both eyes shut, built light as cats.build_cat_lite builds the VIP residents, since
+    a sleeping guest lies still in a bed and every player on a server draws every plot's guests. Same pivot (under
+    its middle, on what it lies on), pieces and Attachments as a loaf. One for each cat in cats.ROSTER. Root
+    attributes `Loaf`, `Sleeping` and `Lite`."""
+    def small(obj, kind, matrix, swatch, extra):
+        if obj.endswith("_Head") and (swatch == "blush" or swatch.startswith("nose_")):
+            return False
+        if obj.endswith(cats.LITE_EYES):
+            return False
+        a, b, _c = common.prim_size(kind, matrix, extra)
+        return math.sqrt(a * b) < cats.LITE_MIN
+
+    common.LITE, cats.SLEEP = small, True
+    try:
+        objs, nest, attributes = build_loaf(name, mat, False, suffix=cats.SLEEP_SUFFIX)
+    finally:
+        common.LITE, cats.SLEEP = None, False
+    kept = [o for o in objs if len(o.data.polygons)]
+    for o in objs:
+        if o not in kept:
+            bpy.data.objects.remove(o, do_unlink=True)
+    del attributes["CarryScale"]
+    return kept, nest, attributes
+
+
 ASSETS = {}
+for _n in cats.ROSTER:
+    ASSETS[f"CleanACat_Cat_{_n}{cats.SLEEP_SUFFIX}"] = (lambda mat, n=_n: build_sleep(n, mat), 1500)
 for _n in NAMES:
     ASSETS[f"CleanACat_Cat_{_n}_Loaf"] = (lambda mat, n=_n: build_loaf(n, mat, False), 1500)
     ASSETS[f"CleanACat_Cat_{_n}_Dirty_Loaf"] = (lambda mat, n=_n: build_loaf(n, mat, True), 2600)
