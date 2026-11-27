@@ -77,6 +77,7 @@ local builds: { [string]: BuildRules.Build } = {}
 local built: { [string]: boolean } = {}
 local freeSince = -math.huge
 local chaining = false -- a recap card closed and the next cat waits for the bubbles in a row (afterRecap)
+local hurryRow: (() -> ())? = nil -- (switch tipTake) ends that row now, so the next cat is asked for (hurry)
 local trailUntil: number? = nil -- os.clock() when our trail goes; nil while it is not ours
 local trailTo: Vector3? = nil
 
@@ -266,10 +267,15 @@ function BubbleController.afterRecap(nextCat: () -> ())
 	local function finish()
 		if not finished then
 			finished = true
+			hurryRow = nil
 			chaining = false
 			freeSince = os.clock() -- the once-a-second check waits again before a bubble of its own
 			nextCat()
 		end
+	end
+	hurryRow = function()
+		left = 0 -- no more in this row; the one shown stays until it goes by itself
+		finish()
 	end
 	local step: () -> ()
 	-- Every step runs guarded: an error anywhere in the row still brings the next cat.
@@ -312,6 +318,23 @@ function BubbleController.afterRecap(nextCat: () -> ())
 		end)
 	end
 	guarded()
+end
+
+-- (switch tipTake, issue 1017) Whether the next cat waits on Suds's bubbles after a recap card closed.
+function BubbleController.holdingNextCat(): boolean
+	return hurryRow ~= nil
+end
+
+-- (switch tipTake) The player tapped a cat on the counter while the next cat waits on a bubble: it is asked for now,
+-- and the bubble shown stays until it goes by itself (Sync on 0e6a8f5: for 6 s every cat sat there with no Take).
+-- False when nothing waits.
+function BubbleController.hurry(): boolean
+	local row = hurryRow
+	if row == nil then
+		return false
+	end
+	row()
+	return true
 end
 
 -- The ask's turn came (askQueue): the bubble due now, if one still is, up for at most ASK_UP_SECONDS.

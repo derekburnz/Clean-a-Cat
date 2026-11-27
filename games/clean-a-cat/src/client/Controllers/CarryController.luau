@@ -56,6 +56,11 @@ local CUSTOMERS_FOLDER = "Customers" -- FigureService's figures in the plot
 
 local player = Players.LocalPlayer
 local scrub: any = nil -- ScrubController: where the tub's seat is and the size a cat sits at there
+local bubbles: any = nil -- BubbleController: whether the next cat waits on Suds's tip (switch tipTake)
+local TIP_FLAG = "tipTake"
+local pendingPlace: number? = nil -- (switch tipTake) the counter place tapped while the next cat waited on a tip
+local pendingAt = 0 -- os.clock() of that tap: a tap whose cat never came to the door (a stray's turn) is dropped
+local PENDING_SECONDS = 8
 
 local prompt: BasePart? = nil -- the anchor of the current prompt ("Take" at the door or "Put in tub")
 local carried: Model? = nil -- the client-only copy of the cat
@@ -234,6 +239,37 @@ local function counterCats(): { [Model]: number }
 	return found
 end
 
+-- (switch tipTake, issue 1017) Whether the next cat waits on Suds's tip after a recap card: the cats on the counter
+-- still look ready to take, so they keep their prompt and a tap brings the next cat now.
+local function holdingForTip(): boolean
+	return where() == nil
+		and LiveFlags.isOn(TIP_FLAG)
+		and LiveFlags.isOn(CounterRules.FLAG)
+		and bubbles ~= nil
+		and bubbles.holdingNextCat() == true
+end
+
+-- (switch tipTake) Takes the cat tapped while the next cat waited on a tip, now that it is at the door. Its place is
+-- the same: the door's customer is the one who stood first.
+local function takePending()
+	local place = pendingPlace
+	pendingPlace = nil
+	if
+		place == nil
+		or walking
+		or where() ~= CarryRules.DOOR
+		or os.clock() - pendingAt > PENDING_SECONDS
+	then
+		return
+	end
+	for cat, at in counterCats() do
+		if at == place then
+			takenFrom = cat:GetPivot()
+		end
+	end
+	ask("RequestTakeCat", CarryRules.DOOR, nil, place)
+end
+
 -- (switch counterLine) A "Take cat" prompt on each cat on the counter, following the line as it changes.
 local function syncCounter()
 	local served = player:GetAttribute(SERVED_ATTRIBUTE) == true
@@ -268,6 +304,18 @@ local function syncCounter()
 		p.MaxActivationDistance = PROMPT_REACH
 		p.Triggered:Connect(function(_who: Player)
 			local now = cat:GetAttribute(CounterRules.PLACE_ATTRIBUTE)
+			if not walking and type(now) == "number" and holdingForTip() then
+				-- (tipTake) the tap asks for the next cat now; this cat is taken once it is at the door
+				pendingPlace = now :: number
+				pendingAt = os.clock()
+				bubbles.hurry()
+				walkUpTo(cat:GetPivot().Position, function()
+					if where() == CarryRules.DOOR then
+						takePending()
+					end
+				end)
+				return
+			end
 			if walking or where() ~= CarryRules.DOOR or type(now) ~= "number" then
 				return
 			end
@@ -476,7 +524,12 @@ local function update()
 	local now = where()
 	if now == CarryRules.DOOR then
 		offerTake()
+		-- (tipTake) a cat tapped while the next cat waited on a tip; still walking up, the walk's end takes it
+		if pendingPlace ~= nil and not walking then
+			takePending()
+		end
 	elseif now == CarryRules.ARMS then
+		pendingPlace = nil
 		if held == nil then
 			clearPrompt()
 			local kind = player:GetAttribute(CarryRules.KIND_ATTRIBUTE)
@@ -493,6 +546,7 @@ end
 
 function CarryController.Init(controllers: { [string]: any })
 	scrub = controllers.ScrubController
+	bubbles = controllers.BubbleController
 end
 
 function CarryController.Start()
@@ -548,6 +602,17 @@ function CarryController.Start()
 				leadToTub()
 			end
 		end)
+	end)
+	-- (switch tipTake) while the next cat waits on Suds's tip, the counter's cats keep their prompts
+	task.spawn(function()
+		while true do
+			task.wait(COUNTER_SCAN_SECONDS)
+			if holdingForTip() then
+				syncCounter()
+			elseif where() == nil and next(counterPrompts) ~= nil then
+				clearCounter()
+			end
+		end
 	end)
 	update()
 end
