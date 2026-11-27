@@ -6,10 +6,11 @@ both at the plot's SpotGardenDoor (the middle of the back door's opening on the 
 Roblox, into the spa room, the yard behind), so they fit the small and the big plot:
 
   CleanACat_Area_BackDoorLocked  a closed mint door in the butter frame (the VIP and Garden doors' frame), two
-                                 strips of butter caution tape with ink stripes crossed over it, pinned at the frame
-                                 with pink tabs, a sawhorse across the doorway with a cream and pink striped board,
-                                 three planks leant on the door, three pastel paint pots (one up on the sawhorse)
-                                 and an apricot cone. An invisible `_Barrier` (solid, CanQuery off) keeps players
+                                 strips of yellow caution tape with ink stripes crossed over it, knotted at the
+                                 frame, a warning sign where they cross, a sawhorse with an orange and cream board,
+                                 three planks leant on the door, three paint pots (one up on the sawhorse), a
+                                 warning lamp and an orange cone. No pink anywhere (Derek, #1063). An
+                                 invisible `_Barrier` (solid, CanQuery off) keeps players
                                  out of the props; the door itself is solid. Attachment `PromptAnchor` in front of
                                  the sawhorse at chest height, for the unlock prompt.
   CleanACat_Area_BackDoorOpen    the same frame with the door swung open flat against the wall's yard side; the
@@ -17,9 +18,10 @@ Roblox, into the spa room, the yard behind), so they fit the small and the big p
 
 Everything stays inside the door's own 6 studs plus the frame and 2.9 studs into the room, clear of the stray box on
 the left and Sam's wash stand on the right in both plots. Nothing sharp and no black: the tape's stripes are the UI
-ink on butter. Props are `_Decor` (not solid), the frame and the door collide. What is behind the door is not here:
-it waits on Derek's pick (Design-Agent's plan page). The Garden's looks put their own gate in this doorway, so the
-game shows one or the other.
+ink on yellow. Props are `_Decor` (not solid), the frame and the door collide. What is behind the door is not here:
+is the Cat Hotel (hotel.py, #1050).
+
+  CleanACat_Area_VipDoorFill     the wall piece that closes the VIP Room's doorway at SpotVipDoor (#1063).
 """
 
 import math
@@ -34,10 +36,11 @@ FRAME_T = 0.38                    # as garden.FRAME_T: solid, so the camera stop
 SINK = 0.02
 LEAF_T = 0.4                      # the door: thick enough to be solid
 LOCKED, OPEN = "CleanACat_Area_BackDoorLocked", "CleanACat_Area_BackDoorOpen"
-DOOR_C, PANEL, TAPE, STRIPE = "spa_mint", "spa_cream", "pastel_butter", "fur_ink"
+DOOR_C, PANEL, TAPE, STRIPE = "spa_mint", "spa_cream", "fur_golden", "fur_ink"
+SIGNAL = "paw_neighbourhood"      # the building site orange: the board's stripes, the cone, the lamp
 WOOD, WOOD2 = "wood_light", "caramel_wood"
-POTS = ("spa_bubblegum", "spa_sky", "spa_mint")
-CONE = "fur_apricot"
+POTS = ("pastel_butter", "spa_sky", "spa_mint")
+CONE = SIGNAL
 TAPE_Y = -0.92                    # just in front of the frame's face (-0.83)
 _RZ = lambda deg: Matrix.Rotation(math.radians(deg), 3, "Z")      # noqa: E731
 _RY = lambda rad: Matrix.Rotation(rad, 3, "Y")                     # noqa: E731
@@ -75,20 +78,31 @@ def _door(b, at, turn):
 
 
 def _tape(d, x0, z0, x1, z1, ty=TAPE_Y):
-    """One strip of caution tape from (x0, z0) to (x1, z1) across the door's front: butter with ink stripes."""
+    """One strip of caution tape from (x0, z0) to (x1, z1) across the door's front: yellow with slanted ink stripes
+    inside the tape's own edges, and a yellow knot where each end is tied to the frame. No pink (#1063)."""
     dx, dz = x1 - x0, z1 - z0
     length = math.hypot(dx, dz)
-    ang = -math.atan2(dz, dx)
-    rot = _RY(ang)
+    rot = _RY(-math.atan2(dz, dx))
     cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
-    d.box((cx, ty, cz), (length, 0.05, 0.62), TAPE, bevel=False, rot=rot)
-    n = int(length / 0.9)
+    w, lean, bar = 0.7, 0.5, 0.28         # each stripe is one slanted block that stays inside the tape's edges
+    d.box((cx, ty, cz), (length, 0.06, w), TAPE, bevel=False, rot=rot)
+    n = int((length - 1.0) / 0.78)
     for i in range(n):
         t = (i + 0.5) / n - 0.5
-        d.box((cx + dx * t, ty - 0.035, cz + dz * t), (0.26, 0.03, 0.62), STRIPE, bevel=False,
-              rot=rot @ _RY(-0.6))
-    for x, z in ((x0, z0), (x1, z1)):                                 # pink tabs pin the ends to the frame
-        d.box((x, ty - 0.06, z), (0.5, 0.05, 0.5), "spa_bubblegum", bevel=False, rot=_RY(0.785))
+        k = t * (length - 1.0) / length
+        d.box((cx + dx * k, ty - 0.035, cz + dz * k), (bar, 0.03, 0.62), STRIPE, bevel=False, rot=rot @ _RY(-lean))
+    for x, z in ((x0, z0), (x1, z1)):                                 # the knots on the frame
+        d.box((x, ty - 0.03, z), (0.42, 0.2, 0.86), TAPE, rot=rot)
+        d.box((x, ty - 0.05, z), (0.5, 0.2, 0.3), TAPE, rot=rot)
+
+
+def _sign(d, x, z, y):
+    """A warning sign hung where the tapes cross: a yellow diamond with an ink rim and an ink exclamation mark."""
+    turn = _RY(math.pi / 4)
+    d.box((x, y + 0.03, z), (1.74, 0.06, 1.74), STRIPE, bevel=False, rot=turn)
+    d.box((x, y - 0.02, z), (1.46, 0.08, 1.46), TAPE, bevel=False, rot=turn)
+    d.box((x, y - 0.075, z + 0.16), (0.22, 0.04, 0.62), STRIPE, bevel=False)
+    d.box((x, y - 0.075, z - 0.38), (0.22, 0.04, 0.22), STRIPE, bevel=False)
 
 
 def _sawhorse(d, y):
@@ -104,7 +118,10 @@ def _sawhorse(d, y):
     k = 7
     for i in range(k):
         x = -half + (i + 0.5) * 2 * half / k
-        d.box((x, y - 0.39, board_z), (0.28, 0.06, 0.6), "spa_bubblegum", bevel=False, rot=_RY(-0.6))
+        d.box((x, y - 0.39, board_z), (0.3, 0.06, 0.56), SIGNAL, bevel=False, rot=_RY(-0.5))
+    # a warning lamp on the beam's left end: a yellow box with an orange dome
+    d.box_base((-half + 0.25, y, top + 0.165), (0.5, 0.36, 0.34), TAPE)
+    d.sphere((-half + 0.25, y, top + 0.5), 0.26, SIGNAL, segments=8, rings=5)
     return top + 0.17
 
 
@@ -151,8 +168,9 @@ def build_locked(mat):
     b, d = Builder(), Builder()
     _frame(b)
     _door(b, (-DOOR_W / 2 + 0.04, 0.0), 0)
-    _tape(d, -2.95, 7.4, 2.95, 1.6)
-    _tape(d, -2.95, 2.0, 2.95, 7.8, TAPE_Y - 0.09)       # in front of the first, so the crossing never flickers
+    _tape(d, -2.95, 7.6, 2.95, 1.8)
+    _tape(d, -2.95, 1.8, 2.95, 7.6, TAPE_Y - 0.09)       # in front of the first, so the crossing never flickers
+    _sign(d, 0.0, 4.7, TAPE_Y - 0.24)
     beam = _sawhorse(d, -1.75)
     _planks(d)
     _pot(d, -1.95, -2.35, -SINK, POTS[0], 0)
@@ -179,5 +197,33 @@ def open_rbx_extras():
     return {"attributes": {"Expansion": "BackDoor", "Locked": {"Bool": False}}}
 
 
-ASSETS = {LOCKED: (build_locked, 2200), OPEN: (build_open, 800)}
-EXTRAS = {LOCKED: locked_rbx_extras, OPEN: open_rbx_extras}
+FILL = "CleanACat_Area_VipDoorFill"
+FILL_W, WALL_T = 8.0, 1.0         # plot.VIP_DOOR's width and plot.WALL_T
+
+
+def build_fill(mat):
+    """The wall that closes the VIP Room's doorway (Derek, #1063: no VIP Room, one door at the back). Stands at the
+    plot's SpotVipDoor (the middle of the opening, in the middle of the wall's thickness) and carries on the wall on
+    both faces: cream, the mint band with its white cap rail inside, the pink band outside. A separate piece, so the
+    plot model is untouched and a switch can put the doorway back. A butter framed paw picture hangs on it."""
+    b, d = Builder(), Builder()
+    w, t = FILL_W, WALL_T
+    b.box_base((0, 0, -0.05), (w, t, DOOR_H + 0.05), "spa_cream", bevel=False)
+    b.box_base((0, -t / 2 - 0.08, -0.008), (w, 0.2, 2.5), "spa_mint", bevel=False)            # inside: the mint band
+    b.box_base((0, -t / 2 - 0.12, 2.44), (w + 0.02, 0.3, 0.26), "offwhite", bevel=False)     # and its cap rail
+    b.box_base((0, t / 2 + 0.08, -0.016), (w, 0.2, 3.0), "spa_bubblegum", bevel=False)        # outside: the pink band
+    y = -t / 2
+    d.box((0, y - 0.05, 6.2), (3.4, 0.14, 2.8), "pastel_butter")
+    d.box((0, y - 0.1, 6.2), (2.9, 0.1, 2.3), "spa_sky", bevel=False)
+    d.cyl((0, y - 0.15, 5.95), 0.52, 0.06, "offwhite", segments=12, bevel=False, rot=_STAND)
+    for dx, dz in ((-0.62, 0.52), (-0.22, 0.86), (0.22, 0.86), (0.62, 0.52)):
+        d.cyl((dx, y - 0.15, 5.95 + dz), 0.2, 0.06, "offwhite", segments=8, bevel=False, rot=_STAND)
+    return [_tris(b.finalize(FILL, mat)), _tris(d.finalize(FILL + "_Decor", mat))]
+
+
+def fill_rbx_extras():
+    return {"attributes": {"Fills": "SpotVipDoor"}}
+
+
+ASSETS = {LOCKED: (build_locked, 2600), OPEN: (build_open, 800), FILL: (build_fill, 300)}
+EXTRAS = {LOCKED: locked_rbx_extras, OPEN: open_rbx_extras, FILL: fill_rbx_extras}
