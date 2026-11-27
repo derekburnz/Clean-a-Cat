@@ -86,6 +86,7 @@ CounterCrate.EMPTY_HAND_ATTRIBUTE = "CarrierHidden"
 -- street), so the counter cat stays hidden until the customer stands on their mat, and a set-down that came due on the
 -- way plays from the moment they arrive.
 CounterCrate.WALK_TO = "WalkTo"
+CounterCrate.WALK_FILE = "WalkFile" -- WalkRules.FILE_ATTRIBUTE (copied): true on a newcomer walking in, cleared on a step-up
 CounterCrate.ARRIVED = 0.25 -- studs, flat: the customer counts as on their mat
 
 -- The steps as Gameplay's 2.4 s (CounterRules.SETTLE_SECONDS) splits them; a longer or shorter total scales them.
@@ -133,6 +134,21 @@ function CounterCrate.shifted(setAt: number, readyAt: number, arrivedAt: number?
 		return setAt, readyAt
 	end
 	return arrivedAt, readyAt + (arrivedAt - setAt)
+end
+
+-- Whether a counter cat still in its "before" phase waits for its customer's walk: a newcomer (WalkFile true, Review-QA
+-- on 993: their times can both be "now" when drawn late) or any customer with a set-down still to come. A customer
+-- moving places with a cat already set down (both times equal, no WalkFile) slides along the counter as before.
+function CounterCrate.waitsForWalk(setAt: number, readyAt: number, file: unknown): boolean
+	return file == true or readyAt > setAt
+end
+
+-- The set-down span to play: the server's, or the whole TOTAL for a newcomer whose two times were equal.
+function CounterCrate.span(setAt: number, readyAt: number, file: unknown): number
+	if readyAt > setAt or file ~= true then
+		return readyAt - setAt
+	end
+	return CounterCrate.TOTAL
 end
 
 function CounterCrate.arcAt(u: number): number
@@ -246,9 +262,25 @@ type Entry = {
 	meowed: boolean?,
 	sawWalk: boolean?, -- issue 871: this customer was seen walking in, so their set-down waits for them
 	arrivedAt: number?, -- server time they stood on their mat, after a walk this device saw
+	lateParts: RBXScriptConnection?, -- hides parts that stream in after the waiting cat was hidden
 }
 
 local entries: { [Model]: Entry } = {}
+
+-- The waiting cat, hidden once, and every part that reaches it later (streaming, or a dirt or fluff part added after
+-- it was drawn) while it still waits, so none shows on the counter before the crate lands (issue 871).
+local function hideWaiting(entry: Entry)
+	if entry.waitHidden then
+		return
+	end
+	entry.waitHidden = true
+	hide(entry.cat)
+	entry.lateParts = entry.cat.DescendantAdded:Connect(function(d)
+		if entry.phase == "before" and (d:IsA("BasePart") or d:IsA("Decal")) then
+			hide(d)
+		end
+	end)
+end
 local stepping: RBXScriptConnection? = nil
 
 local function carrierOf(figure: Model): Model?
@@ -419,18 +451,15 @@ local function step()
 			continue
 		end
 		-- still walking in: the cat is in the crate on their arm, not on the counter beside them (issue 871)
-		-- only a newcomer with a set-down to come (the server gave it a span): a customer moving places with a cat
-		-- already set down (both times equal) slides along the counter as before (Sync passed the step-ups)
-		if entry.phase == "before" and serverReady > serverSet then
+		local file = entry.figure:GetAttribute(CounterCrate.WALK_FILE)
+		serverReady = serverSet + CounterCrate.span(serverSet, serverReady, file)
+		if entry.phase == "before" and CounterCrate.waitsForWalk(serverSet, serverReady, file) then
 			local walkTo = entry.figure:GetAttribute(CounterCrate.WALK_TO)
 			local mat = if typeof(walkTo) == "CFrame" then (walkTo :: CFrame).Position else nil
 			if CounterCrate.walking(entry.figure:GetPivot().Position, mat) then
 				entry.sawWalk = true
 				entry.arrivedAt = nil
-				if not entry.waitHidden then
-					entry.waitHidden = true
-					hide(cat)
-				end
+				hideWaiting(entry)
 				continue
 			end
 			if entry.sawWalk and entry.arrivedAt == nil then
@@ -439,10 +468,7 @@ local function step()
 		end
 		local setAt, readyAt = CounterCrate.shifted(serverSet, serverReady, entry.arrivedAt)
 		if now < setAt then
-			if not entry.waitHidden then
-				entry.waitHidden = true
-				hide(cat)
-			end
+			hideWaiting(entry)
 			continue
 		end
 		if now >= readyAt then

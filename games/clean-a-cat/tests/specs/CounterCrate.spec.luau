@@ -85,4 +85,28 @@ return function()
 			end
 		)
 	end)
+
+	describe("CounterCrate.waitsForWalk and span (issue 871, Review-QA on 993)", function()
+		it(
+			"hides a newcomer whose two times are equal while they walk, with the whole set-down after",
+			function()
+				expect(CounterCrate.waitsForWalk(100, 100, true)).to.equal(true)
+				expect(CounterCrate.span(100, 100, true)).to.equal(CounterCrate.TOTAL)
+			end
+		)
+		it(
+			"leaves a step-up whose cat is already set down (both times equal, no WalkFile) shown",
+			function()
+				expect(CounterCrate.waitsForWalk(100, 100, nil)).to.equal(false)
+				expect(CounterCrate.span(100, 100, nil)).to.equal(0)
+			end
+		)
+		it(
+			"waits for any customer with a set-down still to come, keeping the server's span",
+			function()
+				expect(CounterCrate.waitsForWalk(100, 102.4, nil)).to.equal(true)
+				expect(math.abs(CounterCrate.span(100, 102.4, true) - 2.4) < 1e-9).to.equal(true)
+			end
+		)
+	end)
 end
