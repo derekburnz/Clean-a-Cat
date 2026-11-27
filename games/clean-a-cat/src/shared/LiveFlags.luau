@@ -178,6 +178,7 @@ LiveFlags.KEYS = {
 	"bowDrag", -- the bow step is a drag: the three bows show in the player's best tier and one goes on when dropped on the cat; a gamepad keeps the tap (Spa/BowDrag, ScrubController, issue 889); off by default
 	"helperFetch", -- a helper walks to the counter for the cat they take, carries it to their stand and back out when washed, instead of the cat appearing in the stand (HelperFetchRules, WorkerService, FigureService.handOver, HelperFetchController, issue 884); off by default
 	"humanBuilder", -- the human builder in overalls (Model-Agent's CleanACat_NPC_Builder) stands by the builder board instead of the hard hat kitten, with the same hammer and toolbox; the kitten while the model is missing (StationService, issue 891); off by default
+	"giftGroupOnly", -- the gift stand's gift needs the group join only: the favourite stays asked on the card with no reward tied to it (GiftRules.canClaim, GiftService, issue 1068; the card's words are Design-Agent's); off by default
 	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
 	"giftFlow", -- the gift stand in three stages: one Claim all pays the like row's 150 coins and the welcome gift together, then a good crate at 30 minutes of play once that is claimed, then the stand leaves the spa (GiftFlowRules, GiftService, FreeRewardService, issue 919); off by default
 	"likeHowTo", -- after Like is tapped on the gift card, its picture side shows once a visit how to like the game: a grey heart a tap dot fills pink, "Tap Like on the game's page", the gift either way, Got it; never says the like is checked (LikeHowToRules, UI/GiftCard, issue 869); off by default
@@ -196,6 +197,7 @@ LiveFlags.KEYS = {
 	"noVipRoom", -- the VIP Room leaves the game: not on the board or in the Build window, no special visitor boost, and Model-Agent's wall piece fills its door so the back wall has one door; a save that built it keeps it for when the switch goes off (BuildRules.shown, StationService, issue 1063); off by default
 	"expansionDoor", -- the back door is a building site (caution tape, planks, paint pots) with one prompt, "Unlock · 1500 coins" (50 on dev); the server saves the unlock and the door stands open; the Garden shows there only behind the open door once built (ExpansionRules, ExpansionService, ExpansionController, issue 1041); off by default
 	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
+	"starterCard", -- the starter pack's HUD card is dark with one big picture, the true price and a round "i" for the breakdown; a tap on the card asks for the purchase prompt; no bob, no sparkles and no time chip (HUD/StarterAd, issue 1080); off by default
 	"starterNoClock", -- the starter pack keeps its 72 hours, but its HUD chip and window read "New player offer" instead of the time left (StarterViewRules.hudNote, issue 1069, Derek's plan answer of 2026-11-27); off by default
 }
 
@@ -363,8 +365,10 @@ LiveFlags.OFF_BY_DEFAULT = {
 	resetSave = true,
 	petSingles = true,
 	expansionDoor = true,
+	starterCard = true,
 	noVipRoom = true,
 	windowClear = true,
+	giftGroupOnly = true,
 	starterNoClock = true,
 } :: { [string]: boolean }
 

@@ -24,6 +24,27 @@ return function()
 			)
 		end)
 
+		it("needs the group join only under giftGroupOnly (issue 1068)", function()
+			local function groupOnly(flag: string): boolean
+				return flag == GiftRules.GROUP_ONLY_FLAG
+			end
+			local function none(_flag: string): boolean
+				return false
+			end
+			local noFav = { favourite = false, group = true, claimed = false }
+			expect(GiftRules.canClaim(noFav, groupOnly)).to.equal(true)
+			expect(GiftRules.canClaim(noFav, none)).to.equal(false)
+			expect(
+				GiftRules.canClaim({ favourite = true, group = false, claimed = false }, groupOnly)
+			).to.equal(false)
+			expect(
+				GiftRules.canClaim({ favourite = false, group = true, claimed = true }, groupOnly)
+			).to.equal(false)
+			local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+			expect(table.find(LiveFlags.KEYS, GiftRules.GROUP_ONLY_FLAG)).to.be.ok()
+			expect(LiveFlags.OFF_BY_DEFAULT[GiftRules.GROUP_ONLY_FLAG]).to.equal(true)
+		end)
+
 		it("gives Starcoat once, into the empty player slot", function()
 			local save = { pets = {}, nextPetId = 4, giftClaimed = false }
 			local pet = GiftRules.give(save, CrateRules.PLAYER_SLOT)

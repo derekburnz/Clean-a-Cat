@@ -162,14 +162,19 @@ local function isBuilder(instance: Instance): boolean
 		and instance:GetAttribute("Role") == CustomerMotion.BUILDER_ROLE
 end
 
+-- Is `name` a customer's or staff member's own Model? Their joints carry the same prefix
+-- ("CleanACat_NPC_Customer_Mo_ArmR"), so a name that ends in a joint is never one (issue 1062: with streaming, the
+-- joint Models arrive after the figure and were taken for customers of their own, so the figure's rig was never built
+-- and no customer walked or turned the empty hand back in).
+function CustomerMotion.isRigName(name: string): boolean
+	return (string.sub(name, 1, #CustomerMotion.PREFIX) == CustomerMotion.PREFIX or isStaff(name))
+		and CustomerPose.jointKey(name) == nil
+end
+
 local function isCustomer(instance: Instance?): boolean
 	return instance ~= nil
 		and instance:IsA("Model")
-		and (
-			string.sub(instance.Name, 1, #CustomerMotion.PREFIX) == CustomerMotion.PREFIX
-			or isStaff(instance.Name)
-			or isBuilder(instance)
-		)
+		and (CustomerMotion.isRigName(instance.Name) or isBuilder(instance))
 end
 
 local function findBody(model: Model): BasePart?
