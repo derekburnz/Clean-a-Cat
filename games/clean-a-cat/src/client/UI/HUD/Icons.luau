@@ -134,6 +134,7 @@ local STAND_INS: { [string]: StandIn } = {
 	ShopStarterPet = { glyph = "🐱", fill = Color3.fromHex("FFE98F"), round = true, bare = true },
 	Tools = { glyph = "🧴", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Build = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	Hotel = { glyph = "🛏️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the Cat Hotel's card (1051)
 }
 Icons.STAND_INS = STAND_INS
 
