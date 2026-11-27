@@ -2,3 +2,5 @@
 # Review-QA-Agent adds a line only after looking at the picture at full size and at icon size for anything that could
 # be misread (hands, gestures, shapes), in a pull request of its own. A changed file needs a new line: the sha256 must
 # match. Format: sha256, two spaces, the path from the repo root (exactly as `sha256sum <path>` prints it).
+e668f2dc7f111ed2579d64b9b07c9615a0c98cf08d891069d5c2ec24ea64ffbc  assets/clean-a-cat/ui/icons/hud/CleanACat_Icon_Hud_HeartOutline.png
+2c1ebc57362d7e5fcb43b1607815e3a64bcaf3e6c1c2a4f92003525733b3c869  assets/clean-a-cat/ui/icons/hud/CleanACat_Icon_Hud_TapDot.png
