@@ -39,6 +39,7 @@ local PIC_FILLS: { [string]: { Color3 } } = {
 	SecondPetSlot = { Color3.fromHex("FFD3DF"), Color3.fromHex("FFB3C7") },
 	DoubleCoins = { Color3.fromHex("FFE98F"), Color3.fromHex("FFD35E") },
 	Midas = { Color3.fromHex("FFF1B0"), Color3.fromHex("FFC94D") },
+	SecondBuilder = { Color3.fromHex("D6ECFF"), Color3.fromHex("A9D3FF") },
 }
 local BADGE_PINK, BADGE_GREEN = Color3.fromHex("FF86B0"), Color3.fromHex("3FB071")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window

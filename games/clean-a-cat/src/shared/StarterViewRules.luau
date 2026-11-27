@@ -46,6 +46,13 @@ local LOOK: { [string]: { name: string, what: string, icon: string, badge: strin
 		icon = "Paw",
 		badge = "+1",
 	},
+	-- Derek 2026-11-27: "remove the golden sponge from starter pack it seems lame replace with something else"; the
+	-- card is ready for Gameplay's CONTENTS change (Second Builder in, Golden Sponge out)
+	SecondBuilder = {
+		name = "Second Builder",
+		what = "Two builds at the same time",
+		icon = "ShopBuilder2",
+	},
 	DoubleCoins = {
 		name = "2x Coins",
 		what = "Double coins on cats you wash by hand",
