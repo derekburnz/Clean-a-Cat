@@ -153,6 +153,7 @@ LiveFlags.KEYS = {
 	"helperPets", -- each hired helper's row in the Helpers window has a pet box: their pet, or a paw when empty; a tap opens Pets with that helper's slot picked (owner 2026-11-26, issue 929). The world "Give a pet" prompt going away is petMenuOnly's job; off by default
 	"recapEvery", -- the full recap card after every customer, not only the first ones and rarer cats (RecapRules.EVERY_FLAG; owner's plan page answer of 2026-11-25, issue 890); off by default
 	"petLines", -- each pet says what it gives: "+5% tips or pay" on its tile in Pets and on its row in the crate's chance list, true numbers from CrateRules (CrateViewRules.effectText; owner 2026-11-26, issue 927); off by default
+	"menuContrast", -- the cards and rows inside every window get a lilac edge that stands 3 to 1 against the window, not the pale line that melted into it (Kit.line; owner 2026-11-26, issue 928); off by default
 	"buttonArrive", -- a HUD button that unlocks while the player is in the game arrives with Motion-FX's small pop, tilt and twinkle, once (Effects/Arrive from UI/HUD/SideButtons, issue 528); buttons already there on join simply show; off by default
 	"fewerPills", -- with smallPrompts: at most two prompt pills show at once, the nearest within 10 studs (a winning one such as the door's Take cat at any distance); every key still works (Spa/PillLayout, issue 745); off by default
 	"buildWindow", -- with hudTidy: a Build button in the HUD grid opens "Build and upgrades", every build with its price and time (or its countdown, what it waits for, or Built) and every tool and the next bow with Buy; the server skips only the distance to the board for RequestBuild, RequestBuyTool and RequestBuyBow, while Finish now still needs the board (BuildService, ToolService, BuildViewRules, UI/BuildWindow, BuildWindowController, issue 751); off by default
@@ -176,6 +177,7 @@ LiveFlags.KEYS = {
 	"helperFetch", -- a helper walks to the counter for the cat they take, carries it to their stand and back out when washed, instead of the cat appearing in the stand (HelperFetchRules, WorkerService, FigureService.handOver, HelperFetchController, issue 884); off by default
 	"humanBuilder", -- the human builder in overalls (Model-Agent's CleanACat_NPC_Builder) stands by the builder board instead of the hard hat kitten, with the same hammer and toolbox; the kitten while the model is missing (StationService, issue 891); off by default
 	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
+	"giftFlow", -- the gift stand in three stages: one Claim all pays the like row's 150 coins and the welcome gift together, then a good crate at 30 minutes of play once that is claimed, then the stand leaves the spa (GiftFlowRules, GiftService, FreeRewardService, issue 919); off by default
 	"petMenuOnly", -- a hired helper's stand drops its "Give a pet" prompt while the Pets menu (petsWindow) is on: pets are given to the player and each helper there (WorkerRules.givePrompt, WorkerController, issue 930); off by default
 	"washSides", -- half way through the scrub, the lather and the rinse the cat turns once so the player works on another side, then turns back to the front as he shakes (WashSidesRules, ScrubController, issue 899); off by default
 	"showerAim", -- the rinse's shower head is held off the fur, above and in front of the touch, its nozzle aimed at it (ToolOnCat.nozzle for the spray, issue 899); off by default
@@ -305,6 +307,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helperPets = true,
 	recapEvery = true,
 	petLines = true,
+	menuContrast = true,
 	buttonArrive = true,
 	leaveLines = true,
 	hudTidy = true,
@@ -328,6 +331,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helperFetch = true,
 	humanBuilder = true,
 	giftCrate = true,
+	giftFlow = true,
 	petMenuOnly = true,
 	washSides = true,
 	showerAim = true,

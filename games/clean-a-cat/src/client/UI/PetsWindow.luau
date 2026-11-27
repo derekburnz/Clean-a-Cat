@@ -243,7 +243,7 @@ local function drawTile(
 	tile.BackgroundColor3 = Kit.WHITE
 	Kit.corner(tile, UDim.new(0, 18))
 	local edge = Kit.stroke(tile, 3)
-	edge.Color = Kit.LINE
+	edge.Color = Kit.line()
 	-- the tile's words and pictures sit in their own stack, so the tap area over the tile is not laid out with them
 	local body = frame("Stack", tile)
 	body.Size = UDim2.fromScale(1, 1)
@@ -374,7 +374,7 @@ local function drawSlot(
 	Kit.corner(card, UDim.new(0, 18))
 	local mineNow = row.slot == picked or row.slot2 == picked
 	local edge = Kit.stroke(card, if mineNow then 4 else 3)
-	edge.Color = if mineNow and not row.locked then PICKED else Kit.LINE
+	edge.Color = if mineNow and not row.locked then PICKED else Kit.line()
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
 	pad.Parent = card

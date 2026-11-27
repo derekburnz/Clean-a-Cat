@@ -141,7 +141,7 @@ local function drawCard(
 	c.BackgroundColor3 = Kit.WHITE
 	Kit.corner(c, UDim.new(0, 18))
 	local edge = Kit.stroke(c, 3)
-	edge.Color = Kit.LINE
+	edge.Color = Kit.line()
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 8), UDim.new(0, 8)
 	pad.PaddingTop, pad.PaddingBottom = UDim.new(0, 12), UDim.new(0, 10)

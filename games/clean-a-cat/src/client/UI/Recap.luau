@@ -369,7 +369,7 @@ local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes)
 		line.Size = UDim2.new(1, 0, 0, s.row)
 		Kit.corner(line, UDim.new(0, 12))
 		local edge = Kit.stroke(line, 2)
-		edge.Color = Kit.LINE
+		edge.Color = Kit.line()
 		local pad = Instance.new("UIPadding")
 		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 14), UDim.new(0, 14)
 		pad.Parent = line
