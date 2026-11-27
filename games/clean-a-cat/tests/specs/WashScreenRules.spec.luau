@@ -12,6 +12,15 @@ return function()
 			end)).to.equal(false)
 		end)
 
+		it("counts a figure poking into the room through a wall", function()
+			-- the counter cats have CanQuery off, so they are checked by place (Sync-Agent on PR 979)
+			local spot = Vector3.new(0, 0, 0)
+			local h = WashScreenRules.HALF
+			expect(WashScreenRules.reaches(Vector3.new(0, 2, -(h + 0.5)), 1, spot)).to.equal(true)
+			expect(WashScreenRules.reaches(Vector3.new(0, 2, -(h + 5)), 1, spot)).to.equal(false)
+			expect(WashScreenRules.reaches(Vector3.new(4, 2, 4), 0.5, spot)).to.equal(true)
+		end)
+
 		it("keeps the wash camera inside the room", function()
 			-- the scene's camera: about 6 studs out and 4.5 up from the cat (Effects/WashCamera)
 			local spot = Vector3.new(100, 2, -40)
