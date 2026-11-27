@@ -20,6 +20,7 @@ Open Cloud endpoints (create.roblox.com/docs/cloud/reference/features/game-passe
 guide cloud/guides/experience-icons-and-thumbnails, read 2026-11-26): passes and products are Beta.
 """
 import glob
+import hashlib
 import json
 import os
 import sys
@@ -290,6 +291,40 @@ def upload_image(key, group, path):
     return (asset, None) if asset else (None, f"no asset id: {short(op)}")
 
 
+def read_list(path):
+    lines = []
+    if path and os.path.isfile(path):
+        with open(path) as fh:
+            lines = [ln.strip() for ln in fh if ln.strip() and not ln.startswith("#")]
+    return lines
+
+
+def approved(paths, summary):
+    """Every image must be on main's .github/upload-allow.txt (sha256, two spaces, path) and none on
+    .github/upload-blocked.txt, the same check as upload-asset.yml (Derek, 2026-11-27: "make sure that image is never
+    uploaded again"). The workflow copies both lists from main into UPLOAD_ALLOW and UPLOAD_BLOCKED."""
+    if os.environ.get("GITHUB_REF") != "refs/heads/main":
+        summary.append("REFUSED: start this workflow on main, so main's approval lists are the ones checked")
+        return False
+    allow = set(read_list(os.environ.get("UPLOAD_ALLOW", "")))
+    blocked = {ln.split()[0] for ln in read_list(os.environ.get("UPLOAD_BLOCKED", ""))}
+    refused = 0
+    for path in paths:
+        with open(path, "rb") as fh:
+            sum_ = hashlib.sha256(fh.read()).hexdigest()
+        if sum_ in blocked:
+            summary.append(f"REFUSED: {path} is BLOCKED ({sum_} is on .github/upload-blocked.txt)")
+            refused += 1
+        elif f"{sum_}  {path}" not in allow:
+            summary.append(f"REFUSED: {path} is not approved: Review-QA adds '{sum_}  {path}' to .github/upload-allow.txt")
+            refused += 1
+        else:
+            summary.append(f"Approved: {path}")
+    if refused:
+        summary.append(f"{refused} file(s) refused; nothing was uploaded")
+    return refused == 0
+
+
 def store_art(keys, place, group, art, confirm, summary):
     icon = os.path.join(art, "icon-main-512.png")
     thumbs = sorted(glob.glob(os.path.join(art, "thumbnail-order-*.png")))
@@ -304,6 +339,8 @@ def store_art(keys, place, group, art, confirm, summary):
         summary.append(f"Files missing in {art}: icon {os.path.isfile(icon)}, thumbnails {len(thumbs)} of 4")
         return False
     summary.append("Order: " + ", ".join(os.path.basename(t) for t in thumbs))
+    if not approved([icon] + thumbs, summary):
+        return False
     if confirm != "yes":
         summary.append("would upload the icon and 4 thumbnails, then set the icon and the thumbnails in that order")
         return True

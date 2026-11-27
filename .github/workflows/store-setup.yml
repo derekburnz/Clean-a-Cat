@@ -44,8 +44,16 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
+      # The store art images pass the same approval as upload-asset.yml: main's two lists, read by the script.
+      - name: Copy main's upload approval lists
+        run: |
+          git fetch --no-tags --depth 1 origin main
+          git show FETCH_HEAD:.github/upload-allow.txt >"$RUNNER_TEMP/allow" 2>/dev/null || : >"$RUNNER_TEMP/allow"
+          git show FETCH_HEAD:.github/upload-blocked.txt >"$RUNNER_TEMP/blocked" 2>/dev/null || : >"$RUNNER_TEMP/blocked"
       - name: Run
         env:
+          UPLOAD_ALLOW: ${{ runner.temp }}/allow
+          UPLOAD_BLOCKED: ${{ runner.temp }}/blocked
           KEY_GROUP: ${{ secrets.ROBLOX_GROUP_KEY }}
           KEY_OWNER: ${{ secrets.OWNER_KEY }}
           TARGET: ${{ inputs.target }}
