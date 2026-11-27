@@ -54,26 +54,6 @@ local function seatCounterCat(figure: Model)
 	end
 end
 
--- (switch counterCrate) While a customer walks up with their cat in the crate on their arm, the counter cat stays on
--- its own spot instead of riding along with the figure: Sync-Agent's run on 792d2dd (issue 871) saw it travel at
--- counter height beside the walking customer, over the street. CounterCrate keeps it hidden until it walks out of
--- the crate (Motion-FX, PR 993). A newcomer in the file has never set their crate down; any other walk with the
--- set-down still ahead is a newcomer who stepped up on the way in.
-local function holdCounterCat(walk: Walk, now: number)
-	local cat = walk.figure:FindFirstChild(CounterRules.CAT_NAME)
-	if cat == nil or not cat:IsA("Model") then
-		return
-	end
-	local setAt = cat:GetAttribute(CounterRules.SET_ATTRIBUTE)
-	if type(setAt) ~= "number" then
-		return -- the crate switch is off: the cat comes up with the customer, as before
-	end
-	if walk.file or now < (setAt :: number) then
-		seatCounterCat(walk.figure)
-	end
-	-- otherwise it was set down already: a step-up slides it along the counter with its customer
-end
-
 local function finish(walk: Walk)
 	walks[walk.figure] = nil
 	setHidden(walk, false)
@@ -160,7 +140,6 @@ local function step()
 		local position = walk.from.Position:Lerp(walk.to.Position, progress)
 		local turn = math.clamp(1 - (walk.duration - elapsed) / WalkRules.TURN_SECONDS, 0, 1)
 		walk.figure:PivotTo(CFrame.new(position) * walk.facing:Lerp(walk.to.Rotation, turn))
-		holdCounterCat(walk, now)
 	end
 end
 
