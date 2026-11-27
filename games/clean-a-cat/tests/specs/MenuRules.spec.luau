@@ -36,6 +36,17 @@ return function()
 			expect(MenuRules.helpers(windowsOnly)).to.equal(false)
 		end)
 
+		it(
+			"opens the Helpers button once the first hire is affordable, under menuOnly only",
+			function()
+				local helpers = only("menuOnly", "helpersWindow")
+				expect(MenuRules.helpersOpen(helpers, 300, 300)).to.equal(true)
+				expect(MenuRules.helpersOpen(helpers, 299, 300)).to.equal(false)
+				expect(MenuRules.helpersOpen(helpers, 5000, nil)).to.equal(false) -- everyone hired: the levels open it
+				expect(MenuRules.helpersOpen(only("helpersWindow"), 5000, 300)).to.equal(false)
+			end
+		)
+
 		it("sends a guide card to its window only when that part is on", function()
 			local helpers = only("menuOnly", "helpersWindow")
 			expect(MenuRules.windowFor("hireJo", helpers)).to.equal("Helpers")

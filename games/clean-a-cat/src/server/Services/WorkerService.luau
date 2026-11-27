@@ -468,11 +468,29 @@ local function finish(player: Player, id: string, job: Job)
 	restUntil[player][id] = os.clock() + back + REST_SECONDS
 end
 
+-- menuOnly: the Helpers button opens once the player can pay for a helper (MenuRules.helpersOpen), for the visit.
+local function openHelpers(player: Player, save: any)
+	if player:GetAttribute(MenuRules.OPEN_ATTRIBUTE) == true then
+		return
+	end
+	local cheapest: number? = nil
+	for _, id in WorkerRules.IDS do
+		local price = WorkerRules.priceOf(id, LiveFlags.isOn)
+		if save.workers[id] == nil and not WorkerRules.WORKERS[id].pass and price then
+			cheapest = if cheapest then math.min(cheapest, price) else price
+		end
+	end
+	if MenuRules.helpersOpen(LiveFlags.isOn, save.coins, cheapest) then
+		player:SetAttribute(MenuRules.OPEN_ATTRIBUTE, true)
+	end
+end
+
 local function tickPlayer(player: Player)
 	local save = DataService.get(player)
 	if save == nil or player.Parent ~= Players or SpaLayout.slotOf(player) == nil then
 		return
 	end
+	openHelpers(player, save)
 	local own = jobs[player]
 	if own == nil then
 		own = {}

@@ -73,7 +73,8 @@ SideButtons.BUTTONS = {
 		tidyOrder = 3,
 		flag = "helpersWindow",
 		also = "workers",
-		anyOf = { "WorkerLevel_Jo", "WorkerLevel_Sam", "WorkerLevel_Lou" }, -- HelperViewRules.LEVEL_PREFIX .. id
+		-- HelperViewRules.LEVEL_PREFIX .. id, or with menuOnly MenuRules.OPEN_ATTRIBUTE: the coins for the first hire
+		anyOf = { "WorkerLevel_Jo", "WorkerLevel_Sam", "WorkerLevel_Lou", "HelpersOpen" },
 		icon = "Helpers",
 		caption = "Helpers",
 		top = Color3.fromHex("FFE4CC"),
