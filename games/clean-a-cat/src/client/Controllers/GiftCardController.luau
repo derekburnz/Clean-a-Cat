@@ -13,11 +13,16 @@
 --     Like asks the server to stamp the ask (RequestLikeAsk) and counts down to its Claim; Claim on the like or the
 --     play row sends RequestFreeReward(key). The rows read the server's Player attributes only, and the gift never
 --     depends on a like, which no game can read.
+--   * with the switch giftCrate (issue 859) the gift is a crate: once the claim lands while the card shows, the card
+--     shows "Your gift crate is here!" for a moment, then closes and opens the Crate window on the gift crate, so the
+--     player lands on its chances and its Open button (CrateWindowController.show; the card's button says "Open your
+--     gift crate", Design-Agent).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
+local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local FreeRewardRules = require(Shared:WaitForChild("FreeRewardRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
@@ -29,10 +34,12 @@ local GiftCardController = {}
 
 local ASK_ID = "gift"
 local CLOSE_AFTER = 2.5 -- seconds "Starcoat is yours!" stays before the card closes
+local CRATE_AFTER = 1.2 -- seconds "Your gift crate is here!" stays before the gift crate's window opens (giftCrate)
 local ASK_UP_SECONDS = 20 -- Suds's tip goes by itself after this, as BubbleController's do (#649); not a "no"
 
 local gift: any = nil -- GiftController
 local asks: any = nil -- AskController
+local crates: any = nil -- CrateWindowController
 local asked = false -- the ask was put in the line this visit
 local wasClaimed = false
 
@@ -142,9 +149,19 @@ local function changed()
 	local now = state()
 	UI.setGift(now)
 	if now.claimed and not wasClaimed and UI.isOpen(GiftViewRules.WINDOW) then
-		task.delay(CLOSE_AFTER, function()
-			UI.close(GiftViewRules.WINDOW)
-		end)
+		if LiveFlags.isOn(CrateRules.GIFT_FLAG) and crates then
+			-- the gift crate (issue 859): straight on to its window, on the Open button the card promised
+			task.delay(CRATE_AFTER, function()
+				if UI.isOpen(GiftViewRules.WINDOW) then
+					UI.close(GiftViewRules.WINDOW)
+					crates.show(CrateRules.GIFT_KIND)
+				end
+			end)
+		else
+			task.delay(CLOSE_AFTER, function()
+				UI.close(GiftViewRules.WINDOW)
+			end)
+		end
 	end
 	wasClaimed = now.claimed
 	if now.claimed and asks then
@@ -156,6 +173,7 @@ end
 function GiftCardController.Init(controllers: { [string]: any })
 	gift = controllers.GiftController
 	asks = controllers.AskController
+	crates = controllers.CrateWindowController
 end
 
 function GiftCardController.Start()
