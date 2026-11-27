@@ -53,6 +53,13 @@ return function()
 			expect(GiftViewRules.waitLine(state(true, true))).to.equal(nil)
 			expect(GiftViewRules.claimText(state(true, true))).to.equal("Get Starcoat")
 			expect(GiftViewRules.claimText(state(true, true, true))).to.equal("Starcoat is yours!")
+			-- with giftCrate (issue 859) the stand gives a crate to open
+			expect(GiftViewRules.claimText(state(true, true), true)).to.equal(
+				"Open your gift crate"
+			)
+			expect(GiftViewRules.claimText(state(true, true, true), true)).to.equal(
+				"Your gift crate is here!"
+			)
 		end)
 	end)
 

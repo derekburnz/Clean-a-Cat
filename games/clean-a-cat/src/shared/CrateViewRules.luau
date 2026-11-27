@@ -86,6 +86,9 @@ function CrateViewRules.total(kind: string): number
 end
 
 function CrateViewRules.title(kind: string): string
+	if kind == CrateRules.GIFT_KIND then
+		return "Gift crate" -- the gift stand's crate (switch giftCrate, issue 859)
+	end
 	return if kind == "good" then "Good crate" else "Crate"
 end
 
