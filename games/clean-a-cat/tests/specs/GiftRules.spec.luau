@@ -84,5 +84,44 @@ return function()
 				end
 			end
 		end)
+
+		describe("groupVerify (issue 1111)", function()
+			local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+			local Remotes = require(game:GetService("ReplicatedStorage").Shared.Remotes)
+
+			it("is a switch, off by default, with its remote listed", function()
+				expect(table.find(LiveFlags.KEYS, GiftRules.VERIFY_FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[GiftRules.VERIFY_FLAG]).to.equal(true)
+				expect(table.find(Remotes.ClientToServer, GiftRules.VERIFY_REMOTE)).to.be.ok()
+			end)
+
+			it("answers one tap per cooldown", function()
+				expect(GiftRules.verifyReady(nil, 5)).to.equal(true)
+				expect(GiftRules.verifyReady(100, 100 + GiftRules.VERIFY_COOLDOWN - 1)).to.equal(
+					false
+				)
+				expect(GiftRules.verifyReady(100, 100 + GiftRules.VERIFY_COOLDOWN)).to.equal(true)
+			end)
+
+			it("gives only on a verified join, and each part once", function()
+				local none = GiftRules.verifyGrant(false, false, false)
+				expect(none.pet).to.equal(false)
+				expect(none.coins).to.equal(false)
+				local both = GiftRules.verifyGrant(true, false, false)
+				expect(both.pet).to.equal(true)
+				expect(both.coins).to.equal(true)
+				local coinsOnly = GiftRules.verifyGrant(true, true, false)
+				expect(coinsOnly.pet).to.equal(false)
+				expect(coinsOnly.coins).to.equal(true)
+				local nothing = GiftRules.verifyGrant(true, true, true)
+				expect(nothing.pet).to.equal(false)
+				expect(nothing.coins).to.equal(false)
+			end)
+
+			it("asks for the group only when the check fails", function()
+				expect(string.find(string.lower(GiftRules.NOT_YET_TEXT), "like")).to.equal(nil)
+				expect(string.find(GiftRules.NOT_YET_TEXT, "group")).to.be.ok()
+			end)
+		end)
 	end)
 end

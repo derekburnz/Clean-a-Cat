@@ -179,6 +179,7 @@ LiveFlags.KEYS = {
 	"helperFetch", -- a helper walks to the counter for the cat they take, carries it to their stand and back out when washed, instead of the cat appearing in the stand (HelperFetchRules, WorkerService, FigureService.handOver, HelperFetchController, issue 884); off by default
 	"humanBuilder", -- the human builder in overalls (Model-Agent's CleanACat_NPC_Builder) stands by the builder board instead of the hard hat kitten, with the same hammer and toolbox; the kitten while the model is missing (StationService, issue 891); off by default
 	"feedback", -- Settings' "Send feedback": a tap choice and an optional short note, filtered, counted in analytics and kept by day in the DataStore Feedback_v1 with no name or user id (FeedbackRules, FeedbackService, issue 1081; the window is Design-Agent's); off by default
+	"groupVerify", -- one free reward board at the gift stand: join the group, then Verify; the server checks the group on each tap (one per 10 s) and on a join gives the stand's gift and 150 coins once per save; the like row pays nothing and stays a friendly ask (GiftRules.verifyGrant, GiftService, FreeRewardService, issue 1111; the board is Design-Agent's); off by default
 	"giftGroupOnly", -- the gift stand's gift needs the group join only: the favourite stays asked on the card with no reward tied to it (GiftRules.canClaim, GiftService, issue 1068; the card's words are Design-Agent's); off by default
 	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
 	"giftFlow", -- the gift stand in three stages: one Claim all pays the like row's 150 coins and the welcome gift together, then a good crate at 30 minutes of play once that is claimed, then the stand leaves the spa (GiftFlowRules, GiftService, FreeRewardService, issue 919); off by default
@@ -380,6 +381,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	noVipRoom = true,
 	windowClear = true,
 	giftGroupOnly = true,
+	groupVerify = true,
 	starterNoClock = true,
 	feedback = true,
 	catHotel = true,
