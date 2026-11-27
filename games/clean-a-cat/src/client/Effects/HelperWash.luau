@@ -152,7 +152,7 @@ local function soap(t: number, seed: number, still: boolean): Target
 	local squeeze = if still then 0 else math.max(0, math.sin(TAU * cycle)) ^ 3
 	local along = if still then 0 else math.sin(TAU * 0.35 * (t + seed * 3))
 	return {
-		armR = HelperWash.REACH + math.rad(22) - math.rad(5) * squeeze,
+		armR = HelperWash.REACH + math.rad(28) - math.rad(5) * squeeze, -- the hand up over the back
 		sideR = math.rad(8) * along,
 		armL = HelperWash.REACH - math.rad(4),
 		sideL = math.rad(3),
@@ -513,9 +513,13 @@ function HelperWash.place(
 	end
 	local hand = (grip :: Attachment).WorldCFrame
 	local aim, build = state.aim, state.build
-	local box = cat:GetBoundingBox()
+	local box, size = cat:GetBoundingBox()
 	if aim and build then
-		tool:PivotTo(aimTool(hand, box.Position, aim, if phase == "soap" then 1.2 else 0) * build)
+		-- the pour aims high on the body with a light tip: the hand sits about level with the cat's middle, so a
+		-- steep pour at the middle ran off behind it onto the tail (Sync 2026-11-27, four checks)
+		local soap = phase == "soap"
+		local centre = if soap then box.Position + Vector3.new(0, size.Y * 0.3, 0) else box.Position
+		tool:PivotTo(aimTool(hand, centre, aim, if soap then 0.4 else 0) * build)
 	else
 		tool:PivotTo(hand * holdFor(phase) * (state.handle or CFrame.identity))
 	end
