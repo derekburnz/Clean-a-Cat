@@ -82,6 +82,10 @@ return function()
 			expect(Passes.offered("TripleCoins", owning({ "DoubleCoins" }), off)).to.equal(false)
 			expect(Passes.offered("TripleCoins", owning({ "TripleCoins" }), off)).to.equal(true) -- shows Owned
 			expect(Passes.offered("DoubleCoins", owning({}), off)).to.equal(true)
+			-- one rung at a time: 2x goes once 3x is offered
+			expect(Passes.offered("DoubleCoins", owning({ "DoubleCoins" }), on)).to.equal(false)
+			expect(Passes.offered("DoubleCoins", owning({ "DoubleCoins" }), off)).to.equal(true)
+			expect(#Passes.KEYS - 1).to.equal(Passes.SHOP_CARDS)
 			expect(Passes.offered("Lou", owning({}), off)).to.equal(true)
 		end)
 

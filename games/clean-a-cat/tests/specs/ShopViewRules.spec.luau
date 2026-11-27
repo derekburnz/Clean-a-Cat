@@ -34,7 +34,7 @@ return function()
 			end, function(): boolean
 				return true
 			end)
-			expect(#cards).to.equal(#Passes.KEYS)
+			expect(#cards).to.equal(Passes.SHOP_CARDS)
 			for _, card in cards do
 				expect(card.icon ~= "Star").to.equal(true)
 			end
@@ -61,9 +61,10 @@ return function()
 				local owner = ShopViewRules.cards(price, function(key: string): boolean
 					return key == "DoubleCoins"
 				end, isOn)
-				expect(owner[2].key).to.equal("TripleCoins")
-				expect(owner[2].badge).to.equal("x3")
-				expect(owner[2].was).to.equal(SaleRules.REGULAR_PASSES.TripleCoins)
+				expect(#owner).to.equal(2) -- 3x in 2x's place, and Lou
+				expect(owner[1].key).to.equal("TripleCoins")
+				expect(owner[1].badge).to.equal("x3")
+				expect(owner[1].was).to.equal(SaleRules.REGULAR_PASSES.TripleCoins)
 				local saleOff = ShopViewRules.cards(price, none, function(flag: string): boolean
 					return flag == Passes.LADDER_FLAG
 				end)

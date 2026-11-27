@@ -124,18 +124,25 @@ function Passes.keyOf(id: number): string?
 	return nil
 end
 
--- Whether the shop offers pass `key` now: 3x Coins only while coinLadder is on and 2x Coins is owned (or 3x is owned
--- already, so its card says Owned); every other pass always.
+-- Whether the shop offers pass `key` now. The coin ladder shows one rung: 2x Coins until 3x is offered; 3x Coins
+-- only while coinLadder is on and 2x is owned (or 3x is owned already, so its card says Owned), and then in 2x's
+-- place, as it pays in its place. Every other pass always.
 function Passes.offered(
 	key: string,
 	owns: (key: string) -> boolean,
 	isOn: (flag: string) -> boolean
 ): boolean
+	local triple = owns("TripleCoins") or (isOn(Passes.LADDER_FLAG) and owns("DoubleCoins"))
 	if key == "TripleCoins" then
-		return owns("TripleCoins") or (isOn(Passes.LADDER_FLAG) and owns("DoubleCoins"))
+		return triple
+	elseif key == "DoubleCoins" then
+		return not triple
 	end
 	return true
 end
+
+-- The most cards the shop shows at once: every pass but one rung of the coin ladder.
+Passes.SHOP_CARDS = 5
 
 -- The extra coins the pay passes add to a hand wash that paid `coins`: 2x Coins doubles it (3x Coins triples it in
 -- its place) and the Golden Sponge adds 20%, one on top of the other (2x and the sponge give 2.4 times, 3x and the

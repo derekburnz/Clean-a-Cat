@@ -258,7 +258,7 @@ local function redraw()
 			child:Destroy()
 		end
 	end
-	local columns = #Passes.KEYS
+	local columns = Passes.SHOP_CARDS -- 2x and 3x Coins never show together (Passes.offered, issue 1031)
 	local cardW = math.floor((width - 2 * s.pad - (columns - 1) * s.gap) / columns)
 	p.gridLayout.Padding = UDim.new(0, s.gap)
 	p.grid.Size = UDim2.new(1, 0, 0, s.cardH + 10) -- the tags hang 8 px out of the pictures
