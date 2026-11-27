@@ -60,4 +60,53 @@ return function()
 			expect(Motion.armIn(true, 20, true)).to.equal(0)
 		end)
 	end)
+
+	describe("CounterCrate walking in (issue 871)", function()
+		it(
+			"counts a customer away from their WalkTo mat as walking, and one on it or with none as arrived",
+			function()
+				local mat = Vector3.new(10, 3, -20)
+				expect(CounterCrate.walking(Vector3.new(4, 3, -20), mat)).to.equal(true)
+				expect(CounterCrate.walking(Vector3.new(10.1, 9, -20.1), mat)).to.equal(false)
+				expect(CounterCrate.walking(Vector3.new(4, 3, -20), nil)).to.equal(false)
+			end
+		)
+		it(
+			"keeps the server's times unless the customer arrived after the set-down was due",
+			function()
+				local a, b = CounterCrate.shifted(100, 102.4, nil)
+				expect(a).to.equal(100)
+				expect(b).to.equal(102.4)
+				a, b = CounterCrate.shifted(100, 102.4, 99)
+				expect(a).to.equal(100)
+				a, b = CounterCrate.shifted(100, 102.4, 103)
+				expect(a).to.equal(103)
+				expect(math.abs(b - 105.4) < 1e-9).to.equal(true)
+			end
+		)
+	end)
+
+	describe("CounterCrate.waitsForWalk and span (issue 871, Review-QA on 993)", function()
+		it(
+			"hides a newcomer whose two times are equal while they walk, with the whole set-down after",
+			function()
+				expect(CounterCrate.waitsForWalk(100, 100, true)).to.equal(true)
+				expect(CounterCrate.span(100, 100, true)).to.equal(CounterCrate.TOTAL)
+			end
+		)
+		it(
+			"leaves a step-up whose cat is already set down (both times equal, no WalkFile) shown",
+			function()
+				expect(CounterCrate.waitsForWalk(100, 100, nil)).to.equal(false)
+				expect(CounterCrate.span(100, 100, nil)).to.equal(0)
+			end
+		)
+		it(
+			"waits for any customer with a set-down still to come, keeping the server's span",
+			function()
+				expect(CounterCrate.waitsForWalk(100, 102.4, nil)).to.equal(true)
+				expect(math.abs(CounterCrate.span(100, 102.4, true) - 2.4) < 1e-9).to.equal(true)
+			end
+		)
+	end)
 end
