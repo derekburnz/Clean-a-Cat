@@ -56,7 +56,7 @@ NO_COLLIDE_OBJECTS = ("_Bulb", "_Bulbs", "_Tube", "_Water", "_Foam", "_Decor", "
 INVISIBLE_OBJECTS = ("_Barrier",)     # volumes never drawn: walls that keep players out of a spot
 BARRIER_OBJECTS = ("_Barrier",)       # invisible and always solid
 NO_QUERY_BARRIERS = ("CleanACat_Station_", "CleanACat_Area_Vip", "CleanACat_Area_Street", "CleanACat_Area_Garden",
-                     "CleanACat_Area_SpaPlotBig")   # barriers the camera and clicks pass through (#18: under a
+                     "CleanACat_Area_BackDoor", "CleanACat_Area_SpaPlotBig")   # barriers the camera and clicks pass through (#18: under a
 #                                                 station top, so taps and rays reach the cat and the station)
 CLIMB_OBJECTS = ("_Climb",)           # invisible TrussParts behind a ladder's rungs, so Roblox characters climb it
 # Outdoor families: their planks, rails and pickets collide too, down to THIN_COLLIDE thick when at least THIN_LONG long.

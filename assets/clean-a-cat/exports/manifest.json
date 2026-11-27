@@ -1,5 +1,98 @@
 [
  {
+  "name": "CleanACat_Area_BackDoorLocked",
+  "category": "Area",
+  "module": "backdoor",
+  "objects": [
+   "CleanACat_Area_BackDoorLocked",
+   "CleanACat_Area_BackDoorLocked_Decor",
+   "CleanACat_Area_BackDoorLocked_Barrier"
+  ],
+  "triangles": 1960,
+  "budget": 2200,
+  "parts": 81,
+  "size_studs": {
+   "x": 7.2,
+   "y": 3.47,
+   "z": 12.0
+  },
+  "size_roblox": [
+   7.2,
+   12.0,
+   3.47
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "1960/2200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1192 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.05 (want 0)",
+    "centered": "footprint center x=0.00 y=-1.20",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_BackDoorLocked.png"
+ },
+ {
+  "name": "CleanACat_Area_BackDoorOpen",
+  "category": "Area",
+  "module": "backdoor",
+  "objects": [
+   "CleanACat_Area_BackDoorOpen"
+  ],
+  "triangles": 360,
+  "budget": 800,
+  "parts": 12,
+  "size_studs": {
+   "x": 12.48,
+   "y": 1.91,
+   "z": 9.62
+  },
+  "size_roblox": [
+   12.48,
+   9.62,
+   1.91
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "centered"
+   ],
+   "qa_accepted": {
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "360/800 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "224 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.02 (want 0)",
+    "centered": "footprint center x=-2.64 y=0.11",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_BackDoorOpen.png"
+ },
+ {
   "name": "CleanACat_Area_Backdrop",
   "category": "Area",
   "module": "backdrop",
