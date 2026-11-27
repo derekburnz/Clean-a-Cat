@@ -915,6 +915,34 @@ local function drawAll()
 	end
 end
 
+-- (switch helperFetch, issue 884) A helper takes the cat at shown place `index`: its cat on the counter is lifted out of
+-- its customer's figure (so the customer leaves without it, and no take prompt finds it), parented to nothing and
+-- returned with where it sits, for WorkerService to keep there until the helper picks it up. With no cat on the
+-- counter (counterLine off: the cat is in the carrier), only the customer's spot is returned. (nil, nil) with no figure.
+function FigureService.handOver(player: Player, index: number): (Model?, CFrame?)
+	local _, folder = folderOf(player)
+	if folder == nil then
+		return nil, nil
+	end
+	for _, figure in folder:GetChildren() do
+		if
+			figure:IsA("Model")
+			and figure:GetAttribute(PLACE_ATTRIBUTE) == index
+			and figure:GetAttribute(LEAVING_ATTRIBUTE) ~= true
+		then
+			local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
+			if cat and cat:IsA("Model") then
+				local model = cat :: Model
+				model:SetAttribute(CounterRules.PLACE_ATTRIBUTE, nil)
+				model.Parent = nil
+				return model, model:GetPivot()
+			end
+			return nil, (figure :: Model):GetPivot()
+		end
+	end
+	return nil, nil
+end
+
 -- (switch counterLine) Where the cat at shown place `index` sits on the counter in plot `slot`, for SpaService's reach
 -- check on a take.
 function FigureService.counterCatSpot(index: number, slot: number): CFrame

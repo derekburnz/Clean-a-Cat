@@ -59,24 +59,34 @@ local function attachmentIn(model: Model, name: string): Attachment?
 	return if found and found:IsA("Attachment") then found :: Attachment else nil
 end
 
--- The builder kitten by the board, with its hat, hammer and toolbox, all in `folder`.
+-- The builder kitten by the board, with its hat, hammer and toolbox, all in `folder`. With humanBuilder (issue 891)
+-- the human builder stands there instead, his hard hat on his head already, with the same hammer and toolbox; the
+-- kitten while his model is not in the game.
 local function drawKitten(
 	folder: Folder,
 	assets: Instance,
 	slot: number,
 	running: BuildRules.Build?
 )
-	local kittenAsset = assets:FindFirstChild("CleanACat_NPC_BuilderKitten")
+	local humanAsset = if LiveFlags.isOn(SpaLayout.BUILDER_FLAG)
+		then assets:FindFirstChild(SpaLayout.BUILDER_ASSET)
+		else nil
+	local human = humanAsset ~= nil and humanAsset:IsA("Model")
+	local kittenAsset = if human
+		then humanAsset
+		else assets:FindFirstChild("CleanACat_NPC_BuilderKitten")
 	if kittenAsset == nil or not kittenAsset:IsA("Model") then
 		return
 	end
 	local spot = SpaLayout.slotSpot(SpaLayout.BUILDER_SPOT, slot)
 	local kitten = (kittenAsset :: Model):Clone() :: Model
-	kitten.Name = "BuilderKitten"
-	kitten:PivotTo(spot * CFrame.new(SpaLayout.KITTEN_OFFSET))
+	kitten.Name = if human then "Builder" else "BuilderKitten"
+	kitten:PivotTo(
+		spot * CFrame.new(if human then SpaLayout.BUILDER_OFFSET else SpaLayout.KITTEN_OFFSET)
+	)
 	kitten:SetAttribute("Building", running ~= nil)
 	anchorAll(kitten)
-	local hatSlot = attachmentIn(kitten, "HatSlot")
+	local hatSlot = if human then nil else attachmentIn(kitten, "HatSlot")
 	local hatAsset = assets:FindFirstChild("CleanACat_Prop_HardHat")
 	if hatSlot and hatAsset and hatAsset:IsA("Model") then
 		local hat = (hatAsset :: Model):Clone() :: Model
@@ -482,6 +492,9 @@ function StationService.Start()
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(SpaLayout.PLACED_ATTRIBUTE):Connect(refreshAll)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG)
+		:Connect(refreshAll)
+	ReplicatedStorage
+		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. SpaLayout.BUILDER_FLAG)
 		:Connect(refreshAll)
 	-- a station's own switches (#267, tubBuilds) show or hide it and its pad
 	for _, flag in BuildRules.itemFlags() do

@@ -172,6 +172,8 @@ LiveFlags.KEYS = {
 	"catWalkOut", -- a customer's washed cat hops out of the tub and trots out, fading (Effects/CatWalkOut, CatReturned); off by default
 	"foamStep", -- the Bubble Bath step is "Foam up the cat": a soap bar (Model-Agent's CleanACat_Tool_SoapBar, the bubble sponge until it exists) rubbed on, foam building where it passes (WashDraft.SAY_FOAM, ToolOnCat, issue 888); off by default
 	"bowDrag", -- the bow step is a drag: the three bows show in the player's best tier and one goes on when dropped on the cat; a gamepad keeps the tap (Spa/BowDrag, ScrubController, issue 889); off by default
+	"helperFetch", -- a helper walks to the counter for the cat they take, carries it to their stand and back out when washed, instead of the cat appearing in the stand (HelperFetchRules, WorkerService, FigureService.handOver, HelperFetchController, issue 884); off by default
+	"humanBuilder", -- the human builder in overalls (Model-Agent's CleanACat_NPC_Builder) stands by the builder board instead of the hard hat kitten, with the same hammer and toolbox; the kitten while the model is missing (StationService, issue 891); off by default
 	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
 	"petMenuOnly", -- a hired helper's stand drops its "Give a pet" prompt while the Pets menu (petsWindow) is on: pets are given to the player and each helper there (WorkerRules.givePrompt, WorkerController, issue 930); off by default
 	"washSides", -- half way through the scrub, the lather and the rinse the cat turns once so the player works on another side, then turns back to the front as he shakes (WashSidesRules, ScrubController, issue 899); off by default
@@ -321,6 +323,8 @@ LiveFlags.OFF_BY_DEFAULT = {
 	catWalkOut = true,
 	foamStep = true,
 	bowDrag = true,
+	helperFetch = true,
+	humanBuilder = true,
 	giftCrate = true,
 	petMenuOnly = true,
 	washSides = true,
