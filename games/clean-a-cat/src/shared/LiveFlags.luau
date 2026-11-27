@@ -178,6 +178,7 @@ LiveFlags.KEYS = {
 	"bowDrag", -- the bow step is a drag: the three bows show in the player's best tier and one goes on when dropped on the cat; a gamepad keeps the tap (Spa/BowDrag, ScrubController, issue 889); off by default
 	"helperFetch", -- a helper walks to the counter for the cat they take, carries it to their stand and back out when washed, instead of the cat appearing in the stand (HelperFetchRules, WorkerService, FigureService.handOver, HelperFetchController, issue 884); off by default
 	"humanBuilder", -- the human builder in overalls (Model-Agent's CleanACat_NPC_Builder) stands by the builder board instead of the hard hat kitten, with the same hammer and toolbox; the kitten while the model is missing (StationService, issue 891); off by default
+	"giftGroupOnly", -- the gift stand's gift needs the group join only: the favourite stays asked on the card with no reward tied to it (GiftRules.canClaim, GiftService, issue 1068; the card's words are Design-Agent's); off by default
 	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
 	"giftFlow", -- the gift stand in three stages: one Claim all pays the like row's 150 coins and the welcome gift together, then a good crate at 30 minutes of play once that is claimed, then the stand leaves the spa (GiftFlowRules, GiftService, FreeRewardService, issue 919); off by default
 	"likeHowTo", -- after Like is tapped on the gift card, its picture side shows once a visit how to like the game: a grey heart a tap dot fills pink, "Tap Like on the game's page", the gift either way, Got it; never says the like is checked (LikeHowToRules, UI/GiftCard, issue 869); off by default
@@ -364,6 +365,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	expansionDoor = true,
 	noVipRoom = true,
 	windowClear = true,
+	giftGroupOnly = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

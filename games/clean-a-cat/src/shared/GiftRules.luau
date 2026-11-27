@@ -5,6 +5,8 @@
 -- (the result of the player's own favourite prompt, told by their device, which the server trusts for this one free
 -- pet) and the group (checked on the server). The like cannot be read by a game, so it is asked and never shown as
 -- checked, and never needed. With both checks the pet is given, once per save.
+-- With the switch giftGroupOnly (GROUP_ONLY_FLAG, issue 1068, Derek 2026-11-27: "Yes, group join only") the group
+-- join alone gives the gift: the favourite is still asked on the card, with no reward tied to it, as the like is.
 -- Pure, so tests/specs/GiftRules.spec.luau covers it; GiftService and GiftController use it.
 
 local GiftRules = {}
@@ -24,6 +26,8 @@ GiftRules.FAVOURITE_ATTRIBUTE = "GiftFavourite" -- true once the player's favour
 GiftRules.GROUP_ATTRIBUTE = "GiftGroup" -- true while the last group check found the player in the group
 GiftRules.CLAIMED_ATTRIBUTE = "GiftClaimed" -- true once the pet is the player's
 
+GiftRules.GROUP_ONLY_FLAG = "giftGroupOnly"
+
 export type State = { favourite: boolean, group: boolean, claimed: boolean }
 
 -- Whether the stand is lit at `played` seconds of play.
@@ -31,9 +35,11 @@ function GiftRules.lit(played: number): boolean
 	return played >= GiftRules.LIGHT_AT
 end
 
--- Whether the pet can be given now: both checks passed and not given before. The like is never asked for here.
-function GiftRules.canClaim(state: State): boolean
-	return state.favourite and state.group and not state.claimed
+-- Whether the pet can be given now: both checks passed (the group alone under giftGroupOnly, with `isOn`) and not
+-- given before. The like is never asked for here.
+function GiftRules.canClaim(state: State, isOn: ((flag: string) -> boolean)?): boolean
+	local groupOnly = isOn ~= nil and isOn(GiftRules.GROUP_ONLY_FLAG)
+	return (state.favourite or groupOnly) and state.group and not state.claimed
 end
 
 type Pet = { id: number, kind: string, star: number, slot: string? }
