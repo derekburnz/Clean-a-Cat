@@ -140,7 +140,9 @@ end
 -- pack's contents at the moment of the grant.
 local function grant(player: Player, save: SaveSchema.Save, _receipt: { [string]: any }): boolean
 	local contents = StarterRules.contents(LiveFlags.isOn)
+	local fresh: { [string]: boolean } = {}
 	for _, key in contents do
+		fresh[key] = not PassService.owns(player, key)
 		save.passes[key] = true
 	end
 	local pet = givePet(save)
@@ -151,7 +153,7 @@ local function grant(player: Player, save: SaveSchema.Save, _receipt: { [string]
 	)
 	task.defer(function()
 		for _, key in contents do
-			PassService.grant(player, key)
+			PassService.grant(player, key, fresh[key]) -- new ones fire PassService.changed (the pet slot follows)
 		end
 		show(player)
 		if pet then

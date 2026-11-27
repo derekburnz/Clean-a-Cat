@@ -74,8 +74,8 @@ end
 
 -- Marks `key` owned for `player` (in the save when it is loaded) and tells every feature when it is new. Also
 -- PassService.grant, for a pass given by another purchase (the starter pack, issue 519).
-local function give(player: Player, key: string)
-	local had = PassService.owns(player, key)
+local function give(player: Player, key: string, isNew: boolean?)
+	local had = isNew ~= true and PassService.owns(player, key)
 	local now = ownedNow[player]
 	if now == nil then
 		now = {}
@@ -92,9 +92,11 @@ local function give(player: Player, key: string)
 	end
 end
 
-function PassService.grant(player: Player, key: string)
+-- `isNew`: the caller wrote the pass into the save itself just before (the starter pack's receipt, so it saves with
+-- the purchase), so it counts as new and every feature hears of it (issue 1141).
+function PassService.grant(player: Player, key: string, isNew: boolean?)
 	assert(Passes.IDS[key] ~= nil, `PassService.grant: {key} is not in shared/Passes`)
-	give(player, key)
+	give(player, key, isNew)
 end
 
 -- Asks Roblox about every created pass the save does not hold yet. Yields.
