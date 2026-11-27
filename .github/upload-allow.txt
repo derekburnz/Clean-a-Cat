@@ -4,3 +4,5 @@
 # match. Format: sha256, two spaces, the path from the repo root (exactly as `sha256sum <path>` prints it).
 e668f2dc7f111ed2579d64b9b07c9615a0c98cf08d891069d5c2ec24ea64ffbc  assets/clean-a-cat/ui/icons/hud/CleanACat_Icon_Hud_HeartOutline.png
 2c1ebc57362d7e5fcb43b1607815e3a64bcaf3e6c1c2a4f92003525733b3c869  assets/clean-a-cat/ui/icons/hud/CleanACat_Icon_Hud_TapDot.png
+91ecc8ab96475683b406e882cd4d72b6d78478c073913ed0b17ad2510c8568e1  assets/clean-a-cat/ui/icons/portraits/CleanACat_UI_Portrait_Pet_Clover.png
+87f52cd2447d254839dfd66da9586d3bf9065fafb6bae9dfb7fbabef625f60fc  assets/clean-a-cat/ui/icons/portraits/CleanACat_UI_Portrait_Pet_Glitch.png
