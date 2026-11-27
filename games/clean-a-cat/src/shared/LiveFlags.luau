@@ -196,6 +196,7 @@ LiveFlags.KEYS = {
 	"noVipRoom", -- the VIP Room leaves the game: not on the board or in the Build window, no special visitor boost, and Model-Agent's wall piece fills its door so the back wall has one door; a save that built it keeps it for when the switch goes off (BuildRules.shown, StationService, issue 1063); off by default
 	"expansionDoor", -- the back door is a building site (caution tape, planks, paint pots) with one prompt, "Unlock · 1500 coins" (50 on dev); the server saves the unlock and the door stands open; the Garden shows there only behind the open door once built (ExpansionRules, ExpansionService, ExpansionController, issue 1041); off by default
 	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
+	"starterCard", -- the starter pack's HUD card is dark with one big picture, the true price and a round "i" for the breakdown; a tap on the card asks for the purchase prompt; no bob, no sparkles and no time chip (HUD/StarterAd, issue 1080); off by default
 	"starterNoClock", -- the starter pack keeps its 72 hours, but its HUD chip and window read "New player offer" instead of the time left (StarterViewRules.hudNote, issue 1069, Derek's plan answer of 2026-11-27); off by default
 }
 
@@ -363,6 +364,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	resetSave = true,
 	petSingles = true,
 	expansionDoor = true,
+	starterCard = true,
 	noVipRoom = true,
 	windowClear = true,
 	starterNoClock = true,
