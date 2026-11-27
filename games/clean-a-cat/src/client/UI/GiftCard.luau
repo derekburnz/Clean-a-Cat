@@ -13,11 +13,13 @@
 -- like, asked for in words with no button and no tick. Get Starcoat under them is green once both are ticked and a
 -- soft cream with "One step to go" before. Nothing costs Robux and nothing is random. UI never fires remotes:
 -- GiftCardController calls GiftController, which asks the server.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
+local GiftFlowRules = require(Shared:WaitForChild("GiftFlowRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 
@@ -229,11 +231,24 @@ local function drawStep(
 	end
 end
 
+-- The state as drawn: the controller's state plus the stand's stage (switch giftFlow, issue 968), which the server
+-- keeps on the Player attribute GiftStage (nil with the switch off).
+local function shownState(): GiftViewRules.State
+	local stage = Players.LocalPlayer:GetAttribute(GiftFlowRules.STAGE_ATTRIBUTE)
+	if typeof(stage) ~= "number" then
+		return state
+	end
+	local shown = table.clone(state)
+	shown.stage = stage
+	return shown
+end
+
 local function redraw()
 	local p = parts
 	if p == nil then
 		return
 	end
+	local state = shownState()
 	local scale, short = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
 	if short and state.free then
@@ -245,7 +260,7 @@ local function redraw()
 	end
 	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
 	Window.fit(p.window, width, s.band, s.title, s.badge, if short then SHORT_SHIFT else nil)
-	p.window.title.Text = if state.free then GiftViewRules.FREE_TITLE else GiftViewRules.TITLE
+	p.window.title.Text = GiftViewRules.title(state)
 	local pad = UDim.new(0, s.pad)
 	p.pad.PaddingLeft, p.pad.PaddingRight, p.pad.PaddingTop, p.pad.PaddingBottom =
 		pad, pad, UDim.new(0, s.pad + 2), pad
@@ -254,29 +269,31 @@ local function redraw()
 	-- the pet
 	p.pet.Size = UDim2.fromOffset(s.petW, 0)
 	p.pic.Size = UDim2.fromOffset(s.pic, s.pic)
-	-- (giftCrate, issue 859) the stand gives a crate to open, not Starcoat: the crate's picture, its name and what is in it
+	-- (giftCrate, issue 859) the stand gives a crate to open, not Starcoat; (giftFlow, issue 968) the welcome gift adds
+	-- the like's coins and the playtime stage shows its good crate
 	local crate = LiveFlags.isOn(CrateRules.GIFT_FLAG)
+	local prize = GiftViewRules.prize(state, crate)
 	local rarity = CrateRules.rarityOf(GiftViewRules.PET) or "Uncommon"
-	local stale = p.pic:FindFirstChild(if crate then "Portrait" else "Icon") -- the other picture, if the switch moved
+	local stale = p.pic:FindFirstChild(if prize.crate then "Portrait" else "Icon") -- the other picture, if it changed
 	if stale then
 		stale:Destroy()
 	end
-	if crate then
+	if prize.crate then
 		Icons.draw("Crate", p.pic)
 	else
 		Portraits.draw(GiftViewRules.PET, rarity, p.pic)
 	end
 	p.petName.TextSize = s.petName
 	p.petName.Size = UDim2.new(1, 0, 0, s.petName + 4)
-	p.petName.Text = if crate then GiftViewRules.CRATE else GiftViewRules.PET
+	p.petName.Text = prize.name
 	p.petRarity.TextSize = s.petLine
 	p.petRarity.Size = UDim2.new(1, 0, 0, s.petLine + 4)
 	p.petRarity.Text = rarity
-	p.petRarity.Visible = not crate
+	p.petRarity.Visible = not prize.crate
 	p.petRarity.TextColor3 = (Kit.RARITY[rarity] or Kit.INK):Lerp(Kit.INK, 0.45)
 	p.petLine.TextSize = s.petLine
 	p.petLine.Size = UDim2.new(1, 0, 0, s.petLine * 2 + 4)
-	p.petLine.Text = if crate then GiftViewRules.CRATE_LINE else GiftViewRules.PET_LINE
+	p.petLine.Text = prize.line
 
 	-- the steps, then Get Starcoat
 	p.right.Size = UDim2.fromOffset(width - 2 * s.pad - s.petW - s.gap, 0)
@@ -290,6 +307,7 @@ local function redraw()
 		drawStep(step, index, s, scale, p.rows)
 	end
 	local ready = GiftViewRules.ready(state)
+	p.claim.Visible = GiftViewRules.hasClaim(state) -- the playtime stage's row has its own Claim
 	p.claim.Text = GiftViewRules.claimText(state, crate)
 	p.claim.TextSize = s.claimText
 	p.claim.Size = UDim2.new(1, 0, 0, math.max(s.claimH, math.ceil(MIN_TAP / scale)))
@@ -428,6 +446,12 @@ function GiftCard.build(root: Instance): Frame
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)
 	end
+	-- the stand moves to its next stage (giftFlow): the open card follows
+	Players.LocalPlayer:GetAttributeChangedSignal(GiftFlowRules.STAGE_ATTRIBUTE):Connect(function()
+		if window.layer.Visible then
+			redraw()
+		end
+	end)
 	redraw()
 	return window.layer
 end
