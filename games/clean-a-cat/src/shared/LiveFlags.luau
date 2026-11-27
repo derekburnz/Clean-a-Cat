@@ -45,6 +45,7 @@ LiveFlags.KEYS = {
 	"washPace", -- each wash step takes about 4 to 5 seconds: more brush strokes, more lather, a narrower rinse, a longer claw hold (WashPace, issue 865); off by default
 	"gradeStars", -- a wash earns its grade in spa stars (1 to 3, plus a rarer cat's extra) and the star tiers start 3 times higher (CatRules.gradeStars, issue 868); off by default
 	"toastCards", -- the short notices are small cards at the top right, coloured by kind with a portrait for a cat, not a dark bar across the screen (UI/ToastCard, ToastRules, issue 877); off by default
+	"rewardPop", -- a pet, crate, gift, check-in day or purchase shows as a big popup in the middle with its picture on a sunburst (UI/RewardPop, ToastRules, issue 1024); off by default
 	"contextAsks", -- pop ups only when they guide a next action: announcement cards cut, guide cards name the action and start the floor trail, the notification ask waits for a first build, the special visitor and first crate get guide cards (BubbleRules, issue 877); off by default
 	"openingBonus", -- a brand new spa's first customer tops the player up to Jo's price with a one-time Grand opening gift line (WorkerRules.openingGift, issue 913); off by default
 	"sudsVoice", -- one soft meow when Suds's speech bubble appears (Audio/SudsVoice, issue 827); off by default
@@ -215,6 +216,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	washPace = true,
 	gradeStars = true,
 	toastCards = true,
+	rewardPop = true,
 	contextAsks = true,
 	openingBonus = true,
 	counterCardFx = true,
