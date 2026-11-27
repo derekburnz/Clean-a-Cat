@@ -14,6 +14,7 @@
 -- Behind the LiveFlags switch giftStand, with pets on too.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
@@ -33,6 +34,7 @@ local WalletService = require(script.Parent:WaitForChild("WalletService"))
 local CHECK_SECONDS = 5 -- how often the stands are looked at again (the 7:00 light, a plot changing hands)
 local SAVE_WAIT = 10 -- seconds a claim waits for the save holding the pet to be written
 local SEAT_PET = "GiftPet" -- Starcoat's copy on the stand's PetSeat
+local TEST_GROUP_ATTRIBUTE = "TestInGroup" -- Studio only: the group check's answer for QA (see inGroup)
 
 local GiftService = {}
 
@@ -48,7 +50,9 @@ local function stageOf(save: any): number?
 	if save == nil or not LiveFlags.isOn(GiftFlowRules.FLAG) then
 		return nil
 	end
-	return GiftFlowRules.stage(save.giftClaimed == true, save.freeRewards.play == true)
+	-- (groupVerify) the board stays while the verified join's coins are unpaid, so its Verify can still pay them
+	local coinsOwed = LiveFlags.isOn(GiftRules.VERIFY_FLAG) and save.freeRewards.like ~= true
+	return GiftFlowRules.stage(save.giftClaimed == true, save.freeRewards.play == true, coinsOwed)
 end
 
 local function setAttribute(player: Player, name: string, value: boolean)
@@ -243,7 +247,16 @@ local function show(player: Player)
 end
 
 -- Asks Roblox whether `player` is in the game's group; false when the check fails. Yields.
+-- In Studio only, the Player attribute TEST_GROUP_ATTRIBUTE (true or false, set from the server's command bar)
+-- stands in for the answer, so QA can test both sides without joining or leaving the group (Sync-Agent on #1111).
+-- Only the server can set a Player attribute that the server sees, and the check never runs in a live game.
 local function inGroup(player: Player): boolean
+	if RunService:IsStudio() then
+		local forced = player:GetAttribute(TEST_GROUP_ATTRIBUTE)
+		if type(forced) == "boolean" then
+			return forced
+		end
+	end
 	local ok, result = pcall(function()
 		return player:IsInGroupAsync(GiftRules.GROUP_ID)
 	end)
@@ -456,7 +469,15 @@ function GiftService.Start()
 		verifiedAt[player] = nil
 		task.defer(drawStands)
 	end)
-	for _, flag in { GiftRules.FLAG, CrateRules.FLAG, CrateRules.GIFT_FLAG, GiftFlowRules.FLAG } do
+	for _, flag in
+		{
+			GiftRules.FLAG,
+			CrateRules.FLAG,
+			CrateRules.GIFT_FLAG,
+			GiftFlowRules.FLAG,
+			GiftRules.VERIFY_FLAG,
+		}
+	do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do
