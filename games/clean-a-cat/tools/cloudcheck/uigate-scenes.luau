@@ -1307,6 +1307,35 @@ local SCENES = {
 			flag("starterFloat", true)
 		end,
 	},
+	-- The pack's own price not known (a local Studio place): no ad, never Midas over an empty space.
+	{
+		"HudStarterFloatNoPack",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+			flag("starterPet", true)
+			flag("starterFloat", true)
+			local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+			UI.setStarter(
+				StarterViewRules.items(function(): unknown
+					return nil
+				end),
+				nil,
+				os.time() + 44 * 3600
+			)
+		end,
+	},
+	-- A save that owns one of the pack's passes: no ad at all (Derek 2026-11-27: gone for good after purchase).
+	{
+		"HudStarterFloatOwned",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+			flag("starterPet", true)
+			flag("starterFloat", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("Pass_DoubleCoins", true)
+		end,
+	},
 	-- With Suds's bubble up: on a short screen the ad steps aside, so the X is never by its price (Sync on 1125).
 	{
 		"HudStarterFloatBubble",
