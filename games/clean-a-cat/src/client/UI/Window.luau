@@ -17,13 +17,22 @@
 -- The screen scale sits on a see-through holder the size of the layer, so Motion.popIn can use its own UIScale on
 -- the layer (one UIScale per object).
 local GuiService = game:GetService("GuiService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+
+local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local Motion = require(script.Parent:WaitForChild("Motion"))
 
 local Window = {}
+
+-- issue 1038 (Derek: "some ui is overlapping still like the first helper and the top left image circle"): the round
+-- badge sits inside the title band instead of hanging over its corner, and the HUD's buttons step aside while a window
+-- is open (UI init's fitScreen)
+Window.CLEAR_FLAG = "windowClear"
+local BADGE_INSET = 6 -- design px between the badge and the band's top and bottom
 
 local BACKDROP = Color3.fromRGB(36, 16, 56)
 local RED_TOP, RED_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")
@@ -290,8 +299,17 @@ function Window.fit(
 	asked[w.card] = { scale = scale, shift = shift or TOPBAR_SHIFT, width = width }
 	w.band.Size = UDim2.new(1, 0, 0, band)
 	w.title.TextSize = title
-	w.title.Position = UDim2.new(0, badge + 4, 0.5, 0)
-	w.badge.Size = UDim2.fromOffset(badge, badge)
+	if LiveFlags.isOn(Window.CLEAR_FLAG) then
+		-- the badge inside the band, never over the first row or the HUD
+		local side = math.max(band - 2 * BADGE_INSET, 24)
+		w.badge.Position = UDim2.fromOffset(BADGE_INSET * 2, (band - side) / 2)
+		w.badge.Size = UDim2.fromOffset(side, side)
+		w.title.Position = UDim2.new(0, BADGE_INSET * 2 + side + 10, 0.5, 0)
+	else
+		w.badge.Position = UDim2.fromOffset(-6, -14)
+		w.title.Position = UDim2.new(0, badge + 4, 0.5, 0)
+		w.badge.Size = UDim2.fromOffset(badge, badge)
+	end
 	keepOnScreen(w)
 end
 

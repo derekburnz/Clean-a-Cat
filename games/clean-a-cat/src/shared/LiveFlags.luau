@@ -191,6 +191,7 @@ LiveFlags.KEYS = {
 	"petSingles", -- the Pets window draws every pet as its own tile (no "x3" stacks) and a one star pet with no stars; stars show from two up (CrateViewRules.tiles, PetsWindow, issue 1035); off by default
 	"coinLadder", -- the shop's 3x Coins pass shows only once 2x Coins is owned, and the server prompts it only then; 3x pays in place of 2x, never both, and works once owned with this off too (Passes.offered, ShopViewRules, PassService, issue 1031); off by default
 	"launchSale", -- a pass or product whose Roblox price is below its regular price (SaleRules.REGULAR_*) shows that regular price struck through and "Launch sale: 50% off"; the prices themselves are set on Roblox by store-setup sale-prices (SaleRules, ShopViewRules, issue 1032); off by default
+	"windowClear", -- a window's round badge sits inside its title band (no overhang over the first row or the HUD), and the HUD's buttons step aside while a window is open (UI/Window, UI init, issue 1038); off by default
 	"menuOnly", -- a choice with a menu is made only there: no helper hire pads or Hire and Takes prompts at the stands (Helpers window), no Buy and Build prompts on the boards (Build window), no Wash next prompts (Who's next?), each only while its window is on; guide cards open the window (MenuRules, issues 1028 and 1033); off by default
 	"noVipRoom", -- the VIP Room leaves the game: not on the board or in the Build window, no special visitor boost, and Model-Agent's wall piece fills its door so the back wall has one door; a save that built it keeps it for when the switch goes off (BuildRules.shown, StationService, issue 1063); off by default
 	"expansionDoor", -- the back door is a building site (caution tape, planks, paint pots) with one prompt, "Unlock · 1500 coins" (50 on dev); the server saves the unlock and the door stands open; the Garden shows there only behind the open door once built (ExpansionRules, ExpansionService, ExpansionController, issue 1041); off by default
@@ -362,6 +363,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	petSingles = true,
 	expansionDoor = true,
 	noVipRoom = true,
+	windowClear = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
