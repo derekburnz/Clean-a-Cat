@@ -1,5 +1,54 @@
 [
  {
+  "name": "CleanACat_Area_BackDoorBuilding",
+  "category": "Area",
+  "module": "hotel",
+  "objects": [
+   "CleanACat_Area_BackDoorBuilding",
+   "CleanACat_Area_BackDoorBuilding_Decor",
+   "CleanACat_Area_BackDoorBuilding_Barrier"
+  ],
+  "triangles": 1352,
+  "budget": 2600,
+  "parts": 49,
+  "size_studs": {
+   "x": 7.2,
+   "y": 3.48,
+   "z": 12.0
+  },
+  "size_roblox": [
+   7.2,
+   12.0,
+   3.48
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 2,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "1352/2600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "842 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.05 (want 0)",
+    "centered": "footprint center x=0.00 y=-1.21",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_BackDoorBuilding.png"
+ },
+ {
   "name": "CleanACat_Area_BackDoorLocked",
   "category": "Area",
   "module": "backdoor",
@@ -409,6 +458,62 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_GardenLocked.png"
+ },
+ {
+  "name": "CleanACat_Area_Hotel",
+  "category": "Area",
+  "module": "hotel",
+  "objects": [
+   "CleanACat_Area_Hotel",
+   "CleanACat_Area_Hotel_WallArt",
+   "CleanACat_Area_Hotel_Decor",
+   "CleanACat_Area_Hotel_Lamp_Decor",
+   "CleanACat_Area_Hotel_Bulbs",
+   "CleanACat_Area_Hotel_Room3Lock_Decor",
+   "CleanACat_Area_Hotel_Room4Lock_Decor",
+   "CleanACat_Area_Hotel_Room3Build_Decor",
+   "CleanACat_Area_Hotel_Room4Build_Decor"
+  ],
+  "triangles": 6108,
+  "budget": 6500,
+  "parts": 232,
+  "size_studs": {
+   "x": 18.71,
+   "y": 13.8,
+   "z": 15.57
+  },
+  "size_roblox": [
+   18.71,
+   15.57,
+   13.8
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 5,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "6108/6500 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "3856 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.32 (want 0)",
+    "centered": "footprint center x=0.00 y=6.25",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_Hotel.png"
  },
  {
   "name": "CleanACat_Area_SpaPlot",
@@ -21907,6 +22012,47 @@
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_SudsBed.png"
+ },
+ {
+  "name": "CleanACat_Prop_Suitcase",
+  "category": "Prop",
+  "module": "hotel",
+  "objects": [
+   "CleanACat_Prop_Suitcase"
+  ],
+  "triangles": 240,
+  "budget": 300,
+  "parts": 14,
+  "size_studs": {
+   "x": 1.04,
+   "y": 0.47,
+   "z": 0.94
+  },
+  "size_roblox": [
+   1.04,
+   0.94,
+   0.47
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {},
+   "checks": {
+    "budget": "240/300 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "142 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.01",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_Suitcase.png"
  },
  {
   "name": "CleanACat_Prop_TipJar",
