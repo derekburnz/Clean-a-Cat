@@ -49,6 +49,7 @@ def _numbers(pitch, front, back):
 
 PLOT_D = 48.0                     # plot.PLOT_D
 PITCH = 44.0                      # plot pivot to plot pivot (plot.PLOT_W)
+PLOT_W = PITCH                    # a plot's width: under the pitch, the street has gardens between the plots (Wide)
 XS = X0 = X1 = FRONT = BACK = Y_ROAD0 = Y_ROAD1 = Y_FAR = None
 globals().update(_numbers(PITCH, -PLOT_D / 2, PLOT_D / 2))
 
@@ -65,7 +66,7 @@ def _ground(b):
     b.box_base((cx, (Y_ROAD0 + Y_ROAD1) / 2, -0.06), (X1 - X0 + 0.04, ROAD + 0.02, 0.28), "concrete_dark",
                bevel=False)                                                                    # the road, top 0.22
     # the paving beyond the outer plots, so the near pavement's back edge is never open grass by a plot
-    for x in (min(XS) - PITCH / 2 - 4.0, max(XS) + PITCH / 2 + 4.0):
+    for x in (min(XS) - PLOT_W / 2 - 4.0, max(XS) + PLOT_W / 2 + 4.0) if PITCH - PLOT_W <= 6.0 else ():   # Wide: gardens
         b.box_base((x, (FRONT + BACK) / 2, -0.04), (8.0, BACK - FRONT, TOP + 0.04), "paving_light", bevel=False)
 
 
@@ -215,6 +216,66 @@ def _greenery(b):
         b.sphere((x, y, h + 3.0), 4.5, "leaf_green" if i % 2 else "leaf_dark", segments=10, rings=7)
 
 
+FLOWERS = ("spa_bubblegum", "pastel_butter", "pastel_lilac", "spa_sky", "blush")
+
+
+def _gap_xs():
+    """The middle of every garden: between two plots, and beyond each outer plot out to the street's end."""
+    xs = sorted(XS)
+    mids = [(a + b) / 2 for a, b in zip(xs, xs[1:])]
+    ends = [(X0 + xs[0] - PLOT_W / 2) / 2, (xs[-1] + PLOT_W / 2 + X1) / 2]
+    return mids, ends
+
+
+def _garden(b, x, i, gw, full=True):
+    """One garden in a gap `gw` wide (#887): a stepping stone path in from the pavement to a bench under two round
+    trees, a flower bed by the path, a street lamp at the front and a low hedge at the back. All of it stands at least
+    5 studs in from the pavement and 3 off each plot's edge, so the way along the pavement and into every spa stays
+    open."""
+    f, h_ = FRONT, BACK
+    # a paved path in from the pavement, stones a little apart
+    for k in range(4):
+        b.box_base((x + (0.6 if k % 2 else -0.6), f + 2.0 + 3.6 * k, -0.04), (3.4, 2.4, 0.16), "paving_light", bevel=False)
+    # the bench at the path's end, its back to the hedge, facing the street
+    yb = f + 18.0
+    b.box_base((x, yb, 1.2), (5.0, 1.4, 0.26), "wood_light", bevel=False)
+    b.box_base((x, yb + 0.66, 1.44), (5.0, 0.26, 1.4), "wood_light", bevel=False)
+    for sx in (-2.1, 2.1):
+        b.box_base((x + sx, yb, -0.04), (0.3, 1.2, 1.26), "fur_slate", bevel=False)
+    # two raised flower beds either side of the path, their flowers in a row of colours
+    for side in (-1, 1):
+        bx = x + side * (gw / 2 - 5.5)
+        if not full and abs(bx - x) > gw / 2 - 4:
+            continue
+        b.box_base((bx, f + 8.0, -0.04), (5.0, 8.0, 0.9), "spa_cream", bevel=False)
+        b.box_base((bx, f + 8.0, 0.84), (4.4, 7.4, 0.12), "dark_wood", bevel=False)          # the soil
+        for k in range(5):                              # flower heads sitting in the soil, no stems: fewer parts
+            fx, fy = bx + (-1.1 if k % 2 else 1.1), f + 5.4 + 1.3 * k
+            b.sphere((fx, fy, 1.2), 0.7, FLOWERS[(i + k + side) % len(FLOWERS)], segments=6, rings=4)
+    # two round trees behind the beds, a lamp at the front corner and a low hedge along the back
+    for side, dy in ((-1, 0.0), (1, 4.0)):
+        tx, ty = x + side * min(7.5, gw / 2 - 4.5), f + 26.0 + dy
+        th = 6.5 + 1.5 * ((i + side) % 3)
+        b.cyl_base((tx, ty, -0.05), 0.8, th, "wood_light", segments=6, bevel=False)
+        b.sphere((tx, ty, th + 2.8), 4.0, ("leaf_green", "leaf_dark", "spa_mint")[(i + side) % 3], segments=8, rings=6)
+    lx = x + gw / 2 - 3.2
+    b.cyl_base((lx, f + 2.0, -0.05), 0.5, 0.55, "fur_slate", segments=8, bevel=False)
+    b.cyl_base((lx, f + 2.0, 0.45), 0.2, 8.5, "fur_slate", segments=6, bevel=False)
+    b.box_base((lx, f + 2.7, 8.85), (0.5, 1.9, 0.3), "fur_slate", bevel=False)
+    b.box_base((lx, f + 3.3, 8.2), (0.9, 0.9, 0.66), "lamp_warm", bevel=False)
+    b.box_base((x, h_ - 4.0, -0.05), (gw - 6.0, 2.0, 2.2), "leaf_dark", bevel=False)
+
+
+def _gardens(b):
+    """A garden in every gap between two plots and beyond the outer plots (only when the plots stand apart)."""
+    mids, ends = _gap_xs()
+    gw = PITCH - PLOT_W
+    for i, x in enumerate(mids):
+        _garden(b, x, i, gw)
+    for i, x in enumerate(ends):
+        _garden(b, x, len(mids) + i, (X1 - X0 - (max(XS) - min(XS)) - PLOT_W) / 2, full=False)
+
+
 def _barrier(name, mat):
     """Invisible walls round the street: both ends, behind the trees and in front of the houses."""
     b = Builder()
@@ -232,8 +293,11 @@ def _barrier(name, mat):
 def build_street(mat):
     name = NAME
     objs = []
-    for suffix, fn in (("", _ground), ("_Dashes", _dashes), ("_Houses", _houses), ("_Greenery", _greenery),
-                       ("_Pavement", _far_pavement)):
+    parts = [("", _ground), ("_Dashes", _dashes), ("_Houses", _houses), ("_Greenery", _greenery),
+             ("_Pavement", _far_pavement)]
+    if PITCH - PLOT_W > 6.0:                        # the plots stand apart: gardens between them (#887)
+        parts.append(("_Gardens", _gardens))
+    for suffix, fn in parts:
         b = Builder()
         fn(b)
         objs.append(_tris(b.finalize(name + suffix, mat, bevel=0)))
@@ -255,18 +319,38 @@ def street_rbx_extras():
 # no turn, and PlotSlot1 to PlotSlot6 and PlotSpacing (56) say where the plots go.
 BIG_NAME = "CleanACat_Area_StreetBig"
 BIG_PITCH, BIG_FRONT, BIG_BACK = 56.0, -24.0, 30.0     # plot.BIG's PLOT_X width and PLOT_Y
-BIG = dict(_numbers(BIG_PITCH, BIG_FRONT, BIG_BACK), NAME=BIG_NAME, GRID0=11.0)
+BIG = dict(_numbers(BIG_PITCH, BIG_FRONT, BIG_BACK), NAME=BIG_NAME, GRID0=11.0, PLOT_W=BIG_PITCH)
 
 
 class big_layout:
     """`with big_layout():` builds with the bigger street's numbers (plot.big_layout does the same for the plot)."""
 
+    LAYOUT = BIG
+
     def __enter__(self):
-        self.old = {k: globals()[k] for k in BIG}
-        globals().update(BIG)
+        self.old = {k: globals()[k] for k in self.LAYOUT}
+        globals().update(self.LAYOUT)
 
     def __exit__(self, *exc):
         globals().update(self.old)
+
+
+# -- the wide street (#887) ----------------------------------------------------------------------------------------------
+# Derek on dev, 2026-11-26: "the spa's much further apart so people can visit eachother but not feel too cramped".
+# `CleanACat_Area_StreetWide` is StreetBig with the same bigger plots 84 studs apart pivot to pivot (Gameplay's
+# wideStreet switch), so a 28 stud garden stands between each two plots and beyond the outer ones: a stepping stone path,
+# two flower beds, a bench, two round trees, a lamp and a low hedge (`_Gardens`). The front edge, pavement, road,
+# houses and the wall behind stand where StreetBig's do, only longer: seventeen houses, set in 5 studs so the row is
+# centred. Pivot, PlotSlot1 to PlotSlot6 and PlotSpacing (84) work as on the other two streets.
+WIDE_NAME = "CleanACat_Area_StreetWide"
+WIDE_PITCH = 84.0
+WIDE = dict(_numbers(WIDE_PITCH, BIG_FRONT, BIG_BACK), NAME=WIDE_NAME, GRID0=5.0, PLOT_W=BIG_PITCH)
+
+
+class wide_layout(big_layout):
+    """`with wide_layout():` builds with the wide street's numbers."""
+
+    LAYOUT = WIDE
 
 
 def build_street_big(mat):
@@ -279,5 +363,17 @@ def street_big_rbx_extras():
         return street_rbx_extras()
 
 
-ASSETS = {"CleanACat_Area_Street": (build_street, 20000), BIG_NAME: (build_street_big, 24000)}
-EXTRAS = {"CleanACat_Area_Street": street_rbx_extras, BIG_NAME: street_big_rbx_extras}
+def build_street_wide(mat):
+    with wide_layout():
+        return build_street(mat)
+
+
+def street_wide_rbx_extras():
+    with wide_layout():
+        return street_rbx_extras()
+
+
+ASSETS = {"CleanACat_Area_Street": (build_street, 20000), BIG_NAME: (build_street_big, 24000),
+          WIDE_NAME: (build_street_wide, 40000)}
+EXTRAS = {"CleanACat_Area_Street": street_rbx_extras, BIG_NAME: street_big_rbx_extras,
+          WIDE_NAME: street_wide_rbx_extras}

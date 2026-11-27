@@ -261,5 +261,20 @@ def build_backdrop_big(mat):
             globals().update(old)
 
 
-ASSETS = {N: (build_backdrop, 40000), BIG_N: (build_backdrop_big, 40000)}
+# `CleanACat_Area_BackdropWide` goes with CleanACat_Area_StreetWide (#887) the same way.
+WIDE_N = "CleanACat_Area_BackdropWide"
+rbx_export.LOOKS[WIDE_N + "_HillsFar"] = rbx_export.LOOKS[N + "_HillsFar"]
+
+
+def build_backdrop_wide(mat):
+    old = {k: globals()[k] for k in ("N", "X0", "X1", "CX", "Y_ROAD", "Y_BEHIND", "NEAR", "FAR")}
+    with street.wide_layout():
+        globals().update(_derive(), N=WIDE_N)
+        try:
+            return build_backdrop(mat)
+        finally:
+            globals().update(old)
+
+
+ASSETS = {N: (build_backdrop, 40000), BIG_N: (build_backdrop_big, 40000), WIDE_N: (build_backdrop_wide, 40000)}
 EXTRAS = {}
