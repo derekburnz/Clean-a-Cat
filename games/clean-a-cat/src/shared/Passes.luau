@@ -13,6 +13,10 @@
 --
 -- Each experience has its own passes (Derek, 2026-11-26, q2-wheremake), listed per experience as Products' are; IDS is
 -- the set of the experience this runs in, and every id is 0 anywhere else.
+--
+-- The coin ladder (issue 1031, Derek 2026-11-27: "2x/3x coins ... make 3x appear when 2x is purchased"): 3x Coins
+-- (TripleCoins) is offered only once 2x Coins is owned, with the switch coinLadder on (Passes.offered), and takes the
+-- place of 2x on a hand wash (3 times, never 6). It always works once owned, switch or not.
 
 local Products = require(script.Parent:WaitForChild("Products"))
 
@@ -32,6 +36,7 @@ export type Info = {
 Passes.IDS_BY_GAME = table.freeze({
 	[Products.DEV_GAME_ID] = table.freeze({
 		DoubleCoins = 2098734880,
+		TripleCoins = 0, -- made by store-setup (passes), then its id goes here
 		SecondBuilder = 2098968783,
 		GoldenSponge = 2102105899,
 		Lou = 2100252843,
@@ -39,6 +44,7 @@ Passes.IDS_BY_GAME = table.freeze({
 	}),
 	[Products.LIVE_GAME_ID] = table.freeze({
 		DoubleCoins = 0,
+		TripleCoins = 0,
 		SecondBuilder = 0,
 		GoldenSponge = 0,
 		Lou = 0,
@@ -48,7 +54,8 @@ Passes.IDS_BY_GAME = table.freeze({
 
 -- Every key with id 0, with the design's price for each: the set for an experience not listed above.
 Passes.NONE = table.freeze({
-	DoubleCoins = 0, -- 2x Coins (design: 199 Robux)
+	DoubleCoins = 0, -- 2x Coins (SaleRules.REGULAR_PASSES)
+	TripleCoins = 0, -- 3x Coins, offered once 2x is owned
 	SecondBuilder = 0, -- Second Builder (299)
 	GoldenSponge = 0, -- Golden Sponge (99)
 	Lou = 0, -- Extra Worker, Lou the third helper (249)
@@ -60,6 +67,7 @@ Passes.IDS = Products.pick(Passes.IDS_BY_GAME, Products.currentGame(), Passes.NO
 
 Passes.KEYS = table.freeze({
 	"DoubleCoins",
+	"TripleCoins",
 	"SecondBuilder",
 	"GoldenSponge",
 	"Lou",
@@ -70,6 +78,10 @@ Passes.INFO = table.freeze({
 	DoubleCoins = table.freeze({
 		name = "2x Coins",
 		text = "Every cat you wash by hand pays double",
+	}) :: Info,
+	TripleCoins = table.freeze({
+		name = "3x Coins",
+		text = "Every cat you wash by hand pays triple, in place of double",
 	}) :: Info,
 	SecondBuilder = table.freeze({
 		name = "Second Builder",
@@ -89,6 +101,8 @@ Passes.INFO = table.freeze({
 
 -- Hand wash pay (tuning worker.doubleCoins: hand washes only, never a worker's pay or the tip jar).
 Passes.DOUBLE_TIMES = 2
+Passes.TRIPLE_TIMES = 3 -- 3x Coins, in place of DOUBLE_TIMES (never both)
+Passes.LADDER_FLAG = "coinLadder"
 Passes.SPONGE_TIMES = 1.2
 
 -- The pass id for `key`, or nil while it is not created (0) or unknown.
@@ -110,11 +124,23 @@ function Passes.keyOf(id: number): string?
 	return nil
 end
 
--- The extra coins the pay passes add to a hand wash that paid `coins`: 2x Coins doubles it and the Golden Sponge adds
--- 20%, one on top of the other (199 + 99 Robux gives 2.4 times). 0 with neither.
+-- Whether the shop offers pass `key` now: 3x Coins only while coinLadder is on and 2x Coins is owned (or 3x is owned
+-- already, so its card says Owned); every other pass always.
+function Passes.offered(key: string, owns: (key: string) -> boolean, isOn: (flag: string) -> boolean): boolean
+	if key == "TripleCoins" then
+		return owns("TripleCoins") or (isOn(Passes.LADDER_FLAG) and owns("DoubleCoins"))
+	end
+	return true
+end
+
+-- The extra coins the pay passes add to a hand wash that paid `coins`: 2x Coins doubles it (3x Coins triples it in
+-- its place) and the Golden Sponge adds 20%, one on top of the other (2x and the sponge give 2.4 times, 3x and the
+-- sponge 3.6). 0 with none.
 function Passes.handExtra(coins: number, owns: (key: string) -> boolean): number
 	local times = 1
-	if owns("DoubleCoins") then
+	if owns("TripleCoins") then
+		times *= Passes.TRIPLE_TIMES
+	elseif owns("DoubleCoins") then
 		times *= Passes.DOUBLE_TIMES
 	end
 	if owns("GoldenSponge") then
@@ -124,13 +150,20 @@ function Passes.handExtra(coins: number, owns: (key: string) -> boolean): number
 end
 
 -- Every recap line handLine can give, for the client's check of a recap.
-Passes.LINES =
-	table.freeze({ "2x Coins and Golden Sponge", "2x Coins", "Golden Sponge" }) :: { string }
+Passes.LINES = table.freeze({
+	"3x Coins and Golden Sponge",
+	"3x Coins",
+	"2x Coins and Golden Sponge",
+	"2x Coins",
+	"Golden Sponge",
+}) :: { string }
 
 -- The recap line's words for the pay passes a player owns, or nil with neither.
 function Passes.handLine(owns: (key: string) -> boolean): string?
-	local double, sponge = owns("DoubleCoins"), owns("GoldenSponge")
-	if double and sponge then
+	local triple, double, sponge = owns("TripleCoins"), owns("DoubleCoins"), owns("GoldenSponge")
+	if triple then
+		return if sponge then "3x Coins and Golden Sponge" else "3x Coins"
+	elseif double and sponge then
 		return "2x Coins and Golden Sponge"
 	elseif double then
 		return "2x Coins"
