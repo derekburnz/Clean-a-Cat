@@ -273,10 +273,8 @@ local function drawTile(
 		effect.FontFace = Kit.BODY_FACE
 		effect.TextColor3 = Kit.INK_SOFT
 		effect.Size = UDim2.new(1, -8, 0, s.effect + 2)
-		effect.Text = CrateViewRules.effectText(
-			CrateViewRules.boostText(group.kind, group.star),
-			LiveFlags.isOn
-		)
+		effect.Text =
+			CrateViewRules.effectText(CrateRules.boost(group.kind, group.star), LiveFlags.isOn)
 		Kit.shrinkToFit(effect, s.effect)
 	end
 	-- the stars sit across the bottom of the picture, so a Legendary chip and three stars never crowd one line
