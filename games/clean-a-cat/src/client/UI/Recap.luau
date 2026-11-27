@@ -198,6 +198,12 @@ local SIZES = {
 }
 type Sizes = typeof(SIZES.full)
 local SIDE_GAP = { side = 8, sideShort = 6 } -- design px between the side card's parts
+-- On a short screen a card with more than PAIR_ABOVE coin rows shows them two to a line on a wider card, so Next cat
+-- stays on screen (issue 991: eight rows put it under the bottom of an iPhone 13).
+local PAIR_ABOVE = 4
+local PAIR_WIDER = 180 -- design px the card widens by for the second row in a line
+local PAIR_GAP = 6 -- design px between the two rows of a line
+local LIFT_EDGE = 4 -- real px kept clear under a card that had to rise
 
 local STRIP =
 	{ tile = 64, star = 30, starText = 22, got = 28, gotIcon = 48, button = 60, buttonText = 24 }
@@ -382,18 +388,33 @@ local function drawStars(
 	caption.Text = `{if score then "" else "+"}{count} {if count == 1 then "star" else "stars"}`
 end
 
-local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes)
+local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes, paired: boolean)
 	for _, child in holder:GetChildren() do
 		if child:IsA("GuiObject") then
 			child:Destroy()
 		end
 	end
+	local pair: Frame? = nil
 	for index, row in RecapRules.rows(recap) do
-		local line = frame(`Row_{row.key}`, holder)
+		local parent: Frame = holder
+		if paired then
+			-- two rows to a line (PAIR_ABOVE): a new line for every odd row
+			if index % 2 == 1 or pair == nil then
+				local newPair = frame(`Pair_{(index + 1) // 2}`, holder)
+				newPair.LayoutOrder = index
+				newPair.Size = UDim2.new(1, 0, 0, s.row)
+				list(newPair, true, PAIR_GAP)
+				pair = newPair
+			end
+			parent = pair :: Frame
+		end
+		local line = frame(`Row_{row.key}`, parent)
 		line.LayoutOrder = index
 		line.BackgroundTransparency = 0
 		line.BackgroundColor3 = Kit.WHITE
-		line.Size = UDim2.new(1, 0, 0, s.row)
+		line.Size = if paired
+			then UDim2.new(0.5, -PAIR_GAP / 2, 0, s.row)
+			else UDim2.new(1, 0, 0, s.row)
 		Kit.corner(line, UDim.new(0, 12))
 		local edge = Kit.stroke(line, 2)
 		edge.Color = Kit.line()
@@ -482,7 +503,11 @@ local function arrange(p: Parts, side: boolean, short: boolean, s: Sizes): numbe
 		then Enum.VerticalAlignment.Center
 		else Enum.VerticalAlignment.Top
 	p.whoList.Padding = UDim.new(0, if side then s.who else 8)
-	p.rowsList.Padding = UDim.new(0, if side and short then 4 else 6)
+	p.rowsList.Padding = UDim.new(0, if short then 4 else 6)
+	local rightList = p.right:FindFirstChild("RightList") :: UIListLayout?
+	if rightList then
+		rightList.Padding = UDim.new(0, if short and s.row < 28 then 4 else 8) -- tighter on a very short screen
+	end
 	p.starsList.Padding = UDim.new(0, if side then 4 else 8) -- five stars and "+5 stars" fit beside the portrait
 	p.name.TextXAlignment = if side then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center
 	p.chipList.HorizontalAlignment = if side
@@ -528,6 +553,47 @@ local function arrange(p: Parts, side: boolean, short: boolean, s: Sizes): numbe
 	return beside
 end
 
+-- The middle card rises when its bottom would pass the screen's (issue 991: a tall card on a short screen or with
+-- many rows), but never above the top of the HUD's root, which already starts under Roblox's top bar.
+local function lift(p: Parts)
+	if shownAs() ~= "card" then
+		return
+	end
+	local scale = p.cardScale.Scale
+	local pop = p.card:FindFirstChildOfClass("UIScale")
+	local popScale = if pop then (pop :: UIScale).Scale else 1
+	if scale <= 0 or popScale < 0.99 then
+		return -- mid pop-in: the settled size calls again
+	end
+	local layerTop, layerH = p.layer.AbsolutePosition.Y, p.layer.AbsoluteSize.Y
+	local cardH = p.card.AbsoluteSize.Y
+	local middle = layerTop + layerH / 2 + TOPBAR_SHIFT * scale
+	local over = middle + cardH / 2 - (layerTop + layerH - LIFT_EDGE)
+	if over > 0 then
+		-- the X stands CLOSE_OUT's 20 design px above the card: it keeps that much room under the top, and the card's
+		-- top stays under the coin pill when the pill is over the card's right end (the X then tucks in, placeClose)
+		local top = layerTop + LIFT_EDGE + 20 * scale
+		local avoid = Recap.avoid
+		if avoid then
+			local right = p.card.AbsolutePosition.X + p.card.AbsoluteSize.X + 20 * scale
+			local left = right - 64 * scale
+			for _, piece in avoid() do
+				local x0 = piece.AbsolutePosition.X
+				if piece.Visible and x0 < right and x0 + piece.AbsoluteSize.X > left then
+					top = math.max(top, piece.AbsolutePosition.Y + piece.AbsoluteSize.Y + LIFT_EDGE)
+				end
+			end
+		end
+		middle = math.max(middle - over, top + cardH / 2)
+	end
+	local shift = (middle - (layerTop + layerH / 2)) / scale
+	local position = UDim2.new(0.5, 0, 0.5, shift)
+	if p.card.Position ~= position then
+		p.card.Position = position
+	end
+	placeClose(p.close) -- the X's room beside the coin pill, from where the card now sits
+end
+
 -- Sizes, scale and contents for the recap on show.
 local function redraw()
 	local p = parts
@@ -541,7 +607,7 @@ local function redraw()
 		tellShown()
 		return
 	end
-	local scale, short = Kit.screenScale()
+	local scale, short, tiny = Kit.screenScale()
 	p.cardScale.Scale = scale
 	p.stripScale.Scale = scale
 	local side = as == "side"
@@ -563,6 +629,25 @@ local function redraw()
 	local s: Sizes = if side
 		then (if short then SIZES.sideShort else SIZES.side)
 		else (if short then SIZES.short else SIZES.full)
+	local paired = not side and #RecapRules.rows(recap) > PAIR_ABOVE
+	if paired or tiny then
+		s = table.clone(s)
+	end
+	if paired then
+		local camera = Workspace.CurrentCamera
+		local room = if camera then camera.ViewportSize.X / scale - 48 else math.huge
+		s.width = math.max(s.width, math.min(s.width + PAIR_WIDER, room))
+	end
+	if (tiny or paired) and short and not side then
+		-- a short screen with many rows, or a very short one (issue 991): a slimmer band, stars and rows, so Next cat
+		-- stays on screen under the coin pill
+		s.band, s.title, s.badge = 46, 28, 68
+		s.star, s.starText = 32, 22
+		s.row = 28
+		if tiny then
+			s.pad, s.row = 8, 26
+		end
+	end
 	local beside = arrange(p, side, short, s)
 	p.card.Size = UDim2.fromOffset(s.width, 0)
 	p.band.Size = UDim2.new(1, 0, 0, s.band)
@@ -602,7 +687,7 @@ local function redraw()
 	p.newChip.Size = UDim2.fromOffset(0, s.chip)
 	p.newText.TextSize = s.chipText
 	drawStars(p.stars, recap.stars, s.star, s.starText, recap.mascot)
-	drawRows(p.rows, recap, s)
+	drawRows(p.rows, recap, s, paired)
 	p.total.Size = UDim2.fromOffset(0, s.button)
 	p.totalIcon.Size = UDim2.fromOffset(s.totalIcon, s.totalIcon)
 	p.totalText.TextSize = s.total
@@ -610,6 +695,7 @@ local function redraw()
 	p.total.Visible = not recap.mascot
 	p.next.TextSize = s.buttonText
 	placeClose(p.close)
+	lift(p)
 	tellShown()
 end
 
@@ -770,6 +856,7 @@ function Recap.build(root: Frame)
 	right.AutomaticSize = Enum.AutomaticSize.Y
 	local rightList = list(right, false, 8)
 	rightList.VerticalAlignment = Enum.VerticalAlignment.Top
+	rightList.Name = "RightList"
 	local stars = frame("Stars", right)
 	stars.LayoutOrder = 1
 	stars.Size = UDim2.fromScale(1, 0)
@@ -918,6 +1005,12 @@ function Recap.build(root: Frame)
 		stripGot = stripGot,
 		stripNext = stripNext,
 	}
+	card:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		local p = parts
+		if p then
+			lift(p)
+		end
+	end)
 
 	nextButton.Activated:Connect(Recap.close)
 	close.Activated:Connect(Recap.close)
