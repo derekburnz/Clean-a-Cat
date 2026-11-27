@@ -81,6 +81,13 @@ CounterCrate.REACH_ATTRIBUTE = "CounterReachAt" -- local, on the figure: Custome
 -- local, on the figure: true while the carrier on their arm is hidden (set down, or none until a leave), so
 -- CustomerMotion lets the empty hand hang straight (Gameplay's CarryArmOut, issues 871 and 874)
 CounterCrate.EMPTY_HAND_ATTRIBUTE = "CarrierHidden"
+-- WalkRules.TO_ATTRIBUTE (copied): the mat the customer's walk ends on. Issue 871: a newcomer's CounterCat rode along
+-- at counter height while they were still walking in (Sync, main 792d2dd: 5 to 6.5 studs off the carrier, over the
+-- street), so the counter cat stays hidden until the customer stands on their mat, and a set-down that came due on the
+-- way plays from the moment they arrive.
+CounterCrate.WALK_TO = "WalkTo"
+CounterCrate.WALK_FILE = "WalkFile" -- WalkRules.FILE_ATTRIBUTE (copied): true on a newcomer walking in, cleared on a step-up
+CounterCrate.ARRIVED = 0.25 -- studs, flat: the customer counts as on their mat
 
 -- The steps as Gameplay's 2.4 s (CounterRules.SETTLE_SECONDS) splits them; a longer or shorter total scales them.
 CounterCrate.TOTAL = 2.4
@@ -110,6 +117,38 @@ function CounterCrate.at(t: number, total: number): (number, number, number, num
 		share(t, CounterCrate.DOOR, scale),
 		share(t, CounterCrate.WALK, scale),
 		share(t, CounterCrate.FADE, scale)
+end
+
+-- Whether a customer at `position` still has to walk to `mat` (where their WalkTo mat is), on the flat.
+function CounterCrate.walking(position: Vector3, mat: Vector3?): boolean
+	if mat == nil then
+		return false
+	end
+	return Vector3.new(position.X - mat.X, 0, position.Z - mat.Z).Magnitude > CounterCrate.ARRIVED
+end
+
+-- The set-down's two times on this device: as the server gave them, or, for a customer seen walking in who arrived
+-- after `setAt`, moved later so the crate goes down from the moment they arrived (`arrivedAt`).
+function CounterCrate.shifted(setAt: number, readyAt: number, arrivedAt: number?): (number, number)
+	if arrivedAt == nil or arrivedAt <= setAt then
+		return setAt, readyAt
+	end
+	return arrivedAt, readyAt + (arrivedAt - setAt)
+end
+
+-- Whether a counter cat still in its "before" phase waits for its customer's walk: a newcomer (WalkFile true, Review-QA
+-- on 993: their times can both be "now" when drawn late) or any customer with a set-down still to come. A customer
+-- moving places with a cat already set down (both times equal, no WalkFile) slides along the counter as before.
+function CounterCrate.waitsForWalk(setAt: number, readyAt: number, file: unknown): boolean
+	return file == true or readyAt > setAt
+end
+
+-- The set-down span to play: the server's, or the whole TOTAL for a newcomer whose two times were equal.
+function CounterCrate.span(setAt: number, readyAt: number, file: unknown): number
+	if readyAt > setAt or file ~= true then
+		return readyAt - setAt
+	end
+	return CounterCrate.TOTAL
 end
 
 function CounterCrate.arcAt(u: number): number
@@ -221,9 +260,27 @@ type Entry = {
 	waitHidden: boolean?, -- the waiting cat is hidden once before CounterSetAt, not every frame
 	ownSounds: boolean?, -- issue 828: this crate plays its thud and meow (own plot, counterSounds on)
 	meowed: boolean?,
+	sawWalk: boolean?, -- issue 871: this customer was seen walking in, so their set-down waits for them
+	arrivedAt: number?, -- server time they stood on their mat, after a walk this device saw
+	lateParts: RBXScriptConnection?, -- hides parts that stream in after the waiting cat was hidden
 }
 
 local entries: { [Model]: Entry } = {}
+
+-- The waiting cat, hidden once, and every part that reaches it later (streaming, or a dirt or fluff part added after
+-- it was drawn) while it still waits, so none shows on the counter before the crate lands (issue 871).
+local function hideWaiting(entry: Entry)
+	if entry.waitHidden then
+		return
+	end
+	entry.waitHidden = true
+	hide(entry.cat)
+	entry.lateParts = entry.cat.DescendantAdded:Connect(function(d)
+		if entry.phase == "before" and (d:IsA("BasePart") or d:IsA("Decal")) then
+			hide(d)
+		end
+	end)
+end
 local stepping: RBXScriptConnection? = nil
 
 local function carrierOf(figure: Model): Model?
@@ -385,19 +442,33 @@ local function step()
 			forget()
 			continue
 		end
-		local setAt = cat:GetAttribute(CounterCrate.SET_AT)
-		local readyAt = cat:GetAttribute(CounterCrate.READY_AT)
-		if type(setAt) ~= "number" or type(readyAt) ~= "number" then
+		local serverSet = cat:GetAttribute(CounterCrate.SET_AT)
+		local serverReady = cat:GetAttribute(CounterCrate.READY_AT)
+		if type(serverSet) ~= "number" or type(serverReady) ~= "number" then
 			continue -- the crate switch is off: Gameplay's counter as it was
 		end
 		if entry.phase == "after" then
 			continue
 		end
-		if now < setAt then
-			if not entry.waitHidden then
-				entry.waitHidden = true
-				hide(cat)
+		-- still walking in: the cat is in the crate on their arm, not on the counter beside them (issue 871)
+		local file = entry.figure:GetAttribute(CounterCrate.WALK_FILE)
+		serverReady = serverSet + CounterCrate.span(serverSet, serverReady, file)
+		if entry.phase == "before" and CounterCrate.waitsForWalk(serverSet, serverReady, file) then
+			local walkTo = entry.figure:GetAttribute(CounterCrate.WALK_TO)
+			local mat = if typeof(walkTo) == "CFrame" then (walkTo :: CFrame).Position else nil
+			if CounterCrate.walking(entry.figure:GetPivot().Position, mat) then
+				entry.sawWalk = true
+				entry.arrivedAt = nil
+				hideWaiting(entry)
+				continue
 			end
+			if entry.sawWalk and entry.arrivedAt == nil then
+				entry.arrivedAt = now
+			end
+		end
+		local setAt, readyAt = CounterCrate.shifted(serverSet, serverReady, entry.arrivedAt)
+		if now < setAt then
+			hideWaiting(entry)
 			continue
 		end
 		if now >= readyAt then

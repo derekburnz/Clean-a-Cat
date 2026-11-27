@@ -33,6 +33,7 @@ local CLOSE = 64 -- design px
 local OVERHANG = 20 -- design px the X stands above the card
 local EDGE = 2 -- real px kept clear above and below a window that had to shrink
 local MIN_FIT = 0.8 -- a tall window shrinks to at most this share of its size
+local TINY_BAND, TINY_TITLE, TINY_BADGE = 46, 28, 68 -- design px: the band on a very short screen (Kit.screenScale)
 
 -- What Window.fit last asked for, per card: the screen scale and the shift below the middle.
 local asked: { [Frame]: { scale: number, shift: number, width: number } } = {}
@@ -277,7 +278,12 @@ function Window.fit(
 	badge: number,
 	shift: number?
 )
-	local scale = Kit.screenScale()
+	local scale, _, tiny = Kit.screenScale()
+	if tiny then
+		-- a very short screen: a slimmer title band, so the tallest windows keep their bottom on screen (issue 988)
+		band, title, badge =
+			math.min(band, TINY_BAND), math.min(title, TINY_TITLE), math.min(badge, TINY_BADGE)
+	end
 	w.scale.Scale = scale
 	w.card.Size = UDim2.fromOffset(width, 0)
 	w.card.Position = UDim2.new(0.5, 0, 0.5, shift or TOPBAR_SHIFT)
