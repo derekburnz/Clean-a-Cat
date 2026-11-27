@@ -19373,17 +19373,17 @@
    "CleanACat_Pet_Clover_Star3",
    "CleanACat_Pet_Clover_Star3_Glow"
   ],
-  "triangles": 1284,
+  "triangles": 1272,
   "budget": 2400,
-  "parts": 93,
+  "parts": 92,
   "size_studs": {
    "x": 1.0,
    "y": 1.97,
-   "z": 2.35
+   "z": 1.97
   },
   "size_roblox": [
    1.0,
-   2.35,
+   1.97,
    1.97
   ],
   "pivot": "base center (floor contact)",
@@ -19394,10 +19394,10 @@
    "warnings": [],
    "qa_accepted": {},
    "checks": {
-    "budget": "1284/2400 tris",
+    "budget": "1272/2400 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "842 faces on swatch centers",
+    "uv": "836 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
     "centered": "footprint center x=0.00 y=-0.00",
@@ -19549,17 +19549,17 @@
    "CleanACat_Pet_Glitch_Star3",
    "CleanACat_Pet_Glitch_Star3_Glow"
   ],
-  "triangles": 1524,
+  "triangles": 1536,
   "budget": 2400,
-  "parts": 119,
+  "parts": 120,
   "size_studs": {
-   "x": 1.57,
+   "x": 1.38,
    "y": 1.97,
-   "z": 2.21
+   "z": 1.86
   },
   "size_roblox": [
-   1.57,
-   2.21,
+   1.38,
+   1.86,
    1.97
   ],
   "pivot": "base center (floor contact)",
@@ -19567,21 +19567,19 @@
   "gates": {
    "pass": true,
    "failed": [],
-   "warnings": [
-    "centered"
-   ],
+   "warnings": [],
    "qa_accepted": {
     "shared corners": 2,
     "back to back": 1
    },
    "checks": {
-    "budget": "1524/2400 tris",
+    "budget": "1536/2400 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "872 faces on swatch centers",
+    "uv": "878 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.00 (want 0)",
-    "centered": "footprint center x=0.10 y=-0.00",
+    "centered": "footprint center x=0.00 y=-0.00",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
