@@ -30,7 +30,7 @@ return function()
 					local p = HelperWash.target(phase, t, 0.3, false)
 					expect(p.armR > math.rad(40) and p.armR < math.rad(95)).to.equal(true)
 					expect(p.armL > math.rad(40) and p.armL < math.rad(95)).to.equal(true)
-					expect(math.abs(p.sideR) <= math.rad(20)).to.equal(true)
+					expect(math.abs(p.sideR) <= math.rad(30)).to.equal(true)
 					expect(p.headPitch > 0).to.equal(true)
 				end
 			end

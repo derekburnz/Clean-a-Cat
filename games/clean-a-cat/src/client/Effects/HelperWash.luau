@@ -51,7 +51,8 @@ HelperWash.STROKES = 5
 HelperWash.MOVE = 0.7
 HelperWash.STROKE = math.rad(11) -- each way, along the coat
 HelperWash.PATCHES = table.freeze({ 0, -1, 0.6, 1, -0.5 }) -- sideways spots along the cat, -1 to 1
-HelperWash.PATCH_SIDE = math.rad(11)
+HelperWash.PATCH_SIDE = math.rad(22) -- Sync 2026-11-27: 11 moved the brush only 0.33 studs across the coat
+HelperWash.PATCH_REACH = table.freeze({ 0, 7, -5, 4, -7 }) -- degrees nearer or farther along the cat, per patch
 
 HelperWash.TOOLS = table.freeze({
 	soap = "CleanACat_Tool_Shampoo",
@@ -61,14 +62,14 @@ HelperWash.TOOLS = table.freeze({
 } :: { [string]: string })
 
 -- How each tool sits in the hand, from the Grip's frame (the arm's length is the Grip's -Y). The tool's Handle part
--- goes to the Grip; this turns it so it points along the arm into the work. Tuned on Sync's Studio pictures.
+-- goes to the Grip; this turns it so it points along the arm into the work. Tuned on Sync's Studio pictures (the
+-- brush and towel read right). The shampoo and shower are aimed instead (see aimTool): their grip at the hand and
+-- their business end pointed at the cat, since fixed angles had the bottle sideways and the shower back to front.
 local hold: { [string]: CFrame }? = nil -- built on first use (the specs' runner has no CFrame)
 local function holdFor(phase: string): CFrame
 	if hold == nil then
 		hold = {
-			soap = CFrame.Angles(math.pi, 0, 0), -- the bottle upside down, its cap at the cat
 			scrub = CFrame.Angles(-math.pi / 2, 0, 0), -- the brush's length along the arm, bristles at the coat
-			rinse = CFrame.Angles(0, 0, math.pi / 2) * CFrame.Angles(0, math.pi / 2, 0), -- the nozzle along the arm
 			dry = CFrame.new(0, -0.15, 0), -- the towel flat in the palm
 		}
 	end
@@ -114,8 +115,11 @@ local function scrub(t: number, seed: number, still: boolean): Target
 	local n = math.floor(shifted / burst)
 	local u = shifted - n * burst
 	local patches = HelperWash.PATCHES
-	local here = patches[n % #patches + 1]
-	local nextPatch = patches[(n + 1) % #patches + 1]
+	local i = n % #patches + 1
+	local j = (n + 1) % #patches + 1
+	local here = patches[i]
+	local nextPatch = patches[j]
+	local reach = HelperWash.PATCH_REACH[i]
 	local side = here
 	local stroke = 0
 	local beat = false
@@ -129,9 +133,10 @@ local function scrub(t: number, seed: number, still: boolean): Target
 		local k = (u - strokeTime) / HelperWash.MOVE
 		local e = k * k * (3 - 2 * k)
 		side = here + (nextPatch - here) * e
+		reach += (HelperWash.PATCH_REACH[j] - reach) * e
 	end
 	return {
-		armR = HelperWash.REACH + math.rad(6) + HelperWash.STROKE * stroke,
+		armR = HelperWash.REACH + math.rad(6 + reach) + HelperWash.STROKE * stroke,
 		sideR = side * HelperWash.PATCH_SIDE + math.rad(3) * stroke * stroke,
 		armL = HelperWash.REACH - math.rad(6),
 		sideL = math.rad(4),
@@ -206,6 +211,9 @@ export type State = {
 	tool: Model?,
 	toolPhase: Phase?,
 	handle: CFrame?, -- the tool's pivot from its Handle
+	aim: CFrame?, -- aimed tools: the frame of the business end (X) and its up side (Y), in the model's build space
+	build: CFrame?, -- aimed tools: the model's pivot in its build space (the grip is the build origin)
+	ray: RaycastParams?,
 	emitter: ParticleEmitter?,
 	beam: Beam?,
 	a0: Attachment?,
@@ -283,6 +291,8 @@ local function dropTool(state: State)
 	state.tool = nil
 	state.toolPhase = nil
 	state.handle = nil
+	state.aim = nil
+	state.build = nil
 	state.emitter = nil
 	state.a0 = nil
 	if tool then
@@ -326,6 +336,21 @@ local function makeTool(state: State, phase: Phase)
 		else CFrame.identity
 	-- the puffs come from the business end: the shower's Nozzle, else the tool's middle
 	local nozzle = tool:FindFirstChild("Nozzle", true)
+	-- aimed tools, read while the copy still sits where Model-Agent built it (its grip at the origin): the shower
+	-- sprays out of its Nozzle (the head's +X), the shampoo bottle pours out of its cap (+Y)
+	local spray: Vector3? = nil
+	if phase == "rinse" and nozzle and nozzle:IsA("Attachment") then
+		spray = ((nozzle :: Attachment).Parent :: any).CFrame.RightVector
+	elseif phase == "soap" then
+		spray = Vector3.yAxis
+	end
+	if spray then
+		local a = (spray :: Vector3).Unit
+		local up = if math.abs(a.Y) > 0.95 then Vector3.zAxis else Vector3.yAxis
+		local b = (up - a * a:Dot(up)).Unit
+		state.aim = CFrame.fromMatrix(Vector3.zero, a, b, a:Cross(b))
+		state.build = pivot
+	end
 	local at: Attachment
 	if nozzle and nozzle:IsA("Attachment") then
 		at = nozzle :: Attachment
@@ -417,6 +442,43 @@ local function audioModule(): any
 	return audio
 end
 
+-- Where an aimed tool goes: its grip at the hand and its business end pointed down onto the cat under the hand (so
+-- the pour and the spray follow the arm's sweep), its up side kept up. `aim` is from makeTool.
+local function aimTool(hand: CFrame, centre: Vector3, aim: CFrame): CFrame
+	local at = hand.Position
+	local under = Vector3.new(
+		centre.X + (at.X - centre.X) * 0.7,
+		centre.Y,
+		centre.Z + (at.Z - centre.Z) * 0.7
+	)
+	local toward = under - at
+	local A = if toward.Magnitude > 1e-3 then toward.Unit else -hand.UpVector
+	local B = Vector3.yAxis - A * A:Dot(Vector3.yAxis)
+	if B.Magnitude < 0.1 then
+		B = hand.LookVector - A * A:Dot(hand.LookVector)
+	end
+	B = B.Unit
+	local world = CFrame.fromMatrix(Vector3.zero, A, B, A:Cross(B))
+	return CFrame.new(at) * world * aim:Inverse()
+end
+
+-- Where the water meets the fur: the first point on the cat along the spray (Sync 2026-11-27: aiming at the
+-- middle put the line's end half a stud inside the coat), else the middle.
+local function waterEnd(state: State, cat: Model, from: Vector3, centre: Vector3): Vector3
+	local params = state.ray
+	if params == nil then
+		local made = RaycastParams.new()
+		made.FilterType = Enum.RaycastFilterType.Include
+		state.ray = made
+		params = made
+	end
+	local p = params :: RaycastParams
+	p.FilterDescendantsInstances = { cat }
+	local toward = centre - from
+	local hit = Workspace:Raycast(from, toward.Unit * (toward.Magnitude + 1), p)
+	return if hit then hit.Position else centre
+end
+
 -- Puts the tool at the staff's right hand and runs the step's effects. `near`: within NEAR studs of the camera.
 function HelperWash.place(
 	state: State,
@@ -442,11 +504,16 @@ function HelperWash.place(
 		return
 	end
 	local hand = (grip :: Attachment).WorldCFrame
-	tool:PivotTo(hand * holdFor(phase) * (state.handle or CFrame.identity))
+	local aim, build = state.aim, state.build
+	local box = cat:GetBoundingBox()
+	if aim and build then
+		tool:PivotTo(aimTool(hand, box.Position, aim) * build)
+	else
+		tool:PivotTo(hand * holdFor(phase) * (state.handle or CFrame.identity))
+	end
 	local tip = state.a0
 	if phase == "rinse" and tip then
-		local box = cat:GetBoundingBox()
-		showBeam(state, tip, box.Position + Vector3.new(0, 0.4, 0), now)
+		showBeam(state, tip, waterEnd(state, cat, tip.WorldPosition, box.Position), now)
 	else
 		hideBeam(state)
 	end
