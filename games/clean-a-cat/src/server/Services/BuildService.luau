@@ -17,8 +17,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local DirtRules = require(Shared:WaitForChild("DirtRules"))
+local ExpansionRules = require(Shared:WaitForChild("ExpansionRules"))
 local FinishRules = require(Shared:WaitForChild("FinishRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
+local HotelRules = require(Shared:WaitForChild("HotelRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
@@ -45,6 +47,17 @@ local function nearBoard(player: Player): boolean
 	end
 	return ((root :: BasePart).Position - SpaLayout.spot("SpotBuilder", player).Position).Magnitude
 		<= BuildRules.SERVER_REACH
+end
+
+-- (catHotel) Within reach of the hotel behind the back door, where its own builds start and finish too.
+local function nearHotel(player: Player): boolean
+	local character = player.Character
+	local root = if character then character:FindFirstChild("HumanoidRootPart") else nil
+	if root == nil or not root:IsA("BasePart") or SpaLayout.slotOf(player) == nil then
+		return false
+	end
+	return ((root :: BasePart).Position - SpaLayout.spot(ExpansionRules.SPOT, player).Position).Magnitude
+		<= HotelRules.SERVER_REACH
 end
 
 -- The save's builds as BuildRules works on them, with the running builds read through a check.
@@ -179,7 +192,10 @@ local function onBuild(player: Player, rawId: unknown)
 	local id = Guard.oneOf(rawId, BuildRules.offered(LiveFlags.isOn)) -- an item whose switch is off is refused
 	local save = DataService.get(player)
 	-- the Build window (switch buildWindow, issue 751) starts a build from anywhere; every other check stays
-	local reach = LiveFlags.isOn(BuildRules.WINDOW_FLAG) or nearBoard(player)
+	-- the hotel's builds start at the back door or in the hotel too (HotelRules.isBuild)
+	local reach = LiveFlags.isOn(BuildRules.WINDOW_FLAG)
+		or nearBoard(player)
+		or (id ~= nil and HotelRules.isBuild(id) and nearHotel(player))
 	if id == nil or save == nil or not reach then
 		return
 	end
@@ -215,11 +231,17 @@ local function onFinish(player: Player, rawSlot: unknown)
 	end
 	local slot = Guard.oneOf(rawSlot, BuildRules.SLOTS)
 	local save = DataService.get(player)
-	if slot == nil or save == nil or not nearBoard(player) then
+	if slot == nil or save == nil then
 		return
 	end
 	local state = stateOf(save)
 	local build = state.builds[slot]
+	-- at the board, or for one of the hotel's builds at the hotel (its door's prompt)
+	if
+		not (nearBoard(player) or (build and HotelRules.isBuild(build.item) and nearHotel(player)))
+	then
+		return
+	end
 	local tier = if build then FinishRules.tier(build.endsAt - os.time()) else nil
 	if tier == nil then
 		return -- nothing running there, or under 15 s left: no price

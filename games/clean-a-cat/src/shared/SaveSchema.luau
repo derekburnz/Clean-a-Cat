@@ -118,6 +118,7 @@ export type Save = {
 	likeYes: boolean, -- the like ask was once answered "yes": it never comes again
 	visiting: boolean, -- others may visit this spa (issue 520)
 	expansionUnlocked: boolean, -- the back door expansion is unlocked with coins (ExpansionRules, issue 1041)
+	hotel: { stays: { [string]: any } }, -- the Cat Hotel's stays by room "1" to "4" (HotelRules.Stay; issue 1049)
 	jarCoins: number, -- the tip jar's coins waiting (issue 517)
 	jarAt: number, -- os.time() the jar was last filled or emptied
 	bench: { BenchCat }, -- the cats waiting, front first, as last saved
@@ -182,6 +183,7 @@ function SaveSchema.template(now: number): Save
 		likeYes = false,
 		visiting = true,
 		expansionUnlocked = false,
+		hotel = { stays = {} },
 		jarCoins = 0,
 		jarAt = 0,
 		bench = {},

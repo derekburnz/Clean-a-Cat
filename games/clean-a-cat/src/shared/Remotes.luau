@@ -110,6 +110,11 @@ Remotes.ClientToServer = {
 	-- The back door expansion (ExpansionService, behind expansionDoor, issue 1041).
 	"RequestUnlockExpansion", -- ()  1 a second; switch on, save loaded, still locked, the character within
 	-- ExpansionRules.SERVER_REACH studs of the plot's SpotGardenDoor, ExpansionRules.PRICE coins
+	-- The Cat Hotel (HotelService, behind catHotel with expansionDoor, issue 1049).
+	"BookStay", -- (room: int 1..4, hours: 1 | 4 | 8)  1 a second; save loaded, hotel open, within HotelRules.SERVER_REACH
+	-- of the back door, a guest waiting, the room open and free: the guest sleeps there for `hours` of server time
+	"CollectRoom", -- (room: int 1..4?)  1 a second; the same checks of place; the ended stay in `room` (nil: every one)
+	-- is taken out of the save, then pays HotelRules.pay and its gift
 	-- Send feedback (FeedbackService, behind feedback, issue 1081).
 	"SendFeedback", -- (choice: one of FeedbackRules.CHOICES, note: string?)  once in 30 seconds and 3 a visit; switch on;
 	-- the note, at most FeedbackRules.NOTE_MAX characters, is filtered before it is kept; a bad note is dropped
@@ -134,6 +139,10 @@ Remotes.ServerToClient = {
 	"Builds", -- (builds: { [slot]: { item, endsAt } }, built: { string }, serverNow: number, credits: { [tier]: count })  for the
 	-- board and countdowns; credits are the Finish now credits by tier "1" to "5" (empty while finishNow is off)
 	"BuildFinished", -- (id: string)  a build just finished, or finished while the player was away: celebrate (switch builds)
+	"Hotel", -- (state: { open: boolean, rooms: number, stays: { [room string]: HotelRules.Stay }, guest: HotelRules.Guest?, now: number })
+	-- the Cat Hotel as it is now, after every change (catHotel)
+	"HotelPaid", -- (room: number, coins: number, gift: "coins" | "bow" | "crate", giftText: string, kind: string)  a stay
+	-- checked out: its coins (the bonus included) and its thank-you gift, for the reward popup (catHotel)
 	"PhotoPaid", -- (catId: number, coins: number, total: number, recap: RecapRules.Recap?)  the photo paid; total is the save's coins; recap for a customer, or the kitten's score card (mascot), while recapCard is on
 	"Quests", -- (quests: { { id, text, goal, progress, coins, weekly: boolean, done: boolean } }, weeklyCrate: boolean)  the open
 	-- quests, today's daily ones first, and whether this week's crate is taken (switch quests)
