@@ -1,0 +1,4 @@
+# Files approved for upload to Roblox (the upload-asset workflow refuses anything not listed here).
+# Review-QA-Agent adds a line only after looking at the picture at full size and at icon size for anything that could
+# be misread (hands, gestures, shapes), in a pull request of its own. A changed file needs a new line: the sha256 must
+# match. Format: sha256, two spaces, the path from the repo root (exactly as `sha256sum <path>` prints it).
