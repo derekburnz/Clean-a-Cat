@@ -57,7 +57,7 @@ and a mint pocket with the yellow sponge and the sky brush standing in it. Revie
 tap lands (Growth-Agent's spec, 2026-11-26). Made by `hud_icons.py` (`RingPuff`) and checked at 48 px.
 
 **No hands, ever (2026-11-27).** The first like how-to pictures were hands: a thumbs up, the same thumbs up pressed,
-and a hand pointing one finger. Roblox moderation misread the pressed one (asset 135826908608436) and suspended
+and a hand pointing one finger. Roblox moderation misread the pressed one and suspended
 Derek's account. All three were removed from the repo and from `hud_icons.py`, and their sha256s are on
 `.github/upload-blocked.txt`, so the upload workflow refuses them under any name. Draw no hand, finger or gesture
 in any picture; use hearts, dots and rings instead.

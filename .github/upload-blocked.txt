@@ -1,7 +1,7 @@
 # Files that are never uploaded to Roblox again, under any name or path (the upload-asset workflow refuses their sha256).
 # Format: sha256, two spaces, then a note.
-# 2026-11-27: the like how-to's hand icons. ThumbsUpFilled (asset 135826908608436) was misread by Roblox moderation and
+# 2026-11-27: the like how-to's hand icons. ThumbsUpFilled was misread by Roblox moderation and
 # got Derek's account suspended; the other two are the same hand.
 262cbfa3bf5970faeb46d445a8fc0db26b299f0a5d12d24362a52713a8a9e4e3  CleanACat_Icon_Hud_ThumbsUp.png (removed from the repo)
-059c607f09547b8f01f00001a5a09feb2ed1bf340cdc59c6e5f78a46e684f7b1  CleanACat_Icon_Hud_ThumbsUpFilled.png, asset 135826908608436 (removed from the repo)
+059c607f09547b8f01f00001a5a09feb2ed1bf340cdc59c6e5f78a46e684f7b1  CleanACat_Icon_Hud_ThumbsUpFilled.png, the flagged one (removed from the repo)
 83a421f026227c4b131b8bfe501807da7cd97e0d46277f14688505e64d4680bc  CleanACat_Icon_Hud_TapHand.png (removed from the repo)

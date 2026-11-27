@@ -10,6 +10,7 @@
 #                      upload-asset uses; docs/setup-guide.md step 8)
 #
 # Usage:  archive-asset.sh <asset id> [<asset id> ...]
+# With ARCHIVE_READ_ONLY=yes each id is only read and logged (name, type, owner, state); nothing is archived.
 # Each id is read first, so the log shows its name, type and owner before it is archived. One id that fails does not
 # stop the rest; the script fails at the end if any did. Needs curl and jq.
 set -euo pipefail
@@ -68,6 +69,10 @@ for id in "$@"; do
 	echo "$id: $type \"$name\", owned by $owner, state $state"
 	if [ "$state" = Archived ]; then
 		echo "$id is already archived."
+		continue
+	fi
+	if [ "${ARCHIVE_READ_ONLY:-}" = yes ]; then
+		echo "$id: read only, not archived."
 		continue
 	fi
 	call "$API/assets/$id:archive" -X POST -H "Content-Type: application/json" -d '{}'

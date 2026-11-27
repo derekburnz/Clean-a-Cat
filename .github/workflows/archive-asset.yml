@@ -16,6 +16,10 @@ on:
       ids:
         description: "Asset ids to archive, separated by spaces, commas or new lines"
         required: true
+      read_only:
+        description: "yes: only read each id and log its name, type, owner and state; archive nothing"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -35,6 +39,7 @@ jobs:
     env:
       ROBLOX_UPLOAD_KEY: ${{ secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY }}
       ASSET_IDS: ${{ inputs.ids }}
+      ARCHIVE_READ_ONLY: ${{ inputs.read_only }}
     steps:
       - uses: actions/checkout@v5
 
