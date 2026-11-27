@@ -29,7 +29,13 @@ CounterCardRules.STAGGER = 1.9 -- studs: about 30 px from the player's spot on a
 -- are colliding with eachother"): only the heart bar, no owner chip (the mat's wash still says whose cat it is), sized
 -- in studs so it shrinks with the cat and is always narrower than the 3.2 stud gap between places, all in one row.
 CounterCardRules.SLIM_FLAG = "counterSlim"
-CounterCardRules.SLIM_SIZE = Vector2.new(2.2, 0.42) -- studs, the heart included
+-- (Sync on iphone_13, 2026-11-27: studs alone made far bars 17 px wide and 3 px tall) studs plus a px floor, so a
+-- bar never reads smaller than SLIM_PX and still shrinks a little with distance
+CounterCardRules.SLIM_SIZE = Vector2.new(1.1, 0.2) -- studs, the heart included
+CounterCardRules.SLIM_PX = Vector2.new(30, 8) -- px added to the studs: the floor
+-- every second place's bar sits this many of its own heights higher on screen, so neighbours never cover each other
+-- even when the counter runs away from the camera
+CounterCardRules.SLIM_LIFT = 1.35
 CounterCardRules.SLIM_UP = 2.1 -- studs over the cat's pivot
 CounterCardRules.MAT_WASH = 0.45 -- the mat is the shirt colour this far towards cream, so the cat stays the hero
 CounterCardRules.LOW_AT = HeartRules.GRUMPY_AT -- the bar turns coral here, as the cat turns grumpy
@@ -72,6 +78,12 @@ function CounterCardRules.barColor(fill: number): Color3
 end
 
 -- Studs over the cat's pivot for the card at counter `place`: even places one row up; a slim bar is always one row.
+-- How many of its own heights the slim bar at `place` sits up on screen: SLIM_LIFT for every second place, else 0.
+function CounterCardRules.slimLift(place: unknown): number
+	local even = type(place) == "number" and place % 2 == 0
+	return if even then CounterCardRules.SLIM_LIFT else 0
+end
+
 function CounterCardRules.up(place: unknown, slim: boolean?): number
 	if slim then
 		return CounterCardRules.SLIM_UP

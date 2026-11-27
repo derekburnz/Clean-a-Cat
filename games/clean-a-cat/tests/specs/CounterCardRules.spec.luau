@@ -63,6 +63,12 @@ return function()
 			expect(CounterCardRules.up(1, true)).to.equal(CounterCardRules.SLIM_UP)
 			expect(CounterCardRules.up(2, true)).to.equal(CounterCardRules.SLIM_UP)
 			expect(CounterCardRules.SLIM_SIZE.X < 3.2).to.equal(true)
+			expect(CounterCardRules.SLIM_PX.X >= 30 and CounterCardRules.SLIM_PX.Y >= 8).to.equal(
+				true
+			)
+			expect(CounterCardRules.slimLift(1)).to.equal(0)
+			expect(CounterCardRules.slimLift(2) > 1).to.equal(true)
+			expect(CounterCardRules.slimLift(nil)).to.equal(0)
 		end)
 	end)
 end
