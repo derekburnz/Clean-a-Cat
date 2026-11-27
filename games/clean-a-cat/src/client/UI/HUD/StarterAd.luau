@@ -607,9 +607,9 @@ function StarterAd.build(root: Instance, open: () -> ())
 	shadow.BorderSizePixel = 0
 	shadow.AnchorPoint = Vector2.new(0.5, 0.5)
 	shadow.Position = UDim2.fromScale(0.5, 0.97)
-	shadow.Size = UDim2.fromScale(0.62, 0.12)
+	shadow.Size = UDim2.fromScale(0.5, 0.08)
 	shadow.BackgroundColor3 = Kit.INK
-	shadow.BackgroundTransparency = 0.72
+	shadow.BackgroundTransparency = 0.86 -- soft: at 0.72 it read as a dark bar on the light floor (Derek, Sync on 1141)
 	shadow.Visible = false
 	shadow.ZIndex = 1
 	Kit.corner(shadow, UDim.new(0.5, 0))
