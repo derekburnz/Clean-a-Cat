@@ -106,6 +106,7 @@ export type Save = {
 	-- granted twice
 	starterEndsAt: number, -- os.time() the starter pack offer ends: stamped once by SaveSchema.stampStarter as
 	-- createdAt + 72 hours (the owner's call: 72 hours from first join) while it is 0, and never moved after
+	starterPet: boolean, -- the starter pack's golden pet was given (StarterRules.givePet, issue 1090)
 	starterOpened: boolean, -- the player opened the starter pack window once: its button never bobs again (issue 528)
 	visits: number, -- joins of this save, the first included (the starter pack button bobs on visits 2 to 4)
 	asks: { [string]: boolean }, -- first session asks and HUD unlocks already shown, by ask id (issue 522)
@@ -172,6 +173,7 @@ function SaveSchema.template(now: number): Save
 		receipts = {},
 		starterEndsAt = 0,
 		starterOpened = false,
+		starterPet = false,
 		visits = 0,
 		asks = {},
 		giftClaimed = false,

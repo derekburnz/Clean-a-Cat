@@ -11,6 +11,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Passes = require(Shared:WaitForChild("Passes"))
 local SaveSchema = require(Shared:WaitForChild("SaveSchema"))
@@ -19,6 +20,7 @@ local StarterRules = require(Shared:WaitForChild("StarterRules"))
 local DataService = require(script.Parent:WaitForChild("DataService"))
 local NetService = require(script.Parent:WaitForChild("NetService"))
 local PassService = require(script.Parent:WaitForChild("PassService"))
+local PetService = require(script.Parent:WaitForChild("PetService"))
 local PurchaseService = require(script.Parent:WaitForChild("PurchaseService"))
 local Telemetry = require(script.Parent:WaitForChild("Telemetry"))
 
@@ -114,12 +116,35 @@ local function onOpened(player: Player)
 	show(player)
 end
 
+-- (starterPet) The pack's golden pet into the save, once; true when it was given now. No yield.
+local function givePet(save: SaveSchema.Save): boolean
+	if not LiveFlags.isOn(StarterRules.PET_FLAG) then
+		return false
+	end
+	return StarterRules.givePet(save :: any, CrateRules.PLAYER_SLOT) ~= nil
+end
+
+-- (starterPet) A save that bought the pack before the switch: its pet, once, with a thank you.
+local function catchUp(player: Player, save: SaveSchema.Save)
+	if save.starterPet or not StarterRules.boughtBefore(save.passes) then
+		return
+	end
+	if givePet(save) then
+		PetService.show(player)
+		NetService.notice(
+			player,
+			`Thanks for getting the starter pack: {StarterRules.PET} is yours too!`
+		)
+	end
+end
+
 -- The pack's grant: all three passes into the save (no yield, nothing to check first: a repeat receipt never gets
 -- here). The passes count from the next frame, once PassService hears of them.
 local function grant(player: Player, save: SaveSchema.Save, _receipt: { [string]: any }): boolean
 	for _, key in StarterRules.CONTENTS do
 		save.passes[key] = true
 	end
+	local pet = givePet(save)
 	Telemetry.event(
 		player,
 		"pack_bought",
@@ -130,9 +155,14 @@ local function grant(player: Player, save: SaveSchema.Save, _receipt: { [string]
 			PassService.grant(player, key)
 		end
 		show(player)
+		if pet then
+			PetService.show(player)
+		end
 		NetService.notice(
 			player,
-			"Starter pack: the Golden Sponge, a second pet slot and 2x Coins are yours!"
+			if pet
+				then `Starter pack: {StarterRules.PET}, the Golden Sponge, a second pet slot and 2x Coins are yours!`
+				else "Starter pack: the Golden Sponge, a second pet slot and 2x Coins are yours!"
 		)
 	end)
 	return true
@@ -149,7 +179,17 @@ function StarterService.Start()
 		save.visits += 1
 		stamp(player, save)
 		show(player)
+		catchUp(player, save)
 	end)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. StarterRules.PET_FLAG)
+		:Connect(function()
+			for _, player in Players:GetPlayers() do
+				local save = DataService.get(player)
+				if save then
+					catchUp(player, save)
+				end
+			end
+		end)
 	-- a pass bought on its own takes the pack away at once
 	PassService.changed:Connect(function(player: Player)
 		show(player)
