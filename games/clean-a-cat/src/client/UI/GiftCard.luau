@@ -112,6 +112,8 @@ type Parts = {
 	howTo: Frame,
 	howArt: Frame,
 	howThumb: Frame,
+	howOutline: Frame,
+	howFilled: Frame,
 	howHand: Frame,
 	howRing: Frame,
 	howCaption: TextLabel,
@@ -372,14 +374,10 @@ local function drawHowTo(t: number)
 		return
 	end
 	local f = LikeHowToRules.frame(t, Comfort.reducedMotion())
-	local thumb = p.howThumb:FindFirstChild("Icon")
-	local shown = if f.filled then "HeartFilled" else "HeartOutline"
-	if p.howThumb:GetAttribute("Shown") ~= shown then
-		p.howThumb:SetAttribute("Shown", shown)
-		Icons.draw(shown, p.howThumb)
-	elseif thumb == nil then
-		Icons.draw(shown, p.howThumb)
-	end
+	-- both hearts are drawn once (showHowTo) and only swap here, so neither waits on an image load mid-loop (Sync on
+	-- c2eeb78 never caught the grey heart while each swap made a new image)
+	p.howOutline.Visible = not f.filled
+	p.howFilled.Visible = f.filled
 	-- the tap dot comes from the lower right onto the heart, a little smaller while it presses
 	local away = 1 - f.hand
 	local size = if f.press > 0 then 0.42 else 0.48
@@ -422,6 +420,8 @@ local function showHowTo()
 	end
 	howToShowing = true
 	howToDone = true
+	Icons.draw("HeartOutline", p.howOutline)
+	Icons.draw("HeartFilled", p.howFilled)
 	Icons.draw("TapDot", p.howHand)
 	Icons.draw("RingPuff", p.howRing)
 	local started = os.clock()
@@ -520,11 +520,16 @@ function GiftCard.build(root: Instance): Frame
 	howThumb.AnchorPoint = Vector2.new(0.5, 0.5)
 	howThumb.Position = UDim2.fromScale(0.45, 0.45)
 	howThumb.Size = UDim2.fromScale(0.62, 0.62)
+	local howOutline = frame("Outline", howThumb)
+	howOutline.Size = UDim2.fromScale(1, 1)
+	local howFilled = frame("Filled", howThumb)
+	howFilled.Size = UDim2.fromScale(1, 1)
+	howFilled.Visible = false
 	local howRing = frame("Ring", howArt)
 	howRing.AnchorPoint = Vector2.new(0.5, 0.5)
 	howRing.Position = UDim2.fromScale(0.55, 0.55)
 	howRing.ZIndex = 2
-	local howHand = frame("Hand", howArt)
+	local howHand = frame("Tap", howArt) -- the tap dot (no hands)
 	howHand.AnchorPoint = Vector2.new(0.5, 0.5)
 	howHand.ZIndex = 3
 	local howCaption = words("Caption", howTo, 17)
@@ -590,6 +595,8 @@ function GiftCard.build(root: Instance): Frame
 		howTo = howTo,
 		howArt = howArt,
 		howThumb = howThumb,
+		howOutline = howOutline,
+		howFilled = howFilled,
 		howHand = howHand,
 		howRing = howRing,
 		howCaption = howCaption,
