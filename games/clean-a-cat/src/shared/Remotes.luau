@@ -77,6 +77,8 @@ Remotes.ClientToServer = {
 	"RequestGiftCheck", -- ()  1 every 2 s; switches on: asks Roblox whether the player is in the group, shown as GiftGroup
 	"RequestGiftClaim", -- ()  1 every 2 s; switches on, save loaded, the stand lit for this player, the favourite saved
 	-- and the player in the group (asked again on the server): gives Starcoat once and writes the save
+	"VerifyGroup", -- ()  switch groupVerify, one answered tap per 10 s (else GroupVerify "wait"): the server asks Roblox
+	-- whether the player is in the group; on a join, the stand's gift and 150 coins, each once per save (issue 1111)
 	-- Free Rewards rows on the gift card (FreeRewardService, behind freeRewards, giftStand and pets).
 	"ReportAsk", -- (id: string, answer: "yes" | "no" | "closed" | nil)  2 a second; an AskRules id the queue showed
 	-- (answer nil) or that was answered: logged as ask_shown / ask_answered, at most 60 a visit (AskReportService)
