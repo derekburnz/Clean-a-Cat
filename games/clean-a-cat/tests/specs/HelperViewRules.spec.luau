@@ -68,5 +68,19 @@ return function()
 			expect(rows[2].mode).to.equal(WorkerRules.DEFAULT_MODE)
 			expect(rows[2].name).to.equal("Sam")
 		end)
+
+		it("finds the pet beside a helper, first slot first", function()
+			local pets: { HelperViewRules.Pet } = {
+				{ id = 1, kind = "Pebble", star = 1, slot = "Jo2" },
+				{ id = 2, kind = "Koi", star = 2, slot = "Jo1" },
+				{ id = 3, kind = "Coral", star = 1, slot = "Sam2" },
+				{ id = 4, kind = "Nimbus", star = 1 },
+			}
+			local jo = HelperViewRules.petOf("Jo", pets)
+			expect(jo and jo.kind).to.equal("Koi")
+			local sam = HelperViewRules.petOf("Sam", pets)
+			expect(sam and sam.kind).to.equal("Coral")
+			expect(HelperViewRules.petOf("Lou", pets)).to.equal(nil)
+		end)
 	end)
 end
