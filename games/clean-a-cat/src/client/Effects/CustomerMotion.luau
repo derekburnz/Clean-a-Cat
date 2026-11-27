@@ -440,12 +440,9 @@ function CustomerMotion.atRest(model: Model, fn: () -> ())
 	local armIn = rig.armIn
 	rig.armIn = 0
 	apply(rig, restPose)
-	local ok, err = pcall(fn)
+	fn() -- the caller keeps it from erroring (CustomerLeave clones inside its own pcall)
 	rig.armIn = armIn
 	apply(rig, rig.pose)
-	if not ok then
-		error(err, 0)
-	end
 end
 
 -- With streaming on, a customer's joints can arrive after the Model; a late one rebuilds the rig from rest.
