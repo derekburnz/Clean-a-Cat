@@ -1100,6 +1100,16 @@ local SCENES = {
 			UI.open("Pets")
 		end,
 	},
+	-- The Helpers window with windowClear (issue 1038): the badge inside the title band, the HUD's buttons aside.
+	{
+		"HelpersClear",
+		function()
+			hud(true)
+			flag("helpersWindow", true)
+			flag("windowClear", true)
+			UI.open("Helpers")
+		end,
+	},
 	{
 		"PetsEmpty",
 		function()
@@ -1428,6 +1438,7 @@ function Scenes.close()
 	flag("launchSale", false)
 	flag("menuOnly", false)
 	UI.setCanReset(false)
+	flag("windowClear", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
 	flag("likeHowTo", false)
