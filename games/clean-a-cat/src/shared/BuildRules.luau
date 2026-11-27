@@ -13,6 +13,9 @@
 -- of play instead of 8 to 15; the Garden makes the tip jar hold 12 h and fill 25% faster. While dirtLevels is on too,
 -- the Brush Table, Dryer, Bubble Bath and Pawdicure leave the board, stop standing in the plot and stop paying.
 -- Every read of an item goes through BuildRules.item(id, isOn), which gives the VIP Room its new price and time.
+-- With the switch noVipRoom on (issue 1063, Derek 2026-11-27: "remove the vip room entirely"), the VIP Room is out of
+-- the game: not on the board or in the Build window, no special visitor boost, and its door is walled in
+-- (StationService). A save that built it keeps it in `stations`, so the switch going off gives it back.
 --
 -- A finished build is saved as save.stations[id] = true. These ids are the only station keys in the save; the
 -- tub and the hand brush are there from the start (CatRules.STARTING_STATIONS) and never saved.
@@ -93,6 +96,7 @@ BuildRules.ITEMS = table.freeze({
 		seconds = 8 * 3600,
 		requires = "Dryer",
 		payBonus = 0,
+		hiddenWhen = table.freeze({ "noVipRoom" }), -- issue 1063: out of the game, paid back once (oldRefund)
 	}) :: Item,
 	SecondTub = tub("Second Tub", 60, 15), -- 60 coins, about cat 5 (Design, #660); must stay 15 s or less: Finish now hides under 15 s left (issue 531)
 	ThirdTub = tub("Third Tub", 1000, 30 * 60, "SecondTub"),
@@ -221,9 +225,40 @@ function BuildRules.shown(id: string, isOn: IsOn): boolean
 	return true
 end
 
+-- Whether switches have taken item `id` out of the game: it has hiddenWhen switches and all of them are on.
+local function takenOut(id: string, isOn: IsOn): boolean
+	local hidden = BuildRules.ITEMS[id] and BuildRules.ITEMS[id].hiddenWhen
+	if hidden == nil then
+		return false
+	end
+	for _, flag in hidden do
+		if not isOn(flag) then
+			return false
+		end
+	end
+	return true
+end
+
+-- Running builds of items switches have taken out of the game (the VIP Room's 12 hours under noVipRoom, issue 1063)
+-- end now: each counts as built, so oldRefund pays it back, and the builder is free at once instead of held by a
+-- build nobody can see. Gives the ids it ended.
+function BuildRules.endTakenOut(state: State, isOn: IsOn): { string }
+	local ended: { string } = {}
+	for _, slot in BuildRules.SLOTS do
+		local build = state.builds[slot]
+		if build and takenOut(build.item, isOn) then
+			state.stations[build.item] = true
+			state.builds[slot] = nil
+			table.insert(ended, build.item)
+		end
+	end
+	return ended
+end
+
 -- Coins owed back for builds a save paid for that switches have since taken out of the game (every hiddenWhen switch
 -- on: the Brush
--- Table, Dryer, Bubble Bath and Pawdicure once tubBuilds and dirtLevels are both on; Review-QA on PR 581): each one
+-- Table, Dryer, Bubble Bath and Pawdicure once tubBuilds and dirtLevels are both on; Review-QA on PR 581; the VIP Room
+-- under noVipRoom, issue 1063): each one
 -- built and not refunded before pays back its board price, once. Gives the coins and the ids to mark refunded. The
 -- station stays in `stations`, so turning a switch back off gives it back as it was. Pure.
 function BuildRules.oldRefund(
@@ -248,7 +283,8 @@ function BuildRules.oldRefund(
 			end
 		end
 		if out then
-			coins += item.price
+			-- its price as the switches made it (a VIP Room bought under tubBuilds cost 15000)
+			coins += (BuildRules.item(id, isOn) :: Item).price
 			table.insert(ids, id)
 		end
 	end
@@ -414,7 +450,9 @@ end
 
 -- Whether the tubBuilds VIP Room is built: it brings special visitors more often.
 function BuildRules.hasVip(stations: { [string]: boolean }, isOn: IsOn): boolean
-	return stations.VipRoom == true and isOn(BuildRules.TUBS_FLAG)
+	return stations.VipRoom == true
+		and isOn(BuildRules.TUBS_FLAG)
+		and BuildRules.shown("VipRoom", isOn)
 end
 
 -- The tip jar (issue 517) with the Garden built: hours it holds and how much faster it fills; 8 h and 1 without.

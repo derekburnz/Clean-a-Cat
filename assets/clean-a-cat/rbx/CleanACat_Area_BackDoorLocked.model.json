@@ -756,7 +756,7 @@
        "CFrame": {
         "position": [
          0.0,
-         4.5,
+         4.7,
          -0.92
         ],
         "orientation": [
@@ -780,13 +780,13 @@
       },
       "Size": [
        8.2735,
-       0.62,
-       0.05
+       0.7,
+       0.06
       ],
       "Color": [
-       0.9647,
-       0.8745,
-       0.6275
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -804,19 +804,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         2.6222,
-         7.0778,
+         2.3053,
+         6.9662,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -828,56 +828,7 @@
        }
       },
       "Size": [
-       0.26,
-       0.62,
-       0.03
-      ],
-      "Color": [
-       0.2118,
-       0.2353,
-       0.298
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Area_BackDoorLocked_Decor",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         1.9667,
-         6.4333,
-         -0.955
-        ],
-        "orientation": [
-         [
-          0.9844,
-          -0.1759,
-          0.0
-         ],
-         [
-          0.1759,
-          0.9844,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -902,19 +853,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.3111,
-         5.7889,
+         1.729,
+         6.3997,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -926,7 +877,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -951,19 +902,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.6556,
-         5.1444,
+         1.1526,
+         5.8331,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -975,7 +926,56 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
+       0.62,
+       0.03
+      ],
+      "Color": [
+       0.2118,
+       0.2353,
+       0.298
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.5763,
+         5.2666,
+         -0.955
+        ],
+        "orientation": [
+         [
+          0.9619,
+          -0.2733,
+          0.0
+         ],
+         [
+          0.2733,
+          0.9619,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.28,
        0.62,
        0.03
       ],
@@ -1001,18 +1001,18 @@
        "CFrame": {
         "position": [
          0.0,
-         4.5,
+         4.7,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -1024,7 +1024,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1049,19 +1049,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.6556,
-         3.8556,
+         -0.5763,
+         4.1334,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -1073,7 +1073,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1098,19 +1098,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.3111,
-         3.2111,
+         -1.1526,
+         3.5669,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -1122,7 +1122,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1147,19 +1147,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.9667,
-         2.5667,
+         -1.729,
+         3.0003,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -1171,7 +1171,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1196,19 +1196,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -2.6222,
-         1.9222,
+         -2.3053,
+         2.4338,
          -0.955
         ],
         "orientation": [
          [
-          0.9844,
-          -0.1759,
+          0.9619,
+          -0.2733,
           0.0
          ],
          [
-          0.1759,
-          0.9844,
+          0.2733,
+          0.9619,
           0.0
          ],
          [
@@ -1220,7 +1220,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1246,18 +1246,67 @@
        "CFrame": {
         "position": [
          2.95,
-         7.4,
-         -0.98
+         7.6,
+         -0.95
         ],
         "orientation": [
          [
-          0.7074,
-          -0.7068,
+          0.7131,
+          -0.701,
           0.0
          ],
          [
-          0.7068,
-          0.7074,
+          0.701,
+          0.7131,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.42,
+       0.86,
+       0.2
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         2.95,
+         7.6,
+         -0.97
+        ],
+        "orientation": [
+         [
+          0.7131,
+          -0.701,
+          0.0
+         ],
+         [
+          0.701,
+          0.7131,
           0.0
          ],
          [
@@ -1270,13 +1319,13 @@
       },
       "Size": [
        0.5,
-       0.5,
-       0.05
+       0.3,
+       0.2
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -1295,18 +1344,67 @@
        "CFrame": {
         "position": [
          -2.95,
-         1.6,
-         -0.98
+         1.8,
+         -0.95
         ],
         "orientation": [
          [
-          0.7074,
-          -0.7068,
+          0.7131,
+          -0.701,
           0.0
          ],
          [
-          0.7068,
-          0.7074,
+          0.701,
+          0.7131,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.42,
+       0.86,
+       0.2
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -2.95,
+         1.8,
+         -0.97
+        ],
+        "orientation": [
+         [
+          0.7131,
+          -0.701,
+          0.0
+         ],
+         [
+          0.701,
+          0.7131,
           0.0
          ],
          [
@@ -1319,13 +1417,13 @@
       },
       "Size": [
        0.5,
-       0.5,
-       0.05
+       0.3,
+       0.2
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -1344,7 +1442,7 @@
        "CFrame": {
         "position": [
          0.0,
-         4.9,
+         4.7,
          -1.01
         ],
         "orientation": [
@@ -1368,13 +1466,13 @@
       },
       "Size": [
        8.2735,
-       0.62,
-       0.05
+       0.7,
+       0.06
       ],
       "Color": [
-       0.9647,
-       0.8745,
-       0.6275
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -1392,19 +1490,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         2.6222,
-         2.3222,
+         2.3053,
+         2.4338,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1416,56 +1514,7 @@
        }
       },
       "Size": [
-       0.26,
-       0.62,
-       0.03
-      ],
-      "Color": [
-       0.2118,
-       0.2353,
-       0.298
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Area_BackDoorLocked_Decor",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         1.9667,
-         2.9667,
-         -1.045
-        ],
-        "orientation": [
-         [
-          0.1927,
-          0.9813,
-          0.0
-         ],
-         [
-          -0.9813,
-          0.1927,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1490,19 +1539,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         1.3111,
-         3.6111,
+         1.729,
+         3.0003,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1514,7 +1563,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1539,19 +1588,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         0.6556,
-         4.2556,
+         1.1526,
+         3.5669,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1563,7 +1612,56 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
+       0.62,
+       0.03
+      ],
+      "Color": [
+       0.2118,
+       0.2353,
+       0.298
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.5763,
+         4.1334,
+         -1.045
+        ],
+        "orientation": [
+         [
+          0.2897,
+          0.9571,
+          0.0
+         ],
+         [
+          -0.9571,
+          0.2897,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.28,
        0.62,
        0.03
       ],
@@ -1589,18 +1687,18 @@
        "CFrame": {
         "position": [
          0.0,
-         4.9,
+         4.7,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1612,7 +1710,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1637,19 +1735,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.6556,
-         5.5444,
+         -0.5763,
+         5.2666,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1661,7 +1759,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1686,19 +1784,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.3111,
-         6.1889,
+         -1.1526,
+         5.8331,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1710,7 +1808,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1735,19 +1833,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -1.9667,
-         6.8333,
+         -1.729,
+         6.3997,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1759,7 +1857,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1784,19 +1882,19 @@
       "CFrame": {
        "CFrame": {
         "position": [
-         -2.6222,
-         7.4778,
+         -2.3053,
+         6.9662,
          -1.045
         ],
         "orientation": [
          [
-          0.1927,
-          0.9813,
+          0.2897,
+          0.9571,
           0.0
          ],
          [
-          -0.9813,
-          0.1927,
+          -0.9571,
+          0.2897,
           0.0
          ],
          [
@@ -1808,7 +1906,7 @@
        }
       },
       "Size": [
-       0.26,
+       0.28,
        0.62,
        0.03
       ],
@@ -1834,18 +1932,67 @@
        "CFrame": {
         "position": [
          2.95,
-         2.0,
-         -1.07
+         1.8,
+         -1.04
         ],
         "orientation": [
          [
-          0.7074,
-          -0.7068,
+          0.7131,
+          0.701,
           0.0
          ],
          [
-          0.7068,
-          0.7074,
+          -0.701,
+          0.7131,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.42,
+       0.86,
+       0.2
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         2.95,
+         1.8,
+         -1.06
+        ],
+        "orientation": [
+         [
+          0.7131,
+          0.701,
+          0.0
+         ],
+         [
+          -0.701,
+          0.7131,
           0.0
          ],
          [
@@ -1858,13 +2005,13 @@
       },
       "Size": [
        0.5,
-       0.5,
-       0.05
+       0.3,
+       0.2
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -1883,18 +2030,67 @@
        "CFrame": {
         "position": [
          -2.95,
-         7.8,
-         -1.07
+         7.6,
+         -1.04
         ],
         "orientation": [
          [
-          0.7074,
-          -0.7068,
+          0.7131,
+          0.701,
           0.0
          ],
          [
-          0.7068,
-          0.7074,
+          -0.701,
+          0.7131,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.42,
+       0.86,
+       0.2
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -2.95,
+         7.6,
+         -1.06
+        ],
+        "orientation": [
+         [
+          0.7131,
+          0.701,
+          0.0
+         ],
+         [
+          -0.701,
+          0.7131,
           0.0
          ],
          [
@@ -1907,19 +2103,215 @@
       },
       "Size": [
        0.5,
-       0.5,
-       0.05
+       0.3,
+       0.2
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
       "CanCollide": false,
       "CanTouch": false,
       "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         4.7,
+         -1.13
+        ],
+        "orientation": [
+         [
+          0.7071,
+          -0.7071,
+          0.0
+         ],
+         [
+          0.7071,
+          0.7071,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.74,
+       1.74,
+       0.06
+      ],
+      "Color": [
+       0.2118,
+       0.2353,
+       0.298
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         4.7,
+         -1.18
+        ],
+        "orientation": [
+         [
+          0.7071,
+          -0.7071,
+          0.0
+         ],
+         [
+          0.7071,
+          0.7071,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.46,
+       1.46,
+       0.08
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         4.86,
+         -1.235
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.22,
+       0.62,
+       0.04
+      ],
+      "Color": [
+       0.2118,
+       0.2353,
+       0.298
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         4.32,
+         -1.235
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.22,
+       0.22,
+       0.04
+      ],
+      "Color": [
+       0.2118,
+       0.2353,
+       0.298
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
@@ -2182,13 +2574,13 @@
         ],
         "orientation": [
          [
-          0.8253,
-          0.5646,
+          0.8776,
+          0.4794,
           0.0
          ],
          [
-          -0.5646,
-          0.8253,
+          -0.4794,
+          0.8776,
           0.0
          ],
          [
@@ -2200,14 +2592,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.6,
+       0.3,
+       0.56,
        0.06
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2231,13 +2623,13 @@
         ],
         "orientation": [
          [
-          0.8253,
-          0.5646,
+          0.8776,
+          0.4794,
           0.0
          ],
          [
-          -0.5646,
-          0.8253,
+          -0.4794,
+          0.8776,
           0.0
          ],
          [
@@ -2249,14 +2641,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.6,
+       0.3,
+       0.56,
        0.06
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2280,13 +2672,13 @@
         ],
         "orientation": [
          [
-          0.8253,
-          0.5646,
+          0.8776,
+          0.4794,
           0.0
          ],
          [
-          -0.5646,
-          0.8253,
+          -0.4794,
+          0.8776,
           0.0
          ],
          [
@@ -2298,14 +2690,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.6,
+       0.3,
+       0.56,
        0.06
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2329,13 +2721,13 @@
         ],
         "orientation": [
          [
-          0.8253,
-          0.5646,
+          0.8776,
+          0.4794,
           0.0
          ],
          [
-          -0.5646,
-          0.8253,
+          -0.4794,
+          0.8776,
           0.0
          ],
          [
@@ -2347,14 +2739,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.6,
+       0.3,
+       0.56,
        0.06
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2378,13 +2770,13 @@
         ],
         "orientation": [
          [
-          0.8253,
-          0.5646,
+          0.8776,
+          0.4794,
           0.0
          ],
          [
-          -0.5646,
-          0.8253,
+          -0.4794,
+          0.8776,
           0.0
          ],
          [
@@ -2396,14 +2788,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.6,
+       0.3,
+       0.56,
        0.06
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2427,13 +2819,13 @@
         ],
         "orientation": [
          [
-          0.8253,
-          0.5646,
+          0.8776,
+          0.4794,
           0.0
          ],
          [
-          -0.5646,
-          0.8253,
+          -0.4794,
+          0.8776,
           0.0
          ],
          [
@@ -2445,14 +2837,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.6,
+       0.3,
+       0.56,
        0.06
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2476,13 +2868,13 @@
         ],
         "orientation": [
          [
-          0.8253,
-          0.5646,
+          0.8776,
+          0.4794,
           0.0
          ],
          [
-          -0.5646,
-          0.8253,
+          -0.4794,
+          0.8776,
           0.0
          ],
          [
@@ -2494,14 +2886,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.6,
+       0.3,
+       0.56,
        0.06
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2510,6 +2902,105 @@
       "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.95,
+         2.835,
+         -1.75
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.5,
+       0.34,
+       0.36
+      ],
+      "Color": [
+       0.949,
+       0.7569,
+       0.3059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Area_BackDoorLocked_Decor",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         1.95,
+         3.0,
+         -1.75
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.52,
+       0.52,
+       0.52
+      ],
+      "Color": [
+       0.9412,
+       0.5882,
+       0.251
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
      }
     },
     {
@@ -2745,9 +3236,9 @@
        0.76
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9647,
+       0.8745,
+       0.6275
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2795,9 +3286,9 @@
        0.78
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9647,
+       0.8745,
+       0.6275
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2845,9 +3336,9 @@
        0.08
       ],
       "Color": [
-       1.0,
-       0.702,
-       0.7804
+       0.9647,
+       0.8745,
+       0.6275
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3733,9 +4224,9 @@
        0.9
       ],
       "Color": [
-       0.949,
-       0.7216,
-       0.5412
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3782,9 +4273,9 @@
        0.6233
       ],
       "Color": [
-       0.949,
-       0.7216,
-       0.5412
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3832,9 +4323,9 @@
        0.43
       ],
       "Color": [
-       0.949,
-       0.7216,
-       0.5412
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3882,9 +4373,9 @@
        0.2367
       ],
       "Color": [
-       0.949,
-       0.7216,
-       0.5412
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4032,9 +4523,9 @@
        0.2
       ],
       "Color": [
-       0.949,
-       0.7216,
-       0.5412
+       0.9412,
+       0.5882,
+       0.251
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
