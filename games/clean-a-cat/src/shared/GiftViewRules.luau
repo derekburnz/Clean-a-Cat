@@ -183,11 +183,14 @@ function GiftViewRules.isBoard(state: State): boolean
 end
 
 -- (groupVerify) What the verified join gives, in words: "150 coins and the Starcoat" (or a gift crate), without the
--- coins once they were paid.
+-- coins once they were paid, and only the coins when the gift is already theirs (a save that took the gift before
+-- groupVerify: the server keeps it at stage 1 with GiftClaimed true, PR 1120).
 function GiftViewRules.boardReward(state: State, crate: boolean?): string
 	local gift = if crate then "a gift crate" else `the {GiftViewRules.PET}`
 	if state.coinsPaid then
 		return gift
+	elseif state.claimed then
+		return `{FreeRewardRules.LIKE_COINS} coins`
 	end
 	return `{FreeRewardRules.LIKE_COINS} coins and {gift}`
 end
@@ -329,6 +332,9 @@ function GiftViewRules.prize(state: State, crate: boolean?): Prize
 			name = if crate then GiftViewRules.CRATE else GiftViewRules.PET,
 			line = if state.coinsPaid
 				then (if crate then GiftViewRules.CRATE_LINE else GiftViewRules.PET_LINE)
+				elseif
+					state.claimed
+				then `Yours already. Join for {FreeRewardRules.LIKE_COINS} coins`
 				else `Plus {FreeRewardRules.LIKE_COINS} coins, for joining the group`,
 		}
 	end
