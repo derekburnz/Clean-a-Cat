@@ -4,7 +4,8 @@
 -- second customer: the server sets the Player attribute ChanceBoardLit once a customer has been served, so the
 -- first customer, who is always common, never contradicts it. The chances are those of the player's star tier
 -- (Player attribute CatRules.TIER_ATTRIBUTE, set by the server from the same table its rolls use); the board is
--- drawn again when the tier goes up. Behind the LiveFlags switch `customers`.
+-- drawn again when the tier goes up. Behind the LiveFlags switch `customers`. With `noVisitBoard` on it is not drawn
+-- at all (Derek, 2026-11-27: "it adds clutter"; issue 1021); the same chances stay in the cat index.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -15,6 +16,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local FLAG = "customers"
+local HIDE_FLAG = "noVisitBoard"
 local LIT = "ChanceBoardLit"
 local BOARD_SIZE = Vector3.new(4, 4, 0.3) -- the placeholder, when the board model is missing
 local PROP_ASSET = "CleanACat_Prop_ChanceBoard" -- Model-Agent's board; its text goes on the part named Screen
@@ -102,7 +104,9 @@ local function build(tier: number): Instance
 end
 
 local function refresh()
-	local show = LiveFlags.isOn(FLAG) and Players.LocalPlayer:GetAttribute(LIT) == true
+	local show = LiveFlags.isOn(FLAG)
+		and not LiveFlags.isOn(HIDE_FLAG)
+		and Players.LocalPlayer:GetAttribute(LIT) == true
 	local tier = CatRules.cleanTier(Players.LocalPlayer:GetAttribute(CatRules.TIER_ATTRIBUTE))
 	if board and (not show or tier ~= shownTier) then
 		board:Destroy()
@@ -120,6 +124,8 @@ function ChanceBoardController.Init(_controllers: { [string]: any }) end
 
 function ChanceBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. HIDE_FLAG)
+		:Connect(refresh)
 	Players.LocalPlayer:GetAttributeChangedSignal(LIT):Connect(refresh)
 	Players.LocalPlayer:GetAttributeChangedSignal(CatRules.TIER_ATTRIBUTE):Connect(refresh)
 	-- The plot placed or taken away: the board is drawn again at its spot.
