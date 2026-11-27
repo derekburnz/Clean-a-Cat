@@ -380,10 +380,6 @@ local function catOf(staff: Model): Model?
 	return if found and found:IsA("Model") then found :: Model else nil
 end
 
-local function approach(from: number, to: number, rate: number, dt: number): number
-	return to + (from - to) * math.exp(-rate * dt)
-end
-
 -- The cat's coat under spot (u, v) on the helper's side (see Target): a ray straight down onto the cat, else the top
 -- of its box there.
 local function coatAt(

@@ -88,7 +88,8 @@ type Rig = {
 	leanWritten: number, -- the lean last written to the torso parts
 	torso: { { part: BasePart, offset: CFrame } }, -- staff: the torso's other parts, in the Body part's frame
 	hip: CFrame, -- the lean's pivot in the Body part's frame: the bottom of the torso
-	grips: { [boolean]: CFrame | false }, -- each hand's Grip in its arm's pivot frame (true: left), found once
+	grips: { [string]: CFrame }, -- each hand's Grip in its arm's pivot frame, by arm key, found once
+	noGrip: { [string]: boolean }, -- arms looked at that have no Grip
 	reach: HelperWash.Reach?, -- staff: their forward reach for HelperWash's solve
 }
 
@@ -280,6 +281,7 @@ local function attach(model: Model)
 		torso = torso,
 		hip = CFrame.new(0, -body.Size.Y / 2, 0),
 		grips = {},
+		noGrip = {},
 		reach = nil,
 	}
 	local rig = rigs[model]
@@ -353,20 +355,21 @@ end
 
 -- A hand's Grip in its arm's pivot frame (the arm is rigid, so once is enough); nil when the arm has none.
 local function gripIn(rig: Rig, left: boolean): CFrame?
-	local found = rig.grips[left]
-	if found == nil then
-		local joint = rig.joints[if left then "ArmL" else "ArmR"]
+	local key = if left then "ArmL" else "ArmR"
+	local found = rig.grips[key]
+	if found == nil and not rig.noGrip[key] then
+		local joint = rig.joints[key]
 		local grip = if joint
 			then joint.instance:FindFirstChild(if left then "GripL" else "Grip", true)
 			else nil
 		if joint and grip and grip:IsA("Attachment") then
 			found = joint.instance:GetPivot():ToObjectSpace((grip :: Attachment).WorldCFrame)
+			rig.grips[key] = found
 		else
-			found = false
+			rig.noGrip[key] = true
 		end
-		rig.grips[left] = found
 	end
-	return if found then found :: CFrame else nil
+	return found
 end
 
 -- Where a hand's Grip would be with the waist leaned `lean` and that arm at `arm` and `side` (as apply turns it).
