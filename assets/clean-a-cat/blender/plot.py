@@ -112,6 +112,9 @@ SPOTS = {
     "SpotStation4": (-15.2, 1.0, 0.0, 90.0),     # a quarter turn: these two stand against the side wall and face
     "SpotStation5": (-15.2, -6.6, 0.0, 90.0),    # the room, so the cat on them faces the player (#298)
     "SpotVipDoor": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
+    # the Garden once the Cat Hotel has the back door (#1050): the side looks' pivot (garden.SIDE_NAMES), on the wall
+    # where the VIP door was; the way in is the hotel's side doorway
+    "SpotGardenSide": (7.0, ROOM_Y[1] + WALL_T / 2, 0.0, 0.0),
     "SpotMascot": (10.25, -14.3, 0.0, 230.0),
     "SpotOpening": (5.0, -27.0, 0.0, 0.0),
     "SpotBox": (0.0, -30.6, 0.0, 0.0),
@@ -677,7 +680,7 @@ def _big_spots():
         x, y, z, turn = s[name]
         s[name] = (x + dx, y + dy, z, turn)
 
-    for name in ("SpotVipDoor", "SpotGardenDoor", "SpotWorkerJo", "SpotWorkerSam", "SpotWorkerLou", "SpotBuilder"):
+    for name in ("SpotVipDoor", "SpotGardenSide", "SpotGardenDoor", "SpotWorkerJo", "SpotWorkerSam", "SpotWorkerLou", "SpotBuilder"):
         move(name, dy=grow_y)
     move("SpotStray", -grow_x, grow_y)
     move("SpotStation4", -grow_x)
