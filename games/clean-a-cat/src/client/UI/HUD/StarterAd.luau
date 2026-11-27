@@ -248,7 +248,8 @@ local function redraw()
 	local pet = heroName == StarterViewRules.PET_ICON
 	p.rays.Visible = pet
 	local moving = pet and calm and p.holder.Visible and not Comfort.reducedMotion()
-	if moving and shine == nil then
+	local running: RBXScriptConnection? = shine
+	if moving and not running then
 		local started = os.clock()
 		local glow, rays = p.glow, p.rays
 		shine = RunService.Heartbeat:Connect(function()
@@ -259,10 +260,9 @@ local function redraw()
 			local grow = 1.1 + 0.06 * wave
 			glow.Size = UDim2.fromScale(grow, grow)
 		end)
-	elseif not moving and shine ~= nil then
-		local was = shine
+	elseif not moving and running then
 		shine = nil
-		was:Disconnect()
+		running:Disconnect()
 	end
 	if not moving then
 		p.rays.Rotation = 0
@@ -477,7 +477,7 @@ function StarterAd.build(root: Instance, open: () -> ())
 		bar.BorderSizePixel = 0
 		bar.AnchorPoint = Vector2.new(0.5, 0.5)
 		bar.Position = UDim2.fromScale(0.5, 0.5)
-		bar.Size = UDim2.new(1.4, 0, 0.12, 0)
+		bar.Size = UDim2.fromScale(1.4, 0.12)
 		bar.Rotation = (index - 1) * 180 / RAY_COUNT
 		bar.BackgroundColor3 = Kit.GOLD
 		bar.BackgroundTransparency = 0.35
