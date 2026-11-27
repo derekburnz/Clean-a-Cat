@@ -11,7 +11,7 @@ No key is ever printed.
   KEY_GROUP, KEY_OWNER   the keys (the group key is tried first; either may be empty)
   UNIVERSE_ID, PLACE_ID  the experience and its start place (not secret)
   TARGET                 dev or live (live only on the owner's own word, as publishes and switches)
-  ACTION                 list | passes | products | server-size | store-art
+  ACTION                 list | passes | products | icons | server-size | store-art
   CONFIRM                "yes" to make or change anything
   ART_DIR                store-art: the folder with icon-main-512.png and thumbnail-order-1..4-*.png
   GROUP_ID               store-art: the group that owns the uploaded images
@@ -57,6 +57,25 @@ PRODUCTS = [
     # the words are set only when the product is made; with starterBuilder and starterPet on (issue 1097, 1090)
     ("StarterPack", "Spa Starter Pack", 199, "Midas the golden pet, Second pet slot, 2x Coins and Second Builder."),
 ]
+# The picture Roblox shows in the buy prompt for each pass and product (issue 1122, Model-Agent's PR 1126): 512 px PNGs
+# in ICON_DIR, set by the icons action after main's upload approval list has them (approved()).
+ICON_DIR = "assets/clean-a-cat/ui/icons/shop"
+ICONS = {
+    "DoubleCoins": "CleanACat_UI_Shop_Coins2x.png",
+    "TripleCoins": "CleanACat_UI_Shop_Coins3x.png",
+    "SecondBuilder": "CleanACat_UI_Shop_Builder2.png",
+    "GoldenSponge": "CleanACat_UI_Shop_GoldenSponge.png",
+    "Lou": "CleanACat_UI_Shop_ExtraWorker.png",
+    "SecondPetSlot": "CleanACat_UI_Shop_PetSlot2.png",
+    "FinishTier1": "CleanACat_UI_Shop_Finish1.png",
+    "FinishTier2": "CleanACat_UI_Shop_Finish2.png",
+    "FinishTier3": "CleanACat_UI_Shop_Finish3.png",
+    "FinishTier4": "CleanACat_UI_Shop_Finish4.png",
+    "FinishTier5": "CleanACat_UI_Shop_Finish5.png",
+    "CrateOne": "CleanACat_UI_Shop_Crate1.png",
+    "CrateFive": "CleanACat_UI_Shop_Crate5.png",
+    "StarterPack": "CleanACat_UI_Shop_StarterPet.png",
+}
 SERVER_SIZE = 6
 MAX_PAGES = 20
 
@@ -287,6 +306,55 @@ def set_prices(kind, wanted, keys, universe, confirm, summary, sale):
     return ok
 
 
+def set_icons(kind, wanted, keys, universe, confirm, summary):
+    """Sets the buy prompt picture of each made pass or product from ICONS (issue 1122). Every file must pass
+    approved() first; nothing is sent unless all of this kind's files do. A pass or product not made yet is skipped."""
+    path = "game-passes/v1" if kind == "passes" else "developer-products/v2"
+    noun = "game-passes" if kind == "passes" else "developer-products"
+    base = f"{API}/{path}/universes/{universe}/{noun}"
+    files = []
+    for entry in wanted:
+        icon = ICONS.get(entry[0])
+        if icon is None:
+            summary.append(f"skip {entry[1]}: no picture listed in ICONS")
+            continue
+        file = os.path.join(ICON_DIR, icon)
+        if not os.path.isfile(file):
+            summary.append(f"FAILED {entry[1]}: {file} is missing")
+            return False
+        files.append((entry, file))
+    if not approved([file for _, file in files], summary):
+        return False
+    label, key, status, first = pick_key(keys, lambda k: list_all(k, base + "/creator")[0:3:2])
+    if key is None:
+        summary.append(f"Cannot list {kind}: HTTP {status}: {short(first)}")
+        return False
+    _, have, _ = list_all(key, base + "/creator")
+    names = {name.strip().lower(): (name, ident, price) for name, ident, price in have}
+    summary.append(f"Using {label}. {kind}: buy prompt pictures from {ICON_DIR}")
+    ok = True
+    for entry, file in files:
+        name = entry[1]
+        there = names.get(name.lower())
+        if not there:
+            summary.append(f"skip {name}: not made on this experience yet")
+            continue
+        if confirm != "yes":
+            summary.append(f"would set the picture of {name} (id {there[1]}) to {os.path.basename(file)}")
+            continue
+        with open(file, "rb") as fh:
+            blob = fh.read()
+        body, ctype = multipart([], [("imageFile", os.path.basename(file), "image/png", blob)])
+        status, answer = request("PATCH", f"{base}/{there[1]}", key, body, ctype)
+        time.sleep(1)
+        if status in (200, 204):
+            summary.append(f"set the picture of {name} (id {there[1]}) to {os.path.basename(file)} (HTTP {status})")
+        else:
+            summary.append(f"FAILED the picture of {name} (id {there[1]}): HTTP {status}: {short(answer)}")
+            ok = False
+    return ok
+
+
 def server_size(keys, universe, place, confirm, summary):
     url = f"{API}/cloud/v2/universes/{universe}/places/{place}"
     label, key, status, now = pick_key(keys, lambda k: request("GET", url, k))
@@ -470,6 +538,9 @@ def main():
         sale = action == "sale-prices"
         ok = set_prices("passes", PASSES, keys, universe, confirm, summary, sale)
         ok = set_prices("products", PRODUCTS, keys, universe, confirm, summary, sale) and ok
+    elif action == "icons":
+        ok = set_icons("passes", PASSES, keys, universe, confirm, summary)
+        ok = set_icons("products", PRODUCTS, keys, universe, confirm, summary) and ok
     elif action == "server-size":
         ok = server_size(keys, universe, place, confirm, summary)
     elif action == "description":
