@@ -28,10 +28,10 @@ local wanted: { [Instance]: boolean } = {} -- each item switched off here, with 
 local tags: { [Humanoid]: Enum.HumanoidDisplayDistanceType } = {} -- each name tag switched off, with its setting
 local watch: { RBXScriptConnection } = {}
 local active = false
-local keepFn: Keep = function()
+local keepFn: Keep = function(_item: Instance)
 	return false
 end
-local roomFn: InRoom = function()
+local roomFn: InRoom = function(_point: Vector3)
 	return false
 end
 
