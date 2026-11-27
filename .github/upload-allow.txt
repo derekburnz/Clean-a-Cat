@@ -17,3 +17,4 @@ edd4dbef006a3179ad51481bd68b33f7856095bc59acf056d6c52580d184a88a  assets/clean-a
 ea343a0c03a0845172f8051f346f6ed4c6f91f6b428fe572d7f92379beacdeb4  assets/clean-a-cat/ui/icons/shop/CleanACat_UI_Shop_PetSlot2.png
 8601ae110b326f9f22038fd363cc364b5fc28b27325827f635242a608813aa2c  assets/clean-a-cat/ui/icons/shop/CleanACat_UI_Shop_StarterPet.png
 5c9c75d36195280178fd55a6541232bc411fc6e3ccb774489cbcddacded30a86  assets/clean-a-cat/ui/icons/portraits/CleanACat_UI_Portrait_Pet_Midas.png
+d5ab954d4adbd7dd3b609605a9663e0d3a60db0e3699d3488e330e02ca4150ef  assets/clean-a-cat/ui/icons/hud/CleanACat_Icon_Hud_HelpersTeam.png
