@@ -8,20 +8,21 @@
    "CleanACat_Area_Backdrop_Ground",
    "CleanACat_Area_Backdrop_Dashes",
    "CleanACat_Area_Backdrop_Hills",
-   "CleanACat_Area_Backdrop_HillsFar"
+   "CleanACat_Area_Backdrop_HillsFar",
+   "CleanACat_Area_Backdrop_Peaks"
   ],
-  "triangles": 15228,
+  "triangles": 21496,
   "budget": 40000,
-  "parts": 505,
+  "parts": 696,
   "size_studs": {
-   "x": 1180.0,
-   "y": 749.67,
-   "z": 326.53
+   "x": 1492.56,
+   "y": 1006.38,
+   "z": 839.27
   },
   "size_roblox": [
-   1180.0,
-   326.53,
-   749.67
+   1492.56,
+   839.27,
+   1006.38
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -38,13 +39,13 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "15228/40000 tris",
+    "budget": "21496/40000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "9996 faces on swatch centers",
+    "uv": "15574 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-243.68 (want 0)",
-    "centered": "footprint center x=-22.00 y=-18.55",
+    "pivot": "floor at z=-677.95 (want 0)",
+    "centered": "footprint center x=-22.09 y=-15.46",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
@@ -60,20 +61,21 @@
    "CleanACat_Area_BackdropBig_Ground",
    "CleanACat_Area_BackdropBig_Dashes",
    "CleanACat_Area_BackdropBig_Hills",
-   "CleanACat_Area_BackdropBig_HillsFar"
+   "CleanACat_Area_BackdropBig_HillsFar",
+   "CleanACat_Area_BackdropBig_Peaks"
   ],
-  "triangles": 15228,
+  "triangles": 21244,
   "budget": 40000,
-  "parts": 505,
+  "parts": 698,
   "size_studs": {
-   "x": 1252.0,
-   "y": 755.67,
-   "z": 326.53
+   "x": 1571.54,
+   "y": 1006.38,
+   "z": 839.27
   },
   "size_roblox": [
-   1252.0,
-   326.53,
-   755.67
+   1571.54,
+   839.27,
+   1006.38
   ],
   "pivot": "base center (floor contact)",
   "front": "-Z in Roblox, the LookVector (Blender -Y)",
@@ -90,18 +92,71 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "15228/40000 tris",
+    "budget": "21244/40000 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "9996 faces on swatch centers",
+    "uv": "15408 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
-    "pivot": "floor at z=-243.68 (want 0)",
-    "centered": "footprint center x=-28.00 y=-15.55",
+    "pivot": "floor at z=-677.95 (want 0)",
+    "centered": "footprint center x=-26.75 y=-15.46",
     "qa": "blender-asset-qa clean",
     "qa_warn": "no qa warning outside the accepted kinds"
    }
   },
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_BackdropBig.png"
+ },
+ {
+  "name": "CleanACat_Area_BackdropWide",
+  "category": "Area",
+  "module": "backdrop",
+  "objects": [
+   "CleanACat_Area_BackdropWide",
+   "CleanACat_Area_BackdropWide_Ground",
+   "CleanACat_Area_BackdropWide_Dashes",
+   "CleanACat_Area_BackdropWide_Hills",
+   "CleanACat_Area_BackdropWide_HillsFar",
+   "CleanACat_Area_BackdropWide_Peaks"
+  ],
+  "triangles": 23232,
+  "budget": 40000,
+  "parts": 767,
+  "size_studs": {
+   "x": 1757.4,
+   "y": 1006.39,
+   "z": 839.27
+  },
+  "size_roblox": [
+   1757.4,
+   839.27,
+   1006.39
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "shared corners": 1,
+    "back to back": 2,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "23232/40000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "16630 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-677.95 (want 0)",
+    "centered": "footprint center x=-36.82 y=-15.46",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_BackdropWide.png"
  },
  {
   "name": "CleanACat_Area_Garden",
