@@ -326,6 +326,25 @@ local function drawGarden(
 	model.Parent = folder
 end
 
+-- (noVipRoom) The wall piece in the VIP door's opening, so the back wall has one door (issue 1063).
+local function drawVipFill(folder: Folder, assets: Instance, slot: number)
+	local asset = assets:FindFirstChild(SpaLayout.VIP_FILL_ASSET)
+	if asset == nil or not asset:IsA("Model") then
+		if not warned[SpaLayout.VIP_FILL_ASSET] then
+			warned[SpaLayout.VIP_FILL_ASSET] = true
+			warn(
+				`[StationService] {SpaLayout.VIP_FILL_ASSET} is missing from ReplicatedStorage.Assets`
+			)
+		end
+		return
+	end
+	local model = (asset :: Model):Clone() :: Model
+	model.Name = "VipDoorFill"
+	model:PivotTo(SpaLayout.slotSpot(SpaLayout.VIP_SPOT, slot))
+	anchorAll(model)
+	model.Parent = folder
+end
+
 -- (expansionDoor) The back door: the building site while locked, the open door once unlocked (issue 1041).
 local function drawBackDoor(folder: Folder, assets: Instance, slot: number, unlocked: boolean)
 	local assetName = if unlocked then ExpansionRules.OPEN_ASSET else ExpansionRules.LOCKED_ASSET
@@ -395,36 +414,41 @@ local function drawInto(
 		kittenBuild = running.room
 	end
 	drawKitten(folder, assets :: Instance, slot, kittenBuild)
-	-- The VIP Room door: locked, a building site while it builds, gone once built.
-	local vip = BuildRules.item(SpaLayout.VIP_ID, isOn) :: BuildRules.Item
-	local vipBuild = running[vip.slot]
-	local building = vipBuild ~= nil and vipBuild.item == SpaLayout.VIP_ID
-	if not save.stations[SpaLayout.VIP_ID] then
-		local doorName = if building
-			then SpaLayout.VIP_BUILDING_ASSET
-			else SpaLayout.VIP_LOCKED_ASSET
-		local door = (assets :: Instance):FindFirstChild(doorName)
-		if door and door:IsA("Model") then
-			local model = (door :: Model):Clone() :: Model
-			model.Name = SpaLayout.VIP_ID
-			model:SetAttribute("Built", false)
-			if building and vipBuild then
-				model:SetAttribute("EndsAt", vipBuild.endsAt)
+	-- noVipRoom (issue 1063): no VIP Room at all; its doorway is walled in by Model-Agent's fill piece
+	if not BuildRules.shown(SpaLayout.VIP_ID, isOn) then
+		drawVipFill(folder, assets :: Instance, slot)
+	else
+		-- The VIP Room door: locked, a building site while it builds, gone once built.
+		local vip = BuildRules.item(SpaLayout.VIP_ID, isOn) :: BuildRules.Item
+		local vipBuild = running[vip.slot]
+		local building = vipBuild ~= nil and vipBuild.item == SpaLayout.VIP_ID
+		if not save.stations[SpaLayout.VIP_ID] then
+			local doorName = if building
+				then SpaLayout.VIP_BUILDING_ASSET
+				else SpaLayout.VIP_LOCKED_ASSET
+			local door = (assets :: Instance):FindFirstChild(doorName)
+			if door and door:IsA("Model") then
+				local model = (door :: Model):Clone() :: Model
+				model.Name = SpaLayout.VIP_ID
+				model:SetAttribute("Built", false)
+				if building and vipBuild then
+					model:SetAttribute("EndsAt", vipBuild.endsAt)
+				end
+				model:PivotTo(SpaLayout.slotSpot(SpaLayout.VIP_SPOT, slot))
+				anchorAll(model)
+				if building and vipBuild then
+					buildingLabel(model, vip.name, vipBuild.endsAt)
+				else
+					label(model, vip.name, `{vip.price} coins`)
+				end
+				model.Parent = folder
+			elseif not warned[doorName] then
+				warned[doorName] = true
+				warn(`[StationService] {doorName} is missing from ReplicatedStorage.Assets`)
 			end
-			model:PivotTo(SpaLayout.slotSpot(SpaLayout.VIP_SPOT, slot))
-			anchorAll(model)
-			if building and vipBuild then
-				buildingLabel(model, vip.name, vipBuild.endsAt)
-			else
-				label(model, vip.name, `{vip.price} coins`)
-			end
-			model.Parent = folder
-		elseif not warned[doorName] then
-			warned[doorName] = true
-			warn(`[StationService] {doorName} is missing from ReplicatedStorage.Assets`)
+		elseif isOn(BuildRules.TUBS_FLAG) then
+			drawVipRoom(folder, assets :: Instance, slot, save.index)
 		end
-	elseif isOn(BuildRules.TUBS_FLAG) then
-		drawVipRoom(folder, assets :: Instance, slot, save.index)
 	end
 	local gardenBuilt = save.stations[GardenRules.ID] == true
 	local unlocked = ExpansionRules.isUnlocked(save.expansionUnlocked == true, gardenBuilt)

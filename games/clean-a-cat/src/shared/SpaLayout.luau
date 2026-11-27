@@ -168,6 +168,8 @@ SpaLayout.VIP_ID = "VipRoom"
 SpaLayout.VIP_SPOT = "SpotVipDoor"
 SpaLayout.VIP_LOCKED_ASSET = "CleanACat_Area_VipLocked"
 SpaLayout.VIP_BUILDING_ASSET = "CleanACat_Area_VipBuilding"
+-- noVipRoom (issue 1063): Model-Agent's wall piece that fills the VIP door's opening, inside and out
+SpaLayout.VIP_FILL_ASSET = "CleanACat_Area_VipDoorFill"
 -- The builder kitten (#20) stands beside the builder board at SpotBuilder, the toolbox beside it.
 SpaLayout.BUILDER_SPOT = "SpotBuilder"
 SpaLayout.KITTEN_OFFSET = Vector3.new(4, 0, 0) -- in the spot's frame

@@ -121,6 +121,12 @@ local function refundOld(player: Player)
 	if save == nil then
 		return
 	end
+	-- a VIP Room still building under noVipRoom ends now, so its coins come back and the builder is free
+	local ended = BuildRules.endTakenOut(stateOf(save), LiveFlags.isOn)
+	if #ended > 0 then
+		StationService.refresh(player)
+		send(player)
+	end
 	local coins, ids = BuildRules.oldRefund(save.stations, save.oldRefunds, LiveFlags.isOn)
 	if #ids == 0 then
 		return
@@ -130,7 +136,10 @@ local function refundOld(player: Player)
 	end
 	save.coins += coins
 	WalletService.show(player)
-	NetService.notice(player, `Your old stations made room for tubs: {coins} coins back`)
+	local text = if table.find(ids, "VipRoom")
+		then `The VIP Room has closed: {coins} coins back`
+		else `Your old stations made room for tubs: {coins} coins back`
+	NetService.notice(player, text)
 	Telemetry.economy(
 		player,
 		"coins",
@@ -290,7 +299,7 @@ function BuildService.Start()
 		end
 		refundOld(player)
 	end)
-	for _, flag in { BuildRules.TUBS_FLAG, DirtRules.FLAG } do
+	for _, flag in { BuildRules.TUBS_FLAG, DirtRules.FLAG, "noVipRoom" } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do
