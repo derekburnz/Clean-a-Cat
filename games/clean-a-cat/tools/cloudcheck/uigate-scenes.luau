@@ -1261,6 +1261,25 @@ local SCENES = {
 			flag("starterPet", true)
 		end,
 	},
+	-- starterFloat (issue 1119): no card, a bigger floating Midas with outlined words; then with no price known yet.
+	{
+		"HudStarterFloat",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+			flag("starterPet", true)
+			flag("starterFloat", true)
+		end,
+	},
+	{
+		"HudStarterFloatNoPrice",
+		function()
+			allButtons(false)
+			flag("starterCard", true)
+			flag("starterPet", true)
+			flag("starterFloat", true)
+		end,
+	},
 	-- starterNoClock (issue 1069): the starter ad's chip says "New player offer" instead of the time left.
 	{
 		"HudStarterNoClock",
