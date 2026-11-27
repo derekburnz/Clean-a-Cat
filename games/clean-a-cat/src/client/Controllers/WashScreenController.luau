@@ -56,7 +56,8 @@ local function wipe(onCovered: () -> ())
 			onCovered()
 		end
 	end
-	task.delay(COVER_TIMEOUT, once)
+	-- the wipe first waits for a photo card to print (BubbleWipe.holdFor, PR 938), so the fallback waits as long
+	task.delay(COVER_TIMEOUT + BubbleWipe.holdFor(), once)
 	local ok = pcall(BubbleWipe.play, once)
 	if not ok then
 		once()
