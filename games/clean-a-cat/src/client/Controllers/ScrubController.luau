@@ -52,6 +52,7 @@ local Trove = require(Shared:WaitForChild("Vendor"):WaitForChild("Trove"))
 local WashDraft = require(Shared:WaitForChild("WashDraft"))
 local WashMeter = require(Shared:WaitForChild("WashMeter"))
 local WashPace = require(Shared:WaitForChild("WashPace"))
+local WashSidesRules = require(Shared:WaitForChild("WashSidesRules"))
 
 local FLAG = "scrubPrototype"
 local TOOLS_FLAG = "toolsBoard" -- owned tools (Bubble Soap) widen the sponge only while this is on
@@ -184,6 +185,8 @@ type Visit = {
 	rinsing: boolean, -- (latherFoam) he is covered and the foam is rinsing off
 	rinsed: number, -- (washMeter) puffs the player has sprayed off in the rinse
 	popped: { [Model]: boolean }, -- (washMeter) those puffs
+	sides: { [string]: boolean }, -- (washSides) the steps whose half way turn has run
+	sideYaw: number, -- (washSides) radians he has turned from the front since the last step's shake
 	shaking: string?, -- (washMeter) the step whose full bar the cat is shaking off; input waits until it ends
 	held: string?, -- (washMeter) the full bar still shown after the shake until heldUntil (os.clock), or the next
 	heldUntil: number, -- step's first progress
@@ -354,10 +357,103 @@ function ScrubController.meter(): (number?, string?)
 	return if meterStep then meterFill else nil, meterStep
 end
 
+-- Turns the cat in the tub by `yaw` about the up axis through his pivot (the base centre), in TURN_TWEEN. The mud,
+-- tangles and fluff remember their positions, so those move with him; his foam puffs are parts of his model. A turn
+-- asked for while another runs waits for it. `v.sideYaw` keeps the sum, so washSides can turn him back to the front.
+local function turnBy(v: Visit, cat: Cat, yaw: number)
+	local model = cat.model
+	if turningCat == model then
+		task.spawn(function()
+			while turningCat == model do
+				task.wait()
+			end
+			if visit == v and v.cat == cat and model.Parent then
+				turnBy(v, cat, yaw)
+			end
+		end)
+		return
+	end
+	v.sideYaw += yaw
+	local pivot = model:GetPivot()
+	local centre = pivot.Position
+	local turn = CFrame.new(centre) * CFrame.Angles(0, yaw, 0) * CFrame.new(-centre)
+	for _, list in { cat.mud, cat.tangles, cat.fluff } do
+		for _, piece in list do
+			piece.position = turn * piece.position
+		end
+	end
+	local goal = turn * pivot
+	local alpha = Instance.new("NumberValue")
+	alpha.Changed:Connect(function(value: number)
+		if model.Parent then
+			model:PivotTo(pivot:Lerp(goal, value))
+		end
+	end)
+	turningCat = model
+	local tween = TweenService:Create(alpha, TURN_TWEEN, { Value = 1 })
+	tween.Completed:Connect(function()
+		if model.Parent then
+			model:PivotTo(goal)
+		end
+		alpha:Destroy()
+		if turningCat == model then
+			turningCat = nil
+		end
+	end)
+	tween:Play()
+end
+
+-- (washSides, issue 899) Half way through the scrub, the lather and the rinse the cat turns once, so the player
+-- works on another side: the hidden mud or foam comes round, the lather turns a quarter (WashSidesRules).
+local function turnSide()
+	local v = visit
+	local cat = if v then v.cat else nil
+	local camera = Workspace.CurrentCamera
+	if
+		v == nil
+		or cat == nil
+		or camera == nil
+		or v.shaking ~= nil
+		or turningCat ~= nil
+		or not LiveFlags.isOn(WashSidesRules.FLAG)
+		or not LiveFlags.isOn(WashMeter.FLAG)
+	then
+		return
+	end
+	local step, fill = workOf(v)
+	if step == nil or not WashSidesRules.due(step, fill, v.sides) then
+		return
+	end
+	v.sides[step] = true
+	local centre = cat.model:GetPivot().Position
+	local offsets: { Vector3 } = {}
+	if step == "scrub" then
+		for index, piece in cat.mud do
+			if not v.scrub.cleared[index] then
+				table.insert(offsets, piece.position - centre)
+			end
+		end
+	elseif step == "rinse" then
+		for _, puff in v.suds do
+			if not v.popped[puff] and puff.Parent then
+				table.insert(offsets, puff:GetPivot().Position - centre)
+			end
+		end
+	end
+	local yaw = WashSidesRules.yawFor(step, offsets, camera.CFrame.Position - centre)
+	if yaw then
+		turnBy(v, cat, yaw)
+	end
+end
+
 -- (washMeter) The bar of `step` is full: the cat shakes off what is left (Motion-FX's ShakeOff), the bar stays full
 -- for the shake, and `after` runs once it ends while this visit and cat still stand.
 local function shakeOff(v: Visit, cat: Cat, step: string, after: (() -> ())?)
 	v.shaking = step
+	-- (washSides) he turns back to the front as he shakes, so the next step starts facing the camera
+	if LiveFlags.isOn(WashSidesRules.FLAG) and math.abs(v.sideYaw) > 1e-3 then
+		turnBy(v, cat, -v.sideYaw)
+	end
 	v.held = step
 	v.heldUntil = os.clock() + WashMeter.HOLD_SECONDS
 	syncMeter(v)
@@ -1754,9 +1850,7 @@ local function turnToShow(v: Visit, cat: Cat)
 	then
 		return
 	end
-	local model = cat.model
-	local pivot = model:GetPivot()
-	local centre = pivot.Position
+	local centre = cat.model:GetPivot().Position
 	local offsets: { Vector3 } = {}
 	for index, piece in cat.mud do
 		if not v.scrub.cleared[index] then
@@ -1773,32 +1867,7 @@ local function turnToShow(v: Visit, cat: Cat)
 	if yaw == nil then
 		return
 	end
-	-- A turn about the up axis through the pivot (the base centre): the pieces' remembered positions move with it.
-	local turn = CFrame.new(centre) * CFrame.Angles(0, yaw, 0) * CFrame.new(-centre)
-	for _, list in { cat.mud, cat.tangles, cat.fluff } do
-		for _, piece in list do
-			piece.position = turn * piece.position
-		end
-	end
-	local goal = turn * pivot
-	local alpha = Instance.new("NumberValue")
-	alpha.Changed:Connect(function(value: number)
-		if model.Parent then
-			model:PivotTo(pivot:Lerp(goal, value))
-		end
-	end)
-	turningCat = model
-	local tween = TweenService:Create(alpha, TURN_TWEEN, { Value = 1 })
-	tween.Completed:Connect(function()
-		if model.Parent then
-			model:PivotTo(goal)
-		end
-		alpha:Destroy()
-		if turningCat == model then
-			turningCat = nil
-		end
-	end)
-	tween:Play()
+	turnBy(v, cat, yaw)
 end
 
 -- Studio only, for Sync-Agent's runs: a test sets the Workspace attribute TEST_STEP_ATTRIBUTE (from the server or the
@@ -2306,6 +2375,8 @@ local function buildVisit(folder: Folder): Visit
 		rinsing = false,
 		rinsed = 0,
 		popped = {},
+		sides = {},
+		sideYaw = 0,
 		shaking = nil,
 		held = nil,
 		heldUntil = 0,
@@ -2378,12 +2449,14 @@ local function enable()
 			-- walking while a finger scrubs.
 			if input == active then
 				onPointer(input)
+				turnSide() -- (washSides) half way, he turns to show another side
 			end
 		elseif
 			active.UserInputType == Enum.UserInputType.MouseButton1
 			and input.UserInputType == Enum.UserInputType.MouseMovement
 		then
 			onPointer(input)
+			turnSide()
 		end
 	end)
 	trove:Connect(UserInputService.InputEnded, function(input: InputObject)
@@ -2442,6 +2515,7 @@ local function enable()
 		local active = activeInput
 		if active and active.KeyCode == GAMEPAD_BUTTON then
 			onPointer(active)
+			turnSide()
 		end
 		-- the Pawdicure: a press held on a paw for CLAW_HOLD clips it
 		local v = visit

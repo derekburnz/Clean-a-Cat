@@ -120,6 +120,7 @@ local parts: Parts? = nil
 local pets: { CrateRules.Pet } = {}
 local hired: { [string]: boolean } = {}
 local picked = CrateRules.PLAYER_SLOT
+local pickOnOpen: string? = nil -- the slot the next open starts on (a helper's pet box in Helpers, issue 929)
 local secondSlot = false -- the Second pet slot pass (Pass_SecondPetSlot): two slots a row
 local placeListeners: { (id: number, slot: string?) -> () } = {}
 local names: { [string]: string } = {} -- helper id -> the name the server showed; the default when missing
@@ -363,7 +364,7 @@ local function drawSlot(
 	whoIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	whoIcon.Position = UDim2.fromScale(0.5, 0.5)
 	whoIcon.Size = UDim2.fromScale(0.7, 0.7)
-	Icons.draw(if row.locked then "Lock" elseif row.helper then "Helpers" else "Paw", whoIcon)
+	Icons.draw(if row.locked then "Lock" elseif row.helper then "Helper" else "Paw", whoIcon)
 
 	local text = frame("Text", card)
 	text.Position = UDim2.fromOffset(s.who + 12, 0)
@@ -577,6 +578,11 @@ function PetsWindow.onRename(fn: (id: string) -> ())
 	table.insert(renameListeners, fn)
 end
 
+-- The next open starts with `slot` picked (it glows), not the player's own: a pet tapped then goes there.
+function PetsWindow.pickOnOpen(slot: string)
+	pickOnOpen = slot
+end
+
 function PetsWindow.onPlace(fn: (id: number, slot: string?) -> ())
 	table.insert(placeListeners, fn)
 end
@@ -608,7 +614,8 @@ function PetsWindow.build(root: Instance): Frame
 	end)
 	window.layer:GetPropertyChangedSignal("Visible"):Connect(function()
 		if window.layer.Visible then
-			picked = CrateRules.PLAYER_SLOT
+			picked = pickOnOpen or CrateRules.PLAYER_SLOT
+			pickOnOpen = nil
 			PetsWindow.redraw()
 		end
 	end)

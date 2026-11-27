@@ -35,7 +35,11 @@ local EDGE = 2 -- real px kept clear above and below a window that had to shrink
 local MIN_FIT = 0.8 -- a tall window shrinks to at most this share of its size
 
 -- What Window.fit last asked for, per card: the screen scale and the shift below the middle.
-local asked: { [Frame]: { scale: number, shift: number } } = {}
+local asked: { [Frame]: { scale: number, shift: number, width: number } } = {}
+
+-- The HUD pieces a window's X must stay below (the coin pill and the friend tag, set by UI from HUD.topRight): on a
+-- short phone the X stood on the coin number (issue 873). Nil, nothing is avoided.
+Window.avoid = nil :: (() -> { GuiObject })?
 
 export type Window = {
 	layer: Frame,
@@ -105,15 +109,61 @@ local function keepOnScreen(w: Window)
 	local top = math.max(inset, layerTop) + EDGE
 	local bottom = math.min(camera.ViewportSize.Y, layerTop + layerH) - EDGE
 	local designH = w.card.AbsoluteSize.Y / w.scale.Scale + OVERHANG
-	local room = bottom - top
+	-- the lowest edge of an avoided HUD piece (the coin pill) in the X's column: the X stays below it (issue 873)
+	local clearTop = top
+	local avoid = Window.avoid
+	if avoid then
+		local closeRight = w.layer.AbsolutePosition.X
+			+ w.layer.AbsoluteSize.X / 2
+			+ (want.width / 2 + 20) * want.scale
+		local closeLeft = closeRight - CLOSE * want.scale
+		for _, piece in avoid() do
+			local x0 = piece.AbsolutePosition.X
+			local x1 = x0 + piece.AbsoluteSize.X
+			if piece.Visible and x0 < closeRight and x1 > closeLeft then
+				clearTop = math.max(
+					clearTop,
+					piece.AbsolutePosition.Y + inset + piece.AbsoluteSize.Y + EDGE
+				)
+			end
+		end
+	end
 	local scale, shift = want.scale, want.shift
+	local room = bottom - clearTop
+	local tucked = false
 	if designH * scale > room and designH > 0 and room > 0 then
 		-- never under Kit.SCALE_MIN: the text floor (Kit.minText) holds in real pixels, so a smaller scale shrinks a
 		-- pill around words that stay the same size (Sync on 2a34a8e: "Uncommon" past its pill, prices at 12.7 px)
 		scale = math.max(room / designH, want.scale * MIN_FIT, Kit.SCALE_MIN)
-		-- the card's middle, so its X sits EDGE under the top bar
-		local middle = top + (OVERHANG + (designH - OVERHANG) / 2) * scale
+		local over = OVERHANG
+		if clearTop > top and designH * scale > room then
+			-- still too tall under the coin pill (a short phone): the X tucks into the card's corner, so the card
+			-- can rise by the X's overhang and its X still clears the coins (issue 873)
+			tucked = true
+			over = 0
+			scale = math.max(room / (designH - OVERHANG), want.scale * MIN_FIT, Kit.SCALE_MIN)
+		end
+		-- the card's middle, so its X sits EDGE under the top bar (or under the coin pill)
+		local middle = clearTop + (over + (designH - OVERHANG) / 2) * scale
+		-- never past the bottom: if even that is too tall, the bottom wins over the coin pill
+		middle = math.min(middle, bottom - (designH - OVERHANG) / 2 * scale)
+		-- and never above the top bar's edge, as before
+		middle = math.max(middle, top + (over + (designH - OVERHANG) / 2) * scale)
 		shift = (middle - (layerTop + layerH / 2)) / scale
+	else
+		-- it fits: moved down only as far as its X needs to clear the coin pill
+		local cardH = (designH - OVERHANG) * scale
+		local middle = layerTop + layerH / 2 + shift * scale
+		local closeTop = middle - cardH / 2 - OVERHANG * scale
+		local spare = bottom - (middle + cardH / 2)
+		local down = math.min(clearTop - closeTop, math.max(spare, 0))
+		if down > 0 then
+			shift += down / scale
+		end
+	end
+	local closeAt = if tucked then UDim2.new(1, -6, 0, 0) else UDim2.new(1, 20, 0, -OVERHANG)
+	if w.close.Position ~= closeAt then
+		w.close.Position = closeAt
 	end
 	if math.abs(w.scale.Scale - scale) > 0.001 then
 		w.scale.Scale = scale
@@ -231,7 +281,7 @@ function Window.fit(
 	w.scale.Scale = scale
 	w.card.Size = UDim2.fromOffset(width, 0)
 	w.card.Position = UDim2.new(0.5, 0, 0.5, shift or TOPBAR_SHIFT)
-	asked[w.card] = { scale = scale, shift = shift or TOPBAR_SHIFT }
+	asked[w.card] = { scale = scale, shift = shift or TOPBAR_SHIFT, width = width }
 	w.band.Size = UDim2.new(1, 0, 0, band)
 	w.title.TextSize = title
 	w.title.Position = UDim2.new(0, badge + 4, 0.5, 0)

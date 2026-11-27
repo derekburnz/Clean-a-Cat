@@ -11,6 +11,9 @@
 --       (Review-QA's rule from the tool icon: never cover the face)
 --   ToolOnCat.hide()                  takes it away (the finger lifted or slid off the cat, the step ended)
 --   ToolOnCat.modelFor(stage, step, owns)  which tool model a wash step shows (nil for a step with no tool)
+--   ToolOnCat.nozzle()                the shown tool's nozzle (its Attachment "Nozzle") in the world, +Y the way it
+--       sprays, or nil: with switch showerAim the rinse's shower head is held off the fur, above and in front of the
+--       touch, its nozzle aimed at it (issue 899), and the spray can come out of it toward the cat
 --
 -- The tool lies on the fur with its front (-Z, the brush's head) pointing up the screen, so its grip points down
 -- toward the player's thumb. It glides to each new touch point instead of jumping between the cat's parts.
@@ -40,6 +43,14 @@ local function small(): boolean
 	return LiveFlags.isOn(SMALL_FLAG)
 end
 
+-- (switch showerAim, issue 899) Derek on dev, 2026-11-26: "make the risning actually show water better and point the
+-- right direction". A tool with a Nozzle attachment (the showers) is held this far from the touch point, tilted this
+-- far up the screen from the fur's normal, its nozzle aimed at the point, so the water crosses the screen into the fur.
+local AIM_FLAG = "showerAim"
+local NOZZLE = "Nozzle"
+local STANDOFF = 1.2 -- studs from the touch point to the nozzle
+local TILT = math.rad(40)
+
 -- The tool each wash step shows. A later step (step) wins over the stage it runs in, as in ScrubController.
 -- Owned upgrades show their own model (Bubble Soap's sponge, the Pro Brush's fluffy brush).
 function ToolOnCat.modelFor(stage: string?, step: string?, owns: (string) -> boolean): string?
@@ -62,7 +73,7 @@ function ToolOnCat.modelFor(stage: string?, step: string?, owns: (string) -> boo
 	return nil
 end
 
-type Copy = { model: Model, offset: CFrame, parts: { BasePart }, faint: boolean }
+type Copy = { model: Model, offset: CFrame, parts: { BasePart }, faint: boolean, aimed: boolean }
 
 local copies: { [string]: Copy } = {} -- one copy per tool, made on first use and kept, parented only while shown
 local missing: { [string]: boolean } = {}
@@ -76,7 +87,8 @@ local follow: RBXScriptConnection? = nil
 -- its Handle is over the touch point.
 local function copyOf(name: string): Copy?
 	local scale = if small() then SMALL_SCALE else SCALE
-	local key = `{name}@{scale}` -- a copy per size, so the switch changing mid-session makes a new one
+	local aim = LiveFlags.isOn(AIM_FLAG)
+	local key = `{name}@{scale}@{aim}` -- a copy per size and hold, so a switch changing mid-session makes a new one
 	local have = copies[key]
 	if have then
 		return have
@@ -117,11 +129,17 @@ local function copyOf(name: string): Copy?
 		then (handle :: BasePart).Position
 		else box.Position
 	local bottom = Vector3.new(over.X, box.Position.Y - size.Y / 2, over.Z)
+	-- (showerAim) a tool with a nozzle is placed by its nozzle: the frame is the nozzle's, +Y the way it sprays
+	local nozzle = if aim then model:FindFirstChild(NOZZLE, true) else nil
+	local aimed = nozzle ~= nil and nozzle:IsA("Attachment")
 	local copy = {
 		model = model,
-		offset = CFrame.new(-bottom + Vector3.new(0, LIFT, 0)),
+		offset = if aimed
+			then (nozzle :: Attachment).WorldCFrame:Inverse()
+			else CFrame.new(-bottom + Vector3.new(0, LIFT, 0)),
 		parts = parts,
 		faint = false,
+		aimed = aimed,
 	}
 	copies[key] = copy
 	return copy
@@ -142,6 +160,24 @@ local function surfaceFrame(at: Vector3, normal: Vector3): CFrame
 	end
 	local back = -forward.Unit
 	return CFrame.fromMatrix(at, up:Cross(back), up, back)
+end
+
+-- (showerAim) The nozzle's frame for a touch at `at` on fur with normal `normal`: STANDOFF studs out, TILT up the
+-- screen from the normal, +Y (the spray) at the point, and -Z (about where the grip runs) leaning up the screen.
+local function aimFrame(at: Vector3, normal: Vector3): CFrame
+	local out = if normal.Magnitude > 1e-4 then normal.Unit else Vector3.yAxis
+	local camera = Workspace.CurrentCamera
+	local screenUp = if camera then camera.CFrame.UpVector else Vector3.yAxis
+	local up = screenUp - out * screenUp:Dot(out)
+	if up.Magnitude < 1e-3 then
+		up = out:Cross(Vector3.xAxis)
+	end
+	up = up.Unit
+	local from = at + (out * math.cos(TILT) + up * math.sin(TILT)) * STANDOFF
+	local spray = (at - from).Unit
+	local grip = (up - spray * up:Dot(spray)).Unit
+	local back = -grip
+	return CFrame.fromMatrix(from, spray:Cross(back), spray, back)
 end
 
 local function stopFollow()
@@ -186,7 +222,7 @@ function ToolOnCat.show(name: string?, at: Vector3, normal: Vector3, faint: bool
 		return
 	end
 	setFaint(copy, faint == true)
-	local frame = surfaceFrame(at, normal)
+	local frame = if copy.aimed then aimFrame(at, normal) else surfaceFrame(at, normal)
 	local was = shown
 	if was ~= copy then
 		if was then
@@ -211,6 +247,15 @@ function ToolOnCat.show(name: string?, at: Vector3, normal: Vector3, faint: bool
 			on.model:PivotTo(step * on.offset)
 		end)
 	end
+end
+
+function ToolOnCat.nozzle(): CFrame?
+	local on = shown
+	if on == nil or not on.aimed or on.model.Parent == nil then
+		return nil
+	end
+	local nozzle = on.model:FindFirstChild(NOZZLE, true)
+	return if nozzle and nozzle:IsA("Attachment") then (nozzle :: Attachment).WorldCFrame else nil
 end
 
 -- the switch going off mid-drag takes the tool away at once

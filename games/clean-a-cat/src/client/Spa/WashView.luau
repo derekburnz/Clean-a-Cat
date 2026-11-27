@@ -66,6 +66,20 @@ local function eyeHeight(cat: Model): number?
 	return if count > 0 then sum / count else nil
 end
 
+-- The way the cat faced when the shot first framed him on `where`. The shot keeps it while he turns in the tub (switch
+-- washSides, issue 899: he turns half way through a step to show another side), so a step that frames him mid-turn
+-- never swings the camera round. A new cat or another spot takes his facing afresh.
+local faced: { cat: Model, at: Vector3, look: Vector3 }? = nil
+local function facingOf(cat: Model, where: CFrame): Vector3
+	local was = faced
+	if was and was.cat == cat and (was.at - where.Position).Magnitude < 0.5 then
+		return was.look
+	end
+	local look = cat:GetPivot().LookVector
+	faced = { cat = cat, at = where.Position, look = look }
+	return look
+end
+
 -- The shot for `where` and its cat: with the wash screen (switch washScreen) a front view at his eye level
 -- (WashScreenRules.frontFrom), else Effects/WashCamera's.
 local function shotFor(where: CFrame, cat: Model?): CFrame
@@ -78,8 +92,7 @@ local function shotFor(where: CFrame, cat: Model?): CFrame
 		local fov = WashCamera.SCENE.fov
 		local distance = WashScreenRules.frontDistance(size.Y, fov)
 		local look = box.Position + Vector3.yAxis * WashScreenRules.frontLookUp(distance, fov)
-		local from =
-			WashScreenRules.frontFrom(look, cat:GetPivot().LookVector, distance, eyeHeight(cat))
+		local from = WashScreenRules.frontFrom(look, facingOf(cat, where), distance, eyeHeight(cat))
 		return CFrame.lookAt(from, look)
 	end
 	local look = where.Position + Vector3.yAxis * WashCamera.SCENE.lookUp

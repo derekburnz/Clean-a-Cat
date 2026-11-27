@@ -17,6 +17,14 @@ local WorkerRules = {}
 WorkerRules.FLAG = "workers"
 WorkerRules.POPUP_FLAG = "helperPopups" -- a helper's pay goes to the HelperPaid remote (a popup over their stand), no toast
 WorkerRules.HUD_TIDY_FLAG = "hudTidy" -- the stand's Level up prompt leaves the world: levels are bought in the Helpers window
+WorkerRules.PET_MENU_FLAG = "petMenuOnly" -- the stand's Give a pet prompt leaves the world: pets are given in the Pets menu
+WorkerRules.PETS_WINDOW_FLAG = "petsWindow" -- CrateViewRules.PETS_FLAG: the Pets menu that takes over
+
+-- Whether a hired helper's stand shows the world "Give a pet" prompt (issue 930, Derek's dev notes 2026-11-26: give
+-- pets from the Pets menu instead). It goes only while the Pets menu is on too, so a pet can always be given.
+function WorkerRules.givePrompt(isOn: (flag: string) -> boolean): boolean
+	return not (isOn(WorkerRules.PET_MENU_FLAG) and isOn(WorkerRules.PETS_WINDOW_FLAG))
+end
 WorkerRules.PROGRESS_ATTRIBUTE = "WorkerProgress" -- 0 to 1 on the cat a worker washes (Motion-FX's WorkerBar)
 WorkerRules.WORKER_ATTRIBUTE = "Worker" -- the worker's id on that cat and on their station
 WorkerRules.WASHING_ATTRIBUTE = "Washing" -- true on the staff model while they wash a cat (Motion-FX's staff motion)

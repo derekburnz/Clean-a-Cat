@@ -526,6 +526,33 @@ local SCENES = {
 			UI.open("Helpers")
 		end,
 	},
+	-- The Helpers window with the HUD behind it (issues 873 and 929, switch helperPets): a pet box starts each hired
+	-- row (Jo's Koi, Sam's paw), the buttons stand 16 px apart, and the X clears the coin pill.
+	{
+		"HelpersPets",
+		function()
+			hud(true)
+			UI.setCoins(1240)
+			flag("helpersWindow", true)
+			flag("workers", true)
+			flag("pets", true)
+			flag("helperPets", true)
+			local HelperViewRules = UIShim.require("ReplicatedStorage.Shared.HelperViewRules")
+			local values = { WorkerLevel_Jo = 4, WorkerMode_Jo = "leaving", WorkerLevel_Sam = 1 }
+			UI.setPets({
+				{ id = 1, kind = "Koi", star = 2, slot = "Jo1" },
+				{ id = 2, kind = "Pebble", star = 1 },
+			}, { Jo = true, Sam = true })
+			UI.setHelpers(
+				HelperViewRules.rows(function(name)
+					return values[name]
+				end, { Jo = "Captain Bubbles" }),
+				true,
+				true
+			)
+			UI.open("Helpers")
+		end,
+	},
 	{
 		"HelpersAll",
 		function()
@@ -1100,6 +1127,7 @@ function Scenes.close()
 	flag("crateWindow", false)
 	flag("petsWindow", false)
 	flag("helpersWindow", false)
+	flag("helperPets", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)
 	flag("workers", false)
