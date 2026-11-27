@@ -81,3 +81,8 @@ big-spa-1040-room-wide-b92db46.jpg, roof hidden. I checked this in a local place
 
 ## 1035 petSingles, main 5873817: PASS
 pet-singles-1035-5873817.jpg: a save seeded with Clover (1 star) twice and Glitch (2 stars) shows three tiles, one per pet. The two Clovers are separate tiles with no stars, and Glitch shows two stars.
+
+## 1041 expansionDoor, main eafb264
+- The unlock logic passes. "Unlock · 1500 coins" (object text "Back door", hold 0.3 s, reach 10) sits at (7, 3.5, 6.5). Holding it took coins from 60000 to 58500, set ExpansionUnlocked true, and removed the prompt.
+- FAIL, models missing. The console says "[StationService] CleanACat_Area_BackDoorLocked is missing from ReplicatedStorage.Assets", and CleanACat_Area_BackDoorOpen is missing too. While "locked" the doorway is a plain open gap with no caution tape or barrier (expansion-door-1041-locked-but-open-eafb264.jpg), and a path from inside the spa to behind the door computes as Success, so a player can walk through without paying.
+- Not tested: the Garden showing only behind the open door, and an old save with the Garden built counting as unlocked.
