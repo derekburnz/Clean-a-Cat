@@ -41,7 +41,8 @@ local function offered(player: Player, save: SaveSchema.Save): boolean
 		Telemetry.played(player) or save.playSeconds,
 		function(key: string): boolean
 			return PassService.owns(player, key) or save.passes[key] == true
-		end
+		end,
+		StarterRules.contents(LiveFlags.isOn)
 	)
 end
 
@@ -74,11 +75,7 @@ local function show(player: Player)
 		and save.asks[EXPIRED_ASK] ~= true
 	then
 		save.asks[EXPIRED_ASK] = true
-		local bought = true
-		for _, key in StarterRules.CONTENTS do
-			bought = bought and save.passes[key] == true
-		end
-		if not bought then
+		if not StarterRules.boughtBefore(save.passes) then
 			Telemetry.event(player, "pack_expired", 1)
 		end
 	end
@@ -139,9 +136,11 @@ local function catchUp(player: Player, save: SaveSchema.Save)
 end
 
 -- The pack's grant: all three passes into the save (no yield, nothing to check first: a repeat receipt never gets
--- here). The passes count from the next frame, once PassService hears of them.
+-- here). The passes count from the next frame, once PassService hears of them. (starterBuilder) The three are the
+-- pack's contents at the moment of the grant.
 local function grant(player: Player, save: SaveSchema.Save, _receipt: { [string]: any }): boolean
-	for _, key in StarterRules.CONTENTS do
+	local contents = StarterRules.contents(LiveFlags.isOn)
+	for _, key in contents do
 		save.passes[key] = true
 	end
 	local pet = givePet(save)
@@ -151,7 +150,7 @@ local function grant(player: Player, save: SaveSchema.Save, _receipt: { [string]
 		StarterRules.hoursIn(save.starterEndsAt, os.time(), SaveSchema.STARTER_SECONDS)
 	)
 	task.defer(function()
-		for _, key in StarterRules.CONTENTS do
+		for _, key in contents do
 			PassService.grant(player, key)
 		end
 		show(player)
@@ -160,9 +159,7 @@ local function grant(player: Player, save: SaveSchema.Save, _receipt: { [string]
 		end
 		NetService.notice(
 			player,
-			if pet
-				then `Starter pack: {StarterRules.PET}, the Golden Sponge, a second pet slot and 2x Coins are yours!`
-				else "Starter pack: the Golden Sponge, a second pet slot and 2x Coins are yours!"
+			`Starter pack: {StarterRules.listText(contents, if pet then StarterRules.PET else nil)} are yours!`
 		)
 	end)
 	return true
@@ -194,7 +191,7 @@ function StarterService.Start()
 	PassService.changed:Connect(function(player: Player)
 		show(player)
 	end)
-	for _, flag in { StarterRules.FLAG, Passes.FLAG } do
+	for _, flag in { StarterRules.FLAG, Passes.FLAG, StarterRules.BUILDER_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do
