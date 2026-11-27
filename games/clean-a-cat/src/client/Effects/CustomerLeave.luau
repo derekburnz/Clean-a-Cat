@@ -97,6 +97,16 @@ function CustomerLeave.leave(figure: Model)
 	if not figure:IsDescendantOf(Workspace) then
 		return
 	end
+	-- the cat packed back into the carrier was placed by the server where it keeps the figure, on the pavement; seat
+	-- it in the carrier as this device draws the figure first, or the copy carries it 16 studs off (issue 871)
+	for _, item in figure:GetDescendants() do
+		if item.Name == "PackedCat" and item:IsA("Model") and item.Parent then
+			local seat = (item.Parent :: Instance):FindFirstChild("CatSeat", true)
+			if seat and seat:IsA("Attachment") then
+				(item :: Model):PivotTo((seat :: Attachment).WorldCFrame)
+			end
+		end
+	end
 	local wasArchivable = figure.Archivable
 	figure.Archivable = true
 	local ok, made = pcall(function(): Model?

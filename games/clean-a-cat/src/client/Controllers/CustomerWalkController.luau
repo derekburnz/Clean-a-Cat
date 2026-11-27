@@ -54,6 +54,27 @@ local function seatCounterCat(figure: Model)
 	end
 end
 
+-- A leaving customer's cat goes back into their carrier on the server (FigureService.packCat), placed at the
+-- carrier's CatSeat where the server keeps the figure: on the pavement, not where this device walked it. Seat it in
+-- the carrier as this device draws it, or it shows about 16 studs off on the street (Sync on 208dc9d, issue 871).
+local PACKED_NAME = "PackedCat"
+local function seatPacked(item: Instance)
+	if not item:IsA("Model") then
+		return
+	end
+	-- the new name can reach this device after the new parent: look once both are in
+	task.defer(function()
+		local carrier = item.Parent
+		if item.Name ~= PACKED_NAME or carrier == nil then
+			return
+		end
+		local seat = carrier:FindFirstChild("CatSeat", true)
+		if seat and seat:IsA("Attachment") then
+			(item :: Model):PivotTo((seat :: Attachment).WorldCFrame)
+		end
+	end)
+end
+
 local function finish(walk: Walk)
 	walks[walk.figure] = nil
 	setHidden(walk, false)
@@ -83,6 +104,7 @@ local function begin(instance: Instance)
 			watched[figure] = nil
 			walks[figure] = nil
 		end)
+		figure.DescendantAdded:Connect(seatPacked)
 	end
 	if walks[figure] then
 		return
