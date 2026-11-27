@@ -17,6 +17,23 @@ BuildViewRules.TITLE = "Build and upgrades"
 BuildViewRules.BUILDS_FLAG = "builds" -- the Builds board's switch: no builds without it
 BuildViewRules.TOOLS_FLAG = "toolsBoard" -- the Tools board's: no tools or bows without it
 
+-- Each build, tool and bow tier its own picture (issue 1122, Derek 2026-11-27: buyable items sharing one icon;
+-- Model-Agent's group uploads): the Icons names ShopBuild<id>, ShopTool<id> and ShopBow<tier>. The Ribbon bow, which
+-- is free, keeps the plain bow, and the VIP Room, gone from the game (noVipRoom), the plain build picture.
+local PLAIN: { [string]: string } = { VipRoom = "Build", Ribbon = "Bow" }
+
+function BuildViewRules.buildIcon(id: string): string
+	return PLAIN[id] or `ShopBuild{id}`
+end
+
+function BuildViewRules.toolIcon(id: string): string
+	return `ShopTool{id}`
+end
+
+function BuildViewRules.bowIcon(tier: string): string
+	return PLAIN[tier] or `ShopBow{tier}`
+end
+
 -- "buy": the button shows; "running": counting down; "locked": waits for something else; "done": built or owned
 export type Row = {
 	kind: string, -- "build", "tool" or "bow"
@@ -103,7 +120,7 @@ function BuildViewRules.builds(
 				say = "",
 				state = "buy",
 				action = nil,
-				icon = "Build",
+				icon = BuildViewRules.buildIcon(id),
 			}
 			local before = item.requires
 			if built[id] then
@@ -150,7 +167,7 @@ function BuildViewRules.upgrades(
 			say = if mine then "Yours" else `{tool.price} coins`,
 			state = if mine then "done" else "buy",
 			action = if mine then nil else "Buy",
-			icon = "Tools",
+			icon = BuildViewRules.toolIcon(id),
 			price = if mine then nil else tool.price,
 		})
 	end
@@ -173,7 +190,7 @@ function BuildViewRules.upgrades(
 				say = `{info.price} coins · +{info.bonus} a cat`,
 				state = "buy",
 				action = "Buy",
-				icon = "Bow",
+				icon = BuildViewRules.bowIcon(nextTier),
 				price = info.price,
 			})
 		else
@@ -185,7 +202,7 @@ function BuildViewRules.upgrades(
 				say = "The best bow, yours",
 				state = "done",
 				action = nil,
-				icon = "Bow",
+				icon = BuildViewRules.bowIcon(tier),
 			})
 		end
 	end

@@ -62,14 +62,33 @@ Icons.IMAGES = {
 	StaffLou = "rbxassetid://114806114354624",
 	-- the shop's big card pictures (issues 1030 and 1031, Model-Agent): their x2, x3 or +1 is drawn in the picture
 	ShopExtraWorker = "rbxassetid://95165289753902",
-	ShopCoins2x = "rbxassetid://113360699781391",
-	ShopCoins3x = "rbxassetid://114423850933764",
+	-- 2x and 3x remade so the two look apart (issue 1122): two coin stacks, and a chest
+	ShopCoins2x = "rbxassetid://71955337810834",
+	ShopCoins3x = "rbxassetid://118344697143431",
 	ShopBuilder2 = "rbxassetid://79901743380915",
 	ShopGoldenSponge = "rbxassetid://89559848537020",
 	ShopPetSlot2 = "rbxassetid://114149856510592",
 	-- Midas, the starter pack's golden pet, whole with sparkles (issue 1090, Model-Agent's PR 1093, group upload run
 	-- 46012351823 after Review-QA's image gate)
 	ShopStarterPet = "rbxassetid://75389504028903",
+	-- each build, tool and paid bow its own picture (issue 1122, Model-Agent's group uploads 2026-11-27 after the image
+	-- gate; BuildViewRules.buildIcon, toolIcon and bowIcon pick these names)
+	ShopBuildBrushTable = "rbxassetid://134838156181235",
+	ShopBuildDryer = "rbxassetid://113752193949870",
+	ShopBuildBubbleBath = "rbxassetid://119011776128951",
+	ShopBuildPawdicure = "rbxassetid://103012559669119",
+	ShopBuildSecondTub = "rbxassetid://107311962709814",
+	ShopBuildThirdTub = "rbxassetid://70697308780805",
+	ShopBuildFourthTub = "rbxassetid://127426724307729",
+	ShopBuildGarden = "rbxassetid://123151974285073",
+	ShopBuildCatHotel = "rbxassetid://118129881118187",
+	ShopBuildHotelRoom3 = "rbxassetid://91255774144520",
+	ShopBuildHotelRoom4 = "rbxassetid://79200153366694",
+	ShopToolBubbleSoap = "rbxassetid://130017740181643",
+	ShopToolProBrush = "rbxassetid://73568133107511",
+	ShopBowSilk = "rbxassetid://95988167326795",
+	ShopBowSatin = "rbxassetid://128022272665511",
+	ShopBowGolden = "rbxassetid://113725361249226",
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
@@ -133,6 +152,77 @@ local STAND_INS: { [string]: StandIn } = {
 	ShopPetSlot2 = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	ShopStarterPet = { glyph = "🐱", fill = Color3.fromHex("FFE98F"), round = true, bare = true },
 	Tools = { glyph = "🧴", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopBuildBrushTable = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildDryer = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopBuildBubbleBath = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildPawdicure = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildSecondTub = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildThirdTub = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildFourthTub = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildGarden = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopBuildCatHotel = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildHotelRoom3 = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBuildHotelRoom4 = {
+		glyph = "🔨",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopToolBubbleSoap = {
+		glyph = "🧴",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopToolProBrush = {
+		glyph = "🖌",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopBowSilk = { glyph = "🎀", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopBowSatin = { glyph = "🎀", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopBowGolden = { glyph = "🎀", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Build = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Hotel = { glyph = "🛏️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the Cat Hotel's card (1051)
 }

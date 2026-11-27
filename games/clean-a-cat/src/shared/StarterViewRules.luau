@@ -38,12 +38,12 @@ local LOOK: { [string]: { name: string, what: string, icon: string, badge: strin
 	GoldenSponge = {
 		name = "Golden Sponge",
 		what = "Gold bubbles, +20% on hand washes",
-		icon = "Sponge",
+		icon = "ShopGoldenSponge",
 	},
 	SecondPetSlot = {
 		name = "2nd pet slot", -- short enough for the small phone Shop card (issue 838)
 		what = "One more pet for you and each helper",
-		icon = "Paw",
+		icon = "ShopPetSlot2",
 		badge = "+1",
 	},
 	-- Derek 2026-11-27: "remove the golden sponge from starter pack it seems lame replace with something else"; the
@@ -56,7 +56,7 @@ local LOOK: { [string]: { name: string, what: string, icon: string, badge: strin
 	DoubleCoins = {
 		name = "2x Coins",
 		what = "Double coins on cats you wash by hand",
-		icon = "Coins",
+		icon = "ShopCoins2x",
 		badge = "x2",
 	},
 }
