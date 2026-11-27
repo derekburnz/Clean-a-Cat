@@ -19,6 +19,9 @@ return function()
 	local function allOn(_flag: string): boolean
 		return true
 	end
+	local function allOff(_flag: string): boolean
+		return false
+	end
 	local function anyPrice(_key: string): number
 		return 100
 	end
@@ -69,14 +72,8 @@ return function()
 				expect(imageOf[`pass {key}`] ~= nil).to.equal(true)
 			end
 			-- the starter pack's items, with and without the Second Builder swap
-			for _, isOn in
-				{
-					allOn,
-					function(_flag: string): boolean
-						return false
-					end,
-				}
-			do
+			local switchSets: { (string) -> boolean } = { allOn, allOff }
+			for _, isOn in switchSets do
 				for _, item in StarterViewRules.items(anyPrice, isOn) do
 					claim(`pass {item.key}`, item.icon)
 				end
