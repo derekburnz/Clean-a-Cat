@@ -550,3 +550,11 @@ The owner on 2026-11-24: "we should pick him up out of crate". The player lifts 
 - Models are solid from every side a player can reach.
 - Anything on an inside wall follows section 14's four rules (#670): big flat faces solid and at most 0.2 studs proud, small details at most 0.045 over them, every back 0.03 inside the wall, shelves 8.2 studs up or higher. The camera must never rest behind a face it can see. Run `camera_rest_check.py` after changing a wall.
 - Rooms are roomy: 6 stud gaps at least.
+
+## The back door as a locked expansion (#1041)
+`backdoor.py` builds two looks for the back door, both at the plot's `SpotGardenDoor` (the middle of the opening on the floor, front into the room), so they fit the small and the big plot. Derek, 2026-11-27: "blocked off with caution tape and some construction materials ... when they go to it be unlocked".
+
+- `CleanACat_Area_BackDoorLocked`: a closed mint door in the butter frame, two strips of butter caution tape with ink stripes crossed over it and pinned with pink tabs, a sawhorse with a cream and pink striped board, three planks leant on the door, three pastel paint pots (one on the sawhorse) and an apricot cone. The props are `_Decor` (not solid); an invisible `_Barrier` (solid, CanQuery off) covers them and the doorway; the door and frame collide. Attachment `PromptAnchor` in front of the sawhorse at chest height, for the unlock prompt. Attributes `Expansion` = "BackDoor", `Locked` = true. 1,960 triangles, 81 parts.
+- `CleanACat_Area_BackDoorOpen`: the same frame with the door swung out flat against the yard side of the wall; the way through is clear, no barrier. `Locked` = false. 360 triangles, 12 parts.
+
+Everything stays within the door's 6 studs plus the frame and 2.9 studs into the room, clear of the stray box and Sam's wash stand. Friendly, nothing sharp, no black: the tape's stripes are ink on butter. The Garden's looks put their own gate in this doorway, so the game shows one or the other; what is behind the door is not in these models.
