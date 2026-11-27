@@ -20947,6 +20947,51 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_FoamPuff3.png"
  },
  {
+  "name": "CleanACat_Prop_GiftCrate",
+  "category": "Prop",
+  "module": "crates",
+  "objects": [
+   "CleanACat_Prop_GiftCrate",
+   "CleanACat_Prop_GiftCrate_Lid_Swing",
+   "CleanACat_Prop_GiftCrate_Screen"
+  ],
+  "triangles": 1492,
+  "budget": 1600,
+  "parts": 55,
+  "size_studs": {
+   "x": 2.55,
+   "y": 2.27,
+   "z": 2.37
+  },
+  "size_roblox": [
+   2.55,
+   2.37,
+   2.27
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 2
+   },
+   "checks": {
+    "budget": "1492/1600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "912 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=-0.03",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Prop_GiftCrate.png"
+ },
+ {
   "name": "CleanACat_Prop_GiftStand",
   "category": "Prop",
   "module": "gift",
