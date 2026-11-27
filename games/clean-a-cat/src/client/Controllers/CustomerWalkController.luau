@@ -54,20 +54,13 @@ local function seatCounterCat(figure: Model)
 	end
 end
 
--- (switch counterCrate) While the customer walks up, their cat rides in the crate on their arm, so the counter cat
--- is not drawn on this device until the crate is set down (CounterSetAt; CounterCrate takes over from there). It also
--- stays on its own spot instead of riding along with the figure: Sync-Agent's run on 792d2dd (issue 871) saw it
--- travel at counter height beside the walking customer, over the street.
-local function setCatShown(cat: Model, shown: boolean)
-	for _, descendant in cat:GetDescendants() do
-		if descendant:IsA("BasePart") then
-			(descendant :: BasePart).LocalTransparencyModifier = if shown then 0 else 1
-		end
-	end
-end
-
-local function holdCounterCat(figure: Model, now: number)
-	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
+-- (switch counterCrate) While a customer walks up with their cat in the crate on their arm, the counter cat stays on
+-- its own spot instead of riding along with the figure: Sync-Agent's run on 792d2dd (issue 871) saw it travel at
+-- counter height beside the walking customer, over the street. CounterCrate keeps it hidden until it walks out of
+-- the crate (Motion-FX, PR 993). A newcomer in the file has never set their crate down; any other walk with the
+-- set-down still ahead is a newcomer who stepped up on the way in.
+local function holdCounterCat(walk: Walk, now: number)
+	local cat = walk.figure:FindFirstChild(CounterRules.CAT_NAME)
 	if cat == nil or not cat:IsA("Model") then
 		return
 	end
@@ -75,11 +68,10 @@ local function holdCounterCat(figure: Model, now: number)
 	if type(setAt) ~= "number" then
 		return -- the crate switch is off: the cat comes up with the customer, as before
 	end
-	if now >= (setAt :: number) then
-		return -- already set down: a step-up slides it along the counter with its customer
+	if walk.file or now < (setAt :: number) then
+		seatCounterCat(walk.figure)
 	end
-	setCatShown(cat :: Model, false)
-	seatCounterCat(figure)
+	-- otherwise it was set down already: a step-up slides it along the counter with its customer
 end
 
 local function finish(walk: Walk)
@@ -88,11 +80,6 @@ local function finish(walk: Walk)
 	if walk.figure.Parent then
 		walk.figure:PivotTo(walk.to)
 		seatCounterCat(walk.figure)
-		-- drawn again: from here CounterCrate hides it by its own Transparency until it walks out of the crate
-		local cat = walk.figure:FindFirstChild(CounterRules.CAT_NAME)
-		if cat and cat:IsA("Model") then
-			setCatShown(cat :: Model, true)
-		end
 	end
 end
 
@@ -173,7 +160,7 @@ local function step()
 		local position = walk.from.Position:Lerp(walk.to.Position, progress)
 		local turn = math.clamp(1 - (walk.duration - elapsed) / WalkRules.TURN_SECONDS, 0, 1)
 		walk.figure:PivotTo(CFrame.new(position) * walk.facing:Lerp(walk.to.Rotation, turn))
-		holdCounterCat(walk.figure, now)
+		holdCounterCat(walk, now)
 	end
 end
 
