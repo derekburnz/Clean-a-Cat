@@ -3,6 +3,30 @@ return function()
 	local SaveSchema = require(game:GetService("ReplicatedStorage").Shared.SaveSchema)
 
 	describe("SaveSchema.migrate", function()
+		it(
+			"gives the old eight crate pets their new names, and keeps everything else (issue 883)",
+			function()
+				local save = SaveSchema.migrate({
+					version = SaveSchema.VERSION,
+					pets = {
+						{ id = 1, kind = "Cozy", star = 2, slot = "player" },
+						{ id = 2, kind = "Nimbus", star = 1, slot = "Jo1" },
+						{ id = 3, kind = "Starcoat", star = 1 },
+						{ id = 4, kind = "Blaze", star = 3 },
+					},
+				}, 100) :: any
+				expect(save.pets[1].kind).to.equal("Clover")
+				expect(save.pets[1].id).to.equal(1)
+				expect(save.pets[1].star).to.equal(2)
+				expect(save.pets[1].slot).to.equal("player")
+				expect(save.pets[2].kind).to.equal("Blaze")
+				expect(save.pets[2].slot).to.equal("Jo1")
+				expect(save.pets[3].kind).to.equal("Starcoat")
+				expect(save.pets[4].kind).to.equal("Blaze")
+				expect(#save.pets).to.equal(4)
+			end
+		)
+
 		it("gives a new player the template", function()
 			local save = SaveSchema.migrate(nil, 100)
 			expect(save).to.be.ok()
