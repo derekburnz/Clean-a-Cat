@@ -65,3 +65,11 @@ as a rude gesture to an image check at icon size. Roblox moderation misread the 
 suspended Derek's account. All three were removed on 2026-11-27, and their sha256s are on
 `.github/upload-blocked.txt`, so the upload workflow refuses them under any name. Draw no hand, finger or gesture in
 any picture; use hearts, dots and rings instead.
+
+## Helpers button options (issue 1110)
+
+Derek, 2026-11-27: "make a better helper icon". The thin apron (`Staff`) was weak beside Shop and Build. Three
+options from `hud_icons.py`, each checked at 48 and 36 px beside Shop and Build, for him to pick:
+`CleanACat_Icon_Hud_HelpersTeam.png` (two helpers side by side in the headband and bib, nobody in particular; the
+recommended one), `CleanACat_Icon_Hud_HelpersApron.png` (a fat mint apron with a thick pink loop and bow ends) and
+`CleanACat_Icon_Hud_HelpersBadge.png` (a staff badge with one helper on it). The ones not picked are removed later.
