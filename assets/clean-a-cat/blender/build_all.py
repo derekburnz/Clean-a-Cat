@@ -41,6 +41,7 @@ import coat_table  # noqa: E402
 import common  # noqa: E402
 import contact_sheet  # noqa: E402
 import crates  # noqa: E402
+import wash_room  # noqa: E402
 import pets  # noqa: E402
 import gift  # noqa: E402
 import garden  # noqa: E402
@@ -78,7 +79,7 @@ def all_assets():
         out[name] = (fn, budget, "dirt")
     for module in (stations, tools, props, plot, spa_props, customers, build_props, vip, street, rewards,
                    burrs, busy_spa, opening, loaf, backdrop, boards, foam_puffs, crates, townsfolk, spa_staff,
-                   worker_stations, pets, gift, garden, npc_builder):
+                   worker_stations, pets, gift, garden, npc_builder, wash_room):
         for name, (fn, budget) in module.ASSETS.items():
             out[name] = (fn, budget, module.__name__)
     return out

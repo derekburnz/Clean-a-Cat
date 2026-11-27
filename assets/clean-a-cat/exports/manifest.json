@@ -643,6 +643,53 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_VipRoom.png"
  },
  {
+  "name": "CleanACat_Area_WashRoom",
+  "category": "Area",
+  "module": "wash_room",
+  "objects": [
+   "CleanACat_Area_WashRoom",
+   "CleanACat_Area_WashRoom_Decor"
+  ],
+  "triangles": 4188,
+  "budget": 9000,
+  "parts": 163,
+  "size_studs": {
+   "x": 28.0,
+   "y": 28.0,
+   "z": 13.95
+  },
+  "size_roblox": [
+   28.0,
+   13.95,
+   28.0
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot"
+   ],
+   "qa_accepted": {
+    "back to back": 2,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "4188/9000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "2646 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.95 (want 0)",
+    "centered": "footprint center x=0.00 y=0.00",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_WashRoom.png"
+ },
+ {
   "name": "CleanACat_Bow_Mint",
   "category": "Bow",
   "module": "props",
