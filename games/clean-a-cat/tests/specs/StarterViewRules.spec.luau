@@ -61,6 +61,11 @@ return function()
 			expect(StarterViewRules.left(100, 40)).to.equal(60)
 			expect(StarterViewRules.left(100, 400)).to.equal(0)
 			expect(StarterViewRules.left(nil, 1)).to.equal(0)
+			-- starterNoClock (issue 1069): no time left on screen, the same words on the chip and in the window
+			expect(StarterViewRules.hudNote(5 * 3600, true)).to.equal("New player offer")
+			expect(StarterViewRules.windowNote(5 * 3600, true)).to.equal("New player offer")
+			expect(StarterViewRules.hudNote(5 * 3600 + 12 * 60, false)).to.equal("5h 12m")
+			expect(StarterViewRules.windowNote(12 * 60, false)).to.equal("Ends in 12m")
 		end)
 
 		it("bobs 3 times on the first visit, once on the next two, then never", function()

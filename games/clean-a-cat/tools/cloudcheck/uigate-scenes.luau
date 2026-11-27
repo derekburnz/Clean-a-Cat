@@ -549,6 +549,26 @@ local SCENES = {
 			UI.open("Starter")
 		end,
 	},
+	-- starterNoClock (issue 1069): the window's band line says "New player offer", no time left.
+	{
+		"StarterNoClock",
+		function()
+			flag("passes", true)
+			flag("starterPack", true)
+			flag("starterNoClock", true)
+			local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+			local prices: { [string]: number } =
+				{ GoldenSponge = 99, SecondPetSlot = 249, DoubleCoins = 199 }
+			UI.setStarter(
+				StarterViewRules.items(function(key: string): unknown
+					return prices[key]
+				end),
+				199,
+				os.time() + 44 * 3600
+			)
+			UI.open("Starter")
+		end,
+	},
 	{
 		"StarterNoPrice",
 		function()
@@ -891,6 +911,15 @@ local SCENES = {
 		"HudTidyNoPrice",
 		function()
 			allButtons(false)
+		end,
+	},
+	-- starterNoClock (issue 1069): the starter ad's chip says "New player offer" instead of the time left.
+	{
+		"HudStarterNoClock",
+		function()
+			allButtons(true)
+			flag("starterNoClock", true)
+			UI.setSideNote("Starter", "New player offer")
 		end,
 	},
 	-- Build and upgrades (issue 751, switch buildWindow): a tub built, one building, the rest waiting, then the
