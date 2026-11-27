@@ -7,6 +7,21 @@ local CrateRules = require(script.Parent:WaitForChild("CrateRules"))
 local CrateViewRules = {}
 
 CrateViewRules.FLAG = "crateWindow"
+-- With the switch petLines (issue 927, the owner on 2026-11-26: "have a little description under the pets what they
+-- give/do"), a pet's boost says what it boosts: the player's tips beside the player, a helper's pay beside a helper.
+CrateViewRules.LINES_FLAG = "petLines"
+
+-- What a pet's boost does, for its tile and its crate row: "+5% tips or pay" with petLines, else "+5% boost".
+function CrateViewRules.effectText(boost: string, isOn: ((flag: string) -> boolean)?): string
+	local on = isOn ~= nil and isOn(CrateViewRules.LINES_FLAG)
+	return if on then `{boost} tips or pay` else `{boost} boost`
+end
+
+-- A pet's boost as shown: "+5%" for `kind` at `star`.
+function CrateViewRules.boostText(kind: string, star: number): string
+	return `+{math.floor(CrateRules.boost(kind, star) * 100 + 0.5)}%`
+end
+
 CrateViewRules.SUM_LINE = "The chances add up to 100%. " .. CrateRules.ODDS_NOTE
 
 export type Row = {
