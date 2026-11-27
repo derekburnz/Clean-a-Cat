@@ -36,7 +36,7 @@ NotifyRules.HOTEL_KIND = "hotel"
 NotifyRules.HOTEL_ITEM = "CatHotel" -- HotelRules.ID
 -- The hotel_ready string's id per experience (notify-key workflow, action string, string_name hotel_ready).
 NotifyRules.HOTEL_MESSAGE_IDS = table.freeze({
-	[10778775478] = "", -- Clean-a-Cat-Dev
+	[10778775478] = "f4123f33-8045-fa43-8ee1-29226d8d5f88", -- Clean-a-Cat-Dev: hotel_ready, made 2026-11-27
 	[10778773655] = "", -- Clean a Cat
 }) :: { [number]: string }
 
