@@ -18,10 +18,9 @@ Icons.IMAGES = {
 	Star = "rbxassetid://79608175953496",
 	Paw = "rbxassetid://107223055953057",
 	Heart = "rbxassetid://76458853696811",
-	-- the like how-to's loop (issue 869, Model-Agent's PR 972), group owned
-	ThumbsUp = "rbxassetid://76096338201947",
-	ThumbsUpFilled = "rbxassetid://135826908608436",
-	TapHand = "rbxassetid://121275029069381",
+	-- the like how-to's loop (issue 869): no hands (Model-Agent's PR 976); the filled heart is the approved Heart, the
+	-- grey heart and the tap dot get their ids once uploads resume (their stand-ins below until then)
+	HeartFilled = "rbxassetid://76458853696811",
 	RingPuff = "rbxassetid://113448726935917",
 	Station = "rbxassetid://123888181775346",
 	Gear = "rbxassetid://118282050361608", -- the Settings render
@@ -68,9 +67,9 @@ local STAND_INS: { [string]: StandIn } = {
 	Paw = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Heart = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	-- the like how-to's loop (issue 869) until Model-Agent's icons are uploaded
-	ThumbsUp = { glyph = "👍", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
-	ThumbsUpFilled = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
-	TapHand = { glyph = "👆", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	HeartOutline = { glyph = "🤍", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	HeartFilled = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	TapDot = { glyph = "", fill = Color3.fromHex("FFF6EC"), round = true },
 	RingPuff = { glyph = "✨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Station = { glyph = "🛁", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Index = { glyph = "📖", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },

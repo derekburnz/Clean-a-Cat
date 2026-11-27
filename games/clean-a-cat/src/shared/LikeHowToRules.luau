@@ -1,7 +1,7 @@
 --!strict
 -- LikeHowToRules: the like how-to on the gift card (issue 869, switch likeHowTo; Growth-Agent's spec of 2026-11-26).
 -- When Like is tapped on the card's like row, the card's picture side shows, once per visit, how to like the game: a
--- thumbs up that a hand taps and that fills pink, about 2 s, looping, with "Tap the thumbs up on the game's page".
+-- grey heart that a fingertip dot taps and that fills pink (no hands: a raised finger can read as rude at icon size), about 2 s, looping, with "Tap the thumbs up on the game's page".
 -- The game cannot read a like, so nothing says it is checked: the gift comes either way. It never covers a button,
 -- and "Got it" puts the picture back. Pure, so tests/specs/LikeHowToRules.spec.luau covers it.
 local LikeHowToRules = {}

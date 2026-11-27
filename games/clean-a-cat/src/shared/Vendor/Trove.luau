@@ -84,8 +84,14 @@ type ConnectionLikeMetatable = typeof(setmetatable(
 	.Once (self, callback: (...any) -> ...any) -> ConnectionLike
 ]=]
 type SignalLike = {
-	Connect: (self: SignalLike, callback: (...any) -> ...any) -> ConnectionLike | ConnectionLikeMetatable,
-	Once: (self: SignalLike, callback: (...any) -> ...any) -> ConnectionLike | ConnectionLikeMetatable,
+	Connect: (
+		self: SignalLike,
+		callback: (...any) -> ...any
+	) -> ConnectionLike | ConnectionLikeMetatable,
+	Once: (
+		self: SignalLike,
+		callback: (...any) -> ...any
+	) -> ConnectionLike | ConnectionLikeMetatable,
 }
 
 --[=[
@@ -98,8 +104,14 @@ type SignalLike = {
 type SignalLikeMetatable = typeof(setmetatable(
 	{},
 	{} :: {
-		Connect: (self: SignalLikeMetatable, callback: (...any) -> ...any) -> ConnectionLike | ConnectionLikeMetatable,
-		Once: (self: SignalLikeMetatable, callback: (...any) -> ...any) -> ConnectionLike | ConnectionLikeMetatable,
+		Connect: (
+			self: SignalLikeMetatable,
+			callback: (...any) -> ...any
+		) -> ConnectionLike | ConnectionLikeMetatable,
+		Once: (
+			self: SignalLikeMetatable,
+			callback: (...any) -> ...any
+		) -> ConnectionLike | ConnectionLikeMetatable,
 	}
 ))
 
@@ -112,7 +124,10 @@ type SignalLikeMetatable = typeof(setmetatable(
 ]=]
 type PromiseLike = {
 	getStatus: (self: PromiseLike) -> string,
-	finally: (self: PromiseLike, callback: (...any) -> ...any) -> PromiseLike | PromiseLikeMetatable,
+	finally: (
+		self: PromiseLike,
+		callback: (...any) -> ...any
+	) -> PromiseLike | PromiseLikeMetatable,
 	cancel: (self: PromiseLike) -> (),
 }
 
@@ -128,7 +143,10 @@ type PromiseLikeMetatable = typeof(setmetatable(
 	{},
 	{} :: {
 		getStatus: (self: any) -> string,
-		finally: (self: PromiseLikeMetatable, callback: (...any) -> ...any) -> PromiseLike | PromiseLikeMetatable,
+		finally: (
+			self: PromiseLikeMetatable,
+			callback: (...any) -> ...any
+		) -> PromiseLike | PromiseLikeMetatable,
 		cancel: (self: PromiseLikeMetatable) -> (),
 	}
 ))
@@ -154,7 +172,10 @@ type Destroyable = {
 	.Destroy (self) -> ()
 	@tag Metatable
 ]=]
-type DestroyableMetatable = typeof(setmetatable({}, {} :: { Destroy: (self: DestroyableMetatable) -> () }))
+type DestroyableMetatable = typeof(setmetatable(
+	{},
+	{} :: { Destroy: (self: DestroyableMetatable) -> () }
+))
 
 --[=[
 	@within Trove
@@ -191,7 +212,10 @@ type Disconnectable = {
 	.Disconnect (self) -> ()
 	@tag Metatable
 ]=]
-type DisconectableMetatable = typeof(setmetatable({}, {} :: { Disconnect: (self: DisconectableMetatable) -> () }))
+type DisconectableMetatable = typeof(setmetatable(
+	{},
+	{} :: { Disconnect: (self: DisconectableMetatable) -> () }
+))
 
 --[=[
 	@within Trove
@@ -215,7 +239,8 @@ type DisconnectableLowercaseMetatable = typeof(setmetatable(
 
 local FN_MARKER = newproxy()
 local THREAD_MARKER = newproxy()
-local GENERIC_OBJECT_CLEANUP_METHODS = table.freeze({ "Destroy", "Disconnect", "destroy", "disconnect" })
+local GENERIC_OBJECT_CLEANUP_METHODS =
+	table.freeze({ "Destroy", "Disconnect", "destroy", "disconnect" })
 
 local function getObjectCleanupFunction(object: any, cleanupMethod: string?)
 	local t = typeof(object)
@@ -259,7 +284,11 @@ end
 local function assertSignalLike(object: any)
 	if
 		typeof(object) ~= "RBXScriptSignal"
-		and (typeof(object) ~= "table" or typeof(object.Connect) ~= "function" or typeof(object.Once) ~= "function")
+		and (
+			typeof(object) ~= "table"
+			or typeof(object.Connect) ~= "function"
+			or typeof(object.Once) ~= "function"
+		)
 	then
 		error("did not receive a signal as an argument", 3)
 	end
@@ -507,7 +536,12 @@ end
 	end)
 	```
 ]=]
-function Trove.BindToRenderStep(self: TroveInternal, name: string, priority: number, fn: (dt: number) -> ())
+function Trove.BindToRenderStep(
+	self: TroveInternal,
+	name: string,
+	priority: number,
+	fn: (dt: number) -> ()
+)
 	if self._cleaning then
 		error("cannot call trove:BindToRenderStep() while cleaning", 2)
 	end
@@ -697,7 +731,11 @@ function Trove.WrapClean(self: TroveInternal)
 	end
 end
 
-function Trove._findAndRemoveFromObjects(self: TroveInternal, object: any, cleanup: boolean): boolean
+function Trove._findAndRemoveFromObjects(
+	self: TroveInternal,
+	object: any,
+	cleanup: boolean
+): boolean
 	local objects = self._objects
 
 	for i, obj in objects do
