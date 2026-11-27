@@ -1,0 +1,1829 @@
+{
+ "className": "Model",
+ "attributes": {
+  "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/0",
+  "PartBuilt": true,
+  "Scale": {
+   "Float64": 1.0
+  },
+  "Rarity": "Uncommon",
+  "Cat": "Tux",
+  "Lite": true,
+  "Sleeping": true,
+  "Loaf": true
+ },
+ "children": [
+  {
+   "name": "CleanACat_Cat_Tux_Loaf_Lite_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.35,
+       0.12
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.78,
+     0.58,
+     0.95
+    ],
+    "Color": [
+     0.1843,
+     0.1765,
+     0.2314
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth",
+    "PivotOffset": {
+     "CFrame": {
+      "position": [
+       0.0,
+       -0.35,
+       -0.12
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "attributes": {
+    "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/0"
+   }
+  },
+  {
+   "name": "CleanACat_Cat_Tux_Loaf_Lite_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.35,
+       -0.365
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.46,
+     0.435,
+     0.08
+    ],
+    "Color": [
+     0.9843,
+     0.9686,
+     0.9451
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Cat_Tux_Loaf_Lite_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.05,
+       0.12
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.5,
+     0.04,
+     0.665
+    ],
+    "Color": [
+     0.9843,
+     0.9686,
+     0.9451
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/1"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.8373,
+         -0.5909
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9703,
+          0.2419
+         ],
+         [
+          0.0,
+          -0.2419,
+          0.9703
+         ]
+        ]
+       }
+      },
+      "Size": [
+       1.0,
+       0.84,
+       0.8
+      ],
+      "Color": [
+       0.1843,
+       0.1765,
+       0.2314
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         -0.32,
+         0.22
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9703,
+          -0.2419
+         ],
+         [
+          0.0,
+          0.2419,
+          0.9703
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/1"
+     },
+     "children": [
+      {
+       "name": "Carry",
+       "className": "Attachment",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.68,
+           0.0
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9703,
+            -0.2419
+           ],
+           [
+            0.0,
+            0.2419,
+            0.9703
+           ]
+          ]
+         }
+        }
+       }
+      },
+      {
+       "name": "BowSlot",
+       "className": "Attachment",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.37,
+           0.39,
+           -0.24
+          ],
+          "orientation": [
+           [
+            0.866,
+            -0.5,
+            0.0
+           ],
+           [
+            0.5,
+            0.866,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.5185,
+         -0.9082
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9703,
+          0.2419
+         ],
+         [
+          0.0,
+          -0.2419,
+          0.9703
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.414,
+       0.23,
+       0.07
+      ],
+      "Color": [
+       0.9843,
+       0.9686,
+       0.9451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.5535,
+         -0.9581
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.9703,
+          0.2419
+         ],
+         [
+          0.0,
+          -0.2419,
+          0.9703
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.115,
+       0.0805,
+       0.06
+      ],
+      "Color": [
+       0.8784,
+       0.4784,
+       0.549
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.345,
+         0.4513,
+         -0.9069
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          -0.2419,
+          0.0,
+          0.9703
+         ],
+         [
+          -0.9703,
+          0.0,
+          -0.2419
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1288,
+       0.1288
+      ],
+      "Color": [
+       0.9098,
+       0.6275,
+       0.6275
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.345,
+         0.4513,
+         -0.9069
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          -0.2419,
+          0.0,
+          0.9703
+         ],
+         [
+          -0.9703,
+          0.0,
+          -0.2419
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.05,
+       0.1288,
+       0.1288
+      ],
+      "Color": [
+       0.9098,
+       0.6275,
+       0.6275
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/2"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye1",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.253,
+           0.6806,
+           -0.9713
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9703,
+            0.2419
+           ],
+           [
+            0.0,
+            -0.2419,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2484,
+         0.3229,
+         0.076
+        ],
+        "Color": [
+         0.1843,
+         0.1765,
+         0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0,
+           -0.003
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9703,
+            -0.2419
+           ],
+           [
+            0.0,
+            0.2419,
+            0.9703
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/2"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye1",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.253,
+           0.6075,
+           -0.9974
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9703,
+            0.2419
+           ],
+           [
+            0.0,
+            -0.2419,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.149,
+         0.0435,
+         0.05
+        ],
+        "Color": [
+         0.5569,
+         0.5882,
+         0.6392
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye1",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1599,
+           0.6259,
+           -1.0035
+          ],
+          "orientation": [
+           [
+            0.8192,
+            -0.5736,
+            0.0
+           ],
+           [
+            0.5565,
+            0.7948,
+            0.2419
+           ],
+           [
+            -0.1388,
+            -0.1982,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0869,
+         0.0435,
+         0.047
+        ],
+        "Color": [
+         0.5569,
+         0.5882,
+         0.6392
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye1",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3461,
+           0.6259,
+           -1.0035
+          ],
+          "orientation": [
+           [
+            0.8192,
+            0.5736,
+            0.0
+           ],
+           [
+            -0.5565,
+            0.7948,
+            0.2419
+           ],
+           [
+            0.1388,
+            -0.1982,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0869,
+         0.0435,
+         0.047
+        ],
+        "Color": [
+         0.5569,
+         0.5882,
+         0.6392
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.253,
+         0.6799,
+         -0.9742
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye1"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/3"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye2",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.253,
+           0.6806,
+           -0.9713
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9703,
+            0.2419
+           ],
+           [
+            0.0,
+            -0.2419,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2484,
+         0.3229,
+         0.076
+        ],
+        "Color": [
+         0.1843,
+         0.1765,
+         0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0,
+           0.0,
+           -0.003
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9703,
+            -0.2419
+           ],
+           [
+            0.0,
+            0.2419,
+            0.9703
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/3"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye2",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.253,
+           0.6075,
+           -0.9974
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.9703,
+            0.2419
+           ],
+           [
+            0.0,
+            -0.2419,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.149,
+         0.0435,
+         0.05
+        ],
+        "Color": [
+         0.5569,
+         0.5882,
+         0.6392
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye2",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3461,
+           0.6259,
+           -1.0035
+          ],
+          "orientation": [
+           [
+            0.8192,
+            -0.5736,
+            0.0
+           ],
+           [
+            0.5565,
+            0.7948,
+            0.2419
+           ],
+           [
+            -0.1388,
+            -0.1982,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0869,
+         0.0435,
+         0.047
+        ],
+        "Color": [
+         0.5569,
+         0.5882,
+         0.6392
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye2",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1599,
+           0.6259,
+           -1.0035
+          ],
+          "orientation": [
+           [
+            0.8192,
+            0.5736,
+            0.0
+           ],
+           [
+            -0.5565,
+            0.7948,
+            0.2419
+           ],
+           [
+            0.1388,
+            -0.1982,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0869,
+         0.0435,
+         0.047
+        ],
+        "Color": [
+         0.5569,
+         0.5882,
+         0.6392
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.253,
+         0.6799,
+         -0.9742
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Eye2"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/4"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_EarL",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2844,
+           1.3046,
+           -0.6456
+          ],
+          "orientation": [
+           [
+            0.9781,
+            -0.2079,
+            0.0
+           ],
+           [
+            0.2017,
+            0.9491,
+            0.2419
+           ],
+           [
+            -0.0503,
+            -0.2366,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.24,
+         0.15,
+         0.24
+        ],
+        "Color": [
+         0.1843,
+         0.1765,
+         0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           -0.0312,
+           -0.0717,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.9781,
+            0.2017,
+            -0.0503
+           ],
+           [
+            -0.2079,
+            0.9491,
+            -0.2366
+           ],
+           [
+            0.0,
+            0.2419,
+            0.9703
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/4"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_EarL",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3156,
+           1.4469,
+           -0.681
+          ],
+          "orientation": [
+           [
+            0.9781,
+            -0.2079,
+            0.0
+           ],
+           [
+            0.2017,
+            0.9491,
+            0.2419
+           ],
+           [
+            -0.0503,
+            -0.2366,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.08,
+         0.15,
+         0.08
+        ],
+        "Color": [
+         0.1843,
+         0.1765,
+         0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         -0.3,
+         1.2302,
+         -0.627
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_EarL"
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/5"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_EarR",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2844,
+           1.3046,
+           -0.6456
+          ],
+          "orientation": [
+           [
+            0.9781,
+            0.2079,
+            0.0
+           ],
+           [
+            -0.2017,
+            0.9491,
+            0.2419
+           ],
+           [
+            0.0503,
+            -0.2366,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.24,
+         0.15,
+         0.24
+        ],
+        "Color": [
+         0.1843,
+         0.1765,
+         0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.0312,
+           -0.0717,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.9781,
+            -0.2017,
+            0.0503
+           ],
+           [
+            0.2079,
+            0.9491,
+            -0.2366
+           ],
+           [
+            0.0,
+            0.2419,
+            0.9703
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/5"
+       }
+      },
+      {
+       "name": "CleanACat_Cat_Tux_Loaf_Lite_EarR",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3156,
+           1.4469,
+           -0.681
+          ],
+          "orientation": [
+           [
+            0.9781,
+            0.2079,
+            0.0
+           ],
+           [
+            -0.2017,
+            0.9491,
+            0.2419
+           ],
+           [
+            0.0503,
+            -0.2366,
+            0.9703
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.08,
+         0.15,
+         0.08
+        ],
+        "Color": [
+         0.1843,
+         0.1765,
+         0.2314
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.3,
+         1.2302,
+         -0.627
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_EarR"
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.58,
+       -0.3
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Tux_Loaf_Lite_Head"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/6"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Paws",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.21,
+         0.085,
+         -0.525
+        ],
+        "orientation": [
+         [
+          0.9272,
+          0.0,
+          -0.3746
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.3746,
+          0.0,
+          0.9272
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.26,
+       0.17,
+       0.46
+      ],
+      "Color": [
+       0.9843,
+       0.9686,
+       0.9451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.2584,
+         -0.085,
+         0.079
+        ],
+        "orientation": [
+         [
+          0.9272,
+          0.0,
+          0.3746
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.3746,
+          0.0,
+          0.9272
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/6"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Paws",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.21,
+         0.085,
+         -0.525
+        ],
+        "orientation": [
+         [
+          0.9272,
+          0.0,
+          0.3746
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -0.3746,
+          0.0,
+          0.9272
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.26,
+       0.17,
+       0.46
+      ],
+      "Color": [
+       0.9843,
+       0.9686,
+       0.9451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       -0.355
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Tux_Loaf_Lite_Paws"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Cat_Tux_Loaf_Lite/7"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Tail",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4425,
+         0.6283,
+         0.685
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.866,
+          0.5
+         ],
+         [
+          0.0,
+          0.5,
+          0.866
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.24,
+       0.24,
+       0.31
+      ],
+      "Color": [
+       0.1843,
+       0.1765,
+       0.2314
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.0,
+         -0.125
+        ],
+        "orientation": [
+         [
+          0.0,
+          0.0,
+          -1.0
+         ],
+         [
+          -0.866,
+          0.5,
+          0.0
+         ],
+         [
+          0.5,
+          0.866,
+          0.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Cat_Tux_Loaf_Lite/7"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Tail",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.4833,
+         0.8596,
+         0.685
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.9848,
+          -0.1736
+         ],
+         [
+          0.0,
+          -0.1736,
+          0.9848
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.22,
+       0.22,
+       0.31
+      ],
+      "Color": [
+       0.1843,
+       0.1765,
+       0.2314
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Cat_Tux_Loaf_Lite_Tail",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.3658,
+         1.0631,
+         0.685
+        ],
+        "orientation": [
+         [
+          0.0,
+          -0.6428,
+          -0.766
+         ],
+         [
+          0.0,
+          -0.766,
+          0.6428
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.16,
+       0.2,
+       0.31
+      ],
+      "Color": [
+       0.9843,
+       0.9686,
+       0.9451
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.38,
+       0.52,
+       0.685
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Cat_Tux_Loaf_Lite_Tail"
+  }
+ ],
+ "properties": {
+  "WorldPivotData": {
+   "OptionalCFrame": {
+    "position": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "orientation": [
+     [
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0
+     ]
+    ]
+   }
+  }
+ }
+}

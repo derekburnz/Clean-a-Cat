@@ -109,6 +109,8 @@ def cat_rbx_extras(name):
         attributes["Special"] = True
     if name.endswith(cats.LITE):                      # a light twin (cats.build_cat_lite): for cats seen across a room
         attributes["Lite"] = True
+    if name.endswith(cats.SLEEP_SUFFIX):              # asleep in a hotel bed (cats.build_cat_sleep, #1050)
+        attributes["Sleeping"] = True
     slot = props.slot(cat)
     if slot in ("Head", "Face"):                      # the game leaves a bow's `_Fan` off such a cat (BowFit): the
         attributes["HeadPiece"] = True                # Golden bow's fan would cross the head piece
@@ -166,7 +168,9 @@ def main():
         common.hide_all_meshes()
         built = fn(mat)
         objs, dnest, dattrs = built if isinstance(built, tuple) else (built, {}, {})
+        cats.SLEEP = name.endswith(cats.SLEEP_SUFFIX)  # a sleeping cat's head spots follow its own head tip
         extra = cat_rbx_extras(name) if name.startswith("CleanACat_Cat_") else {}
+        cats.SLEEP = False
         if name in stations.EXTRAS:
             extra = stations.EXTRAS[name]()
         if name in props.EXTRAS:

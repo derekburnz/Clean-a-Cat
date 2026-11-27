@@ -400,8 +400,10 @@ def joints(spec, body="walk"):
 
 
 def loaf_look_matrix(size=3):
-    """The loaf's head's turn about its neck: tipped nose down (LOAF_PITCH), then turned to the right (LOAF_LOOK)."""
-    return Matrix.Rotation(math.radians(-LOAF_LOOK), size, "Z") @ Matrix.Rotation(math.radians(LOAF_PITCH), size, "X")
+    """The loaf's head's turn about its neck: tipped nose down (LOAF_PITCH; SLEEP_PITCH on a sleeping cat, so its
+    shut eyes show from above), then turned to the right (LOAF_LOOK)."""
+    pitch = SLEEP_PITCH if SLEEP else LOAF_PITCH
+    return Matrix.Rotation(math.radians(-LOAF_LOOK), size, "Z") @ Matrix.Rotation(math.radians(pitch), size, "X")
 
 
 def loaf_look(v):
@@ -603,6 +605,14 @@ def _eye(spec, c, h, side):
     eye = c["eyes"] if side > 0 else c["eyes2"]         # an odd-eyed cat's right eye (Eye2, screen left) is eyes2
     # its back 6 mm deeper than its front is proud: a back at the same depth lies in the plane of a face inside
     # the chamfered head (#160)
+    if SLEEP:                                           # shut: the fur over the eye and one curved lash line (#1050)
+        ink = "fur_grey" if palette.lstar(c["fur"]) < 35 else "fur_black"
+        b.box((0, 0.003, 0), (0.2 * k, 0.076, EYE_H * k), c["fur"], bevel=False)
+        b.box((0, -0.03, -EYE_H * 0.2 * k), (0.12 * k, 0.03, 0.035 * k), ink, bevel=False)
+        for sx in (-1, 1):
+            b.box((sx * 0.075 * k, -0.033, -EYE_H * 0.14 * k), (0.07 * k, 0.03, 0.035 * k), ink, bevel=False,
+                  rot=_rot(-sx * 35, "Y"))
+        return b
     b.box((0, 0.003, 0), (0.2 * k, 0.076, EYE_H * k), eye, bevel=False)
     if not spec.get("glow_eyes"):
         b.box((side * 0.01, -0.025, -0.02 * k), (0.12 * k, 0.04, EYE_H * 0.72 * k), "fur_black", bevel=False)
@@ -1336,6 +1346,11 @@ LITE_MIN_BY_CAT = {"Rosette": {"_Head": 0.11}, "Prism": {"_Head": 0.07}, "Bathti
                    "Moonstag": {"_Prop": 0.06}, "WhiteTiger": {"_Head": 0.06}, "Phoenix": {"_Head": 0.06}}
 LITE = "_Lite"
 LITE_EYES = ("_Eye1", "_Eye2")
+
+
+SLEEP = False               # while True, _eye draws shut eyes (loaf.build_sleep, #1050)
+SLEEP_SUFFIX = "_Loaf" + "_Lite"
+SLEEP_PITCH = 14.0          # a sleeping cat's head is only a little nose down: the face shows to a player standing over the bed
 
 
 def build_cat_lite(name, mat):
