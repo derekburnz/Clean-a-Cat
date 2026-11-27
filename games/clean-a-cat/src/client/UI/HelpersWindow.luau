@@ -287,7 +287,6 @@ local function drawRow(
 			paw.Position = UDim2.fromScale(0.5, 0.5)
 			paw.Size = UDim2.fromScale(0.6, 0.6)
 			Icons.draw("Paw", paw, true)
-			Kit.plusBadge(box)
 		end
 		local petTap = Instance.new("TextButton")
 		petTap.Name = "Tap"

@@ -4,9 +4,6 @@
 -- Games, 2026-11-24, Model-Agent); one without an upload yet stays "" and draws its stand-in: a glyph on a coloured
 -- tile. A picture still in moderation draws blank until Roblox approves it. Model icons are drawn at 48 real px or
 -- larger and are never scaled by TextSize.
-local ContentProvider = game:GetService("ContentProvider")
-local RunService = game:GetService("RunService")
-
 local Icons = {}
 
 -- name -> "rbxassetid://<id>" once uploaded under the group (rule 18); "" draws the stand-in.
@@ -101,84 +98,7 @@ local STAND_INS: { [string]: StandIn } = {
 	Crate = { glyph = "📦", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Helpers = { glyph = "🧑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
-	Helper = { glyph = "🧑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
-	Tools = { glyph = "🧴", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
-	Build = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 }
-Icons.STAND_INS = STAND_INS
-
--- Ids that would not load on this device (issue 1034, Derek: "tons of missing hud and ui images"): a rejected,
--- deleted or not group-owned picture fails its fetch and drew a blank square. Once one fails it draws its stand-in, here
--- and on every later draw, so a button is never empty.
-local failed: { [string]: boolean } = {}
-local WATCH_SECONDS = 20 -- a fetch still not done by then counts as failed
-
-local drawStandIn: (name: string, parent: GuiObject, fade: number) -> GuiObject
-
--- Calls `fallback` once if `image` on `label` fails to load (a failed or timed out fetch, or still not loaded after
--- WATCH_SECONDS), and remembers the id as failed. Only in a running game. Portraits uses it too.
-function Icons.onFail(label: ImageLabel, image: string, fallback: () -> ())
-	if not RunService:IsRunning() then
-		return
-	end
-	local done = false
-	local function fail()
-		if done then
-			return
-		end
-		done = true
-		failed[image] = true
-		if label.Parent then
-			fallback()
-		end
-	end
-	task.spawn(function()
-		local ok = pcall(function()
-			ContentProvider:PreloadAsync(
-				{ image },
-				function(_id: string, status: Enum.AssetFetchStatus)
-					if
-						status == Enum.AssetFetchStatus.Failure
-						or status == Enum.AssetFetchStatus.TimedOut
-					then
-						task.defer(fail)
-					end
-				end
-			)
-		end)
-		if not ok then
-			return
-		end
-		task.delay(WATCH_SECONDS, function()
-			if label.Parent and not label.IsLoaded then
-				fail()
-			end
-		end)
-	end)
-end
-
-function Icons.hasFailed(image: string): boolean
-	return failed[image] == true
-end
-
--- Swaps `label` for its stand-in when its picture fails to load, keeping the ZIndex a caller gave it.
-local function watch(label: ImageLabel, name: string, image: string, fade: number)
-	Icons.onFail(label, image, function()
-		local parent = label.Parent
-		if parent == nil or not parent:IsA("GuiObject") then
-			return
-		end
-		local z = label.ZIndex
-		label:Destroy()
-		local drawn = drawStandIn(name, parent :: GuiObject, fade)
-		drawn.ZIndex = z
-		for _, d in drawn:GetDescendants() do
-			if d:IsA("GuiObject") then
-				(d :: GuiObject).ZIndex = z
-			end
-		end
-	end)
-end
 
 -- Puts icon `name` inside `parent`, filling it, and returns it. `faded` dims it (a step already done).
 function Icons.draw(name: string, parent: GuiObject, faded: boolean?): GuiObject
@@ -188,7 +108,7 @@ function Icons.draw(name: string, parent: GuiObject, faded: boolean?): GuiObject
 	end
 	local fade = if faded then 0.55 else 0
 	local image = Icons.IMAGES[name] or ""
-	if image ~= "" and not failed[image] then
+	if image ~= "" then
 		local label = Instance.new("ImageLabel")
 		label.Name = "Icon"
 		label.BackgroundTransparency = 1
@@ -197,13 +117,8 @@ function Icons.draw(name: string, parent: GuiObject, faded: boolean?): GuiObject
 		label.ScaleType = Enum.ScaleType.Fit
 		label.ImageTransparency = fade
 		label.Parent = parent
-		watch(label, name, image, fade)
 		return label
 	end
-	return drawStandIn(name, parent, fade)
-end
-
-function drawStandIn(name: string, parent: GuiObject, fade: number): GuiObject
 	local standIn: StandIn = STAND_INS[name]
 		or { glyph = "?", fill = Color3.new(1, 1, 1), round = true, bare = false }
 	if standIn.bare then
