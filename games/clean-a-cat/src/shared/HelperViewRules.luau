@@ -3,8 +3,11 @@
 -- server's Player attributes WorkerLevel_<id> and WorkerMode_<id> (WorkerService sets them; a missing level means
 -- not hired). One row per helper in WorkerRules.IDS order. A hired helper shows their level, the coins for the next
 -- one (none at the top level) and the line they wash first. Jo and Sam not hired yet show their price, paid at their
--- pad; Lou not hired says he comes with his game pass. Nothing is sold here, and nothing says "hurry". Pure, so
+-- pad; Lou not hired says he comes with his game pass. Nothing is sold here, and nothing says "hurry". With menuOnly
+-- on (MenuRules.helpers, issue 1033) there are no pads: Jo and Sam not hired get a Hire button on their row
+-- (`hire`, its words hireText), which sends RequestHireWorker(id); the server checks the coins as at the pad. Pure, so
 -- tests/specs/HelperViewRules.spec.luau covers it.
+local MenuRules = require(script.Parent:WaitForChild("MenuRules"))
 local WorkerRules = require(script.Parent:WaitForChild("WorkerRules"))
 
 local HelperViewRules = {}
@@ -25,6 +28,7 @@ export type Row = {
 	modeName: string?,
 	price: number?, -- coins at their pad, for one not hired; nil for a pass helper
 	pass: boolean, -- comes with a game pass (Lou)
+	hire: boolean, -- menuOnly: not hired and hired for coins, so the row has a Hire button
 }
 
 -- The rows in WorkerRules.IDS order. `attribute(name)` reads a Player attribute; `names[id]` is a shown name.
@@ -56,6 +60,7 @@ function HelperViewRules.rows(
 			modeName = if mode then WorkerRules.MODE_NAMES[mode] else nil,
 			price = if hired then nil else WorkerRules.priceOf(id, isOn),
 			pass = info.pass,
+			hire = not hired and not info.pass and isOn ~= nil and MenuRules.helpers(isOn),
 		})
 	end
 	return out
@@ -80,7 +85,15 @@ function HelperViewRules.say(row: Row): string
 	elseif row.pass then
 		return "Comes with the Extra Worker pass"
 	end
+	if row.hire then
+		return "Washes cats for you"
+	end
 	return `Hire at their pad · {row.price} coins`
+end
+
+-- The Hire button's words (menuOnly), or nil when the row has none.
+function HelperViewRules.hireText(row: Row): string?
+	return if row.hire then `Hire · {row.price or 0}` else nil
 end
 
 -- The mode button's words: which waiting cat they take first (the same words as their stand's prompt).

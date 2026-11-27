@@ -6,6 +6,8 @@
 -- Lou comes with a game pass, so he has no hire prompt. Nothing opens by itself.
 -- With `pets` on, a third prompt gives the worker the best pet from the player's pen (until Design's Pets window).
 -- With `petMenuOnly` and `petsWindow` on, that prompt goes: pets are given in the Pets menu (issue 930).
+-- With `menuOnly` and `helpersWindow` on, the Hire and Takes prompts go: both are in the Helpers window (MenuRules,
+-- issues 1028 and 1033).
 -- It also fires Moments.WorkerFinished(cat) when a worker's clean cat sits down in their tub, on any plot.
 -- Behind the LiveFlags switch `workers`.
 local Players = game:GetService("Players")
@@ -15,6 +17,7 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local MenuRules = require(Shared:WaitForChild("MenuRules"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -91,15 +94,16 @@ local function build(id: string)
 		give.Enabled = best ~= nil and WorkerRules.givePrompt(LiveFlags.isOn)
 		give.ActionText = "Give a pet"
 		give.ObjectText = if best then `{best.kind} to {nameOf(id)}` else ""
+		local inMenu = MenuRules.helpers(LiveFlags.isOn)
 		if not hired then
-			main.Enabled = not info.pass
+			main.Enabled = not info.pass and not inMenu
 			main.ActionText = `Hire {info.name}`
 			main.ObjectText = `{WorkerRules.priceOf(id, LiveFlags.isOn) or 0} coins`
 			level.Enabled = false
 			return
 		end
 		local mode = WorkerRules.cleanMode(attribute("WorkerMode", id)) or WorkerRules.DEFAULT_MODE
-		main.Enabled = true
+		main.Enabled = not inMenu
 		main.ActionText = `Takes: {WorkerRules.MODE_NAMES[mode]}`
 		main.ObjectText = `{nameOf(id)}, tap to change`
 		local cost =
@@ -207,7 +211,13 @@ function WorkerController.Start()
 			end
 		end)
 	for _, flag in
-		{ WorkerRules.HUD_TIDY_FLAG, WorkerRules.PET_MENU_FLAG, WorkerRules.PETS_WINDOW_FLAG }
+		{
+			WorkerRules.HUD_TIDY_FLAG,
+			WorkerRules.PET_MENU_FLAG,
+			WorkerRules.PETS_WINDOW_FLAG,
+			MenuRules.FLAG,
+			MenuRules.HELPERS_FLAG,
+		}
 	do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()

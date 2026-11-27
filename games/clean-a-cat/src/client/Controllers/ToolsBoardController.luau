@@ -5,6 +5,8 @@
 -- prompt goes away, and so does its display on the shelf. Nothing opens by itself.
 -- Behind the LiveFlags switch `toolsBoard`. With `bowTiers` on too, the row below the tools sells the next bow tier
 -- (BowRules, issue 508), and goes away once the Golden bow is bought.
+-- With `menuOnly` and `buildWindow` on, the board keeps its shelves but has no prompts: tools and bows are bought in
+-- the Build window (MenuRules, issue 1028).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -14,6 +16,7 @@ local BoardProp = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild(
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BowRules = require(Shared:WaitForChild("BowRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local MenuRules = require(Shared:WaitForChild("MenuRules"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local ToolRules = require(Shared:WaitForChild("ToolRules"))
@@ -44,6 +47,7 @@ local function enable()
 	-- every tool keeps its own shelf (its place in IDS, where the model's display stands), so with one switched off
 	-- the next tool's prompt is never on the empty shelf (Review-QA on #432)
 	local sellsBows = LiveFlags.isOn(BowRules.FLAG)
+	local inMenu = MenuRules.build(LiveFlags.isOn)
 	local made =
 		BoardProp.make(SPEC, SpaLayout.spot("Tools"), #ToolRules.IDS + (if sellsBows then 1 else 0))
 	-- a tool on sale shows on its shelf until it is owned; one switched off never shows
@@ -64,7 +68,7 @@ local function enable()
 		prompt.HoldDuration = ToolRules.BUY_HOLD
 		prompt.MaxActivationDistance = ToolRules.PROMPT_REACH
 		prompt.RequiresLineOfSight = false
-		prompt.Enabled = not owns(id)
+		prompt.Enabled = not owns(id) and not inMenu
 		prompt.Parent = spot
 		table.insert(
 			connections,
@@ -77,7 +81,7 @@ local function enable()
 			Players.LocalPlayer
 				:GetAttributeChangedSignal(ToolRules.ATTRIBUTE_PREFIX .. id)
 				:Connect(function()
-					prompt.Enabled = not owns(id)
+					prompt.Enabled = not owns(id) and not inMenu
 					showDisplay(id)
 				end)
 		)
@@ -103,7 +107,7 @@ local function enable()
 			end
 			onSale = BowRules.nextTier(bows)
 			local info = if onSale then BowRules.TIER[onSale] else nil
-			prompt.Enabled = info ~= nil
+			prompt.Enabled = info ~= nil and not inMenu
 			if info then
 				prompt.ActionText = `Buy {info.name} bow`
 				prompt.ObjectText = `{info.price} coins, +{info.bonus} a cat`
@@ -157,6 +161,14 @@ function ToolsBoardController.Start()
 			disable()
 			refresh()
 		end)
+	-- menuOnly or the Build window came or went: the board is drawn again with or without its prompts.
+	for _, flag in { MenuRules.FLAG, MenuRules.BUILD_FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(function()
+				disable()
+				refresh()
+			end)
+	end
 	-- A tool's own switch (the Pro Brush's) changed: the board is drawn again with or without it.
 	for _, id in ToolRules.IDS do
 		local toolFlag = ToolRules.TOOLS[id].flag
