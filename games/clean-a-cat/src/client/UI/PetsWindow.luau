@@ -306,7 +306,9 @@ local function drawTile(
 	starRow.ZIndex = 3
 	local starList = list(starRow, true, 0)
 	starList.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	stars(starRow, group.star, s.star, 1)
+	if CrateViewRules.showStars(group.star, LiveFlags.isOn(CrateViewRules.SINGLES_FLAG)) then
+		stars(starRow, group.star, s.star, 1)
+	end
 
 	-- the tap that puts this pet in the picked slot (or takes it off), under Fuse
 	local tap = tapArea(tile, `Put {group.kind} with the picked slot`)
@@ -546,7 +548,7 @@ function PetsWindow.redraw()
 	p.rightNote.Visible = not short
 
 	-- the pets
-	local groups = CrateViewRules.groups(pets)
+	local groups = CrateViewRules.tiles(pets, LiveFlags.isOn(CrateViewRules.SINGLES_FLAG))
 	clear(p.scroll)
 	local cellW = math.floor((leftW - 20 - (s.cols - 1) * s.tileGap) / s.cols) -- the bar and the list's padding
 	local twoLines = false

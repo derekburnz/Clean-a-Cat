@@ -126,6 +126,40 @@ return function()
 			expect(id).to.equal(1)
 			expect(slot).to.equal("Jo1")
 		end)
+
+		it(
+			"with petSingles draws one tile per pet, one Fuse per three, no stars at one star",
+			function()
+				local tiles = CrateViewRules.tiles(pets, true)
+				expect(#tiles).to.equal(5)
+				local clovers: { CrateViewRules.Group } = {}
+				for _, tile in tiles do
+					expect(tile.count).to.equal(1)
+					if tile.kind == "Clover" then
+						table.insert(clovers, tile)
+					end
+				end
+				expect(#clovers).to.equal(3)
+				expect(clovers[1].own).to.equal(2)
+				expect(clovers[1].canFuse).to.equal(true)
+				expect(clovers[2].canFuse).to.equal(false)
+				expect(clovers[3].canFuse).to.equal(false)
+				local ids = CrateViewRules.fuseIds(clovers[1]) :: { number }
+				expect(#ids).to.equal(3)
+				expect(ids[1]).to.equal(2)
+				-- a tap is about that one pet
+				local id, slot = CrateViewRules.placeFor(clovers[1], "player", pets)
+				expect(id).to.equal(2)
+				expect(slot).to.equal(nil)
+				id, slot = CrateViewRules.placeFor(clovers[2], "player", pets)
+				expect(id).to.equal(clovers[2].own)
+				expect(slot).to.equal("player")
+				expect(#CrateViewRules.tiles(pets, false)).to.equal(3)
+				expect(CrateViewRules.showStars(1, true)).to.equal(false)
+				expect(CrateViewRules.showStars(2, true)).to.equal(true)
+				expect(CrateViewRules.showStars(1, false)).to.equal(true)
+			end
+		)
 	end)
 	describe("CrateViewRules.shopRows", function()
 		local prices: { [string]: number } = { CrateOne = 49, CrateFive = 199 }
