@@ -49,5 +49,43 @@ return function()
 			expect(StarterRules.hoursIn(length, 0, length)).to.equal(0)
 			expect(StarterRules.hoursIn(length + 1000, 1000 + 2 * 3600 + 5, length)).to.equal(2)
 		end)
+
+		it(
+			"gives the golden pet once, never from a crate, no stronger than the best crate pet (1090)",
+			function()
+				local CrateRules = require(Shared:WaitForChild("CrateRules"))
+				local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+				expect(table.find(LiveFlags.KEYS, StarterRules.PET_FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[StarterRules.PET_FLAG]).to.equal(true)
+				expect(CrateRules.rarityOf(StarterRules.PET)).to.equal(StarterRules.PET_RARITY)
+				expect(CrateRules.BOOST[StarterRules.PET_RARITY] <= CrateRules.BOOST.Legendary).to.equal(
+					true
+				)
+				for _, kind in CrateRules.KINDS do
+					for _, odds in CrateRules.odds(kind) do
+						expect(odds.pet ~= StarterRules.PET).to.equal(true)
+					end
+				end
+				local save = { pets = {}, nextPetId = 3, starterPet = false }
+				local pet = StarterRules.givePet(save, CrateRules.PLAYER_SLOT)
+				expect(pet).to.be.ok()
+				expect((pet :: any).slot).to.equal(CrateRules.PLAYER_SLOT)
+				expect(save.nextPetId).to.equal(4)
+				expect(StarterRules.givePet(save, CrateRules.PLAYER_SLOT)).to.equal(nil)
+				expect(#save.pets).to.equal(1)
+			end
+		)
+
+		it("knows a save that bought the pack from its three passes", function()
+			expect(StarterRules.boughtBefore({})).to.equal(false)
+			expect(StarterRules.boughtBefore({ GoldenSponge = true, SecondPetSlot = true })).to.equal(
+				false
+			)
+			expect(StarterRules.boughtBefore({
+				GoldenSponge = true,
+				SecondPetSlot = true,
+				DoubleCoins = true,
+			})).to.equal(true)
+		end)
 	end)
 end

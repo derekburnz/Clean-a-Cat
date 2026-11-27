@@ -54,7 +54,9 @@ end
 
 -- Pets that come from no crate, with their rarity: the gift stand's pet (GiftRules, issue 521). Never rolled; boosts and
 -- shows like any pet of that rarity.
-CrateRules.GIFT_PETS = table.freeze({ Starcoat = "Uncommon" }) :: { [string]: string }
+-- The starter pack's golden pet (StarterRules.PET, issue 1090) is one too.
+CrateRules.GIFT_PETS =
+	table.freeze({ Starcoat = "Uncommon", Midas = "Epic" }) :: { [string]: string }
 
 -- Percent per rarity for each crate kind; each sums to 100 (tuning crate.chance and crate.good).
 CrateRules.CHANCES = table.freeze({
