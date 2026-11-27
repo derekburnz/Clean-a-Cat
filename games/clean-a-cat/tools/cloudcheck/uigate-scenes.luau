@@ -267,6 +267,7 @@ local SCENES = {
 			flag("feedback", true)
 			UI.setFeedback(true, 1, 3)
 			UI.setCanReset(true)
+			UI.setVisitors(true) -- the tallest Settings: every optional row and both buttons
 			UI.open("Settings")
 		end,
 	},

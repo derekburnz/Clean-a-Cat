@@ -504,7 +504,9 @@ redraw = function()
 	p.reset.Parent = p.columns[if short then 2 else 1]
 	p.reset.Size = UDim2.new(1, 0, 0, if short then 60 else 64) -- 44 real px at the smallest scale
 	p.reset.Visible = canReset
-	p.feedback.Parent = p.columns[if short then 2 else 1]
+	-- with both buttons on a short screen, feedback goes under the first column and reset under the second, so
+	-- neither column runs off a small phone (Visitors, Send feedback and Reset all shown on a dev server)
+	p.feedback.Parent = p.columns[if short and not canReset then 2 else 1]
 	p.feedback.Size = UDim2.new(1, 0, 0, if short then 60 else 64)
 	p.feedback.Visible = feedbackOn
 	local done = feedbackSent >= feedbackMax
