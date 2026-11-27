@@ -42,3 +42,11 @@ Uploaded under the group like the rest once Review-QA has passed them.
 `Helper` and `Helpers` were rendered again on 2026-11-26: the staff's cheeks are round, as on the models (#776), where
 they were small bars. Nothing else in the two pictures changed. They are uploaded again as new assets; the ids in
 `HUD/Icons.luau` are Design-Agent's to swap.
+
+## Staff apron (issue 929)
+
+`CleanACat_Icon_Hud_Staff.png`, for the Helpers button and the Helpers window badge. Derek, 2026-11-26: "switch the
+helper icon to be something other then the first helper". The staff's cream bib apron on its own, no person and no
+face, so the button never looks like one helper: a big pink paw on the bib, a pink neck loop, waistband, ties and hem,
+and a mint pocket with the yellow sponge and the sky brush standing in it. Review-QA found the first draft read as a tote bag at 36 px under the Shop button, so the bib is narrow for a T, the neck loop is a thin cord, the waist ties stand out at the sides and the sponge and brush are bigger. Made by `hud_icons.py` (`Staff`), checked at
+48 and 36 px beside Shop, Pets and Quests. `Helpers` (Jo) stays for anything that means Jo herself.
