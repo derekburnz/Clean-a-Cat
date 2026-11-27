@@ -34,15 +34,18 @@ return function()
 			expect(SaleRules.salePrice(1)).to.equal(1)
 		end)
 
-		it("strikes the regular price only with the sale on and the live price really lower", function()
-			local regular = SaleRules.REGULAR_PASSES
-			expect(SaleRules.was(regular, "DoubleCoins", 25, on)).to.equal(50)
-			expect(SaleRules.was(regular, "DoubleCoins", 25, off)).to.equal(nil)
-			expect(SaleRules.was(regular, "DoubleCoins", 50, on)).to.equal(nil)
-			expect(SaleRules.was(regular, "DoubleCoins", 60, on)).to.equal(nil)
-			expect(SaleRules.was(regular, "DoubleCoins", nil, on)).to.equal(nil)
-			expect(SaleRules.was(regular, "Nope", 1, on)).to.equal(nil)
-			expect(string.find(string.lower(SaleRules.LABEL), "hurry", 1, true)).to.equal(nil)
-		end)
+		it(
+			"strikes the regular price only with the sale on and the live price really lower",
+			function()
+				local regular = SaleRules.REGULAR_PASSES
+				expect(SaleRules.was(regular, "DoubleCoins", 25, on)).to.equal(50)
+				expect(SaleRules.was(regular, "DoubleCoins", 25, off)).to.equal(nil)
+				expect(SaleRules.was(regular, "DoubleCoins", 50, on)).to.equal(nil)
+				expect(SaleRules.was(regular, "DoubleCoins", 60, on)).to.equal(nil)
+				expect(SaleRules.was(regular, "DoubleCoins", nil, on)).to.equal(nil)
+				expect(SaleRules.was(regular, "Nope", 1, on)).to.equal(nil)
+				expect(string.find(string.lower(SaleRules.LABEL), "hurry", 1, true)).to.equal(nil)
+			end
+		)
 	end)
 end

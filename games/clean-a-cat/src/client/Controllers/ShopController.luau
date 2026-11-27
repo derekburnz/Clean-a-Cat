@@ -46,7 +46,8 @@ function ShopController.Start()
 		player:GetAttributeChangedSignal(Passes.ATTRIBUTE_PREFIX .. key):Connect(refresh)
 	end
 	for _, flag in { Passes.LADDER_FLAG, SaleRules.FLAG } do
-		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag):Connect(refresh)
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(refresh)
 	end
 	refresh()
 end

@@ -126,7 +126,11 @@ end
 
 -- Whether the shop offers pass `key` now: 3x Coins only while coinLadder is on and 2x Coins is owned (or 3x is owned
 -- already, so its card says Owned); every other pass always.
-function Passes.offered(key: string, owns: (key: string) -> boolean, isOn: (flag: string) -> boolean): boolean
+function Passes.offered(
+	key: string,
+	owns: (key: string) -> boolean,
+	isOn: (flag: string) -> boolean
+): boolean
 	if key == "TripleCoins" then
 		return owns("TripleCoins") or (isOn(Passes.LADDER_FLAG) and owns("DoubleCoins"))
 	end

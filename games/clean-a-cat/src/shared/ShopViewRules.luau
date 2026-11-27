@@ -30,7 +30,11 @@ type Look = { icon: string, badge: string?, short: string? }
 
 local LOOK: { [string]: Look } = {
 	DoubleCoins = { icon = "Coins", badge = "x2", short = "Double coins on cats you wash by hand" },
-	TripleCoins = { icon = "Coins", badge = "x3", short = "Triple coins on hand washes, in place of 2x" },
+	TripleCoins = {
+		icon = "Coins",
+		badge = "x3",
+		short = "Triple coins on hand washes, in place of 2x",
+	},
 	SecondBuilder = { icon = "Build", badge = "x2", short = "Build a tub and a room at once" },
 	GoldenSponge = { icon = "Sponge", short = "Gold sponge, +20% on hand washes" },
 	Lou = { icon = "Helper", short = "A third helper with his own stand" },
@@ -51,9 +55,10 @@ function ShopViewRules.cards(
 	isOn: ((flag: string) -> boolean)?
 ): { Card }
 	local out: { Card } = {}
-	local flags: (flag: string) -> boolean = isOn or function(_flag: string): boolean
-		return false
-	end
+	local flags: (flag: string) -> boolean = isOn
+		or function(_flag: string): boolean
+			return false
+		end
 	for _, key in Passes.KEYS do
 		local info = Passes.INFO[key]
 		local robux = whole(price(key))
