@@ -168,3 +168,11 @@ The `hotel-*.jpg` pictures show the side Garden's three looks (locked, building,
 ## shortText (issue 1027) on main 009c407, iphone_13, 2026-11-27
 
 `1027-<window>-iphone13.jpg` shows Shop, Helpers, Pets, Settings, Check in, Crate, Gift and Starter with shortText on and prices set by hand. Prices are 149, 299, 99, 249 and 249 for the passes, 49 and 199 for crates, and 199 for the starter pack.
+
+## menuContrast3 (issue 1096, PR 1114) on main 59e74dc, iphone_13, 2026-11-27
+
+`1114-<piece>-iphone13.jpg` shows:
+- The outlined white button words: Buy, Build, Level up, Claim, Save and the X.
+- The deeper ticks (1E7A45) and the deeper gold "+100" (6B4200).
+- The white to lilac soft buttons: the Takes chip and Rename's "Use Sam".
+- The Settings rows on white cards with ink edges.
