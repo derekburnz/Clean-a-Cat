@@ -83,7 +83,17 @@ PETS = {
 GIFT_PETS = {
     "Starcoat": dict(cats.ROSTER["Starcoat"], gift=True, pet_rarity="Uncommon"),
 }
-ALL = {**PETS, **GIFT_PETS}
+# The starter pack's pet (#1090; Derek, 2026-11-27, on the starter card: "make it like a golden flashing pet or crate
+# or something crazy"). Only the starter pack gives it: no crate holds it. A cat of solid gold (the three metal
+# golds, so it shines in the game), sky blue eyes, a jewelled crown with lit gems, wide gold wings with white hot
+# tips and a lit star on its tail.
+STARTER_PETS = {
+    "Midas": dict(rarity="Epic", fur="gold_mid", second="gold_light", third="gold_dark", eyes="eye_sky",
+                  pattern="gradient", sparkle=True, speck_out=(0.045, 0.03), muzzle="gold_light", nose="nose_bubblegum",
+                  fluffy=True, tail_thick=0.3, socks="gold_light", tip="gold_light", scale=1.12, eye_k=1.1, ear_k=1.2, ears="gold_light",
+                  starter=True),
+}
+ALL = {**PETS, **GIFT_PETS, **STARTER_PETS}
 
 
 def key(name):
@@ -418,11 +428,49 @@ def present_pack(ctx):
     P.ico(tuple(c + Vector((0, 0, 0.39))), 0.06, "gold_light")
 
 
-HEAD = {"Starcoat": present_bow, "Clover": clover_crown, "Ghost": ghost_flames, "Ooze": slime_cap, "Glitch": pixel_crown,
+def gold_crown(ctx):
+    """Midas (the starter pack's pet): a gold crown of three points on its head, a white hot ball on each point and
+    three lit gems on the band (the object `_Glow`): pink, sky and pink."""
+    P = ctx.pen("head")
+    G = ctx.piece("Glow", "head", (0, 0.02, 0.2))
+    P.box((0, 0.02, 0.06), (0.44, 0.36, 0.14), "gold_light")                            # the band, between the ears
+    for k in range(3):
+        x = -0.13 + 0.13 * k
+        h = 0.4 - 0.1 * abs(k - 1)
+        P.pyramid((x, 0.02 + 0.004 * (k % 2), 0.08 + 0.008 * k + h / 2), 0.16, h, "gold_light")
+        G.ico((x, 0.02, 0.1 + h - 0.05), 0.065, STAR)
+    for k, sw in enumerate(("bow_pink", "bow_sky", "bow_pink")):
+        G.box((-0.13 + 0.13 * k, -0.175, 0.06), (0.085, 0.05, 0.085), sw, rot=_ry(45))
+
+
+def gold_wings(ctx):
+    """Midas's back piece: two wide gold wings fanned from the shoulders, pale gold at the root, lit gold then white
+    hot at the tips (`_Wings_Glow`), and a lit star standing on the tail's tip (`_Tail_Star_Glow`, riding the
+    Tail)."""
+    U = ctx.pen("up")
+    G = ctx.piece("Wings_Glow", "up", (0, 0.05, 0.05))
+    lean = _rx(-24)
+    U.box((0, 0.05, 0.05), (0.28, 0.12, 0.14), "gold_light")
+    for sx in (-1, 1):
+        for k in range(5):
+            ang = math.radians(66 - 15 * k)
+            L = 1.0 + 0.14 * math.sin(k / 4 * math.pi) + 0.06 * k
+            root = Vector((sx * 0.08, 0.05 + 0.012 * k, 0.06))
+            dv = lean @ Vector((sx * math.cos(ang), 0, math.sin(ang)))
+            U.bar(tuple(root), tuple(root + dv * L * 0.66), 0.3, 0.036, "gold_light", up=(0, 1, 0))
+            G.bar(tuple(root + dv * L * 0.54), tuple(root + dv * L * 0.94), 0.25, 0.042, NEON_GOLD, up=(0, 1, 0))
+            G.bar(tuple(root + dv * L * 0.88), tuple(root + dv * L * 1.1), 0.15, 0.048, STAR, up=(0, 1, 0))
+    tip, dv, th, a_, _b = _tail_axes(ctx)
+    T = ctx.piece("Tail_Star_Glow", "tail", tuple(tip))
+    T.star(tuple(tip + dv * 0.16), 0.24, 0.1, 0.08, NEON_GOLD, rot=_rx(78))
+    T.bar(tuple(tip - dv * 0.04), tuple(tip + dv * 0.1), 0.08, 0.05, STAR, up=tuple(a_))
+
+
+HEAD = {"Midas": gold_crown, "Starcoat": present_bow, "Clover": clover_crown, "Ghost": ghost_flames, "Ooze": slime_cap, "Glitch": pixel_crown,
         "Angler": angler_lure, "Nebula": orbit_ring, "Dragon": petal_horns, "Blaze": flame_fan}
-BACK = {"Starcoat": present_pack, "Ooze": slime_jar, "Glitch": error_sprite, "Angler": fin_sail, "Nebula": star_trail,
+BACK = {"Midas": gold_wings, "Starcoat": present_pack, "Ooze": slime_jar, "Glitch": error_sprite, "Angler": fin_sail, "Nebula": star_trail,
         "Dragon": blossom_wings, "Blaze": sun_wings}
-EXTRA = {"Clover": {"Glow": "Prop"}, "Ghost": {"Glow": "Prop"},
+EXTRA = {"Midas": {"Glow": "Prop", "Wings_Glow": "Prop2", "Tail_Star_Glow": "Tail"}, "Clover": {"Glow": "Prop"}, "Ghost": {"Glow": "Prop"},
          "Ooze": {"Glow": "Prop", "Jar_Glow": "Prop2"}, "Glitch": {"Glow": "Prop", "Sprite_Glow": "Prop2"},
          "Angler": {"Glow": "Prop", "Sail_Glow": "Prop2"}, "Nebula": {"Glow": "Prop", "Stars_Glow": "Prop2"},
          "Dragon": {"Glow": "Prop", "Spines_Glow": "Prop2", "Tail_Gem_Glow": "Tail"},
@@ -482,6 +530,8 @@ def pet_rbx_extras(name):
                       "PropSlot": props.slot(key(name))}
         if spec.get("gift"):                             # the gift stand's pet: no crate holds it
             attributes["Gift"] = True
+        if spec.get("starter"):                          # the starter pack's pet (#1090): no crate holds it
+            attributes["Starter"] = True
         part_attributes = {"_Prop": {"Follows": "Head"}, "_Prop_Glass": {"Follows": "Head"}}
         nest = {"_Prop": "_Head", "_Prop_Glass": "_Head", "_Star3_Glow": "_Star3"}
         if props.slot2(key(name)):

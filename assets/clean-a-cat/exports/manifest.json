@@ -21012,6 +21012,67 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Glitch.png"
  },
  {
+  "name": "CleanACat_Pet_Midas",
+  "category": "Pet",
+  "module": "pets",
+  "objects": [
+   "CleanACat_Pet_Midas_Body",
+   "CleanACat_Pet_Midas_Head",
+   "CleanACat_Pet_Midas_Eye1",
+   "CleanACat_Pet_Midas_Eye2",
+   "CleanACat_Pet_Midas_EarL",
+   "CleanACat_Pet_Midas_EarR",
+   "CleanACat_Pet_Midas_Tail",
+   "CleanACat_Pet_Midas_LegF1",
+   "CleanACat_Pet_Midas_LegF2",
+   "CleanACat_Pet_Midas_LegB1",
+   "CleanACat_Pet_Midas_LegB2",
+   "CleanACat_Pet_Midas_Prop",
+   "CleanACat_Pet_Midas_Glow",
+   "CleanACat_Pet_Midas_Prop2",
+   "CleanACat_Pet_Midas_Wings_Glow",
+   "CleanACat_Pet_Midas_Tail_Star_Glow",
+   "CleanACat_Pet_Midas_Star2",
+   "CleanACat_Pet_Midas_Star3",
+   "CleanACat_Pet_Midas_Star3_Glow"
+  ],
+  "triangles": 1758,
+  "budget": 2400,
+  "parts": 140,
+  "size_studs": {
+   "x": 3.24,
+   "y": 2.25,
+   "z": 2.41
+  },
+  "size_roblox": [
+   3.24,
+   2.41,
+   2.25
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [],
+   "qa_accepted": {
+    "back to back": 1
+   },
+   "checks": {
+    "budget": "1758/2400 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1055 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.00 (want 0)",
+    "centered": "footprint center x=0.00 y=0.01",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Pet_Midas.png"
+ },
+ {
   "name": "CleanACat_Pet_Nebula",
   "category": "Pet",
   "module": "pets",

@@ -311,7 +311,7 @@ def main(argv):
     for key in shop_art.SHOTS:
         if want(key):
             print("ui:", shop_picture(key, mat, out, makers))
-    for name in pets.PETS:
+    for name in {**pets.PETS, **pets.STARTER_PETS}:
         if want("portrait_Pet_" + name):
             print("ui:", pet_portrait(name, mat, out))
     for asset in ICONS:

@@ -12,5 +12,6 @@ the ink outline all round). Render, don't edit by hand.
 | `CleanACat_UI_Shop_GoldenSponge.png` | the golden sponge with sparkles |
 | `CleanACat_UI_Shop_ExtraWorker.png` | the Extra Worker pass: Lou with "+1" (never Jo's picture, #1036) |
 | `CleanACat_UI_Shop_PetSlot2.png` | the second pet slot: two pets with "+1" |
+| `CleanACat_UI_Shop_StarterPet.png` | the starter pack (#1090): Midas the golden pet, whole, wings out, with sparkles. Never a sponge (Derek) |
 
 Every picture goes through Review-QA's image gate and `.github/upload-allow.txt` before `upload-asset.yml`.
