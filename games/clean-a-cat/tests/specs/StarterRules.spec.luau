@@ -2,6 +2,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local Passes = require(Shared:WaitForChild("Passes"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
 local StarterRules = require(Shared:WaitForChild("StarterRules"))
@@ -54,7 +55,6 @@ return function()
 			"gives the golden pet once, never from a crate, no stronger than the best crate pet (1090)",
 			function()
 				local CrateRules = require(Shared:WaitForChild("CrateRules"))
-				local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 				expect(table.find(LiveFlags.KEYS, StarterRules.PET_FLAG)).to.be.ok()
 				expect(LiveFlags.OFF_BY_DEFAULT[StarterRules.PET_FLAG]).to.equal(true)
 				expect(CrateRules.rarityOf(StarterRules.PET)).to.equal(StarterRules.PET_RARITY)
@@ -86,6 +86,63 @@ return function()
 				SecondPetSlot = true,
 				DoubleCoins = true,
 			})).to.equal(true)
+			-- (starterBuilder) the new pack counts too
+			expect(StarterRules.boughtBefore({
+				SecondPetSlot = true,
+				DoubleCoins = true,
+				SecondBuilder = true,
+			})).to.equal(true)
+			expect(StarterRules.boughtBefore({ SecondBuilder = true, DoubleCoins = true })).to.equal(
+				false
+			)
+		end)
+
+		describe("starterBuilder", function()
+			it("is a switch, off by default", function()
+				expect(table.find(LiveFlags.KEYS, StarterRules.BUILDER_FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[StarterRules.BUILDER_FLAG]).to.equal(true)
+			end)
+
+			it("swaps the Golden Sponge for the Second Builder only with the switch on", function()
+				local off = StarterRules.contents(function(_key: string): boolean
+					return false
+				end)
+				local on = StarterRules.contents(function(key: string): boolean
+					return key == StarterRules.BUILDER_FLAG
+				end)
+				expect(off).to.equal(StarterRules.CONTENTS)
+				expect(StarterRules.contents(nil)).to.equal(StarterRules.CONTENTS)
+				expect(on).to.equal(StarterRules.BUILDER_CONTENTS)
+				expect(#on).to.equal(3)
+				expect(table.find(on, "GoldenSponge")).to.equal(nil)
+				expect(table.find(on, "SecondBuilder")).to.be.ok()
+				for _, key in on do
+					expect(table.find(Passes.KEYS, key)).to.be.ok()
+					expect(StarterRules.NAMES[key]).to.be.ok()
+				end
+			end)
+
+			it("offers the pack by the contents it is given", function()
+				local builder = function(key: string): boolean
+					return key == "SecondBuilder"
+				end
+				local sponge = function(key: string): boolean
+					return key == "GoldenSponge"
+				end
+				local new = StarterRules.BUILDER_CONTENTS
+				expect(StarterRules.offered(100000, 1000, 9999, builder, new)).to.equal(false)
+				expect(StarterRules.offered(100000, 1000, 9999, sponge, new)).to.equal(true)
+				expect(StarterRules.offered(100000, 1000, 9999, sponge)).to.equal(false)
+			end)
+
+			it("lists the grant in plain words", function()
+				expect(StarterRules.listText(StarterRules.BUILDER_CONTENTS, StarterRules.PET)).to.equal(
+					"Midas, a second pet slot, 2x Coins and a second builder"
+				)
+				expect(StarterRules.listText(StarterRules.CONTENTS)).to.equal(
+					"the Golden Sponge, a second pet slot and 2x Coins"
+				)
+			end)
 		end)
 	end)
 end

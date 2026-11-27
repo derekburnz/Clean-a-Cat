@@ -15,6 +15,43 @@ StarterRules.FLAG = "starterPack"
 StarterRules.PRODUCT = "StarterPack" -- the Products key
 StarterRules.CONTENTS =
 	table.freeze({ "GoldenSponge", "SecondPetSlot", "DoubleCoins" }) :: { string }
+
+-- (switch starterBuilder, issue 1097, Derek 2026-11-27: "remove the golden sponge from starter pack it seems lame
+-- replace with something else") The pack gives the Second Builder in place of the Golden Sponge, still 199 Robux; the
+-- Golden Sponge stays in the shop on its own. CONTENTS above is the pack with the switch off.
+StarterRules.BUILDER_FLAG = "starterBuilder"
+StarterRules.BUILDER_CONTENTS =
+	table.freeze({ "SecondPetSlot", "DoubleCoins", "SecondBuilder" }) :: { string }
+
+-- The pack's three passes now: BUILDER_CONTENTS with starterBuilder on, else CONTENTS. `isOn` is LiveFlags.isOn.
+function StarterRules.contents(isOn: ((key: string) -> boolean)?): { string }
+	return if isOn and isOn(StarterRules.BUILDER_FLAG)
+		then StarterRules.BUILDER_CONTENTS
+		else StarterRules.CONTENTS
+end
+
+-- What the grant's notice lists, by pass key.
+StarterRules.NAMES = table.freeze({
+	GoldenSponge = "the Golden Sponge",
+	SecondPetSlot = "a second pet slot",
+	DoubleCoins = "2x Coins",
+	SecondBuilder = "a second builder",
+}) :: { [string]: string }
+
+-- "a, b and c" from `keys` (a pack's contents), with `first` ahead when given.
+function StarterRules.listText(keys: { string }, first: string?): string
+	local words: { string } = {}
+	if first then
+		table.insert(words, first)
+	end
+	for _, key in keys do
+		table.insert(words, StarterRules.NAMES[key] or key)
+	end
+	if #words == 1 then
+		return words[1]
+	end
+	return table.concat(words, ", ", 1, #words - 1) .. " and " .. words[#words]
+end
 StarterRules.SHOW_FROM = 2 * 60 + 45 -- seconds of play: the end of the tutorial (SpaRules.TUTORIAL_ENDS_AT)
 
 -- (switch starterPet, issue 1090, Derek 2026-11-27: "make it like a golden flashing pet ... or something crazy") The
@@ -28,14 +65,20 @@ StarterRules.PET_RARITY = "Epic"
 
 type Pet = { id: number, kind: string, star: number, slot: string? }
 
--- Whether `passes` (save.passes) hold all three of the pack's passes: the pack was bought (or all three were).
-function StarterRules.boughtBefore(passes: { [string]: boolean }): boolean
-	for _, key in StarterRules.CONTENTS do
+local function holdsAll(passes: { [string]: boolean }, keys: { string }): boolean
+	for _, key in keys do
 		if passes[key] ~= true then
 			return false
 		end
 	end
 	return true
+end
+
+-- Whether `passes` (save.passes) hold all three passes of the pack, as it was (CONTENTS) or is with starterBuilder
+-- (BUILDER_CONTENTS): the pack was bought (or all three were).
+function StarterRules.boughtBefore(passes: { [string]: boolean }): boolean
+	return holdsAll(passes, StarterRules.CONTENTS)
+		or holdsAll(passes, StarterRules.BUILDER_CONTENTS)
 end
 
 -- Gives the starter pet into `save` once: into the player's slot when it is empty. Nil when it was given already.
@@ -67,17 +110,19 @@ StarterRules.ENDS_ATTRIBUTE = "StarterEndsAt" -- os.time() the offer ends, set o
 StarterRules.OPENED_ATTRIBUTE = "StarterOpened" -- true once the player opened the window
 StarterRules.VISITS_ATTRIBUTE = "Visits" -- joins of this save, the first included
 
--- Whether the pack is offered: before its end, after the tutorial, and the player owning none of the three.
+-- Whether the pack is offered: before its end, after the tutorial, and the player owning none of the three
+-- (`contents`, StarterRules.contents; CONTENTS when nil).
 function StarterRules.offered(
 	endsAt: number,
 	now: number,
 	played: number,
-	owns: (key: string) -> boolean
+	owns: (key: string) -> boolean,
+	contents: { string }?
 ): boolean
 	if endsAt <= 0 or now >= endsAt or played < StarterRules.SHOW_FROM then
 		return false
 	end
-	for _, key in StarterRules.CONTENTS do
+	for _, key in contents or StarterRules.CONTENTS do
 		if owns(key) then
 			return false
 		end
