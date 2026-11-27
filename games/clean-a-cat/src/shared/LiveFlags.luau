@@ -152,6 +152,7 @@ LiveFlags.KEYS = {
 	"helpersWindow", -- a Helpers button on the HUD, shown once a helper is hired, opens one row per helper: their name, level with Level up and its price, the line they wash first (tap to change) and Rename; a helper not hired yet shows their price at their pad, and Lou his pass in the Shop (UI/HelpersWindow, HelperViewRules, issue 526 item 3); off by default
 	"helperPets", -- each hired helper's row in the Helpers window has a pet box: their pet, or a paw when empty; a tap opens Pets with that helper's slot picked (owner 2026-11-26, issue 929). The world "Give a pet" prompt going away is petMenuOnly's job; off by default
 	"recapEvery", -- the full recap card after every customer, not only the first ones and rarer cats (RecapRules.EVERY_FLAG; owner's plan page answer of 2026-11-25, issue 890); off by default
+	"petLines", -- each pet says what it gives: "+5% tips or pay" on its tile in Pets and on its row in the crate's chance list, true numbers from CrateRules (CrateViewRules.effectText; owner 2026-11-26, issue 927); off by default
 	"buttonArrive", -- a HUD button that unlocks while the player is in the game arrives with Motion-FX's small pop, tilt and twinkle, once (Effects/Arrive from UI/HUD/SideButtons, issue 528); buttons already there on join simply show; off by default
 	"fewerPills", -- with smallPrompts: at most two prompt pills show at once, the nearest within 10 studs (a winning one such as the door's Take cat at any distance); every key still works (Spa/PillLayout, issue 745); off by default
 	"buildWindow", -- with hudTidy: a Build button in the HUD grid opens "Build and upgrades", every build with its price and time (or its countdown, what it waits for, or Built) and every tool and the next bow with Buy; the server skips only the distance to the board for RequestBuild, RequestBuyTool and RequestBuyBow, while Finish now still needs the board (BuildService, ToolService, BuildViewRules, UI/BuildWindow, BuildWindowController, issue 751); off by default
@@ -173,6 +174,8 @@ LiveFlags.KEYS = {
 	"foamStep", -- the Bubble Bath step is "Foam up the cat": a soap bar (Model-Agent's CleanACat_Tool_SoapBar, the bubble sponge until it exists) rubbed on, foam building where it passes (WashDraft.SAY_FOAM, ToolOnCat, issue 888); off by default
 	"bowDrag", -- the bow step is a drag: the three bows show in the player's best tier and one goes on when dropped on the cat; a gamepad keeps the tap (Spa/BowDrag, ScrubController, issue 889); off by default
 	"helperFetch", -- a helper walks to the counter for the cat they take, carries it to their stand and back out when washed, instead of the cat appearing in the stand (HelperFetchRules, WorkerService, FigureService.handOver, HelperFetchController, issue 884); off by default
+	"humanBuilder", -- the human builder in overalls (Model-Agent's CleanACat_NPC_Builder) stands by the builder board instead of the hard hat kitten, with the same hammer and toolbox; the kitten while the model is missing (StationService, issue 891); off by default
+	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
 	"giftCrate", -- the gift stand's favourite and group gift is a gift crate to open (CrateRules kind gift, its own chance per pet shown before it opens: no Commons, Starcoat only from it) instead of Starcoat straight away (GiftRules.giveCrate, GiftService, CrateController, issue 859); off by default
 	"giftFlow", -- the gift stand in three stages: one Claim all pays the like row's 150 coins and the welcome gift together, then a good crate at 30 minutes of play once that is claimed, then the stand leaves the spa (GiftFlowRules, GiftService, FreeRewardService, issue 919); off by default
 	"petMenuOnly", -- a hired helper's stand drops its "Give a pet" prompt while the Pets menu (petsWindow) is on: pets are given to the player and each helper there (WorkerRules.givePrompt, WorkerController, issue 930); off by default
@@ -303,6 +306,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	helpersWindow = true,
 	helperPets = true,
 	recapEvery = true,
+	petLines = true,
 	buttonArrive = true,
 	leaveLines = true,
 	hudTidy = true,
@@ -324,6 +328,8 @@ LiveFlags.OFF_BY_DEFAULT = {
 	foamStep = true,
 	bowDrag = true,
 	helperFetch = true,
+	humanBuilder = true,
+	giftCrate = true,
 	giftCrate = true,
 	giftFlow = true,
 	petMenuOnly = true,
