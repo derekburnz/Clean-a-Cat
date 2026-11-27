@@ -20,3 +20,9 @@ Across 12 bow looks on Stardust_Sit and Stardust_Dirty_Sit, 0 bow parts overlap 
 
 ## 884 close-out, main c2eeb78 (PR 1011): PASS
 helpers-884-route-c2eeb78-clear.jpg: a top view with Jo in red and Sam in yellow. Both routes are (stand) > (x, -4.8) > (8.1, -4.8) > (8.1, -22.3) > (1.6, -22.3), with the lane between the player's tub and station 4. Each stop is at place 2's own spot: dX 0.00, dZ 2.60 behind the cat, 1.30 studs from the counter edge (z -23.60). Sweeping a 2 x 3.2 x 2 body box along every segment crossed nothing solid: no tools board, tub, stand or counter.
+
+## 869 like how-to, main c2eeb78
+like-howto-869-c2eeb78-desktop.jpg: after Like on the gift card, the how-to shows HeartOutline 98146759736466 (Thumb), TapDot 112847264343092 and the ring puff 113448726935917. All three report IsLoaded true and draw. A fresh PreloadAsync returns Failure while the account is suspended (403), so that result is NOT CONCLUSIVE. No hand images. The heart showed pink in every sample; I saw no grey phase.
+
+## 883 Clover and Glitch portraits, main c2eeb78: PASS
+portraits-883-pets-menu-c2eeb78.jpg and portraits-883-good-crate-c2eeb78.jpg: Clover 77963078642728 and Glitch 80341127367421 report IsLoaded true and FetchStatus Success in the Pets menu (73 px) and in the Good crate chances (62 px). Both draw in full colour. The save was seeded with one of each.
