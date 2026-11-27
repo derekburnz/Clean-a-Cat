@@ -86,6 +86,7 @@ type Rig = {
 	near: boolean, -- within HelperWash.NEAR of the camera this frame
 	lean: number, -- radians the torso leans forward at the hips (HelperWash, issue 1137); 0 otherwise
 	leanWritten: number, -- the lean last written to the torso parts
+	leaned: boolean, -- staff that have leaned at least once (only they are ever straightened by baseOf)
 	torso: { { part: BasePart, offset: CFrame } }, -- staff: the torso's other parts, in the Body part's frame
 	hip: CFrame, -- the lean's pivot in the Body part's frame: the bottom of the torso
 	grips: { [string]: CFrame }, -- each hand's Grip in its arm's pivot frame, by arm key, found once
@@ -278,6 +279,7 @@ local function attach(model: Model)
 		near = false,
 		lean = 0,
 		leanWritten = 0,
+		leaned = false,
 		torso = torso,
 		hip = CFrame.new(0, -body.Size.Y / 2, 0),
 		grips = {},
@@ -303,7 +305,8 @@ end
 -- lean a walk or a move copied from a leaned pivot (HelperFetchController takes the model's pivot as home).
 local function baseOf(rig: Rig): CFrame
 	local cf = rig.body.CFrame
-	if not rig.staff or (rig.leanWritten == 0 and cf.UpVector.Y > 0.9995) then
+	-- only a rig that has leaned is ever straightened: a figure built or placed a little off upright stays as it is
+	if not rig.leaned or (rig.leanWritten == 0 and cf.UpVector.Y > 0.9995) then
 		return cf
 	end
 	local hip = cf * rig.hip.Position
@@ -351,6 +354,9 @@ local function writeTorso(rig: Rig, bodyCF: CFrame)
 	end
 	Workspace:BulkMoveTo(torsoParts, torsoFrames, Enum.BulkMoveMode.FireCFrameChanged)
 	rig.leanWritten = rig.lean
+	if rig.lean ~= 0 then
+		rig.leaned = true
+	end
 end
 
 -- A hand's Grip in its arm's pivot frame (the arm is rigid, so once is enough); nil when the arm has none.
@@ -629,6 +635,30 @@ end
 -- Runs fn() with `model`'s joints back at the server's rest: no swing, and the carrying arm as FigureService turned it
 -- out. Then it puts this frame's pose back. CustomerLeave clones the figure inside it, so the walk-off copy's rig takes
 -- the true rest (Sync on 1082, issue 1062: a copy cloned with the arm turned in walked off with it turned in).
+-- A carrying helper's arms for StaffCarry (issue 1138): the Body part's upright frame, and in that frame each arm's
+-- shoulder (its pivot) and hand (its Grip) as this frame's pose holds them: { shoulderL, handL, shoulderR, handR }.
+-- nil when `model` is no staff rig here or an arm has no Grip.
+function CustomerMotion.carryArms(model: Model): (CFrame?, { Vector3 }?)
+	local rig = rigs[model]
+	if rig == nil or not rig.staff or rig.body.Parent == nil then
+		return nil, nil
+	end
+	local base = baseOf(rig)
+	local out: { Vector3 } = {}
+	for _, left in { true, false } do
+		local joint = rig.joints[if left then "ArmL" else "ArmR"]
+		local grip = reachOf(rig, 0, if left then rig.pose.armL else rig.pose.armR, 0, left)
+		if joint == nil or grip == nil then
+			return nil, nil
+		end
+		local shoulder: Vector3 = (joint :: Joint).rest.Position
+		local hand: Vector3 = base:PointToObjectSpace((grip :: CFrame).Position)
+		table.insert(out, shoulder)
+		table.insert(out, hand)
+	end
+	return base, out
+end
+
 function CustomerMotion.atRest(model: Model, fn: () -> ())
 	local rig = rigs[model]
 	if rig == nil or rig.body.Parent == nil then
