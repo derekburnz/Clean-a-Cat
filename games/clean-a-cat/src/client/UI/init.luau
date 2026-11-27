@@ -751,6 +751,7 @@ end
 -- fn() when Get pack is pressed.
 function UI.onStarterBuy(fn: () -> ())
 	StarterWindow.onBuy(fn)
+	StarterAd.onBuy(fn) -- switch starterCard: a tap on the HUD card asks for the purchase prompt (issue 1080)
 end
 
 -- The HUD side button that opens `window`, or nil while it is not drawn.

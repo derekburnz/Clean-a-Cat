@@ -28,6 +28,7 @@ local UI = require(Client:WaitForChild("UI"))
 local StarterController = {}
 
 local WINDOW = StarterViewRules.WINDOW
+local CARD_FLAG = "starterCard" -- HUD/StarterAd.CARD_FLAG
 local NOTE_SECONDS = 1 -- read each second so the chip turns with the window's line (issue 636); the words only
 -- change once a minute, so nothing visibly ticks
 local CHECK_SECONDS = 1
@@ -90,6 +91,9 @@ local function bob()
 	local button = UI.sideButton(WINDOW)
 	if button == nil or not button.Visible or not on() or endsAt() == nil then
 		return
+	end
+	if LiveFlags.isOn(CARD_FLAG) then
+		return -- switch starterCard (issue 1080, Derek: "no bobbing"): the dark card stands out without moving
 	end
 	local bobs = StarterViewRules.bobs(player:GetAttribute(StarterRules.VISITS_ATTRIBUTE), opened())
 	if bobs > 0 then

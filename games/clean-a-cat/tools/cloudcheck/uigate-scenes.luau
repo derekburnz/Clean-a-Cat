@@ -913,6 +913,30 @@ local SCENES = {
 			allButtons(false)
 		end,
 	},
+	-- starterCard (issue 1080): the dark card with one big picture, the price and the round "i"; then with the pack's
+	-- own price not known yet ("See the pack", no struck total).
+	{
+		"HudStarterCard",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+		end,
+	},
+	{
+		"HudStarterCardNoPrice",
+		function()
+			allButtons(false)
+			flag("starterCard", true)
+			local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+			UI.setStarter(
+				StarterViewRules.items(function(): unknown
+					return nil
+				end),
+				nil,
+				os.time() + 44 * 3600
+			)
+		end,
+	},
 	-- starterNoClock (issue 1069): the starter ad's chip says "New player offer" instead of the time left.
 	{
 		"HudStarterNoClock",
@@ -1468,6 +1492,7 @@ function Scenes.close()
 	flag("menuOnly", false)
 	UI.setCanReset(false)
 	flag("windowClear", false)
+	flag("starterCard", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
 	flag("likeHowTo", false)
