@@ -157,3 +157,10 @@ customerWalk is on (CustomerMotion enabled) and the ArmR joint is recognised. Sa
 - Every window has the panel DCC8F2, white cards and ink edges (45226B).
 - No INK_SOFT text and no plain cream fills are left.
 - Body text is ink: 8.0 to 1 on the panel and 12.4 to 1 on white.
+
+## Cat Hotel and side Garden (1049, 1050, 1051) on main 1f4f9c1, desktop frame, 2026-11-27
+
+The `hotel-*.jpg` pictures show the side Garden's three looks (locked, building, built) next to the hotel at the back door, on the normal plot and with bigSpa:
+- `normal-garden-pets` shows the three pen pets in the built Garden.
+- `normal-hotel-inside-room2-booked` shows room 2 with a guest booked, its 59m bubble showing.
+- `big-hotel-roof-join` shows where the hotel roof meets the big spa's roof eave.
