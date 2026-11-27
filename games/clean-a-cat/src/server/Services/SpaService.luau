@@ -1357,19 +1357,30 @@ end
 -- A worker takes the customer at `place` of the line (as lineForWorkers gave it): they leave the line with their cat,
 -- which goes to the worker's station, and the line refills. Returns the cat's kind and dirt level, or nil when there
 -- is nobody at that place any more.
-function SpaService.takeForWorker(player: Player, place: number, kind: string): (string?, number?)
+-- A helper takes the cat at `place` of the line. With `handOver` (switch helperFetch, issue 884) its cat is left where
+-- it sat for the helper to fetch: also returned are that cat (when it sat on the counter) and where it was.
+function SpaService.takeForWorker(
+	player: Player,
+	place: number,
+	kind: string,
+	handOver: boolean?
+): (string?, number?, Model?, CFrame?)
 	local line = queues[player]
 	if line == nil or line[place] ~= kind then
-		return nil, nil
+		return nil, nil, nil, nil
 	end
 	local order = ordersFor(player)[place]
 	local dirt = if order then order.dirt else 1
 	local shownPlace = place + (if carrying[player] == CarryRules.DOOR then 1 else 0)
+	local cat, at = nil, nil
+	if handOver then
+		cat, at = FigureService.handOver(player, shownPlace)
+	end
 	table.remove(line, place)
 	table.remove(ordersFor(player), place)
 	FigureService.left(player, shownPlace)
 	sendQueue(player)
-	return kind, dirt
+	return kind, dirt, cat, at
 end
 
 function SpaService.Init(_services: { [string]: any }) end
