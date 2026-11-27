@@ -354,7 +354,7 @@ local function drawRow(
 		pass.TextSize = s.buttonText
 		local passW = math.ceil(measure(text, s.buttonText)) + BUTTON_PAD
 		pass.Size = UDim2.fromOffset(passW, buttonH)
-		pass:SetAttribute("Says", "See the Lou pass in the Shop")
+		pass:SetAttribute("Says", "See the Extra Worker pass in the Shop")
 		pass.Activated:Connect(function()
 			for _, listener in passListeners do
 				task.spawn(listener)

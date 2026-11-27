@@ -32,12 +32,14 @@ import uuid
 
 API = "https://apis.roblox.com"
 
-# Our keys (Passes.KEYS and Products.IDS_BY_GAME) with the name, price and words shown on Roblox.
+# Our keys (Passes.KEYS and Products.IDS_BY_GAME) with the name, price and words shown on Roblox, and for a pass whose
+# name changed, the old names it may still have there: that pass is renamed, never made again (a copy cannot be deleted).
 PASSES = [
     ("DoubleCoins", "2x Coins", 199, "Every cat you wash by hand pays double."),
     ("SecondBuilder", "Second Builder", 299, "Build a tub or station and a room at the same time."),
     ("GoldenSponge", "Golden Sponge", 99, "The best sponge with gold bubbles, and +20% on every cat you wash by hand."),
-    ("Lou", "Lou", 249, "A third helper, with his own wash stand."),
+    # Derek 2026-11-27: the pass is "Extra Worker", not the helper's name; the dev pass made as "Lou" is renamed
+    ("Lou", "Extra Worker", 249, "A third helper, with his own wash stand.", ("Lou",)),
     ("SecondPetSlot", "Second pet slot", 249, "A second pet for you and every helper."),
 ]
 PRODUCTS = [
@@ -170,12 +172,35 @@ def make(kind, wanted, keys, universe, confirm, summary):
         summary.append(f"- {name}: id {ident}, price {price}")
     ids = {}
     ok = True
-    for our_key, name, price, text in wanted:
+    for entry in wanted:
+        our_key, name, price, text = entry[:4]
+        old_names = entry[4] if len(entry) > 4 else ()
         there = names.get(name.lower())
         if there:
             ids[our_key] = there[1]
             summary.append(f"skip {name}: already there (id {there[1]}, price {there[2]})")
             continue
+        was = next((names[o.lower()] for o in old_names if o.lower() in names), None)
+        if was is not None:
+            ids[our_key] = was[1]
+            if kind != "passes":
+                summary.append(f"FAILED {name}: only passes can be renamed here; {was[0]} (id {was[1]}) left as it is")
+                ok = False
+                break
+            if confirm != "yes":
+                summary.append(f"would rename {was[0]} (id {was[1]}) to {name}")
+                continue
+            body, ctype = multipart([("name", name), ("description", text)])
+            status, answer = request("PATCH", f"{base}/{was[1]}", key, body, ctype)
+            time.sleep(2)
+            _, again, _ = list_all(key, base + "/creator")
+            now = next((item for item in again if str(item[1]) == str(was[1])), None)
+            if now and now[0].strip().lower() == name.lower():
+                summary.append(f"renamed {was[0]} to {name}: id {was[1]} (HTTP {status})")
+                continue
+            summary.append(f"FAILED to rename {was[0]} (id {was[1]}) to {name}: HTTP {status}: {short(answer)}")
+            ok = False
+            break
         if confirm != "yes":
             summary.append(f"would make {name} for {price} Robux")
             continue

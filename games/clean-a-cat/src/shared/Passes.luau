@@ -51,7 +51,7 @@ Passes.NONE = table.freeze({
 	DoubleCoins = 0, -- 2x Coins (design: 199 Robux)
 	SecondBuilder = 0, -- Second Builder (299)
 	GoldenSponge = 0, -- Golden Sponge (99)
-	Lou = 0, -- Lou, the extra helper (249)
+	Lou = 0, -- Extra Worker, Lou the third helper (249)
 	SecondPetSlot = 0, -- Second pet slot (249)
 }) :: { [string]: number }
 
@@ -79,7 +79,8 @@ Passes.INFO = table.freeze({
 		name = "Golden Sponge",
 		text = "The best sponge with gold bubbles, and +20% on every cat you wash by hand",
 	}) :: Info,
-	Lou = table.freeze({ name = "Lou", text = "A third helper, with his own wash stand" }) :: Info,
+	-- the pass is "Extra Worker", never the helper's own name (Derek, 2026-11-27); the key stays Lou in saves and code
+	Lou = table.freeze({ name = "Extra Worker", text = "A third helper, with his own wash stand" }) :: Info,
 	SecondPetSlot = table.freeze({
 		name = "2nd pet slot", -- short enough for the small phone Shop card (issue 838)
 		text = "A second pet for you and every helper",

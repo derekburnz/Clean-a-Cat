@@ -78,7 +78,7 @@ function HelperViewRules.say(row: Row): string
 			then `Level {row.level}, the top`
 			else `Level {row.level}`
 	elseif row.pass then
-		return "Comes with the Lou pass"
+		return "Comes with the Extra Worker pass"
 	end
 	return `Hire at their pad · {row.price} coins`
 end
