@@ -637,6 +637,50 @@ local SCENES = {
 			flag("starterBuilder", true)
 		end,
 	},
+	-- The Cat Hotel's desk card (issue 1051, switch catHotel): a Lilac Cloud guest waits; room 1 is ready, room 2
+	-- asleep, room 3 free, room 4 not built. Then every room full with no guest, two ready to collect.
+	{
+		"Hotel",
+		function()
+			flag("catHotel", true)
+			local t = os.time()
+			UI.setHotel({
+				open = true,
+				rooms = 3,
+				stays = {
+					["1"] = { kind = "Marble", rarity = "Rare", hours = 4, endsAt = t - 10 },
+					["2"] = {
+						kind = "Cotton",
+						rarity = "Common",
+						hours = 8,
+						endsAt = t + 3 * 3600 + 12 * 60,
+					},
+				},
+				guest = { kind = "LilacCloud", rarity = "Epic" },
+				now = t,
+			}, 0)
+			UI.open("Hotel")
+		end,
+	},
+	{
+		"HotelFull",
+		function()
+			flag("catHotel", true)
+			local t = os.time()
+			UI.setHotel({
+				open = true,
+				rooms = 4,
+				stays = {
+					["1"] = { kind = "Marble", rarity = "Rare", hours = 4, endsAt = t - 10 },
+					["2"] = { kind = "Starcoat", rarity = "Legendary", hours = 8, endsAt = t - 5 },
+					["3"] = { kind = "Tux", rarity = "Uncommon", hours = 1, endsAt = t + 40 * 60 },
+					["4"] = { kind = "Inky", rarity = "Common", hours = 8, endsAt = t + 7 * 3600 },
+				},
+				now = t,
+			}, 0)
+			UI.open("Hotel")
+		end,
+	},
 	-- starterNoClock (issue 1069): the window's band line says "New player offer", no time left.
 	{
 		"StarterNoClock",
@@ -1652,6 +1696,7 @@ function Scenes.close()
 	flag("starterCard", false)
 	flag("starterPet", false)
 	flag("starterBuilder", false)
+	flag("catHotel", false)
 	flag("menuContrast2", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)

@@ -69,6 +69,7 @@ local GiftCard = require(script:WaitForChild("GiftCard"))
 local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
 local HelpersWindow = require(script:WaitForChild("HelpersWindow"))
+local HotelWindow = require(script:WaitForChild("HotelWindow"))
 local LeaveLines = require(script:WaitForChild("LeaveLines"))
 local Motion = require(script:WaitForChild("Motion"))
 local PetsWindow = require(script:WaitForChild("PetsWindow"))
@@ -354,6 +355,7 @@ function UI.init()
 		FeedbackCard.reset()
 		UI.open(FeedbackCard.WINDOW)
 	end)
+	windows.Hotel = HotelWindow.build(root) -- the Cat Hotel's front desk (switch catHotel, issue 1051)
 	windows.Build = BuildWindow.build(root) -- builds and upgrades from the HUD (switch buildWindow, issue 751)
 	windows.Helpers = HelpersWindow.build(root) -- the helpers' levels, modes and names (switch helpersWindow, 526)
 	-- every window's X stays below the coin pill and the friend tag (issue 873)
@@ -443,6 +445,20 @@ end
 -- Whether Settings shows "Reset my game" (the server's CanResetSave, issue 1037).
 function UI.setCanReset(allowed: boolean)
 	SettingsCard.setCanReset(allowed)
+end
+
+-- The Cat Hotel's state from the server (HotelViewRules.clean) and server time minus os.time() (issue 1051).
+function UI.setHotel(state: any, skew: number)
+	HotelWindow.set(state, skew)
+end
+
+-- fn(room, hours) when a stay is picked on the hotel's card; fn(room) for one ready room, fn(nil) for Collect all.
+function UI.onHotelBook(fn: (room: number, hours: number) -> ())
+	HotelWindow.onBook(fn)
+end
+
+function UI.onHotelCollect(fn: (room: number?) -> ())
+	HotelWindow.onCollect(fn)
 end
 
 -- Settings' "Send feedback": shown while `on`, with the sends this visit and the most a visit allows (issue 1081).
