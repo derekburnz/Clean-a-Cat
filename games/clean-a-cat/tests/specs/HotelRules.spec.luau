@@ -129,5 +129,33 @@ return function()
 				nil
 			)
 		end)
+
+		it(
+			"puts the Garden at the side yard only with noVipRoom on too, in its side looks (#1050)",
+			function()
+				local function flags(list: { string }): (string) -> boolean
+					return function(key: string): boolean
+						return table.find(list, key) ~= nil
+					end
+				end
+				expect(HotelRules.gardenAtSide(flags({ HotelRules.FLAG, HotelRules.NO_VIP_FLAG }))).to.equal(
+					true
+				)
+				expect(HotelRules.gardenAtSide(flags({ HotelRules.FLAG }))).to.equal(false)
+				expect(HotelRules.gardenAtSide(flags({ HotelRules.NO_VIP_FLAG }))).to.equal(false)
+				local SpaLayout = require(game:GetService("ReplicatedStorage").Shared.SpaLayout)
+				expect(SpaLayout.PLOT_SPOTS[HotelRules.GARDEN_SPOT]).to.be.ok()
+				expect(SpaLayout.BIG_SPOTS[HotelRules.GARDEN_SPOT]).to.be.ok()
+				for _, name in
+					{
+						HotelRules.GARDEN_LOCKED_ASSET,
+						HotelRules.GARDEN_BUILDING_ASSET,
+						HotelRules.GARDEN_AREA_ASSET,
+					}
+				do
+					expect(string.find(name, "^CleanACat_Area_GardenSide")).to.be.ok()
+				end
+			end
+		)
 	end)
 end
