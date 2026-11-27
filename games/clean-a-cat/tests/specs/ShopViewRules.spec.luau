@@ -19,7 +19,7 @@ return function()
 			expect(#cards).to.equal(2)
 			expect(cards[1].key).to.equal("DoubleCoins")
 			expect(cards[1].name).to.equal(Passes.INFO.DoubleCoins.name)
-			expect(cards[1].badge).to.equal("x2")
+			expect(cards[1].icon).to.equal("ShopCoins2x") -- the x2 is in the picture
 			expect(cards[1].price).to.equal(199)
 			expect(cards[1].owned).to.equal(false)
 			expect(cards[2].key).to.equal("Lou")
@@ -63,7 +63,7 @@ return function()
 				end, isOn)
 				expect(#owner).to.equal(2) -- 3x in 2x's place, and Lou
 				expect(owner[1].key).to.equal("TripleCoins")
-				expect(owner[1].badge).to.equal("x3")
+				expect(owner[1].icon).to.equal("ShopCoins3x")
 				expect(owner[1].was).to.equal(SaleRules.REGULAR_PASSES.TripleCoins)
 				local saleOff = ShopViewRules.cards(price, none, function(flag: string): boolean
 					return flag == Passes.LADDER_FLAG

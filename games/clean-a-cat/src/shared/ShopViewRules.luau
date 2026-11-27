@@ -29,16 +29,13 @@ export type Card = {
 type Look = { icon: string, badge: string?, short: string? }
 
 local LOOK: { [string]: Look } = {
-	DoubleCoins = { icon = "Coins", badge = "x2", short = "Double coins on cats you wash by hand" },
-	TripleCoins = {
-		icon = "Coins",
-		badge = "x3",
-		short = "Triple coins on hand washes, in place of 2x",
-	},
-	SecondBuilder = { icon = "Build", badge = "x2", short = "Build a tub and a room at once" },
-	GoldenSponge = { icon = "Sponge", short = "Gold sponge, +20% on hand washes" },
-	Lou = { icon = "Helper", short = "A third helper with his own stand" },
-	SecondPetSlot = { icon = "Paw", badge = "+1", short = "A second pet for you and helpers" },
+	-- Model-Agent's shop pictures (issues 1030, 1031) carry their own x2, x3 or +1, so the cards draw no tag
+	DoubleCoins = { icon = "ShopCoins2x", short = "Double coins on cats you wash by hand" },
+	TripleCoins = { icon = "ShopCoins3x", short = "Triple coins on hand washes, in place of 2x" },
+	SecondBuilder = { icon = "ShopBuilder2", short = "Build a tub and a room at once" },
+	GoldenSponge = { icon = "ShopGoldenSponge", short = "Gold sponge, +20% on hand washes" },
+	Lou = { icon = "ShopExtraWorker", short = "A third helper with his own stand" },
+	SecondPetSlot = { icon = "ShopPetSlot2", short = "A second pet for you and helpers" },
 }
 
 local function whole(raw: unknown): number?

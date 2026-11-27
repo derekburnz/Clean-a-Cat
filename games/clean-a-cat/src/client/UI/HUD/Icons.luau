@@ -55,6 +55,18 @@ Icons.IMAGES = {
 	-- the staff's T shaped apron with side ties and a neck cord, no face, so the button never reads as one helper
 	-- (CleanACat_Icon_Hud_Staff, Model-Agent, issue 929, checked by Review-QA; was Jo's head, 86032284297873)
 	Helpers = "rbxassetid://75869829179271",
+	-- each helper's own smooth bust (issue 1036, Derek: "redo the picture for helpers it looks blocky and mid and it
+	-- shouldn't be the same as the first worker"; Model-Agent's uploads to the group, 2026-11-27)
+	StaffJo = "rbxassetid://85051325996520",
+	StaffSam = "rbxassetid://73703341255691",
+	StaffLou = "rbxassetid://114806114354624",
+	-- the shop's big card pictures (issues 1030 and 1031, Model-Agent): their x2, x3 or +1 is drawn in the picture
+	ShopExtraWorker = "rbxassetid://95165289753902",
+	ShopCoins2x = "rbxassetid://113360699781391",
+	ShopCoins3x = "rbxassetid://114423850933764",
+	ShopBuilder2 = "rbxassetid://79901743380915",
+	ShopGoldenSponge = "rbxassetid://89559848537020",
+	ShopPetSlot2 = "rbxassetid://114149856510592",
 } :: { [string]: string }
 
 local INK = Color3.fromHex("45226B")
@@ -102,6 +114,20 @@ local STAND_INS: { [string]: StandIn } = {
 	Helpers = { glyph = "🧑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Pointer = { glyph = "👈", fill = Color3.fromHex("FFFFFF"), round = true, bare = true }, -- the tutorial's arrow
 	Helper = { glyph = "🧑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	StaffJo = { glyph = "👩", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	StaffSam = { glyph = "👨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	StaffLou = { glyph = "🧑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopExtraWorker = { glyph = "🧑", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopCoins2x = { glyph = "🪙", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopCoins3x = { glyph = "💰", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopBuilder2 = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ShopGoldenSponge = {
+		glyph = "🧽",
+		fill = Color3.fromHex("FFFFFF"),
+		round = true,
+		bare = true,
+	},
+	ShopPetSlot2 = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Tools = { glyph = "🧴", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Build = { glyph = "🔨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 }
