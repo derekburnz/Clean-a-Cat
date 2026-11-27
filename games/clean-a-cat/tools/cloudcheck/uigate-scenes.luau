@@ -249,6 +249,44 @@ local SCENES = {
 			UI.open("Settings")
 		end,
 	},
+	-- Settings with "Send feedback" (issue 1081, switch feedback), alone and with Reset my game on a dev server; then
+	-- after one send ("Sent, thank you! Send more"), the longest words it shows.
+	{
+		"SettingsFeedback",
+		function()
+			flag("settingsCard", true)
+			flag("feedback", true)
+			UI.setFeedback(true, 0, 3)
+			UI.open("Settings")
+		end,
+	},
+	{
+		"SettingsFeedbackReset",
+		function()
+			flag("settingsCard", true)
+			flag("feedback", true)
+			UI.setFeedback(true, 1, 3)
+			UI.setCanReset(true)
+			UI.open("Settings")
+		end,
+	},
+	-- The Feedback card (issue 1081): as it opens (Send grey), then with "Something is hard" picked and a long note.
+	{
+		"Feedback",
+		function()
+			flag("feedback", true)
+			UI.open("Feedback")
+		end,
+	},
+	{
+		"FeedbackPicked",
+		function()
+			flag("feedback", true)
+			UI.open("Feedback")
+			local card = UIShim.require("StarterPlayer.StarterPlayerScripts.Client.UI.FeedbackCard")
+			card.pick("hard")
+		end,
+	},
 	-- The Helpers window with menuOnly (issue 1033): Jo and Sam not hired yet, each with a Hire button.
 	{
 		"HelpersHire",
@@ -1521,6 +1559,8 @@ function Scenes.close()
 	flag("launchSale", false)
 	flag("menuOnly", false)
 	UI.setCanReset(false)
+	UI.setFeedback(false, 0, 3)
+	flag("feedback", false)
 	flag("windowClear", false)
 	flag("starterCard", false)
 	flag("menuContrast2", false)

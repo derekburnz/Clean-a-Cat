@@ -143,6 +143,7 @@ type Parts = {
 	columns: { Frame },
 	rows: { Row },
 	reset: TextButton,
+	feedback: TextButton,
 }
 
 local parts: Parts? = nil
@@ -159,6 +160,16 @@ local ARM_SECONDS = 4
 local RESET_TOP, RESET_BOTTOM = Color3.fromHex("FF7062"), Color3.fromHex("E83A3A")
 local RESET_TEXT = "Reset my game"
 local RESET_SURE = "Tap again to wipe it all"
+-- "Send feedback" (issue 1081, switch feedback): opens the Feedback card; after a send it thanks, and after
+-- FeedbackRules.PER_VISIT sends this visit it stops offering
+local feedbackOn = false
+local feedbackSent = 0
+local feedbackMax = 3
+local feedbackListeners: { () -> () } = {}
+local FEEDBACK_TOP, FEEDBACK_BOTTOM = Color3.fromHex("C9A8FF"), Color3.fromHex("9A6BEA")
+local FEEDBACK_TEXT = "Send feedback"
+local FEEDBACK_MORE = "Sent, thank you! Send more"
+local FEEDBACK_DONE = "Sent, thank you!"
 
 -- A switch row's value: the visitors row reads the server's, the others the saved settings.
 local function toggleOn(key: string): boolean
@@ -415,7 +426,8 @@ redraw = function()
 	local s: Sizes = if short then SIZES.short else SIZES.full
 	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
 	-- with the reset button on a short screen the card is taller: it sits a little higher, as the Helpers window does
-	Window.fit(p.window, width, s.band, s.title, s.badge, if short and canReset then 8 else nil)
+	local extra = canReset or feedbackOn
+	Window.fit(p.window, width, s.band, s.title, s.badge, if short and extra then 8 else nil)
 
 	local padding = p.pad
 	padding.PaddingLeft, padding.PaddingRight = UDim.new(0, s.padX), UDim.new(0, s.padX)
@@ -492,6 +504,16 @@ redraw = function()
 	p.reset.Parent = p.columns[if short then 2 else 1]
 	p.reset.Size = UDim2.new(1, 0, 0, if short then 60 else 64) -- 44 real px at the smallest scale
 	p.reset.Visible = canReset
+	p.feedback.Parent = p.columns[if short then 2 else 1]
+	p.feedback.Size = UDim2.new(1, 0, 0, if short then 60 else 64)
+	p.feedback.Visible = feedbackOn
+	local done = feedbackSent >= feedbackMax
+	p.feedback.Text = if done
+		then FEEDBACK_DONE
+		elseif feedbackSent > 0 then FEEDBACK_MORE
+		else FEEDBACK_TEXT
+	p.feedback.Active = not done
+	p.feedback.AutoButtonColor = not done
 end
 
 -- The server's CanResetSave: whether the "Reset my game" button shows (issue 1037).
@@ -505,6 +527,17 @@ function SettingsCard.setCanReset(allowed: boolean)
 			p.reset.Text = RESET_TEXT
 		end
 	end
+end
+
+-- Whether "Send feedback" shows (switch feedback), how many were sent this visit, and the most a visit allows.
+function SettingsCard.setFeedback(on: boolean, sent: number, most: number)
+	feedbackOn, feedbackSent, feedbackMax = on, sent, most
+	redraw()
+end
+
+-- fn() when "Send feedback" is pressed (the UI opens the Feedback card).
+function SettingsCard.onFeedback(fn: () -> ())
+	table.insert(feedbackListeners, fn)
 end
 
 -- fn() when "Reset my game" is pressed twice.
@@ -591,7 +624,29 @@ function SettingsCard.build(root: Instance, onChange: (Settings) -> ()): Frame
 		end)
 	end)
 
-	parts = { window = window, pad = pad, columns = columns, rows = rows, reset = reset }
+	local feedback =
+		Window.button("Feedback", FEEDBACK_TEXT, columns[1], FEEDBACK_TOP, FEEDBACK_BOTTOM)
+	feedback.LayoutOrder = 998
+	feedback.TextSize = 22
+	feedback.Visible = false
+	feedback:SetAttribute("Says", "Send feedback: tell us what you think")
+	feedback.Activated:Connect(function()
+		if feedbackSent >= feedbackMax then
+			return
+		end
+		for _, listener in feedbackListeners do
+			task.spawn(listener)
+		end
+	end)
+
+	parts = {
+		window = window,
+		pad = pad,
+		columns = columns,
+		rows = rows,
+		reset = reset,
+		feedback = feedback,
+	}
 	local camera = Workspace.CurrentCamera
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)

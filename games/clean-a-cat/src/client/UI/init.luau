@@ -64,6 +64,7 @@ local CatIndex = require(script:WaitForChild("CatIndex"))
 local CheckinCard = require(script:WaitForChild("CheckinCard"))
 local Comfort = require(script:WaitForChild("Comfort"))
 local CrateWindow = require(script:WaitForChild("CrateWindow"))
+local FeedbackCard = require(script:WaitForChild("FeedbackCard"))
 local GiftCard = require(script:WaitForChild("GiftCard"))
 local HUD = require(script:WaitForChild("HUD"))
 local HeldTool = require(script:WaitForChild("HUD"):WaitForChild("HeldTool"))
@@ -348,6 +349,11 @@ function UI.init()
 	windows.Starter = StarterWindow.build(root) -- the Spa Starter Pack (switch starterPack with passes, issue 519)
 	windows.Gift = GiftCard.build(root) -- the gift stand's free pet (switch giftStand with pets, issue 521)
 	windows.Rename = RenameCard.build(root) -- name a hired helper, from their row in Pets (switch staffRename, #487)
+	windows.Feedback = FeedbackCard.build(root) -- "Send feedback" from Settings (switch feedback, issue 1081)
+	SettingsCard.onFeedback(function()
+		FeedbackCard.reset()
+		UI.open(FeedbackCard.WINDOW)
+	end)
 	windows.Build = BuildWindow.build(root) -- builds and upgrades from the HUD (switch buildWindow, issue 751)
 	windows.Helpers = HelpersWindow.build(root) -- the helpers' levels, modes and names (switch helpersWindow, 526)
 	-- every window's X stays below the coin pill and the friend tag (issue 873)
@@ -437,6 +443,16 @@ end
 -- Whether Settings shows "Reset my game" (the server's CanResetSave, issue 1037).
 function UI.setCanReset(allowed: boolean)
 	SettingsCard.setCanReset(allowed)
+end
+
+-- Settings' "Send feedback": shown while `on`, with the sends this visit and the most a visit allows (issue 1081).
+function UI.setFeedback(on: boolean, sent: number, most: number)
+	SettingsCard.setFeedback(on, sent, most)
+end
+
+-- fn(choice, note) when the Feedback card's Send is pressed; the card closes, the server thanks.
+function UI.onFeedbackSend(fn: (choice: string, note: string) -> ())
+	FeedbackCard.onSend(fn)
 end
 
 -- fn() when "Reset my game" is pressed twice in Settings.
