@@ -244,3 +244,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## Helper wash recheck (PR 1136 at 559f490), desktop frame, 2026-11-27
 
 `1136b-*`: the aimed shampoo and shower, and the wider brush patches.
+
+## Helper wash last recheck (PR 1136 at 694e2fc), 2026-11-27
+
+`1136c-shampoo.jpg` shows the bottle tipped down over the cat. `1136c-brush.jpg` shows a brush patch.
