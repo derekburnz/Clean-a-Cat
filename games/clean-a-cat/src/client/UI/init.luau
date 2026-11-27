@@ -715,6 +715,12 @@ function UI.onGiftClaim(fn: () -> ())
 	GiftCard.onClaim(fn)
 end
 
+-- fn(answer) for the like how-to on the gift card (switch likeHowTo, issue 869): nil when it shows, then "yes" or
+-- "closed", for the ask_shown and ask_answered events.
+function UI.onLikeHowTo(fn: (answer: string?) -> ())
+	GiftCard.onHowTo(fn)
+end
+
 -- fn() when Get pack is pressed.
 function UI.onStarterBuy(fn: () -> ())
 	StarterWindow.onBuy(fn)
