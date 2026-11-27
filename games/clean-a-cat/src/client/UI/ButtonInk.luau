@@ -81,6 +81,19 @@ local function copy(button: TextButton, label: TextLabel)
 	end
 end
 
+-- Our own TextTransparency writes on each button that its listener has not seen yet.
+local pending: { [TextButton]: number? } = {}
+
+-- Writes the button's text transparency, counted so its listener knows the write is ours. A write that changes
+-- nothing fires no signal, so it is not counted.
+local function setText(button: TextButton, value: number)
+	if button.TextTransparency == value then
+		return
+	end
+	pending[button] = (pending[button] or 0) + 1
+	button.TextTransparency = value
+end
+
 -- The button's own text transparency: kept in an attribute while its words are drawn by the label.
 local function ownTransparency(button: TextButton): number
 	local kept = button:GetAttribute(OWN_TEXT)
@@ -116,7 +129,7 @@ local function outline(button: TextButton, on: boolean)
 			button:SetAttribute(OWN_TEXT, button.TextTransparency)
 			button:SetAttribute(OWN_STROKE, button.TextStrokeTransparency)
 		end
-		button.TextTransparency = 1
+		setText(button, 1)
 		button.TextStrokeTransparency = 1
 	else
 		if label then
@@ -125,7 +138,7 @@ local function outline(button: TextButton, on: boolean)
 		local text = button:GetAttribute(OWN_TEXT)
 		local stroke = button:GetAttribute(OWN_STROKE)
 		if typeof(text) == "number" then
-			button.TextTransparency = text
+			setText(button, text)
 		end
 		if typeof(stroke) == "number" then
 			button.TextStrokeTransparency = stroke
@@ -207,12 +220,20 @@ local function follow(piece: Instance)
 		end
 		button:GetPropertyChangedSignal("TextColor3"):Connect(again)
 		button:GetPropertyChangedSignal("TextTransparency"):Connect(function()
-			if button.TextTransparency ~= 1 and button:FindFirstChild(LABEL) then
-				-- the window set its own transparency: keep it as the button's own, still hidden under the label
-				button:SetAttribute(OWN_TEXT, button.TextTransparency)
-				button.TextTransparency = 1
-				again()
+			local mine: number? = pending[button]
+			if mine ~= nil then
+				-- one of our own writes: with deferred signals this runs after the write's turn ended, so a count of
+				-- writes still to be seen tells them apart, not a flag cleared in that turn (Review-QA on 1116)
+				pending[button] = if mine > 1 then mine - 1 else nil
+				return
 			end
+			-- the window set its own transparency (1 included, to hide the words): it is the button's own, and the
+			-- label follows it (gone while hidden, back when shown again)
+			if button:FindFirstChild(LABEL) then
+				button:SetAttribute(OWN_TEXT, button.TextTransparency)
+				setText(button, 1)
+			end
+			again()
 		end)
 	elseif piece:IsA("TextLabel") and piece.Name ~= LABEL then
 		local label = piece :: TextLabel
