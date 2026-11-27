@@ -553,14 +553,19 @@ local function drawInto(
 		if HotelRules.gardenAtSide(isOn) then
 			-- (catHotel) the Garden stands in the side yard, wherever the back door is; only once the plot has that spot
 			if SpaLayout.PLOT_SPOTS[HotelRules.GARDEN_SPOT] ~= nil then
-				drawGarden(folder, assets :: Instance, slot, save, running, isOn, HotelRules.GARDEN_SPOT)
+				drawGarden(
+					folder,
+					assets :: Instance,
+					slot,
+					save,
+					running,
+					isOn,
+					HotelRules.GARDEN_SPOT
+				)
 			end
 		elseif ExpansionRules.showGarden(isOn, unlocked, gardenBuilt) then
 			drawGarden(folder, assets :: Instance, slot, save, running, isOn, GardenRules.SPOT)
 		end
-	end
-	elseif ExpansionRules.showGarden(isOn, unlocked, gardenBuilt) then
-		drawGarden(folder, assets :: Instance, slot, save, running, isOn, GardenRules.SPOT)
 	end
 	folder.Parent = plot
 end
