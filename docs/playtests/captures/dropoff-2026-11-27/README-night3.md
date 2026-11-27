@@ -178,3 +178,10 @@ The `hotel-*.jpg` pictures show the side Garden's three looks (locked, building,
 - The Settings rows on white cards with ink edges.
 
 `1114-retap-*-iphone13.jpg` shows the same buttons after taps, after a text change (Level up 200 to 500 to 1200), after closing and reopening, and the Gift window through Like, Got it, Favourite and Claim all.
+
+## PR 1116 (issue 1110 and the 1114 small fits) on main 1a5ebf1, iphone_13, 2026-11-27
+
+`1116-<piece>-iphone13.jpg` shows:
+- The two-helpers picture (rbxassetid://97491083681037) on the HUD Helpers button and the Helpers window badge.
+- The Crate's Uncommon pills at 89 in 89.
+- The Check in title at 84 in 84.
