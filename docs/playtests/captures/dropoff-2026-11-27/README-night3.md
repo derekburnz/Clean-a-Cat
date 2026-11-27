@@ -176,3 +176,5 @@ The `hotel-*.jpg` pictures show the side Garden's three looks (locked, building,
 - The deeper ticks (1E7A45) and the deeper gold "+100" (6B4200).
 - The white to lilac soft buttons: the Takes chip and Rename's "Use Sam".
 - The Settings rows on white cards with ink edges.
+
+`1114-retap-*-iphone13.jpg` shows the same buttons after taps, after a text change (Level up 200 to 500 to 1200), after closing and reopening, and the Gift window through Like, Got it, Favourite and Claim all.
