@@ -37,6 +37,7 @@ local SEAT_PET = "GiftPet" -- Starcoat's copy on the stand's PetSeat
 local GiftService = {}
 
 local claiming: { [Player]: boolean } = {}
+local verifiedAt: { [Player]: number } = {} -- (groupVerify) os.clock() of the last answered Verify tap
 
 local function on(): boolean
 	return LiveFlags.isOn(GiftRules.FLAG) and LiveFlags.isOn(CrateRules.FLAG)
@@ -352,12 +353,99 @@ local function onClaim(player: Player)
 	)
 end
 
+-- (groupVerify, issue 1111) The board's Verify: the server asks Roblox about the group on each answered tap and, on a
+-- join, gives what is left of the stand's gift and the 150 coins, each once per save. Nothing else is asked for.
+local function onVerify(player: Player)
+	if not (on() and LiveFlags.isOn(GiftRules.VERIFY_FLAG)) or claiming[player] then
+		return
+	end
+	local save = DataService.get(player)
+	if save == nil then
+		return
+	end
+	local now = os.clock()
+	if not GiftRules.verifyReady(verifiedAt[player], now) then
+		player:SetAttribute(GiftRules.VERIFY_ATTRIBUTE, "wait")
+		return
+	end
+	verifiedAt[player] = now
+	claiming[player] = true
+	local member = inGroup(player)
+	if player.Parent ~= Players then
+		claiming[player] = nil
+		return
+	end
+	setAttribute(player, GiftRules.GROUP_ATTRIBUTE, member)
+	player:SetAttribute(GiftRules.VERIFY_ATTRIBUTE, if member then "joined" else "notYet")
+	Telemetry.event(
+		player,
+		"gift_step",
+		1,
+		{ if member then "verify_joined" else "verify_not_yet" }
+	)
+	if not member then
+		claiming[player] = nil
+		NetService.notice(player, GiftRules.NOT_YET_TEXT, "warning")
+		return
+	end
+	local grant = GiftRules.verifyGrant(member, save.giftClaimed, save.freeRewards.like)
+	local crate = LiveFlags.isOn(CrateRules.GIFT_FLAG)
+	local given = false
+	if grant.pet then
+		given = if crate
+			then GiftRules.giveCrate(save :: any, CrateRules.GIFT_KIND)
+			else GiftRules.give(save :: any, CrateRules.PLAYER_SLOT) ~= nil
+		if given then
+			Telemetry.event(player, "gift_claimed", 1, { if crate then "crate" else "pet" })
+		end
+	end
+	if grant.coins then
+		save.freeRewards.like = true
+		save.coins += FreeRewardRules.LIKE_COINS
+		WalletService.show(player)
+		Telemetry.economy(
+			player,
+			"coins",
+			"source",
+			FreeRewardRules.LIKE_COINS,
+			save.coins,
+			"Gameplay",
+			"group_verify"
+		)
+		player:SetAttribute(FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE, true)
+	end
+	if given then
+		PetService.show(player)
+		DataService.saveAndConfirm(player, function(saved: { [string]: any }): boolean
+			return saved.giftClaimed == true
+		end, SAVE_WAIT)
+	end
+	claiming[player] = nil
+	if player.Parent ~= Players then
+		return
+	end
+	show(player)
+	if given then
+		drawStands()
+	end
+	local gift = if crate then "a gift crate" else GiftRules.PET
+	NetService.notice(
+		player,
+		if given and grant.coins
+			then `+{FreeRewardRules.LIKE_COINS} coins and {gift}! Thank you for joining us`
+			elseif given then `{gift} is yours! Thank you for joining us`
+			elseif grant.coins then `+{FreeRewardRules.LIKE_COINS} coins! Thank you for joining us`
+			else "You're in the group. Thank you for joining us!"
+	)
+end
+
 function GiftService.Init(_services: { [string]: any }) end
 
 function GiftService.Start()
 	NetService.on("RequestGiftFavourite", { perSecond = 1, burst = 2 }, onFavourite)
 	NetService.on("RequestGiftCheck", { perSecond = 0.5, burst = 2 }, check)
 	NetService.on("RequestGiftClaim", { perSecond = 0.5, burst = 2 }, onClaim)
+	NetService.on(GiftRules.VERIFY_REMOTE, { perSecond = 0.5, burst = 2 }, onVerify)
 	DataService.onLoaded:Connect(function(player: Player, _save: SaveSchema.Save)
 		show(player)
 		task.spawn(check, player)
@@ -365,6 +453,7 @@ function GiftService.Start()
 	end)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		claiming[player] = nil
+		verifiedAt[player] = nil
 		task.defer(drawStands)
 	end)
 	for _, flag in { GiftRules.FLAG, CrateRules.FLAG, CrateRules.GIFT_FLAG, GiftFlowRules.FLAG } do

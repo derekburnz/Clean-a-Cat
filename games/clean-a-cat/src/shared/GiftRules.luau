@@ -28,6 +28,34 @@ GiftRules.CLAIMED_ATTRIBUTE = "GiftClaimed" -- true once the pet is the player's
 
 GiftRules.GROUP_ONLY_FLAG = "giftGroupOnly"
 
+-- (switch groupVerify, issue 1111, Derek 2026-11-27: "another possible way to do the rewards for likes then only check
+-- for group") One free reward board: Join the group, then tap Verify. The server reads the group itself on each tap
+-- (VERIFY_REMOTE, one per VERIFY_COOLDOWN seconds) and, on a verified join only, gives the stand's gift and the 150
+-- coins (FreeRewardRules.LIKE_COINS) that the like row paid before, each once per save. The like stays a friendly
+-- ask with nothing tied to it: with the switch on the like row pays nothing. A player who can't join groups loses
+-- nothing else. The board's line reads VERIFY_ATTRIBUTE: the last tap's answer, one of VERIFY_ANSWERS.
+GiftRules.VERIFY_FLAG = "groupVerify"
+GiftRules.VERIFY_REMOTE = "VerifyGroup"
+GiftRules.VERIFY_ATTRIBUTE = "GroupVerify"
+GiftRules.VERIFY_COOLDOWN = 10
+GiftRules.VERIFY_ANSWERS = table.freeze({ "joined", "notYet", "wait" })
+GiftRules.NOT_YET_TEXT = "Join the group, then tap Verify" -- the group only (Growth-Agent on #1111)
+
+-- Whether a Verify tap at `now` is answered, after the last answered one at `lastAt` (nil: none this visit).
+function GiftRules.verifyReady(lastAt: number?, now: number): boolean
+	return lastAt == nil or now - lastAt >= GiftRules.VERIFY_COOLDOWN
+end
+
+-- What a Verify tap gives: the gift (`pet`, not given before) and the coins (not paid before), both only when the
+-- server found the player in the group.
+function GiftRules.verifyGrant(
+	member: boolean,
+	giftClaimed: boolean,
+	coinsPaid: boolean
+): { pet: boolean, coins: boolean }
+	return { pet = member and not giftClaimed, coins = member and not coinsPaid }
+end
+
 export type State = { favourite: boolean, group: boolean, claimed: boolean }
 
 -- Whether the stand is lit at `played` seconds of play.

@@ -9,6 +9,8 @@
 -- PlaySeconds on the player shows the save's play time for the play row (whole seconds, every CHECK_SECONDS).
 -- The favourite plus group row (Starcoat) stays GiftService's. Behind the LiveFlags switch freeRewards, with
 -- giftStand and pets on too; nothing costs Robux.
+-- (groupVerify, issue 1111) The like row pays nothing: its 150 coins come with the verified group join instead
+-- (GiftService), and the like stays a friendly ask with nothing tied to it.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -72,13 +74,15 @@ local function show(player: Player)
 	setAttribute(
 		player,
 		FreeRewardRules.LIKE_READY_ATTRIBUTE,
-		FreeRewardRules.likeReadyAt(save.likeAskedAt)
+		if LiveFlags.isOn(GiftRules.VERIFY_FLAG)
+			then nil
+			else FreeRewardRules.likeReadyAt(save.likeAskedAt)
 	)
 	setAttribute(player, FreeRewardRules.PLAY_SECONDS_ATTRIBUTE, math.floor(played(player, save)))
 end
 
 local function onLikeAsk(player: Player)
-	if not on() then
+	if not on() or LiveFlags.isOn(GiftRules.VERIFY_FLAG) then
 		return
 	end
 	local save = DataService.get(player)
@@ -100,6 +104,10 @@ local function onClaim(player: Player, rawKey: unknown)
 		return
 	end
 	local key: FreeRewardRules.Key = clean
+	if key == "like" and LiveFlags.isOn(GiftRules.VERIFY_FLAG) then
+		show(player) -- (groupVerify) nothing is tied to the like
+		return
+	end
 	local refusal = FreeRewardRules.refusal({
 		claimed = save.freeRewards,
 		likeAskedAt = save.likeAskedAt,
@@ -157,7 +165,15 @@ function FreeRewardService.Start()
 	DataService.onLoaded:Connect(function(player: Player, _save: SaveSchema.Save)
 		show(player)
 	end)
-	for _, flag in { FreeRewardRules.FLAG, GiftRules.FLAG, CrateRules.FLAG, GiftFlowRules.FLAG } do
+	for _, flag in
+		{
+			FreeRewardRules.FLAG,
+			GiftRules.FLAG,
+			CrateRules.FLAG,
+			GiftFlowRules.FLAG,
+			GiftRules.VERIFY_FLAG,
+		}
+	do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do
