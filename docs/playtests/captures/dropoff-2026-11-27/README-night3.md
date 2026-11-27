@@ -231,3 +231,8 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## Buy pictures (PR 1131, issue 1122) on main 734d1d7, iphone_13, 2026-11-27
 
 `1131-*`: the Build window rows, a QA sheet of all 18 new pictures (each drawn in its own ImageLabel), the Shop, and the Starter window.
+
+## HUD star coin (PR 1134) on main f6e2370, iphone_13, 2026-11-27
+
+- `1134-coin-pill-iphone13.jpg`: the HUD coin pill.
+- `1134-coin-200px-iphone13.jpg`: the same rbxassetid://108922632736355 drawn at 200 px in a temporary QA label, to show the star.
