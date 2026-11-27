@@ -31,6 +31,7 @@ local Workspace = game:GetService("Workspace")
 local Comfort = require(script.Parent.Parent:WaitForChild("UI"):WaitForChild("Comfort"))
 local CounterCrate = require(script.Parent:WaitForChild("CounterCrate"))
 local CustomerPose = require(script.Parent:WaitForChild("CustomerPose"))
+local HelperWash = require(script.Parent:WaitForChild("HelperWash"))
 local StaffPose = require(script.Parent:WaitForChild("StaffPose"))
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local HelperFetchRules = require(Shared:WaitForChild("HelperFetchRules"))
@@ -79,6 +80,10 @@ type Rig = {
 	carrier: Model?, -- the figure's Carrier (FigureService hangs it under the arm), looked up at most once a second
 	carrierPart: BasePart?, -- one of its parts: CounterCrate hides the carrier by Transparency
 	carrierAt: number, -- os.clock() of the last look for it
+	helper: HelperWash.State?, -- (switch helperWash) the wash steps of a staff member at their stand
+	sideL: number, -- radians the arms turn sideways, across the body (HelperWash); 0 otherwise
+	sideR: number,
+	near: boolean, -- within HelperWash.NEAR of the camera this frame
 }
 
 -- Whether a helper is holding the cat on Gameplay's walk at server time `now` (HelperFetchRules.pose).
@@ -243,6 +248,10 @@ local function attach(model: Model)
 		carrier = nil,
 		carrierPart = nil,
 		carrierAt = -math.huge,
+		helper = nil,
+		sideL = 0,
+		sideR = 0,
+		near = false,
 	}
 	local names = {}
 	for key in joints do
@@ -264,8 +273,11 @@ local function apply(rig: Rig, pose: CustomerPose.Pose)
 	rig.appliedAt = bodyCF
 	turn(rig, "LegL", bodyCF, CFrame.Angles(pose.legL, 0, 0))
 	turn(rig, "LegR", bodyCF, CFrame.Angles(pose.legR, 0, 0))
-	turn(rig, "ArmL", bodyCF, CFrame.Angles(pose.armL, 0, 0))
-	local armR = CFrame.Angles(0, 0, -rig.armIn) * CFrame.Angles(pose.armR, 0, 0)
+	-- a sideways turn about the shoulder's Y moves a forward-reaching hand across the body (HelperWash's strokes)
+	turn(rig, "ArmL", bodyCF, CFrame.Angles(0, -rig.sideL, 0) * CFrame.Angles(pose.armL, 0, 0))
+	local armR = CFrame.Angles(0, 0, -rig.armIn)
+		* CFrame.Angles(0, rig.sideR, 0)
+		* CFrame.Angles(pose.armR, 0, 0)
 	turn(rig, "ArmR", bodyCF, armR)
 	local tool = rig.tool
 	local arm = rig.joints.ArmR
@@ -315,7 +327,18 @@ end
 -- Back to rest: the pose at rest, with the carrying arm straight unless a carrier shows in the hand (issue 1062), so a
 -- far or unanimated customer never keeps the server's turned-out arm with nothing in it. Written again only when
 -- something changed or a move put the joints back at the server's rest.
+local function stopHelper(rig: Rig)
+	local helper = rig.helper
+	if helper then
+		rig.helper = nil
+		HelperWash.stop(helper)
+	end
+	rig.sideL = 0
+	rig.sideR = 0
+end
+
 local function toRest(rig: Rig)
+	stopHelper(rig)
 	if rig.body.Parent == nil then
 		rig.moved = false
 		return
@@ -363,7 +386,22 @@ local function update(rig: Rig, now: number)
 		StaffPose.freeArms(rig.pose)
 		local washing = rig.model:GetAttribute("Washing") == true
 		rig.wash = CustomerPose.approach(rig.wash, if washing then 1 else 0, StaffPose.BLEND, dt)
-		StaffPose.scrub(rig.pose, now, rig.seed, rig.wash * (1 - rig.amount), still)
+		local amount = rig.wash * (1 - rig.amount)
+		local sideL, sideR = nil, nil
+		if washing and HelperWash.on() then
+			local helper = rig.helper or HelperWash.new()
+			rig.helper = helper
+			sideL, sideR =
+				HelperWash.pose(helper, rig.model, rig.pose, now, rig.seed, amount, still, dt)
+		end
+		if sideL == nil or sideR == nil then
+			-- no step to show (switch off, no cat in the stand, or the wash just ended): the plain rub
+			stopHelper(rig)
+			StaffPose.scrub(rig.pose, now, rig.seed, amount, still)
+		else
+			rig.sideL = sideL
+			rig.sideR = sideR
+		end
 		local carrying = LiveFlags.isOn(HelperFetchRules.FLAG)
 			and CustomerMotion.holding(rig.model, Workspace:GetServerTimeNow())
 		rig.carry = CustomerPose.approach(rig.carry, if carrying then 1 else 0, StaffPose.BLEND, dt)
@@ -387,6 +425,10 @@ local function update(rig: Rig, now: number)
 		dt
 	)
 	apply(rig, rig.pose)
+	local helper = rig.helper
+	if helper then
+		HelperWash.place(helper, rig.model, rig.near, now, Comfort.lessSparkle())
+	end
 	rig.moved = true
 end
 
@@ -400,6 +442,7 @@ local function step()
 	local budget = CustomerMotion.MAX
 	for model, rig in rigs do
 		if model.Parent == nil or rig.body.Parent == nil then
+			stopHelper(rig) -- the tool and water are client-only copies in Workspace: they go with the helper
 			rigs[model] = nil
 			continue
 		end
@@ -415,6 +458,7 @@ local function step()
 			continue
 		end
 		budget -= 1
+		rig.near = distance <= HelperWash.NEAR
 		local interval = if distance > CustomerMotion.NEAR
 			then CustomerMotion.STEP * 2
 			else CustomerMotion.STEP
@@ -424,6 +468,10 @@ local function step()
 			-- the body moved since the last write (a replicated server move also puts every joint back at rest), so
 			-- the same pose is written again this frame: no stutter between 30 Hz updates (Review-QA on #462)
 			apply(rig, rig.pose)
+			local helper = rig.helper
+			if helper then
+				HelperWash.place(helper, rig.model, rig.near, now, Comfort.lessSparkle())
+			end
 		end
 	end
 end

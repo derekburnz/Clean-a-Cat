@@ -210,6 +210,7 @@ LiveFlags.KEYS = {
 	"menuContrast3", -- the white words on every window's buttons (Buy, Build, Level up, Claim, Favourite, Like, Reset, the X) get a thick ink outline, and the tick green and gold words turn deeper (UI/ButtonInk, issue 1096); off by default
 	"shortText", -- fewer words in every window: lines the picture and title already say are hidden, long lines cut short ("Hire at their pad · 1200 coins" to "1200 coins"); numbers, prices and odds stay (UI/ShortText, ShortTextRules, issue 1027); off by default
 	"starterNoClock", -- the starter pack keeps its 72 hours, but its HUD chip and window read "New player offer" instead of the time left (StarterViewRules.hudNote, issue 1069, Derek's plan answer of 2026-11-27); off by default
+	"helperWash", -- a helper washing a cat at their stand works through the steps with a tool in hand: shampoo, brush strokes with foam, the shower's water line, towel pats (Effects/HelperWash, CustomerMotion, issue 1135); client only; off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -392,6 +393,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	starterPet = true,
 	starterBuilder = true,
 	hotelNotify = true,
+	helperWash = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
