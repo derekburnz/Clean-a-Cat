@@ -22,6 +22,7 @@ local Workspace = game:GetService("Workspace")
 
 local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
 
+local Contrast = require(script.Parent:WaitForChild("Contrast"))
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local Motion = require(script.Parent:WaitForChild("Motion"))
@@ -274,6 +275,7 @@ function Window.new(name: string, title: string, badgeIcon: string, root: Instan
 	card:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 		keepOnScreen(w)
 	end)
+	Contrast.watch(card) -- switch menuContrast2 (issue 1029)
 	return w
 end
 
