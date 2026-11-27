@@ -12,6 +12,7 @@ local Portraits = {}
 -- mascot (#285), has his own key here though he is not in the Cat Index.
 Portraits.IMAGES = {
 	Suds = "rbxassetid://134546291029280", -- CleanACat_UI_Portrait_Suds, round cheeks, group upload (#784)
+	Midas = "rbxassetid://125587914737060", -- CleanACat_UI_Portrait_Pet_Midas, the starter pack's golden pet (#1090)
 	-- the 20 cats, clean (#794, upload run 45894254332) and at dirt levels 1 to 4 (the tangle and fluff renders after
 	-- #791, upload run 45902777416)
 	Bathtile = "rbxassetid://104371157404490",

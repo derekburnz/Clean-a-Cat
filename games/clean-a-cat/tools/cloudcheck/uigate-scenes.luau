@@ -587,6 +587,26 @@ local SCENES = {
 			UI.open("Starter")
 		end,
 	},
+	-- starterPet (issue 1090): a fourth card for Midas, "Bonus" and no price, with the saving from the three passes.
+	{
+		"StarterPet",
+		function()
+			flag("passes", true)
+			flag("starterPack", true)
+			flag("starterPet", true)
+			local StarterViewRules = UIShim.require("ReplicatedStorage.Shared.StarterViewRules")
+			local prices: { [string]: number } =
+				{ GoldenSponge = 99, SecondPetSlot = 249, DoubleCoins = 199 }
+			UI.setStarter(
+				StarterViewRules.items(function(key: string): unknown
+					return prices[key]
+				end),
+				199,
+				os.time() + 44 * 3600
+			)
+			UI.open("Starter")
+		end,
+	},
 	-- starterNoClock (issue 1069): the window's band line says "New player offer", no time left.
 	{
 		"StarterNoClock",
@@ -1001,6 +1021,15 @@ local SCENES = {
 				nil,
 				os.time() + 44 * 3600
 			)
+		end,
+	},
+	-- starterPet (issue 1090): Midas is the card's big picture, with gold rays behind him.
+	{
+		"HudStarterPet",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+			flag("starterPet", true)
 		end,
 	},
 	-- starterNoClock (issue 1069): the starter ad's chip says "New player offer" instead of the time left.
@@ -1591,6 +1620,7 @@ function Scenes.close()
 	flag("feedback", false)
 	flag("windowClear", false)
 	flag("starterCard", false)
+	flag("starterPet", false)
 	flag("menuContrast2", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)

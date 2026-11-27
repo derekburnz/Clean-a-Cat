@@ -68,6 +68,30 @@ return function()
 			expect(StarterViewRules.windowNote(12 * 60, false)).to.equal("Ends in 12m")
 		end)
 
+		it("adds Midas as a fourth card with no price, never in the saving (issue 1090)", function()
+			local pet = StarterViewRules.petItem()
+			expect(pet.name).to.equal("Midas")
+			expect(pet.price).to.equal(nil)
+			expect(pet.badge).to.equal("Bonus")
+			expect(pet.note).to.equal("Pack only")
+			expect(StarterViewRules.fine(true)).to.equal(
+				"Nothing random. All four are yours to keep."
+			)
+			expect(StarterViewRules.fine(false)).to.equal(StarterViewRules.FINE)
+			local three = StarterViewRules.items(function()
+				return 100
+			end)
+			local total, percent = StarterViewRules.saving(three, 199)
+			local four = table.clone(three)
+			table.insert(four, pet)
+			local total4, percent4 = StarterViewRules.saving(four, 199)
+			expect(total).to.equal(300)
+			-- a card with no price hides the saving, so the window passes only the three passes to saving
+			expect(total4).to.equal(nil)
+			expect(percent4).to.equal(nil)
+			expect(percent).never.to.equal(nil)
+		end)
+
 		it("bobs 3 times on the first visit, once on the next two, then never", function()
 			expect(StarterViewRules.bobs(1, false)).to.equal(3)
 			expect(StarterViewRules.bobs(2, false)).to.equal(1)
@@ -78,7 +102,14 @@ return function()
 
 		it("never hurries", function()
 			for _, line in
-				{ StarterViewRules.TITLE, StarterViewRules.FINE, StarterViewRules.buyText(1) }
+				{
+					StarterViewRules.TITLE,
+					StarterViewRules.FINE,
+					StarterViewRules.FINE_PET,
+					StarterViewRules.petItem().what,
+					StarterViewRules.petItem().note or "",
+					StarterViewRules.buyText(1),
+				}
 			do
 				local low = string.lower(line)
 				for _, word in { "hurry", "limited", "72", "now!", "last chance" } do
