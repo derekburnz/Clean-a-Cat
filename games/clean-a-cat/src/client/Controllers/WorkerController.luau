@@ -5,6 +5,7 @@
 -- shows the result on the Player attributes WorkerMode_<id> and WorkerLevel_<id>; the prompts only follow them.
 -- Lou comes with a game pass, so he has no hire prompt. Nothing opens by itself.
 -- With `pets` on, a third prompt gives the worker the best pet from the player's pen (until Design's Pets window).
+-- With `petMenuOnly` and `petsWindow` on, that prompt goes: pets are given in the Pets menu (issue 930).
 -- It also fires Moments.WorkerFinished(cat) when a worker's clean cat sits down in their tub, on any plot.
 -- Behind the LiveFlags switch `workers`.
 local Players = game:GetService("Players")
@@ -87,7 +88,7 @@ local function build(id: string)
 	local function show()
 		local hired = attribute("WorkerLevel", id) ~= nil
 		local best = if hired and LiveFlags.isOn(CrateRules.FLAG) then bestInPen() else nil
-		give.Enabled = best ~= nil
+		give.Enabled = best ~= nil and WorkerRules.givePrompt(LiveFlags.isOn)
 		give.ActionText = "Give a pet"
 		give.ObjectText = if best then `{best.kind} to {nameOf(id)}` else ""
 		if not hired then
@@ -205,13 +206,16 @@ function WorkerController.Start()
 				show()
 			end
 		end)
-	ReplicatedStorage
-		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. WorkerRules.HUD_TIDY_FLAG)
-		:Connect(function()
-			for _, show in shows do
-				show()
-			end
-		end)
+	for _, flag in
+		{ WorkerRules.HUD_TIDY_FLAG, WorkerRules.PET_MENU_FLAG, WorkerRules.PETS_WINDOW_FLAG }
+	do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(function()
+				for _, show in shows do
+					show()
+				end
+			end)
+	end
 	-- the plot placed or taken away: the prompts move with the stations
 	SpaLayout.changed(function()
 		for id, anchor in anchors do

@@ -170,6 +170,7 @@ LiveFlags.KEYS = {
 	"catWalkOut", -- a customer's washed cat hops out of the tub and trots out, fading (Effects/CatWalkOut, CatReturned); off by default
 	"foamStep", -- the Bubble Bath step is "Foam up the cat": a soap bar (Model-Agent's CleanACat_Tool_SoapBar, the bubble sponge until it exists) rubbed on, foam building where it passes (WashDraft.SAY_FOAM, ToolOnCat, issue 888); off by default
 	"bowDrag", -- the bow step is a drag: the three bows show in the player's best tier and one goes on when dropped on the cat; a gamepad keeps the tap (Spa/BowDrag, ScrubController, issue 889); off by default
+	"petMenuOnly", -- a hired helper's stand drops its "Give a pet" prompt while the Pets menu (petsWindow) is on: pets are given to the player and each helper there (WorkerRules.givePrompt, WorkerController, issue 930); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -312,6 +313,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	catWalkOut = true,
 	foamStep = true,
 	bowDrag = true,
+	petMenuOnly = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
