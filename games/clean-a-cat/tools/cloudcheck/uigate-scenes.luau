@@ -1128,6 +1128,22 @@ local SCENES = {
 	},
 }
 
+-- The menus with their stronger card edges (issue 928, switch menuContrast): the same scenes, the switch on.
+for _, name in { "Shop", "Build", "Quests", "Helpers", "Pets", "Crate" } do
+	for _, scene in table.clone(SCENES) do
+		if scene[1] == name then
+			local open = scene[2]
+			table.insert(SCENES, {
+				name .. "Contrast",
+				function()
+					flag("menuContrast", true)
+					open()
+				end,
+			})
+		end
+	end
+end
+
 Scenes.names = {}
 for _, scene in SCENES do
 	table.insert(Scenes.names, scene[1])
@@ -1158,6 +1174,7 @@ function Scenes.close()
 	flag("helpersWindow", false)
 	flag("helperPets", false)
 	flag("petLines", false)
+	flag("menuContrast", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)
 	flag("workers", false)
