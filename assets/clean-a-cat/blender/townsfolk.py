@@ -325,6 +325,13 @@ def _torso(b, f, look):
         for sx in (1, -1):
             b.box((sx * 0.33, fy - 0.015, (z0 + z1) / 2 + 0.1), (0.14, 0.04, z1 - z0 - 0.3), look["backpack"],
                   bevel=False)
+    if look.get("toolbelt"):                             # the builder (#891): a belt, two pouches, a wrench
+        belt, pouch = look["toolbelt"]
+        b.box_base((0, 0, z0 - 0.12), (w + 0.08, dep + 0.08, 0.2), belt)
+        for sx in (1, -1):                               # the pouches' backs 0.06 into the hips, so none floats
+            b.box((sx * 0.42, fy, z0 - 0.22), (0.36, 0.16, 0.3), pouch)
+        b.box((0.42, fy - 0.06, z0 + 0.0), (0.09, 0.08, 0.42), "fur_smoke_light")              # a wrench in one
+        b.box((0.42, fy - 0.06, z0 + 0.24), (0.22, 0.09, 0.12), "fur_smoke_light")
     if look.get("apron"):
         _apron(b, f, look)
     b.box_base((0, 0, f.top - 0.05), (0.5, 0.5, 0.2), look["skin"], bevel=False)             # the neck
@@ -520,6 +527,12 @@ def _hair(h, f, look):
         h.pyramid((0, -(cd / 2 - 0.13), top + 0.36), 0.3, 0.42, cr)
         for dx, sw in ((-0.36, "spa_sky"), (0.0, "royal_berry"), (0.36, "spa_mint")):
             h.box((dx, -cd / 2 - 0.01, top + 0.23), (0.13, 0.04, 0.13), sw, bevel=False, rot=_ry(45))
+    if look.get("hardhat"):                               # the builder (#891): a hard hat with a peak and a ridge
+        hh = look["hardhat"]
+        h.box_base((0, 0, top - 0.12), (hw + 0.2, hd + 0.2, 0.2), hh)                                    # the rim
+        h.box_base((0, 0, top), (hw + 0.04, hd + 0.04, 0.42), hh)                                         # the dome
+        h.box_base((0, -hd / 2 - 0.12, top - 0.1), (hw - 0.1, 0.36, 0.12), hh)                            # the peak
+        h.box_base((0, 0, top + 0.38), (0.32, hd + 0.1, 0.14), hh)                                        # the ridge
     if look.get("headband"):                              # the staff: a towelling band round the hair, a paw in front
         band, mark = look["headband"]
         h.box_base((0, 0, top - 0.28), (hw + 0.3, hd + 0.3, 0.25), band)       # its top just under the head's
@@ -549,6 +562,8 @@ def top_of(look):
         extra = 0.62
     elif look["style"] in ("puffs", "curls"):
         extra = 0.6
+    elif look.get("hardhat"):
+        extra = 0.52
     elif look.get("phones"):
         extra = 0.24
     return f.head1 + extra
