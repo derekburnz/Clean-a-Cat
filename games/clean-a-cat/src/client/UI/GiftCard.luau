@@ -15,14 +15,17 @@
 -- GiftCardController calls GiftController, which asks the server.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local GiftFlowRules = require(Shared:WaitForChild("GiftFlowRules"))
 local GiftViewRules = require(Shared:WaitForChild("GiftViewRules"))
+local LikeHowToRules = require(Shared:WaitForChild("LikeHowToRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 
+local Comfort = require(script.Parent:WaitForChild("Comfort"))
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local Portraits = require(script.Parent:WaitForChild("Portraits"))
@@ -104,12 +107,25 @@ type Parts = {
 	claim: TextButton,
 	claimGradient: UIGradient,
 	wait: TextLabel,
+	-- the like how-to (switch likeHowTo, issue 869), in the picture side's place while it shows
+	howTo: Frame,
+	howArt: Frame,
+	howThumb: Frame,
+	howHand: Frame,
+	howRing: Frame,
+	howCaption: TextLabel,
+	howNote: TextLabel,
+	howButton: TextButton,
 }
 
 local parts: Parts? = nil
 local state: GiftViewRules.State =
 	{ lit = false, favourite = false, group = false, claimed = false }
 local stepListeners: { (key: string) -> () } = {}
+local howToListeners: { (answer: string?) -> () } = {}
+local howToShowing = false
+local howToDone = false -- once a visit (issue 869)
+local howToLoop: RBXScriptConnection? = nil
 local claimListeners: { () -> () } = {}
 
 local function frame(name: string, parent: Instance): Frame
@@ -295,6 +311,21 @@ local function redraw()
 	p.petLine.Size = UDim2.new(1, 0, 0, s.petLine * 2 + 4)
 	p.petLine.Text = prize.line
 
+	-- (likeHowTo, issue 869) the how-to takes the picture side's place while it shows
+	for _, piece in { p.pic, p.petName, p.petLine } :: { GuiObject } do
+		piece.Visible = not howToShowing
+	end
+	if howToShowing then
+		p.petRarity.Visible = false
+	end
+	p.howTo.Visible = howToShowing
+	p.howArt.Size = UDim2.fromOffset(s.pic, s.pic)
+	p.howCaption.TextSize = s.petLine
+	p.howNote.TextSize = s.petLine - 2
+	p.howNote.Text = LikeHowToRules.note(state.stage == 1)
+	p.howButton.TextSize = s.actionText
+	p.howButton.Size = UDim2.new(1, 0, 0, math.max(s.claimH - 12, math.ceil(MIN_TAP / scale)))
+
 	-- the steps, then Get Starcoat
 	p.right.Size = UDim2.fromOffset(width - 2 * s.pad - s.petW - s.gap, 0)
 	for _, child in p.rows:GetChildren() do
@@ -318,7 +349,7 @@ local function redraw()
 		then ColorSequence.new(GREEN_TOP, GREEN_BOTTOM)
 		else ColorSequence.new(WAIT_TOP, WAIT_BOTTOM)
 	local waitLine = GiftViewRules.waitLine(state)
-	p.wait.Visible = waitLine ~= nil
+	p.wait.Visible = waitLine ~= nil and not (howToShowing and state.free ~= nil)
 	-- with the free rewards rows (four of them) the steps left for Starcoat sit under the pet, so the card fits a phone
 	p.wait.Parent = if state.free then p.pet else p.right
 	p.wait.LayoutOrder = if state.free then 5 else 3
@@ -327,8 +358,85 @@ local function redraw()
 	p.wait.Text = waitLine or ""
 end
 
+-- Draws one frame of the how-to's loop (LikeHowToRules.frame).
+local function drawHowTo(t: number)
+	local p = parts
+	if p == nil then
+		return
+	end
+	local f = LikeHowToRules.frame(t, Comfort.reducedMotion())
+	local thumb = p.howThumb:FindFirstChild("Icon")
+	local shown = if f.filled then "ThumbsUpFilled" else "ThumbsUp"
+	if p.howThumb:GetAttribute("Shown") ~= shown then
+		p.howThumb:SetAttribute("Shown", shown)
+		Icons.draw(shown, p.howThumb)
+	elseif thumb == nil then
+		Icons.draw(shown, p.howThumb)
+	end
+	-- the hand comes from the lower right onto the thumb, a little smaller while it presses
+	local away = 1 - f.hand
+	local size = if f.press > 0 then 0.42 else 0.48
+	p.howHand.Size = UDim2.fromScale(size, size)
+	p.howHand.Position = UDim2.fromScale(0.62 + 0.3 * away, 0.62 + 0.3 * away)
+	p.howRing.Visible = f.ring > 0
+	p.howRing.Size = UDim2.fromScale(0.4 + 0.6 * f.ring, 0.4 + 0.6 * f.ring)
+	for _, child in p.howRing:GetDescendants() do
+		if child:IsA("ImageLabel") then
+			(child :: ImageLabel).ImageTransparency = f.ring
+		elseif child:IsA("TextLabel") then
+			(child :: TextLabel).TextTransparency = f.ring
+		end
+	end
+end
+
+local function tellHowTo(answer: string?)
+	for _, listener in howToListeners do
+		task.spawn(listener, answer)
+	end
+end
+
+local function hideHowTo(answer: string?)
+	if not howToShowing then
+		return
+	end
+	howToShowing = false
+	if howToLoop then
+		howToLoop:Disconnect()
+		howToLoop = nil
+	end
+	tellHowTo(answer)
+	redraw()
+end
+
+local function showHowTo()
+	local p = parts
+	if p == nil or howToShowing or howToDone then
+		return
+	end
+	howToShowing = true
+	howToDone = true
+	Icons.draw("TapHand", p.howHand)
+	Icons.draw("RingPuff", p.howRing)
+	local started = os.clock()
+	drawHowTo(0)
+	howToLoop = RunService.Heartbeat:Connect(function()
+		drawHowTo(os.clock() - started)
+	end)
+	tellHowTo(nil)
+	redraw()
+end
+
 function GiftCard.set(newState: GiftViewRules.State)
+	-- (likeHowTo, issue 869) Like was just tapped on the open card: show how to like the game, once a visit
+	local before = state.free
+	local now = newState.free
+	local tapped = before ~= nil and now ~= nil and not before.likeAsked and now.likeAsked
 	state = newState
+	local open = parts ~= nil and (parts :: Parts).window.layer.Visible
+	if tapped and open and LiveFlags.isOn(LikeHowToRules.FLAG) then
+		showHowTo()
+		return
+	end
 	local p = parts
 	if p and p.window.layer.Visible then
 		redraw()
@@ -337,6 +445,11 @@ end
 
 function GiftCard.onStep(fn: (key: string) -> ())
 	table.insert(stepListeners, fn)
+end
+
+-- fn(answer) for the like how-to's ask events: nil when it shows, "yes" on Got it, "closed" when the card closes.
+function GiftCard.onHowTo(fn: (answer: string?) -> ())
+	table.insert(howToListeners, fn)
 end
 
 function GiftCard.onClaim(fn: () -> ())
@@ -387,6 +500,44 @@ function GiftCard.build(root: Instance): Frame
 	petLine.TextColor3 = Kit.INK_SOFT
 	petLine.TextWrapped = true
 	petLine.AutomaticSize = Enum.AutomaticSize.Y
+	-- the like how-to (switch likeHowTo, issue 869): its loop, its two lines and Got it
+	local howTo = frame("HowTo", pet)
+	howTo.LayoutOrder = 6
+	howTo.Size = UDim2.fromScale(1, 0)
+	howTo.AutomaticSize = Enum.AutomaticSize.Y
+	howTo.Visible = false
+	list(howTo, false, 6).HorizontalAlignment = Enum.HorizontalAlignment.Center
+	local howArt = frame("Art", howTo)
+	howArt.LayoutOrder = 1
+	local howThumb = frame("Thumb", howArt)
+	howThumb.AnchorPoint = Vector2.new(0.5, 0.5)
+	howThumb.Position = UDim2.fromScale(0.45, 0.45)
+	howThumb.Size = UDim2.fromScale(0.62, 0.62)
+	local howRing = frame("Ring", howArt)
+	howRing.AnchorPoint = Vector2.new(0.5, 0.5)
+	howRing.Position = UDim2.fromScale(0.55, 0.55)
+	howRing.ZIndex = 2
+	local howHand = frame("Hand", howArt)
+	howHand.AnchorPoint = Vector2.new(0.5, 0.5)
+	howHand.ZIndex = 3
+	local howCaption = words("Caption", howTo, 17)
+	howCaption.LayoutOrder = 2
+	howCaption.Text = LikeHowToRules.CAPTION
+	howCaption.TextWrapped = true
+	howCaption.Size = UDim2.fromScale(1, 0)
+	howCaption.AutomaticSize = Enum.AutomaticSize.Y
+	local howNote = words("Note", howTo, 15)
+	howNote.LayoutOrder = 3
+	howNote.FontFace = Kit.BODY_FACE
+	howNote.TextColor3 = Kit.INK_SOFT
+	howNote.TextWrapped = true
+	howNote.Size = UDim2.fromScale(1, 0)
+	howNote.AutomaticSize = Enum.AutomaticSize.Y
+	local howButton = Window.button("GotIt", LikeHowToRules.BUTTON, howTo, GREEN_TOP, GREEN_BOTTOM)
+	howButton.LayoutOrder = 4
+	howButton.Activated:Connect(function()
+		hideHowTo("yes")
+	end)
 
 	local right = frame("Steps", columnsFrame)
 	right.LayoutOrder = 2
@@ -428,10 +579,20 @@ function GiftCard.build(root: Instance): Frame
 		claim = claim,
 		claimGradient = claimGradient,
 		wait = wait,
+		howTo = howTo,
+		howArt = howArt,
+		howThumb = howThumb,
+		howHand = howHand,
+		howRing = howRing,
+		howCaption = howCaption,
+		howNote = howNote,
+		howButton = howButton,
 	}
 	window.layer:GetPropertyChangedSignal("Visible"):Connect(function()
 		if window.layer.Visible then
 			redraw()
+		else
+			hideHowTo("closed") -- the card closed over the how-to (the like gift is unaffected)
 		end
 	end)
 	for _, flag in { GiftViewRules.FLAG, "pets" } do

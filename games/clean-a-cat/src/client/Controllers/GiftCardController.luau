@@ -183,6 +183,10 @@ function GiftCardController.Start()
 	wasClaimed = state().claimed
 	gift.onOpen(open)
 	gift.onChanged(changed)
+	-- (likeHowTo, issue 869) the like how-to's ask_shown and ask_answered events
+	UI.onLikeHowTo(function(answer: string?)
+		Remotes.event("ReportAsk"):FireServer("likeHowTo", answer)
+	end)
 	UI.onGiftStep(function(key: string)
 		if key == "favourite" then
 			gift.favourite()
