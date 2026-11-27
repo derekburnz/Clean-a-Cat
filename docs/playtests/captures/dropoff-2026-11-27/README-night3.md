@@ -236,3 +236,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 
 - `1134-coin-pill-iphone13.jpg`: the HUD coin pill.
 - `1134-coin-200px-iphone13.jpg`: the same rbxassetid://108922632736355 drawn at 200 px in a temporary QA label, to show the star.
+
+## Helper wash with tools (PR 1136, issue 1135) at 71c68bc, desktop frame, 2026-11-27
+
+`1136-<step>.jpg` shows the shampoo, brush, shower with its water line and the towel at the helpers' right hands (Jo, Sam and Lou hired), plus a wide shot.
