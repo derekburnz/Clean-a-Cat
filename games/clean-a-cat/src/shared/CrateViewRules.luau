@@ -11,6 +11,11 @@ CrateViewRules.FLAG = "crateWindow"
 -- give/do"), a pet's boost says what it boosts: the player's tips beside the player, a helper's pay beside a helper.
 CrateViewRules.LINES_FLAG = "petLines"
 
+-- Whether a boost is more than a helper's pets may add to their pay (CrateRules.PET_CAP).
+function CrateViewRules.overCap(share: number): boolean
+	return share > CrateRules.PET_CAP + 1e-9
+end
+
 -- A share as shown: 0.05 is "+5%".
 local function plus(share: number): string
 	return `+{math.floor(share * 100 + 0.5)}%`
@@ -24,7 +29,7 @@ function CrateViewRules.effectText(share: number, isOn: ((flag: string) -> boole
 	if not on then
 		return `{plus(share)} boost`
 	end
-	if share > CrateRules.PET_CAP + 1e-9 then
+	if CrateViewRules.overCap(share) then
 		return `{plus(share)} tips, {plus(CrateRules.PET_CAP)} pay`
 	end
 	return `{plus(share)} tips or pay`
