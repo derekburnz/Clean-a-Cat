@@ -3,7 +3,6 @@
 -- renders them (the screens' img/portrait_<Name>_ink.png). Until a group upload exists (rule 18) a name maps to "" and
 -- the portrait draws its stand-in: a cat glyph on a tile in the rarity's colour. Portraits are drawn at 48 real px or
 -- larger.
-local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 
 local Portraits = {}
@@ -172,19 +171,7 @@ function Portraits.draw(
 		frame.Color = Kit.INK
 	end
 	local image = Portraits.imageFor(cat, dirt)
-	local function glyphIn()
-		local glyph = Instance.new("TextLabel")
-		glyph.Name = "Glyph"
-		glyph.BackgroundTransparency = 1
-		glyph.AnchorPoint = Vector2.new(0.5, 0.5)
-		glyph.Position = UDim2.fromScale(0.5, 0.5)
-		glyph.Size = UDim2.fromScale(0.7, 0.7)
-		glyph.Text = Portraits.GLYPHS[cat] or "🐱"
-		glyph.TextScaled = true -- an emoji stand-in, not words: it fills its tile
-		glyph.ZIndex = tile.ZIndex
-		glyph.Parent = tile
-	end
-	if image ~= "" and not Icons.hasFailed(image) then
+	if image ~= "" then
 		local label = Instance.new("ImageLabel")
 		label.Name = "Image"
 		label.BackgroundTransparency = 1
@@ -194,13 +181,16 @@ function Portraits.draw(
 		label.Image = image
 		label.ScaleType = Enum.ScaleType.Fit
 		label.Parent = tile
-		-- a portrait that will not load shows its emoji, never a bare tinted circle (issue 1034)
-		Icons.onFail(label, image, function()
-			label:Destroy()
-			glyphIn()
-		end)
 	else
-		glyphIn()
+		local glyph = Instance.new("TextLabel")
+		glyph.Name = "Glyph"
+		glyph.BackgroundTransparency = 1
+		glyph.AnchorPoint = Vector2.new(0.5, 0.5)
+		glyph.Position = UDim2.fromScale(0.5, 0.5)
+		glyph.Size = UDim2.fromScale(0.7, 0.7)
+		glyph.Text = Portraits.GLYPHS[cat] or "🐱"
+		glyph.TextScaled = true -- an emoji stand-in, not words: it fills its tile
+		glyph.Parent = tile
 	end
 	tile.Parent = parent
 	return tile
