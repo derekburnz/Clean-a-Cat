@@ -288,6 +288,7 @@ local function drawGardenPets(garden: Model, assets: Instance, pets: any)
 end
 
 -- (tubBuilds) The Garden at the back door: the locked gate, the building site while its build runs, then the garden.
+-- (catHotel) At the side yard spot it uses the side yard looks (HotelRules.GARDEN_*_ASSET).
 local function drawGarden(
 	folder: Folder,
 	assets: Instance,
@@ -297,6 +298,7 @@ local function drawGarden(
 	isOn: (flag: string) -> boolean,
 	spot: string
 )
+	local side = spot == HotelRules.GARDEN_SPOT
 	local item = BuildRules.item(GardenRules.ID, isOn)
 	if item == nil then
 		return
@@ -305,9 +307,11 @@ local function drawGarden(
 	local building = build ~= nil and build.item == GardenRules.ID
 	local built = save.stations[GardenRules.ID] == true
 	local assetName = if built
-		then GardenRules.AREA_ASSET
-		elseif building then GardenRules.BUILDING_ASSET
-		else GardenRules.LOCKED_ASSET
+		then (if side then HotelRules.GARDEN_AREA_ASSET else GardenRules.AREA_ASSET)
+		elseif building then (if side
+			then HotelRules.GARDEN_BUILDING_ASSET
+			else GardenRules.BUILDING_ASSET)
+		else (if side then HotelRules.GARDEN_LOCKED_ASSET else GardenRules.LOCKED_ASSET)
 	local asset = assets:FindFirstChild(assetName)
 	if asset == nil or not asset:IsA("Model") then
 		if not warned[assetName] then
@@ -550,9 +554,13 @@ local function drawInto(
 		drawBackDoor(folder, assets :: Instance, slot, unlocked)
 	end
 	if BuildRules.shown(GardenRules.ID, isOn) then
-		if HotelRules.gardenAtSide(isOn) then
-			-- (catHotel) the Garden stands in the side yard, wherever the back door is; only once the plot has that spot
-			if SpaLayout.PLOT_SPOTS[HotelRules.GARDEN_SPOT] ~= nil then
+		if hotel then
+			-- (catHotel) the hotel holds the back door: the Garden stands in the side yard, the VIP Room's old site,
+			-- only with noVipRoom on (Review-QA on #1103) and once the plot has that spot
+			if
+				HotelRules.gardenAtSide(isOn)
+				and SpaLayout.PLOT_SPOTS[HotelRules.GARDEN_SPOT] ~= nil
+			then
 				drawGarden(
 					folder,
 					assets :: Instance,

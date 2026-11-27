@@ -15,7 +15,9 @@
 -- RARITY_TIMES and a thank-you gift rolled from GIFT_CHANCES: bonus coins (+25%), the next bow tier, or a normal
 -- crate. The stay is cleared before the pay is added, so it pays once. No Robux inside the hotel.
 --
--- While catHotel is on, the Garden leaves the back door for the side yard spot GARDEN_SPOT (Model-Agent's, #1050).
+-- While catHotel is on, the Garden leaves the back door for the side yard spot GARDEN_SPOT (Model-Agent's, #1050),
+-- in its side yard looks GARDEN_*_ASSET. That spot is the old VIP door's site, so the side Garden needs noVipRoom on
+-- too; with catHotel on and noVipRoom off there is no Garden at all (the hotel holds the back door).
 -- Pure, so tests/specs/HotelRules.spec.luau covers it; HotelService and StationService use it.
 local CatRules = require(script.Parent:WaitForChild("CatRules"))
 
@@ -39,6 +41,10 @@ HotelRules.LOCK_DECOR = "Room%dLock_Decor" -- the end of a child model's name: s
 HotelRules.BUILD_DECOR = "Room%dBuild_Decor" -- the end of a child model's name: shown only while that room builds
 HotelRules.GUEST_SCALE_ATTRIBUTE = "GuestScale"
 HotelRules.GARDEN_SPOT = "SpotGardenSide"
+HotelRules.GARDEN_LOCKED_ASSET = "CleanACat_Area_GardenSideLocked"
+HotelRules.GARDEN_BUILDING_ASSET = "CleanACat_Area_GardenSideBuilding"
+HotelRules.GARDEN_AREA_ASSET = "CleanACat_Area_GardenSide"
+HotelRules.NO_VIP_FLAG = "noVipRoom" -- the VIP Room taken out (issue 1063): its site is free for the side Garden
 
 -- Attributes the server keeps for the client.
 HotelRules.GUEST_ATTRIBUTE = "HotelGuest" -- on the guest model, and on the stay's sleeping cat: the cat's kind
@@ -253,9 +259,9 @@ function HotelRules.nextBow(tiers: { string }, owned: { [string]: boolean }): st
 	return nil
 end
 
--- Whether the Garden stands at the side yard (catHotel on) rather than at the back door.
+-- Whether the Garden stands at the side yard (catHotel on, and noVipRoom on so the VIP Room's site is free).
 function HotelRules.gardenAtSide(isOn: (flag: string) -> boolean): boolean
-	return isOn(HotelRules.FLAG)
+	return isOn(HotelRules.FLAG) and isOn(HotelRules.NO_VIP_FLAG)
 end
 
 return table.freeze(HotelRules)

@@ -98,6 +98,7 @@ SpaLayout.PLOT_SPOTS = table.freeze({
 	SpotStation5 = at(15.2, 0.5, -6.6, 0), -- the Pawdicure, in front of it
 	SpotVipDoor = at(-7, 0.5, 10.5, 0),
 	SpotGardenDoor = at(12, 0.5, 10.5, 0), -- the back door to the Garden (GardenRules, Model-Agent's #579)
+	SpotGardenSide = at(-7, 0.5, 10.5, 0), -- (catHotel) the side yard Garden, on the old VIP door's site (#1050, PR 1103)
 	SpotBoard = at(-13.5, 0.5, -14.6, TURNED),
 	-- The opening (#285, Model-Agent): the player stands mid-entrance facing the street, the box lands in front on the
 	-- near pavement, and the truck hits the bump across the near lane.
@@ -206,6 +207,7 @@ SpaLayout.BIG_SPOTS = table.freeze({
 	SpotBuilder = at(-22.5, 0.5, 5, -math.pi / 2), -- issue 878
 	SpotVipDoor = at(-7, 0.5, 16.5, 0),
 	SpotGardenDoor = at(12, 0.5, 16.5, 0),
+	SpotGardenSide = at(-7, 0.5, 16.5, 0),
 	SpotWorkerJo = at(-17.5, 0.5, 12.5, 0), -- issue 878: Jo alone right of the VIP door
 	SpotWorkerSam = at(6, 0.5, 12.5, 0),
 	SpotWorkerLou = at(0, 0.5, 12.5, 0),
