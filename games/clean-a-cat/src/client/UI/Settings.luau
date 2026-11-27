@@ -570,6 +570,12 @@ function SettingsCard.build(root: Instance, onChange: (Settings) -> ()): Frame
 			for _, listener in resetListeners do
 				task.spawn(listener)
 			end
+			-- the server kicks to rejoin; if it refused, the button reads as before (Review-QA on #1056)
+			task.delay(ARM_SECONDS * 2, function()
+				if reset.Parent and armedAt == nil then
+					reset.Text = RESET_TEXT
+				end
+			end)
 			return
 		end
 		local mine = os.clock()

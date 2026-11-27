@@ -29,6 +29,8 @@ local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F
 local PIC_TOP, PIC_BOTTOM = Color3.fromHex("FFF6D6"), Color3.fromHex("FFE7A8")
 local BADGE_PINK = Color3.fromHex("FF7EB0")
 local OWNED_GREEN = Color3.fromHex("2F9A63")
+local SALE_RED = Color3.fromHex("E83A3A") -- the launch sale's tag (issue 1032)
+local STRUCK = "#DFFFD2" -- the struck regular price on the green button: pale, so the sale price reads first
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 8 -- design px below the middle on a short screen (Window's default is 33)
 local MIN_TAP = 44 -- real px
@@ -231,6 +233,35 @@ local function drawCard(
 		buy.Size = UDim2.new(1, 0, 0, buyH)
 		buy.TextSize = s.buyText
 		buy:SetAttribute("Says", `Buy {card.name} for {card.price} Robux`)
+		local was = card.was
+		if was then
+			-- launchSale (issue 1032, Derek: "the classic redline cut through old pricing with the new pricing there"):
+			-- the true regular price struck through before the sale price, and a red tag on the picture
+			buy.RichText = true
+			buy.Text =
+				`<font color="{STRUCK}"><s>{was}</s></font> {ShopViewRules.priceText(card.price)}`
+			buy:SetAttribute("Says", `Buy {card.name} for {card.price} Robux, was {was}`)
+			buy.TextSize = s.buyText - 2 -- two prices on one button
+			local sale = frame("Sale", pic)
+			sale.AnchorPoint = Vector2.new(0, 0)
+			sale.Position = UDim2.fromOffset(-8, -8)
+			sale.AutomaticSize = Enum.AutomaticSize.X
+			sale.Size = UDim2.fromOffset(0, s.tag + 8)
+			sale.BackgroundTransparency = 0
+			sale.BackgroundColor3 = SALE_RED
+			sale.ZIndex = 3
+			Kit.corner(sale, UDim.new(0, 10))
+			Kit.stroke(sale, 3).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+			local salePad = Instance.new("UIPadding")
+			salePad.PaddingLeft, salePad.PaddingRight = UDim.new(0, 6), UDim.new(0, 6)
+			salePad.Parent = sale
+			local saleText = Kit.outlined("Text", sale)
+			saleText.AnchorPoint = Vector2.new(0, 0.5)
+			saleText.Position = UDim2.fromScale(0, 0.5)
+			saleText.TextSize = s.tag
+			saleText.ZIndex = 3
+			saleText.Text = "50% off"
+		end
 		local key = card.key
 		buy.Activated:Connect(function()
 			for _, listener in buyListeners do
