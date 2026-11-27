@@ -607,6 +607,9 @@ function CarryController.Start()
 	task.spawn(function()
 		while true do
 			task.wait(COUNTER_SCAN_SECONDS)
+			if not LiveFlags.isOn(TIP_FLAG) then
+				continue -- switch off: nothing new runs
+			end
 			if holdingForTip() then
 				syncCounter()
 			elseif where() == nil and next(counterPrompts) ~= nil then
