@@ -1,7 +1,8 @@
 --!strict
 -- FinishRules: Finish now on a running build (issue 515; tuning section 8, finishNow.price). The owner's words:
--- paid skips on any build, waiting is always free. The price goes by the time left: 5 minutes or less is tier 1,
--- 30 minutes tier 2, 2 hours tier 3, 8 hours tier 4, more tier 5 (5, 15, 35, 75 and 99 Robux in the design; the
+-- paid skips on any build, waiting is always free. The price goes by the time left: 2 minutes or less is tier 1,
+-- 1 hour tier 2, 4 hours tier 3, 12 hours tier 4, more tier 5 (5, 15, 35, 75 and 99 Robux, the edges the owner picked
+-- on the plan page, q2-skipprice, 2026-11-25; issue 881; the
 -- real price is the developer product's, read from Roblox). Under HIDE_UNDER seconds left there is no price at all,
 -- so the first short build of the tutorial never shows one.
 --
@@ -26,10 +27,10 @@ export type Tier = {
 }
 
 FinishRules.TIERS = table.freeze({
-	table.freeze({ key = "FinishTier1", upTo = 5 * 60, robux = 5 }),
-	table.freeze({ key = "FinishTier2", upTo = 30 * 60, robux = 15 }),
-	table.freeze({ key = "FinishTier3", upTo = 2 * 3600, robux = 35 }),
-	table.freeze({ key = "FinishTier4", upTo = 8 * 3600, robux = 75 }),
+	table.freeze({ key = "FinishTier1", upTo = 2 * 60, robux = 5 }),
+	table.freeze({ key = "FinishTier2", upTo = 3600, robux = 15 }),
+	table.freeze({ key = "FinishTier3", upTo = 4 * 3600, robux = 35 }),
+	table.freeze({ key = "FinishTier4", upTo = 12 * 3600, robux = 75 }),
 	table.freeze({ key = "FinishTier5", upTo = math.huge, robux = 99 }),
 }) :: { Tier }
 
