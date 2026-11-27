@@ -124,3 +124,12 @@ customerWalk is on (CustomerMotion enabled) and the ArmR joint is recognised. Sa
 - The VIP Room is gone from the Build window (Second Tub, Third Tub, Fourth Tub and Garden under Builds; Bubble Soap, Pro Brush and Silk bow under Upgrades). No VIP prompt or VIP text remains in the world.
 - The back door tape and building site have no pink. The visible part colours are #fff6ec, #fff9f2, #f2c14e, #f09640, #a8e6cf, #8fd3fe, #f6dfa0, #363c4c, #e3c49c, #a9afb8 and #c98a4b (0 pinkish parts).
 - Refund: coins went from 60000 to 75003 at join (+15000, plus 3 from Jo). The notice had gone by the time I read the GUI, so I did not see its text. A second join cannot be tested here, since a local place has no DataStore.
+
+## 1038 windowClear and 1065 round fills, main e0ebe2f
+- Badge rects (GUI px, measured on each window while shown):
+  - iphone_13 (749 x 388): Helpers band (52,58 645x38), badge (61,62 28x28), first row at y 98. Shop band (24,91 700x42), badge (33,95 33x33), first at y 139. Pets band (24,58 700x42), badge (33,62 33x33), first at y 106. Settings band (37,58 675x42), badge (46,62 33x33), first at y 104.
+  - ipad_10th_generation (1179 x 819): Helpers band (175,221 829x66), badge (186,227 55x55), first at y 300. Shop band (92,292 995x66), badge (103,298 55x55), first at y 373. Pets band (83,150 1013x66), badge (94,156 55x55), first at y 231. Settings band (304,217 570x54), badge (314,222 45x45), first at y 280.
+  - In every case the badge sits inside the band and clears the first row.
+- HUD: with a window open, Shop, Build, Helpers and More are all hidden. They come back when it closes (checked on Helpers and Check in on iphone_13, and Helpers on the iPad).
+- 1065: the Settings fills have UICorner 0.5 and full round ends at Music 5% (22 x 17 px fill, radius 8.3) and Sounds 92% (422 x 17 px). The Cat Index bar at 10% is 8 x 15 px with UICorner 0.5, so its ends are round too.
+- Pictures: window-clear-1038-helpers-iphone13, window-clear-1038-checkin-iphone13, window-clear-1038-helpers-ipad and sliders-1065-ipad-5-and-92-percent (all -e0ebe2f.jpg).
