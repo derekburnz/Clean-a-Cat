@@ -9,7 +9,10 @@
 --     WashView.setTransition, so the camera cuts under the cover) and draws a clean room around the shot there:
 --     Model-Agent's CleanACat_Area_WashRoom, or a plain pastel box until it exists;
 --   * hides on this device every other part inside the room, keeping what sits near the cat (WashScreenRules.keeps:
---     the tub or station, the cat, its bubbles), and looks again every WashScreenRules.REFRESH seconds;
+--     the tub or station, the cat, its bubbles), and looks again every WashScreenRules.REFRESH seconds. The spa's
+--     figures (customers, the cats at the counter, helpers' kittens, pets) have CanQuery off, so the part query never
+--     finds them: they are kept in a list from Workspace.SpaPlots and checked by place (Sync-Agent on PR 979: the
+--     counter cats still showed against the back wall);
 --   * switches off everything that draws over or through the room's walls (Spa/WashQuiet: the heart bars, name
 --     tags, worker bars and other world guis, highlights, and effects of other stands inside the room), keeping the
 --     wash's own pieces; Derek in Studio, 2026-11-26 10 PM ET: "during cleaning you can see the heart bars of cats in
@@ -26,6 +29,7 @@ local Workspace = game:GetService("Workspace")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local WashScreenRules = require(Shared:WaitForChild("WashScreenRules"))
 
 local BubbleWipe = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("BubbleWipe"))
@@ -42,6 +46,8 @@ local room: Model? = nil
 local roomAt: Vector3? = nil -- the spot the room stands on
 local hidden: { [Instance]: number } = {} -- each part, decal or texture hidden here, with its own fade to put back
 local playerListWas: boolean? = nil
+local unqueried: { [BasePart]: boolean } = {} -- the plots' parts with CanQuery off, which a part query skips
+local plotsWatch: RBXScriptConnection? = nil
 local WASH_FOLDER = "PH_SpaPrototype" -- ScrubController's folder: the cat in the tub, the bow buttons
 local FX_PREFIX = "CleanACat_Fx" -- the effects' folders in Workspace
 
@@ -104,6 +110,40 @@ local function showAll()
 	table.clear(hidden)
 end
 
+local function track(item: Instance)
+	if item:IsA("BasePart") and not (item :: BasePart).CanQuery then
+		unqueried[item :: BasePart] = true
+	end
+end
+
+-- Lists the plots' parts with CanQuery off now, and each one added while the wash screen is up.
+local function trackPlots()
+	local plots = Workspace:FindFirstChild(SpaLayout.PLOTS_FOLDER)
+	if not plots then
+		return
+	end
+	for _, item in plots:GetDescendants() do
+		track(item)
+	end
+	plotsWatch = plots.DescendantAdded:Connect(function(item: Instance)
+		-- a figure's parts are set up after they are parented: look once that is done
+		task.defer(function()
+			if up and item.Parent then
+				track(item)
+			end
+		end)
+	end)
+end
+
+local function untrackPlots()
+	local watch = plotsWatch
+	plotsWatch = nil
+	if watch then
+		watch:Disconnect()
+	end
+	table.clear(unqueried)
+end
+
 -- Hides every part in the room around `spot` but the room itself, the player's own character (WashView hides it)
 -- and what sits near the cat; parts already hidden get their fade again, since a walk or effect may have reset it.
 local function hideClutter(spot: Vector3)
@@ -145,6 +185,23 @@ local function hideClutter(spot: Vector3)
 		for _, child in part:GetChildren() do
 			if child:IsA("Decal") or child:IsA("Texture") then
 				hideOne(child)
+			end
+		end
+	end
+	-- the figures the query cannot see: by place, counting a part as in the room when any of it may reach inside
+	for part in unqueried do
+		if not part:IsDescendantOf(Workspace) then
+			unqueried[part] = nil
+		elseif
+			hidden[part] == nil
+			and WashScreenRules.reaches(part.Position, part.Size.Magnitude / 2, spot)
+			and not WashScreenRules.keeps(part.Position, spot)
+		then
+			hideOne(part)
+			for _, child in part:GetChildren() do
+				if child:IsA("Decal") or child:IsA("Texture") then
+					hideOne(child)
+				end
 			end
 		end
 	end
@@ -275,6 +332,8 @@ local function enter(my: number)
 	end
 	setFocus(true)
 	local spot = WashView.framing()
+	untrackPlots()
+	trackPlots()
 	placeRoom(spot)
 	WashQuiet.start(washOwns, inRoom)
 	-- a passer by or a new prop in the room is hidden too, while this screen is up
@@ -290,6 +349,7 @@ local function enter(my: number)
 end
 
 local function leave()
+	untrackPlots()
 	WashQuiet.stop()
 	dropRoom()
 	showAll()

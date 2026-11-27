@@ -41,6 +41,17 @@ function WashScreenRules.inRoom(point: Vector3, spot: Vector3): boolean
 	return math.abs(d.X) <= h and math.abs(d.Z) <= h and d.Y >= -1 and d.Y <= WashScreenRules.HEIGHT
 end
 
+-- May a part whose middle is at `point` and that reaches `radius` studs from it stand partly inside the room around
+-- `spot`? (A figure poking through a wall counts.)
+function WashScreenRules.reaches(point: Vector3, radius: number, spot: Vector3): boolean
+	local h = WashScreenRules.HALF + radius
+	local d = point - spot
+	return math.abs(d.X) <= h
+		and math.abs(d.Z) <= h
+		and d.Y >= -1 - radius
+		and d.Y <= WashScreenRules.HEIGHT + radius
+end
+
 -- Does a part whose middle is at `point` stay shown in the room around `spot`?
 function WashScreenRules.keeps(point: Vector3, spot: Vector3): boolean
 	local d = point - spot
