@@ -192,9 +192,11 @@ return function()
 			expect(WorkerRules.givePrompt(only())).to.equal(true)
 			expect(WorkerRules.givePrompt(only(WorkerRules.PET_MENU_FLAG))).to.equal(true)
 			expect(WorkerRules.givePrompt(only(WorkerRules.PETS_WINDOW_FLAG))).to.equal(true)
-			expect(WorkerRules.givePrompt(only(WorkerRules.PET_MENU_FLAG, WorkerRules.PETS_WINDOW_FLAG))).to.equal(
-				false
-			)
+			expect(
+				WorkerRules.givePrompt(
+					only(WorkerRules.PET_MENU_FLAG, WorkerRules.PETS_WINDOW_FLAG)
+				)
+			).to.equal(false)
 		end)
 
 		it("tops the first customer's pay up to Jo's price with the Grand opening gift", function()

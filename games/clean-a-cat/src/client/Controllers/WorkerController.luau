@@ -206,12 +206,15 @@ function WorkerController.Start()
 				show()
 			end
 		end)
-	for _, flag in { WorkerRules.HUD_TIDY_FLAG, WorkerRules.PET_MENU_FLAG, WorkerRules.PETS_WINDOW_FLAG } do
-		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag):Connect(function()
-			for _, show in shows do
-				show()
-			end
-		end)
+	for _, flag in
+		{ WorkerRules.HUD_TIDY_FLAG, WorkerRules.PET_MENU_FLAG, WorkerRules.PETS_WINDOW_FLAG }
+	do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(function()
+				for _, show in shows do
+					show()
+				end
+			end)
 	end
 	-- the plot placed or taken away: the prompts move with the stations
 	SpaLayout.changed(function()
