@@ -25,8 +25,14 @@
 -- opens the Spa Starter Pack window with the item by item breakdown. A tap anywhere else on the card asks the server
 -- for Roblox's purchase prompt (StarterController, RequestStarter), which shows the price again before any charge.
 -- StarterController does not bob it (the bob's sparkles were the "little sparkle at top").
+--
+-- Switch starterPet (issue 1090, Derek 2026-11-27: "don't use a sponge as the image make it like a golden flashing pet
+-- or crate or something crazy"): the big picture is Midas, the golden pet the pack gives (found nowhere else), with gold
+-- rays turning slowly behind him and his glow pulsing. With Reduced Motion, Less screen shake or Less sparkle the rays
+-- and the glow stand still. The card itself never moves.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
@@ -35,6 +41,7 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local StarterRules = require(Shared:WaitForChild("StarterRules"))
 local StarterViewRules = require(Shared:WaitForChild("StarterViewRules"))
 
+local Comfort = require(script.Parent.Parent:WaitForChild("Comfort"))
 local Icons = require(script.Parent:WaitForChild("Icons"))
 local Kit = require(script.Parent.Parent:WaitForChild("Kit"))
 local Motion = require(script.Parent.Parent:WaitForChild("Motion"))
@@ -65,6 +72,11 @@ local TAG_TOP, TAG_BOTTOM = Color3.fromHex("FFE98F"), Color3.fromHex("FFC94D")
 local DARK_TOP, DARK_BOTTOM = Color3.fromHex("4A2B78"), Color3.fromHex("2A1745")
 local DARK_RED = Color3.fromHex("FF9AA8")
 local DARK_GREEN = Color3.fromHex("8CF06B")
+-- starterPet: the rays behind Midas and his glow's pulse
+local RAY_COUNT = 6 -- bars through the middle, so 12 rays
+local RAY_TURN = 18 -- degrees a second: one turn in 20 s, slow enough to read as a shine, not a spin
+local PULSE_SECONDS = 1.6
+local GLOW_STILL = 0.55 -- the glow's see-through amount when still; the pulse swings it from 0.4 to 0.7
 local INFO_SIZE = 34 -- design px: the round "i"; its button around it keeps a 46 real px tap area
 
 -- Design px: a short screen (a phone held sideways, drawn at 0.75) and a full one. Model icons stay 48 real px or
@@ -108,6 +120,9 @@ type Parts = {
 	tag: TextLabel,
 	note: TextLabel,
 	hero: Frame,
+	glow: Frame,
+	rays: Frame,
+	picture: Frame,
 	info: TextButton,
 	tint: UIGradient,
 	edge: UIStroke,
@@ -121,6 +136,15 @@ local aside = false
 local drawn: { string } = {}
 local tooSmall = false -- true while the card would not fit even at MIN_FIT
 local buyHandlers: { () -> () } = {}
+local heroDrawn = "" -- the Icons name the big picture shows now
+local shine: RBXScriptConnection? = nil -- starterPet: turns the rays and pulses the glow while the card shows
+
+-- The big picture's Icons name: Midas with starterPet, else the Golden Sponge.
+function StarterAd.heroIcon(): string
+	return if LiveFlags.isOn(StarterViewRules.PET_FLAG)
+		then StarterViewRules.PET_ICON
+		else StarterAd.HERO
+end
 
 local function allOn(): boolean
 	for _, name in FLAGS do
@@ -215,6 +239,36 @@ local function redraw()
 	p.icons.Visible = not calm
 	p.hero.Visible = calm
 	p.hero.Size = UDim2.fromOffset(s.hero, s.hero)
+	local heroName = StarterAd.heroIcon()
+	if heroName ~= heroDrawn then
+		heroDrawn = heroName
+		local drawnHero = Icons.draw(heroName, p.picture)
+		drawnHero.ZIndex = 3
+	end
+	local pet = heroName == StarterViewRules.PET_ICON
+	p.rays.Visible = pet
+	local moving = pet and calm and p.holder.Visible and not Comfort.reducedMotion()
+	if moving and shine == nil then
+		local started = os.clock()
+		local glow, rays = p.glow, p.rays
+		shine = RunService.Heartbeat:Connect(function()
+			local t = os.clock() - started
+			rays.Rotation = (t * RAY_TURN) % 360
+			local wave = math.sin(t * 2 * math.pi / PULSE_SECONDS)
+			glow.BackgroundTransparency = GLOW_STILL + 0.15 * wave
+			local grow = 1.1 + 0.06 * wave
+			glow.Size = UDim2.fromScale(grow, grow)
+		end)
+	elseif not moving and shine ~= nil then
+		local was = shine
+		shine = nil
+		was:Disconnect()
+	end
+	if not moving then
+		p.rays.Rotation = 0
+		p.glow.BackgroundTransparency = GLOW_STILL
+		p.glow.Size = UDim2.fromScale(1.1, 1.1)
+	end
 	p.info.Visible = calm
 	p.info.Position = UDim2.new(1, -8, 0, 6 + s.ribbon + 8) -- inside the card, under the ribbon's right end
 	p.tint.Enabled = calm
@@ -407,13 +461,46 @@ function StarterAd.build(root: Instance, open: () -> ())
 	hero.BackgroundTransparency = 1
 	hero.Visible = false
 	hero.Parent = card
+	-- starterPet: gold rays behind the glow, each bar fading out at both ends
+	local rays = Instance.new("Frame")
+	rays.Name = "Rays"
+	rays.BackgroundTransparency = 1
+	rays.AnchorPoint = Vector2.new(0.5, 0.5)
+	rays.Position = UDim2.fromScale(0.5, 0.5)
+	rays.Size = UDim2.fromScale(1, 1)
+	rays.Visible = false
+	rays.ZIndex = 1
+	rays.Parent = hero
+	for index = 1, RAY_COUNT do
+		local bar = Instance.new("Frame")
+		bar.Name = `Ray{index}`
+		bar.BorderSizePixel = 0
+		bar.AnchorPoint = Vector2.new(0.5, 0.5)
+		bar.Position = UDim2.fromScale(0.5, 0.5)
+		bar.Size = UDim2.new(1.4, 0, 0.12, 0)
+		bar.Rotation = (index - 1) * 180 / RAY_COUNT
+		bar.BackgroundColor3 = Kit.GOLD
+		bar.BackgroundTransparency = 0.35
+		bar.ZIndex = 1
+		local fade = Instance.new("UIGradient")
+		fade.Transparency = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, 1),
+			NumberSequenceKeypoint.new(0.3, 0.4),
+			NumberSequenceKeypoint.new(0.5, 0.2),
+			NumberSequenceKeypoint.new(0.7, 0.4),
+			NumberSequenceKeypoint.new(1, 1),
+		})
+		fade.Parent = bar
+		bar.Parent = rays
+	end
 	local glow = Instance.new("Frame")
 	glow.Name = "Glow"
 	glow.AnchorPoint = Vector2.new(0.5, 0.5)
 	glow.Position = UDim2.fromScale(0.5, 0.5)
 	glow.Size = UDim2.fromScale(1.1, 1.1)
 	glow.BackgroundColor3 = Kit.GOLD
-	glow.BackgroundTransparency = 0.55
+	glow.BackgroundTransparency = GLOW_STILL
+	glow.ZIndex = 2
 	Kit.corner(glow, UDim.new(0.5, 0))
 	glow.Parent = hero
 	local picture = Instance.new("Frame")
@@ -422,10 +509,8 @@ function StarterAd.build(root: Instance, open: () -> ())
 	picture.AnchorPoint = Vector2.new(0.5, 0.5)
 	picture.Position = UDim2.fromScale(0.5, 0.5)
 	picture.Size = UDim2.fromScale(0.86, 0.86)
-	picture.ZIndex = 2
+	picture.ZIndex = 3
 	picture.Parent = hero
-	local drawnHero = Icons.draw(StarterAd.HERO, picture)
-	drawnHero.ZIndex = 2
 
 	-- the struck shop total, then the pack's price
 	local prices = Instance.new("Frame")
@@ -564,6 +649,9 @@ function StarterAd.build(root: Instance, open: () -> ())
 		tag = tag,
 		note = note,
 		hero = hero,
+		glow = glow,
+		rays = rays,
+		picture = picture,
 		info = info,
 		tint = tint,
 		edge = edge,
@@ -572,8 +660,10 @@ function StarterAd.build(root: Instance, open: () -> ())
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
 			:Connect(redraw)
 	end
-	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. StarterAd.CARD_FLAG)
-		:Connect(redraw)
+	for _, name in { StarterAd.CARD_FLAG, StarterViewRules.PET_FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. name)
+			:Connect(redraw)
+	end
 	Players.LocalPlayer:GetAttributeChangedSignal(StarterRules.ENDS_ATTRIBUTE):Connect(redraw)
 	card:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit) -- the pictures and prices settle after a redraw
 	local camera = Workspace.CurrentCamera
