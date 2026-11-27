@@ -21,8 +21,8 @@ return function()
 		end)
 
 		it("writes the normal crate's numbers as tuning.md has them", function()
-			local rows = CrateViewRules.rows("normal", { Cozy = true })
-			expect(rows[1].pet).to.equal("Cozy")
+			local rows = CrateViewRules.rows("normal", { Clover = true })
+			expect(rows[1].pet).to.equal("Clover")
 			expect(rows[1].chance).to.equal("25%")
 			expect(rows[1].boost).to.equal("+5%")
 			expect(rows[1].owned).to.equal(true)
@@ -43,6 +43,7 @@ return function()
 		it("names the crate and counts what the player holds", function()
 			expect(CrateViewRules.title("good")).to.equal("Good crate")
 			expect(CrateViewRules.title("normal")).to.equal("Crate")
+			expect(CrateViewRules.title(CrateRules.GIFT_KIND)).to.equal("Gift crate")
 			expect(CrateViewRules.haveLine("normal", 1)).to.equal("You have 1 crate")
 			expect(CrateViewRules.haveLine("normal", 3)).to.equal("You have 3 crates")
 			expect(CrateViewRules.haveLine("good", 1)).to.equal("Your day 2 gift")
@@ -51,28 +52,28 @@ return function()
 
 		it("collects the kinds the player owns", function()
 			local owned = CrateViewRules.ownedKinds({
-				{ id = 1, kind = "Koi", star = 1 },
-				{ id = 2, kind = "Koi", star = 2, slot = "player" },
+				{ id = 1, kind = "Angler", star = 1 },
+				{ id = 2, kind = "Angler", star = 2, slot = "player" },
 			})
-			expect(owned.Koi).to.equal(true)
-			expect(owned.Cozy).to.equal(nil)
+			expect(owned.Angler).to.equal(true)
+			expect(owned.Clover).to.equal(nil)
 		end)
 	end)
 
 	describe("CrateViewRules pets window", function()
 		local pets: { CrateRules.Pet } = {
-			{ id = 1, kind = "Cozy", star = 1 },
-			{ id = 2, kind = "Cozy", star = 1, slot = "player" },
-			{ id = 3, kind = "Cozy", star = 1 },
-			{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
-			{ id = 5, kind = "Nimbus", star = 1 },
+			{ id = 1, kind = "Clover", star = 1 },
+			{ id = 2, kind = "Clover", star = 1, slot = "player" },
+			{ id = 3, kind = "Clover", star = 1 },
+			{ id = 4, kind = "Angler", star = 2, slot = "Jo1" },
+			{ id = 5, kind = "Blaze", star = 1 },
 		}
 
 		it("groups by pet and star, rarest first, slotted ids first", function()
 			local groups = CrateViewRules.groups(pets)
 			expect(#groups).to.equal(3)
-			expect(groups[1].kind).to.equal("Nimbus")
-			expect(groups[2].kind).to.equal("Koi")
+			expect(groups[1].kind).to.equal("Blaze")
+			expect(groups[2].kind).to.equal("Angler")
 			local cozy = groups[3]
 			expect(cozy.count).to.equal(3)
 			expect(cozy.ids[1]).to.equal(2)
@@ -89,25 +90,25 @@ return function()
 			local rows = CrateViewRules.slotRows(pets, { Jo = true })
 			expect(#rows).to.equal(4)
 			expect(rows[1].who).to.equal("You")
-			expect(rows[1].say).to.equal("Cozy: tips +5%")
+			expect(rows[1].say).to.equal("Clover: tips +5%")
 			expect(rows[2].who).to.equal("Jo")
-			expect(rows[2].say).to.equal("Koi, 2 stars: pay +18%")
+			expect(rows[2].say).to.equal("Angler, 2 stars: pay +18%")
 			expect(rows[3].locked).to.equal(true)
 			expect(rows[3].say).to.equal("Comes when Sam is hired")
 		end)
 
 		it("gives each row a second slot with the Second pet slot pass", function()
 			local two: { CrateRules.Pet } = {
-				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
-				{ id = 2, kind = "Koi", star = 2, slot = "player2" },
-				{ id = 3, kind = "Nimbus", star = 1, slot = "Jo2" },
+				{ id = 1, kind = "Clover", star = 1, slot = "player" },
+				{ id = 2, kind = "Angler", star = 2, slot = "player2" },
+				{ id = 3, kind = "Blaze", star = 1, slot = "Jo2" },
 			}
 			local rows = CrateViewRules.slotRows(two, { Jo = true }, true)
 			expect(rows[1].slot2).to.equal("player2")
 			expect((rows[1].pet2 :: CrateRules.Pet).id).to.equal(2)
-			expect(rows[1].say).to.equal("Cozy +5%, Koi +18%")
+			expect(rows[1].say).to.equal("Clover +5%, Angler +18%")
 			expect(rows[2].slot2).to.equal("Jo2")
-			expect(rows[2].say).to.equal("Nimbus +20%")
+			expect(rows[2].say).to.equal("Blaze +20%")
 			expect(rows[3].say).to.equal("Comes when Sam is hired")
 			expect(rows[3].pet2).to.equal(nil)
 			local one = CrateViewRules.slotRows(two, { Jo = true })
@@ -156,6 +157,29 @@ return function()
 			expect(#CrateViewRules.shopRows("normal", true, function(): unknown
 				return -5
 			end)).to.equal(0)
+		end)
+
+		describe("CrateViewRules.effectText", function()
+			it("says what a pet gives with petLines, with its true boost", function()
+				local function on(flag: string): boolean
+					return flag == CrateViewRules.LINES_FLAG
+				end
+				expect(CrateViewRules.boostText("Clover", 1)).to.equal("+5%")
+				expect(CrateViewRules.boostText("Angler", 2)).to.equal("+18%")
+				expect(CrateViewRules.boostText("Blaze", 3)).to.equal("+40%")
+				expect(CrateViewRules.effectText(0.05, on)).to.equal("+5% tips or pay")
+				expect(CrateViewRules.effectText(0.05)).to.equal("+5% boost")
+				-- a helper's pets raise their pay by at most PET_CAP, so a boost over it says both true numbers
+				expect(CrateViewRules.effectText(CrateRules.boost("Blaze", 3), on)).to.equal(
+					"+40% tips, +30% pay"
+				)
+				expect(CrateViewRules.effectText(CrateRules.boost("Blaze", 2), on)).to.equal(
+					"+30% tips or pay"
+				)
+				expect(CrateViewRules.effectText(CrateRules.boost("Blaze", 3))).to.equal(
+					"+40% boost"
+				)
+			end)
 		end)
 	end)
 end

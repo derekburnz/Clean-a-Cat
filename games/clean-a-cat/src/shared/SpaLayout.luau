@@ -53,6 +53,15 @@ SpaLayout.BIG_ASSET = "CleanACat_Area_SpaPlotBig"
 SpaLayout.BIG_STREET_ASSET = "CleanACat_Area_StreetBig"
 SpaLayout.BIG_BACKDROP_ASSET = "CleanACat_Area_BackdropBig"
 SpaLayout.BIG_PLOT_SPACING = 56
+-- (switch wideStreet, issue 887) Derek on dev, 2026-11-26: "the spa's much further apart so people can visit eachother
+-- but not feel too cramped". On the big spa's street, plots stand WIDE_PLOT_SPACING apart on Model-Agent's longer
+-- street with scenery between them. PlotService says with WIDE_ATTRIBUTE when it placed that street (only while the
+-- street asset is in the game), and every spot and pivot follows it.
+SpaLayout.WIDE_FLAG = "wideStreet"
+SpaLayout.WIDE_ATTRIBUTE = "SpaWide" -- ReplicatedStorage attribute: true while the wide street is the placed one
+SpaLayout.WIDE_STREET_ASSET = "CleanACat_Area_StreetWide"
+SpaLayout.WIDE_BACKDROP_ASSET = "CleanACat_Area_BackdropWide"
+SpaLayout.WIDE_PLOT_SPACING = 84
 -- The small spa's props the big one does without: its counter mats are part of the plot, so no mats in the street
 SpaLayout.BIG_SKIPS_PROPS =
 	table.freeze({ QueueMat1 = true, QueueMat2 = true, QueueMat3 = true }) :: { [string]: boolean }
@@ -162,6 +171,11 @@ SpaLayout.VIP_BUILDING_ASSET = "CleanACat_Area_VipBuilding"
 -- The builder kitten (#20) stands beside the builder board at SpotBuilder, the toolbox beside it.
 SpaLayout.BUILDER_SPOT = "SpotBuilder"
 SpaLayout.KITTEN_OFFSET = Vector3.new(4, 0, 0) -- in the spot's frame
+-- (switch humanBuilder, issue 891) Derek's q2-builder: a human builder in overalls (Model-Agent's CleanACat_NPC_Builder,
+-- about 6.3 studs tall, his hard hat part of his head) stands there instead of the kitten, a little further out.
+SpaLayout.BUILDER_FLAG = "humanBuilder"
+SpaLayout.BUILDER_ASSET = "CleanACat_NPC_Builder"
+SpaLayout.BUILDER_OFFSET = Vector3.new(4.5, 0, 0) -- in the spot's frame
 SpaLayout.TOOLBOX_OFFSET = Vector3.new(5.6, 0, 0.4)
 
 -- The placeholder room before the plot, in world space: the spawn at the origin and everything facing it (+Z).
@@ -248,14 +262,22 @@ function SpaLayout.plotSpot(name: string): Spot?
 	return SpaLayout.plotSpotFor(name, SpaLayout.big())
 end
 
--- The pivot-to-pivot step between plots, on the big street when `big`.
-function SpaLayout.spacingFor(big: boolean): number
+-- Is the wide street the placed one (switch wideStreet, as PlotService placed it)? Only ever with the big spa.
+function SpaLayout.wide(): boolean
+	return ReplicatedStorage:GetAttribute(SpaLayout.WIDE_ATTRIBUTE) == true
+end
+
+-- The pivot-to-pivot step between plots, on the big street when `big`, and on the wide one when `wide` too.
+function SpaLayout.spacingFor(big: boolean, wide: boolean?): number
+	if big and wide then
+		return SpaLayout.WIDE_PLOT_SPACING
+	end
 	return if big then SpaLayout.BIG_PLOT_SPACING else SpaLayout.PLOT_SPACING
 end
 
 -- The pivot-to-pivot step between plots on the street placed now.
 function SpaLayout.spacing(): number
-	return SpaLayout.spacingFor(SpaLayout.big())
+	return SpaLayout.spacingFor(SpaLayout.big(), SpaLayout.wide())
 end
 
 -- Where plot `slot`'s pivot goes: slot 1 at PIVOT_POSITION, then one step right, one left, two right...

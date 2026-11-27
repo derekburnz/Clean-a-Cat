@@ -39,6 +39,33 @@ local Portraits = require(script.Parent:WaitForChild("Portraits"))
 
 local Recap = {}
 
+-- HUD pieces the card's X must not cover (the coin pill; UI/init sets it to HUD.topRight, as for Window.avoid).
+Recap.avoid = nil :: (() -> { GuiObject })?
+local CLOSE_OUT = UDim2.new(1, 20, 0, -20) -- the X over the card's top right corner
+local CLOSE_IN = UDim2.new(1, -8, 0, 8) -- tucked into the corner, when out it would cover the coins (issue 873)
+
+-- Whether two screen boxes overlap.
+local function overlaps(a: GuiObject, b: GuiObject): boolean
+	local a0, a1 = a.AbsolutePosition, a.AbsolutePosition + a.AbsoluteSize
+	local b0, b1 = b.AbsolutePosition, b.AbsolutePosition + b.AbsoluteSize
+	return a0.X < b1.X and a1.X > b0.X and a0.Y < b1.Y and a1.Y > b0.Y
+end
+
+-- The X sits over the card's corner, unless there it would cover the coin pill on a small phone: then it tucks in.
+local function placeClose(close: GuiObject)
+	close.Position = CLOSE_OUT
+	local avoid = Recap.avoid
+	if not avoid then
+		return
+	end
+	for _, piece in avoid() do
+		if piece.Visible and overlaps(close, piece) then
+			close.Position = CLOSE_IN
+			return
+		end
+	end
+end
+
 Recap.FLAG = "recapCard"
 Recap.SIDE_FLAG = "recapSide"
 -- True once the close-up wash camera slides the cat clear of the side card on a phone (Design-Agent); the UI gate
@@ -369,7 +396,7 @@ local function drawRows(holder: Frame, recap: RecapRules.Recap, s: Sizes)
 		line.Size = UDim2.new(1, 0, 0, s.row)
 		Kit.corner(line, UDim.new(0, 12))
 		local edge = Kit.stroke(line, 2)
-		edge.Color = Kit.LINE
+		edge.Color = Kit.line()
 		local pad = Instance.new("UIPadding")
 		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 14), UDim.new(0, 14)
 		pad.Parent = line
@@ -582,6 +609,7 @@ local function redraw()
 	p.totalText.Text = total
 	p.total.Visible = not recap.mascot
 	p.next.TextSize = s.buttonText
+	placeClose(p.close)
 	tellShown()
 end
 
@@ -799,7 +827,7 @@ function Recap.build(root: Frame)
 
 	local close = chunky("Close", "X", card, RED_TOP, RED_BOTTOM)
 	close.AnchorPoint = Vector2.new(1, 0)
-	close.Position = UDim2.new(1, 20, 0, -20)
+	close.Position = CLOSE_OUT
 	close.Size = UDim2.fromOffset(64, 64)
 	close.TextSize = 34
 	close.ZIndex = 3

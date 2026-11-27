@@ -153,7 +153,7 @@ local function drawTile(tile: CheckinViewRules.Tile, parent: Frame, s: Sizes, wi
 		then TODAY_EDGE
 		elseif tile.got then GOT_EDGE
 		elseif tile.big then BIG_EDGE
-		else Kit.LINE
+		else Kit.line()
 	if tile.big and not tile.got then
 		local tint = Instance.new("UIGradient")
 		tint.Rotation = 90

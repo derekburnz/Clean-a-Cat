@@ -113,6 +113,15 @@ Portraits.IMAGES = {
 	WhiteTiger_Dirty2 = "rbxassetid://111573284250160",
 	WhiteTiger_Dirty3 = "rbxassetid://105265029405232",
 	WhiteTiger_Dirty4 = "rbxassetid://123255647273640",
+	-- the eight crate pets under their new names (issue 883, Model-Agent's PR 962), group owned
+	Clover = "rbxassetid://87691200049996",
+	Ghost = "rbxassetid://85397860599687",
+	Ooze = "rbxassetid://129987399664489",
+	Glitch = "rbxassetid://115707461545852",
+	Angler = "rbxassetid://107617453014958",
+	Nebula = "rbxassetid://118688157626872",
+	Dragon = "rbxassetid://119730475255717",
+	Blaze = "rbxassetid://133643213662061",
 } :: { [string]: string }
 
 -- The stand-in glyph for a cat with no image yet; the cat glyph when not listed. One code point each: a joined emoji

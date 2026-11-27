@@ -361,7 +361,7 @@ function StarterWindow.build(root: Instance): Frame
 	Kit.corner(timer, UDim.new(0, 12))
 	local timerEdge = Kit.stroke(timer, 3)
 	timerEdge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	timerEdge.Color = Kit.LINE
+	timerEdge.Color = Kit.line()
 	local timerPad = Instance.new("UIPadding")
 	timerPad.PaddingLeft, timerPad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
 	timerPad.Parent = timer

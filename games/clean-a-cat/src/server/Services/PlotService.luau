@@ -216,6 +216,19 @@ local function place()
 			`[PlotService] bigSpa is on but {SpaLayout.BIG_ASSET} or {SpaLayout.BIG_STREET_ASSET} is missing; placing the small spa`
 		)
 	end
+	-- (switch wideStreet, issue 887) the big spa's plots further apart, on the longer street, when it is in the game
+	local wideStreet = if assets and useBig
+		then assets:FindFirstChild(SpaLayout.WIDE_STREET_ASSET)
+		else nil
+	local useWide = useBig
+		and LiveFlags.isOn(SpaLayout.WIDE_FLAG)
+		and wideStreet ~= nil
+		and wideStreet:IsA("Model")
+	if useBig and LiveFlags.isOn(SpaLayout.WIDE_FLAG) and not useWide then
+		warn(
+			`[PlotService] wideStreet is on but {SpaLayout.WIDE_STREET_ASSET} is missing; placing the big street`
+		)
+	end
 	local asset = if assets
 		then assets:FindFirstChild(if useBig then SpaLayout.BIG_ASSET else SpaLayout.ASSET)
 		else nil
@@ -229,10 +242,14 @@ local function place()
 	end
 	-- said before anything is placed, so every spot and pivot below (and on every client) follows the same street
 	ReplicatedStorage:SetAttribute(SpaLayout.BIG_ATTRIBUTE, useBig)
+	ReplicatedStorage:SetAttribute(SpaLayout.WIDE_ATTRIBUTE, useWide)
 	local folder = Instance.new("Folder")
 	folder.Name = SpaLayout.PLOTS_FOLDER
 	local streetAsset = (assets :: Instance):FindFirstChild(
-		if useBig then SpaLayout.BIG_STREET_ASSET else SpaLayout.STREET_ASSET
+		if useWide
+			then SpaLayout.WIDE_STREET_ASSET
+			elseif useBig then SpaLayout.BIG_STREET_ASSET
+			else SpaLayout.STREET_ASSET
 	)
 	if streetAsset and streetAsset:IsA("Model") then
 		local streetModel = (streetAsset :: Model):Clone() :: Model
@@ -261,6 +278,7 @@ end
 local function remove()
 	ReplicatedStorage:SetAttribute(SpaLayout.PLACED_ATTRIBUTE, false)
 	ReplicatedStorage:SetAttribute(SpaLayout.BIG_ATTRIBUTE, false)
+	ReplicatedStorage:SetAttribute(SpaLayout.WIDE_ATTRIBUTE, false)
 	local folder = street
 	street = nil
 	if folder then

@@ -23,8 +23,40 @@ end
 
 return function()
 	describe("CrateRules", function()
+		it(
+			"shows the gift crate's own chance per pet, adding up to 100 (giftCrate, issue 859)",
+			function()
+				local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+				expect(table.find(LiveFlags.KEYS, CrateRules.GIFT_FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[CrateRules.GIFT_FLAG]).to.equal(true)
+				expect(table.find(CrateRules.KINDS, CrateRules.GIFT_KIND)).to.be.ok()
+				local list = CrateRules.odds(CrateRules.GIFT_KIND)
+				expect(#list).to.equal(7)
+				local total = 0
+				local byRarity: { [string]: number } = {}
+				for _, entry in list do
+					expect(entry.rarity).never.to.equal("Common")
+					total += entry.percent
+					byRarity[entry.rarity] = (byRarity[entry.rarity] or 0) + entry.percent
+				end
+				expect(math.abs(total - 100) < 1e-9).to.equal(true)
+				for rarity, sum in byRarity do
+					expect(sum).to.equal(CrateRules.CHANCES.gift[rarity])
+				end
+				expect(list[1].pet).to.equal("Glitch") -- 23%, Uncommon, by name among the three at 23
+				expect(list[#list].pet).to.equal("Blaze")
+				expect(list[#list].percent).to.equal(1)
+				expect(CrateRules.roll(CrateRules.GIFT_KIND, always(0.995))).to.equal("Blaze")
+				local starcoat = false
+				for _, entry in list do
+					starcoat = starcoat or entry.pet == "Starcoat"
+				end
+				expect(starcoat).to.equal(true)
+			end
+		)
+
 		it("shows every pet with a chance, adding up to 100, for both crates", function()
-			for _, kind in CrateRules.KINDS do
+			for _, kind in { "normal", "good" } do
 				local total = 0
 				local list = CrateRules.odds(kind)
 				expect(#list).to.equal(8)
@@ -109,11 +141,11 @@ return function()
 		end)
 
 		it("adds boosts, star ups included, and caps a worker's", function()
-			expect(CrateRules.boost("Nimbus", 1)).to.equal(0.2)
-			expect(CrateRules.boost("Nimbus", 3)).to.equal(0.4)
+			expect(CrateRules.boost("Blaze", 1)).to.equal(0.2)
+			expect(CrateRules.boost("Blaze", 3)).to.equal(0.4)
 			local pets: { CrateRules.Pet } = {
-				{ id = 1, kind = "Nimbus", star = 3, slot = "Jo1" },
-				{ id = 2, kind = "Cozy", star = 1, slot = CrateRules.PLAYER_SLOT },
+				{ id = 1, kind = "Blaze", star = 3, slot = "Jo1" },
+				{ id = 2, kind = "Clover", star = 1, slot = CrateRules.PLAYER_SLOT },
 			}
 			expect(CrateRules.boostOf(pets, { "Jo1" }, CrateRules.PET_CAP)).to.equal(
 				CrateRules.PET_CAP
@@ -128,5 +160,38 @@ return function()
 			expect(CrateRules.SHOP.CrateOne).to.equal(1)
 			expect(CrateRules.SHOP.CrateFive).to.equal(5)
 		end)
+
+		it(
+			"renames each old pet to a new one of the same rarity, and no old name is rolled (issue 883)",
+			function()
+				local rarities = {
+					Cozy = "Common",
+					Scrubby = "Common",
+					Pebble = "Uncommon",
+					Pickle = "Uncommon",
+				}
+				rarities.Koi = "Rare"
+				rarities.Bamboo = "Rare"
+				rarities.Coral = "Epic"
+				rarities.Nimbus = "Legendary"
+				local count = 0
+				for old, new in CrateRules.RENAMED do
+					count += 1
+					expect(CrateRules.rarityOf(old)).to.equal(nil)
+					expect(CrateRules.rarityOf(new)).to.equal(rarities[old])
+					expect(CrateRules.renamed(old)).to.equal(new)
+				end
+				expect(count).to.equal(8)
+				expect(CrateRules.renamed("Starcoat")).to.equal("Starcoat")
+				-- a pet name a build does not know (an older dev server meeting a renamed pet): no rarity, no boost
+				expect(CrateRules.rarityOf("NotAPet")).to.equal(nil)
+				expect(CrateRules.boost("NotAPet", 2)).to.equal(0)
+				for _, kind in CrateRules.KINDS do
+					for _, entry in CrateRules.odds(kind) do
+						expect(CrateRules.RENAMED[entry.pet]).to.equal(nil)
+					end
+				end
+			end
+		)
 	end)
 end

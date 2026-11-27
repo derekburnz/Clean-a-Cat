@@ -140,7 +140,7 @@ local function drawRow(row: BuildViewRules.Row, order: number, s: Sizes, parent:
 	card.BackgroundColor3 = if row.state == "done" then DONE_FILL else Kit.WHITE
 	Kit.corner(card, UDim.new(0, 18))
 	local edge = Kit.stroke(card, 3)
-	edge.Color = Kit.LINE
+	edge.Color = Kit.line()
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
 	pad.Parent = card

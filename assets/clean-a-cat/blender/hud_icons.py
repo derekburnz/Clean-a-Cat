@@ -622,6 +622,57 @@ def staff_apron(mat):
     return _fin(b, "Staff", mat)
 
 
+def _thumb_up(b, body, cuff):
+    """A fist with its thumb up, the knuckles to the right and a cuff at the left, flat to the camera."""
+    Y = lambda d: (math.radians(d), "Y")             # noqa: E731
+    b.box((-1.12, 0, -0.5), (0.5, 0.6, 1.5), cuff)                                   # the cuff
+    b.box((-0.1, 0, -0.55), (1.5, 0.66, 1.3), body)                                  # the back of the hand
+    for k, z in enumerate((-1.02, -0.7, -0.38, -0.06)):                              # four curled fingers
+        b.box((0.55, 0, z), (0.84 - 0.06 * k, 0.64, 0.3), body)
+    b.box((-0.32, 0, 0.5), (0.56, 0.64, 1.1), body, rot=Y(-14))                     # the thumb
+    b.sphere((-0.45, 0, 1.0), 0.28, body, segments=20, rings=10, scale=(1, 1.12, 1))   # its round tip
+
+
+def thumbs_up(mat):
+    """The like how-to (#869): a thumbs up in a soft grey, not yet pressed."""
+    b = Builder()
+    _thumb_up(b, "fur_grey", "fur_mist")
+    return _fin(b, "ThumbsUp", mat)
+
+
+def thumbs_up_filled(mat):
+    """The like how-to (#869): the same thumbs up pressed, in the heart's pink with a white glint."""
+    b = Builder()
+    _thumb_up(b, "nose_bubblegum", "spa_bubblegum")
+    b.cyl((-0.55, -0.34, -0.02), 0.11, 0.04, "foam", segments=12, bevel=False, rot=X, scale=(1.8, 1, 1))
+    return _fin(b, "ThumbsUpFilled", mat)
+
+
+def tap_hand(mat):
+    """The like how-to (#869): a cream hand pointing up with one finger, the one that taps."""
+    b = Builder()
+    Y = lambda d: (math.radians(d), "Y")             # noqa: E731
+    b.box((0.05, 0, -1.25), (1.15, 0.6, 0.45), "fur_mist")                          # the cuff
+    b.box((0.05, 0, -0.45), (1.35, 0.66, 1.2), "spa_cream")                         # the fist
+    for k, x in enumerate((0.0, 0.36)):                                             # two curled fingers on top
+        b.box((x, 0, 0.18 - 0.04 * k), (0.32, 0.64, 0.4), "spa_cream")
+    b.box((-0.42, 0, 0.62), (0.36, 0.64, 1.9), "spa_cream")                         # the pointing finger
+    b.sphere((-0.42, 0, 1.55), 0.19, "spa_cream", segments=20, rings=10, scale=(1, 1.7, 1))   # its round tip
+    b.box((0.78, 0, -0.35), (0.42, 0.64, 0.8), "spa_cream", rot=Y(28))              # the thumb
+    return _fin(b, "TapHand", mat)
+
+
+def ring_puff(mat):
+    """The like how-to (#869): a small ring burst where the finger taps, a pink ring and eight short butter rays."""
+    b = Builder()
+    b.ring((0, 0, 0), 0.82, 0.26, 0.4, "nose_bubblegum", segments=28, rot=X)
+    for k in range(8):
+        a = math.radians(45 * k + 22.5)
+        c = (1.42 * math.cos(a), 0, 1.42 * math.sin(a))
+        b.box(c, (0.46, 0.4, 0.2), "pastel_butter", rot=(-a, "Y"))
+    return _fin(b, "RingPuff", mat)
+
+
 BUILDERS = {                                       # name -> (builder, (yaw, pitch)[, outline px])
     "Index": (index, (22.0, 12.0)),
     "Settings": (settings, (-16.0, 8.0)),
@@ -648,6 +699,10 @@ BUILDERS = {                                       # name -> (builder, (yaw, pit
     "Bow": (bow, (-10.0, 6.0)),
     "Helpers": (helpers, (-18.0, 10.0)),
     "Staff": (staff_apron, (-18.0, 10.0)),          # the Helpers button with no face (#929)
+    "ThumbsUp": (thumbs_up, (-10.0, 6.0)),           # the like how-to's pictures (#869)
+    "ThumbsUpFilled": (thumbs_up_filled, (-10.0, 6.0)),
+    "TapHand": (tap_hand, (-10.0, 6.0)),
+    "RingPuff": (ring_puff, (0.0, 0.0)),
     "Crown": (crown, TINY_VIEW, TINY_OUTLINE),       # the tiny pictures (#255)
     "Lock": (lock, TINY_VIEW, TINY_OUTLINE),
     "Mud": (mud, TINY_VIEW, TINY_OUTLINE),

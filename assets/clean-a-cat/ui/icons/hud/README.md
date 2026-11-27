@@ -50,3 +50,13 @@ helper icon to be something other then the first helper". The staff's cream bib 
 face, so the button never looks like one helper: a big pink paw on the bib, a pink neck loop, waistband, ties and hem,
 and a mint pocket with the yellow sponge and the sky brush standing in it. Review-QA found the first draft read as a tote bag at 36 px under the Shop button, so the bib is narrow for a T, the neck loop is a thin cord, the waist ties stand out at the sides and the sponge and brush are bigger. Made by `hud_icons.py` (`Staff`), checked at
 48 and 36 px beside Shop, Pets and Quests. `Helpers` (Jo) stays for anything that means Jo herself.
+
+## The like how-to pictures (issue 869)
+
+Four pictures for Design-Agent's two second loop that shows how to like the game (Growth-Agent's spec,
+2026-11-26). `CleanACat_Icon_Hud_ThumbsUp.png` is a thumbs up in a soft grey with a pale cuff, not yet pressed.
+`CleanACat_Icon_Hud_ThumbsUpFilled.png` is the same hand in the heart's pink with a white glint, pressed.
+`CleanACat_Icon_Hud_TapHand.png` is a cream hand pointing up with one finger, the one that taps.
+`CleanACat_Icon_Hud_RingPuff.png` is a pink ring with eight short butter rays, the burst where it taps. All are
+original art drawn as our own fist and hand, with no Roblox logo or button. Made by `hud_icons.py` (`ThumbsUp`,
+`ThumbsUpFilled`, `TapHand`, `RingPuff`) and checked at 48 px.

@@ -62,6 +62,11 @@ local STAND_INS: { [string]: StandIn } = {
 	Star = { glyph = "⭐", fill = Color3.fromHex("FFC94D"), round = true, bare = true },
 	Paw = { glyph = "🐾", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Heart = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	-- the like how-to's loop (issue 869) until Model-Agent's icons are uploaded
+	ThumbsUp = { glyph = "👍", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	ThumbsUpFilled = { glyph = "💗", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	TapHand = { glyph = "👆", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
+	RingPuff = { glyph = "✨", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Station = { glyph = "🛁", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Index = { glyph = "📖", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
 	Settings = { glyph = "⚙️", fill = Color3.fromHex("FFFFFF"), round = true, bare = true },
