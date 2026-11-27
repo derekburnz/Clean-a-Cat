@@ -164,3 +164,7 @@ The `hotel-*.jpg` pictures show the side Garden's three looks (locked, building,
 - `normal-garden-pets` shows the three pen pets in the built Garden.
 - `normal-hotel-inside-room2-booked` shows room 2 with a guest booked, its 59m bubble showing.
 - `big-hotel-roof-join` shows where the hotel roof meets the big spa's roof eave.
+
+## shortText (issue 1027) on main 009c407, iphone_13, 2026-11-27
+
+`1027-<window>-iphone13.jpg` shows Shop, Helpers, Pets, Settings, Check in, Crate, Gift and Starter with shortText on and prices set by hand. Prices are 149, 299, 99, 249 and 249 for the passes, 49 and 199 for crates, and 199 for the starter pack.
