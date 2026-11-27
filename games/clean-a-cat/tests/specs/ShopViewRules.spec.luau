@@ -72,6 +72,40 @@ return function()
 			end
 		)
 
+		it(
+			"features the best pass not owned, then the rest with the owned ones last (shopRevamp, issue 1030)",
+			function()
+				local function card(key: string, owned: boolean): ShopViewRules.Card
+					return {
+						key = key,
+						name = key,
+						text = "",
+						icon = "Star",
+						price = 1,
+						owned = owned,
+					}
+				end
+				local featured, rest = ShopViewRules.arrange({
+					card("DoubleCoins", true),
+					card("SecondBuilder", false),
+					card("GoldenSponge", false),
+					card("Lou", true),
+					card("SecondPetSlot", false),
+				})
+				expect(featured and featured.key).to.equal("SecondBuilder")
+				expect(#rest).to.equal(4)
+				expect(rest[1].key).to.equal("GoldenSponge")
+				expect(rest[3].key).to.equal("DoubleCoins")
+				expect(rest[4].key).to.equal("Lou")
+				local none, all = ShopViewRules.arrange({ card("Lou", true) })
+				expect(none).to.equal(nil)
+				expect(#all).to.equal(1)
+				for _, line in ShopViewRules.LINE do
+					expect(#line <= 16).to.equal(true) -- one short line on the smallest phone card
+				end
+			end
+		)
+
 		it("writes the price in Robux, never a hurry", function()
 			expect(ShopViewRules.priceText(199)).to.equal("199 Robux")
 			local low = string.lower(ShopViewRules.EMPTY)

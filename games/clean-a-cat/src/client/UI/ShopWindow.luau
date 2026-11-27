@@ -9,7 +9,11 @@
 --
 -- One card per game pass: its picture, name, what it does in plain words and its real Robux price on the button,
 -- shown before Roblox's own prompt opens. An owned pass says Owned and has no button. No coins are sold and nothing
--- says "hurry". The Crates and Starter Pack pages join when bought crates (issue 514) and the starter pack (issue
+-- says "hurry".
+--
+-- Switch shopRevamp (issue 1030, ShopViewRules.arrange): one featured card, bigger, on the left (the best pass not
+-- owned), the rest in a two by two grid beside it with their pictures large and one short line each, and every price
+-- in white words with an ink outline on the green button, so it reads on a phone. The Crates and Starter Pack pages join when bought crates (issue 514) and the starter pack (issue
 -- 519) land. UI never fires remotes: ShopController asks the server, which opens Roblox's prompt.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -73,6 +77,34 @@ local SIZES = {
 	},
 }
 type Sizes = typeof(SIZES.full)
+
+-- shopRevamp: design pixels, full then short.
+local REVAMP = {
+	full = {
+		width = 1080,
+		featured = 0.32,
+		rowH = 150,
+		gap = 12,
+		name = 24,
+		bigName = 30,
+		line = 17,
+		buy = 52,
+		buyText = 24,
+	},
+	short = {
+		width = 980,
+		featured = 0.30,
+		rowH = 126,
+		gap = 8,
+		name = 20,
+		bigName = 26,
+		line = 15,
+		buy = 48,
+		buyText = 22,
+	},
+}
+type Revamp = typeof(REVAMP.full)
+local FEATURE_EDGE = Color3.fromHex("FFB020") -- the featured card's gold edge (ink on its white card reads 12.4)
 
 type Parts = {
 	window: Window.Window,
@@ -271,6 +303,205 @@ local function drawCard(
 	end
 end
 
+-- shopRevamp: the price button, its words white with an ink outline (Kit.outlined) so they read on the green.
+local function priceButton(
+	card: ShopViewRules.Card,
+	parent: Instance,
+	height: number,
+	textSize: number
+): GuiObject
+	if card.owned then
+		local owned = frame("Owned", parent)
+		owned.Size = UDim2.new(1, 0, 0, height)
+		local ownedList = list(owned, true, 6)
+		ownedList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		ownedList.VerticalAlignment = Enum.VerticalAlignment.Center
+		local tick = frame("Tick", owned)
+		tick.LayoutOrder = 1
+		tick.Size = UDim2.fromOffset(textSize + 6, textSize + 6)
+		Icons.draw("Check", tick)
+		local label = words("Label", owned, textSize)
+		label.LayoutOrder = 2
+		label.TextColor3 = OWNED_GREEN
+		label.AutomaticSize = Enum.AutomaticSize.X
+		label.Size = UDim2.fromOffset(0, height)
+		label.Text = "Owned"
+		return owned
+	end
+	local buy = Window.button("Buy", "", parent, GREEN_TOP, GREEN_BOTTOM)
+	buy.Size = UDim2.new(1, 0, 0, height)
+	buy:SetAttribute("Says", `Buy {card.name} for {card.price} Robux`)
+	local row = frame("Price", buy)
+	row.Size = UDim2.fromScale(1, 1)
+	local rowList = list(row, true, 8)
+	rowList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	rowList.VerticalAlignment = Enum.VerticalAlignment.Center
+	local was = card.was
+	if was then
+		local struck = Kit.outlined("Was", row)
+		struck.LayoutOrder = 1
+		struck.RichText = true
+		struck.TextSize = textSize - 4
+		struck.TextColor3 = Color3.fromHex(string.sub(STRUCK, 2))
+		struck.Text = `<s>{was}</s>`
+		buy:SetAttribute("Says", `Buy {card.name} for {card.price} Robux, was {was}`)
+	end
+	local price = Kit.outlined("Robux", row)
+	price.LayoutOrder = 2
+	price.TextSize = textSize
+	price.Text = ShopViewRules.priceText(card.price)
+	local key = card.key
+	buy.Activated:Connect(function()
+		for _, listener in buyListeners do
+			task.spawn(listener, key)
+		end
+	end)
+	return buy
+end
+
+-- shopRevamp: the picture on its warm tile, with the sale tag when on sale.
+local function picture(
+	card: ShopViewRules.Card,
+	parent: Instance,
+	size: number,
+	tagSize: number
+): Frame
+	local pic = frame("Pic", parent)
+	pic.Size = UDim2.fromOffset(size, size)
+	pic.BackgroundTransparency = 0
+	pic.BackgroundColor3 = Kit.WHITE
+	local tint = Instance.new("UIGradient")
+	tint.Rotation = 90
+	tint.Color = ColorSequence.new(PIC_TOP, PIC_BOTTOM)
+	tint.Parent = pic
+	Kit.corner(pic, UDim.new(0, 20))
+	Kit.stroke(pic, 3)
+	local icon = frame("Icon", pic)
+	icon.AnchorPoint = Vector2.new(0.5, 0.5)
+	icon.Position = UDim2.fromScale(0.5, 0.5)
+	icon.Size = UDim2.fromScale(0.9, 0.9)
+	Icons.draw(card.icon, icon)
+	if card.was and not card.owned then
+		local sale = frame("Sale", pic)
+		sale.Position = UDim2.fromOffset(-8, -8)
+		sale.AutomaticSize = Enum.AutomaticSize.X
+		sale.Size = UDim2.fromOffset(0, tagSize + 8)
+		sale.BackgroundTransparency = 0
+		sale.BackgroundColor3 = SALE_RED
+		sale.ZIndex = 3
+		Kit.corner(sale, UDim.new(0, 10))
+		Kit.stroke(sale, 3).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		local salePad = Instance.new("UIPadding")
+		salePad.PaddingLeft, salePad.PaddingRight = UDim.new(0, 6), UDim.new(0, 6)
+		salePad.Parent = sale
+		local saleText = Kit.outlined("Text", sale)
+		saleText.AnchorPoint = Vector2.new(0, 0.5)
+		saleText.Position = UDim2.fromScale(0, 0.5)
+		saleText.TextSize = tagSize
+		saleText.ZIndex = 3
+		saleText.Text = "50% off"
+	end
+	return pic
+end
+
+local function cardFrame(
+	name: string,
+	parent: Instance,
+	size: UDim2,
+	edgeColour: Color3,
+	thick: number
+): Frame
+	local c = frame(name, parent)
+	c.Size = size
+	c.BackgroundTransparency = 0
+	c.BackgroundColor3 = Kit.WHITE
+	Kit.corner(c, UDim.new(0, 18))
+	local edge = Kit.stroke(c, thick)
+	edge.Color = edgeColour
+	return c
+end
+
+-- shopRevamp: the featured card (tall, picture on top) and the small ones (picture on the left).
+local function drawRevamp(p: Parts, r: Revamp, s: Sizes, inner: number)
+	local featured, rest = ShopViewRules.arrange(cards)
+	local buyH = tapSize(r.buy)
+	local totalH = 2 * r.rowH + r.gap
+	p.grid.Size = UDim2.new(1, 0, 0, totalH + 10)
+	p.gridLayout.Padding = UDim.new(0, r.gap)
+	local featureW = if featured then math.floor(inner * r.featured) else 0
+	if featured then
+		local c =
+			cardFrame(featured.key, p.grid, UDim2.fromOffset(featureW, totalH), FEATURE_EDGE, 5)
+		c.LayoutOrder = 1
+		local pad = Instance.new("UIPadding")
+		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 12), UDim.new(0, 12)
+		pad.PaddingTop, pad.PaddingBottom = UDim.new(0, 12), UDim.new(0, 12)
+		pad.Parent = c
+		local column = list(c, false, 4)
+		column.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		local picSize =
+			math.min(featureW - 24, totalH - 24 - (r.bigName + 6) - (r.line + 4) - buyH - 12)
+		local pic = picture(featured, c, picSize, s.tag)
+		pic.LayoutOrder = 1
+		local name = words("Name", c, r.bigName)
+		name.LayoutOrder = 2
+		name.Size = UDim2.new(1, 0, 0, r.bigName + 6)
+		Kit.shrinkToFit(name, r.bigName)
+		name.Text = featured.name
+		local line = words("What", c, r.line)
+		line.LayoutOrder = 3
+		line.FontFace = Kit.BODY_FACE
+		line.Size = UDim2.new(1, 0, 0, r.line + 4)
+		Kit.shrinkToFit(line, r.line)
+		line.Text = ShopViewRules.lineOf(featured)
+		local buy = priceButton(featured, c, buyH, r.buyText)
+		buy.LayoutOrder = 4
+	end
+	local side = frame("Rest", p.grid)
+	side.LayoutOrder = 2
+	local sideW = inner - featureW - (if featured then r.gap else 0)
+	side.Size = UDim2.fromOffset(sideW, totalH)
+	local gridLayout = Instance.new("UIGridLayout")
+	gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	gridLayout.CellPadding = UDim2.fromOffset(r.gap, r.gap)
+	local columns = if featured then 2 else 3
+	local rows = math.max(2, math.ceil(#rest / columns))
+	local cellH = math.floor((totalH - (rows - 1) * r.gap) / rows)
+	gridLayout.CellSize =
+		UDim2.fromOffset(math.floor((sideW - (columns - 1) * r.gap) / columns), cellH)
+	gridLayout.Parent = side
+	for index, card in rest do
+		local c = cardFrame(card.key, side, UDim2.new(), Kit.INK, 3)
+		c.LayoutOrder = index
+		local pad = Instance.new("UIPadding")
+		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 8), UDim.new(0, 8)
+		pad.PaddingTop, pad.PaddingBottom = UDim.new(0, 8), UDim.new(0, 8)
+		pad.Parent = c
+		local picSize = cellH - 16
+		picture(card, c, picSize, s.tag)
+		local right = frame("Right", c)
+		right.Position = UDim2.fromOffset(picSize + 8, 0)
+		right.Size = UDim2.new(1, -(picSize + 8), 1, 0)
+		local stack = list(right, false, 2)
+		stack.VerticalAlignment = Enum.VerticalAlignment.Center
+		local name = words("Name", right, r.name)
+		name.LayoutOrder = 1
+		name.Size = UDim2.new(1, 0, 0, r.name + 4)
+		name.TextXAlignment = Enum.TextXAlignment.Left
+		Kit.shrinkToFit(name, r.name)
+		name.Text = card.name
+		local line = words("What", right, r.line)
+		line.LayoutOrder = 2
+		line.FontFace = Kit.BODY_FACE
+		line.TextXAlignment = Enum.TextXAlignment.Left
+		line.Size = UDim2.new(1, 0, 0, r.line + 4)
+		Kit.shrinkToFit(line, r.line)
+		line.Text = ShopViewRules.lineOf(card)
+		local buy = priceButton(card, right, buyH, r.buyText)
+		buy.LayoutOrder = 3
+	end
+end
+
 local function redraw()
 	local p = parts
 	if p == nil then
@@ -288,6 +519,13 @@ local function redraw()
 		if child:IsA("GuiObject") then
 			child:Destroy()
 		end
+	end
+	if LiveFlags.isOn(ShopViewRules.REVAMP_FLAG) and #cards > 0 then
+		local r: Revamp = if short then REVAMP.short else REVAMP.full
+		drawRevamp(p, r, s, width - 2 * s.pad)
+		p.grid.Visible = true
+		p.empty.Visible = false
+		return
 	end
 	local columns = Passes.SHOP_CARDS -- 2x and 3x Coins never show together (Passes.offered, issue 1031)
 	local cardW = math.floor((width - 2 * s.pad - (columns - 1) * s.gap) / columns)
@@ -339,6 +577,13 @@ function ShopWindow.build(root: Instance): Frame
 	empty.TextColor3 = Kit.INK_SOFT
 
 	parts = { window = window, pad = pad, grid = grid, gridLayout = gridLayout, empty = empty }
+	ReplicatedStorage
+		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. ShopViewRules.REVAMP_FLAG)
+		:Connect(function()
+			if window.layer.Visible then
+				redraw()
+			end
+		end)
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. Passes.FLAG)
 		:Connect(function()
 			if not LiveFlags.isOn(Passes.FLAG) then

@@ -1683,6 +1683,31 @@ do
 	end
 end
 
+-- The shop revamp (issue 1030, switch shopRevamp): the featured card and the two by two grid, at full price with one
+-- pass owned, and in the launch sale, each also with shortText on.
+for _, name in { "Shop", "ShopSale" } do
+	for _, scene in table.clone(SCENES) do
+		if scene[1] == name then
+			local open = scene[2]
+			table.insert(SCENES, {
+				name .. "Revamp",
+				function()
+					flag("shopRevamp", true)
+					open()
+				end,
+			})
+			table.insert(SCENES, {
+				name .. "RevampShort",
+				function()
+					flag("shopRevamp", true)
+					flag("shortText", true)
+					open()
+				end,
+			})
+		end
+	end
+end
+
 Scenes.names = {}
 for _, scene in SCENES do
 	table.insert(Scenes.names, scene[1])
@@ -1726,6 +1751,7 @@ function Scenes.close()
 	flag("catHotel", false)
 	flag("menuContrast2", false)
 	flag("shortText", false)
+	flag("shopRevamp", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
 	flag("likeHowTo", false)
