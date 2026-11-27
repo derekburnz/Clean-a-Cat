@@ -24,7 +24,56 @@ NotifyRules.MAX_WAIT_SECONDS = 30 * 86400 -- a queued message older than this is
 -- line instead.
 NotifyRules.RESULTS = table.freeze({ "shown", "closed", "cannot_prompt" })
 
-export type Due = { item: string, endsAt: number }
+-- A queued message: the long build `item` that finishes at `endsAt`, or with `kind` HOTEL_KIND the Cat Hotel's guests
+-- (item is then HOTEL_ITEM).
+export type Due = { item: string, endsAt: number, kind: string? }
+
+-- (switch hotelNotify, issue 1049) "Your hotel guests are ready to check out": queued when the player leaves with
+-- guests still asleep, for the moment the last of them is ready. Same queue, same once-a-day cap and same 13 and over
+-- opt in as build_done; when both are due, the one that comes first is sent. Needs longBuildOffer and catHotel too.
+NotifyRules.HOTEL_FLAG = "hotelNotify"
+NotifyRules.HOTEL_KIND = "hotel"
+NotifyRules.HOTEL_ITEM = "CatHotel" -- HotelRules.ID
+-- The hotel_ready string's id per experience (notify-key workflow, action string, string_name hotel_ready).
+NotifyRules.HOTEL_MESSAGE_IDS = table.freeze({
+	[10778775478] = "", -- Clean-a-Cat-Dev
+	[10778773655] = "", -- Clean a Cat
+}) :: { [number]: string }
+
+-- The string id for `kind` (nil: build_done) in experience `gameId`, or "" when it is not made yet.
+function NotifyRules.messageId(kind: string?, gameId: number): string
+	local ids = if kind == NotifyRules.HOTEL_KIND
+		then NotifyRules.HOTEL_MESSAGE_IDS
+		else NotifyRules.MESSAGE_IDS
+	return ids[gameId] or ""
+end
+
+-- The hotel message to queue at `now`: when the last stay of `stays` (HotelRules.cleanStays) ends, or nil when no
+-- guest is still asleep.
+function NotifyRules.hotelDueAtLeave(stays: { [string]: any }, now: number): Due?
+	local last: number? = nil
+	for _, stay in stays do
+		local endsAt: number = stay.endsAt
+		if endsAt > now and (last == nil or endsAt > last) then
+			last = endsAt
+		end
+	end
+	if last == nil then
+		return nil
+	end
+	return { item = NotifyRules.HOTEL_ITEM, endsAt = last, kind = NotifyRules.HOTEL_KIND }
+end
+
+-- Of two messages to queue, the one that comes first (only one is queued per player).
+function NotifyRules.first(a: Due?, b: Due?): Due?
+	if a == nil then
+		return b
+	end
+	if b == nil then
+		return a
+	end
+	return if b.endsAt < a.endsAt then b else a
+end
 
 -- True when `item` gets the bell.
 function NotifyRules.isLong(item: string): boolean
@@ -40,7 +89,7 @@ function NotifyRules.dueAtLeave(builds: { [string]: BuildRules.Build }, now: num
 		if NotifyRules.isLong(build.item) and build.endsAt > now then
 			local current = due
 			if current == nil or build.endsAt > current.endsAt then
-				due = { item = build.item, endsAt = build.endsAt }
+				due = { item = build.item, endsAt = build.endsAt, kind = nil } :: Due
 			end
 		end
 	end
@@ -71,10 +120,17 @@ function NotifyRules.cleanDue(raw: unknown): Due?
 	local entry = raw :: { [string]: unknown }
 	local item = entry.item
 	local endsAt = entry.endsAt
-	if type(item) ~= "string" or not NotifyRules.isLong(item) then
+	local kind = entry.kind
+	if type(endsAt) ~= "number" or endsAt ~= endsAt or math.abs(endsAt) == math.huge then
 		return nil
 	end
-	if type(endsAt) ~= "number" or endsAt ~= endsAt or math.abs(endsAt) == math.huge then
+	if kind == NotifyRules.HOTEL_KIND then
+		if item ~= NotifyRules.HOTEL_ITEM then
+			return nil
+		end
+		return { item = NotifyRules.HOTEL_ITEM, endsAt = endsAt, kind = NotifyRules.HOTEL_KIND }
+	end
+	if kind ~= nil or type(item) ~= "string" or not NotifyRules.isLong(item) then
 		return nil
 	end
 	return { item = item, endsAt = endsAt }
