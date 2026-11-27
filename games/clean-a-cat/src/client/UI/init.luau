@@ -112,6 +112,7 @@ local openedListeners: { (name: string) -> () } = {}
 local toastToken = 0
 local washFocus = false -- UI.setWashFocus (issue 856)
 local refitScreen: (() -> ())? = nil -- Init's fitScreen, run again when washFocus changes
+local windowOpen = false -- any window shown (syncControls), for windowClear (issue 1038)
 local controlsHidden = false -- true while this module has Roblox's touch controls hidden
 
 local function corner(parent: Instance, radius: number)
@@ -214,6 +215,15 @@ local function syncControls()
 			break
 		end
 	end
+	-- with windowClear (issue 1038) the HUD's buttons step aside while a window is open, so the window never sits
+	-- over them
+	if anyOpen ~= windowOpen then
+		windowOpen = anyOpen
+		local refit = refitScreen
+		if refit then
+			refit()
+		end
+	end
 	-- The recap card at the side (switch recapSide) hides them too: its Next cat sits low on the left.
 	local hide = (anyOpen and LiveFlags.isOn(CONTROLS_FLAG)) or Recap.sideShown()
 	if hide == controlsHidden then
@@ -271,8 +281,9 @@ function UI.init()
 		-- for the whole wash: with five or more buttons it reached the step line's title (issue 625, Sync's B5), and
 		-- the windows are for between washes.
 		local listShown = HUD.listShown()
-		SideButtons.setAside(listShown or HUD.washing() or washFocus)
-		menu.Visible = not SideButtons.any() and not listShown and not washFocus
+		local clear = windowOpen and LiveFlags.isOn("windowClear") -- Window.CLEAR_FLAG
+		SideButtons.setAside(listShown or HUD.washing() or washFocus or clear)
+		menu.Visible = not SideButtons.any() and not listShown and not washFocus and not clear
 	end
 	refitScreen = fitScreen
 	fitScreen()
