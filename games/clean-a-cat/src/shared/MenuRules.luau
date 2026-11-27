@@ -12,6 +12,9 @@
 --   queue     (queueWindow) no Wash next prompts over the waiting customers: Who's next? picks
 --
 -- A guide card whose "Show me" walked to one of those (BubbleRules) opens its window instead (windowFor).
+-- With no pads, the HUD's Helpers button can't wait for the first hire: under `helpers` the server sets the Player
+-- attribute HelpersOpen (OPEN_ATTRIBUTE) once the player has the coins for the cheapest helper not hired, for the
+-- rest of the visit, and the button shows from then (helpersOpen).
 -- Pure, so tests/specs/MenuRules.spec.luau covers it.
 local MenuRules = {}
 
@@ -25,6 +28,8 @@ MenuRules.FLAGS = table.freeze({
 	MenuRules.BUILD_FLAG,
 	MenuRules.QUEUE_FLAG,
 })
+
+MenuRules.OPEN_ATTRIBUTE = "HelpersOpen"
 
 type IsOn = (flag: string) -> boolean
 
@@ -41,6 +46,12 @@ end
 -- The next customer is picked in Who's next? only.
 function MenuRules.queue(isOn: IsOn): boolean
 	return isOn(MenuRules.FLAG) and isOn(MenuRules.QUEUE_FLAG)
+end
+
+-- Whether the Helpers button opens now under `helpers`: the coins for `cheapest` (the lowest price of a helper not
+-- hired, nil when none is left) are there. Once true the server keeps it for the visit, so it never flickers.
+function MenuRules.helpersOpen(isOn: IsOn, coins: number, cheapest: number?): boolean
+	return MenuRules.helpers(isOn) and cheapest ~= nil and coins >= cheapest
 end
 
 -- The guide cards (BubbleRules ids) whose "Show me" opens a window under menuOnly, and the window each opens.

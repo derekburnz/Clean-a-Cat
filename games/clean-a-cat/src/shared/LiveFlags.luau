@@ -190,6 +190,7 @@ LiveFlags.KEYS = {
 	"noVisitBoard", -- the "Who might visit" chance board by the door is not drawn (Derek: it adds clutter); the same chances stay in the cat index and the queue window (ChanceBoardController, issue 1021); off by default
 	"petSingles", -- the Pets window draws every pet as its own tile (no "x3" stacks) and a one star pet with no stars; stars show from two up (CrateViewRules.tiles, PetsWindow, issue 1035); off by default
 	"menuOnly", -- a choice with a menu is made only there: no helper hire pads or Hire and Takes prompts at the stands (Helpers window), no Buy and Build prompts on the boards (Build window), no Wash next prompts (Who's next?), each only while its window is on; guide cards open the window (MenuRules, issues 1028 and 1033); off by default
+	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -351,6 +352,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	tipTake = true,
 	noVisitBoard = true,
 	menuOnly = true,
+	resetSave = true,
 	petSingles = true,
 } :: { [string]: boolean }
 

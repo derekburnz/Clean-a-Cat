@@ -14,6 +14,11 @@
 --                                         writes the save now and yields until a write whose saved copy passes
 --                                         check(saved) lands, at most timeout seconds; true when one did. For a Robux
 --                                         grant, which must be stored before Roblox is told it went through
+--   DataService.replaceOnRelease(player, fresh)
+--                                         stores `fresh` instead of the save when this server lets go of it (the
+--                                         beforeRelease steps still run on the old one first); the caller then kicks
+--                                         the player. For "Reset my game" (ResetService, issue 1037). False when no
+--                                         save is held
 --
 -- Studio uses its own store (name + "_dev"), so a playtest with API access on never touches live saves. Without
 -- "Enable Studio Access to API Services", ProfileStore runs on a mock store: the game works, nothing persists.
@@ -31,6 +36,7 @@ type Session = {
 	save: Save,
 	profile: any, -- ProfileStore's profile; its Data is the save
 	joinedAt: number,
+	replacement: Save?, -- stored in place of the save on release (replaceOnRelease)
 }
 
 local DataService = {}
@@ -75,6 +81,15 @@ function DataService.saveAndConfirm(
 	end
 	connection:Disconnect()
 	return done
+end
+
+function DataService.replaceOnRelease(player: Player, fresh: Save): boolean
+	local session = sessions[player]
+	if session == nil or not session.profile:IsActive() then
+		return false
+	end
+	session.replacement = fresh
+	return true
 end
 
 local function finalize(player: Player, session: Session)
@@ -135,6 +150,11 @@ local function release(player: Player)
 		return
 	end
 	finalize(player, session)
+	local replacement = session.replacement
+	if replacement then
+		replacement.lastSeen = os.time()
+		session.profile.Data = replacement
+	end
 	sessions[player] = nil
 	session.profile:EndSession()
 end
