@@ -25,6 +25,10 @@ on:
         description: "yes to make or change anything; anything else only prints the plan"
         required: false
         default: ""
+      only:
+        description: "icons: 1 to 4 keys, comma separated (e.g. DoubleCoins,TripleCoins), per the image gate's run rule; empty plan lists all"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -59,6 +63,7 @@ jobs:
           TARGET: ${{ inputs.target }}
           ACTION: ${{ inputs.action }}
           CONFIRM: ${{ inputs.confirm }}
+          ONLY: ${{ inputs.only }}
           GROUP_ID: ${{ vars.ROBLOX_GROUP_ID || '107520049' }}
           ART_DIR: assets/clean-a-cat/store/picked-2026-11-26
           DESCRIPTION_FILE: assets/clean-a-cat/store/description-2026-11-26.txt

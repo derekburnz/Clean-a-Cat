@@ -15,6 +15,7 @@ No key is ever printed.
   CONFIRM                "yes" to make or change anything
   ART_DIR                store-art: the folder with icon-main-512.png and thumbnail-order-1..4-*.png
   GROUP_ID               store-art: the group that owns the uploaded images
+  ONLY                   icons: comma list of ICONS keys, 1 to ICONS_PER_RUN with CONFIRM yes (empty plan: all)
 
 Open Cloud endpoints (create.roblox.com/docs/cloud/reference/features/game-passes, developer-products, and the
 guide cloud/guides/experience-icons-and-thumbnails, read 2026-11-26): passes and products are Beta.
@@ -76,6 +77,9 @@ ICONS = {
     "CrateFive": "CleanACat_UI_Shop_Crate5.png",
     "StarterPack": "CleanACat_UI_Shop_StarterPet.png",
 }
+# The image gate's run rule (Review-QA on #1128): at most ICONS_PER_RUN pictures per run, named in ONLY, and the
+# run stops at the first answer that is not 2xx.
+ICONS_PER_RUN = 4
 SERVER_SIZE = 6
 MAX_PAGES = 20
 
@@ -306,12 +310,30 @@ def set_prices(kind, wanted, keys, universe, confirm, summary, sale):
     return ok
 
 
-def set_icons(kind, wanted, keys, universe, confirm, summary):
-    """Sets the buy prompt picture of each made pass or product from ICONS (issue 1122). Every file must pass
-    approved() first; nothing is sent unless all of this kind's files do. A pass or product not made yet is skipped."""
+def icon_keys(raw, confirm, summary):
+    """The ONLY input as a list of ICONS keys, or None when it is refused. With confirm yes it must name 1 to
+    ICONS_PER_RUN keys; a plan run may leave it empty (every key)."""
+    keys = [k.strip() for k in (raw or "").split(",") if k.strip()]
+    unknown = [k for k in keys if k not in ICONS]
+    if unknown:
+        summary.append(f"REFUSED: not in ICONS: {', '.join(unknown)}")
+        return None
+    if confirm == "yes" and not 1 <= len(keys) <= ICONS_PER_RUN:
+        summary.append(f"REFUSED: with confirm yes, only must name 1 to {ICONS_PER_RUN} keys (the image gate's run rule)")
+        return None
+    return keys or list(ICONS)
+
+
+def set_icons(kind, wanted, keys, universe, confirm, summary, only):
+    """Sets the buy prompt picture of each made pass or product named in `only` from ICONS (issue 1122). Every file
+    must pass approved() first; nothing is sent unless all of them do. A pass or product not made yet is skipped. The
+    first answer that is not 2xx stops the run (False)."""
     path = "game-passes/v1" if kind == "passes" else "developer-products/v2"
     noun = "game-passes" if kind == "passes" else "developer-products"
     base = f"{API}/{path}/universes/{universe}/{noun}"
+    wanted = [entry for entry in wanted if entry[0] in only]
+    if not wanted:
+        return True
     files = []
     for entry in wanted:
         icon = ICONS.get(entry[0])
@@ -332,7 +354,6 @@ def set_icons(kind, wanted, keys, universe, confirm, summary):
     _, have, _ = list_all(key, base + "/creator")
     names = {name.strip().lower(): (name, ident, price) for name, ident, price in have}
     summary.append(f"Using {label}. {kind}: buy prompt pictures from {ICON_DIR}")
-    ok = True
     for entry, file in files:
         name = entry[1]
         there = names.get(name.lower())
@@ -345,14 +366,15 @@ def set_icons(kind, wanted, keys, universe, confirm, summary):
         with open(file, "rb") as fh:
             blob = fh.read()
         body, ctype = multipart([], [("imageFile", os.path.basename(file), "image/png", blob)])
-        status, answer = request("PATCH", f"{base}/{there[1]}", key, body, ctype)
+        # never retried: a retry would send the picture again, past the gate's count
+        status, answer = request("PATCH", f"{base}/{there[1]}", key, body, ctype, retry=False)
         time.sleep(1)
-        if status in (200, 204):
+        if 200 <= status < 300:
             summary.append(f"set the picture of {name} (id {there[1]}) to {os.path.basename(file)} (HTTP {status})")
         else:
-            summary.append(f"FAILED the picture of {name} (id {there[1]}): HTTP {status}: {short(answer)}")
-            ok = False
-    return ok
+            summary.append(f"FAILED the picture of {name} (id {there[1]}): HTTP {status}: {short(answer)}; run stopped")
+            return False
+    return True
 
 
 def server_size(keys, universe, place, confirm, summary):
@@ -539,8 +561,10 @@ def main():
         ok = set_prices("passes", PASSES, keys, universe, confirm, summary, sale)
         ok = set_prices("products", PRODUCTS, keys, universe, confirm, summary, sale) and ok
     elif action == "icons":
-        ok = set_icons("passes", PASSES, keys, universe, confirm, summary)
-        ok = set_icons("products", PRODUCTS, keys, universe, confirm, summary) and ok
+        only = icon_keys(os.environ.get("ONLY", ""), confirm, summary)
+        ok = only is not None and set_icons("passes", PASSES, keys, universe, confirm, summary, only)
+        # the products only after the passes went through (a failure stops the whole run)
+        ok = ok and set_icons("products", PRODUCTS, keys, universe, confirm, summary, only)
     elif action == "server-size":
         ok = server_size(keys, universe, place, confirm, summary)
     elif action == "description":
