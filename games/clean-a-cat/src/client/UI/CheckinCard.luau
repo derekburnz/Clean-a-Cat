@@ -199,6 +199,8 @@ local function drawTile(tile: CheckinViewRules.Tile, parent: Frame, s: Sizes, wi
 		-- one line here, so the words shrink to fit it rather than wrap out of sight ("Good crate", Sync's B5)
 		what.Size = UDim2.new(1, 0, 0, s.what + 4)
 		Kit.shrinkToFit(what, s.what)
+		-- the column's side padding comes off here, so "Good crate" fits at the smallest size on a small phone (issue 838)
+		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 0), UDim.new(0, 0)
 		local chances = Instance.new("TextButton")
 		chances.Name = "Chances"
 		chances.LayoutOrder = 4
