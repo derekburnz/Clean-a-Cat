@@ -731,19 +731,29 @@ def head_top(name, spec, body, d):
 # #845 it hung down the side of the head at full size). The model carries the size as the root attribute BowScale,
 # which Spa/BowFit.luau multiplies into the bow's scale.
 BOW_SCALE = 0.6
+# Bathtile's shower cap covers the whole top, so its bow rests on the cap's front corner, a little smaller so it fits
+# there by the block shape too (#948; Review-QA, 2026-11-27, after the owner's "top right corner not on side").
+BOW_SCALE_OWN = {"Bathtile": 0.51}
+
+
+def bow_scale(cat):
+    """The BowScale a cat with a head piece carries."""
+    return BOW_SCALE_OWN.get(cat, BOW_SCALE)
+
 # Cats whose head piece reaches the corner spot, each with its own (in, forward, down, tip) from cats.bow_side's spot:
 # studs towards the head's middle, towards the face, under the top, and the tip in degrees. Found by rbx_bowfit.py
 # on the Roblox parts.
 BOW_OWN = {
-    "Bathtile": (-0.04, 0.04, -0.15, 30.0),   # the cap covers the whole top: the bow is pinned to its front corner
-    "Djinn": (-0.028, 0.12, 0.0, 30.0),       # the turban too: pinned to its front corner
-    "Prism": (0.0, 0.2, 0.0, 30.0),           # in front of the horn's lit gem, at the front edge
-    "Rosette": (-0.04, 0.08, 0.0, 30.0),      # in front of the crown's corner point
-    "Stardust": (-0.04, 0.04, -0.03, 30.0),   # under the corner stalk's gem
+    # #948: every spot clears the head piece by the query shape too (the block a part query sees), not only the drawn one
+    "Bathtile": (-0.15, -0.12, -0.2, 90.0),   # the cap covers the whole top: the bow rests on its front corner
+    "Djinn": (-0.12, 0.08, 0.0, 60.0),        # leaned out past the turban's rim, on the head's corner
+    "Prism": (-0.12, 0.0, 0.0, 75.0),         # leaned out past the horn's lit gem
+    "Rosette": (0.0, 0.16, -0.03, 45.0),      # in front of the crown's corner point
+    "Stardust": (-0.04, 0.08, 0.0, 30.0),     # in front of the corner stalk's gem
     "Jade": (-0.04, 0.0, 0.0, 60.0),          # leaned out past the lotus horn
-    "Sherbet": (-0.04, 0.0, -0.03, 60.0),     # leaned out past the sundae's rim
-    "WhiteTiger": (-0.04, 0.0, 0.0, 60.0),    # leaned out past the circlet's spike
-    "Phoenix": (-0.04, 0.0, 0.0, 30.0),
+    "Sherbet": (-0.08, 0.0, 0.0, 75.0),       # leaned out past the sundae's rim
+    "WhiteTiger": (-0.08, 0.0, 0.0, 60.0),    # leaned out past the circlet's spike
+    "Phoenix": (-0.04, 0.0, 0.0, 45.0),       # leaned a little out past the crest
     "Moonstag": (-0.04, 0.0, 0.0, 30.0),
 }
 
