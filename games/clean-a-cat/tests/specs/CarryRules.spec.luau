@@ -52,6 +52,71 @@ return function()
 			expect(CarryRules.modelName("Smudge", has)).to.equal("CleanACat_Cat_Smudge_Dirty_Sit")
 			expect(CarryRules.modelName("Cotton", has)).to.equal("CleanACat_Cat_Cotton_Dirty")
 		end)
+
+		it("says a sit for those bodies", function()
+			local function has(name: string): boolean
+				return name == "CleanACat_Cat_Smudge_Dirty_Sit"
+			end
+			local _, held = CarryRules.modelName("Smudge", has, true)
+			expect(held).to.equal("sit")
+			local _, plain = CarryRules.modelName("Cotton", has)
+			expect(plain).to.equal("sit")
+		end)
+
+		it("carries the held loaf under loafCarry when there is one", function()
+			local function has(name: string): boolean
+				return name == "CleanACat_Cat_Smudge_Dirty_Loaf"
+					or name == "CleanACat_Cat_Smudge_Dirty_Sit"
+			end
+			local name, held = CarryRules.modelName("Smudge", has, true)
+			expect(name).to.equal("CleanACat_Cat_Smudge_Dirty_Loaf")
+			expect(held).to.equal("loaf")
+		end)
+
+		it("keeps the sitting body with loafCarry off", function()
+			local function has(name: string): boolean
+				return name == "CleanACat_Cat_Smudge_Dirty_Loaf"
+					or name == "CleanACat_Cat_Smudge_Dirty_Sit"
+			end
+			local name, held = CarryRules.modelName("Smudge", has, false)
+			expect(name).to.equal("CleanACat_Cat_Smudge_Dirty_Sit")
+			expect(held).to.equal("sit")
+		end)
+	end)
+
+	describe("CarryRules.helperModelName", function()
+		local function has(name: string): boolean
+			return name == "CleanACat_Cat_Smudge_Dirty_Loaf" or name == "CleanACat_Cat_Smudge_Loaf"
+		end
+
+		it("fetches the dirty loaf and walks back with the clean one under loafCarry", function()
+			local fetch, fetchHeld = CarryRules.helperModelName("Smudge", false, has, true)
+			expect(fetch).to.equal("CleanACat_Cat_Smudge_Dirty_Loaf")
+			expect(fetchHeld).to.equal("loaf")
+			local back, backHeld = CarryRules.helperModelName("Smudge", true, has, true)
+			expect(back).to.equal("CleanACat_Cat_Smudge_Loaf")
+			expect(backHeld).to.equal("loaf")
+		end)
+
+		it("keeps the sitting bodies with the switch off or no loaf", function()
+			expect((CarryRules.helperModelName("Smudge", false, has, false))).to.equal(
+				"CleanACat_Cat_Smudge_Dirty_Sit"
+			)
+			expect((CarryRules.helperModelName("Smudge", true, has))).to.equal(
+				"CleanACat_Cat_Smudge_Sit"
+			)
+			local name, held = CarryRules.helperModelName("Cotton", true, has, true)
+			expect(name).to.equal("CleanACat_Cat_Cotton_Sit")
+			expect(held).to.equal("sit")
+		end)
+	end)
+
+	describe("CarryRules.isLoaf", function()
+		it("knows a held loaf by its name", function()
+			expect(CarryRules.isLoaf("CleanACat_Cat_Smudge_Dirty_Loaf")).to.equal(true)
+			expect(CarryRules.isLoaf("CleanACat_Cat_Smudge_Loaf")).to.equal(true)
+			expect(CarryRules.isLoaf("CleanACat_Cat_Smudge_Dirty_Sit")).to.equal(false)
+		end)
 	end)
 
 	describe("CarryRules.shownLine", function()
