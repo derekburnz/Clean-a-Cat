@@ -159,10 +159,20 @@ function StarterController.Start()
 	end)
 	ReplicatedStorage:GetAttributeChangedSignal(Products.PRICE_PREFIX .. StarterRules.PRODUCT)
 		:Connect(refresh)
-	for _, key in StarterRules.CONTENTS do
-		ReplicatedStorage:GetAttributeChangedSignal(Passes.PRICE_PREFIX .. key):Connect(refresh)
+	-- both packs' passes (starterBuilder): a card's price follows whichever pack is offered
+	for _, list in { StarterRules.CONTENTS, StarterRules.BUILDER_CONTENTS } do
+		for _, key in list do
+			ReplicatedStorage:GetAttributeChangedSignal(Passes.PRICE_PREFIX .. key):Connect(refresh)
+		end
 	end
-	for _, flag in { StarterRules.FLAG, Passes.FLAG, StarterViewRules.NO_CLOCK_FLAG } do
+	for _, flag in
+		{
+			StarterRules.FLAG,
+			Passes.FLAG,
+			StarterViewRules.NO_CLOCK_FLAG,
+			StarterRules.BUILDER_FLAG,
+		}
+	do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				refresh()

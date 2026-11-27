@@ -54,7 +54,8 @@ PRODUCTS = [
     ("FinishTier5", "Finish now (over 8 hours)", 99, "Finishes a build with more than 8 hours left."),
     ("CrateOne", "Crate", 49, "One crate with a random pet. The odds are shown in the game before you buy."),
     ("CrateFive", "5 Crates", 199, "Five crates with a random pet each. The odds are shown in the game before you buy."),
-    ("StarterPack", "Spa Starter Pack", 199, "Golden Sponge, Second pet slot and 2x Coins."),
+    # the words are set only when the product is made; with starterBuilder and starterPet on (issue 1097, 1090)
+    ("StarterPack", "Spa Starter Pack", 199, "Midas the golden pet, Second pet slot, 2x Coins and Second Builder."),
 ]
 SERVER_SIZE = 6
 MAX_PAGES = 20

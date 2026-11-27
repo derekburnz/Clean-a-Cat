@@ -13,6 +13,9 @@
 -- before Roblox's own prompt; "Nothing random. All three are yours to keep." The title band says when the offer
 -- ends in days, hours and minutes (never seconds), and nothing changes near the end: no red, no flash. UI never
 -- fires remotes: StarterController asks the server, which opens Roblox's prompt.
+--
+-- Switch starterPet (issue 1090): a fourth card for Midas, the golden pet only this pack gives, tagged "Bonus" and
+-- with no price of his own. The struck total and the saving still come from the three passes only, so they stay true.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -35,10 +38,13 @@ local PIC_FILLS: { [string]: { Color3 } } = {
 	GoldenSponge = { Color3.fromHex("C9F5E5"), Color3.fromHex("A8E6CF") },
 	SecondPetSlot = { Color3.fromHex("FFD3DF"), Color3.fromHex("FFB3C7") },
 	DoubleCoins = { Color3.fromHex("FFE98F"), Color3.fromHex("FFD35E") },
+	Midas = { Color3.fromHex("FFF1B0"), Color3.fromHex("FFC94D") },
+	SecondBuilder = { Color3.fromHex("D6ECFF"), Color3.fromHex("A9D3FF") },
 }
 local BADGE_PINK, BADGE_GREEN = Color3.fromHex("FF86B0"), Color3.fromHex("3FB071")
 local SCREEN_MARGIN = 64 -- design px kept clear beside the window
 local SHORT_SHIFT = 8
+local PET_WIDER = 120 -- design px added to the window's width for Midas's card (starterPet)
 local CLOSE_ROOM = 84 -- design px at the band's right for the X
 local MIN_TAP = 44 -- real px
 local TICK_SECONDS = 1 -- read each second, in step with the HUD chip (issue 636); the words change once a minute
@@ -242,12 +248,14 @@ local function drawItem(
 		what.Text = item.what
 	end
 	local price = item.price
-	if price then
+	local line = if price then `{price} Robux` else item.note
+	if line then
 		local each = words("Each", card, s.each)
 		each.LayoutOrder = 4
 		each.TextColor3 = Kit.INK_SOFT
 		each.Size = UDim2.new(1, 0, 0, s.each + 4)
-		each.Text = `{price} Robux`
+		Kit.shrinkToFit(each, s.each)
+		each.Text = line
 	end
 end
 
@@ -289,7 +297,10 @@ local function redraw()
 	end
 	local scale, short = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
-	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
+	local withPet = LiveFlags.isOn(StarterViewRules.PET_FLAG)
+	-- a fourth card needs a wider window, so every name still fits on one line on a phone
+	local width =
+		math.min(s.width + (if withPet then PET_WIDER else 0), screenWidth(scale) - SCREEN_MARGIN)
 	Window.fit(p.window, width, s.band, s.title, s.badge, if short then SHORT_SHIFT else nil)
 	local pad = UDim.new(0, s.pad)
 	p.pad.PaddingLeft, p.pad.PaddingRight, p.pad.PaddingTop, p.pad.PaddingBottom =
@@ -299,18 +310,25 @@ local function redraw()
 	p.timer.Size = UDim2.fromOffset(0, s.timer + 8)
 	p.timer.Position = UDim2.new(1, -CLOSE_ROOM, 0.5, 0)
 
-	-- the three cards with plus signs between them, fitted to the window
+	-- the three cards (four with Midas) with plus signs between them, fitted to the window
 	clear(p.items)
+	local shown = table.clone(items)
+	if withPet then
+		table.insert(shown, StarterViewRules.petItem())
+	end
+	local count = math.max(#shown, 1)
 	local inner = width - 2 * s.pad
-	local itemW = math.min(s.itemW, math.floor((inner - 2 * s.plus - 4 * 10) / 3))
-	for index, item in items do
+	local itemW =
+		math.min(s.itemW, math.floor((inner - (count - 1) * s.plus - (2 * count - 2) * 10) / count))
+	for index, item in shown do
 		if index > 1 then
 			drawPlus(index * 2 - 1, s, p.items)
 		end
 		drawItem(item, index * 2, s, itemW, p.items)
 	end
 
-	-- the struck total, Get pack and the saving: the saving only when every price is known and it is real
+	-- the struck total, Get pack and the saving: the saving only when every price is known and it is real (the
+	-- three passes only: Midas has no price of his own)
 	local total, percent = StarterViewRules.saving(items, pack)
 	p.was.Visible = total ~= nil
 	p.was.TextSize = s.was
@@ -330,6 +348,7 @@ local function redraw()
 	p.fine.Visible = s.fine > 0
 	p.fine.TextSize = math.max(s.fine, 14)
 	p.fine.Size = UDim2.new(1, 0, 0, s.fine + 6)
+	p.fine.Text = StarterViewRules.fine(withPet)
 	tick()
 end
 
@@ -454,6 +473,13 @@ function StarterWindow.build(root: Instance): Frame
 			end)
 		end
 	end)
+	ReplicatedStorage
+		:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. StarterViewRules.PET_FLAG)
+		:Connect(function()
+			if window.layer.Visible then
+				redraw()
+			end
+		end)
 	for _, flag in { StarterRules.FLAG, "passes" } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()

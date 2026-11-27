@@ -707,7 +707,82 @@ def thumb_busy(mat, out, res):
     return render(objs + drift, focus, out, res, az=4, el=11, margin=1.0, lens=38)
 
 
+COUNTER_PEOPLE = ("Bea", "Kit", "Juno", "Theo", "Vivi", "Mo")
+COUNTER_CATS = ("Muffin", "Smudge", "Patches", "Toffee", "Cotton", "Marble")
+
+
+def thumb_counter(mat, out, res):
+    """Detail page picture (#1066): the bigger spa's counter window seen from inside, as the player sees it. The
+    muddy cats wait on their mats facing in, their owners stand outside behind them. The roof and the window's
+    barrier are left off so the room is lit, the people's hands are in their sleeves' colour (image gate) and the
+    sky is see-through for the bubble backdrop. No tangles or fluff (owner, 2026-11-26: not in promo art)."""
+    import plot
+    import townsfolk
+    objs = [o for o in plot.build_plot_big(mat) if not o.name.endswith(("_Roof", "_Glass", "_Barrier"))]
+    spots, floor = plot.BIG["SPOTS"], plot.FLOOR
+
+    def place(made, x, y, z, turn, k=1.0):
+        M = Matrix.Translation((x, y, floor + z)) @ Matrix.Rotation(math.radians(turn), 4, "Z") @ Matrix.Scale(k, 4)
+        bpy.context.view_layer.update()
+        for ob in made:
+            ob.matrix_world = M @ ob.matrix_world
+        return _fresh(made)
+
+    for i, (who, kind) in enumerate(zip(COUNTER_PEOPLE, COUNTER_CATS), start=1):
+        look = dict(townsfolk.ALL_LOOKS[who])
+        look["gloves"] = look.get("top")
+        x, y, z, _t = spots["SpotCounter%d" % i]
+        objs += place(townsfolk.build_figure(townsfolk.PREFIX + who, look, mat, carry=False), x + 1.6, y + 1.2, z, 180)
+        cat, _, _ = dirt.build_dirty(kind, mat, "sit")
+        cat = [o for o in cat if "_Tangle" not in o.name and "_Fluff" not in o.name]
+        x, y, z, _t = spots["SpotCounterCat%d" % i]
+        objs += place(cat, x, y, z, 180, 1.5)
+    xs = [spots["SpotCounterCat%d" % i][0] for i in range(1, len(COUNTER_CATS) + 1)]
+    cx, cy, cz = sum(xs) / len(xs), spots["SpotCounterCat1"][1], floor + spots["SpotCounterCat1"][2]
+    sc = bpy.context.scene
+    common.render_preview(objs[:1], out, res=(8, 8), samples=1)
+    cam = sc.camera
+    cam.data.lens = 27
+    cam.location = Vector((cx + 1.2, cy + 9.6, cz + 2.5))
+    cam.rotation_euler = (Vector((cx + 0.4, cy, cz + 1.7)) - cam.location).to_track_quat("-Z", "Y").to_euler()
+    sc.render.resolution_x, sc.render.resolution_y = res
+    sc.cycles.samples = 32
+    sc.render.film_transparent = True
+    for ob in sc.objects:
+        if ob.type == "MESH":
+            ob.hide_render = ob not in objs
+    sc.render.filepath = out
+    common.render_still()
+    sc.render.film_transparent = False
+    return out
+
+
+def thumb_crate(mat, out, res):
+    """Detail page picture (#1066): a pet crate with its lid open and three crate pets, the best one rising out of
+    it. The rarity stars are left off, as on the portraits."""
+    import crates
+    import pets
+    objs = crates.build_pet_crate(mat)
+    bpy.context.view_layer.update()
+    lid = next(o for o in objs if o.name.endswith("_Lid_Swing"))
+    lid.matrix_world = lid.matrix_world @ Matrix.Rotation(math.radians(-crates.LID_OPEN), 4, "X")
+    objs = _fresh([o for o in objs if not o.name.endswith("_Barrier")])
+    bpy.context.view_layer.update()
+    _lo, top = common.bounds([o for o in objs if not o.name.endswith("_Lid_Swing")])
+    for name, at, k, turn in (("Blaze", (0, 0.1, top.z - 0.55), 1.25, 0), ("Clover", (-3.2, -0.9, 0), 1.45, 16),
+                              ("Nebula", (3.2, -0.9, 0), 1.45, -16)):
+        made = [o for o in pets.build_pet(name, mat) if not o.name.endswith(("_Star2", "_Star3", "_Star3_Glow"))]
+        bpy.context.view_layer.update()
+        _move(made, at, k, turn)
+        objs += _fresh(made)
+    bpy.context.view_layer.update()
+    lo, hi = common.bounds(objs)
+    return render(objs, (Vector((lo.x, -1.5, 0.0)), Vector((hi.x, 1.0, hi.z))), out, res, az=6, el=10, margin=1.04, lens=45)
+
+
 SHOTS.update({
+    "thumb-crate": (thumb_crate, (960, 540), (1920, 1080)),
+    "thumb-counter": (thumb_counter, (960, 540), (1920, 1080)),
     "icon-box": (icon_box, (512, 512), (1024, 1024)),
     "thumb-box": (thumb_box, (1280, 720), (1920, 1080)),
     "thumb-lineup": (thumb_lineup, (1500, 620), (3000, 1240)),

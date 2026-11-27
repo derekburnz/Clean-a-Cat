@@ -16,6 +16,13 @@ StarterViewRules.FINE = "Nothing random. All three are yours to keep."
 -- ends 72 hours after the first join, but nothing on screen counts down; the chip and the window say NO_CLOCK.
 StarterViewRules.NO_CLOCK_FLAG = "starterNoClock"
 StarterViewRules.NO_CLOCK = "New player offer"
+-- Switch starterPet (issue 1090, Derek 2026-11-27: "make it like a golden flashing pet or crate or something crazy"):
+-- the pack also gives Midas, a golden pet found nowhere else (Model-Agent's CleanACat_Pet_Midas, Gameplay's grant). He
+-- is the HUD card's one big picture and a fourth card in the window. He has no shop price, so he is never counted in
+-- the struck total or the saving: those stay the three passes' own prices against the pack's.
+StarterViewRules.PET_FLAG = "starterPet"
+StarterViewRules.FINE_PET = "Nothing random. All four are yours to keep."
+StarterViewRules.PET_ICON = "ShopStarterPet" -- an Icons name: Midas whole, with sparkles
 
 export type Item = {
 	key: string, -- a Passes key
@@ -24,6 +31,7 @@ export type Item = {
 	icon: string, -- an Icons name
 	badge: string?, -- "x2", "+1"
 	price: number?, -- the pass's own Robux price, nil while unknown
+	note: string?, -- shown in place of a price on a card that has none of its own (Midas)
 }
 
 local LOOK: { [string]: { name: string, what: string, icon: string, badge: string? } } = {
@@ -37,6 +45,13 @@ local LOOK: { [string]: { name: string, what: string, icon: string, badge: strin
 		what = "One more pet for you and each helper",
 		icon = "Paw",
 		badge = "+1",
+	},
+	-- Derek 2026-11-27: "remove the golden sponge from starter pack it seems lame replace with something else"; the
+	-- card is ready for Gameplay's CONTENTS change (Second Builder in, Golden Sponge out)
+	SecondBuilder = {
+		name = "Second Builder",
+		what = "Two builds at the same time",
+		icon = "ShopBuilder2",
 	},
 	DoubleCoins = {
 		name = "2x Coins",
@@ -70,6 +85,24 @@ function StarterViewRules.items(price: (key: string) -> unknown): { Item }
 		end
 	end
 	return out
+end
+
+-- Midas's card in the window: no price (he is not sold alone), a "Bonus" tag.
+function StarterViewRules.petItem(): Item
+	return {
+		key = "Midas",
+		name = "Midas",
+		what = "A golden pet that shines",
+		icon = StarterViewRules.PET_ICON,
+		badge = "Bonus",
+		price = nil,
+		note = "Pack only",
+	}
+end
+
+-- The window's small print, with or without Midas.
+function StarterViewRules.fine(withPet: boolean): string
+	return if withPet then StarterViewRules.FINE_PET else StarterViewRules.FINE
 end
 
 -- The pack's own price, or nil while it is unknown (then there is no button to press).
