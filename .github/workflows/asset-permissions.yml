@@ -10,6 +10,11 @@ name: asset-permissions
 on:
   workflow_dispatch:
     inputs:
+      target:
+        description: "dev: the dev copy (default). live: the real game"
+        type: choice
+        options: [dev, live]
+        default: dev
       action:
         description: "list | grant (grant: Use permission for the experience on every id the game uses)"
         type: choice
@@ -39,7 +44,8 @@ jobs:
     timeout-minutes: 5
     env:
       ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_GROUP_KEY || secrets.ROBLOX_PUBLISH_KEY || secrets.OWNER_KEY }}
-      ROBLOX_UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID || '10778773655' }}
+      # each experience needs its own Use permission (issue 1034: images blank on dev, which was never granted)
+      ROBLOX_UNIVERSE_ID: ${{ inputs.target == 'live' && (vars.ROBLOX_UNIVERSE_ID || '10778773655') || (vars.ROBLOX_DEV_UNIVERSE_ID || '10778775478') }}
       ACTION: ${{ inputs.action }}
       SUBJECT_TYPE: ${{ inputs.subject_type }}
       SUBJECT_ID: ${{ inputs.subject_id }}
