@@ -21,6 +21,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
+local ExpansionRules = require(Shared:WaitForChild("ExpansionRules"))
 local GardenRules = require(Shared:WaitForChild("GardenRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
@@ -325,11 +326,36 @@ local function drawGarden(
 	model.Parent = folder
 end
 
+-- (expansionDoor) The back door: the building site while locked, the open door once unlocked (issue 1041).
+local function drawBackDoor(folder: Folder, assets: Instance, slot: number, unlocked: boolean)
+	local assetName = if unlocked then ExpansionRules.OPEN_ASSET else ExpansionRules.LOCKED_ASSET
+	local asset = assets:FindFirstChild(assetName)
+	if asset == nil or not asset:IsA("Model") then
+		if not warned[assetName] then
+			warned[assetName] = true
+			warn(`[StationService] {assetName} is missing from ReplicatedStorage.Assets`)
+		end
+		return
+	end
+	local model = (asset :: Model):Clone() :: Model
+	model.Name = ExpansionRules.MODEL_NAME
+	model:SetAttribute(ExpansionRules.ATTRIBUTE, unlocked)
+	model:PivotTo(SpaLayout.slotSpot(ExpansionRules.SPOT, slot))
+	anchorAll(model)
+	model.Parent = folder
+end
+
 local function drawInto(
 	plot: Model,
 	slot: number,
 	assets: Instance,
-	save: { stations: any, builds: any, index: any?, pets: any? },
+	save: {
+		stations: any,
+		builds: any,
+		index: any?,
+		pets: any?,
+		expansionUnlocked: boolean?,
+	},
 	isOn: (flag: string) -> boolean
 )
 	local folder = Instance.new("Folder")
@@ -400,7 +426,14 @@ local function drawInto(
 	elseif isOn(BuildRules.TUBS_FLAG) then
 		drawVipRoom(folder, assets :: Instance, slot, save.index)
 	end
-	if BuildRules.shown(GardenRules.ID, isOn) then
+	local unlocked = save.expansionUnlocked == true
+	if isOn(ExpansionRules.FLAG) then
+		drawBackDoor(folder, assets :: Instance, slot, unlocked)
+	end
+	if
+		BuildRules.shown(GardenRules.ID, isOn)
+		and ExpansionRules.showGarden(isOn, unlocked, save.stations[GardenRules.ID] == true)
+	then
 		drawGarden(folder, assets :: Instance, slot, save, running, isOn)
 	end
 	folder.Parent = plot

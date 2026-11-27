@@ -107,6 +107,9 @@ Remotes.ClientToServer = {
 	-- Suds's help bubble (BubbleService, behind sudsBubble).
 	"ReportBubbleSeen", -- (id: one of BubbleRules.IDS)  2 a second; switch on, save loaded; marks that bubble shown in the
 	-- save so it never shows again, nothing else changes
+	-- The back door expansion (ExpansionService, behind expansionDoor, issue 1041).
+	"RequestUnlockExpansion", -- ()  1 a second; switch on, save loaded, still locked, the character within
+	-- ExpansionRules.SERVER_REACH studs of the plot's SpotGardenDoor, ExpansionRules.PRICE coins
 	-- Reset my game (ResetService, behind resetSave, issue 1037).
 	"RequestResetSave", -- ()  once in 5 seconds; switch on, save loaded, the dev game, Studio or the group's owner:
 	-- the save goes back to a new one (receipts and passes kept) and the player is kicked to rejoin at the opening
