@@ -69,6 +69,25 @@ def scopes_of(info):
     return found
 
 
+def status_fields(info):
+    # Every other field introspection returns, for a moderation check (coordinator, 2026-11-26, after a 403 "User is
+    # moderated"): yes or no values and status like words in full, anything else (ids, names, times) only as "set",
+    # since run summaries on a public repo are public.
+    out = []
+    for name in sorted(info):
+        if name in ("scopes", "name"):
+            continue
+        value = info[name]
+        word = name.lower()
+        if isinstance(value, bool) or value is None:
+            out.append(f"{name} {value}")
+        elif isinstance(value, str) and any(w in word for w in ("status", "moderat", "state", "reason")):
+            out.append(f"{name} {value[:80]}")
+        else:
+            out.append(f"{name} (set)")
+    return ", ".join(out) or "(none)"
+
+
 def can(scopes, word, op_words=("write", "create", "post")):
     # `word` must name the scope itself: "user.user-notification" (sending), "universe.secret", "notification-string"
     for name, ops in scopes:
@@ -93,7 +112,10 @@ def main():
             continue
         status, info = call("POST", f"{API}/api-keys/v1/introspect", body={"apiKey": key})
         if status != 200:
-            summary.append(f"- {label}: introspection failed (HTTP {status}: {info.get('message', '')})")
+            summary.append(
+                f"- {label}: introspection failed (HTTP {status}: {str(info.get('message', ''))[:200]}; "
+                f"fields: {status_fields(info)})"
+            )
             continue
         scopes = scopes_of(info)
         usable = info.get("enabled", True) and not info.get("expired", False)
@@ -107,6 +129,7 @@ def main():
         )
         for name, ops in scopes:
             summary.append(f"  - {name}: {', '.join(ops) if ops else '(all)'}")
+        summary.append(f"  - other fields: {status_fields(info)}")
         if notify and notify_key is None:
             notify_key = (label, key)
         if secrets and secret_key is None:
