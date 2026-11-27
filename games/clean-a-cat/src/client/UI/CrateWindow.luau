@@ -106,6 +106,7 @@ type Parts = {
 	shop: Frame,
 	shopTitle: TextLabel,
 	right: Frame,
+	rightList: UIListLayout,
 	grid: Frame,
 	gridLayout: UIGridLayout,
 	sum: TextLabel,
@@ -306,14 +307,16 @@ local function redraw()
 	if p == nil then
 		return
 	end
-	local scale, short = Kit.screenScale()
+	local scale, short, tiny = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
 	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
 	Window.fit(p.window, width, s.band, s.title, s.badge, if short then SHORT_SHIFT else nil)
 	p.window.title.Text = CrateViewRules.title(shownKind)
 	local pad = UDim.new(0, s.pad)
+	-- a very short screen: tighter edges and gaps, so the chances line keeps on screen (issue 988)
 	p.pad.PaddingLeft, p.pad.PaddingRight, p.pad.PaddingTop, p.pad.PaddingBottom =
-		pad, pad, UDim.new(0, s.pad - 4), pad
+		pad, pad, UDim.new(0, if tiny then 4 else s.pad - 4), UDim.new(0, if tiny then 4 else s.pad)
+	p.rightList.Padding = UDim.new(0, if tiny then 4 else 8)
 	p.columns.Padding = UDim.new(0, s.gap)
 
 	-- the crate, how many the player holds and Open crate
@@ -322,7 +325,10 @@ local function redraw()
 	p.gift.Size = UDim2.fromOffset(s.gift, s.gift)
 	-- on a short screen the Robux rows take the crate picture's place, so the window stays on screen (bug hunt B8,
 	-- issue 658: with Open crate and both rows it was 360 px tall on a 332 px phone screen)
-	p.gift.Visible = not (short and #shopRows > 0)
+	-- on a very short screen with no Robux rows, the chances note moves under Open crate in the crate picture's place,
+	-- so the window keeps its whole bottom edge and the note shows whole beside the odds (issue 988)
+	local sumInBox = tiny and #shopRows == 0
+	p.gift.Visible = not ((short and #shopRows > 0) or sumInBox)
 	p.have.TextSize = s.have
 	p.have.Size = UDim2.new(1, 0, 0, s.have + 6) -- AutomaticSize grows it when larger text wraps
 	p.have.Text = CrateViewRules.haveLine(shownKind, held)
@@ -349,15 +355,23 @@ local function redraw()
 	p.right.Size = UDim2.fromOffset(rightW, 0)
 	local cellW = math.floor((rightW - s.rowGap) / 2)
 	p.gridLayout.CellSize = UDim2.fromOffset(cellW, s.rowH)
-	p.gridLayout.CellPadding = UDim2.fromOffset(s.rowGap, s.rowGap)
+	local rowGap = if tiny then 2 else s.rowGap
+	p.gridLayout.CellPadding = UDim2.fromOffset(s.rowGap, rowGap)
 	clearGrid(p.grid)
 	for index, row in rows do
 		drawRow(row, p.grid, index, s, cellW)
 	end
 	local lines = math.ceil(#rows / 2)
-	p.grid.Size = UDim2.new(1, 0, 0, lines * s.rowH + math.max(lines - 1, 0) * s.rowGap)
+	p.grid.Size = UDim2.new(1, 0, 0, lines * s.rowH + math.max(lines - 1, 0) * rowGap)
 	p.sum.TextSize = s.sum
 	p.sum.Text = CrateViewRules.SUM_LINE
+	p.sum.Parent = if sumInBox then p.box else p.right
+	p.sum.LayoutOrder = if sumInBox then 5 else 2
+	p.sum.TextXAlignment = if sumInBox then Enum.TextXAlignment.Center else Enum.TextXAlignment.Left
+	local sumPad = p.sum:FindFirstChildOfClass("UIPadding") :: UIPadding?
+	if sumPad then
+		sumPad.PaddingRight = UDim.new(0, if sumInBox then 0 else 10)
+	end
 end
 
 function CrateWindow.set(kind: string, count: number, newRows: { CrateViewRules.Row })
@@ -456,7 +470,7 @@ function CrateWindow.build(root: Instance): Frame
 	local right = frame("Chances", row)
 	right.LayoutOrder = 2
 	right.AutomaticSize = Enum.AutomaticSize.Y
-	list(right, false, 8)
+	local rightList = list(right, false, 8)
 	local grid = frame("Pets", right)
 	grid.LayoutOrder = 1
 	local gridLayout = Instance.new("UIGridLayout")
@@ -487,6 +501,7 @@ function CrateWindow.build(root: Instance): Frame
 		shop = shop,
 		shopTitle = shopTitle,
 		right = right,
+		rightList = rightList,
 		grid = grid,
 		gridLayout = gridLayout,
 		sum = sum,

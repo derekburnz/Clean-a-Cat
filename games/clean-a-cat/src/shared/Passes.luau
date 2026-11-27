@@ -81,7 +81,7 @@ Passes.INFO = table.freeze({
 	}) :: Info,
 	Lou = table.freeze({ name = "Lou", text = "A third helper, with his own wash stand" }) :: Info,
 	SecondPetSlot = table.freeze({
-		name = "Second pet slot",
+		name = "2nd pet slot", -- short enough for the small phone Shop card (issue 838)
 		text = "A second pet for you and every helper",
 	}) :: Info,
 }) :: { [string]: Info }

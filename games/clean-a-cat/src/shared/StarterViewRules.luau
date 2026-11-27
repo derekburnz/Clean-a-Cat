@@ -29,7 +29,7 @@ local LOOK: { [string]: { name: string, what: string, icon: string, badge: strin
 		icon = "Sponge",
 	},
 	SecondPetSlot = {
-		name = "Second pet slot",
+		name = "2nd pet slot", -- short enough for the small phone Shop card (issue 838)
 		what = "One more pet for you and each helper",
 		icon = "Paw",
 		badge = "+1",
