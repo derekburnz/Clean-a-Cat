@@ -46,9 +46,18 @@ return function()
 			expect((pet :: any).slot).to.equal(nil)
 		end)
 
-		it("is a known pet with a rarity, and never in a crate", function()
+		it("gives the gift crate once instead of the pet (giftCrate, issue 859)", function()
+			local save = { crates = {} :: { [string]: number }, giftClaimed = false }
+			expect(GiftRules.giveCrate(save, CrateRules.GIFT_KIND)).to.equal(true)
+			expect(save.crates.gift).to.equal(1)
+			expect(save.giftClaimed).to.equal(true)
+			expect(GiftRules.giveCrate(save, CrateRules.GIFT_KIND)).to.equal(false)
+			expect(save.crates.gift).to.equal(1)
+		end)
+
+		it("is a known pet with a rarity, and in no crate but the gift crate", function()
 			expect(CrateRules.rarityOf(GiftRules.PET)).to.equal("Uncommon")
-			for _, kind in CrateRules.KINDS do
+			for _, kind in { "normal", "good" } do
 				for _, entry in CrateRules.odds(kind) do
 					expect(entry.pet).never.to.equal(GiftRules.PET)
 				end
