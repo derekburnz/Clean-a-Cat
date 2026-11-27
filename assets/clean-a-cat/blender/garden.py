@@ -30,6 +30,10 @@ Attachments in the finished garden's first part, on the lawn unless noted and ea
 SpotGardenEnter (just inside the gate), SpotPetSit1 to SpotPetSit4 (the bench's cushion, a flat stone by the pond,
 the pet bed, under the tree) and SpotPetPlay1 to SpotPetPlay4 (by the ball, at the tunnel's mouth, at the
 scratching post, at the pond's edge by a lily). Root attributes `PetSpots` 8 and `GroundUp`. No rules in the model.
+
+Side looks (#1050, see SIDE): the same three looks as `CleanACat_Area_GardenSide*` at the plot's SpotGardenSide, for a
+plot whose back door leads to the Cat Hotel. The way in is one gate leaf in the left edge, opposite the doorway in
+the hotel's right wall.
 """
 
 import math
@@ -50,6 +54,16 @@ GROUND = 0.07                     # the lawn's and the soil's top over the spa f
 FENCE_X = SITE_X + 0.3            # the new fence run on the right
 LOCKED, BUILDING, NAME = "CleanACat_Area_GardenLocked", "CleanACat_Area_GardenBuilding", "CleanACat_Area_Garden"
 BUDGET = {LOCKED: 2000, BUILDING: 2600, NAME: 5200}
+# The side looks (#1050): the Cat Hotel took the back door, so the Garden stands on the old VIP site to the hotel's
+# right (pivot at the plot's SpotGardenSide, where SpotVipDoor is) and is entered through a gate in its LEFT edge,
+# opposite the doorway in the hotel's right wall (hotel.SIDE_DOOR). Same garden; what differs is listed at SIDE.
+SIDE = False                      # set while a side look builds
+SIDE_NAMES = {LOCKED: "CleanACat_Area_GardenSideLocked", BUILDING: "CleanACat_Area_GardenSideBuilding",
+              NAME: "CleanACat_Area_GardenSide"}
+GATE_Y = 6.5                      # the side gate's middle along the left edge (hotel.SIDE_DOOR's middle)
+GATE_W = 3.0
+LINK = 1.2                        # from the hotel wall's outer face to the site's left edge
+SIGN_Z = 5.4                      # the side sign's foot: over a character's head, under the hotel doorway's top (7.0)
 _STAND = Matrix.Rotation(math.pi / 2, 3, "X")       # a disc lying flat stood up to face -Y
 _RZ = lambda deg: Matrix.Rotation(math.radians(deg), 3, "Z")      # noqa: E731
 
@@ -68,6 +82,7 @@ BALL = (-3.3, 5.2)
 TUNNEL = (-5.6, 3.6)              # its middle; it lies along Y, 2.6 long
 POST = (-2.0, 8.3)                # the scratching post
 BED = (-6.9, 7.7)                 # the pet bed
+SIDE_BED = (-4.7, 9.7)            # the pet bed in the side looks: clear of the side gate and its open leaf
 # the pets' spots in the finished garden: (name, x, y, z over GROUND, turn in degrees)
 STONE_SIT = (1.95, 4.35)          # the flat stone by the pond: clear of the open gate leaf, its edge at the pond's bank
 # #680: every pet at pet scale must stand clear of every prop here (a pet is up to 0.73 long each way from its pivot
@@ -97,6 +112,12 @@ def _frame(b):
 def _sign(name, mat, tall):
     """The mint sign inside the top of the opening and its cream `Screen` face. `tall` leaves room for a timer under
     the name (the Screen is the VIP door sign's size); the finished garden's is the VIP Room's name plate."""
+    if SIDE:                               # across the two tall gate posts, its face toward the hotel's doorway (-X)
+        hh, fh = (1.6, 1.3) if tall else (1.2, 0.96)
+        s, f = Builder(), Builder()
+        s.box_base((-SITE_X, GATE_Y, SIGN_Z), (0.3, GATE_W + 1.2, hh), "spa_mint")
+        f.box_base((-SITE_X - 0.16, GATE_Y, SIGN_Z + (hh - fh) / 2), (0.06, GATE_W + 0.84, fh), "offwhite", bevel=False)
+        return [s.finalize(name + "_Sign_Decor", mat), f.finalize(name + "_Screen", mat, bevel=0)]
     hh, fh = (2.1, 1.74) if tall else (1.2, 0.96)
     s = Builder()
     s.box_base((0, 0.0, DOOR_H - 0.05 - hh), (4.6, 0.3, hh), "spa_mint")
@@ -106,7 +127,17 @@ def _sign(name, mat, tall):
 
 
 def _gate_posts(b):
-    """Two white posts with mint caps just behind the wall, each side of the way through."""
+    """Two white posts with mint caps just behind the wall, each side of the way through. Side looks: two tall posts
+    on the left edge that carry the sign, a stone step across the gap to the hotel's doorway and a short white wall
+    each side of it."""
+    if SIDE:
+        gx = -SITE_X
+        for sy in (1, -1):
+            b.box_base((gx, GATE_Y + sy * (GATE_W / 2 + 0.25), -SINK), (0.5, 0.5, SIGN_Z + SINK), "offwhite", bevel=False)
+            b.box_base((gx - LINK / 2 - 0.25, GATE_Y + sy * (GATE_W / 2 + 0.36), -SINK - 0.002), (LINK - 0.5, 0.28, 2.4 + SINK),
+                       "offwhite", bevel=False)
+        b.box_base((gx - LINK / 2, GATE_Y, -0.31), (LINK, GATE_W, GROUND + 0.31 - 0.004), STONE, bevel=False)
+        return
     for sx in (1, -1):
         b.box_base((sx * (DOOR_W / 2 + 0.05), 0.95, -SINK), (0.5, 0.5, 3.9 + SINK), "offwhite", bevel=False)
         b.sphere((sx * (DOOR_W / 2 + 0.05), 0.95, 4.1), 0.34, "spa_mint", segments=8, rings=5)
@@ -137,6 +168,9 @@ def _leaf(b, hinge, turn, sx):
 
 
 def _gate(b, open_):
+    if SIDE:                               # one leaf, hinged at the gate's far end, swinging into the garden
+        _leaf(b, (-SITE_X, GATE_Y + GATE_W / 2 - 0.05), (190 if open_ else 90), 1)
+        return
     for sx in (1, -1):
         hinge = (sx * (DOOR_W / 2 - 0.2), 0.95)
         _leaf(b, hinge, (-sx * 100 if open_ else 0), sx)
@@ -152,7 +186,15 @@ def _leaf_barrier(name, mat):
     low as the leaf (3.3 studs) was hopped by a phone's auto jump (#736), and one of 8.5 studs by a moving jump,
     which lifts an R15 root part's bottom to about 9.3 studs off the floor, legs passing through (#741)."""
     b = Builder()
-    for sx in (1, -1):
+    if SIDE:
+        turn = 190
+        c, s = math.cos(math.radians(turn)), math.sin(math.radians(turn))
+        hx, hy = -SITE_X, GATE_Y + GATE_W / 2 - 0.05
+        b.box_base((hx - 1.48 * c, hy - 1.48 * s, -0.01), (2.75, 0.34, SLAB_H), "metal", bevel=False, rot=_RZ(turn))
+        for sy in (1, -1):                 # and over the short walls across the gap to the hotel
+            b.box_base((-SITE_X - LINK / 2, GATE_Y + sy * (GATE_W / 2 + 0.36), -0.012), (LINK + 0.3, 0.34, SLAB_H),
+                       "metal", bevel=False)
+    for sx in (() if SIDE else (1, -1)):
         turn = -sx * 100
         c, s = math.cos(math.radians(turn)), math.sin(math.radians(turn))
         hx, hy = sx * (DOOR_W / 2 - 0.2), 0.95
@@ -171,10 +213,21 @@ def _fence(b):
         b.box_base((FENCE_X, y, -SINK - 0.002 * k), (0.3, 0.3, 2.4 + SINK), "offwhite", bevel=False)
     for z in (0.9, 1.9):
         b.box((FENCE_X, (y0 + y1) / 2, z), (0.12, y1 - y0, 0.22), "offwhite", bevel=False)
+    if SIDE:                               # and down the left, each side of the gate
+        for ya, yb in ((y0, GATE_Y - GATE_W / 2 - 0.5), (GATE_Y + GATE_W / 2 + 0.5, y1)):
+            for k in range(3):
+                b.box_base((-SITE_X, ya + (yb - ya) * k / 2 + (0.2 if k == 0 else -0.2 if k == 2 else 0), -SINK - 0.003 * k),
+                           (0.3, 0.3, 2.4 + SINK), "offwhite", bevel=False)
+            for z in (0.9, 1.9):
+                b.box((-SITE_X, (ya + yb) / 2, z), (0.12, yb - ya, 0.22), "offwhite", bevel=False)
 
 
 def _barrier(name, mat):
     b = Builder()
+    if SIDE:
+        for sy in (1, -1):
+            b.box_base((-SITE_X - LINK / 2 - 0.2, GATE_Y + sy * (GATE_W / 2 + 0.36), -0.06), (LINK, 0.34, 12.0), "metal",
+                       bevel=False)
     b.box_base((0.15, (SITE_Y[0] + SITE_Y[1]) / 2 + 0.05, -0.05), (2 * SITE_X + 0.96, SITE_Y[1] - SITE_Y[0] + 1.34, 12.0),
                "metal", bevel=False)
     ob = b.finalize(name + "_Barrier", mat, bevel=0)
@@ -185,6 +238,8 @@ def _barrier(name, mat):
 def _ground(b, swatch):
     x0, x1, y0, y1 = -SITE_X, SITE_X, SITE_Y[0], SITE_Y[1]
     b.box_base((0, (y0 + y1) / 2, -0.33), (x1 - x0, y1 - y0, GROUND + 0.33), swatch, bevel=False)
+    if SIDE:
+        return
     b.box_base((0, (0.5 + y0) / 2 + 0.01, -0.31), (DOOR_W + 1.6, y0 - 0.5 + 0.04, GROUND + 0.31 - 0.004), STONE,
                bevel=False)                                                # a stone step from the door to the site
 
@@ -210,7 +265,8 @@ def _turf_roll(b, x, y, z, turn=0.0):
 # ---- the locked look -------------------------------------------------------------------------------------------
 def build_garden_locked(mat):
     b = Builder()
-    _frame(b)
+    if not SIDE:
+        _frame(b)
     _gate_posts(b)
     _gate(b, False)
     _fence(b)
@@ -222,7 +278,7 @@ def build_garden_locked(mat):
             d.box_base((x + dx, y + 0.05 * j, GROUND - 0.02), (0.1, 0.1, 0.5 + 0.12 * (j == 1)), "leaf_green",
                        bevel=False, rot=Matrix.Rotation(math.radians(lean), 3, "Y"))
     for i, (dy, z) in enumerate(((-0.45, 0.42), (0.45, 0.42), (0.0, 1.14))):                                    # turf rolls
-        _turf_roll(d, -5.6 + 0.1 * i, 6.2 + dy, GROUND + z)
+        _turf_roll(d, -5.6 + 0.1 * i, (3.4 if SIDE else 6.2) + dy, GROUND + z)
     # a seed sign on a stake: a cream card with a pink flower, facing the gate
     d.box_base((2.2, 3.0, GROUND - 0.02), (0.16, 0.14, 2.3), "wood_light", bevel=False)
     d.box((2.2, 2.9, GROUND + 2.2), (1.3, 0.1, 1.5), "wood_light", bevel=False)
@@ -242,7 +298,8 @@ def build_garden_locked(mat):
 # ---- the building look -----------------------------------------------------------------------------------------
 def build_garden_building(mat):
     b = Builder()
-    _frame(b)
+    if not SIDE:
+        _frame(b)
     _gate_posts(b)
     _gate(b, False)
     _fence(b)
@@ -302,6 +359,8 @@ def _path(b):
     hair higher than the last."""
     stones = ((0.0, 2.3, 0.85), (0.35, 3.9, 0.8), (-0.2, 5.4, 0.85), (0.3, 6.9, 0.8), (-0.1, 8.3, 0.8),
               (STONE_SIT[0], STONE_SIT[1], 0.72))
+    if SIDE:                               # in from the side gate to the middle, then on to the arbour and the pond
+        stones = ((-7.5, GATE_Y, 0.85), (-5.7, GATE_Y - 0.1, 0.8), (-3.9, GATE_Y + 0.15, 0.85), (-2.0, GATE_Y - 0.1, 0.8)) + stones[2:]
     for i, (x, y, r) in enumerate(stones):
         b.cyl_base((x, y, GROUND - 0.05 - 0.003 * i), r, 0.08 + 0.007 * i, STONE if i % 2 == 0 else "paving_sand",
                    segments=10, bevel=False, scale=(1.0, 0.82, 1.0))
@@ -354,13 +413,19 @@ def _beds(b, f):
     n = 0
     for sx in (1, -1):
         x = sx * (SITE_X - 1.0)
+        if SIDE and sx < 0:                # the left bed stops short of the side gate
+            y1 = GATE_Y - GATE_W / 2 - 1.0
         b.box_base((x, (y0 + y1) / 2, GROUND - 0.04), (1.9, y1 - y0 + 0.3, 0.3), STONE, bevel=False)
         b.box_base((x, (y0 + y1) / 2, GROUND - 0.035), (1.5, y1 - y0 - 0.1, 0.36), SOIL, bevel=False)
-        for k in range(6):
+        rows = 2 if SIDE and sx < 0 else 6
+        for k in range(rows):
             for j in (0, 1):
                 n += 1
-                _flower(f, x - 0.36 + 0.72 * j, y0 + 0.5 + (y1 - y0 - 1.0) * k / 5 + 0.25 * j, 1.0 + 0.3 * ((k + j) % 2), n)
+                _flower(f, x - 0.36 + 0.72 * j, y0 + 0.5 + (y1 - y0 - 1.0) * k / (rows - 1) + 0.25 * j,
+                        1.0 + 0.3 * ((k + j) % 2), n)
         f.sphere((x, y0 - 0.75, GROUND + 0.6), 0.8, "leaf_green", segments=8, rings=5)
+        if SIDE and sx < 0:
+            continue
         f.sphere((x, y1 + 0.85, GROUND + 0.66), 0.86, "leaf_dark" if sx > 0 else "leaf_green", segments=8, rings=5)
 
 
@@ -388,7 +453,7 @@ def _toys(d):
           rot=Matrix.Rotation(math.radians(40), 3, "Y"))
     d.ico((sx_ + 0.76, sy_, GROUND + 3.34), 0.2, "pastel_lilac", scale=(1.0, 0.5, 1.5))
     # the pet bed: a bubblegum ring and a cream pad
-    bx, by = BED
+    bx, by = SIDE_BED if SIDE else BED
     d.cyl_base((bx, by, GROUND - 0.012), 1.05, 0.46, "spa_bubblegum", segments=10, bevel=False)
     d.cyl_base((bx, by, GROUND - 0.008), 0.8, 0.33, "spa_cream", segments=10, bevel=False)
 
@@ -407,7 +472,7 @@ def _lanterns(b, name, mat):
     """A lantern each side of the gate, inside: a white post, a mint cap and a warm bulb (`_Bulbs`)."""
     g = Builder()
     for sx in (1, -1):
-        x, y = sx * 4.6, 2.0
+        x, y = (-6.9, GATE_Y + (2.5 if sx > 0 else -1.6)) if SIDE else (sx * 4.6, 2.0)
         b.box_base((x, y, GROUND - 0.02), (0.3, 0.3, 3.2), "offwhite", bevel=False)
         b.box((x, y, GROUND + 3.24), (0.7, 0.7, 0.16), "offwhite", bevel=False)
         b.box_base((x, y, GROUND + 3.3), (0.1, 0.1, 0.76), "offwhite", bevel=False)      # a rod through the bulb
@@ -418,7 +483,8 @@ def _lanterns(b, name, mat):
 
 def build_garden(mat):
     b, d, f, c, w = Builder(), Builder(), Builder(), Builder(), Builder()
-    _frame(b)
+    if not SIDE:
+        _frame(b)
     _gate_posts(b)
     _gate(b, True)
     _fence(b)
@@ -445,7 +511,36 @@ def garden_rbx_extras():
             "attributes": {"GroundUp": {"Float64": GROUND}, "PetSpots": len(PET_SPOTS)}}
 
 
+def _side(fn, base):
+    """Build `fn` as its side look: SIDE on and the three names swapped for the length of the build."""
+    def build(mat):
+        global SIDE, LOCKED, BUILDING, NAME
+        old = (LOCKED, BUILDING, NAME)
+        SIDE, LOCKED, BUILDING, NAME = True, SIDE_NAMES[old[0]], SIDE_NAMES[old[1]], SIDE_NAMES[old[2]]
+        try:
+            return fn(mat)
+        finally:
+            SIDE, (LOCKED, BUILDING, NAME) = False, old
+    return build
+
+
+def garden_side_rbx_extras():
+    def at(x, y, z=0.0, turn=0.0):
+        return Matrix.Translation((x, y, GROUND + z)) @ Matrix.Rotation(math.radians(turn), 4, "Z")
+    name = SIDE_NAMES[NAME]
+    atts = [(name, "SpotGardenEnter", at(-7.5, GATE_Y, 0.03, 90.0))]
+    for n, x, y, z, turn in PET_SPOTS:
+        if n == "SpotPetSit3":
+            x, y, turn = SIDE_BED[0], SIDE_BED[1], _face(SIDE_BED[0], SIDE_BED[1], 0.0, 6.0)
+        atts.append((name, n, at(x, y, z, turn)))
+    return {"attachments": atts,
+            "attributes": {"GroundUp": {"Float64": GROUND}, "PetSpots": len(PET_SPOTS), "Side": True}}
+
+
 ASSETS = {LOCKED: (build_garden_locked, BUDGET[LOCKED]),
           BUILDING: (build_garden_building, BUDGET[BUILDING]),
-          NAME: (build_garden, BUDGET[NAME])}
-EXTRAS = {NAME: garden_rbx_extras}
+          NAME: (build_garden, BUDGET[NAME]),
+          SIDE_NAMES[LOCKED]: (_side(build_garden_locked, LOCKED), BUDGET[LOCKED]),
+          SIDE_NAMES[BUILDING]: (_side(build_garden_building, BUILDING), BUDGET[BUILDING]),
+          SIDE_NAMES[NAME]: (_side(build_garden, NAME), BUDGET[NAME])}
+EXTRAS = {NAME: garden_rbx_extras, SIDE_NAMES[NAME]: garden_side_rbx_extras}

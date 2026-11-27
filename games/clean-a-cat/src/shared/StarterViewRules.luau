@@ -68,10 +68,14 @@ local function whole(raw: unknown): number?
 	return math.floor(raw)
 end
 
--- The three cards in StarterRules.CONTENTS order. `price(key)` reads the pass's price attribute.
-function StarterViewRules.items(price: (key: string) -> unknown): { Item }
+-- The three cards in the pack's order now (StarterRules.contents: with starterBuilder the Second Builder replaces the
+-- Golden Sponge, issue 1097). `price(key)` reads the pass's price attribute; `isOn` is LiveFlags.isOn.
+function StarterViewRules.items(
+	price: (key: string) -> unknown,
+	isOn: ((key: string) -> boolean)?
+): { Item }
 	local out: { Item } = {}
-	for _, key in StarterRules.CONTENTS do
+	for _, key in StarterRules.contents(isOn) do
 		local look = LOOK[key]
 		if look then
 			table.insert(out, {
