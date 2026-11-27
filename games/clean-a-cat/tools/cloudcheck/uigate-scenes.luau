@@ -715,6 +715,37 @@ local SCENES = {
 			UI.open("Gift")
 		end,
 	},
+	-- The like how-to (switch likeHowTo, issue 869): Like was just tapped on the open welcome gifts card.
+	{
+		"LikeHowTo",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			flag("giftFlow", true)
+			flag("likeHowTo", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", 1)
+			local function gift(asked: boolean)
+				UI.setGift({
+					lit = true,
+					favourite = true,
+					group = false,
+					claimed = false,
+					free = {
+						likeAsked = asked,
+						likeIn = 0,
+						likeClaimed = false,
+						played = 500,
+						playClaimed = false,
+					},
+				})
+			end
+			gift(false)
+			UI.open("Gift")
+			gift(true)
+		end,
+	},
 	-- The leave lines (issue 726, switch leaveLines) at their longest, as Roblox's menu opens over the HUD.
 	{
 		"LeaveLines",
@@ -1259,6 +1290,7 @@ function Scenes.close()
 	flag("petLines", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
+	flag("likeHowTo", false)
 	game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", nil)
 	flag("menuContrast", false)
 	UI.showLeaveLines(false)
