@@ -28,7 +28,7 @@ return function()
 			)
 			expect(rows[3].pass).to.equal(true)
 			expect(rows[3].price).to.equal(nil)
-			expect(HelperViewRules.say(rows[3])).to.equal("Comes with the Lou pass")
+			expect(HelperViewRules.say(rows[3])).to.equal("Comes with the Extra Worker pass")
 			expect(HelperViewRules.anyHired(reader({}))).to.equal(false)
 		end)
 
