@@ -363,8 +363,9 @@ local function gripIn(rig: Rig, left: boolean): CFrame?
 			then joint.instance:FindFirstChild(if left then "GripL" else "Grip", true)
 			else nil
 		if joint and grip and grip:IsA("Attachment") then
-			found = joint.instance:GetPivot():ToObjectSpace((grip :: Attachment).WorldCFrame)
-			rig.grips[key] = found
+			local made = joint.instance:GetPivot():ToObjectSpace((grip :: Attachment).WorldCFrame)
+			rig.grips[key] = made
+			found = made
 		else
 			rig.noGrip[key] = true
 		end
