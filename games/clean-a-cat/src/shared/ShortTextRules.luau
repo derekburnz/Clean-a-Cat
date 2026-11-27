@@ -24,8 +24,12 @@ local DROP: { [string]: boolean } = {
 	["One more pet for you and each helper"] = true,
 	["A golden pet that shines"] = true,
 }
-for _, info in Passes.INFO do
-	DROP[info.text] = true -- the shop cards' long descriptions: the picture shows x2, +1 or the helper
+for key, info in Passes.INFO do
+	-- the passes' long descriptions: the picture shows x2, +1 or the helper. Not the Golden Sponge's, whose name does
+	-- not say what it does: it is cut to its number below (Review-QA on PR 1106)
+	if key ~= "GoldenSponge" then
+		DROP[info.text] = true
+	end
 end
 
 -- Lines cut short: a Lua pattern over the whole line and its short form.
@@ -33,12 +37,15 @@ local CUT: { { string } } = {
 	-- the Golden Sponge's card is the one whose title does not say what it does: keep its number
 	{ "^Gold sponge, %+20%% on hand washes$", "+20%% on hand washes" },
 	{ "^Gold bubbles, %+20%% on hand washes$", "+20%% on hand washes" },
+	{
+		"^The best sponge with gold bubbles, and %+20%% on every cat you wash by hand$",
+		"+20%% on hand washes",
+	},
 	{ "^Hire at their pad · (.+ coins)$", "%1" },
 	{ "^Comes with the Extra Worker pass$", "Extra Worker pass" },
 	{ "^Comes when (%S+) is hired$", "Hire %1 first" },
 	{ "^Your next gift waits for the next day you play%.$", "Next gift tomorrow" },
 	{ "^Day (%d+) waits for the next day you play%.$", "Day %1 tomorrow" },
-	{ "^The chances add up to 100%%%..*$", "The chances add up to 100%%" },
 	{ "^(%+%d+%%) tips or pay$", "%1" },
 }
 

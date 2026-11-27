@@ -6,7 +6,7 @@
 --     shop cards' long descriptions, the gift steps' second lines, the Settings row note);
 --   * a long line is cut to the fewest words that still say it ("Hire at their pad · 1200 coins" -> "1200 coins").
 -- Numbers, prices, odds and every button keep their words: only these known lines change, so nothing that matters to
--- a purchase is ever hidden (the crate still says its chances add up to 100%). Each line keeps its own words in an
+-- a purchase is ever hidden (the crate's chances line stays whole). Each line keeps its own words in an
 -- attribute, so turning the switch off puts every line back exactly.
 --
 --   ShortText.watch(card)    shortens the window card's lines, now and as they change
