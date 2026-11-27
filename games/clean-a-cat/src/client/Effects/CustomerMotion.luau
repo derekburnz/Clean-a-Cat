@@ -356,7 +356,7 @@ end
 -- A hand's Grip in its arm's pivot frame (the arm is rigid, so once is enough); nil when the arm has none.
 local function gripIn(rig: Rig, left: boolean): CFrame?
 	local key = if left then "ArmL" else "ArmR"
-	local found = rig.grips[key]
+	local found: CFrame? = rig.grips[key]
 	if found == nil and not rig.noGrip[key] then
 		local joint = rig.joints[key]
 		local grip = if joint
