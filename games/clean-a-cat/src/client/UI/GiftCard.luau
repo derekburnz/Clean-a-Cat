@@ -366,14 +366,14 @@ local function drawHowTo(t: number)
 	end
 	local f = LikeHowToRules.frame(t, Comfort.reducedMotion())
 	local thumb = p.howThumb:FindFirstChild("Icon")
-	local shown = if f.filled then "ThumbsUpFilled" else "ThumbsUp"
+	local shown = if f.filled then "HeartFilled" else "HeartOutline"
 	if p.howThumb:GetAttribute("Shown") ~= shown then
 		p.howThumb:SetAttribute("Shown", shown)
 		Icons.draw(shown, p.howThumb)
 	elseif thumb == nil then
 		Icons.draw(shown, p.howThumb)
 	end
-	-- the hand comes from the lower right onto the thumb, a little smaller while it presses
+	-- the tap dot comes from the lower right onto the heart, a little smaller while it presses
 	local away = 1 - f.hand
 	local size = if f.press > 0 then 0.42 else 0.48
 	p.howHand.Size = UDim2.fromScale(size, size)
@@ -415,7 +415,7 @@ local function showHowTo()
 	end
 	howToShowing = true
 	howToDone = true
-	Icons.draw("TapHand", p.howHand)
+	Icons.draw("TapDot", p.howHand)
 	Icons.draw("RingPuff", p.howRing)
 	local started = os.clock()
 	drawHowTo(0)
