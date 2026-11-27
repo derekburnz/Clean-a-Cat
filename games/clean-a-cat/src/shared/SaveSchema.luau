@@ -127,6 +127,8 @@ export type Save = {
 	-- purchase completes or Roblox says so on a join, and never taken back, so a slow ownership check loses nothing
 }
 
+local CrateRules = require(script.Parent:WaitForChild("CrateRules"))
+
 local SaveSchema = {}
 
 SaveSchema.VERSION = 1
@@ -298,6 +300,13 @@ function SaveSchema.migrate(raw: unknown, now: number): (Save?, string?)
 		end
 	end
 	fill(data, SaveSchema.template(now) :: any)
+	-- (issue 883) the old eight crate pets' names become the new eight's (CrateRules.RENAMED). No VERSION bump: an
+	-- older server keeps a pet whose name it does not know as it is, so a save loaded there loses nothing either.
+	for _, pet in data.pets do
+		if type(pet) == "table" and type(pet.kind) == "string" then
+			pet.kind = CrateRules.renamed(pet.kind)
+		end
+	end
 	data.version = SaveSchema.VERSION
 	return (data :: any) :: Save, nil
 end
