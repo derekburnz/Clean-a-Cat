@@ -55,3 +55,11 @@ Console (531) from our scripts: no errors. The only lines are local-place limits
 
 ## 773 bow on, main fb23dab
 In the display window, Muffin wears its bow on the head's top corner (WornBow under the head). During a served customer's walk-out I saw no PackedCat with a bow: served cats go home through the tub's going-home effect. Not conclusive for the carrier walk-out.
+
+## 1021 noVisitBoard, main 1f2895a: PASS
+no-visit-board-1021-1f2895a.jpg: the area by the build board and the gift stand, where the "Who might visit" board stood, now empty (0 ChanceBoard instances). Turning the switch off brings the board back within 2 s.
+
+## 1022 counterSlim on iphone_13 (749 x 388), main 1f2895a: FAIL on size from the normal camera
+Camera held at the default follow position: 12.5 studs behind the player, 20 degrees up, FOV 70, facing the counter. Each bar's edges were projected with WorldToViewportPoint.
+- From the spawn (-5, -7): bars measure 16.8 to 21.6 px wide and 3.2 to 4.1 px tall, with gaps of 2.0 to 7.7 px (counter-slim-1022-from-spawn-iphone13.jpg).
+- From the door line (-6.3, -22.5), looking along the counter: bars measure 19.2 to 36.0 px wide and 3.7 to 6.9 px tall. Neighbours overlap on screen by 15.7 to 21.0 px, because the row runs away from the camera (counter-slim-1022-from-door-line-iphone13.jpg, with the bars drawn in pink).
