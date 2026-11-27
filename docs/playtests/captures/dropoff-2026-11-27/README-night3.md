@@ -133,3 +133,14 @@ customerWalk is on (CustomerMotion enabled) and the ArmR joint is recognised. Sa
 - HUD: with a window open, Shop, Build, Helpers and More are all hidden. They come back when it closes (checked on Helpers and Check in on iphone_13, and Helpers on the iPad).
 - 1065: the Settings fills have UICorner 0.5 and full round ends at Music 5% (22 x 17 px fill, radius 8.3) and Sounds 92% (422 x 17 px). The Cat Index bar at 10% is 8 x 15 px with UICorner 0.5, so its ends are round too.
 - Pictures: window-clear-1038-helpers-iphone13, window-clear-1038-checkin-iphone13, window-clear-1038-helpers-ipad and sliders-1065-ipad-5-and-92-percent (all -e0ebe2f.jpg).
+
+## 1062 arms on PR 1082 (3f41199), 2026-11-27
+
+- `1082-line-behind-arms-straight.jpg`: the line from behind with each carrier hidden (CarrierHidden). Every right arm hangs straight.
+- `1082-counter-follow-cam.jpg`: the follow camera at the counter, where the client numbers were taken.
+- Client numbers (sampled every 0.1 s for about 5 minutes):
+  - Every customer reads MotionRig "rig ArmL ArmR Head LegL LegR".
+  - ArmR stays at 0 to 2 degrees while hidden, apart from the 0.7 s crate reach.
+  - Walking with a carrier, the arm stays out at CarryArmOut.
+  - LegL swings 0 to 26 degrees on walk-ins.
+  - PackedCat leaves FAIL. Bea's arm turned out only 15.2 of 35.5 degrees. Theo's stayed at 0 of 19.6.
