@@ -559,6 +559,32 @@ local SCENES = {
 			UI.open("Shop")
 		end,
 	},
+	-- The coin ladder (issue 1031, switch coinLadder) once 2x Coins is owned: 3x Coins takes 2x's card, so the shop
+	-- still shows five cards (Passes.offered). Review-QA's check on the shop revamp (PR 1107).
+	{
+		"ShopLadder",
+		function()
+			flag("passes", true)
+			flag("coinLadder", true)
+			local ShopViewRules = UIShim.require("ReplicatedStorage.Shared.ShopViewRules")
+			local prices: { [string]: number } = {
+				DoubleCoins = 50,
+				TripleCoins = 100,
+				SecondBuilder = 299,
+				GoldenSponge = 99,
+				Lou = 249,
+				SecondPetSlot = 249,
+			}
+			UI.setShop(ShopViewRules.cards(function(key: string): unknown
+				return prices[key]
+			end, function(key: string): boolean
+				return key == "DoubleCoins"
+			end, function(name: string): boolean
+				return name == "coinLadder" or name == "passes"
+			end))
+			UI.open("Shop")
+		end,
+	},
 	{
 		"ShopEmpty",
 		function()
@@ -1684,8 +1710,8 @@ do
 end
 
 -- The shop revamp (issue 1030, switch shopRevamp): the featured card and the two by two grid, at full price with one
--- pass owned, and in the launch sale, each also with shortText on.
-for _, name in { "Shop", "ShopSale" } do
+-- pass owned, in the launch sale, and with 2x Coins owned and the coin ladder on, each also with shortText on.
+for _, name in { "Shop", "ShopSale", "ShopLadder" } do
 	for _, scene in table.clone(SCENES) do
 		if scene[1] == name then
 			local open = scene[2]
@@ -1752,6 +1778,7 @@ function Scenes.close()
 	flag("menuContrast2", false)
 	flag("shortText", false)
 	flag("shopRevamp", false)
+	flag("coinLadder", false)
 	flag("giftCrate", false)
 	flag("giftFlow", false)
 	flag("likeHowTo", false)

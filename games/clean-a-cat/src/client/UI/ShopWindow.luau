@@ -464,8 +464,11 @@ local function drawRevamp(p: Parts, r: Revamp, s: Sizes, inner: number)
 	local gridLayout = Instance.new("UIGridLayout")
 	gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	gridLayout.CellPadding = UDim2.fromOffset(r.gap, r.gap)
-	local columns = if featured then 2 else 3
-	local rows = math.max(2, math.ceil(#rest / columns))
+	-- Two rows always: the shop shows five cards at most (Passes.SHOP_CARDS, one rung of the coin ladder), so the
+	-- side holds four in a two by two grid. Should a sixth card ever come, a third column keeps every card's name,
+	-- line and Buy inside two rows instead of squeezing a third row under the button (Review-QA, PR 1107).
+	local columns = if featured and #rest <= 4 then 2 else math.max(3, math.ceil(#rest / 2))
+	local rows = 2
 	local cellH = math.floor((totalH - (rows - 1) * r.gap) / rows)
 	gridLayout.CellSize =
 		UDim2.fromOffset(math.floor((sideW - (columns - 1) * r.gap) / columns), cellH)
