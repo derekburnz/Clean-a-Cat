@@ -73,3 +73,8 @@ big-spa-1040-room-wide-b92db46.jpg, roof hidden. I checked this in a local place
 ## 1039 and 1043, main 6f4569d
 - Reward popup layer, PASS (reward-pop-layer-1039-ooze-iphone13-6f4569d.jpg): RewardPopLayer is its own ScreenGui with DisplayOrder 45 (the HUD is 0) and IgnoreGuiInset true. The dim now covers the whole screen, top strip included, and the hint card and starter ad sit under it.
 - menuOnly: there are no Hire, Takes, Buy or Build prompts in the world, and no hire pads. The only live prompts are Free gift, Look inside and Take cat. The Build window has every build and upgrade with its Build or Buy button (menu-only-1043-build-window-6f4569d.jpg). RISK: with no helper hired yet, the HUD's Helpers button is hidden (SideButtons shows it only once a WorkerLevel_ attribute exists), and the More tray and the Build window have no hire either. So the only way to the Helpers window is the one-time hireJo guide card. If that card is closed or missed, a new player cannot hire Jo.
+
+## 1046 Helpers button once Jo is affordable, main 79d7c5b (menuOnly and joPrice on, no helper hired)
+- At 250 coins: HelpersOpen nil and the Helpers button hidden. PASS.
+- After two hand washes, coins 273 and then 318 (Jo costs 300): HelpersOpen true and the Helpers button showing. PASS.
+- In the Helpers window (helpers-1046-window-no-hire-button-79d7c5b.jpg): FAIL. Jo's and Sam's rows read only "Washes cats for you", with no price and no Hire button, so Jo cannot be hired. It is the same after closing and opening the window again. HelperViewRules marks the row with hire = true, but HelpersWindow.luau never reads row.hire or hireText, so no button is drawn.
