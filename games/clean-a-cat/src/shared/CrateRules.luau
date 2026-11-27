@@ -26,12 +26,31 @@ CrateRules.ODDS_NOTE =
 -- Rarity and PetScale, a Burst attachment, star pieces as child Models with StarLevel 2 or 3). A rarity's chance is
 -- split evenly between its pets.
 CrateRules.PETS = table.freeze({
-	Common = table.freeze({ "Cozy", "Scrubby" }),
-	Uncommon = table.freeze({ "Pebble", "Pickle" }),
-	Rare = table.freeze({ "Koi", "Bamboo" }),
-	Epic = table.freeze({ "Coral" }),
-	Legendary = table.freeze({ "Nimbus" }),
+	Common = table.freeze({ "Clover", "Ghost" }),
+	Uncommon = table.freeze({ "Ooze", "Glitch" }),
+	Rare = table.freeze({ "Angler", "Nebula" }),
+	Epic = table.freeze({ "Dragon" }),
+	Legendary = table.freeze({ "Blaze" }),
 }) :: { [string]: { string } }
+
+-- (issue 883) Model-Agent's eight new crate pets (PR 962) took the old eight's places, rarity for rarity. Saves keep
+-- a pet's name as its kind, so a save that still holds an old name gets the new one when it loads
+-- (SaveSchema.migrate, through CrateRules.renamed): nobody's pet disappears, and its id, star and slot stay.
+CrateRules.RENAMED = table.freeze({
+	Cozy = "Clover",
+	Scrubby = "Ghost",
+	Pebble = "Ooze",
+	Pickle = "Glitch",
+	Koi = "Angler",
+	Bamboo = "Nebula",
+	Coral = "Dragon",
+	Nimbus = "Blaze",
+}) :: { [string]: string }
+
+-- The kind a saved pet goes by now: the new name for an old one, any other kind as it is.
+function CrateRules.renamed(kind: string): string
+	return CrateRules.RENAMED[kind] or kind
+end
 
 -- Pets that come from no crate, with their rarity: the gift stand's pet (GiftRules, issue 521). Never rolled; boosts and
 -- shows like any pet of that rarity.
@@ -53,12 +72,12 @@ CrateRules.GIFT_KIND = "gift"
 CrateRules.PET_CHANCES = table.freeze({
 	gift = table.freeze({
 		Starcoat = 23,
-		Pebble = 23,
-		Pickle = 23,
-		Koi = 12,
-		Bamboo = 12,
-		Coral = 6,
-		Nimbus = 1,
+		Ooze = 23,
+		Glitch = 23,
+		Angler = 12,
+		Nebula = 12,
+		Dragon = 6,
+		Blaze = 1,
 	}),
 }) :: { [string]: { [string]: number } }
 

@@ -19,6 +19,10 @@ GiftViewRules.TITLE = "A gift for you!"
 GiftViewRules.FREE_TITLE = "Free gifts" -- with the free rewards rows (switch freeRewards, issue 730)
 GiftViewRules.PET_LINE = "A free pet, yours to keep"
 GiftViewRules.GROUP_NAME = "Creampuff Games"
+-- With the switch giftCrate (CrateRules.GIFT_FLAG, issue 859) the stand gives a gift crate to open, not Starcoat: the
+-- card shows the crate, says what can come out, and its button opens it.
+GiftViewRules.CRATE = "Gift crate"
+GiftViewRules.CRATE_LINE = "A free pet inside, Uncommon or better"
 
 -- The free rewards rows (switch freeRewards, issue 730), nil while they are off.
 export type Free = {
@@ -177,8 +181,11 @@ function GiftViewRules.ready(state: State): boolean
 	return state.favourite and state.group and not state.claimed
 end
 
--- The claim button's words.
-function GiftViewRules.claimText(state: State): string
+-- The claim button's words; `crate` with the switch giftCrate (issue 859).
+function GiftViewRules.claimText(state: State, crate: boolean?): string
+	if crate then
+		return if state.claimed then "Your gift crate is here!" else "Open your gift crate"
+	end
 	if state.claimed then
 		return `{GiftViewRules.PET} is yours!`
 	end

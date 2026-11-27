@@ -254,18 +254,29 @@ local function redraw()
 	-- the pet
 	p.pet.Size = UDim2.fromOffset(s.petW, 0)
 	p.pic.Size = UDim2.fromOffset(s.pic, s.pic)
+	-- (giftCrate, issue 859) the stand gives a crate to open, not Starcoat: the crate's picture, its name and what is in it
+	local crate = LiveFlags.isOn(CrateRules.GIFT_FLAG)
 	local rarity = CrateRules.rarityOf(GiftViewRules.PET) or "Uncommon"
-	Portraits.draw(GiftViewRules.PET, rarity, p.pic)
+	local stale = p.pic:FindFirstChild(if crate then "Portrait" else "Icon") -- the other picture, if the switch moved
+	if stale then
+		stale:Destroy()
+	end
+	if crate then
+		Icons.draw("Crate", p.pic)
+	else
+		Portraits.draw(GiftViewRules.PET, rarity, p.pic)
+	end
 	p.petName.TextSize = s.petName
 	p.petName.Size = UDim2.new(1, 0, 0, s.petName + 4)
-	p.petName.Text = GiftViewRules.PET
+	p.petName.Text = if crate then GiftViewRules.CRATE else GiftViewRules.PET
 	p.petRarity.TextSize = s.petLine
 	p.petRarity.Size = UDim2.new(1, 0, 0, s.petLine + 4)
 	p.petRarity.Text = rarity
+	p.petRarity.Visible = not crate
 	p.petRarity.TextColor3 = (Kit.RARITY[rarity] or Kit.INK):Lerp(Kit.INK, 0.45)
 	p.petLine.TextSize = s.petLine
 	p.petLine.Size = UDim2.new(1, 0, 0, s.petLine * 2 + 4)
-	p.petLine.Text = GiftViewRules.PET_LINE
+	p.petLine.Text = if crate then GiftViewRules.CRATE_LINE else GiftViewRules.PET_LINE
 
 	-- the steps, then Get Starcoat
 	p.right.Size = UDim2.fromOffset(width - 2 * s.pad - s.petW - s.gap, 0)
@@ -279,7 +290,7 @@ local function redraw()
 		drawStep(step, index, s, scale, p.rows)
 	end
 	local ready = GiftViewRules.ready(state)
-	p.claim.Text = GiftViewRules.claimText(state)
+	p.claim.Text = GiftViewRules.claimText(state, crate)
 	p.claim.TextSize = s.claimText
 	p.claim.Size = UDim2.new(1, 0, 0, math.max(s.claimH, math.ceil(MIN_TAP / scale)))
 	p.claim.AutoButtonColor = ready
