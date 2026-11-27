@@ -9,6 +9,7 @@ a file to take (`.github/workflows/upload-asset.yml`).
 | `CleanACat_UI_Portrait_<Cat>.png` (20 cats) | `Portraits.luau`, `<Cat>`: the Cat Index, recap, bench card when clean | the same renders, `portrait_<Cat>_ink` (#794) |
 | `CleanACat_UI_Portrait_<Cat>_Dirty1.png` to `_Dirty4.png` (20 cats, 80 files) | `Portraits.luau`, `<Cat>_Dirty1` to `<Cat>_Dirty4`: the bench card at the cat's dirt level | `portrait_<Cat>_Dirty<n>_ink` from Model-Agent's `faces-dirt-2026-11-26` renders, after the tangle and fluff rework (#791, PR 831) |
 | `CleanACat_UI_Portrait_Pet_<Name>.png` (8 crate pets: Clover, Ghost, Ooze, Glitch, Angler, Nebula, Dragon, Blaze) | `Portraits.luau`, keyed by the pet's name once `CrateRules` lists the new pets: the pets window and the crate reveal | `ui_renders.py --only portrait_Pet_` then `ui_compose.py`, `portrait_Pet_<Name>_ink` (#883): the head whole with its head piece, stars left off |
+| `CleanACat_UI_Portrait_Staff_Jo.png`, `_Sam`, `_Lou` | the Helpers screen's rows and cards, one per helper (#1036) | `ui_renders.py --only portrait_Staff_` then `ui_compose.py`, `portrait_Staff_<Name>_ink`: the smooth busts of `staff_busts.py`, 512 px |
 
 - All four dirt levels were rendered again on 2026-11-26 after the tangle and fluff rework (#791); level 1 replaces the first upload and needs new ids.
 - Rendered again on 2026-11-26 with the round cheeks (#771, #784). The first upload (2026-11-24) had the cheek bars.
