@@ -78,7 +78,7 @@ ROUND = 4
 # Names the game looks up. An object ending in _SignBoard or _Screen keeps its child Model but its part is named
 # SignBoard or Screen (found with a recursive FindFirstChild), so the UI can hang a SurfaceGui on it.
 RENAME_BIGGEST = {n: "Handle" for n in ("CleanACat_Tool_Sponge", "CleanACat_Tool_SpongeBubble",
-                                          "CleanACat_Tool_SpongeGolden", "CleanACat_Tool_Brush",
+                                          "CleanACat_Tool_SoapBar", "CleanACat_Tool_SpongeGolden", "CleanACat_Tool_Brush",
                                           "CleanACat_Tool_BrushFluffy", "CleanACat_Tool_BrushGolden",
                                           "CleanACat_Tool_ShowerRain", "CleanACat_Tool_ShowerGolden",
                                           "CleanACat_Tool_Shower", "CleanACat_Tool_Comb", "CleanACat_Tool_Tweezers",

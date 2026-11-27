@@ -21,6 +21,9 @@ Drafts for the other wash steps (#123): rinse, pick out burrs, towel dry, trim n
   CleanACat_Tool_Dryer     a hand dryer: a bubblegum barrel, a cream nozzle, a darker pink grip. Attachment `Air`
                            at the nozzle's mouth, its +Y (Roblox) along the air
   CleanACat_Tool_Shampoo   a pump bottle: lilac, a cream label with a pink paw, a white pump
+  CleanACat_Tool_SoapBar   the foam step (#888, Derek 2026-11-26: "it should be like a soap bar and it be like foam up
+                           the cat"): a rounded bubblegum bar of soap, a cream paw pressed into its top, a few balls
+                           of white lather on one end. The sponge's size; its flat bottom is the working face
 
 Each is one object, so the Part model is a Model of Parts whose biggest part is named `Handle` (rbx_export
 RENAME_BIGGEST): the game moves the parts into a Roblox Tool and welds them to Handle. Pivot at the grip centre
@@ -232,6 +235,28 @@ def build_shampoo(mat):
     return [b.finalize("CleanACat_Tool_Shampoo", mat)]
 
 
+def build_soap_bar(mat):
+    """The foam step's soap (#888). Pivot at the middle of the bar, front -Y, the flat bottom rubs the fur. The bar is
+    the biggest part, so it is `Handle`. Seen from above it is a pill: a box with flat sides between two round ends,
+    a hair inside them so no faces meet."""
+    b = Builder()
+    w, d, h = 1.1, 0.58, 0.34
+    r = d / 2
+    for sx in (-1, 1):                                                              # the round ends
+        b.cyl((sx * (w - d) / 2, 0, 0), r, h - 0.004 * (sx + 1), "spa_bubblegum", segments=14, bevel=False)
+    b.box((0, 0, 0), (w - d, 2 * r * math.cos(math.pi / 14) - 0.004, h - 0.014), "spa_bubblegum",   # flat sides
+          bevel=False)
+    top = h / 2
+    b.box((0.04, 0.0, top - 0.01), (w - 0.36, d - 0.2, 0.045), "nose_bubblegum", bevel=False)     # a worn top panel
+    z = top + 0.03                                                                  # a cream paw on the panel
+    b.box((0.06, 0.05, z), (0.22, 0.13, 0.05), "spa_cream", bevel=False)            # the pad
+    for x, y in ((-0.135, -0.065), (-0.045, -0.105), (0.045, -0.105), (0.135, -0.065)):   # four toes, apart
+        b.box((0.06 + x, 0.05 + y, z + 0.006), (0.065, 0.065, 0.05), "spa_cream", bevel=False)
+    for x, y, zz, rr in ((-0.38, -0.08, 0.2, 0.11), (-0.26, -0.16, 0.17, 0.08), (-0.42, 0.07, 0.18, 0.07)):
+        b.sphere((x, y, zz + rr * 0.6), rr, "foam", segments=8, rings=5)               # lather on one end
+    return [b.finalize("CleanACat_Tool_SoapBar", mat)]
+
+
 ASSETS = {n: (lambda mat, n=n: build_sponge(n, mat), 400) for n in SPONGES}
 for _n in BRUSHES:
     ASSETS[_n] = (lambda mat, n=_n: build_brush(mat, n), 450 if BRUSHES[_n][5] else 200)
@@ -240,7 +265,7 @@ for _n in SHOWERS:
 ASSETS.update({"CleanACat_Tool_Comb": (build_comb, 300),
                "CleanACat_Tool_Tweezers": (build_tweezers, 400), "CleanACat_Tool_Towel": (build_towel, 200),
                "CleanACat_Tool_Clipper": (build_clipper, 200), "CleanACat_Tool_Dryer": (build_dryer, 400),
-               "CleanACat_Tool_Shampoo": (build_shampoo, 400)})
+               "CleanACat_Tool_Shampoo": (build_shampoo, 400), "CleanACat_Tool_SoapBar": (build_soap_bar, 500)})
 EXTRAS = {"CleanACat_Tool_Dryer": dryer_rbx_extras}
 for _n in SHOWERS:
     EXTRAS[_n] = (lambda n=_n: shower_rbx_extras(n))
