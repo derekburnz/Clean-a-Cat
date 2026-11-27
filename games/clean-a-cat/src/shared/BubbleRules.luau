@@ -50,6 +50,9 @@ BubbleRules.BUBBLES = table.freeze({
 	bubble("crate", "You got a crate!", "Open it for a pet that helps.", true), -- the first crate held
 	-- Jo affordable and not hired yet (issue 913): his pad, with Jo walking up (Moments.JoArrives)
 	bubble("hireJo", "Hire your first helper", "Jo washes cats for you.", true),
+	-- switch catHotel (issue 1051, the hotel spec's Suds line): the hotel behind the back door is open; "Show me"
+	-- points at the back door
+	bubble("hotel", "Book a hotel stay", "Guests pay you while you're away.", true),
 }) :: { Bubble }
 
 -- Context asks (switch contextAsks, issue 877; the owner on 2026-11-26: "use context tutorials based on what the

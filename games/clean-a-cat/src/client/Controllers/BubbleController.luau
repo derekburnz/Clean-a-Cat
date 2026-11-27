@@ -34,6 +34,7 @@ local BubbleRules = require(Shared:WaitForChild("BubbleRules"))
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local CounterRules = require(Shared:WaitForChild("CounterRules"))
+local ExpansionRules = require(Shared:WaitForChild("ExpansionRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local MenuRules = require(Shared:WaitForChild("MenuRules"))
 local Moments = require(Shared:WaitForChild("Moments"))
@@ -65,6 +66,7 @@ local TOOLS_FLAG = "toolsBoard"
 local BUILDS_FLAG = "builds"
 local MASCOT_FOLDER = "Mascot" -- MascotService's folder in the plot
 local QUESTS_FLAG = "quests"
+local HOTEL_FLAG = "catHotel" -- HotelRules.FLAG
 local HUD_FLAG = "gameHud" -- the Quests button lives on the HUD
 
 local BubbleController = {}
@@ -128,6 +130,9 @@ local function facts(): { [string]: boolean }
 		hireJo = LiveFlags.isOn(WorkerRules.FLAG)
 			and player:GetAttribute("WorkerLevel_Jo") == nil
 			and coins() >= (WorkerRules.priceOf("Jo", LiveFlags.isOn) or math.huge),
+		-- issue 1051: the Cat Hotel is open (its build done, or the back door unlocked before catHotel)
+		hotel = LiveFlags.isOn(HOTEL_FLAG)
+			and player:GetAttribute(ExpansionRules.ATTRIBUTE) == true,
 		quests = LiveFlags.isOn(QUESTS_FLAG) and LiveFlags.isOn(HUD_FLAG) and player:GetAttribute(
 			QuestViewRules.OPEN_ATTRIBUTE
 		) == true,
@@ -153,6 +158,8 @@ local function target(id: string): Vector3?
 		return SpaLayout.spot("Crate").Position -- CrateController's crate
 	elseif id == "hireJo" then
 		return SpaLayout.spot(WorkerRules.WORKERS.Jo.spot).Position
+	elseif id == "hotel" then
+		return SpaLayout.spot(ExpansionRules.SPOT).Position
 	end
 	return nil
 end
