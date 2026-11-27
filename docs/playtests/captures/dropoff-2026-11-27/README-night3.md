@@ -78,3 +78,6 @@ big-spa-1040-room-wide-b92db46.jpg, roof hidden. I checked this in a local place
 - At 250 coins: HelpersOpen nil and the Helpers button hidden. PASS.
 - After two hand washes, coins 273 and then 318 (Jo costs 300): HelpersOpen true and the Helpers button showing. PASS.
 - In the Helpers window (helpers-1046-window-no-hire-button-79d7c5b.jpg): FAIL. Jo's and Sam's rows read only "Washes cats for you", with no price and no Hire button, so Jo cannot be hired. It is the same after closing and opening the window again. HelperViewRules marks the row with hire = true, but HelpersWindow.luau never reads row.hire or hireText, so no button is drawn.
+
+## 1035 petSingles, main 5873817: PASS
+pet-singles-1035-5873817.jpg: a save seeded with Clover (1 star) twice and Glitch (2 stars) shows three tiles, one per pet. The two Clovers are separate tiles with no stars, and Glitch shows two stars.
