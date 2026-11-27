@@ -60,4 +60,29 @@ return function()
 			expect(Motion.armIn(true, 20, true)).to.equal(0)
 		end)
 	end)
+
+	describe("CounterCrate walking in (issue 871)", function()
+		it(
+			"counts a customer away from their WalkTo mat as walking, and one on it or with none as arrived",
+			function()
+				local mat = Vector3.new(10, 3, -20)
+				expect(CounterCrate.walking(Vector3.new(4, 3, -20), mat)).to.equal(true)
+				expect(CounterCrate.walking(Vector3.new(10.1, 9, -20.1), mat)).to.equal(false)
+				expect(CounterCrate.walking(Vector3.new(4, 3, -20), nil)).to.equal(false)
+			end
+		)
+		it(
+			"keeps the server's times unless the customer arrived after the set-down was due",
+			function()
+				local a, b = CounterCrate.shifted(100, 102.4, nil)
+				expect(a).to.equal(100)
+				expect(b).to.equal(102.4)
+				a, b = CounterCrate.shifted(100, 102.4, 99)
+				expect(a).to.equal(100)
+				a, b = CounterCrate.shifted(100, 102.4, 103)
+				expect(a).to.equal(103)
+				expect(math.abs(b - 105.4) < 1e-9).to.equal(true)
+			end
+		)
+	end)
 end
