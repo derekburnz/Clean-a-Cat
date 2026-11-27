@@ -209,3 +209,7 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## Gift board words (PR 1123) on main f27b5c4, iphone_13, 2026-11-27
 
 `1123-6b-*`: a save that already owns the Starcoat, with the group coins unpaid. Membership was set with the TestInGroup Studio hook.
+
+## ButtonInk park at 0.999 (PR 1124) on main 463866d, iphone_13, 2026-11-27
+
+`1124-*`: Sam's Level up after its first TextTransparency = 1, which was swallowed, so the words still show. Also the Bubble Soap Buy hidden after a working write of 1, and back outlined after a write of 0.
