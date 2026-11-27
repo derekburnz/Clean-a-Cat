@@ -52,9 +52,9 @@ Icons.IMAGES = {
 	Shop = "rbxassetid://75206569453389", -- a shopfront with a striped awning; soft below 48 px, so keep it 48+
 	Pets = "rbxassetid://112809586144557", -- a lilac cat's head in a collar with a bell
 	Crate = "rbxassetid://79856687835511", -- the pet crate with cat ears and a paw latch
-	-- the staff's T shaped apron with side ties and a neck cord, no face, so the button never reads as one helper
-	-- (CleanACat_Icon_Hud_Staff, Model-Agent, issue 929, checked by Review-QA; was Jo's head, 86032284297873)
-	Helpers = "rbxassetid://75869829179271",
+	-- two helpers side by side (CleanACat_Icon_Hud_HelpersTeam, Model-Agent, issue 1110, Derek 2026-11-27 on the apron:
+	-- "this icon sucks remake it"; image gate passed). Was the staff apron 75869829179271, before that Jo's head
+	Helpers = "rbxassetid://97491083681037",
 	-- each helper's own smooth bust (issue 1036, Derek: "redo the picture for helpers it looks blocky and mid and it
 	-- shouldn't be the same as the first worker"; Model-Agent's uploads to the group, 2026-11-27)
 	StaffJo = "rbxassetid://85051325996520",
