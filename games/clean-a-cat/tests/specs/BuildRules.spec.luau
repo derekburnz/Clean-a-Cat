@@ -54,7 +54,7 @@ return function()
 
 		it("offers the Bubble Bath and Pawdicure only with their switches on (#267)", function()
 			local function on(flag: string): boolean
-				return flag ~= "tubBuilds" and flag ~= "noVipRoom" -- every switch but the tubs' (those are below) and noVipRoom
+				return flag ~= "tubBuilds" and flag ~= "noVipRoom" and flag ~= "catHotel" -- every switch but the tubs' (below), noVipRoom and catHotel
 			end
 			local function off(_flag: string): boolean
 				return false
@@ -251,7 +251,7 @@ return function()
 						local at = table.find(flags, flag)
 						return at ~= nil and (mask // 2 ^ (at - 1)) % 2 == 1
 					end
-					expect(#BuildRules.offered(isOn) + 1 <= BuildRules.MAX_ROWS).to.equal(true)
+					expect(#BuildRules.boardOffered(isOn) + 1 <= BuildRules.MAX_ROWS).to.equal(true)
 				end
 			end
 		)

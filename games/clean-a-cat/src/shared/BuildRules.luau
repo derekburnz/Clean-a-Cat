@@ -34,6 +34,7 @@ export type Item = {
 	flag: string?, -- a LiveFlags switch: while it is off the item is not offered (offered)
 	alsoFlag: string?, -- a second switch that must be on as well
 	hiddenWhen: { string }?, -- while every one of these switches is on, the item is gone (shown)
+	windowOnly: boolean?, -- not a row on the builder board: started from the Build window or its own place (boardOffered)
 }
 
 BuildRules.TUBS_FLAG = "tubBuilds"
@@ -110,6 +111,41 @@ BuildRules.ITEMS = table.freeze({
 		flag = BuildRules.TUBS_FLAG,
 		alsoFlag = DIRT_FLAG, -- the new board comes whole, so it never has more rows than MAX_ROWS
 	}) :: Item,
+	-- The Cat Hotel (switch catHotel with expansionDoor, issue 1049; HotelRules): opening it at the back door, then
+	-- rooms 3 and 4. Timed builds like the rest (Derek, 2026-11-27: "Make it take construction time also like other
+	-- builds"); started from the back door's prompt, the hotel or the Build window, never a board row.
+	CatHotel = table.freeze({
+		name = "Cat Hotel",
+		slot = "room",
+		price = 1500, -- hotel.unlock
+		seconds = 20 * 60,
+		payBonus = 0,
+		flag = "catHotel",
+		alsoFlag = "expansionDoor",
+		windowOnly = true,
+	}) :: Item,
+	HotelRoom3 = table.freeze({
+		name = "Hotel Room 3",
+		slot = "room",
+		price = 3000,
+		seconds = 30 * 60,
+		requires = "CatHotel",
+		payBonus = 0,
+		flag = "catHotel",
+		alsoFlag = "expansionDoor",
+		windowOnly = true,
+	}) :: Item,
+	HotelRoom4 = table.freeze({
+		name = "Hotel Room 4",
+		slot = "room",
+		price = 8000,
+		seconds = 3600,
+		requires = "HotelRoom3",
+		payBonus = 0,
+		flag = "catHotel",
+		alsoFlag = "expansionDoor",
+		windowOnly = true,
+	}) :: Item,
 }) :: { [string]: Item }
 
 -- The VIP Room while tubBuilds is on (tuning build.VipRoom): its own price and time, and nothing to build first.
@@ -133,6 +169,9 @@ BuildRules.IDS = table.freeze({
 	"Pawdicure",
 	"VipRoom",
 	"Garden",
+	"CatHotel",
+	"HotelRoom3",
+	"HotelRoom4",
 })
 BuildRules.TUBS = table.freeze({ "SecondTub", "ThirdTub", "FourthTub" })
 -- Rows the builder board can give their own key (BoardProp.rowKeys, issue 574), the bell's included: the offered
@@ -398,6 +437,17 @@ function BuildRules.offered(isOn: IsOn): { string }
 	local out: { string } = {}
 	for _, id in BuildRules.IDS do
 		if BuildRules.shown(id, isOn) then
+			table.insert(out, id)
+		end
+	end
+	return out
+end
+
+-- The rows the builder board shows: offered less the items that are never a board row (windowOnly).
+function BuildRules.boardOffered(isOn: IsOn): { string }
+	local out: { string } = {}
+	for _, id in BuildRules.offered(isOn) do
+		if not BuildRules.ITEMS[id].windowOnly then
 			table.insert(out, id)
 		end
 	end

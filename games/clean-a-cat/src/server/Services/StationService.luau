@@ -23,6 +23,7 @@ local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CrateRules = require(Shared:WaitForChild("CrateRules"))
 local ExpansionRules = require(Shared:WaitForChild("ExpansionRules"))
 local GardenRules = require(Shared:WaitForChild("GardenRules"))
+local HotelRules = require(Shared:WaitForChild("HotelRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local VipRules = require(Shared:WaitForChild("VipRules"))
@@ -35,6 +36,14 @@ local LABEL_COLOR = Color3.fromRGB(90, 70, 110)
 local StationService = {}
 
 local warned: { [string]: boolean } = {}
+local drawnHooks: { (player: Player, folder: Folder) -> () } = {}
+
+local function missing(name: string)
+	if not warned[name] then
+		warned[name] = true
+		warn(`[StationService] {name} is missing from ReplicatedStorage.Assets`)
+	end
+end
 
 local function anchorAll(model: Model)
 	for _, descendant in model:GetDescendants() do
@@ -285,7 +294,8 @@ local function drawGarden(
 	slot: number,
 	save: { stations: any, pets: any? },
 	running: { [string]: BuildRules.Build },
-	isOn: (flag: string) -> boolean
+	isOn: (flag: string) -> boolean,
+	spot: string
 )
 	local item = BuildRules.item(GardenRules.ID, isOn)
 	if item == nil then
@@ -312,7 +322,7 @@ local function drawGarden(
 	if building and build then
 		model:SetAttribute("EndsAt", build.endsAt)
 	end
-	model:PivotTo(SpaLayout.slotSpot(GardenRules.SPOT, slot))
+	model:PivotTo(SpaLayout.slotSpot(spot, slot))
 	anchorAll(model)
 	if not built then
 		if building and build then
@@ -362,6 +372,87 @@ local function drawBackDoor(folder: Folder, assets: Instance, slot: number, unlo
 	model:PivotTo(SpaLayout.slotSpot(ExpansionRules.SPOT, slot))
 	anchorAll(model)
 	model.Parent = folder
+end
+
+-- (catHotel) A child model of the hotel whose name ends with `suffix`, or nil.
+local function decor(hotel: Model, suffix: string): Model?
+	for _, child in hotel:GetChildren() do
+		if child:IsA("Model") and string.sub(child.Name, -#suffix) == suffix then
+			return child :: Model
+		end
+	end
+	return nil
+end
+
+-- (catHotel, issue 1049) The back door and the Cat Hotel behind it: the locked door with the hotel's price, the
+-- building look with its countdown while the CatHotel build runs, then the open door and the hotel, with rooms 3 and 4
+-- roped off until built and their building look only while each builds. The guests are HotelService's.
+local function drawHotel(
+	folder: Folder,
+	assets: Instance,
+	slot: number,
+	save: { stations: any, expansionUnlocked: any? },
+	running: { [string]: BuildRules.Build },
+	isOn: (flag: string) -> boolean
+)
+	local open = HotelRules.open(save.stations, save.expansionUnlocked == true)
+	local item = BuildRules.item(HotelRules.ID, isOn) :: BuildRules.Item
+	local build = running[item.slot]
+	local building = not open and build ~= nil and build.item == HotelRules.ID
+	local doorName = if open
+		then ExpansionRules.OPEN_ASSET
+		elseif building then HotelRules.DOOR_BUILDING_ASSET
+		else ExpansionRules.LOCKED_ASSET
+	local door = assets:FindFirstChild(doorName)
+	if door == nil or not door:IsA("Model") then
+		missing(doorName)
+	else
+		local model = (door :: Model):Clone() :: Model
+		model.Name = ExpansionRules.MODEL_NAME
+		model:SetAttribute(ExpansionRules.ATTRIBUTE, open)
+		if building and build then
+			model:SetAttribute("EndsAt", build.endsAt)
+			buildingLabel(model, item.name, build.endsAt)
+		elseif not open then
+			label(model, item.name, `{item.price} coins`)
+		end
+		model:PivotTo(SpaLayout.slotSpot(ExpansionRules.SPOT, slot))
+		anchorAll(model)
+		model.Parent = folder
+	end
+	if not open then
+		return
+	end
+	local area = assets:FindFirstChild(HotelRules.AREA_ASSET)
+	if area == nil or not area:IsA("Model") then
+		missing(HotelRules.AREA_ASSET)
+		return
+	end
+	local hotel = (area :: Model):Clone() :: Model
+	hotel.Name = HotelRules.AREA_NAME
+	hotel:SetAttribute("Built", true)
+	for room = HotelRules.START_ROOMS + 1, HotelRules.MAX_ROOMS do
+		local id = HotelRules.ROOM_BUILDS[room]
+		local roomBuild = running[(BuildRules.ITEMS[id] :: BuildRules.Item).slot]
+		local roomBuilding = roomBuild ~= nil and roomBuild.item == id
+		local built = save.stations[id] == true
+		local lock = decor(hotel, string.format(HotelRules.LOCK_DECOR, room))
+		local site = decor(hotel, string.format(HotelRules.BUILD_DECOR, room))
+		if lock and (built or roomBuilding) then
+			lock:Destroy()
+		end
+		if site then
+			if roomBuilding and roomBuild then
+				site:SetAttribute("EndsAt", roomBuild.endsAt)
+				buildingLabel(site, BuildRules.ITEMS[id].name, roomBuild.endsAt)
+			else
+				site:Destroy()
+			end
+		end
+	end
+	hotel:PivotTo(SpaLayout.slotSpot(ExpansionRules.SPOT, slot))
+	anchorAll(hotel)
+	hotel.Parent = folder
 end
 
 local function drawInto(
@@ -452,14 +543,29 @@ local function drawInto(
 	end
 	local gardenBuilt = save.stations[GardenRules.ID] == true
 	local unlocked = ExpansionRules.isUnlocked(save.expansionUnlocked == true, gardenBuilt)
-	if isOn(ExpansionRules.FLAG) then
+	local hotel = isOn(ExpansionRules.FLAG) and isOn(HotelRules.FLAG)
+	if hotel then
+		drawHotel(folder, assets :: Instance, slot, save, running, isOn)
+	elseif isOn(ExpansionRules.FLAG) then
 		drawBackDoor(folder, assets :: Instance, slot, unlocked)
 	end
-	if
-		BuildRules.shown(GardenRules.ID, isOn)
-		and ExpansionRules.showGarden(isOn, unlocked, gardenBuilt)
-	then
-		drawGarden(folder, assets :: Instance, slot, save, running, isOn)
+	if not BuildRules.shown(GardenRules.ID, isOn) then
+		-- no Garden under these switches
+	elseif HotelRules.gardenAtSide(isOn) then
+		-- (catHotel) the Garden stands in the side yard, wherever the back door is; only once the plot has that spot
+		if SpaLayout.PLOT_SPOTS[HotelRules.GARDEN_SPOT] ~= nil then
+			drawGarden(
+				folder,
+				assets :: Instance,
+				slot,
+				save,
+				running,
+				isOn,
+				HotelRules.GARDEN_SPOT
+			)
+		end
+	elseif ExpansionRules.showGarden(isOn, unlocked, gardenBuilt) then
+		drawGarden(folder, assets :: Instance, slot, save, running, isOn, GardenRules.SPOT)
 	end
 	folder.Parent = plot
 end
@@ -478,6 +584,25 @@ function StationService.refresh(player: Player)
 		return
 	end
 	drawInto(plot, slot, assets :: Instance, save, LiveFlags.isOn)
+	-- (catHotel) the Player attribute the back door's prompt reads: true while the Cat Hotel's build runs
+	local running = BuildRules.cleanBuilds(save.builds)
+	local hotelBuild = running[BuildRules.ITEMS[HotelRules.ID].slot]
+	player:SetAttribute(
+		HotelRules.BUILDING_ATTRIBUTE,
+		LiveFlags.isOn(HotelRules.FLAG) and hotelBuild ~= nil and hotelBuild.item == HotelRules.ID
+	)
+	local folder = plot:FindFirstChild(SpaLayout.STATIONS_FOLDER)
+	if folder and folder:IsA("Folder") then
+		for _, hook in drawnHooks do
+			task.spawn(hook, player, folder :: Folder)
+		end
+	end
+end
+
+-- Calls `hook(player, folder)` each time the player's plot is drawn again, with its new stations folder (HotelService
+-- puts the hotel's guests in it).
+function StationService.onDrawn(hook: (player: Player, folder: Folder) -> ())
+	table.insert(drawnHooks, hook)
 end
 
 -- Draws the pets in the player's finished garden again (PetService, after every change to the pets), leaving the

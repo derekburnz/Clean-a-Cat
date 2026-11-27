@@ -196,6 +196,7 @@ LiveFlags.KEYS = {
 	"windowClear", -- a window's round badge sits inside its title band (no overhang over the first row or the HUD), and the HUD's buttons step aside while a window is open (UI/Window, UI init, issue 1038); off by default
 	"menuOnly", -- a choice with a menu is made only there: no helper hire pads or Hire and Takes prompts at the stands (Helpers window), no Buy and Build prompts on the boards (Build window), no Wash next prompts (Who's next?), each only while its window is on; guide cards open the window (MenuRules, issues 1028 and 1033); off by default
 	"noVipRoom", -- the VIP Room leaves the game: not on the board or in the Build window, no special visitor boost, and Model-Agent's wall piece fills its door so the back wall has one door; a save that built it keeps it for when the switch goes off (BuildRules.shown, StationService, issue 1063); off by default
+	"catHotel", -- the Cat Hotel behind the back door (needs expansionDoor and builds): the door opens through a 20 minute build (1,500 coins), rooms 1 and 2 open, rooms 3 and 4 are builds; a guest waits at the desk while a room is free and sleeps 1, 4 or 8 hours of server time, then pays its coins and a gift; the Garden moves to the side yard (HotelRules, HotelService, StationService, issue 1049; the stay card is Design-Agent's, issue 1051); off by default
 	"expansionDoor", -- the back door is a building site (caution tape, planks, paint pots) with one prompt, "Unlock · 1500 coins" (50 on dev); the server saves the unlock and the door stands open; the Garden shows there only behind the open door once built (ExpansionRules, ExpansionService, ExpansionController, issue 1041); off by default
 	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
 	"starterCard", -- the starter pack's HUD card is dark with one big picture, the true price and a round "i" for the breakdown; a tap on the card asks for the purchase prompt; no bob, no sparkles and no time chip (HUD/StarterAd, issue 1080); off by default
@@ -372,6 +373,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	giftGroupOnly = true,
 	starterNoClock = true,
 	feedback = true,
+	catHotel = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

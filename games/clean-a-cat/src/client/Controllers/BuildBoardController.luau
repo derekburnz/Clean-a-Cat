@@ -201,7 +201,7 @@ local function enable()
 	if board then
 		return
 	end
-	local offered = BuildRules.offered(LiveFlags.isOn)
+	local offered = BuildRules.boardOffered(LiveFlags.isOn)
 	local made = BoardProp.make(SPEC, SpaLayout.spot("SpotBuilder"), #offered)
 	for index, id in offered do
 		local spot = made.rows[index]
