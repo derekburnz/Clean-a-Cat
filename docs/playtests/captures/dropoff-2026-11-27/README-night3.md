@@ -63,3 +63,6 @@ no-visit-board-1021-1f2895a.jpg: the area by the build board and the gift stand,
 Camera held at the default follow position: 12.5 studs behind the player, 20 degrees up, FOV 70, facing the counter. Each bar's edges were projected with WorldToViewportPoint.
 - From the spawn (-5, -7): bars measure 16.8 to 21.6 px wide and 3.2 to 4.1 px tall, with gaps of 2.0 to 7.7 px (counter-slim-1022-from-spawn-iphone13.jpg).
 - From the door line (-6.3, -22.5), looking along the counter: bars measure 19.2 to 36.0 px wide and 3.7 to 6.9 px tall. Neighbours overlap on screen by 15.7 to 21.0 px, because the row runs away from the camera (counter-slim-1022-from-door-line-iphone13.jpg, with the bars drawn in pink).
+
+## 1024 rewardPop, main b92db46, iphone_13
+reward-pop-1024-crate-nebula-iphone13-b92db46.jpg: opening a good crate shows "You got Nebula!" in the middle, with the Nebula portrait on gold rays, "Rare, +12% on your tips" and "Tap to close". The screen is dimmed behind it, and it closes by itself within a few seconds. Two look notes: the dim covers only the area below the 58 px top inset, so the top strip stays bright; and the tutorial hint card ("Bring the cat to the tub") and the starter ad draw on top of the dim, with the hint card covering the area under "Tap to close".
