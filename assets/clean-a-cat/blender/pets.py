@@ -230,7 +230,7 @@ def angler_lure(ctx):
     for a, b in zip(pts, pts[1:]):
         P.bar(tuple(a), tuple(b), 0.06, 0.06, "galaxy_blue")
     tip = pts[-1] + Vector((0, 0, -0.1))
-    P.bar(tuple(pts[-1]), tuple(tip), 0.04, 0.04, "galaxy_blue")
+    P.bar(tuple(pts[-1]), tuple(tip), 0.04, 0.04, "galaxy_blue", up=(0, 1, 0))      # straight down: up must not be Z
     G.ico(tuple(tip + Vector((0, 0, -0.06))), 0.13, NEON_MINT)
     G.ico(tuple(tip + Vector((0, -0.06, -0.06))), 0.07, STAR)
     for p in pts[1:4]:
