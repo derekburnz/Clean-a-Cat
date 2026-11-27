@@ -343,7 +343,7 @@ function UI.init()
 		-- on a short screen the starter ad steps aside while the bubble is up, so the bubble's X never sits by the
 		-- ad's price (Sync on 1125, iPhone 7)
 		local Kit = require(script:WaitForChild("Kit"))
-		local bubble = root:FindFirstChild("SudsBubble") :: GuiObject?
+		local bubble = root:WaitForChild("SudsBubble") :: GuiObject?
 		local function hushAd()
 			local _, short = Kit.screenScale()
 			StarterAd.setHush(bubble ~= nil and bubble.Visible and short)
@@ -355,6 +355,7 @@ function UI.init()
 		if camera then
 			camera:GetPropertyChangedSignal("ViewportSize"):Connect(hushAd)
 		end
+		hushAd()
 	end
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
