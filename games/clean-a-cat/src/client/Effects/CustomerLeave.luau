@@ -20,6 +20,7 @@ local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
+local CustomerMotion = require(script.Parent:WaitForChild("CustomerMotion"))
 local Effects = require(script.Parent)
 
 local CustomerLeave = {}
@@ -109,8 +110,12 @@ function CustomerLeave.leave(figure: Model)
 	end
 	local wasArchivable = figure.Archivable
 	figure.Archivable = true
-	local ok, made = pcall(function(): Model?
-		return figure:Clone() :: Model
+	-- cloned at rest, so the copy's own rig starts from the server's pose and turns the arm out round the packed cat
+	local ok, made = false, nil :: Model?
+	CustomerMotion.atRest(figure, function()
+		ok, made = pcall(function(): Model?
+			return figure:Clone() :: Model
+		end)
 	end)
 	figure.Archivable = wasArchivable
 	local cloned: Model? = if ok then made else nil
