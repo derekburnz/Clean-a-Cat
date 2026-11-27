@@ -124,7 +124,11 @@ local function refresh()
 		end
 		return
 	end
-	local action = if state.claimed then "Free gifts" else "Free pet"
+	-- (giftCrate, issue 859) the gift is a crate to open, not a pet
+	local action = if state.claimed
+		then "Free gifts"
+		elseif LiveFlags.isOn(CrateRules.GIFT_FLAG) then "Free gift"
+		else "Free pet"
 	if prompt and prompt.Parent and prompt:IsDescendantOf(stand :: Model) then
 		prompt.ActionText = action
 		return
@@ -180,7 +184,7 @@ function GiftController.Start()
 			changed:Fire()
 		end)
 	end
-	for _, flag in { GiftRules.FLAG, CrateRules.FLAG, FreeRewardRules.FLAG } do
+	for _, flag in { GiftRules.FLAG, CrateRules.FLAG, FreeRewardRules.FLAG, CrateRules.GIFT_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(refresh)
 	end

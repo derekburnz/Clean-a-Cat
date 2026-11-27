@@ -183,7 +183,11 @@ local function drawStands()
 		local owner = ownerOf(slot)
 		local save = if owner then DataService.get(owner) else nil
 		light(stand :: Model, owner ~= nil and owner:GetAttribute(GiftRules.LIT_ATTRIBUTE) == true)
-		seatPet(stand :: Model, save == nil or not save.giftClaimed)
+		-- (giftCrate) Starcoat is no longer the gift, only a chance in the crate: he leaves the stand
+		seatPet(
+			stand :: Model,
+			(save == nil or not save.giftClaimed) and not LiveFlags.isOn(CrateRules.GIFT_FLAG)
+		)
 	end
 end
 
@@ -264,12 +268,16 @@ local function onClaim(player: Player)
 		end
 		return
 	end
-	local pet = GiftRules.give(save :: any, CrateRules.PLAYER_SLOT)
-	if pet == nil then
+	-- (switch giftCrate, issue 859) a gift crate to open, with its chances shown, instead of Starcoat straight away
+	local crate = LiveFlags.isOn(CrateRules.GIFT_FLAG)
+	local given = if crate
+		then GiftRules.giveCrate(save :: any, CrateRules.GIFT_KIND)
+		else GiftRules.give(save :: any, CrateRules.PLAYER_SLOT) ~= nil
+	if not given then
 		claiming[player] = nil
 		return
 	end
-	Telemetry.event(player, "gift_claimed", 1)
+	Telemetry.event(player, "gift_claimed", 1, { if crate then "crate" else "pet" })
 	PetService.show(player)
 	-- the pet is the player's from now on; the card hears it once the save holding it is written (or after SAVE_WAIT,
 	-- when the next save carries it)
@@ -282,7 +290,12 @@ local function onClaim(player: Player)
 	end
 	show(player)
 	drawStands()
-	NetService.notice(player, "Starcoat is yours! Thank you for joining us")
+	NetService.notice(
+		player,
+		if crate
+			then "Your gift crate is here! Thank you for joining us"
+			else "Starcoat is yours! Thank you for joining us"
+	)
 end
 
 function GiftService.Init(_services: { [string]: any }) end
@@ -300,7 +313,7 @@ function GiftService.Start()
 		claiming[player] = nil
 		task.defer(drawStands)
 	end)
-	for _, flag in { GiftRules.FLAG, CrateRules.FLAG } do
+	for _, flag in { GiftRules.FLAG, CrateRules.FLAG, CrateRules.GIFT_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				for _, player in Players:GetPlayers() do

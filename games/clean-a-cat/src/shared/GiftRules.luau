@@ -60,4 +60,18 @@ function GiftRules.give(save: Save, playerSlot: string): Pet?
 	return pet
 end
 
+-- (switch giftCrate, issue 859) Gives the gift crate (CrateRules.GIFT_KIND) into `save` once instead of the pet: the
+-- player opens it with their own tap, its chances shown first. False when the gift was given already.
+function GiftRules.giveCrate(
+	save: { crates: { [string]: number }, giftClaimed: boolean },
+	kind: string
+): boolean
+	if save.giftClaimed then
+		return false
+	end
+	save.giftClaimed = true
+	save.crates[kind] = (save.crates[kind] or 0) + 1
+	return true
+end
+
 return table.freeze(GiftRules)
