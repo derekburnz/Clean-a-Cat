@@ -117,6 +117,7 @@ export type Save = {
 	likeNos: number, -- how many times the like ask was answered "Not now" (LikeAskRules.MAX_NOS)
 	likeYes: boolean, -- the like ask was once answered "yes": it never comes again
 	visiting: boolean, -- others may visit this spa (issue 520)
+	expansionUnlocked: boolean, -- the back door expansion is unlocked with coins (ExpansionRules, issue 1041)
 	jarCoins: number, -- the tip jar's coins waiting (issue 517)
 	jarAt: number, -- os.time() the jar was last filled or emptied
 	bench: { BenchCat }, -- the cats waiting, front first, as last saved
@@ -180,6 +181,7 @@ function SaveSchema.template(now: number): Save
 		likeNos = 0,
 		likeYes = false,
 		visiting = true,
+		expansionUnlocked = false,
 		jarCoins = 0,
 		jarAt = 0,
 		bench = {},

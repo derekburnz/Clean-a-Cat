@@ -188,9 +188,11 @@ LiveFlags.KEYS = {
 	"outdoorWalk", -- once the first session's tutorial has ended (2:45 of play), the player walks at 24 studs a second outside every spa building, the default 16 inside one and all through the tutorial (OutdoorWalkRules, OutdoorWalkService, OutdoorWalkController, issue 886); off by default
 	"tipTake", -- with counterLine: while the next cat waits on Suds's tip after a recap card, the cats on the counter keep their Take cat prompt, and a tap asks for the next cat at once and takes that cat (BubbleController.hurry, CarryController, issue 1017); off by default
 	"noVisitBoard", -- the "Who might visit" chance board by the door is not drawn (Derek: it adds clutter); the same chances stay in the cat index and the queue window (ChanceBoardController, issue 1021); off by default
+	"petSingles", -- the Pets window draws every pet as its own tile (no "x3" stacks) and a one star pet with no stars; stars show from two up (CrateViewRules.tiles, PetsWindow, issue 1035); off by default
 	"coinLadder", -- the shop's 3x Coins pass shows only once 2x Coins is owned, and the server prompts it only then; 3x pays in place of 2x, never both, and works once owned with this off too (Passes.offered, ShopViewRules, PassService, issue 1031); off by default
 	"launchSale", -- a pass or product whose Roblox price is below its regular price (SaleRules.REGULAR_*) shows that regular price struck through and "Launch sale: 50% off"; the prices themselves are set on Roblox by store-setup sale-prices (SaleRules, ShopViewRules, issue 1032); off by default
 	"menuOnly", -- a choice with a menu is made only there: no helper hire pads or Hire and Takes prompts at the stands (Helpers window), no Buy and Build prompts on the boards (Build window), no Wash next prompts (Who's next?), each only while its window is on; guide cards open the window (MenuRules, issues 1028 and 1033); off by default
+	"expansionDoor", -- the back door is a building site (caution tape, planks, paint pots) with one prompt, "Unlock · 1500 coins" (50 on dev); the server saves the unlock and the door stands open; the Garden shows there only behind the open door once built (ExpansionRules, ExpansionService, ExpansionController, issue 1041); off by default
 	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
 }
 
@@ -356,6 +358,8 @@ LiveFlags.OFF_BY_DEFAULT = {
 	launchSale = true,
 	menuOnly = true,
 	resetSave = true,
+	petSingles = true,
+	expansionDoor = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

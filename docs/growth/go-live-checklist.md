@@ -44,6 +44,7 @@ Order, and why:
    - `passes` after the live passes and their ids exist.
    - `finishNow` after the five Finish now products exist.
    - `pets` and `crateShop` after the questionnaire is in, the live crate products exist and the policy check is current. `giftStand`, `giftCrate`, `giftFlow` with `freeRewards` and the like asks (`likeAsk`, then `likeAskPurchase` last, each its own switch).
+   - `launchSale` on live only with a planned end date, then run store-setup regular-prices and switch `launchSale` off. The sale shows the regular price struck through, which is only honest if the sale really ends. End date: the one Derek picks (Review-QA suggested 7 days after launch).
    - the `starterPack` switch last of all, so its 72 hour clock only starts for players who see everything it buys.
 8. **Held until they pass the iPhone 12:** `wideStreet`, `bigSpa`, `worldBackdrop`. They need a new server once flipped.
 

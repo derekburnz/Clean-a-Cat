@@ -184,4 +184,30 @@ function Kit.rarityChip(
 	return c
 end
 
+-- An empty pet slot's "+" (issue 1034, Derek saw empty slots as plain grey circles): a small green round badge at the
+-- box's bottom right, so the box reads as "put a pet here".
+function Kit.plusBadge(box: GuiObject): Frame
+	local badge = Instance.new("Frame")
+	badge.Name = "Plus"
+	badge.AnchorPoint = Vector2.new(0.5, 0.5)
+	badge.Position = UDim2.fromScale(0.86, 0.86)
+	badge.Size = UDim2.fromScale(0.42, 0.42)
+	badge.BackgroundColor3 = Color3.fromHex("5BCB8A")
+	badge.ZIndex = box.ZIndex + 2
+	Kit.corner(badge, UDim.new(0.5, 0))
+	Kit.stroke(badge, 2)
+	local plus = Instance.new("TextLabel")
+	plus.Name = "Glyph"
+	plus.BackgroundTransparency = 1
+	plus.Size = UDim2.fromScale(1, 1)
+	plus.Text = "+"
+	plus.TextScaled = true -- one glyph that fills its badge
+	plus.TextColor3 = Kit.WHITE
+	plus.Font = Kit.FONT
+	plus.ZIndex = badge.ZIndex
+	plus.Parent = badge
+	badge.Parent = box
+	return badge
+end
+
 return Kit
