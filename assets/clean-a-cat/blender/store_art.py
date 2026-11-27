@@ -656,6 +656,32 @@ def thumb_lineup(mat, out, res):
 BUSY = (("Lou", "Cotton", "dirty"), ("Sam", "Muffin", "half"), ("Jo", "Sherbet", "plain"))
 
 
+def _stand_no_pole(ws, who, mat):
+    """A wash stand without a standing shower. Jo's shower pole read as a long rod held up beside a person, and the
+    image gate fails any long rounded shape (Review-QA, 2026-11-27), so the store art leaves it out. The plant and
+    the shelf stay."""
+    look = ws.LOOKS[who]
+    keep = look["tall"]
+    if keep != "shower":
+        return ws.build_stand(who, mat, grow=False)
+    ws.TALLS["_none"] = lambda _b, _top_b, _sw: None
+    look["tall"] = "_none"
+    try:
+        return ws.build_stand(who, mat, grow=False)
+    finally:
+        look["tall"] = keep
+        del ws.TALLS["_none"]
+
+
+def _staff_sleeved(spa_staff, who, mat):
+    """The staff for the store art: arms hanging straight at their sides in long smock sleeves that cover the hands,
+    so no hand and no bare forearm shows (image gate: no hands and no skin tone blobs, Review-QA 2026-11-27). The
+    game's staff keep their short sleeves and hands."""
+    import townsfolk
+    look = dict(spa_staff.LOOKS[who], short_sleeves=None, gloves=spa_staff.SMOCK)
+    return townsfolk.build_figure(spa_staff.PREFIX + who, look, mat, carry=False)
+
+
 def thumb_busy(mat, out, res):
     """Thumbnail: the busy spa. The three wash stands in front, each with a cat a step further along: a muddy one,
     one half washed and one clean. No bow on the clean cat: the owner, 2026-11-26, on a sky Royal bow tried there,
@@ -667,11 +693,11 @@ def thumb_busy(mat, out, res):
     objs = []
     for i, (who, cat, state) in enumerate(BUSY):
         x = (i - 1) * 4.7
-        stand = [o for o in ws.build_stand(who, mat, grow=False) if not o.name.endswith("_Barrier")]
+        stand = [o for o in _stand_no_pole(ws, who, mat) if not o.name.endswith("_Barrier")]
         _move(stand, (x, 0, 0))
         objs += _fresh(stand)
         objs += cat_state(cat, mat, "sit", state, (x + ws.BX, ws.BY, ws.SEAT), TUB_K)
-        staff = spa_staff.build_staff(who, mat)
+        staff = _staff_sleeved(spa_staff, who, mat)
         _move(staff, (x + 2.25, 3.4, 0), 1.0, -6 * (i - 1))
         objs += _fresh(staff)
     lo, hi = common.bounds(objs)
