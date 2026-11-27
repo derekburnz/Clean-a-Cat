@@ -1,0 +1,2 @@
+Held 2026-11-27: the Roblox account behind both Open Cloud keys is suspended for 7 days (appealed), so every Roblox write fails with "moderated".
+Merges to main go on with green checks and publish in one pass later. To publish again, delete this file in a pull request.
