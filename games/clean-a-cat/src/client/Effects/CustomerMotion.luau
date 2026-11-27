@@ -72,6 +72,9 @@ type Rig = {
 	builder: boolean,
 	hammer: number, -- the hammering pose's blend, 0 to 1 (builder only)
 	tool: Joint?, -- the builder's Hammer, its rest in the right arm's frame
+	carrier: Model?, -- the figure's Carrier (FigureService hangs it under the arm), looked up at most once a second
+	carrierPart: BasePart?, -- one of its parts: CounterCrate hides the carrier by Transparency
+	carrierAt: number, -- os.clock() of the last look for it
 }
 
 -- Whether a helper is holding the cat on Gameplay's walk at server time `now` (HelperFetchRules.pose).
@@ -99,25 +102,42 @@ function CustomerMotion.holding(model: Model, now: number): boolean
 end
 
 -- Gameplay turns the carrying arm out by the figure's CarryArmOut degrees on the server so the carrier hangs clear of
--- the body (issues 871 and 874). While the carrier is hidden (CounterCrate's CarrierHidden, after the reach that sets
--- the crate down) the arm turns back in by as much, so an empty hand hangs straight; when the PackedCat shows for the
--- leave it turns out again.
-function CustomerMotion.armIn(hidden: boolean, outDegrees: unknown, reaching: boolean): number
-	if not hidden or reaching or type(outDegrees) ~= "number" then
+-- the body (issues 871 and 874). The straight arm is the default (issue 1062, Derek on dev: an arm sticking out with
+-- nothing in the hand): the arm stays turned out only while a carrier that shows hangs from the hand, or while the
+-- reach that sets the crate down plays. Otherwise it turns back in by as much and the hand hangs straight. That covers
+-- the carrier hidden (CounterCrate's CarrierHidden), none built or none come in yet, and customers too far away or
+-- past MAX, which rest with the arm straight too. When the PackedCat shows for the leave, it turns out again.
+function CustomerMotion.armIn(holding: boolean, outDegrees: unknown, reaching: boolean): number
+	if holding or reaching or type(outDegrees) ~= "number" then
 		return 0
 	end
 	return math.rad(outDegrees :: number)
 end
 
-function CustomerMotion.armInFor(model: Model, now: number): number
+-- Does a carrier that shows hang from the hand: a Carrier with a part drawn, and not hidden by CounterCrate.
+function CustomerMotion.carrierShows(
+	hidden: boolean,
+	carrier: boolean,
+	transparency: number?
+): boolean
+	return not hidden and carrier and transparency ~= nil and transparency < 1
+end
+
+function CustomerMotion.armInFor(model: Model, now: number, carrierPart: BasePart?): number
+	local out = model:GetAttribute("CarryArmOut")
+	if type(out) ~= "number" then
+		return 0
+	end
 	local reachAt = model:GetAttribute(CounterCrate.REACH_ATTRIBUTE)
 	local reaching = type(reachAt) == "number"
 		and now - (reachAt :: number) < CounterCrate.REACH_SECONDS
-	return CustomerMotion.armIn(
+	local part = if carrierPart and carrierPart.Parent then carrierPart else nil
+	local holding = CustomerMotion.carrierShows(
 		model:GetAttribute(CounterCrate.EMPTY_HAND_ATTRIBUTE) == true,
-		model:GetAttribute("CarryArmOut"),
-		reaching
+		part ~= nil,
+		if part then part.Transparency else nil
 	)
+	return CustomerMotion.armIn(holding, out, reaching)
 end
 
 local rigs: { [Model]: Rig } = {}
@@ -209,6 +229,9 @@ local function attach(model: Model)
 		builder = builder,
 		hammer = 0,
 		tool = tool,
+		carrier = nil,
+		carrierPart = nil,
+		carrierAt = -math.huge,
 	}
 end
 
@@ -242,8 +265,47 @@ end
 
 local restPose = CustomerPose.newPose()
 
+local CARRIER_LOOK_SECONDS = 1
+
+-- The figure's carrier part, found again at most once a second while there is none (it can be built or stream in
+-- after the figure), so no model walk runs every frame (issue 821).
+local function carrierPartOf(rig: Rig, clock: number): BasePart?
+	local carrier = rig.carrier
+	if carrier == nil or not carrier:IsDescendantOf(rig.model) then
+		rig.carrier = nil
+		rig.carrierPart = nil
+		if clock - rig.carrierAt < CARRIER_LOOK_SECONDS then
+			return nil
+		end
+		rig.carrierAt = clock
+		local found = rig.model:FindFirstChild("Carrier", true)
+		if found == nil or not found:IsA("Model") then
+			return nil
+		end
+		carrier = found :: Model
+		rig.carrier = carrier
+	end
+	local part = rig.carrierPart
+	if part == nil or not part:IsDescendantOf(carrier :: Model) then
+		local model = carrier :: Model
+		local primary = model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart", true)
+		part = if primary and primary:IsA("BasePart") then primary :: BasePart else nil
+		rig.carrierPart = part
+	end
+	return part
+end
+
+-- Back to rest: the pose at rest, with the carrying arm straight unless a carrier shows in the hand (issue 1062), so a
+-- far or unanimated customer never keeps the server's turned-out arm with nothing in it. Written again only when
+-- something changed or a move put the joints back at the server's rest.
 local function toRest(rig: Rig)
-	if rig.moved and rig.body.Parent then
+	if rig.body.Parent == nil then
+		rig.moved = false
+		return
+	end
+	local want = CustomerMotion.armInFor(rig.model, os.clock(), carrierPartOf(rig, os.clock()))
+	if rig.moved or want ~= rig.armIn or (want ~= 0 and rig.body.CFrame ~= rig.appliedAt) then
+		rig.armIn = want
 		apply(rig, restPose)
 	end
 	rig.moved = false
@@ -301,7 +363,12 @@ local function update(rig: Rig, now: number)
 	if type(reachAt) == "number" and not still then
 		rig.pose.armR += CounterCrate.reachAt(now - reachAt)
 	end
-	rig.armIn = CustomerPose.approach(rig.armIn, CustomerMotion.armInFor(rig.model, now), 8, dt)
+	rig.armIn = CustomerPose.approach(
+		rig.armIn,
+		CustomerMotion.armInFor(rig.model, now, carrierPartOf(rig, os.clock())),
+		8,
+		dt
+	)
 	apply(rig, rig.pose)
 	rig.moved = true
 end
