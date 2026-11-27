@@ -190,3 +190,7 @@ The `hotel-*.jpg` pictures show the side Garden's three looks (locked, building,
 
 `1111-<step>-iphone13.jpg` covers the free reward board: Join, Verify when not in the group, the 10 s wait, and the join with the gift and 150 coins. It also covers the seeded saves with the like already paid and with the gift already owned.
 Group membership was faked only inside the unsaved local place: a QA patch to GiftService.inGroup reads the workspace attribute _QAInGroup. No real group was joined, left or changed.
+
+## ButtonInk write counter (PR 1118) on main f27874d, iphone_13, 2026-11-27
+
+`1118-<piece>-iphone13.jpg` shows Sam's Level up and the Build Buy buttons after TextTransparency was set from the client (1, then 0, then three quick 1/0 toggles). The words stay outlined.
