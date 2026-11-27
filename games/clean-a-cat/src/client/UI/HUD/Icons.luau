@@ -111,12 +111,11 @@ Icons.STAND_INS = STAND_INS
 -- deleted or not group-owned picture fails its fetch and drew a blank square. Once one fails it draws its stand-in, here
 -- and on every later draw, so a button is never empty.
 local failed: { [string]: boolean } = {}
-local WATCH_SECONDS = 20 -- a fetch still not done by then counts as failed
 
 local drawStandIn: (name: string, parent: GuiObject, fade: number) -> GuiObject
 
--- Calls `fallback` once if `image` on `label` fails to load (a failed or timed out fetch, or still not loaded after
--- WATCH_SECONDS), and remembers the id as failed. Only in a running game. Portraits uses it too.
+-- Calls `fallback` once if `image` on `label` fails to load (Roblox reports its fetch as Failure), and remembers the id
+-- as failed. Only in a running game. Portraits uses it too.
 function Icons.onFail(label: ImageLabel, image: string, fallback: () -> ())
 	if not RunService:IsRunning() then
 		return
@@ -132,28 +131,22 @@ function Icons.onFail(label: ImageLabel, image: string, fallback: () -> ())
 			fallback()
 		end
 	end
+	-- Preload the LABEL, never the bare "rbxassetid://" string: for image ids the string form always reports Failure,
+	-- which swapped every picture for its stand-in (Sync on #1054). Then only a fetch Roblox itself reports as Failure
+	-- for this id counts; a slow or timed out fetch, or a label in a hidden window that has not drawn yet, never does.
 	task.spawn(function()
 		local ok = pcall(function()
-			ContentProvider:PreloadAsync(
-				{ image },
-				function(_id: string, status: Enum.AssetFetchStatus)
-					if
-						status == Enum.AssetFetchStatus.Failure
-						or status == Enum.AssetFetchStatus.TimedOut
-					then
-						task.defer(fail)
-					end
-				end
-			)
+			ContentProvider:PreloadAsync({ label })
 		end)
-		if not ok then
+		if not ok or label.Parent == nil then
 			return
 		end
-		task.delay(WATCH_SECONDS, function()
-			if label.Parent and not label.IsLoaded then
-				fail()
-			end
+		local read, status = pcall(function(): Enum.AssetFetchStatus
+			return ContentProvider:GetAssetFetchStatus(image)
 		end)
+		if read and status == Enum.AssetFetchStatus.Failure then
+			fail()
+		end
 	end)
 end
 
