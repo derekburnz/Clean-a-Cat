@@ -153,6 +153,7 @@ local items: { StarterViewRules.Item } = {}
 local pack: number? = nil
 local noteText: string? = nil
 local aside = false
+local hush = false -- a landscape phone with Suds's bubble up (StarterAd.setHush)
 local drawn: { string } = {}
 local tooSmall = false -- true while the card would not fit even at MIN_FIT
 local buyHandlers: { () -> () } = {}
@@ -240,7 +241,10 @@ local function fit()
 	local small = k < MIN_FIT
 	if small ~= tooSmall then
 		tooSmall = small
-		p.holder.Visible = allOn() and not aside and not tooSmall
+		p.holder.Visible = allOn()
+			and not aside
+			and not (hush and StarterAd.floating())
+			and not tooSmall
 	end
 	local want = scale * math.max(k, MIN_FIT)
 	-- a 1% step is not visible, and a smaller one let the floored text sizes flip it back and forth every frame
@@ -259,7 +263,10 @@ local function redraw()
 	end
 	local scale, short = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
-	p.holder.Visible = allOn() and not aside and not tooSmall
+	p.holder.Visible = allOn()
+		and not aside
+		and not (hush and StarterAd.floating())
+		and not tooSmall
 	p.holder.Position = UDim2.new(1, -EDGE * scale, 0, TOP * scale)
 	local float = StarterAd.floating()
 	local width = if float then s.floatWidth else s.width
@@ -423,6 +430,16 @@ end
 function StarterAd.setAside(on: boolean)
 	if aside ~= on then
 		aside = on
+		redraw()
+	end
+end
+
+-- Hides the ad while Suds's help bubble is up on a short screen, where the bubble's X came down beside the ad's
+-- price on an iPhone 7 and a tap meant for the X could land on a purchase (Sync on 1125). One thing at a time. Only
+-- with starterFloat, where Sync measured it (rule 16: the switch off leaves the ad as it was).
+function StarterAd.setHush(on: boolean)
+	if hush ~= on then
+		hush = on
 		redraw()
 	end
 end

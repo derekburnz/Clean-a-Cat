@@ -1307,6 +1307,19 @@ local SCENES = {
 			flag("starterFloat", true)
 		end,
 	},
+	-- With Suds's bubble up: on a short screen the ad steps aside, so the X is never by its price (Sync on 1125).
+	{
+		"HudStarterFloatBubble",
+		function()
+			allButtons(true)
+			flag("starterCard", true)
+			flag("starterPet", true)
+			flag("starterFloat", true)
+			flag("sudsBubble", true)
+			local BubbleRules = UIShim.require("ReplicatedStorage.Shared.BubbleRules")
+			UI.showBubble(BubbleRules.get("firstCustomer"))
+		end,
+	},
 	-- starterNoClock (issue 1069): the starter ad's chip says "New player offer" instead of the time left.
 	{
 		"HudStarterNoClock",

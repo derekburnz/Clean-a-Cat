@@ -339,6 +339,25 @@ function UI.init()
 	-- windows; its words keep clear of the step pill
 	HUD.onTipChanged(Spotlight.refit)
 	SudsBubble.build(root) -- Suds's help bubble (switch sudsBubble), at the bottom while the tub is empty
+	do
+		-- on a short screen the starter ad steps aside while the bubble is up, so the bubble's X never sits by the
+		-- ad's price (Sync on 1125, iPhone 7)
+		local Kit = require(script:WaitForChild("Kit"))
+		local found = root:WaitForChild("SudsBubble")
+		local bubble: GuiObject? = if found:IsA("GuiObject") then found :: GuiObject else nil
+		local function hushAd()
+			local _, short = Kit.screenScale()
+			StarterAd.setHush(bubble ~= nil and bubble.Visible and short)
+		end
+		if bubble then
+			bubble:GetPropertyChangedSignal("Visible"):Connect(hushAd)
+		end
+		local camera = Workspace.CurrentCamera
+		if camera then
+			camera:GetPropertyChangedSignal("ViewportSize"):Connect(hushAd)
+		end
+		hushAd()
+	end
 	Recap.build(root) -- the recap card and strip (switch recapCard, off by default), above the HUD and toast
 	windows.CatIndex = CatIndex.build(root) -- the Cat Index window (switch catIndexWindow, #238)
 	windows.Queue = QueueWindow.build(root) -- "Who's next?" (switch queueWindow, #246)
