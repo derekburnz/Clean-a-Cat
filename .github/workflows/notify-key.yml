@@ -19,6 +19,11 @@ on:
         type: choice
         options: [check, install, string]
         default: check
+      string_name:
+        description: "string: which notification string (hotel_ready is the Cat Hotel's, issue 1049)"
+        type: choice
+        options: [build_done, hotel_ready]
+        default: build_done
 
 permissions:
   contents: read
@@ -45,4 +50,5 @@ jobs:
           KEY_OWNER: ${{ secrets.OWNER_KEY }}
           KEY_GROUP: ${{ secrets.ROBLOX_GROUP_KEY }}
           ACTION: ${{ inputs.action }}
+          STRING_NAME: ${{ inputs.string_name }}
         run: python3 games/clean-a-cat/tools/opencloud/notify-key.py
