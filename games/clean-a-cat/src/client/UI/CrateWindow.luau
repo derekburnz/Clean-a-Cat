@@ -325,7 +325,10 @@ local function redraw()
 	p.gift.Size = UDim2.fromOffset(s.gift, s.gift)
 	-- on a short screen the Robux rows take the crate picture's place, so the window stays on screen (bug hunt B8,
 	-- issue 658: with Open crate and both rows it was 360 px tall on a 332 px phone screen)
-	p.gift.Visible = not (short and #shopRows > 0)
+	-- on a very short screen with no Robux rows, the chances note moves under Open crate in the crate picture's place,
+	-- so the window keeps its whole bottom edge and the note shows whole beside the odds (issue 988)
+	local sumInBox = tiny and #shopRows == 0
+	p.gift.Visible = not ((short and #shopRows > 0) or sumInBox)
 	p.have.TextSize = s.have
 	p.have.Size = UDim2.new(1, 0, 0, s.have + 6) -- AutomaticSize grows it when larger text wraps
 	p.have.Text = CrateViewRules.haveLine(shownKind, held)
@@ -362,6 +365,13 @@ local function redraw()
 	p.grid.Size = UDim2.new(1, 0, 0, lines * s.rowH + math.max(lines - 1, 0) * rowGap)
 	p.sum.TextSize = s.sum
 	p.sum.Text = CrateViewRules.SUM_LINE
+	p.sum.Parent = if sumInBox then p.box else p.right
+	p.sum.LayoutOrder = if sumInBox then 5 else 2
+	p.sum.TextXAlignment = if sumInBox then Enum.TextXAlignment.Center else Enum.TextXAlignment.Left
+	local sumPad = p.sum:FindFirstChildOfClass("UIPadding") :: UIPadding?
+	if sumPad then
+		sumPad.PaddingRight = UDim.new(0, if sumInBox then 0 else 10)
+	end
 end
 
 function CrateWindow.set(kind: string, count: number, newRows: { CrateViewRules.Row })
