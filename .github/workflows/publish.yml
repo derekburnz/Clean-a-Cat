@@ -10,6 +10,9 @@
 # - By hand to dev: target "dev" (the default).
 # Published goes live for new servers of that place; Saved only adds a version to the place history.
 #
+# Hold: while .github/publish-hold is on main, every run (automatic or by hand) ends green without publishing; delete
+# the file to publish again (the hold job below).
+#
 # A publish reaches NEW servers only. Running servers keep their version until they empty or are restarted.
 # Restarting disconnects players, so it happens only when the owner says so: tick restart_servers on a hand
 # run, or run restart-servers.yml. The repo variable AUTO_RESTART ("true") makes every automatic publish (dev)
@@ -66,12 +69,45 @@ env:
   TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'dev' }}
 
 jobs:
+  # The publish hold: while the file .github/publish-hold is on main, no publish runs, automatic or by hand, and the
+  # run ends green with the reason in its summary. Put on 2026-11-27 while Derek's Roblox account was suspended (both
+  # Open Cloud keys answer "moderated"), so merges can go on with green checks. To publish again: delete that file
+  # in a pull request; nothing else changes.
+  hold:
+    name: Publish hold
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      held: ${{ steps.look.outputs.held }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          sparse-checkout: .github
+      - name: Look for .github/publish-hold
+        id: look
+        run: |
+          if [ -f .github/publish-hold ]; then
+            echo "held=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Publish held"
+              echo
+              echo "No publish while .github/publish-hold is on main:"
+              echo
+              sed 's/^/> /' .github/publish-hold
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "held=false" >> "$GITHUB_OUTPUT"
+          fi
+
   publish:
     name: Build with Rojo and upload
+    needs: hold
     if: >-
+      needs.hold.outputs.held != 'true' && (
       github.event_name == 'workflow_dispatch' ||
       (vars.AUTO_PUBLISH == 'true' && github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push')
+      github.event.workflow_run.event == 'push'))
     runs-on: ubuntu-latest
     timeout-minutes: 40 # 20 for the build and upload, plus the countdown when it restarts
     env:

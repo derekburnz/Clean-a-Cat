@@ -10,6 +10,10 @@
 --     Model-Agent's CleanACat_Area_WashRoom, or a plain pastel box until it exists;
 --   * hides on this device every other part inside the room, keeping what sits near the cat (WashScreenRules.keeps:
 --     the tub or station, the cat, its bubbles), and looks again every WashScreenRules.REFRESH seconds;
+--   * switches off everything that draws over or through the room's walls (Spa/WashQuiet: the heart bars, name
+--     tags, worker bars and other world guis, highlights, and effects of other stands inside the room), keeping the
+--     wash's own pieces; Derek in Studio, 2026-11-26 10 PM ET: "during cleaning you can see the heart bars of cats in
+--     the background make it a seperate screen with nothing really shown in the background";
 --   * hides Roblox's player list and asks the UI to hide the regular HUD (UI.setWashFocus, Design-Agent's) while the
 --     minigame's own step counter, progress bar and tool tray stay.
 -- PromptController hides every prompt pill and ScrubController the Walk button under the same switch. On the way
@@ -26,6 +30,7 @@ local WashScreenRules = require(Shared:WaitForChild("WashScreenRules"))
 
 local BubbleWipe = require(script.Parent.Parent:WaitForChild("Effects"):WaitForChild("BubbleWipe"))
 local UI = require(script.Parent.Parent:WaitForChild("UI"))
+local WashQuiet = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashQuiet"))
 local WashView = require(script.Parent.Parent:WaitForChild("Spa"):WaitForChild("WashView"))
 
 local WashScreenController = {}
@@ -201,6 +206,28 @@ local function placeholder(pivot: CFrame): Model
 	return model
 end
 
+-- The wash's own pieces, which stay drawn: the room, ScrubController's folder (the cat, its paw marker and ring) and
+-- the effects' folders (suds, foam, glows).
+local function washOwns(item: Instance): boolean
+	local at: Instance? = item
+	while at and at ~= (Workspace :: Instance) do
+		if at == room then
+			return true
+		end
+		local parent = at.Parent
+		if parent == (Workspace :: Instance) then
+			return at.Name == WASH_FOLDER or string.sub(at.Name, 1, #FX_PREFIX) == FX_PREFIX
+		end
+		at = parent
+	end
+	return false
+end
+
+local function inRoom(point: Vector3): boolean
+	local at = roomAt
+	return at ~= nil and WashScreenRules.inRoom(point, at)
+end
+
 local function dropRoom()
 	local old = room
 	room = nil
@@ -249,6 +276,7 @@ local function enter(my: number)
 	setFocus(true)
 	local spot = WashView.framing()
 	placeRoom(spot)
+	WashQuiet.start(washOwns, inRoom)
 	-- a passer by or a new prop in the room is hidden too, while this screen is up
 	task.spawn(function()
 		while turn == my and up do
@@ -262,6 +290,7 @@ local function enter(my: number)
 end
 
 local function leave()
+	WashQuiet.stop()
 	dropRoom()
 	showAll()
 	setFocus(false)
@@ -287,6 +316,7 @@ local function update()
 		local at = roomAt
 		if at and (at - spot.Position).Magnitude > 0.5 then
 			placeRoom(spot)
+			WashQuiet.refresh(inRoom)
 		end
 	elseif not want and up then
 		up = false
