@@ -151,6 +151,7 @@ LiveFlags.KEYS = {
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 	"helpersWindow", -- a Helpers button on the HUD, shown once a helper is hired, opens one row per helper: their name, level with Level up and its price, the line they wash first (tap to change) and Rename; a helper not hired yet shows their price at their pad, and Lou his pass in the Shop (UI/HelpersWindow, HelperViewRules, issue 526 item 3); off by default
 	"helperPets", -- each hired helper's row in the Helpers window has a pet box: their pet, or a paw when empty; a tap opens Pets with that helper's slot picked (owner 2026-11-26, issue 929). The world "Give a pet" prompt going away is petMenuOnly's job; off by default
+	"recapEvery", -- the full recap card after every customer, not only the first ones and rarer cats (RecapRules.EVERY_FLAG; owner's plan page answer of 2026-11-25, issue 890); off by default
 	"buttonArrive", -- a HUD button that unlocks while the player is in the game arrives with Motion-FX's small pop, tilt and twinkle, once (Effects/Arrive from UI/HUD/SideButtons, issue 528); buttons already there on join simply show; off by default
 	"fewerPills", -- with smallPrompts: at most two prompt pills show at once, the nearest within 10 studs (a winning one such as the door's Take cat at any distance); every key still works (Spa/PillLayout, issue 745); off by default
 	"buildWindow", -- with hudTidy: a Build button in the HUD grid opens "Build and upgrades", every build with its price and time (or its countdown, what it waits for, or Built) and every tool and the next bow with Buy; the server skips only the distance to the board for RequestBuild, RequestBuyTool and RequestBuyBow, while Finish now still needs the board (BuildService, ToolService, BuildViewRules, UI/BuildWindow, BuildWindowController, issue 751); off by default
@@ -297,6 +298,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	staffRename = true,
 	helpersWindow = true,
 	helperPets = true,
+	recapEvery = true,
 	buttonArrive = true,
 	leaveLines = true,
 	hudTidy = true,

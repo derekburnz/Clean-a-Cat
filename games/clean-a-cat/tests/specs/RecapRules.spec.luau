@@ -183,5 +183,14 @@ return function()
 			local clean = RecapRules.clean(recap) :: any
 			expect(clean.opening).to.equal(284)
 		end)
+
+		it("gives every customer the full card with recapEvery", function()
+			expect(RecapRules.isFull(50, "Common")).to.equal(false)
+			expect(RecapRules.isFull(50, "Common", true)).to.equal(true)
+			expect(RecapRules.isFull(50, "Common", false)).to.equal(false)
+			local pay = CatRules.pay("Muffin")
+			expect(RecapRules.make("Muffin", pay, 0, 50, false, nil, true).full).to.equal(true)
+			expect(RecapRules.make("Muffin", pay, 0, 50, false).full).to.equal(false)
+		end)
 	end)
 end
