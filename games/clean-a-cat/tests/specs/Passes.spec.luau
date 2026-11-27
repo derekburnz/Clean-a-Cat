@@ -12,8 +12,8 @@ end
 
 return function()
 	describe("Passes", function()
-		it("lists the five passes, none created yet", function()
-			expect(#Passes.KEYS).to.equal(5)
+		it("lists the six passes, none created yet", function()
+			expect(#Passes.KEYS).to.equal(6)
 			for _, key in Passes.KEYS do
 				expect(Passes.IDS[key]).to.be.ok()
 				expect(Passes.INFO[key]).to.be.ok()
@@ -60,10 +60,45 @@ return function()
 			)
 		end)
 
+		it("triples a hand wash with 3x Coins in place of 2x, never both", function()
+			expect(Passes.handExtra(20, owning({ "TripleCoins" }))).to.equal(40)
+			expect(Passes.handExtra(20, owning({ "DoubleCoins", "TripleCoins" }))).to.equal(40)
+			expect(Passes.handExtra(20, owning({ "TripleCoins", "GoldenSponge" }))).to.equal(52)
+			expect(Passes.handLine(owning({ "DoubleCoins", "TripleCoins" }))).to.equal("3x Coins")
+			expect(Passes.handLine(owning({ "TripleCoins", "GoldenSponge" }))).to.equal(
+				"3x Coins and Golden Sponge"
+			)
+		end)
+
+		it("offers 3x Coins only once 2x is owned, with coinLadder on", function()
+			local function on(flag: string): boolean
+				return flag == Passes.LADDER_FLAG
+			end
+			local function off(_flag: string): boolean
+				return false
+			end
+			expect(Passes.offered("TripleCoins", owning({}), on)).to.equal(false)
+			expect(Passes.offered("TripleCoins", owning({ "DoubleCoins" }), on)).to.equal(true)
+			expect(Passes.offered("TripleCoins", owning({ "DoubleCoins" }), off)).to.equal(false)
+			expect(Passes.offered("TripleCoins", owning({ "TripleCoins" }), off)).to.equal(true) -- shows Owned
+			expect(Passes.offered("DoubleCoins", owning({}), off)).to.equal(true)
+			-- one rung at a time: 2x goes once 3x is offered
+			expect(Passes.offered("DoubleCoins", owning({ "DoubleCoins" }), on)).to.equal(false)
+			expect(Passes.offered("DoubleCoins", owning({ "DoubleCoins" }), off)).to.equal(true)
+			expect(#Passes.KEYS - 1).to.equal(Passes.SHOP_CARDS)
+			expect(Passes.offered("Lou", owning({}), off)).to.equal(true)
+		end)
+
 		it("names the recap line from one of its known words", function()
 			expect(Passes.handLine(owning({}))).to.equal(nil)
 			for _, list in
-				{ { "DoubleCoins" }, { "GoldenSponge" }, { "DoubleCoins", "GoldenSponge" } }
+				{
+					{ "DoubleCoins" },
+					{ "GoldenSponge" },
+					{ "DoubleCoins", "GoldenSponge" },
+					{ "TripleCoins" },
+					{ "TripleCoins", "GoldenSponge" },
+				}
 			do
 				local line = Passes.handLine(owning(list)) :: string
 				expect(table.find(Passes.LINES, line)).to.be.ok()
