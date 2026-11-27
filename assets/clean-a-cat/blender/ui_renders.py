@@ -9,6 +9,7 @@ Python with Pillow) trims them, adds the ink outline and writes the finals and t
   portrait_Helper.png, _Helper2, _Helper3        each helper look in its bath cap, same crop as the cats
   portrait_Staff_<Name>.png                      each member of the human staff (spa_staff.py, the game models):
                                                  the head whole, the apron down to its paw
+  portrait_Pet_<Name>.png                        each crate pet's face with its head piece (#883)
   icon_<Model name without CleanACat_>.png       one three-quarter picture of each model in ICONS
   icon_Customer_<Name>.png, icon_Visitor_<Name>.png   head and shoulders of each customer and rare visitor look, on
                                                  the stand-in block figure (the game's customers are R15 rigs)
@@ -160,6 +161,25 @@ def portrait(name, mat, out, dirty=False, level=None):
     return path
 
 
+def pet_portrait(name, mat, out):
+    """A crate pet's face (#883): the head with its ears and its head piece whole, on the walk body it stands on,
+    the chest down to a quarter of the head's height, the stars left off (portrait_Pet_<Name>.png)."""
+    objs = [o for o in pets.build_pet(name, mat) if not o.name.endswith(STAR_OBJECTS)]
+    bpy.context.view_layer.update()
+    head = [o for o in objs if o.name.endswith(("_Head", "_EarL", "_EarR", "_Eye1", "_Eye2"))]
+    lo, hi = common.bounds(head)
+    lo = Vector((lo.x, lo.y, lo.z - (hi.z - lo.z) * 0.25))
+    worn = [o for o in objs if o.get("rides") == "Head"]
+    if worn:
+        wlo, whi = common.bounds(worn)
+        lo = Vector((min(lo.x, wlo.x), min(lo.y, wlo.y), lo.z))
+        hi = Vector((max(hi.x, whi.x), max(hi.y, whi.y), max(hi.z, whi.z)))
+    path = os.path.join(out, f"portrait_Pet_{name}.png")
+    shot(objs, path, PORTRAIT_RAW, PORTRAIT_VIEW, focus=(lo, hi), pad=1.1)
+    _clear()
+    return path
+
+
 def helper_portrait(i, mat, out):
     """Helper look i in its cap, framed like a cat's portrait (the cap counts as part of the head)."""
     name, cap_name = busy_spa.HELPERS[i][0], busy_spa.HELPERS[i][2]
@@ -279,6 +299,9 @@ def main(argv):
     for name in spa_staff.LOOKS:
         if want("portrait_Staff_" + name):
             print("ui:", staff_portrait(name, mat, out))
+    for name in pets.PETS:
+        if want("portrait_Pet_" + name):
+            print("ui:", pet_portrait(name, mat, out))
     for asset in ICONS:
         if asset in makers and want("icon_" + asset):
             print("ui:", icon(asset, mat, out, makers))
