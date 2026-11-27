@@ -82,7 +82,7 @@ local function copy(button: TextButton, label: TextLabel)
 end
 
 -- Our own TextTransparency writes on each button that its listener has not seen yet.
-local pending: { [TextButton]: number } = {}
+local pending: { [TextButton]: number? } = {}
 
 -- Writes the button's text transparency, counted so its listener knows the write is ours. A write that changes
 -- nothing fires no signal, so it is not counted.
@@ -220,8 +220,8 @@ local function follow(piece: Instance)
 		end
 		button:GetPropertyChangedSignal("TextColor3"):Connect(again)
 		button:GetPropertyChangedSignal("TextTransparency"):Connect(function()
-			local mine = pending[button]
-			if mine then
+			local mine: number? = pending[button]
+			if mine ~= nil then
 				-- one of our own writes: with deferred signals this runs after the write's turn ended, so a count of
 				-- writes still to be seen tells them apart, not a flag cleared in that turn (Review-QA on 1116)
 				pending[button] = if mine > 1 then mine - 1 else nil
