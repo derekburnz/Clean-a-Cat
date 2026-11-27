@@ -38,8 +38,11 @@ local TURN = 18 -- degrees a second
 local TITLE = 34
 local SUB = 20
 local HINT = 19 -- the 14 real px floor at the smallest scale
+local CLOSE = 23 -- "Tap to close": a size above the floor, so it reads on a small phone (Review-QA on #1026)
 local DIM = 0.5 -- the backdrop's transparency
 local WIDE = 560 -- design px: the words' widest
+local LAYER = "RewardPopLayer"
+local DISPLAY_ORDER = 45 -- over the HUD, its tutorial hint and windows; under the bubble wipe and claim effects
 
 -- The rarity a notice names at the start of its second line ("Common, +5% on your tips"), if any.
 local function rarityOf(sub: string): string?
@@ -92,9 +95,30 @@ function RewardPop.show(
 	picture: ToastRules.Picture?,
 	onClosed: (() -> ())?
 ): () -> ()
-	local old = root:FindFirstChild("RewardPop")
-	if old then
-		old:Destroy()
+	-- its own screen layer over the whole screen (Sync on #1026): the dim reaches under Roblox's top bar, and the
+	-- tutorial hint and the starter ad never draw over it
+	local host: Instance = root
+	local layer: ScreenGui? = nil
+	local playerGui = root:FindFirstAncestorOfClass("PlayerGui")
+	if playerGui then
+		local old = playerGui:FindFirstChild(LAYER)
+		if old then
+			old:Destroy()
+		end
+		local made = Instance.new("ScreenGui")
+		made.Name = LAYER
+		made.IgnoreGuiInset = true
+		made.DisplayOrder = DISPLAY_ORDER
+		made.ResetOnSpawn = false
+		made.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+		made.Parent = playerGui
+		layer = made
+		host = made
+	else
+		local old = root:FindFirstChild("RewardPop")
+		if old then
+			old:Destroy()
+		end
 	end
 	local scale, short = Kit.screenScale()
 	local reduced = Comfort.reducedMotion()
@@ -199,11 +223,11 @@ function RewardPop.show(
 		local sub = words("Sub", pop.sub, SUB, 3)
 		sub.TextColor3 = if rarity then rim:Lerp(Kit.WHITE, 0.35) else Kit.GOLD_TEXT
 	end
-	local hint = words("Hint", "Tap to close", HINT, 4)
+	local hint = words("Hint", "Tap to close", CLOSE, 4)
 	hint.TextColor3 = Kit.CREAM
 	hint.TextTransparency = 0.15
 
-	back.Parent = root
+	back.Parent = host
 
 	local spin: RBXScriptConnection? = nil
 	local began = os.clock()
@@ -247,6 +271,10 @@ function RewardPop.show(
 		end
 		task.delay(RewardPop.FADE, function()
 			back:Destroy()
+			local own = layer
+			if own then
+				own:Destroy()
+			end
 			if onClosed then
 				onClosed()
 			end

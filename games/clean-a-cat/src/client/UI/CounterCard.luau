@@ -1,7 +1,7 @@
 --!strict
 -- CounterCard: the small card over a cat waiting on the counter (issue 745 part 2, switch counterCards; the rules and
 -- why are in shared/CounterCardRules). A round chip in the owner's shirt colour, then the heart bar with a heart at
--- its start (with counterSlim only the heart bar, sized in studs, all in one row). A fixed screen size (CounterCardRules.SIZE), so it reads on a phone, with every second place's card a row
+-- its start (with counterSlim only the heart bar, sized in studs with a px floor, every second one lifted on screen). A fixed screen size (CounterCardRules.SIZE), so it reads on a phone, with every second place's card a row
 -- up so neighbours never cover each other; drawn on top, but only within CounterCardRules.FAR. Nothing on it is pressable: the Take prompt on the cat is the tap.
 --
 --   local card = CounterCard.new(adornee, parent, motion?)
@@ -108,7 +108,12 @@ function CounterCard.new(adornee: BasePart, parent: Instance, motion: Motion?, s
 	gui.Name = "CounterCard"
 	if slim then
 		-- only the heart bar, in studs: it shrinks with the cat and never reaches the next place (switch counterSlim)
-		gui.Size = UDim2.fromScale(CounterCardRules.SLIM_SIZE.X, CounterCardRules.SLIM_SIZE.Y)
+		gui.Size = UDim2.new(
+			CounterCardRules.SLIM_SIZE.X,
+			CounterCardRules.SLIM_PX.X,
+			CounterCardRules.SLIM_SIZE.Y,
+			CounterCardRules.SLIM_PX.Y
+		)
 	else
 		gui.Size = UDim2.fromOffset(CounterCardRules.SIZE.X, CounterCardRules.SIZE.Y) -- px, the same near and far
 	end
@@ -234,6 +239,9 @@ function CounterCard.new(adornee: BasePart, parent: Instance, motion: Motion?, s
 	end
 	function card.place(place: unknown)
 		gui.StudsOffsetWorldSpace = Vector3.new(0, CounterCardRules.up(place, slim), 0)
+		if slim then
+			gui.SizeOffset = Vector2.new(0, CounterCardRules.slimLift(place)) -- in screen space: always clears
+		end
 	end
 	local gone = false
 	function card.destroy()

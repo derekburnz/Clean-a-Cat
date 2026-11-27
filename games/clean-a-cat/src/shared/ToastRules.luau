@@ -124,8 +124,13 @@ function ToastRules.popOf(text: string, kind: ("info" | "warning")?): Pop?
 	if title == nil or rest == nil then
 		title, rest = string.match(text, "^(Day %d+:)%s*(.+)$")
 	end
-	if title and rest then
-		return { title = title, sub = rest }
+	if title ~= nil and rest ~= nil then
+		local line: string = rest
+		-- the popup closes on any tap, so it never says "tap it": it says where the crate is (Review-QA on #1026)
+		if string.match(line, "^Tap ") and string.find(lower, "crate", 1, true) ~= nil then
+			line = "It's waiting on your spa floor"
+		end
+		return { title = title, sub = line }
 	end
 	return { title = text, sub = "" }
 end
