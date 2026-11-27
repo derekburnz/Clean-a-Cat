@@ -44,26 +44,31 @@ function HelperFetchRules.stopFor(from: Vector3, cat: Vector3): Vector3
 	return from + along.Unit * (distance - HelperFetchRules.SHORT_OF)
 end
 
+HelperFetchRules.COUNTER_GAP = 2.6 -- (big spa) studs from the cats the helper stops behind the counter: its edge is 1.3
+-- from them and a helper is 2 wide (Sync on 49f4f89: 2 studs clipped it by 0.3)
+
 export type Aisle = {
 	front: number, -- the Z of the cross aisle in front of the helpers' stands
-	lane: number, -- the X of the lane down the room, between the second station and the player's tub
-	counter: number, -- the Z the helper stands at behind the counter, SHORT_OF studs from the cats
+	lane: number, -- the X of the lane down the room, between the player's tub and the far stations
+	counter: number, -- the Z the helper stands at behind the counter, COUNTER_GAP studs from the cats
 	cats: number, -- the Z of the cats on the counter
 }
 
--- The aisles of a big spa from its spots: a helper's stand, the second station, the player's tub and the first
--- counter cat, all world positions on one plot (the plots are never turned, so X and Z are the room's own).
+-- The aisles of a big spa from its spots: a helper's stand, the player's tub, the far station (the Bubble Bath's,
+-- against the side wall on the tub's side) and the first counter cat, all world positions on one plot (the plots are
+-- never turned, so X and Z are the room's own). The lane runs on the open side of the tub: the Tools board stands on
+-- the other, between the tub and the second station (Sync on 49f4f89).
 function HelperFetchRules.aisle(
 	stand: Vector3,
-	station: Vector3,
 	tub: Vector3,
+	farStation: Vector3,
 	counterCat: Vector3
 ): Aisle
 	local toward = if stand.Z >= counterCat.Z then 1 else -1
 	return {
-		front = (stand.Z + station.Z) / 2,
-		lane = (station.X + tub.X) / 2,
-		counter = counterCat.Z + toward * HelperFetchRules.SHORT_OF,
+		front = (stand.Z + tub.Z) / 2,
+		lane = (tub.X + farStation.X) / 2,
+		counter = counterCat.Z + toward * HelperFetchRules.COUNTER_GAP,
 		cats = counterCat.Z,
 	}
 end

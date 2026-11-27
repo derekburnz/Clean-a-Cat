@@ -79,37 +79,37 @@ return function()
 		it(
 			"keeps to the aisles on the big spa, never the straight line through the tubs",
 			function()
-				-- the big plot's own spots (Sync on 844315b): Jo's stand, station 2, the tub, counter cat 1
+				-- the big plot's own spots (SpaLayout.BIG_SPOTS): Jo's stand, the tub, station 4, counter cat 1
 				local aisle = HelperFetchRules.aisle(
-					Vector3.new(-17.5, 0.25, 9.5),
-					Vector3.new(-7, 0.25, -4),
-					Vector3.new(5, 0.25, -5),
-					Vector3.new(3.4, 3.13, -17.9)
+					Vector3.new(-17.5, 0.5, 12.5),
+					Vector3.new(5, 0.5, -2),
+					Vector3.new(21.2, 0.5, 1),
+					Vector3.new(3.4, 3.38, -14.9)
 				)
-				expect(math.abs(aisle.front - 2.75) < 1e-6).to.equal(true)
-				expect(math.abs(aisle.lane - -1) < 1e-6).to.equal(true)
-				expect(math.abs(aisle.counter - (-17.9 + HelperFetchRules.SHORT_OF)) < 1e-6).to.equal(
+				expect(math.abs(aisle.front - 5.25) < 1e-6).to.equal(true)
+				expect(math.abs(aisle.lane - 13.1) < 1e-6).to.equal(true)
+				expect(math.abs(aisle.counter - (-14.9 + HelperFetchRules.COUNTER_GAP)) < 1e-6).to.equal(
 					true
 				)
-				local from = Vector3.new(-20.1, 0.25, 9.9)
-				local via, stop = HelperFetchRules.route(from, Vector3.new(13, 3.13, -17.9), aisle)
+				local from = Vector3.new(-20.1, 0.5, 12.9)
+				local via, stop = HelperFetchRules.route(from, Vector3.new(6.6, 3.38, -14.9), aisle)
 				expect(#via).to.equal(3)
-				expect(math.abs(stop.X - 13) < 1e-6 and math.abs(stop.Z - aisle.counter) < 1e-6).to.equal(
+				expect(math.abs(stop.X - 6.6) < 1e-6 and math.abs(stop.Z - aisle.counter) < 1e-6).to.equal(
 					true
 				)
 				expect(math.abs(stop.Y - from.Y) < 1e-6).to.equal(true)
-				-- down the lane, clear of station 3 at X -13.5 and the tub at X 5
-				expect(math.abs(via[2].X - -1) < 1e-6 and math.abs(via[3].X - -1) < 1e-6).to.equal(
+				-- down the lane on the open side of the tub, clear of the Tools board at X -2.9 to 0.9 (Sync on 49f4f89)
+				expect(math.abs(via[2].X - 13.1) < 1e-6 and math.abs(via[3].X - 13.1) < 1e-6).to.equal(
 					true
 				)
+				-- 1.3 studs clear of the counter's edge for a helper 2 studs wide
+				expect(HelperFetchRules.COUNTER_GAP - 1.3 >= 1.2).to.equal(true)
 				-- a cat at the door line (no counter): the straight line, as before
 				local none, straight =
-					HelperFetchRules.route(from, Vector3.new(-5, 0.25, -16), aisle)
+					HelperFetchRules.route(from, Vector3.new(-5, 0.5, -21), aisle)
 				expect(#none).to.equal(0)
-				expect(straight).to.equal(
-					HelperFetchRules.stopFor(from, Vector3.new(-5, 0.25, -16))
-				)
-				local plain = HelperFetchRules.route(from, Vector3.new(13, 3.13, -17.9), nil)
+				expect(straight).to.equal(HelperFetchRules.stopFor(from, Vector3.new(-5, 0.5, -21)))
+				local plain = HelperFetchRules.route(from, Vector3.new(13, 3.38, -14.9), nil)
 				expect(#plain).to.equal(0)
 			end
 		)

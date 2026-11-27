@@ -234,8 +234,8 @@ local function aisleFor(player: Player): HelperFetchRules.Aisle?
 	end
 	return HelperFetchRules.aisle(
 		SpaLayout.slotSpot(WorkerRules.WORKERS.Jo.spot, slot).Position,
-		SpaLayout.slotSpot("SpotStation2", slot).Position,
 		SpaLayout.slotSpot("SpotTub", slot).Position,
+		SpaLayout.slotSpot("SpotStation4", slot).Position,
 		counterCat.Position
 	)
 end
