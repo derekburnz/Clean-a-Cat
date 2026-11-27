@@ -448,10 +448,13 @@ end
 -- alone held the bottle level, Sync 2026-11-27).
 local function aimTool(hand: CFrame, centre: Vector3, aim: CFrame, pour: number): CFrame
 	local at = hand.Position
+	-- the shower lands under the hand so the spray follows the sweep; the pour aims at the middle of the back
+	-- (Sync 2026-11-27: aimed under the hand, a steep pour ran down behind the cat onto the tail)
+	local follow = if pour > 0 then 0 else 0.7
 	local under = Vector3.new(
-		centre.X + (at.X - centre.X) * 0.7,
+		centre.X + (at.X - centre.X) * follow,
 		centre.Y,
-		centre.Z + (at.Z - centre.Z) * 0.7
+		centre.Z + (at.Z - centre.Z) * follow
 	)
 	local toward = under - at
 	local A = if toward.Magnitude > 1e-3 then toward.Unit else -hand.UpVector
@@ -512,7 +515,7 @@ function HelperWash.place(
 	local aim, build = state.aim, state.build
 	local box = cat:GetBoundingBox()
 	if aim and build then
-		tool:PivotTo(aimTool(hand, box.Position, aim, if phase == "soap" then 2 else 0) * build)
+		tool:PivotTo(aimTool(hand, box.Position, aim, if phase == "soap" then 1.2 else 0) * build)
 	else
 		tool:PivotTo(hand * holdFor(phase) * (state.handle or CFrame.identity))
 	end
