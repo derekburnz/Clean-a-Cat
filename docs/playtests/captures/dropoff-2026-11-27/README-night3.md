@@ -213,3 +213,9 @@ Group membership was faked only inside the unsaved local place: a QA patch to Gi
 ## ButtonInk park at 0.999 (PR 1124) on main 463866d, iphone_13, 2026-11-27
 
 `1124-*`: Sam's Level up after its first TextTransparency = 1, which was swallowed, so the words still show. Also the Bubble Soap Buy hidden after a working write of 1, and back outlined after a write of 0.
+
+## starterFloat fixes (PR 1125) on main 16cc5c1, 2026-11-27
+
+`1125-*`:
+- The SAVE tag now sits under "STARTER PACK" on iphone_13 and the iPad.
+- The iphone_7 gap above the jump button, in a fresh play session and after a device switch during play.
