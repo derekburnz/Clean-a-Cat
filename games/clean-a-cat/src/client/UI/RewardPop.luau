@@ -38,6 +38,7 @@ local TURN = 18 -- degrees a second
 local TITLE = 34
 local SUB = 20
 local HINT = 19 -- the 14 real px floor at the smallest scale
+local CLOSE = 23 -- "Tap to close": a size above the floor, so it reads on a small phone (Review-QA on #1026)
 local DIM = 0.5 -- the backdrop's transparency
 local WIDE = 560 -- design px: the words' widest
 
@@ -199,7 +200,7 @@ function RewardPop.show(
 		local sub = words("Sub", pop.sub, SUB, 3)
 		sub.TextColor3 = if rarity then rim:Lerp(Kit.WHITE, 0.35) else Kit.GOLD_TEXT
 	end
-	local hint = words("Hint", "Tap to close", HINT, 4)
+	local hint = words("Hint", "Tap to close", CLOSE, 4)
 	hint.TextColor3 = Kit.CREAM
 	hint.TextTransparency = 0.15
 
