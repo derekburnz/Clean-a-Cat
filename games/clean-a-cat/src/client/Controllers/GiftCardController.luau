@@ -72,6 +72,17 @@ local function free(): GiftViewRules.Free?
 	}
 end
 
+-- (groupVerify, issue 1111) the last Verify tap's answer for the board, "" before any; nil with the switch off.
+local function verify(): string?
+	if not LiveFlags.isOn(GiftRules.VERIFY_FLAG) then
+		return nil
+	end
+	local answer = player:GetAttribute(GiftRules.VERIFY_ATTRIBUTE)
+	return if type(answer) == "string" and table.find(GiftRules.VERIFY_ANSWERS, answer)
+		then answer
+		else ""
+end
+
 local function state(): GiftViewRules.State
 	local now: GiftViewRules.State = if gift == nil
 		then { lit = false, favourite = false, group = false, claimed = false }
@@ -83,6 +94,8 @@ local function state(): GiftViewRules.State
 		claimed = now.claimed,
 		free = free(),
 		groupOnly = LiveFlags.isOn(GiftRules.GROUP_ONLY_FLAG), -- issue 1068: the group join alone
+		verify = verify(),
+		coinsPaid = player:GetAttribute(FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE) == true,
 	}
 end
 
@@ -211,6 +224,7 @@ function GiftCardController.Start()
 			FreeRewardRules.PLAY_SECONDS_ATTRIBUTE,
 			FreeRewardRules.LIKE_CLAIMED_ATTRIBUTE,
 			FreeRewardRules.PLAY_CLAIMED_ATTRIBUTE,
+			GiftRules.VERIFY_ATTRIBUTE,
 		}
 	do
 		player:GetAttributeChangedSignal(name):Connect(function()
@@ -218,7 +232,7 @@ function GiftCardController.Start()
 			tick()
 		end)
 	end
-	for _, flag in { FreeRewardRules.FLAG, GiftRules.GROUP_ONLY_FLAG } do
+	for _, flag in { FreeRewardRules.FLAG, GiftRules.GROUP_ONLY_FLAG, GiftRules.VERIFY_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(function()
 				UI.setGift(state())
@@ -230,7 +244,13 @@ function GiftCardController.Start()
 		end
 	end)
 	UI.onGiftClaim(function()
-		if GiftViewRules.ready(state()) then
+		local now = state()
+		if not GiftViewRules.ready(now) then
+			return
+		elseif GiftViewRules.isBoard(now) then
+			-- (groupVerify) Verify: the server reads the group itself and gives the gifts on a join
+			Remotes.event(GiftRules.VERIFY_REMOTE):FireServer()
+		else
 			gift.claim()
 		end
 	end)

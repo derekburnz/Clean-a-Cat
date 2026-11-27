@@ -903,6 +903,134 @@ local SCENES = {
 			UI.open("Gift")
 		end,
 	},
+	-- The free reward board (issue 1111, switch groupVerify): Join, then Verify; the like apart below a divider. Before
+	-- any tap, after a "not yet", inside the server's 10 s, with the crate gift, and with both gifts in.
+	{
+		"GiftVerify",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("groupVerify", true)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = false,
+				claimed = false,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+				verify = "",
+				coinsPaid = false,
+			})
+			UI.open("Gift")
+		end,
+	},
+	{
+		"GiftVerifyNotYet",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("groupVerify", true)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = false,
+				claimed = false,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+				verify = "notYet",
+				coinsPaid = false,
+			})
+			UI.open("Gift")
+		end,
+	},
+	{
+		"GiftVerifyWait",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("groupVerify", true)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = true,
+				claimed = false,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+				verify = "wait",
+				coinsPaid = false,
+			})
+			UI.open("Gift")
+		end,
+	},
+	{
+		"GiftVerifyCrate",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("groupVerify", true)
+			flag("giftCrate", true)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = false,
+				claimed = false,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+				verify = "",
+				coinsPaid = false,
+			})
+			UI.open("Gift")
+		end,
+	},
+	{
+		"GiftVerifyDone",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("groupVerify", true)
+			UI.setGift({
+				lit = true,
+				favourite = false,
+				group = true,
+				claimed = true,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = true,
+					played = 1260,
+					playClaimed = false,
+				},
+				verify = "joined",
+				coinsPaid = true,
+			})
+			UI.open("Gift")
+		end,
+	},
 	-- The gift stand's card giving the gift crate (switch giftCrate, issue 859), with the free rewards rows.
 	{
 		"GiftCrate",
@@ -1815,6 +1943,7 @@ function Scenes.close()
 	flag("likeHowTo", false)
 	game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", nil)
 	flag("giftGroupOnly", false)
+	flag("groupVerify", false)
 	flag("menuContrast", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)

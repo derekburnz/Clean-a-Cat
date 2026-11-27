@@ -187,4 +187,64 @@ return function()
 			end)
 		end)
 	end)
+
+	describe("GiftViewRules, the groupVerify board (issue 1111)", function()
+		local function board(verify: string, group: boolean, claimed: boolean, paid: boolean): GiftViewRules.State
+			return {
+				lit = true,
+				favourite = false,
+				group = group,
+				claimed = claimed,
+				verify = verify,
+				coinsPaid = paid,
+			}
+		end
+		it("says exactly what is checked, and nothing about the like", function()
+			local st = board("", false, false, false)
+			expect(GiftViewRules.isBoard(st)).to.equal(true)
+			local steps = GiftViewRules.steps(st)
+			expect(#steps).to.equal(1)
+			expect(steps[1].key).to.equal("group")
+			expect(steps[1].action).to.equal("Join")
+			expect(steps[1].line).to.equal("For 150 coins and the Starcoat")
+			expect(GiftViewRules.steps(st, true)[1].line).to.equal("For 150 coins and a gift crate")
+			expect(GiftViewRules.title(st)).to.equal("Free gift")
+			expect(GiftViewRules.claimText(st)).to.equal("Verify")
+			expect(GiftViewRules.ready(st)).to.equal(true)
+			expect(GiftViewRules.waitLine(st)).to.equal("Join the group, then tap Verify")
+			local asks = GiftViewRules.asks(st)
+			expect(#asks).to.equal(1)
+			for _, word in { "coin", "gift", "reward", "free", "claim" } do
+				expect(string.find(string.lower(asks[1]), word, 1, true)).to.equal(nil)
+			end
+		end)
+		it("answers each Verify tap, and keeps Verify live inside the server's wait", function()
+			expect(GiftViewRules.waitLine(board("notYet", false, false, false))).to.equal(
+				"Join the group, then tap Verify"
+			)
+			local waiting = board("wait", true, false, false)
+			expect(GiftViewRules.waitLine(waiting)).to.equal("One moment, then tap Verify again")
+			expect(GiftViewRules.ready(waiting)).to.equal(true)
+			expect(GiftViewRules.waitLine(board("joined", true, true, false))).to.equal(
+				"Thank you! Your gifts are in"
+			)
+		end)
+		it("drops the coins once paid, and ends once both gifts are in", function()
+			local paid = board("", false, false, true)
+			expect(GiftViewRules.steps(paid)[1].line).to.equal("For the Starcoat")
+			local done = board("joined", true, true, true)
+			expect(GiftViewRules.ready(done)).to.equal(false)
+			expect(GiftViewRules.claimText(done)).to.equal("Starcoat is yours!")
+			expect(GiftViewRules.waitLine(done)).to.equal(nil)
+		end)
+		it("is not the board with the switch off or at the playtime stage", function()
+			local off = board("", false, false, false)
+			off.verify = nil
+			expect(GiftViewRules.isBoard(off)).to.equal(false)
+			expect(#GiftViewRules.asks(off)).to.equal(0)
+			local play = board("", true, true, false)
+			play.stage = 2
+			expect(GiftViewRules.isBoard(play)).to.equal(false)
+		end)
+	end)
 end

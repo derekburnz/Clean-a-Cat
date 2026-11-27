@@ -108,6 +108,11 @@ type Parts = {
 	claim: TextButton,
 	claimGradient: UIGradient,
 	wait: TextLabel,
+	-- (groupVerify, issue 1111) the friendly asks below a divider, apart from the reward
+	asks: Frame,
+	askLine: Frame,
+	askIcon: Frame,
+	askText: TextLabel,
 	-- the like how-to (switch likeHowTo, issue 869), in the picture side's place while it shows
 	howTo: Frame,
 	howArt: Frame,
@@ -343,7 +348,7 @@ local function redraw()
 		end
 	end
 	p.rowList.Padding = UDim.new(0, s.rowGap)
-	for index, step in GiftViewRules.steps(state) do
+	for index, step in GiftViewRules.steps(state, crate) do
 		drawStep(step, index, s, scale, p.rows)
 	end
 	local ready = GiftViewRules.ready(state)
@@ -358,10 +363,22 @@ local function redraw()
 		then ColorSequence.new(GREEN_TOP, GREEN_BOTTOM)
 		else ColorSequence.new(WAIT_TOP, WAIT_BOTTOM)
 	local waitLine = GiftViewRules.waitLine(state)
+	local board = GiftViewRules.isBoard(state)
 	p.wait.Visible = waitLine ~= nil and not (howToShowing and state.free ~= nil)
-	-- with the free rewards rows (four of them) the steps left for Starcoat sit under the pet, so the card fits a phone
-	p.wait.Parent = if state.free then p.pet else p.right
-	p.wait.LayoutOrder = if state.free then 5 else 3
+	-- with the free rewards rows (four of them) the steps left for Starcoat sit under the pet, so the card fits a phone;
+	-- on the groupVerify board the line answers Verify, so it stays under the button
+	p.wait.Parent = if state.free and not board then p.pet else p.right
+	p.wait.LayoutOrder = if state.free and not board then 5 else 3
+	-- (groupVerify) the friendly asks, apart from the reward
+	local askWords = GiftViewRules.asks(state)
+	p.asks.Visible = #askWords > 0
+	p.askLine.BackgroundColor3 = Kit.line()
+	p.askIcon.Size = UDim2.fromOffset(s.rowLine + 8, s.rowLine + 8)
+	p.askText.Position = UDim2.fromOffset(s.rowLine + 16, 0)
+	p.askText.Size = UDim2.new(1, -(s.rowLine + 16), 0, s.rowLine + 8)
+	p.askText.TextSize = s.rowLine
+	Kit.shrinkToFit(p.askText, s.rowLine)
+	p.askText.Text = table.concat(askWords, "\n")
 	p.wait.TextSize = s.wait
 	p.wait.Size = UDim2.new(1, 0, 0, s.wait + 4)
 	p.wait.Text = waitLine or ""
@@ -575,6 +592,31 @@ function GiftCard.build(root: Instance): Frame
 	wait.LayoutOrder = 3
 	wait.FontFace = Kit.BODY_FACE
 	wait.TextColor3 = Kit.INK_SOFT
+	-- (groupVerify) under a divider, in a quieter style: no box, no button, no tick (Growth-Agent on #1111)
+	local asks = frame("Asks", right)
+	asks.LayoutOrder = 4
+	asks.Size = UDim2.fromScale(1, 0)
+	asks.AutomaticSize = Enum.AutomaticSize.Y
+	asks.Visible = false
+	list(asks, false, 6)
+	local askLine = frame("Divider", asks)
+	askLine.LayoutOrder = 1
+	askLine.BackgroundTransparency = 0
+	askLine.BackgroundColor3 = Kit.line()
+	askLine.Size = UDim2.new(1, 0, 0, 2)
+	local askRow = frame("Like", asks)
+	askRow.LayoutOrder = 2
+	askRow.Size = UDim2.fromScale(1, 0)
+	askRow.AutomaticSize = Enum.AutomaticSize.Y
+	local askIcon = frame("Icon", askRow)
+	askIcon.Size = UDim2.fromOffset(24, 24)
+	Icons.draw("Heart", askIcon)
+	local askText = words("Text", askRow, 16)
+	askText.FontFace = Kit.BODY_FACE
+	askText.TextColor3 = Kit.INK_SOFT
+	askText.TextXAlignment = Enum.TextXAlignment.Left
+	askText.TextWrapped = true
+	askText.AutomaticSize = Enum.AutomaticSize.Y
 
 	parts = {
 		window = window,
@@ -590,6 +632,10 @@ function GiftCard.build(root: Instance): Frame
 		rows = rows,
 		rowList = rowList,
 		claim = claim,
+		asks = asks,
+		askLine = askLine,
+		askIcon = askIcon,
+		askText = askText,
 		claimGradient = claimGradient,
 		wait = wait,
 		howTo = howTo,
