@@ -1603,7 +1603,14 @@ local function markDirty(node)
 	end
 end
 
+-- Properties Roblox keeps as 32-bit floats, so a write reads back rounded (0.999 reads 0.9990000129) and writing the
+-- same number again is no change and fires no signal (Sync on 1124, ButtonInk's parked words).
+local FLOAT32 = { TextTransparency = true }
+
 InstanceMT.__newindex = function(self, key, value)
+	if FLOAT32[key] and type(value) == "number" then
+		value = string.unpack("<f", string.pack("<f", value))
+	end
 	local s = state[self]
 	local old
 	if key == "Parent" then
