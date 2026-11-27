@@ -52,7 +52,7 @@ HelperWash.MOVE = 0.7
 HelperWash.STROKE = math.rad(11) -- each way, along the coat
 HelperWash.PATCHES = table.freeze({ 0, -1, 0.6, 1, -0.5 }) -- sideways spots along the cat, -1 to 1
 HelperWash.PATCH_SIDE = math.rad(22) -- Sync 2026-11-27: 11 moved the brush only 0.33 studs across the coat
-HelperWash.PATCH_REACH = table.freeze({ 0, 7, -5, 4, -7 }) -- degrees nearer or farther along the cat, per patch
+HelperWash.PATCH_REACH = table.freeze({ 0, 12, -9, 7, -12 }) -- degrees nearer or farther along the cat, per patch
 
 HelperWash.TOOLS = table.freeze({
 	soap = "CleanACat_Tool_Shampoo",
@@ -444,7 +444,9 @@ end
 
 -- Where an aimed tool goes: its grip at the hand and its business end pointed down onto the cat under the hand (so
 -- the pour and the spray follow the arm's sweep), its up side kept up. `aim` is from makeTool.
-local function aimTool(hand: CFrame, centre: Vector3, aim: CFrame): CFrame
+-- `pour` tips the end further down (the shampoo: the cat's middle is about level with the hand, so aiming at it
+-- alone held the bottle level, Sync 2026-11-27).
+local function aimTool(hand: CFrame, centre: Vector3, aim: CFrame, pour: number): CFrame
 	local at = hand.Position
 	local under = Vector3.new(
 		centre.X + (at.X - centre.X) * 0.7,
@@ -453,6 +455,9 @@ local function aimTool(hand: CFrame, centre: Vector3, aim: CFrame): CFrame
 	)
 	local toward = under - at
 	local A = if toward.Magnitude > 1e-3 then toward.Unit else -hand.UpVector
+	if pour > 0 then
+		A = (A - Vector3.yAxis * pour).Unit
+	end
 	local B = Vector3.yAxis - A * A:Dot(Vector3.yAxis)
 	if B.Magnitude < 0.1 then
 		B = hand.LookVector - A * A:Dot(hand.LookVector)
@@ -507,7 +512,7 @@ function HelperWash.place(
 	local aim, build = state.aim, state.build
 	local box = cat:GetBoundingBox()
 	if aim and build then
-		tool:PivotTo(aimTool(hand, box.Position, aim) * build)
+		tool:PivotTo(aimTool(hand, box.Position, aim, if phase == "soap" then 2 else 0) * build)
 	else
 		tool:PivotTo(hand * holdFor(phase) * (state.handle or CFrame.identity))
 	end
