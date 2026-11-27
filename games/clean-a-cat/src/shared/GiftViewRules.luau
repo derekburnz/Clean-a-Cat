@@ -208,7 +208,9 @@ function GiftViewRules.steps(state: State, crate: boolean?): { Step }
 			icon = "Crown",
 			title = `Join {GiftViewRules.GROUP_NAME}`,
 			-- the reward box says exactly what is checked (Growth-Agent on #1111)
-			line = if state.group then "Done, welcome!" else `For {GiftViewRules.boardReward(state, crate)}`,
+			line = if state.group
+				then "Done, welcome!"
+				else `For {GiftViewRules.boardReward(state, crate)}`,
 			done = state.group,
 			action = if state.group then nil else "Join",
 		}

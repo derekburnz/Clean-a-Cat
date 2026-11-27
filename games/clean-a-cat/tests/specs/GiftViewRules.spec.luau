@@ -189,7 +189,12 @@ return function()
 	end)
 
 	describe("GiftViewRules, the groupVerify board (issue 1111)", function()
-		local function board(verify: string, group: boolean, claimed: boolean, paid: boolean): GiftViewRules.State
+		local function board(
+			verify: string,
+			group: boolean,
+			claimed: boolean,
+			paid: boolean
+		): GiftViewRules.State
 			return {
 				lit = true,
 				favourite = false,
