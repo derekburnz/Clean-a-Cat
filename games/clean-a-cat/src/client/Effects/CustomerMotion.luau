@@ -24,7 +24,6 @@
 --
 -- API
 --   CustomerMotion.start(isOn)     isOn() is read once a second; when false every customer goes back to rest
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
@@ -39,11 +38,9 @@ local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 
 local CustomerMotion = {}
 
--- Client-only state for Studio checks (issue 1062), read from the client with execute_luau; nothing replicates:
--- on each customer, RIG_ATTRIBUTE says how far attach got ("seen", "no body", "no joints" or "rig <joints>");
--- on the local player, STATE_ATTRIBUTE is "on=<switch> rigs=<count> steps=<frames>", written once a second.
+-- Client only, for Studio checks (issue 1062), read on the client with execute_luau; nothing replicates. On each
+-- customer RIG_ATTRIBUTE says how far attach got: "no body", "no joints" or "rig <joints>", written only on attach.
 CustomerMotion.RIG_ATTRIBUTE = "MotionRig"
-CustomerMotion.STATE_ATTRIBUTE = "CustomerMotionState"
 
 CustomerMotion.PREFIX = "CleanACat_NPC_Customer_"
 CustomerMotion.STAFF_PREFIX = "CleanACat_NPC_Staff_"
@@ -148,7 +145,6 @@ function CustomerMotion.armInFor(model: Model, now: number, carrierPart: BasePar
 end
 
 local rigs: { [Model]: Rig } = {}
-local steps = 0 -- frames stepped, for the state below
 local started = false
 local enabled = false
 local seedCount = 0
@@ -195,7 +191,6 @@ local function attach(model: Model)
 		return
 	end
 	local body = findBody(model)
-	model:SetAttribute(CustomerMotion.RIG_ATTRIBUTE, "seen")
 	if body == nil then
 		model:SetAttribute(CustomerMotion.RIG_ATTRIBUTE, "no body")
 		return
@@ -403,7 +398,6 @@ local function step()
 	local from = camera.CFrame.Position
 	local now = os.clock()
 	local budget = CustomerMotion.MAX
-	steps += 1
 	for model, rig in rigs do
 		if model.Parent == nil or rig.body.Parent == nil then
 			rigs[model] = nil
@@ -476,17 +470,6 @@ function CustomerMotion.start(isOn: () -> boolean)
 			checkAt = now + 1
 			local ok, on = pcall(isOn)
 			enabled = ok and on == true
-			local count = 0
-			for _ in rigs do
-				count += 1
-			end
-			local player = Players.LocalPlayer
-			if player then
-				player:SetAttribute(
-					CustomerMotion.STATE_ATTRIBUTE,
-					`on={enabled} rigs={count} steps={steps}`
-				)
-			end
 		end
 		step()
 	end)
