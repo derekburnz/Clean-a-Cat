@@ -289,7 +289,7 @@ local function onClaim(player: Player)
 	setAttribute(player, GiftRules.GROUP_ATTRIBUTE, member)
 	local state: GiftRules.State =
 		{ favourite = save.giftFavourite, group = member, claimed = save.giftClaimed }
-	if not GiftRules.canClaim(state) then
+	if not GiftRules.canClaim(state, LiveFlags.isOn) then
 		claiming[player] = nil
 		if not save.giftClaimed then
 			NetService.notice(
