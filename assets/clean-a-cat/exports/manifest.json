@@ -460,6 +460,165 @@
   "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_GardenLocked.png"
  },
  {
+  "name": "CleanACat_Area_GardenSide",
+  "category": "Area",
+  "module": "garden",
+  "objects": [
+   "CleanACat_Area_GardenSide",
+   "CleanACat_Area_GardenSide_Decor",
+   "CleanACat_Area_GardenSide_Flowers",
+   "CleanACat_Area_GardenSide_Canopy",
+   "CleanACat_Area_GardenSide_Pond",
+   "CleanACat_Area_GardenSide_Bulbs",
+   "CleanACat_Area_GardenSide_Sign_Decor",
+   "CleanACat_Area_GardenSide_Screen",
+   "CleanACat_Area_GardenSide_Gate_Barrier"
+  ],
+  "triangles": 4040,
+  "budget": 5200,
+  "parts": 176,
+  "size_studs": {
+   "x": 19.8,
+   "y": 12.5,
+   "z": 12.32
+  },
+  "size_roblox": [
+   19.8,
+   12.32,
+   12.5
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 3,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "4040/5200 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "2794 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.33 (want 0)",
+    "centered": "footprint center x=-0.45 y=6.85",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_GardenSide.png"
+ },
+ {
+  "name": "CleanACat_Area_GardenSideBuilding",
+  "category": "Area",
+  "module": "garden",
+  "objects": [
+   "CleanACat_Area_GardenSideBuilding",
+   "CleanACat_Area_GardenSideBuilding_Decor",
+   "CleanACat_Area_GardenSideBuilding_Sign_Decor",
+   "CleanACat_Area_GardenSideBuilding_Screen",
+   "CleanACat_Area_GardenSideBuilding_Barrier"
+  ],
+  "triangles": 1656,
+  "budget": 2600,
+  "parts": 98,
+  "size_studs": {
+   "x": 20.03,
+   "y": 12.54,
+   "z": 12.28
+  },
+  "size_roblox": [
+   20.03,
+   12.28,
+   12.54
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 3,
+    "enclosed parts": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "1656/2600 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "1044 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.33 (want 0)",
+    "centered": "footprint center x=-0.39 y=6.85",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_GardenSideBuilding.png"
+ },
+ {
+  "name": "CleanACat_Area_GardenSideLocked",
+  "category": "Area",
+  "module": "garden",
+  "objects": [
+   "CleanACat_Area_GardenSideLocked",
+   "CleanACat_Area_GardenSideLocked_Decor",
+   "CleanACat_Area_GardenSideLocked_Sign_Decor",
+   "CleanACat_Area_GardenSideLocked_Screen",
+   "CleanACat_Area_GardenSideLocked_Barrier"
+  ],
+  "triangles": 1140,
+  "budget": 2000,
+  "parts": 75,
+  "size_studs": {
+   "x": 20.03,
+   "y": 12.54,
+   "z": 12.28
+  },
+  "size_roblox": [
+   20.03,
+   12.28,
+   12.54
+  ],
+  "pivot": "base center (floor contact)",
+  "front": "-Z in Roblox, the LookVector (Blender -Y)",
+  "gates": {
+   "pass": true,
+   "failed": [],
+   "warnings": [
+    "pivot",
+    "centered"
+   ],
+   "qa_accepted": {
+    "back to back": 2,
+    "enclosed parts": 1,
+    "pivot off the floor": 1
+   },
+   "checks": {
+    "budget": "1140/2000 tris",
+    "transforms": "scale 1, rotation 0",
+    "material": "one material (CleanACat_Palette)",
+    "uv": "650 faces on swatch centers",
+    "naming": "CleanACat_<Category>_<Name>",
+    "pivot": "floor at z=-0.33 (want 0)",
+    "centered": "footprint center x=-0.39 y=6.85",
+    "qa": "blender-asset-qa clean",
+    "qa_warn": "no qa warning outside the accepted kinds"
+   }
+  },
+  "preview": "docs/concepts/clean-a-cat/previews/CleanACat_Area_GardenSideLocked.png"
+ },
+ {
   "name": "CleanACat_Area_Hotel",
   "category": "Area",
   "module": "hotel",
@@ -474,9 +633,9 @@
    "CleanACat_Area_Hotel_Room3Build_Decor",
    "CleanACat_Area_Hotel_Room4Build_Decor"
   ],
-  "triangles": 6108,
+  "triangles": 6192,
   "budget": 6500,
-  "parts": 232,
+  "parts": 239,
   "size_studs": {
    "x": 18.71,
    "y": 13.8,
@@ -502,10 +661,10 @@
     "pivot off the floor": 1
    },
    "checks": {
-    "budget": "6108/6500 tris",
+    "budget": "6192/6500 tris",
     "transforms": "scale 1, rotation 0",
     "material": "one material (CleanACat_Palette)",
-    "uv": "3856 faces on swatch centers",
+    "uv": "3898 faces on swatch centers",
     "naming": "CleanACat_<Category>_<Name>",
     "pivot": "floor at z=-0.32 (want 0)",
     "centered": "footprint center x=0.00 y=6.25",

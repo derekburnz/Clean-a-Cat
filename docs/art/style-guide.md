@@ -561,6 +561,14 @@ The owner on 2026-11-24: "we should pick him up out of crate". The player lifts 
 
 Everything stays within the door's 6 studs plus the frame and 2.9 studs into the room, clear of the stray box and Sam's wash stand. Friendly, nothing sharp, no black: the tape's stripes are ink on butter. The Garden's looks put their own gate in this doorway, so the game shows one or the other; what is behind the door is not in these models.
 
+## The Garden's side gate (#1050)
+`garden.py` (`SIDE`), `hotel.py` (`SIDE_DOOR`), `plot.py` (`SpotGardenSide`). The Cat Hotel has the back door, so the Garden stands on the old VIP site to the hotel's right and is entered from the hotel. Design's pick, 2026-11-27 (option A); the owner may still change it.
+- **The doorway.** In the hotel's right wall between the desk's key board and room 4: 2.8 wide, 7 tall, a butter post each side, a butter threshold. Attachment `SpotHotelGardenDoor` in its middle, facing out. The two wall lamps moved up to 8 studs.
+- **Three side looks**, the same garden as the back door looks with the same parts and suffixes: `CleanACat_Area_GardenSideLocked`, `CleanACat_Area_GardenSideBuilding`, `CleanACat_Area_GardenSide`. Pivot at the plot's `SpotGardenSide` (where `SpotVipDoor` is). No butter door frame and no front gate: the front edge lies along the spa's back wall.
+- **The gate** is one white picket leaf in the site's left edge, opposite the doorway, between two tall white posts that carry the mint sign and its cream `_Screen` (the screen faces the hotel, -X). A stone step and a short white wall each side cross the 1.2 stud gap between the hotel and the site; invisible slabs stand over those walls in every look. A white fence runs down the left edge each side of the gate.
+- **Moved for the gate:** the left flower bed is short (two rows), the pet bed is at the back by the tree (`SpotPetSit3` moves with it), the path's stones come in from the side gate, the two lanterns stand inside the gate, and `SpotGardenEnter` is just inside the side gate. Root attribute `Side` on the finished look.
+- The back door looks (`CleanACat_Area_Garden*` at `SpotGardenDoor`) are unchanged for a game without the hotel.
+
 ## The Cat Hotel (#1050)
 `hotel.py`. Derek, 2026-11-27: "go with cat Hotel and draft it". The room stands on the yard site behind the back door, at the plot's `SpotGardenDoor` like the back door looks, and goes with `CleanACat_Area_BackDoorOpen`. A draft with no rules: prices, stays and which rooms are open are the game's.
 

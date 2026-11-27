@@ -72,6 +72,8 @@ ARCH_Z = 5.2                      # the arch beam over each alcove's front
 DESK = (5.6, 3.3)                 # the desk's middle; it faces the way in (-X)
 MAT_AT = (3.4, 3.3)               # where a guest waits
 GUEST_SCALE = 1.0
+SIDE_DOOR = (5.1, 7.9, 7.0)        # the doorway in the right wall to the Garden's side gate: y from, y to, its top
+                                  # (garden.GATE_Y is its middle; between the desk's key board and room 4)
 _RZ = lambda deg: Matrix.Rotation(math.radians(deg), 3, "Z")      # noqa: E731
 _STAND = Matrix.Rotation(math.pi / 2, 3, "X")
 
@@ -103,12 +105,23 @@ def _shell(b, art):
     ym = (y0 + y1) / 2
     b.box_base((0, ym, FLOOR_UP - 0.4), (x1 - x0 - 0.02, y1 - y0 - 0.02, 0.4), FLOOR, bevel=False)          # the floor
     b.box_base((0, 0, -SINK), (DOOR_W - 0.1, WALL_T + 0.3, 0.05 + SINK), RAIL, bevel=False)                # a threshold
+    da, db, dtop = SIDE_DOOR
     for sx in (1, -1):
         x = sx * (RX - t / 2)
-        b.box_base((x, ym, -SINK), (t, y1 - y0, BAND + SINK), LOW, bevel=False)
-        b.box_base((x, ym, BAND), (t - 0.01, y1 - y0 - 0.01, EAVES - BAND), HIGH, bevel=False)
-        b.box((sx * (RX - t - 0.05 + WALL_SINK / 2), ym, BAND + 0.1), (0.1 + WALL_SINK, y1 - y0 - 2 * t - 0.02, 0.24),
-              RAIL, bevel=False)
+        # the right wall is in pieces round the doorway to the Garden: each side of it, and over it
+        runs = ((y0, da), (db, y1)) if sx > 0 else ((y0, y1),)
+        for ya, yb in runs:
+            b.box_base((x, (ya + yb) / 2, -SINK), (t, yb - ya, BAND + SINK), LOW, bevel=False)
+            b.box_base((x, (ya + yb) / 2, BAND), (t - 0.01, yb - ya - 0.01, (dtop if sx > 0 else EAVES) - BAND), HIGH,
+                       bevel=False)
+            ra, rb = max(ya, y0 + t + 0.01), min(yb, y1 - t - 0.01)
+            b.box((sx * (RX - t - 0.05 + WALL_SINK / 2), (ra + rb) / 2, BAND + 0.1), (0.1 + WALL_SINK, rb - ra, 0.24),
+                  RAIL, bevel=False)
+        if sx > 0:
+            b.box_base((x, ym, dtop), (t - 0.01, y1 - y0 - 0.01, EAVES - dtop), HIGH, bevel=False)
+            for y in (da - 0.09, db + 0.09):             # a butter post each side of the doorway, on both faces
+                b.box_base((x, y, FLOOR_UP - 0.027), (t + 0.3, 0.22, dtop - FLOOR_UP + 0.04), RAIL, bevel=False)
+            b.box_base((x, (da + db) / 2, -SINK - 0.004), (t + 0.3, db - da, FLOOR_UP + SINK), RAIL, bevel=False)   # threshold
     xin = RX - t
     b.box_base((0, y1 - t / 2, -SINK + 0.004), (2 * xin, t, BAND + SINK - 0.004), LOW, bevel=False)
     b.box_base((0, y1 - t / 2, BAND + 0.002), (2 * xin, t - 0.01, EAVES - BAND - 0.002), HIGH, bevel=False)
@@ -224,8 +237,8 @@ def _lamps(name, mat):
     g.sphere((px, py, 8.85), 0.5, "lamp_warm", segments=8, rings=5)
     for sx in (1, -1):
         x = sx * (RX - RWT)
-        b.box((x - sx * (0.1 - WALL_SINK / 2), 7.6, 6.9), (0.2 + WALL_SINK, 0.5, 0.5), RAIL, bevel=False)
-        g.sphere((x - sx * 0.42, 7.6, 6.9), 0.36, "lamp_warm", segments=8, rings=5)
+        b.box((x - sx * (0.1 - WALL_SINK / 2), 7.6, 8.0), (0.2 + WALL_SINK, 0.5, 0.5), RAIL, bevel=False)   # over the
+        g.sphere((x - sx * 0.42, 7.6, 8.0), 0.36, "lamp_warm", segments=8, rings=5)                         # side doorway
     return [_tris(b.finalize(name + "_Lamp_Decor", mat)), _tris(g.finalize(name + "_Bulbs", mat))]
 
 
@@ -330,7 +343,8 @@ def hotel_rbx_extras():
         return Matrix.Translation((x, y, z)) @ Matrix.Rotation(math.radians(turn), 4, "Z")
     atts = [(NAME, "SpotHotelEnter", at(0.0, RY0 + 1.6)),
             (NAME, "SpotHotelDesk", at(MAT_AT[0], MAT_AT[1], FLOOR_UP + 0.05, 90.0)),
-            (NAME, "SpotHotelBell", at(DESK[0] - 0.3, DESK[1] - 1.1, FLOOR_UP + 3.2))]
+            (NAME, "SpotHotelBell", at(DESK[0] - 0.3, DESK[1] - 1.1, FLOOR_UP + 3.2)),
+            (NAME, "SpotHotelGardenDoor", at(RX - RWT / 2, (SIDE_DOOR[0] + SIDE_DOOR[1]) / 2, FLOOR_UP, 270.0))]
     for i, x in enumerate(ROOM_X):
         atts.append((NAME, f"SpotHotelRoom{i + 1}", at(x, BED_Y, BED_TOP)))
         atts.append((NAME, f"SpotHotelSign{i + 1}", at(x, ROOM_Y0 - 0.3, ARCH_Z + 1.1)))
