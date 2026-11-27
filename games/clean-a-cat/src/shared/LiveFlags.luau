@@ -205,6 +205,7 @@ LiveFlags.KEYS = {
 	"starterCard", -- the starter pack's HUD card is dark with one big picture, the true price and a round "i" for the breakdown; a tap on the card asks for the purchase prompt; no bob, no sparkles and no time chip (HUD/StarterAd, issue 1080); off by default
 	"shopRevamp", -- the shop's new layout: one featured card, the rest in a two by two grid, big pictures, one short line each and the price in white words with an ink outline (ShopWindow, ShopViewRules.arrange, issue 1030); off by default
 	"menuContrast2", -- every window's cream card turns a deeper lilac, the cards in it white, their edges and the soft body text ink (UI/Contrast, issue 1029); off by default
+	"menuContrast3", -- the white words on every window's buttons (Buy, Build, Level up, Claim, Favourite, Like, Reset, the X) get a thick ink outline, and the tick green and gold words turn deeper (UI/ButtonInk, issue 1096); off by default
 	"shortText", -- fewer words in every window: lines the picture and title already say are hidden, long lines cut short ("Hire at their pad · 1200 coins" to "1200 coins"); numbers, prices and odds stay (UI/ShortText, ShortTextRules, issue 1027); off by default
 	"starterNoClock", -- the starter pack keeps its 72 hours, but its HUD chip and window read "New player offer" instead of the time left (StarterViewRules.hudNote, issue 1069, Derek's plan answer of 2026-11-27); off by default
 }
@@ -376,6 +377,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	starterCard = true,
 	shopRevamp = true,
 	menuContrast2 = true,
+	menuContrast3 = true,
 	shortText = true,
 	noVipRoom = true,
 	windowClear = true,

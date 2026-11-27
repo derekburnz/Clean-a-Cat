@@ -24,6 +24,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SettingsRules =
 	require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("SettingsRules"))
 
+local LiveFlags = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LiveFlags"))
+
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local Window = require(script.Parent:WaitForChild("Window"))
@@ -66,6 +68,7 @@ local ROWS: { RowSpec } = {
 		detail = "Always shown, for every cat",
 	},
 }
+local ROW_CARDS_FLAG = "menuContrast3" -- each row on a white card (issue 1096, UI/ButtonInk)
 local SHORT_FIRST_COLUMN = 3 -- rows in the left column on a short screen
 
 local GREEN_TOP, GREEN_BOTTOM = Color3.fromHex("7BE85A"), Color3.fromHex("3DBF3F")
@@ -120,6 +123,7 @@ type Row = {
 	spec: RowSpec,
 	frame: GuiObject,
 	line: Frame,
+	card: Frame, -- (menuContrast3) the white card behind the row, in place of the dividing line
 	iconBox: Frame,
 	words: Frame,
 	say: TextLabel,
@@ -301,6 +305,17 @@ local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
 	line.BackgroundColor3 = Kit.line()
 	line.Size = UDim2.new(1, 0, 0, 3)
 
+	-- menuContrast3 (issue 1096): each row on its own white card with an ink edge, under the row's pieces
+	local card = frame("RowCard", holder)
+	card.ZIndex = 0
+	card.BackgroundTransparency = 0
+	card.BackgroundColor3 = Kit.WHITE
+	card.Position = UDim2.fromOffset(-8, 3)
+	card.Size = UDim2.new(1, 16, 1, -6)
+	card.Visible = false
+	Kit.corner(card, UDim.new(0, 14))
+	Kit.stroke(card, 3).Color = Kit.INK
+
 	local iconBox = frame("IconBox", holder)
 	iconBox.AnchorPoint = Vector2.new(0, 0.5)
 	Icons.draw(spec.icon, iconBox)
@@ -328,6 +343,7 @@ local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
 		spec = spec,
 		frame = holder,
 		line = line,
+		card = card,
 		iconBox = iconBox,
 		words = block,
 		say = say,
@@ -452,7 +468,9 @@ redraw = function()
 		local columnIndex = if short and shown > SHORT_FIRST_COLUMN then 2 else 1
 		row.frame.Parent = p.columns[columnIndex]
 		inColumn[columnIndex] += 1
-		row.line.Visible = inColumn[columnIndex] > 1
+		local cards = LiveFlags.isOn(ROW_CARDS_FLAG)
+		row.card.Visible = cards
+		row.line.Visible = not cards and inColumn[columnIndex] > 1
 		row.frame.Size = UDim2.new(1, 0, 0, s.row)
 		row.iconBox.Size = UDim2.fromOffset(s.icon, s.icon)
 		row.iconBox.Position = UDim2.new(0, 2, 0.5, 0)
@@ -653,6 +671,8 @@ function SettingsCard.build(root: Instance, onChange: (Settings) -> ()): Frame
 	if camera then
 		camera:GetPropertyChangedSignal("ViewportSize"):Connect(redraw)
 	end
+	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. ROW_CARDS_FLAG)
+		:Connect(redraw)
 	redraw()
 	return window.layer
 end

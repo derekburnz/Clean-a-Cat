@@ -1683,6 +1683,35 @@ do
 	end
 end
 
+-- Readable button words (issue 1096, switch menuContrast3, with menuContrast2 as on dev): the windows with the most
+-- buttons, their white words drawn again with an ink outline, and the deeper tick green and gold.
+for _, name in
+	{
+		"Shop",
+		"Build",
+		"Helpers",
+		"SettingsFeedbackReset",
+		"CatIndex",
+		"Checkin",
+		"FreeGifts",
+		"FreeGiftsReady",
+	}
+do
+	for _, scene in table.clone(SCENES) do
+		if scene[1] == name then
+			local open = scene[2]
+			table.insert(SCENES, {
+				name .. "Contrast3",
+				function()
+					flag("menuContrast2", true)
+					flag("menuContrast3", true)
+					open()
+				end,
+			})
+		end
+	end
+end
+
 -- Fewer words (issue 1027, switch shortText): the windows with the most text, with their long lines cut or hidden.
 for _, name in
 	{
@@ -1777,6 +1806,7 @@ function Scenes.close()
 	flag("starterBuilder", false)
 	flag("catHotel", false)
 	flag("menuContrast2", false)
+	flag("menuContrast3", false)
 	flag("shortText", false)
 	flag("shopRevamp", false)
 	flag("coinLadder", false)
