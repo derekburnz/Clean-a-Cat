@@ -214,7 +214,14 @@ local function drawRow(
 	whoIcon.AnchorPoint = Vector2.new(0.5, 0.5)
 	whoIcon.Position = UDim2.fromScale(0.5, 0.5)
 	whoIcon.Size = UDim2.fromScale(0.7, 0.7)
-	Icons.draw(if row.hired then "Helper" elseif row.pass then "Star" else "Coins", whoIcon)
+	-- each helper's own picture (issue 1036), faded until hired; Icons.draw falls back if an id has none
+	local own = `Staff{row.id}`
+	if Icons.IMAGES[own] then
+		whoIcon.Size = UDim2.fromScale(0.92, 0.92)
+		Icons.draw(own, whoIcon, not row.hired)
+	else
+		Icons.draw(if row.hired then "Helper" elseif row.pass then "Star" else "Coins", whoIcon)
+	end
 	local id = row.id
 	if row.hired and canRename then
 		-- the round picture is the Rename button, with a pencil on it, as in the Pets window (issue 487)

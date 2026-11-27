@@ -496,6 +496,31 @@ local SCENES = {
 			UI.open("Shop")
 		end,
 	},
+	-- The launch sale (issue 1032, switch launchSale): each card's regular price struck through before the sale price,
+	-- and a red "50% off" tag on its picture.
+	{
+		"ShopSale",
+		function()
+			flag("passes", true)
+			flag("launchSale", true)
+			local ShopViewRules = UIShim.require("ReplicatedStorage.Shared.ShopViewRules")
+			local prices: { [string]: number } = {
+				DoubleCoins = 25,
+				SecondBuilder = 149,
+				GoldenSponge = 49,
+				Lou = 124,
+				SecondPetSlot = 124,
+			}
+			UI.setShop(ShopViewRules.cards(function(key: string): unknown
+				return prices[key]
+			end, function(key: string): boolean
+				return key == "GoldenSponge"
+			end, function(name: string): boolean
+				return name == "launchSale" or name == "passes"
+			end))
+			UI.open("Shop")
+		end,
+	},
 	{
 		"ShopEmpty",
 		function()
@@ -1400,6 +1425,7 @@ function Scenes.close()
 	flag("helperPets", false)
 	flag("petLines", false)
 	flag("petSingles", false)
+	flag("launchSale", false)
 	flag("menuOnly", false)
 	UI.setCanReset(false)
 	flag("giftCrate", false)
