@@ -11,6 +11,7 @@ local HelperViewRules = {}
 
 HelperViewRules.WINDOW = "Helpers"
 HelperViewRules.FLAG = "helpersWindow"
+HelperViewRules.PETS_FLAG = "helperPets" -- a pet box on each hired row; pets are given only from the menu (issue 929)
 HelperViewRules.LEVEL_PREFIX = "WorkerLevel_"
 HelperViewRules.MODE_PREFIX = "WorkerMode_"
 
@@ -91,6 +92,20 @@ end
 function HelperViewRules.levelText(row: Row): string?
 	local cost = row.nextCost
 	return if cost then `Level up · {cost}` else nil
+end
+
+-- The pet beside helper `id` (in their first slot, else their second), or nil: the pet box on their row.
+export type Pet = { id: number, kind: string, star: number, slot: string? } -- the shape of CrateRules.Pet
+function HelperViewRules.petOf(id: string, pets: { Pet }): Pet?
+	local second: Pet? = nil
+	for _, pet in pets do
+		if pet.slot == `{id}1` then
+			return pet
+		elseif pet.slot == `{id}2` then
+			second = pet
+		end
+	end
+	return second
 end
 
 return HelperViewRules

@@ -150,6 +150,7 @@ LiveFlags.KEYS = {
 	"tubBuilds", -- the Build board sells the Second, Third and Fourth Tub, the VIP Room at its new price and the Garden; one builder; a built tub pays +2 on every hand wash and the VIP Room brings special visitors more often; with dirtLevels on, the old stations leave (BuildRules, issue 515); off by default
 	"pets", -- crates the player holds stand by their tub with their chance list over them; a tap opens one, the pet walks beside the player (boosting tips) or sits by a worker (boosting their pay, capped), and three of the same fuse into a star up (CrateRules, PetService, issues 511 and 512); off by default
 	"helpersWindow", -- a Helpers button on the HUD, shown once a helper is hired, opens one row per helper: their name, level with Level up and its price, the line they wash first (tap to change) and Rename; a helper not hired yet shows their price at their pad, and Lou his pass in the Shop (UI/HelpersWindow, HelperViewRules, issue 526 item 3); off by default
+	"helperPets", -- each hired helper's row in the Helpers window has a pet box: their pet, or a paw when empty; a tap opens Pets with that helper's slot picked (owner 2026-11-26, issue 929). The world "Give a pet" prompt going away is petMenuOnly's job; off by default
 	"buttonArrive", -- a HUD button that unlocks while the player is in the game arrives with Motion-FX's small pop, tilt and twinkle, once (Effects/Arrive from UI/HUD/SideButtons, issue 528); buttons already there on join simply show; off by default
 	"fewerPills", -- with smallPrompts: at most two prompt pills show at once, the nearest within 10 studs (a winning one such as the door's Take cat at any distance); every key still works (Spa/PillLayout, issue 745); off by default
 	"buildWindow", -- with hudTidy: a Build button in the HUD grid opens "Build and upgrades", every build with its price and time (or its countdown, what it waits for, or Built) and every tool and the next bow with Buy; the server skips only the distance to the board for RequestBuild, RequestBuyTool and RequestBuyBow, while Finish now still needs the board (BuildService, ToolService, BuildViewRules, UI/BuildWindow, BuildWindowController, issue 751); off by default
@@ -172,6 +173,8 @@ LiveFlags.KEYS = {
 	"bowDrag", -- the bow step is a drag: the three bows show in the player's best tier and one goes on when dropped on the cat; a gamepad keeps the tap (Spa/BowDrag, ScrubController, issue 889); off by default
 	"helperFetch", -- a helper walks to the counter for the cat they take, carries it to their stand and back out when washed, instead of the cat appearing in the stand (HelperFetchRules, WorkerService, FigureService.handOver, HelperFetchController, issue 884); off by default
 	"petMenuOnly", -- a hired helper's stand drops its "Give a pet" prompt while the Pets menu (petsWindow) is on: pets are given to the player and each helper there (WorkerRules.givePrompt, WorkerController, issue 930); off by default
+	"washSides", -- half way through the scrub, the lather and the rinse the cat turns once so the player works on another side, then turns back to the front as he shakes (WashSidesRules, ScrubController, issue 899); off by default
+	"showerAim", -- the rinse's shower head is held off the fur, above and in front of the touch, its nozzle aimed at it (ToolOnCat.nozzle for the spray, issue 899); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -294,6 +297,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	friendBonus = true,
 	staffRename = true,
 	helpersWindow = true,
+	helperPets = true,
 	buttonArrive = true,
 	leaveLines = true,
 	hudTidy = true,
@@ -316,6 +320,8 @@ LiveFlags.OFF_BY_DEFAULT = {
 	bowDrag = true,
 	helperFetch = true,
 	petMenuOnly = true,
+	washSides = true,
+	showerAim = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
