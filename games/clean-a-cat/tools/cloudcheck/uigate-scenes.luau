@@ -632,6 +632,30 @@ local SCENES = {
 			UI.open("Gift")
 		end,
 	},
+	-- The gift stand's card giving the gift crate (switch giftCrate, issue 859), with the free rewards rows.
+	{
+		"GiftCrate",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			UI.setGift({
+				lit = true,
+				favourite = true,
+				group = true,
+				claimed = false,
+				free = {
+					likeAsked = true,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 4000,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
 	-- The leave lines (issue 726, switch leaveLines) at their longest, as Roblox's menu opens over the HUD.
 	{
 		"LeaveLines",
@@ -1158,6 +1182,7 @@ function Scenes.close()
 	flag("helpersWindow", false)
 	flag("helperPets", false)
 	flag("petLines", false)
+	flag("giftCrate", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)
 	flag("workers", false)
