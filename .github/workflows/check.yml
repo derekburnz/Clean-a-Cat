@@ -52,6 +52,18 @@ jobs:
         working-directory: ${{ env.GAME_DIR }}
         run: bash ./check.sh
 
+      # Every new picture, sound or mesh id must be owned by the Creampuff Games group: one a person's account owns
+      # does not load for players in the group's game (Derek, 2026-11-27). Only the ids this pull request adds are
+      # read (Open Cloud Assets API, the group key's asset:read), so a PR with none needs no key and no calls.
+      - name: New asset ids are owned by the group
+        if: github.event_name == 'pull_request'
+        env:
+          ROBLOX_PUBLISH_KEY: ${{ secrets.ROBLOX_GROUP_KEY }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          bash "$GAME_DIR/tools/opencloud/asset-permissions.sh" owners FETCH_HEAD
+
       # Selene's Roblox list (roblox.yml) cannot be fetched from a cloud thread (its downloader does not trust the
       # proxy's certificate), so main's copy is kept: as this artifact, then as a release asset (job keep-selene-std).
       - name: Write Selene's Roblox list into the game folder
