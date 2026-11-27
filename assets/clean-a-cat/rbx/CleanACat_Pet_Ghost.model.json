@@ -1,28 +1,27 @@
 {
  "className": "Model",
  "attributes": {
-  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/0",
+  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/0",
   "PartBuilt": true,
   "Pet": true,
-  "PetId": "Pebble",
-  "Rarity": "Uncommon",
+  "PetId": "Ghost",
+  "Rarity": "Common",
   "PetScale": {
    "Float64": 0.7
   },
-  "PropSlot": "Head",
-  "PropSlot2": "Back"
+  "PropSlot": "Head"
  },
  "children": [
   {
-   "name": "CleanACat_Pet_Pebble_Body",
+   "name": "CleanACat_Pet_Ghost_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
        0.0,
-       0.62,
-       0.12
+       0.5,
+       0.1098
       ],
       "orientation": [
        [
@@ -46,12 +45,12 @@
     "Size": [
      0.78,
      0.58,
-     0.95
+     0.9295
     ],
     "Color": [
-     0.4784,
-     0.5882,
-     0.7059
+     0.9294,
+     0.8902,
+     0.9843
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -64,8 +63,8 @@
      "CFrame": {
       "position": [
        0.0,
-       -0.62,
-       -0.12
+       -0.5,
+       -0.1098
       ],
       "orientation": [
        [
@@ -88,7 +87,7 @@
     }
    },
    "attributes": {
-    "Rojo_Id": "CleanACat_Pet_Pebble/0"
+    "Rojo_Id": "CleanACat_Pet_Ghost/0"
    },
    "children": [
     {
@@ -99,8 +98,8 @@
        "CFrame": {
         "position": [
          0.0,
-         1.4166,
-         -0.64
+         1.5939,
+         -0.6298
         ],
         "orientation": [
          [
@@ -126,211 +125,15 @@
    ]
   },
   {
-   "name": "CleanACat_Pet_Pebble_Body",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.4,
-       0.67,
-       0.24
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.04,
-     0.32,
-     0.45
-    ],
-    "Color": [
-     0.4314,
-     0.4941,
-     0.5961
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Pet_Pebble_Body",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -0.4,
-       0.6,
-       -0.03
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.04,
-     0.26,
-     0.34
-    ],
-    "Color": [
-     0.7647,
-     0.8157,
-     0.8706
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Pet_Pebble_Body",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       -0.12,
-       0.92,
-       0.31
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.36,
-     0.04,
-     0.4
-    ],
-    "Color": [
-     0.7647,
-     0.8157,
-     0.8706
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Pet_Pebble_Body",
-   "className": "Part",
-   "properties": {
-    "CFrame": {
-     "CFrame": {
-      "position": [
-       0.16,
-       0.92,
-       -0.06
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    },
-    "Size": [
-     0.28,
-     0.04,
-     0.32
-    ],
-    "Color": [
-     0.4314,
-     0.4941,
-     0.5961
-    ],
-    "Material": "SmoothPlastic",
-    "Anchored": true,
-    "CanCollide": false,
-    "CanTouch": false,
-    "CastShadow": false,
-    "TopSurface": "Smooth",
-    "BottomSurface": "Smooth"
-   }
-  },
-  {
-   "name": "CleanACat_Pet_Pebble_Body",
+   "name": "CleanACat_Pet_Ghost_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
        0.0,
-       0.58,
-       -0.365
+       0.5075,
+       0.16
       ],
       "orientation": [
        [
@@ -352,20 +155,69 @@
      }
     },
     "Size": [
-     0.36,
-     0.348,
-     0.06
+     0.81,
+     0.625,
+     0.285
     ],
     "Color": [
-     0.7647,
-     0.8157,
-     0.8706
+     0.7882,
+     0.7216,
+     0.9098
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Ghost_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.5,
+       0.4335
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.82,
+     0.62,
+     0.342
+    ],
+    "Color": [
+     0.7882,
+     0.7216,
+     0.9098
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    }
@@ -373,19 +225,19 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/1"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/1"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         1.17,
-         -0.52
+         1.05,
+         -0.531
         ],
         "orientation": [
          [
@@ -409,12 +261,12 @@
       "Size": [
        1.0,
        0.84,
-       0.8
+       0.778
       ],
       "Color": [
-       0.4784,
-       0.5882,
-       0.7059
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -428,7 +280,7 @@
         "position": [
          0.0,
          -0.32,
-         0.22
+         0.231
         ],
         "orientation": [
          [
@@ -451,117 +303,19 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/1"
+      "Rojo_Id": "CleanACat_Pet_Ghost/1"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.2391,
-         1.6,
-         -0.47
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.3696,
-       0.06,
-       0.44
-      ],
-      "Color": [
-       0.4314,
-       0.4941,
-       0.5961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Head",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.3261,
-         1.23,
-         -0.91
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.2,
-       0.26,
-       0.06
-      ],
-      "Color": [
-       0.7647,
-       0.8157,
-       0.8706
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.9375,
-         -0.905
+         1.05,
+         -0.28
         ],
         "orientation": [
          [
@@ -583,33 +337,33 @@
        }
       },
       "Size": [
-       0.414,
-       0.23,
-       0.07
+       1.03,
+       0.87,
+       0.336
       ],
       "Color": [
-       0.7647,
-       0.8157,
-       0.8706
+       0.7882,
+       0.7216,
+       0.9098
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
       "CanCollide": false,
       "CanTouch": false,
-      "CastShadow": false,
+      "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.9835,
+         0.8635,
          -0.945
         ],
         "orientation": [
@@ -637,9 +391,9 @@
        0.06
       ],
       "Color": [
-       0.8784,
-       0.4784,
-       0.549
+       0.949,
+       0.5529,
+       0.6824
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -651,15 +405,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.9138,
-         -0.945
+         0.7938,
+         -0.925
         ],
         "orientation": [
          [
@@ -700,15 +454,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0288,
-         0.8628,
-         -0.948
+         0.7428,
+         -0.928
         ],
         "orientation": [
          [
@@ -749,15 +503,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0978,
-         0.8628,
-         -0.945
+         0.7428,
+         -0.925
         ],
         "orientation": [
          [
@@ -798,15 +552,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.0288,
-         0.8628,
-         -0.948
+         0.7428,
+         -0.928
         ],
         "orientation": [
          [
@@ -847,15 +601,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.0978,
-         0.8628,
-         -0.945
+         0.7428,
+         -0.925
         ],
         "orientation": [
          [
@@ -896,14 +650,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.345,
-         0.872,
+         0.752,
          -0.92
         ],
         "orientation": [
@@ -946,14 +700,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Head",
+     "name": "CleanACat_Pet_Ghost_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.345,
-         0.872,
+         0.752,
          -0.92
         ],
         "orientation": [
@@ -998,18 +752,18 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/2"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/2"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Pebble_Eye1",
+       "name": "CleanACat_Pet_Ghost_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            -0.253,
-           1.11,
+           0.99,
            -0.927
           ],
           "orientation": [
@@ -1032,14 +786,14 @@
          }
         },
         "Size": [
-         0.253,
-         0.3289,
+         0.2576,
+         0.3349,
          0.076
         ],
         "Color": [
-         0.949,
-         0.7098,
-         0.2275
+         0.3686,
+         0.7451,
+         1.0
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1076,18 +830,18 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Pebble/2"
+        "Rojo_Id": "CleanACat_Pet_Ghost/2"
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_Eye1",
+       "name": "CleanACat_Pet_Ghost_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            -0.263,
-           1.0847,
+           0.9642,
            -0.9725
           ],
           "orientation": [
@@ -1110,8 +864,8 @@
          }
         },
         "Size": [
-         0.1518,
-         0.2368,
+         0.1546,
+         0.2411,
          0.075
         ],
         "Color": [
@@ -1129,14 +883,63 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_Eye1",
+       "name": "CleanACat_Pet_Ghost_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.1961,
-           1.2021,
+           -0.253,
+           1.0938,
+           -0.948
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.3176,
+         0.1874,
+         0.094
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Eye1",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.195,
+           0.9632,
            -0.975
           ],
           "orientation": [
@@ -1159,8 +962,8 @@
          }
         },
         "Size": [
-         0.0759,
-         0.0886,
+         0.0773,
+         0.0644,
          0.03
         ],
         "Color": [
@@ -1183,7 +986,7 @@
        "OptionalCFrame": {
         "position": [
          -0.253,
-         1.11,
+         0.99,
          -0.93
         ],
         "orientation": [
@@ -1206,23 +1009,23 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Pebble_Eye1"
+     "name": "CleanACat_Pet_Ghost_Eye1"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/3"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/3"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Pebble_Eye2",
+       "name": "CleanACat_Pet_Ghost_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.253,
-           1.11,
+           0.99,
            -0.927
           ],
           "orientation": [
@@ -1245,14 +1048,14 @@
          }
         },
         "Size": [
-         0.253,
-         0.3289,
+         0.2576,
+         0.3349,
          0.076
         ],
         "Color": [
-         0.949,
-         0.7098,
-         0.2275
+         0.3686,
+         0.7451,
+         1.0
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1289,18 +1092,18 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Pebble/3"
+        "Rojo_Id": "CleanACat_Pet_Ghost/3"
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_Eye2",
+       "name": "CleanACat_Pet_Ghost_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.263,
-           1.0847,
+           0.9642,
            -0.9725
           ],
           "orientation": [
@@ -1323,8 +1126,8 @@
          }
         },
         "Size": [
-         0.1518,
-         0.2368,
+         0.1546,
+         0.2411,
          0.075
         ],
         "Color": [
@@ -1342,14 +1145,63 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_Eye2",
+       "name": "CleanACat_Pet_Ghost_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.3099,
-           1.2021,
+           0.253,
+           1.0938,
+           -0.948
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.3177,
+         0.1874,
+         0.094
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Eye2",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.311,
+           0.9632,
            -0.975
           ],
           "orientation": [
@@ -1372,8 +1224,8 @@
          }
         },
         "Size": [
-         0.0759,
-         0.0886,
+         0.0773,
+         0.0644,
          0.03
         ],
         "Color": [
@@ -1396,7 +1248,7 @@
        "OptionalCFrame": {
         "position": [
          0.253,
-         1.11,
+         0.99,
          -0.93
         ],
         "orientation": [
@@ -1419,23 +1271,23 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Pebble_Eye2"
+     "name": "CleanACat_Pet_Ghost_Eye2"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/4"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/4"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Pebble_EarL",
+       "name": "CleanACat_Pet_Ghost_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            -0.2792,
-           1.6122,
+           1.4922,
            -0.46
           ],
           "orientation": [
@@ -1463,9 +1315,9 @@
          0.2667
         ],
         "Color": [
-         0.4784,
-         0.5882,
-         0.7059
+         0.7882,
+         0.7216,
+         0.9098
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1502,18 +1354,18 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Pebble/4"
+        "Rojo_Id": "CleanACat_Pet_Ghost/4"
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_EarL",
+       "name": "CleanACat_Pet_Ghost_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            -0.3,
-           1.71,
+           1.59,
            -0.46
           ],
           "orientation": [
@@ -1541,9 +1393,9 @@
          0.16
         ],
         "Color": [
-         0.4784,
-         0.5882,
-         0.7059
+         0.7882,
+         0.7216,
+         0.9098
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1555,14 +1407,14 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_EarL",
+       "name": "CleanACat_Pet_Ghost_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            -0.3208,
-           1.8078,
+           1.6878,
            -0.46
           ],
           "orientation": [
@@ -1590,9 +1442,9 @@
          0.0533
         ],
         "Color": [
-         0.4784,
-         0.5882,
-         0.7059
+         0.7882,
+         0.7216,
+         0.9098
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1604,15 +1456,15 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_EarL",
+       "name": "CleanACat_Pet_Ghost_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            -0.3187,
-           1.65,
-           -0.5918
+           1.53,
+           -0.5752
           ],
           "orientation": [
            [
@@ -1636,12 +1488,12 @@
         "Size": [
          0.1152,
          0.114,
-         0.0631
+         0.03
         ],
         "Color": [
-         0.8784,
-         0.4784,
-         0.549
+         0.7255,
+         0.6392,
+         0.8706
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1658,7 +1510,7 @@
        "OptionalCFrame": {
         "position": [
          -0.3,
-         1.56,
+         1.44,
          -0.46
         ],
         "orientation": [
@@ -1681,23 +1533,23 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Pebble_EarL"
+     "name": "CleanACat_Pet_Ghost_EarL"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/5"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/5"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Pebble_EarR",
+       "name": "CleanACat_Pet_Ghost_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.2792,
-           1.6122,
+           1.4922,
            -0.46
           ],
           "orientation": [
@@ -1725,9 +1577,9 @@
          0.2667
         ],
         "Color": [
-         0.4784,
-         0.5882,
-         0.7059
+         0.7882,
+         0.7216,
+         0.9098
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1764,18 +1616,18 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Pebble/5"
+        "Rojo_Id": "CleanACat_Pet_Ghost/5"
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_EarR",
+       "name": "CleanACat_Pet_Ghost_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.3,
-           1.71,
+           1.59,
            -0.46
           ],
           "orientation": [
@@ -1803,9 +1655,9 @@
          0.16
         ],
         "Color": [
-         0.4784,
-         0.5882,
-         0.7059
+         0.7882,
+         0.7216,
+         0.9098
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1817,14 +1669,14 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_EarR",
+       "name": "CleanACat_Pet_Ghost_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.3208,
-           1.8078,
+           1.6878,
            -0.46
           ],
           "orientation": [
@@ -1852,9 +1704,9 @@
          0.0533
         ],
         "Color": [
-         0.4784,
-         0.5882,
-         0.7059
+         0.7882,
+         0.7216,
+         0.9098
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1866,14 +1718,14 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_EarR",
+       "name": "CleanACat_Pet_Ghost_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.3187,
-           1.65,
+           1.53,
            -0.5752
           ],
           "orientation": [
@@ -1901,9 +1753,9 @@
          0.03
         ],
         "Color": [
-         0.8784,
-         0.4784,
-         0.549
+         0.7255,
+         0.6392,
+         0.8706
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1920,7 +1772,7 @@
        "OptionalCFrame": {
         "position": [
          0.3,
-         1.56,
+         1.44,
          -0.46
         ],
         "orientation": [
@@ -1943,53 +1795,53 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Pebble_EarR"
+     "name": "CleanACat_Pet_Ghost_EarR"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/11"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/11"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Pebble_Prop",
+       "name": "CleanACat_Pet_Ghost_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.0217,
-           1.6607,
-           -0.607
+           0.0,
+           1.5026,
+           -0.52
           ],
           "orientation": [
            [
-            0.9135,
-            0.0566,
-            0.4028
+            1.0,
+            0.0,
+            0.0
            ],
            [
             0.0,
-            0.9903,
-            -0.1392
+            1.0,
+            0.0
            ],
            [
-            -0.4067,
-            0.1271,
-            0.9047
+            0.0,
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.5022,
-         0.1435,
-         0.7174
+         1.0652,
+         0.1087,
+         0.8652
         ],
         "Color": [
-         0.3725,
+         0.7882,
          0.7216,
-         0.3529
+         0.9098
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -2001,33 +1853,82 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           -0.105,
-           -0.7625,
-           0.3993
+           0.0,
+           -0.7726,
+           0.22
           ],
           "orientation": [
            [
-            0.9135,
+            1.0,
             0.0,
-            -0.4067
+            0.0
            ],
            [
-            0.0566,
-            0.9903,
-            0.1271
+            0.0,
+            1.0,
+            0.0
            ],
            [
-            0.4028,
-            -0.1392,
-            0.9047
+            0.0,
+            0.0,
+            1.0
            ]
           ]
          }
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Pebble/11",
+        "Rojo_Id": "CleanACat_Pet_Ghost/11",
         "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3261,
+           1.6222,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2826,
+         0.2826,
+         0.2402
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
        },
        "children": [
         {
@@ -2037,99 +1938,50 @@
           "MeshType": "Sphere"
          }
         }
-       ]
-      },
-      {
-       "name": "CleanACat_Pet_Pebble_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.0187,
-           1.7145,
-           -0.6
-          ],
-          "orientation": [
-           [
-            0.9135,
-            0.0566,
-            0.4028
-           ],
-           [
-            0.0,
-            0.9903,
-            -0.1392
-           ],
-           [
-            -0.4067,
-            0.1271,
-            0.9047
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0543,
-         0.0543,
-         0.587
-        ],
-        "Color": [
-         0.2431,
-         0.498,
-         0.3059
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": true,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
+       ],
        "attributes": {
         "Follows": "Head"
        }
       },
       {
-       "name": "CleanACat_Pet_Pebble_Prop",
+       "name": "CleanACat_Pet_Ghost_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.1361,
-           1.7269,
-           -0.2525
+           0.3261,
+           1.5207,
+           -0.4983
           ],
           "orientation": [
            [
-            0.9135,
-            -0.2732,
-            0.3013
+            0.7071,
+            0.0,
+            0.7071
            ],
            [
             0.0,
-            0.7409,
-            0.6716
+            1.0,
+            0.0
            ],
            [
-            -0.4067,
-            -0.6136,
-            0.6768
+            -0.7071,
+            0.0,
+            0.7071
            ]
           ]
          }
         },
         "Size": [
-         0.0652,
-         0.0652,
-         0.2547
+         0.1812,
+         0.1232,
+         0.1812
         ],
         "Color": [
-         0.2431,
-         0.498,
-         0.3059
+         0.9294,
+         0.8902,
+         0.9843
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -2142,6 +1994,767 @@
        "attributes": {
         "Follows": "Head"
        }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3261,
+           1.6439,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.1232,
+         0.1087
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.3261,
+           1.7671,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0362,
+         0.1232,
+         0.0362
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6222,
+           -0.5635
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2826,
+         0.2826,
+         0.2402
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.4772,
+           -0.5635
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1812,
+         0.1667,
+         0.1812
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6439,
+           -0.5635
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.1667,
+         0.1087
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.8106,
+           -0.5635
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0362,
+         0.1667,
+         0.0362
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3261,
+           1.6222,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2826,
+         0.2826,
+         0.2402
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3261,
+           1.5207,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1812,
+         0.1232,
+         0.1812
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3261,
+           1.6439,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1087,
+         0.1232,
+         0.1087
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ghost_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3261,
+           1.7671,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            0.7071,
+            0.0,
+            0.7071
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.7071,
+            0.0,
+            0.7071
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0362,
+         0.1232,
+         0.0362
+        ],
+        "Color": [
+         0.9294,
+         0.8902,
+         0.9843
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/12"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Pet_Ghost_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.3261,
+             1.6439,
+             -0.5635
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1522,
+           0.1522,
+           0.1522
+          ],
+          "Color": [
+           0.3686,
+           0.7451,
+           1.0
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             -0.3261,
+             0.0435,
+             0.0435
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Pet_Ghost/12",
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ghost_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             1.6439,
+             -0.6287
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1522,
+           0.1522,
+           0.1522
+          ],
+          "Color": [
+           0.3686,
+           0.7451,
+           1.0
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ghost_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.3261,
+             1.6439,
+             -0.5635
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1522,
+           0.1522,
+           0.1522
+          ],
+          "Color": [
+           0.3686,
+           0.7451,
+           1.0
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           1.6874,
+           -0.52
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Pet_Ghost_Glow"
       }
      ],
      "properties": {
@@ -2149,7 +2762,7 @@
        "OptionalCFrame": {
         "position": [
          0.0,
-         0.85,
+         0.73,
          -0.3
         ],
         "orientation": [
@@ -2172,7 +2785,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Pebble_Prop"
+     "name": "CleanACat_Pet_Ghost_Prop"
     }
    ],
    "properties": {
@@ -2180,7 +2793,7 @@
      "OptionalCFrame": {
       "position": [
        0.0,
-       0.85,
+       0.73,
        -0.3
       ],
       "orientation": [
@@ -2203,23 +2816,23 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_Head"
+   "name": "CleanACat_Pet_Ghost_Head"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/6"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/6"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_Tail",
+     "name": "CleanACat_Pet_Ghost_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.886,
+         0.766,
          0.7029
         ],
         "orientation": [
@@ -2247,9 +2860,9 @@
        0.36
       ],
       "Color": [
-       0.4784,
-       0.5882,
-       0.7059
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2286,18 +2899,18 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/6"
+      "Rojo_Id": "CleanACat_Pet_Ghost/6"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Tail",
+     "name": "CleanACat_Pet_Ghost_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.0,
-         1.1198,
+         0.0,
+         0.9998,
          0.8518
         ],
         "orientation": [
@@ -2320,14 +2933,161 @@
        }
       },
       "Size": [
-       0.18,
+       0.22,
        0.22,
        0.36
       ],
       "Color": [
-       0.4314,
-       0.4941,
-       0.5961
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Ghost_Tail",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.2126,
+         0.8232
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          -0.6428,
+          0.766
+         ],
+         [
+          0.0,
+          -0.766,
+          -0.6428
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.187,
+       0.187,
+       0.22
+      ],
+      "Color": [
+       0.9294,
+       0.8902,
+       0.9843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Ghost_Tail",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.0,
+         1.2712,
+         0.6939
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          -0.9962,
+          -0.0872
+         ],
+         [
+          0.0,
+          0.0872,
+          -0.9962
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.127,
+       0.165,
+       0.2
+      ],
+      "Color": [
+       0.7882,
+       0.7216,
+       0.9098
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Ghost_Tail",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.2127,
+         0.5891
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          -0.5,
+          -0.866
+         ],
+         [
+          0.0,
+          0.866,
+          -0.5
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.143,
+       0.143,
+       0.17
+      ],
+      "Color": [
+       0.7882,
+       0.7216,
+       0.9098
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2344,7 +3104,7 @@
      "OptionalCFrame": {
       "position": [
        0.0,
-       0.8,
+       0.68,
        0.58
       ],
       "orientation": [
@@ -2367,23 +3127,23 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_Tail"
+   "name": "CleanACat_Pet_Ghost_Tail"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/7"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/7"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_LegF1",
+     "name": "CleanACat_Pet_Ghost_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.22,
-         0.235,
+         0.175,
          -0.2
         ],
         "orientation": [
@@ -2407,13 +3167,13 @@
       },
       "Size": [
        0.24,
-       0.37,
+       0.25,
        0.24
       ],
       "Color": [
-       0.4784,
-       0.5882,
-       0.7059
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2426,7 +3186,7 @@
        "CFrame": {
         "position": [
          0.0,
-         0.185,
+         0.125,
          0.0
         ],
         "orientation": [
@@ -2450,11 +3210,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/7"
+      "Rojo_Id": "CleanACat_Pet_Ghost/7"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_LegF1",
+     "name": "CleanACat_Pet_Ghost_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2462,7 +3222,7 @@
         "position": [
          -0.22,
          0.055,
-         -0.1975
+         -0.21
         ],
         "orientation": [
          [
@@ -2486,12 +3246,12 @@
       "Size": [
        0.27,
        0.11,
-       0.295
+       0.27
       ],
       "Color": [
-       0.7647,
-       0.8157,
-       0.8706
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2508,7 +3268,7 @@
      "OptionalCFrame": {
       "position": [
        -0.22,
-       0.42,
+       0.3,
        -0.2
       ],
       "orientation": [
@@ -2531,23 +3291,23 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_LegF1"
+   "name": "CleanACat_Pet_Ghost_LegF1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/8"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/8"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_LegF2",
+     "name": "CleanACat_Pet_Ghost_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.22,
-         0.235,
+         0.175,
          -0.2
         ],
         "orientation": [
@@ -2571,13 +3331,13 @@
       },
       "Size": [
        0.24,
-       0.37,
+       0.25,
        0.24
       ],
       "Color": [
-       0.4784,
-       0.5882,
-       0.7059
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2590,7 +3350,7 @@
        "CFrame": {
         "position": [
          0.0,
-         0.185,
+         0.125,
          0.0
         ],
         "orientation": [
@@ -2614,11 +3374,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/8"
+      "Rojo_Id": "CleanACat_Pet_Ghost/8"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_LegF2",
+     "name": "CleanACat_Pet_Ghost_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2626,7 +3386,7 @@
         "position": [
          0.22,
          0.055,
-         -0.1975
+         -0.21
         ],
         "orientation": [
          [
@@ -2650,12 +3410,12 @@
       "Size": [
        0.27,
        0.11,
-       0.295
+       0.27
       ],
       "Color": [
-       0.7647,
-       0.8157,
-       0.8706
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2672,7 +3432,7 @@
      "OptionalCFrame": {
       "position": [
        0.22,
-       0.42,
+       0.3,
        -0.2
       ],
       "orientation": [
@@ -2695,23 +3455,23 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_LegF2"
+   "name": "CleanACat_Pet_Ghost_LegF2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/9"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/9"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_LegB1",
+     "name": "CleanACat_Pet_Ghost_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.22,
-         0.235,
+         0.175,
          0.42
         ],
         "orientation": [
@@ -2735,13 +3495,13 @@
       },
       "Size": [
        0.24,
-       0.37,
+       0.25,
        0.24
       ],
       "Color": [
-       0.4784,
-       0.5882,
-       0.7059
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2754,7 +3514,7 @@
        "CFrame": {
         "position": [
          0.0,
-         0.185,
+         0.125,
          0.0
         ],
         "orientation": [
@@ -2778,11 +3538,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/9"
+      "Rojo_Id": "CleanACat_Pet_Ghost/9"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_LegB1",
+     "name": "CleanACat_Pet_Ghost_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2790,7 +3550,7 @@
         "position": [
          -0.22,
          0.055,
-         0.4225
+         0.41
         ],
         "orientation": [
          [
@@ -2814,12 +3574,12 @@
       "Size": [
        0.27,
        0.11,
-       0.295
+       0.27
       ],
       "Color": [
-       0.7647,
-       0.8157,
-       0.8706
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2836,7 +3596,7 @@
      "OptionalCFrame": {
       "position": [
        -0.22,
-       0.42,
+       0.3,
        0.42
       ],
       "orientation": [
@@ -2859,23 +3619,23 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_LegB1"
+   "name": "CleanACat_Pet_Ghost_LegB1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/10"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/10"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_LegB2",
+     "name": "CleanACat_Pet_Ghost_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.22,
-         0.235,
+         0.175,
          0.42
         ],
         "orientation": [
@@ -2899,13 +3659,13 @@
       },
       "Size": [
        0.24,
-       0.37,
+       0.25,
        0.24
       ],
       "Color": [
-       0.4784,
-       0.5882,
-       0.7059
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2918,7 +3678,7 @@
        "CFrame": {
         "position": [
          0.0,
-         0.185,
+         0.125,
          0.0
         ],
         "orientation": [
@@ -2942,11 +3702,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/10"
+      "Rojo_Id": "CleanACat_Pet_Ghost/10"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_LegB2",
+     "name": "CleanACat_Pet_Ghost_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2954,7 +3714,7 @@
         "position": [
          0.22,
          0.055,
-         0.4225
+         0.41
         ],
         "orientation": [
          [
@@ -2978,12 +3738,12 @@
       "Size": [
        0.27,
        0.11,
-       0.295
+       0.27
       ],
       "Color": [
-       0.7647,
-       0.8157,
-       0.8706
+       0.9294,
+       0.8902,
+       0.9843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3000,7 +3760,7 @@
      "OptionalCFrame": {
       "position": [
        0.22,
-       0.42,
+       0.3,
        0.42
       ],
       "orientation": [
@@ -3023,629 +3783,24 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_LegB2"
+   "name": "CleanACat_Pet_Ghost_LegB2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/12"
-   },
-   "children": [
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.995,
-         0.12
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.648,
-       0.216,
-       0.459
-      ],
-      "Color": [
-       0.4118,
-       0.451,
-       0.4902
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         0.0,
-         -0.995,
-         -0.12
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/12",
-      "Follows": "Body"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ]
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.03,
-         1.15,
-         0.13
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.46,
-       0.168,
-       0.36
-      ],
-      "Color": [
-       0.5882,
-       0.5686,
-       0.549
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.02,
-         1.27,
-         0.12
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.308,
-       0.126,
-       0.266
-      ],
-      "Color": [
-       0.2902,
-       0.3098,
-       0.3451
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.04,
-         1.345,
-         0.12
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.1,
-       0.06,
-       0.1
-      ],
-      "Color": [
-       0.949,
-       0.5608,
-       0.6667
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0015,
-         1.345,
-         0.1771
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.1,
-       0.06,
-       0.1
-      ],
-      "Color": [
-       0.949,
-       0.5608,
-       0.6667
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0685,
-         1.345,
-         0.1553
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.1,
-       0.06,
-       0.1
-      ],
-      "Color": [
-       0.949,
-       0.5608,
-       0.6667
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0685,
-         1.345,
-         0.0847
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.1,
-       0.06,
-       0.1
-      ],
-      "Color": [
-       0.949,
-       0.5608,
-       0.6667
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0015,
-         1.345,
-         0.0629
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.1,
-       0.06,
-       0.1
-      ],
-      "Color": [
-       0.949,
-       0.5608,
-       0.6667
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Pebble_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.02,
-         1.365,
-         0.12
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.08,
-       0.08,
-       0.08
-      ],
-      "Color": [
-       0.9647,
-       0.8745,
-       0.6275
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    }
-   ],
-   "properties": {
-    "WorldPivotData": {
-     "OptionalCFrame": {
-      "position": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    }
-   },
-   "name": "CleanACat_Pet_Pebble_Prop2"
-  },
-  {
-   "className": "Model",
-   "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/13",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/13",
     "StarLevel": 2
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.9325,
+         0.8125,
          0.48
         ],
         "orientation": [
@@ -3712,19 +3867,19 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/13",
+      "Rojo_Id": "CleanACat_Pet_Ghost/13",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.2205,
-         1.2228,
+         1.1028,
          0.5159
         ],
         "orientation": [
@@ -3769,14 +3924,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.2965,
-         1.2228,
+         1.1028,
          0.4821
         ],
         "orientation": [
@@ -3821,14 +3976,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.3311,
-         1.1939,
+         1.0739,
          0.4599
         ],
         "orientation": [
@@ -3873,14 +4028,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.3479,
-         1.1165,
+         0.9965,
          0.4344
         ],
         "orientation": [
@@ -3925,14 +4080,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.3297,
-         1.0698,
+         0.9498,
          0.4317
         ],
         "orientation": [
@@ -3977,14 +4132,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.264,
-         1.022,
+         0.902,
          0.4498
         ],
         "orientation": [
@@ -4029,14 +4184,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.2181,
-         1.022,
+         0.902,
          0.4702
         ],
         "orientation": [
@@ -4081,14 +4236,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.1608,
-         1.0698,
+         0.9498,
          0.5069
         ],
         "orientation": [
@@ -4133,14 +4288,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.1506,
-         1.1165,
+         0.9965,
          0.5223
         ],
         "orientation": [
@@ -4185,14 +4340,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.1808,
-         1.1939,
+         1.0739,
          0.5268
         ],
         "orientation": [
@@ -4237,14 +4392,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.2965,
-         1.2228,
+         1.1028,
          0.4821
         ],
         "orientation": [
@@ -4289,14 +4444,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.2205,
-         1.2228,
+         1.1028,
          0.5159
         ],
         "orientation": [
@@ -4341,14 +4496,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.1808,
-         1.1939,
+         1.0739,
          0.5268
         ],
         "orientation": [
@@ -4393,14 +4548,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.1506,
-         1.1165,
+         0.9965,
          0.5223
         ],
         "orientation": [
@@ -4445,14 +4600,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.1608,
-         1.0698,
+         0.9498,
          0.5069
         ],
         "orientation": [
@@ -4497,14 +4652,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.2181,
-         1.022,
+         0.902,
          0.4702
         ],
         "orientation": [
@@ -4549,14 +4704,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.264,
-         1.022,
+         0.902,
          0.4498
         ],
         "orientation": [
@@ -4601,14 +4756,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.3297,
-         1.0698,
+         0.9498,
          0.4317
         ],
         "orientation": [
@@ -4653,14 +4808,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.3479,
-         1.1165,
+         0.9965,
          0.4344
         ],
         "orientation": [
@@ -4705,14 +4860,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star2",
+     "name": "CleanACat_Pet_Ghost_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.3311,
-         1.1939,
+         1.0739,
          0.4599
         ],
         "orientation": [
@@ -4762,7 +4917,7 @@
      "OptionalCFrame": {
       "position": [
        0.0,
-       0.91,
+       0.79,
        0.48
       ],
       "orientation": [
@@ -4785,25 +4940,25 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_Star2"
+   "name": "CleanACat_Pet_Ghost_Star2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/14",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/14",
     "StarLevel": 3
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.0526,
-         1.539,
-         0.5285
+         1.4172,
+         0.537
         ],
         "orientation": [
          [
@@ -4825,7 +4980,7 @@
        }
       },
       "Size": [
-       0.0575,
+       0.075,
        0.26,
        0.1053
       ],
@@ -4844,7 +4999,7 @@
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.0833,
+         -0.0746,
          -0.6253,
          0.0526
         ],
@@ -4869,19 +5024,19 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Pebble/14",
+      "Rojo_Id": "CleanACat_Pet_Ghost/14",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         1.08,
+         0.96,
          0.5
         ],
         "orientation": [
@@ -4926,14 +5081,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0526,
-         1.5354,
+         1.4154,
          0.5453
         ],
         "orientation": [
@@ -4978,15 +5133,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.1074,
-         1.4983,
-         0.5288
+         1.3766,
+         0.5368
         ],
         "orientation": [
          [
@@ -5008,7 +5163,7 @@
        }
       },
       "Size": [
-       0.04,
+       0.0564,
        0.26,
        0.1053
       ],
@@ -5030,15 +5185,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.1399,
-         1.4003,
-         0.5079
+         1.2787,
+         0.5156
         ],
         "orientation": [
          [
@@ -5060,7 +5215,7 @@
        }
       },
       "Size": [
-       0.04,
+       0.0558,
        0.26,
        0.1053
       ],
@@ -5082,15 +5237,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.119,
-         1.3374,
-         0.4945
+         1.2158,
+         0.502
         ],
         "orientation": [
          [
@@ -5112,7 +5267,7 @@
        }
       },
       "Size": [
-       0.04,
+       0.0553,
        0.26,
        0.1053
       ],
@@ -5134,14 +5289,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0338,
-         1.2769,
+         1.1569,
          0.4817
         ],
         "orientation": [
@@ -5186,14 +5341,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.0338,
-         1.2769,
+         1.1569,
          0.4817
         ],
         "orientation": [
@@ -5238,14 +5393,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.119,
-         1.3374,
+         1.2174,
          0.4946
         ],
         "orientation": [
@@ -5290,14 +5445,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.1399,
-         1.4003,
+         1.2803,
          0.5079
         ],
         "orientation": [
@@ -5342,14 +5497,14 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Pebble_Star3",
+     "name": "CleanACat_Pet_Ghost_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          -0.1074,
-         1.4983,
+         1.3783,
          0.5288
         ],
         "orientation": [
@@ -5396,20 +5551,20 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Pebble/15",
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ghost/15",
       "StarLevel": 3
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Pebble_Star3_Glow",
+       "name": "CleanACat_Pet_Ghost_Star3_Glow",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.0,
-           1.41,
-           0.5097
+           1.2918,
+           0.5014
           ],
           "orientation": [
            [
@@ -5432,7 +5587,7 @@
         },
         "Size": [
          0.1,
-         0.1344,
+         0.1175,
          0.1
         ],
         "Color": [
@@ -5451,7 +5606,7 @@
          "CFrame": {
           "position": [
            0.3502,
-           -0.0749,
+           -0.0834,
            -0.3502
           ],
           "orientation": [
@@ -5475,7 +5630,7 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Pebble/15",
+        "Rojo_Id": "CleanACat_Pet_Ghost/15",
         "Follows": "Body"
        }
       }
@@ -5485,7 +5640,7 @@
        "OptionalCFrame": {
         "position": [
          0.0,
-         0.91,
+         0.79,
          0.48
         ],
         "orientation": [
@@ -5508,7 +5663,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Pebble_Star3_Glow"
+     "name": "CleanACat_Pet_Ghost_Star3_Glow"
     }
    ],
    "properties": {
@@ -5516,7 +5671,7 @@
      "OptionalCFrame": {
       "position": [
        0.0,
-       0.91,
+       0.79,
        0.48
       ],
       "orientation": [
@@ -5539,7 +5694,7 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Pebble_Star3"
+   "name": "CleanACat_Pet_Ghost_Star3"
   }
  ],
  "properties": {

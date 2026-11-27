@@ -1,20 +1,19 @@
 {
  "className": "Model",
  "attributes": {
-  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/0",
+  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/0",
   "PartBuilt": true,
   "Pet": true,
-  "PetId": "Bamboo",
-  "Rarity": "Rare",
+  "PetId": "Clover",
+  "Rarity": "Common",
   "PetScale": {
    "Float64": 0.7
   },
-  "PropSlot": "Head",
-  "PropSlot2": "Back"
+  "PropSlot": "Head"
  },
  "children": [
   {
-   "name": "CleanACat_Pet_Bamboo_Body",
+   "name": "CleanACat_Pet_Clover_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
@@ -49,9 +48,9 @@
      0.95
     ],
     "Color": [
-     0.9843,
-     0.9686,
-     0.9451
+     0.4353,
+     0.8118,
+     0.5922
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -88,7 +87,7 @@
     }
    },
    "attributes": {
-    "Rojo_Id": "CleanACat_Pet_Bamboo/0"
+    "Rojo_Id": "CleanACat_Pet_Clover/0"
    },
    "children": [
     {
@@ -99,7 +98,7 @@
        "CFrame": {
         "position": [
          0.0,
-         1.9404,
+         1.9261,
          -0.64
         ],
         "orientation": [
@@ -126,13 +125,454 @@
    ]
   },
   {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.15,
+       0.92,
+       0.32
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.16,
+     0.04,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.18,
+       0.92,
+       -0.03
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.16,
+     0.04,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.2,
+       0.92,
+       -0.18
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.16,
+     0.04,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.1,
+       0.92,
+       0.47
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.16,
+     0.04,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.4,
+       0.68,
+       0.32
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.04,
+     0.16,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.4,
+       0.56,
+       -0.08
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.04,
+     0.16,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.4,
+       0.66,
+       0.12
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.04,
+     0.16,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.4,
+       0.54,
+       0.44
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.04,
+     0.16,
+     0.16
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Clover_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.58,
+       -0.365
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.36,
+     0.348,
+     0.06
+    ],
+    "Color": [
+     1.0,
+     0.9647,
+     0.9255
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/1"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/1"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -167,9 +607,9 @@
        0.8
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -206,29 +646,29 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/1"
+      "Rojo_Id": "CleanACat_Pet_Clover/1"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.2533,
-         1.11,
-         -0.9335
+         0.0,
+         0.9375,
+         -0.905
         ],
         "orientation": [
          [
-          0.9781,
-          0.2079,
+          1.0,
+          0.0,
           0.0
          ],
          [
-          -0.2079,
-          0.9781,
+          0.0,
+          1.0,
           0.0
          ],
          [
@@ -240,14 +680,14 @@
        }
       },
       "Size": [
-       0.3261,
-       0.37,
-       0.04
+       0.414,
+       0.23,
+       0.07
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       1.0,
+       0.9647,
+       0.9255
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -259,56 +699,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.2533,
-         1.11,
-         -0.9335
-        ],
-        "orientation": [
-         [
-          0.9781,
-          -0.2079,
-          0.0
-         ],
-         [
-          0.2079,
-          0.9781,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.3261,
-       0.37,
-       0.04
-      ],
-      "Color": [
-       0.1843,
-       0.1765,
-       0.2314
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -357,7 +748,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -365,7 +756,7 @@
         "position": [
          0.0,
          0.9138,
-         -0.925
+         -0.945
         ],
         "orientation": [
          [
@@ -406,7 +797,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -414,7 +805,7 @@
         "position": [
          0.0288,
          0.8628,
-         -0.928
+         -0.948
         ],
         "orientation": [
          [
@@ -455,7 +846,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -463,7 +854,7 @@
         "position": [
          0.0978,
          0.8628,
-         -0.925
+         -0.945
         ],
         "orientation": [
          [
@@ -504,7 +895,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -512,7 +903,7 @@
         "position": [
          -0.0288,
          0.8628,
-         -0.928
+         -0.948
         ],
         "orientation": [
          [
@@ -553,7 +944,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -561,7 +952,7 @@
         "position": [
          -0.0978,
          0.8628,
-         -0.925
+         -0.945
         ],
         "orientation": [
          [
@@ -602,7 +993,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -652,7 +1043,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Head",
+     "name": "CleanACat_Pet_Clover_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -704,11 +1095,11 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/2"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/2"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Bamboo_Eye1",
+       "name": "CleanACat_Pet_Clover_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -716,7 +1107,7 @@
           "position": [
            -0.253,
            1.11,
-           -0.9513
+           -0.927
           ],
           "orientation": [
            [
@@ -740,12 +1131,12 @@
         "Size": [
          0.253,
          0.3289,
-         0.1245
+         0.076
         ],
         "Color": [
-         0.451,
-         0.8667,
-         0.7059
+         0.949,
+         0.7098,
+         0.2275
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -759,7 +1150,7 @@
           "position": [
            0.0,
            0.0,
-           0.0212
+           -0.003
           ],
           "orientation": [
            [
@@ -782,11 +1173,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Bamboo/2"
+        "Rojo_Id": "CleanACat_Pet_Clover/2"
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_Eye1",
+       "name": "CleanACat_Pet_Clover_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -794,7 +1185,7 @@
           "position": [
            -0.263,
            1.0847,
-           -0.9593
+           -0.9725
           ],
           "orientation": [
            [
@@ -818,7 +1209,7 @@
         "Size": [
          0.1518,
          0.2368,
-         0.0485
+         0.075
         ],
         "Color": [
          0.1686,
@@ -835,7 +1226,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_Eye1",
+       "name": "CleanACat_Pet_Clover_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -843,7 +1234,7 @@
           "position": [
            -0.1961,
            1.2021,
-           -1.0018
+           -0.975
           ],
           "orientation": [
            [
@@ -867,7 +1258,7 @@
         "Size": [
          0.0759,
          0.0886,
-         0.0835
+         0.03
         ],
         "Color": [
          1.0,
@@ -912,16 +1303,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Bamboo_Eye1"
+     "name": "CleanACat_Pet_Clover_Eye1"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/3"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/3"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Bamboo_Eye2",
+       "name": "CleanACat_Pet_Clover_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -929,7 +1320,7 @@
           "position": [
            0.253,
            1.11,
-           -0.9513
+           -0.927
           ],
           "orientation": [
            [
@@ -953,12 +1344,12 @@
         "Size": [
          0.253,
          0.3289,
-         0.1245
+         0.076
         ],
         "Color": [
-         0.451,
-         0.8667,
-         0.7059
+         0.949,
+         0.7098,
+         0.2275
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -972,7 +1363,7 @@
           "position": [
            0.0,
            0.0,
-           0.0212
+           -0.003
           ],
           "orientation": [
            [
@@ -995,11 +1386,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Bamboo/3"
+        "Rojo_Id": "CleanACat_Pet_Clover/3"
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_Eye2",
+       "name": "CleanACat_Pet_Clover_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1007,7 +1398,7 @@
           "position": [
            0.263,
            1.0847,
-           -0.9593
+           -0.9725
           ],
           "orientation": [
            [
@@ -1031,7 +1422,7 @@
         "Size": [
          0.1518,
          0.2368,
-         0.0485
+         0.075
         ],
         "Color": [
          0.1686,
@@ -1048,7 +1439,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_Eye2",
+       "name": "CleanACat_Pet_Clover_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1056,7 +1447,7 @@
           "position": [
            0.3099,
            1.2021,
-           -1.0018
+           -0.975
           ],
           "orientation": [
            [
@@ -1080,7 +1471,7 @@
         "Size": [
          0.0759,
          0.0886,
-         0.0835
+         0.03
         ],
         "Color": [
          1.0,
@@ -1125,16 +1516,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Bamboo_Eye2"
+     "name": "CleanACat_Pet_Clover_Eye2"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/4"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/4"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Bamboo_EarL",
+       "name": "CleanACat_Pet_Clover_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1169,9 +1560,9 @@
          0.2667
         ],
         "Color": [
-         0.1843,
-         0.1765,
-         0.2314
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1208,11 +1599,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Bamboo/4"
+        "Rojo_Id": "CleanACat_Pet_Clover/4"
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_EarL",
+       "name": "CleanACat_Pet_Clover_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1247,9 +1638,9 @@
          0.16
         ],
         "Color": [
-         0.1843,
-         0.1765,
-         0.2314
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1261,7 +1652,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_EarL",
+       "name": "CleanACat_Pet_Clover_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1296,9 +1687,9 @@
          0.0533
         ],
         "Color": [
-         0.1843,
-         0.1765,
-         0.2314
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1310,7 +1701,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_EarL",
+       "name": "CleanACat_Pet_Clover_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1345,9 +1736,9 @@
          0.0631
         ],
         "Color": [
-         0.2902,
-         0.3098,
-         0.3451
+         0.8784,
+         0.4784,
+         0.549
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1387,16 +1778,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Bamboo_EarL"
+     "name": "CleanACat_Pet_Clover_EarL"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/5"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/5"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Bamboo_EarR",
+       "name": "CleanACat_Pet_Clover_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1431,9 +1822,9 @@
          0.2667
         ],
         "Color": [
-         0.1843,
-         0.1765,
-         0.2314
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1470,11 +1861,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Bamboo/5"
+        "Rojo_Id": "CleanACat_Pet_Clover/5"
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_EarR",
+       "name": "CleanACat_Pet_Clover_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1509,9 +1900,9 @@
          0.16
         ],
         "Color": [
-         0.1843,
-         0.1765,
-         0.2314
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1523,7 +1914,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_EarR",
+       "name": "CleanACat_Pet_Clover_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1558,9 +1949,9 @@
          0.0533
         ],
         "Color": [
-         0.1843,
-         0.1765,
-         0.2314
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1572,7 +1963,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_EarR",
+       "name": "CleanACat_Pet_Clover_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1607,9 +1998,9 @@
          0.0631
         ],
         "Color": [
-         0.2902,
-         0.3098,
-         0.3451
+         0.8784,
+         0.4784,
+         0.549
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1649,34 +2040,34 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Bamboo_EarR"
+     "name": "CleanACat_Pet_Clover_EarR"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/11"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/11"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Bamboo_Prop",
+       "name": "CleanACat_Pet_Clover_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0321,
-           1.7502,
-           -0.6287
+           -0.2017,
+           2.1689,
+           -0.4983
           ],
           "orientation": [
            [
-            0.1736,
-            -0.9848,
+            1.0,
+            0.0,
             0.0
            ],
            [
-            0.9848,
-            0.1736,
+            0.0,
+            1.0,
             0.0
            ],
            [
@@ -1688,14 +2079,14 @@
          }
         },
         "Size": [
-         0.3696,
-         0.1413,
-         0.1413
+         0.2391,
+         0.2391,
+         0.1004
         ],
         "Color": [
-         0.7255,
-         0.8471,
-         0.2902
+         0.3725,
+         0.7216,
+         0.3529
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1704,23 +2095,22 @@
         "CastShadow": false,
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth",
-        "Shape": "Cylinder",
         "PivotOffset": {
          "CFrame": {
           "position": [
-           -0.8921,
-           -0.1247,
-           0.3287
+           0.2017,
+           -1.3189,
+           0.1983
           ],
           "orientation": [
            [
-            0.1736,
-            0.9848,
+            1.0,
+            0.0,
             0.0
            ],
            [
-            -0.9848,
-            0.1736,
+            0.0,
+            1.0,
             0.0
            ],
            [
@@ -1733,44 +2123,53 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Bamboo/11",
+        "Rojo_Id": "CleanACat_Pet_Clover/11",
         "Follows": "Head"
-       }
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ]
       },
       {
-       "name": "CleanACat_Pet_Bamboo_Prop",
+       "name": "CleanACat_Pet_Clover_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0321,
-           1.7502,
-           -0.6287
+           0.0,
+           1.7911,
+           -0.4983
           ],
           "orientation": [
            [
-            0.1736,
-            -0.9848,
-            0.0
-           ],
-           [
-            0.9848,
-            0.1736,
+            -1.0,
+            0.0,
             0.0
            ],
            [
             0.0,
             0.0,
             1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
            ]
           ]
          }
         },
         "Size": [
-         0.0489,
-         0.1739,
-         0.1739
+         0.0652,
+         0.0652,
+         0.4674
         ],
         "Color": [
          0.2431,
@@ -1783,108 +2182,168 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Cylinder"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Bamboo_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.2129,
-           2.0314,
-           -0.6436
-          ],
-          "orientation": [
-           [
-            -0.5547,
-            0.069,
-            0.8292
-           ],
-           [
-            0.8321,
-            0.046,
-            0.5528
-           ],
-           [
-            0.0,
-            0.9966,
-            -0.0829
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.163,
-         0.0543,
-         0.4239
-        ],
-        "Color": [
-         0.3725,
-         0.7216,
-         0.3529
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
         "BottomSurface": "Smooth"
        },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ],
        "attributes": {
         "Follows": "Head"
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_Prop",
+       "name": "CleanACat_Pet_Clover_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0292,
-           2.1302,
-           -0.6287
+           -0.1441,
+           2.2265,
+           -0.4896
           ],
           "orientation": [
            [
-            -0.9848,
+            1.0,
             0.0,
-            -0.1738
-           ],
-           [
-            -0.1738,
-            0.0,
-            0.9848
+            0.0
            ],
            [
             0.0,
             1.0,
             0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.163,
-         0.0543,
-         0.4674
+         0.2391,
+         0.2391,
+         0.1004
+        ],
+        "Color": [
+         0.4353,
+         0.8118,
+         0.5922
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1441,
+           2.2265,
+           -0.4809
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2391,
+         0.2391,
+         0.1004
+        ],
+        "Color": [
+         0.4353,
+         0.8118,
+         0.5922
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.2017,
+           2.1689,
+           -0.4722
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2391,
+         0.2391,
+         0.1004
         ],
         "Color": [
          0.3725,
@@ -1913,39 +2372,39 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Bamboo_Prop",
+       "name": "CleanACat_Pet_Clover_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.1073,
-           1.9826,
-           -0.6136
+           0.2017,
+           1.8807,
+           -0.4635
           ],
           "orientation": [
            [
-            -0.2822,
-            0.0809,
-            -0.9559
-           ],
-           [
-            -0.9594,
-            -0.0238,
-            0.2812
+            1.0,
+            0.0,
+            0.0
            ],
            [
             0.0,
-            0.9964,
-            0.0843
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.163,
-         0.0543,
-         0.4239
+         0.2391,
+         0.2391,
+         0.1004
         ],
         "Color": [
          0.3725,
@@ -1972,6 +2431,618 @@
        "attributes": {
         "Follows": "Head"
        }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1441,
+           1.8231,
+           -0.4548
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2391,
+         0.2391,
+         0.1004
+        ],
+        "Color": [
+         0.4353,
+         0.8118,
+         0.5922
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1441,
+           1.8231,
+           -0.4461
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2391,
+         0.2391,
+         0.1004
+        ],
+        "Color": [
+         0.4353,
+         0.8118,
+         0.5922
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.2017,
+           1.8807,
+           -0.4374
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.2391,
+         0.2391,
+         0.1004
+        ],
+        "Color": [
+         0.3725,
+         0.7216,
+         0.3529
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "children": [
+        {
+         "name": "Mesh",
+         "className": "SpecialMesh",
+         "properties": {
+          "MeshType": "Sphere"
+         }
+        }
+       ],
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.185,
+           1.6933,
+           -0.3026
+          ],
+          "orientation": [
+           [
+            -0.8511,
+            -0.525,
+            0.0
+           ],
+           [
+            0.525,
+            -0.8511,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.087,
+         0.087
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1247,
+           1.6293,
+           -0.3026
+          ],
+          "orientation": [
+           [
+            -0.5736,
+            -0.8192,
+            0.0
+           ],
+           [
+            0.8192,
+            -0.5736,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.087,
+         0.0935
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.044,
+           1.5945,
+           -0.3026
+          ],
+          "orientation": [
+           [
+            -0.2022,
+            -0.9793,
+            0.0
+           ],
+           [
+            0.9793,
+            -0.2022,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.087,
+         0.087
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.044,
+           1.5945,
+           -0.3026
+          ],
+          "orientation": [
+           [
+            0.2022,
+            -0.9793,
+            0.0
+           ],
+           [
+            0.9793,
+            0.2022,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.087,
+         0.0935
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1247,
+           1.6293,
+           -0.3026
+          ],
+          "orientation": [
+           [
+            0.5736,
+            -0.8192,
+            0.0
+           ],
+           [
+            0.8192,
+            0.5736,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.087,
+         0.087
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Clover_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.185,
+           1.6933,
+           -0.3026
+          ],
+          "orientation": [
+           [
+            0.8511,
+            -0.525,
+            0.0
+           ],
+           [
+            0.525,
+            0.8511,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1304,
+         0.087,
+         0.0935
+        ],
+        "Color": [
+         0.949,
+         0.7569,
+         0.3059
+        ],
+        "Material": "Metal",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/12"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Pet_Clover_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             2.0248,
+             -0.5526
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1522,
+           0.1522,
+           0.1522
+          ],
+          "Color": [
+           0.949,
+           0.7098,
+           0.2275
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             0.0,
+             0.0,
+             0.0543
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Pet_Clover/12",
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           2.0248,
+           -0.4983
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Pet_Clover_Glow"
       }
      ],
      "properties": {
@@ -2002,7 +3073,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Bamboo_Prop"
+     "name": "CleanACat_Pet_Clover_Prop"
     }
    ],
    "properties": {
@@ -2033,16 +3104,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_Head"
+   "name": "CleanACat_Pet_Clover_Head"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/6"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/6"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_Tail",
+     "name": "CleanACat_Pet_Clover_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2077,9 +3148,9 @@
        0.36
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2116,11 +3187,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/6"
+      "Rojo_Id": "CleanACat_Pet_Clover/6"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Tail",
+     "name": "CleanACat_Pet_Clover_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2155,9 +3226,9 @@
        0.36
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.6588,
+       0.902,
+       0.8118
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2167,192 +3238,6 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/13"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Pet_Bamboo_Tail_Leaf",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.0771,
-           1.358,
-           0.8938
-          ],
-          "orientation": [
-           [
-            -0.766,
-            0.0,
-            -0.6428
-           ],
-           [
-            -0.633,
-            -0.1736,
-            0.7544
-           ],
-           [
-            -0.1116,
-            0.9848,
-            0.133
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.15,
-         0.065,
-         0.36
-        ],
-        "Color": [
-         0.2431,
-         0.498,
-         0.3059
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.0,
-           0.0,
-           -0.12
-          ],
-          "orientation": [
-           [
-            -0.766,
-            -0.633,
-            -0.1116
-           ],
-           [
-            0.0,
-            -0.1736,
-            0.9848
-           ],
-           [
-            -0.6428,
-            0.7544,
-            0.133
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Bamboo/13",
-        "Follows": "Tail"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ]
-      },
-      {
-       "name": "CleanACat_Pet_Bamboo_Tail_Leaf",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.0771,
-           1.358,
-           0.8938
-          ],
-          "orientation": [
-           [
-            -0.766,
-            0.0,
-            0.6428
-           ],
-           [
-            0.633,
-            -0.1736,
-            0.7544
-           ],
-           [
-            0.1116,
-            0.9848,
-            0.133
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.15,
-         0.055,
-         0.36
-        ],
-        "Color": [
-         0.3725,
-         0.7216,
-         0.3529
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ],
-       "attributes": {
-        "Follows": "Tail"
-       }
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         0.0,
-         1.2675,
-         0.8778
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Pet_Bamboo_Tail_Leaf"
     }
    ],
    "properties": {
@@ -2383,16 +3268,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_Tail"
+   "name": "CleanACat_Pet_Clover_Tail"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/7"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/7"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_LegF1",
+     "name": "CleanACat_Pet_Clover_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2427,9 +3312,9 @@
        0.24
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2466,11 +3351,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/7"
+      "Rojo_Id": "CleanACat_Pet_Clover/7"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_LegF1",
+     "name": "CleanACat_Pet_Clover_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2478,7 +3363,7 @@
         "position": [
          -0.22,
          0.055,
-         -0.21
+         -0.1975
         ],
         "orientation": [
          [
@@ -2502,12 +3387,12 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.295
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2547,16 +3432,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_LegF1"
+   "name": "CleanACat_Pet_Clover_LegF1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/8"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/8"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_LegF2",
+     "name": "CleanACat_Pet_Clover_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2591,9 +3476,9 @@
        0.24
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2630,11 +3515,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/8"
+      "Rojo_Id": "CleanACat_Pet_Clover/8"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_LegF2",
+     "name": "CleanACat_Pet_Clover_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2642,7 +3527,7 @@
         "position": [
          0.22,
          0.055,
-         -0.21
+         -0.1975
         ],
         "orientation": [
          [
@@ -2666,12 +3551,12 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.295
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2711,16 +3596,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_LegF2"
+   "name": "CleanACat_Pet_Clover_LegF2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/9"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/9"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_LegB1",
+     "name": "CleanACat_Pet_Clover_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2755,9 +3640,9 @@
        0.24
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2794,11 +3679,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/9"
+      "Rojo_Id": "CleanACat_Pet_Clover/9"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_LegB1",
+     "name": "CleanACat_Pet_Clover_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2806,7 +3691,7 @@
         "position": [
          -0.22,
          0.055,
-         0.41
+         0.4225
         ],
         "orientation": [
          [
@@ -2830,12 +3715,12 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.295
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2875,16 +3760,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_LegB1"
+   "name": "CleanACat_Pet_Clover_LegB1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/10"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/10"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_LegB2",
+     "name": "CleanACat_Pet_Clover_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2919,9 +3804,9 @@
        0.24
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2958,11 +3843,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/10"
+      "Rojo_Id": "CleanACat_Pet_Clover/10"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_LegB2",
+     "name": "CleanACat_Pet_Clover_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2970,7 +3855,7 @@
         "position": [
          0.22,
          0.055,
-         0.41
+         0.4225
         ],
         "orientation": [
          [
@@ -2994,12 +3879,12 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.295
       ],
       "Color": [
-       0.1843,
-       0.1765,
-       0.2314
+       0.949,
+       0.7569,
+       0.3059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3039,590 +3924,17 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_LegB2"
+   "name": "CleanACat_Pet_Clover_LegB2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/12"
-   },
-   "children": [
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.985,
-         0.051
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       1.16,
-       0.15,
-       0.15
-      ],
-      "Color": [
-       0.7255,
-       0.8471,
-       0.2902
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": true,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder",
-      "PivotOffset": {
-       "CFrame": {
-        "position": [
-         0.0,
-         0.985,
-         -0.051
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/12",
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.42,
-         0.985,
-         0.051
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.045,
-       0.18,
-       0.18
-      ],
-      "Color": [
-       0.2431,
-       0.498,
-       0.3059
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.14,
-         0.985,
-         0.051
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.045,
-       0.18,
-       0.18
-      ],
-      "Color": [
-       0.2431,
-       0.498,
-       0.3059
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.14,
-         0.985,
-         0.051
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.045,
-       0.18,
-       0.18
-      ],
-      "Color": [
-       0.2431,
-       0.498,
-       0.3059
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.42,
-         0.985,
-         0.051
-        ],
-        "orientation": [
-         [
-          -1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          -1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.045,
-       0.18,
-       0.18
-      ],
-      "Color": [
-       0.2431,
-       0.498,
-       0.3059
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Cylinder"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.66,
-         1.105,
-         0.101
-        ],
-        "orientation": [
-         [
-          -0.7682,
-          -0.1952,
-          0.6097
-         ],
-         [
-          0.6402,
-          -0.2342,
-          0.7317
-         ],
-         [
-          0.0,
-          0.9524,
-          0.3049
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.14,
-       0.05,
-       0.328
-      ],
-      "Color": [
-       0.3725,
-       0.7216,
-       0.3529
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.69,
-         0.955,
-         0.131
-        ],
-        "orientation": [
-         [
-          0.5241,
-          0.1642,
-          0.8357
-         ],
-         [
-          0.0,
-          0.9812,
-          -0.1928
-         ],
-         [
-          -0.8517,
-          0.1011,
-          0.5143
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.13,
-       0.05,
-       0.3111
-      ],
-      "Color": [
-       0.2431,
-       0.498,
-       0.3059
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.66,
-         1.105,
-         0.101
-        ],
-        "orientation": [
-         [
-          -0.7682,
-          0.1952,
-          -0.6097
-         ],
-         [
-          -0.6402,
-          -0.2342,
-          0.7317
-         ],
-         [
-          0.0,
-          0.9524,
-          0.3049
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.14,
-       0.05,
-       0.328
-      ],
-      "Color": [
-       0.3725,
-       0.7216,
-       0.3529
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Bamboo_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.69,
-         0.955,
-         0.131
-        ],
-        "orientation": [
-         [
-          0.5241,
-          -0.1642,
-          -0.8357
-         ],
-         [
-          0.0,
-          0.9812,
-          -0.1928
-         ],
-         [
-          0.8517,
-          0.1011,
-          0.5143
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.13,
-       0.05,
-       0.3111
-      ],
-      "Color": [
-       0.2431,
-       0.498,
-       0.3059
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     },
-     "children": [
-      {
-       "name": "Mesh",
-       "className": "SpecialMesh",
-       "properties": {
-        "MeshType": "Sphere"
-       }
-      }
-     ],
-     "attributes": {
-      "Follows": "Body"
-     }
-    }
-   ],
-   "properties": {
-    "WorldPivotData": {
-     "OptionalCFrame": {
-      "position": [
-       0.0,
-       0.0,
-       0.0
-      ],
-      "orientation": [
-       [
-        1.0,
-        0.0,
-        0.0
-       ],
-       [
-        0.0,
-        1.0,
-        0.0
-       ],
-       [
-        0.0,
-        0.0,
-        1.0
-       ]
-      ]
-     }
-    }
-   },
-   "name": "CleanACat_Pet_Bamboo_Prop2"
-  },
-  {
-   "className": "Model",
-   "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/14",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/13",
     "StarLevel": 2
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3696,12 +4008,12 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/14",
+      "Rojo_Id": "CleanACat_Pet_Clover/13",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3753,7 +4065,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3805,7 +4117,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3857,7 +4169,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3909,7 +4221,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3961,7 +4273,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4013,7 +4325,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4065,7 +4377,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4117,7 +4429,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4169,7 +4481,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4221,7 +4533,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4273,7 +4585,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4325,7 +4637,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4377,7 +4689,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4429,7 +4741,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4481,7 +4793,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4533,7 +4845,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4585,7 +4897,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4637,7 +4949,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4689,7 +5001,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star2",
+     "name": "CleanACat_Pet_Clover_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4769,17 +5081,17 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_Star2"
+   "name": "CleanACat_Pet_Clover_Star2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/15",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/14",
     "StarLevel": 3
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4853,12 +5165,12 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Bamboo/15",
+      "Rojo_Id": "CleanACat_Pet_Clover/14",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -4910,7 +5222,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4962,7 +5274,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5014,7 +5326,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5066,7 +5378,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5118,7 +5430,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5170,7 +5482,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5222,7 +5534,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5274,7 +5586,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5326,7 +5638,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Bamboo_Star3",
+     "name": "CleanACat_Pet_Clover_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5380,12 +5692,12 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Bamboo/16",
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Clover/15",
       "StarLevel": 3
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Bamboo_Star3_Glow",
+       "name": "CleanACat_Pet_Clover_Star3_Glow",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -5459,7 +5771,7 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Bamboo/16",
+        "Rojo_Id": "CleanACat_Pet_Clover/15",
         "Follows": "Body"
        }
       }
@@ -5492,7 +5804,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Bamboo_Star3_Glow"
+     "name": "CleanACat_Pet_Clover_Star3_Glow"
     }
    ],
    "properties": {
@@ -5523,7 +5835,7 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Bamboo_Star3"
+   "name": "CleanACat_Pet_Clover_Star3"
   }
  ],
  "properties": {

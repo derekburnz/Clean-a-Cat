@@ -1,11 +1,11 @@
 {
  "className": "Model",
  "attributes": {
-  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/0",
+  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/0",
   "PartBuilt": true,
   "Pet": true,
-  "PetId": "Nimbus",
-  "Rarity": "Legendary",
+  "PetId": "Glitch",
+  "Rarity": "Uncommon",
   "PetScale": {
    "Float64": 0.7
   },
@@ -14,7 +14,7 @@
  },
  "children": [
   {
-   "name": "CleanACat_Pet_Nimbus_Body",
+   "name": "CleanACat_Pet_Glitch_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
@@ -22,7 +22,7 @@
       "position": [
        0.0,
        0.62,
-       0.1098
+       0.12
       ],
       "orientation": [
        [
@@ -46,12 +46,12 @@
     "Size": [
      0.78,
      0.58,
-     0.9295
+     0.95
     ],
     "Color": [
-     0.9843,
-     0.9686,
-     0.9451
+     0.451,
+     0.8667,
+     0.7059
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -65,7 +65,7 @@
       "position": [
        0.0,
        -0.62,
-       -0.1098
+       -0.12
       ],
       "orientation": [
        [
@@ -88,7 +88,7 @@
     }
    },
    "attributes": {
-    "Rojo_Id": "CleanACat_Pet_Nimbus/0"
+    "Rojo_Id": "CleanACat_Pet_Glitch/0"
    },
    "children": [
     {
@@ -99,8 +99,8 @@
        "CFrame": {
         "position": [
          0.0,
-         1.8004,
-         -0.6298
+         1.7904,
+         -0.64
         ],
         "orientation": [
          [
@@ -126,15 +126,15 @@
    ]
   },
   {
-   "name": "CleanACat_Pet_Nimbus_Body",
+   "name": "CleanACat_Pet_Glitch_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       0.62,
-       0.16
+       0.395,
+       0.665,
+       -0.1094
       ],
       "orientation": [
        [
@@ -156,34 +156,34 @@
      }
     },
     "Size": [
-     0.81,
-     0.53,
-     0.285
+     0.03,
+     0.125,
+     0.1412
     ],
     "Color": [
+     0.9686,
      0.6588,
-     0.8471,
-     0.9412
+     0.7843
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    }
   },
   {
-   "name": "CleanACat_Pet_Nimbus_Body",
+   "name": "CleanACat_Pet_Glitch_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       0.62,
-       0.4335
+       0.395,
+       0.665,
+       0.0569
       ],
       "orientation": [
        [
@@ -205,34 +205,34 @@
      }
     },
     "Size": [
-     0.82,
-     0.62,
-     0.342
+     0.03,
+     0.125,
+     0.1412
     ],
     "Color": [
-     0.5608,
-     0.8275,
-     0.9961
+     0.1843,
+     0.1765,
+     0.2314
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    }
   },
   {
-   "name": "CleanACat_Pet_Nimbus_Body",
+   "name": "CleanACat_Pet_Glitch_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
-       0.42,
-       0.506,
-       0.12
+       0.395,
+       0.665,
+       0.2231
       ],
       "orientation": [
        [
@@ -254,34 +254,34 @@
      }
     },
     "Size": [
-     0.08,
-     0.2919,
-     0.855
+     0.03,
+     0.125,
+     0.1412
     ],
     "Color": [
-     0.6588,
-     0.8471,
-     0.9412
+     1.0,
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    }
   },
   {
-   "name": "CleanACat_Pet_Nimbus_Body",
+   "name": "CleanACat_Pet_Glitch_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
-       -0.42,
-       0.506,
-       0.12
+       0.395,
+       0.665,
+       0.3894
       ],
       "orientation": [
        [
@@ -303,34 +303,34 @@
      }
     },
     "Size": [
-     0.08,
-     0.2919,
-     0.855
+     0.03,
+     0.125,
+     0.1412
     ],
     "Color": [
+     0.9686,
      0.6588,
-     0.8471,
-     0.9412
+     0.7843
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    }
   },
   {
-   "name": "CleanACat_Pet_Nimbus_Body",
+   "name": "CleanACat_Pet_Glitch_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
-       0.0,
-       0.591,
-       -0.395
+       0.395,
+       0.515,
+       -0.1094
       ],
       "orientation": [
        [
@@ -352,20 +352,853 @@
      }
     },
     "Size": [
-     0.624,
-     0.435,
-     0.1
+     0.03,
+     0.125,
+     0.1412
     ],
     "Color": [
-     0.6588,
-     0.8471,
-     0.9412
+     1.0,
+     0.9765,
+     0.949
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": true,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.395,
+       0.515,
+       0.0569
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.9686,
+     0.6588,
+     0.7843
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.395,
+       0.515,
+       0.2231
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.1843,
+     0.1765,
+     0.2314
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.395,
+       0.515,
+       0.3894
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.665,
+       -0.1094
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.1843,
+     0.1765,
+     0.2314
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.665,
+       0.0569
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.665,
+       0.2231
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.9686,
+     0.6588,
+     0.7843
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.665,
+       0.3894
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.1843,
+     0.1765,
+     0.2314
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.515,
+       -0.1094
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.9686,
+     0.6588,
+     0.7843
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.515,
+       0.0569
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.1843,
+     0.1765,
+     0.2314
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.515,
+       0.2231
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.395,
+       0.515,
+       0.3894
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.03,
+     0.125,
+     0.1412
+    ],
+    "Color": [
+     0.9686,
+     0.6588,
+     0.7843
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0975,
+       0.915,
+       0.0975
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.17,
+     0.03,
+     0.1175
+    ],
+    "Color": [
+     0.1843,
+     0.1765,
+     0.2314
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0975,
+       0.915,
+       0.24
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.17,
+     0.03,
+     0.1175
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0975,
+       0.915,
+       0.3825
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.17,
+     0.03,
+     0.1175
+    ],
+    "Color": [
+     0.9686,
+     0.6588,
+     0.7843
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.0975,
+       0.915,
+       0.0975
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.17,
+     0.03,
+     0.1175
+    ],
+    "Color": [
+     1.0,
+     0.9765,
+     0.949
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.0975,
+       0.915,
+       0.24
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.17,
+     0.03,
+     0.1175
+    ],
+    "Color": [
+     0.9686,
+     0.6588,
+     0.7843
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Glitch_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       -0.0975,
+       0.915,
+       0.3825
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.17,
+     0.03,
+     0.1175
+    ],
+    "Color": [
+     0.1843,
+     0.1765,
+     0.2314
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": false,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    }
@@ -373,11 +1206,11 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/1"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/1"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -385,7 +1218,7 @@
         "position": [
          0.0,
          1.17,
-         -0.531
+         -0.52
         ],
         "orientation": [
          [
@@ -409,12 +1242,12 @@
       "Size": [
        1.0,
        0.84,
-       0.778
+       0.8
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -428,7 +1261,7 @@
         "position": [
          0.0,
          -0.32,
-         0.231
+         0.22
         ],
         "orientation": [
          [
@@ -451,19 +1284,19 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/1"
+      "Rojo_Id": "CleanACat_Pet_Glitch/1"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.0,
-         1.17,
-         -0.28
+         0.085,
+         1.595,
+         -0.56
         ],
         "orientation": [
          [
@@ -485,26 +1318,173 @@
        }
       },
       "Size": [
-       1.03,
-       0.87,
-       0.336
+       0.145,
+       0.03,
+       0.135
       ],
       "Color": [
-       0.6588,
-       0.8471,
-       0.9412
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
       "CanCollide": false,
       "CanTouch": false,
-      "CastShadow": true,
+      "CastShadow": false,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.085,
+         1.595,
+         -0.4
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.145,
+       0.03,
+       0.135
+      ],
+      "Color": [
+       1.0,
+       0.9765,
+       0.949
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Glitch_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.085,
+         1.595,
+         -0.56
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.145,
+       0.03,
+       0.135
+      ],
+      "Color": [
+       1.0,
+       0.9765,
+       0.949
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Glitch_Head",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.085,
+         1.595,
+         -0.4
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.145,
+       0.03,
+       0.135
+      ],
+      "Color": [
+       0.9686,
+       0.6588,
+       0.7843
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -539,9 +1519,9 @@
        0.06
       ],
       "Color": [
-       0.949,
-       0.5529,
-       0.6824
+       0.2902,
+       0.2667,
+       0.3137
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -553,7 +1533,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -602,7 +1582,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -651,7 +1631,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -700,7 +1680,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -749,7 +1729,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -798,7 +1778,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -848,7 +1828,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
+     "name": "CleanACat_Pet_Glitch_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -898,111 +1878,13 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Head",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         0.52,
-         0.92,
-         -0.77
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.14,
-       0.28,
-       0.24
-      ],
-      "Color": [
-       0.6588,
-       0.8471,
-       0.9412
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Nimbus_Head",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.52,
-         0.92,
-         -0.77
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.14,
-       0.28,
-       0.24
-      ],
-      "Color": [
-       0.6588,
-       0.8471,
-       0.9412
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth"
-     }
-    },
-    {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/2"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/2"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Nimbus_Eye1",
+       "name": "CleanACat_Pet_Glitch_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1037,9 +1919,9 @@
          0.076
         ],
         "Color": [
-         0.949,
-         0.7098,
-         0.2275
+         1.0,
+         0.702,
+         0.7804
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1076,11 +1958,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/2"
+        "Rojo_Id": "CleanACat_Pet_Glitch/2"
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Eye1",
+       "name": "CleanACat_Pet_Glitch_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1129,7 +2011,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Eye1",
+       "name": "CleanACat_Pet_Glitch_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1206,16 +2088,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Nimbus_Eye1"
+     "name": "CleanACat_Pet_Glitch_Eye1"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/3"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/3"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Nimbus_Eye2",
+       "name": "CleanACat_Pet_Glitch_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1250,9 +2132,9 @@
          0.076
         ],
         "Color": [
-         0.949,
-         0.7098,
-         0.2275
+         0.3686,
+         0.7451,
+         1.0
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1289,11 +2171,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/3"
+        "Rojo_Id": "CleanACat_Pet_Glitch/3"
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Eye2",
+       "name": "CleanACat_Pet_Glitch_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1342,7 +2224,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Eye2",
+       "name": "CleanACat_Pet_Glitch_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1419,16 +2301,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Nimbus_Eye2"
+     "name": "CleanACat_Pet_Glitch_Eye2"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/4"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/4"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Nimbus_EarL",
+       "name": "CleanACat_Pet_Glitch_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1463,9 +2345,9 @@
          0.2667
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.451,
+         0.8667,
+         0.7059
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1502,11 +2384,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/4"
+        "Rojo_Id": "CleanACat_Pet_Glitch/4"
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_EarL",
+       "name": "CleanACat_Pet_Glitch_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1541,9 +2423,9 @@
          0.16
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.451,
+         0.8667,
+         0.7059
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1555,7 +2437,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_EarL",
+       "name": "CleanACat_Pet_Glitch_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1590,9 +2472,9 @@
          0.0533
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.451,
+         0.8667,
+         0.7059
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1604,7 +2486,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_EarL",
+       "name": "CleanACat_Pet_Glitch_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1612,7 +2494,7 @@
           "position": [
            -0.3187,
            1.65,
-           -0.5752
+           -0.604
           ],
           "orientation": [
            [
@@ -1636,12 +2518,12 @@
         "Size": [
          0.1152,
          0.114,
-         0.03
+         0.0876
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.8784,
+         0.4784,
+         0.549
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1681,16 +2563,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Nimbus_EarL"
+     "name": "CleanACat_Pet_Glitch_EarL"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/5"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/5"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Nimbus_EarR",
+       "name": "CleanACat_Pet_Glitch_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1725,9 +2607,9 @@
          0.2667
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.451,
+         0.8667,
+         0.7059
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1764,11 +2646,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/5"
+        "Rojo_Id": "CleanACat_Pet_Glitch/5"
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_EarR",
+       "name": "CleanACat_Pet_Glitch_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1803,9 +2685,9 @@
          0.16
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.451,
+         0.8667,
+         0.7059
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1817,7 +2699,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_EarR",
+       "name": "CleanACat_Pet_Glitch_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1852,9 +2734,9 @@
          0.0533
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.451,
+         0.8667,
+         0.7059
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1866,7 +2748,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_EarR",
+       "name": "CleanACat_Pet_Glitch_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1874,7 +2756,7 @@
           "position": [
            0.3187,
            1.65,
-           -0.5752
+           -0.5918
           ],
           "orientation": [
            [
@@ -1898,12 +2780,12 @@
         "Size": [
          0.1152,
          0.114,
-         0.03
+         0.0631
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.8784,
+         0.4784,
+         0.549
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1943,55 +2825,55 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Nimbus_EarR"
+     "name": "CleanACat_Pet_Glitch_EarR"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/11"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/11"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Nimbus_Prop",
+       "name": "CleanACat_Pet_Glitch_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0,
-           1.84,
-           -0.183
+           -0.5543,
+           1.3726,
+           -0.5743
           ],
           "orientation": [
            [
-            -1.0,
+            1.0,
             0.0,
             0.0
            ],
            [
             0.0,
-            -0.037,
-            0.9993
+            1.0,
+            0.0
            ],
            [
             0.0,
-            0.9993,
-            0.037
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.0652,
-         0.0652,
-         0.5874
+         0.1739,
+         0.1304,
+         0.713
         ],
         "Color": [
-         0.949,
-         0.7569,
-         0.3059
+         0.451,
+         0.8667,
+         0.7059
         ],
-        "Material": "Metal",
+        "Material": "SmoothPlastic",
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
@@ -2001,51 +2883,51 @@
         "PivotOffset": {
          "CFrame": {
           "position": [
-           0.0,
-           -0.0802,
-           -0.9937
+           0.5543,
+           -0.5226,
+           0.2743
           ],
           "orientation": [
            [
-            -1.0,
+            1.0,
             0.0,
             0.0
            ],
            [
             0.0,
-            -0.037,
-            0.9993
+            1.0,
+            0.0
            ],
            [
             0.0,
-            0.9993,
-            0.037
+            0.0,
+            1.0
            ]
           ]
          }
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/11",
+        "Rojo_Id": "CleanACat_Pet_Glitch/11",
         "Follows": "Head"
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Prop",
+       "name": "CleanACat_Pet_Glitch_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.2704,
-           2.1335,
-           -0.4476
+           -0.3261,
+           1.6552,
+           -0.4983
           ],
           "orientation": [
            [
-            0.9659,
+            1.0,
             0.0,
-            0.2588
+            0.0
            ],
            [
             0.0,
@@ -2053,24 +2935,24 @@
             0.0
            ],
            [
-            -0.2588,
             0.0,
-            0.9659
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.0924,
-         0.0761,
-         0.1823
+         0.2391,
+         0.2391,
+         0.2391
         ],
         "Color": [
-         0.949,
-         0.7569,
-         0.3059
+         0.451,
+         0.8667,
+         0.7059
         ],
-        "Material": "Metal",
+        "Material": "SmoothPlastic",
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
@@ -2083,21 +2965,21 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Prop",
+       "name": "CleanACat_Pet_Glitch_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.1979,
-           2.1335,
-           -0.3221
+           -0.6235,
+           1.9526,
+           -0.5106
           ],
           "orientation": [
            [
-            0.7071,
+            1.0,
             0.0,
-            0.7071
+            0.0
            ],
            [
             0.0,
@@ -2105,24 +2987,24 @@
             0.0
            ],
            [
-            -0.7071,
             0.0,
-            0.7071
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.0924,
-         0.0761,
-         0.1823
+         0.1739,
+         0.1739,
+         0.1494
         ],
         "Color": [
-         0.949,
-         0.7569,
-         0.3059
+         0.451,
+         0.8667,
+         0.7059
         ],
-        "Material": "Metal",
+        "Material": "SmoothPlastic",
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
@@ -2135,21 +3017,21 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Prop",
+       "name": "CleanACat_Pet_Glitch_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.0724,
-           2.1335,
-           -0.2496
+           -0.737,
+           2.0661,
+           -0.5091
           ],
           "orientation": [
            [
-            0.2588,
+            1.0,
             0.0,
-            0.9659
+            0.0
            ],
            [
             0.0,
@@ -2157,24 +3039,24 @@
             0.0
            ],
            [
-            -0.9659,
             0.0,
-            0.2588
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.0924,
-         0.0761,
-         0.1823
+         0.1413,
+         0.1413,
+         0.1413
         ],
         "Color": [
-         0.949,
-         0.7569,
-         0.3059
+         0.1843,
+         0.1765,
+         0.2314
         ],
-        "Material": "Metal",
+        "Material": "SmoothPlastic",
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
@@ -2187,21 +3069,21 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Prop",
+       "name": "CleanACat_Pet_Glitch_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0724,
-           2.1335,
-           -0.2496
+           0.5543,
+           1.1117,
+           -0.4657
           ],
           "orientation": [
            [
-            -0.2588,
+            1.0,
             0.0,
-            0.9659
+            0.0
            ],
            [
             0.0,
@@ -2209,860 +3091,28 @@
             0.0
            ],
            [
-            -0.9659,
             0.0,
-            -0.2588
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
-         0.0924,
-         0.0761,
-         0.1823
+         0.1739,
+         0.1304,
+         0.713
         ],
         "Color": [
-         0.949,
-         0.7569,
-         0.3059
+         0.451,
+         0.8667,
+         0.7059
         ],
-        "Material": "Metal",
+        "Material": "SmoothPlastic",
         "Anchored": true,
         "CanCollide": false,
         "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.1979,
-           2.1335,
-           -0.3221
-          ],
-          "orientation": [
-           [
-            -0.7071,
-            0.0,
-            0.7071
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.7071,
-            0.0,
-            -0.7071
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.2704,
-           2.1335,
-           -0.4476
-          ],
-          "orientation": [
-           [
-            -0.9659,
-            0.0,
-            0.2588
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.2588,
-            0.0,
-            -0.9659
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.2704,
-           2.1335,
-           -0.5924
-          ],
-          "orientation": [
-           [
-            -0.9659,
-            0.0,
-            -0.2588
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.2588,
-            0.0,
-            -0.9659
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.1979,
-           2.1335,
-           -0.7179
-          ],
-          "orientation": [
-           [
-            -0.7071,
-            0.0,
-            -0.7071
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.7071,
-            0.0,
-            -0.7071
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.0724,
-           2.1335,
-           -0.7904
-          ],
-          "orientation": [
-           [
-            -0.2588,
-            0.0,
-            -0.9659
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.9659,
-            0.0,
-            -0.2588
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.0724,
-           2.1335,
-           -0.7904
-          ],
-          "orientation": [
-           [
-            0.2588,
-            0.0,
-            -0.9659
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.9659,
-            0.0,
-            0.2588
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.1979,
-           2.1335,
-           -0.7179
-          ],
-          "orientation": [
-           [
-            0.7071,
-            0.0,
-            -0.7071
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.7071,
-            0.0,
-            0.7071
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.2704,
-           2.1335,
-           -0.5924
-          ],
-          "orientation": [
-           [
-            0.9659,
-            0.0,
-            -0.2588
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.2588,
-            0.0,
-            0.9659
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0924,
-         0.0761,
-         0.1823
-        ],
-        "Color": [
-         0.949,
-         0.7569,
-         0.3059
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.3515,
-           2.1635,
-           -0.3744
-          ],
-          "orientation": [
-           [
-            0.9239,
-            0.0,
-            0.3827
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.3827,
-            0.0,
-            0.9239
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.1456,
-           2.1035,
-           -0.1685
-          ],
-          "orientation": [
-           [
-            0.3827,
-            0.0,
-            0.9239
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.9239,
-            0.0,
-            0.3827
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.1456,
-           2.1635,
-           -0.1685
-          ],
-          "orientation": [
-           [
-            -0.3827,
-            0.0,
-            0.9239
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.9239,
-            0.0,
-            -0.3827
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.3515,
-           2.1635,
-           -0.3744
-          ],
-          "orientation": [
-           [
-            -0.9239,
-            0.0,
-            0.3827
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.3827,
-            0.0,
-            -0.9239
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.3515,
-           2.1635,
-           -0.6656
-          ],
-          "orientation": [
-           [
-            -0.9239,
-            0.0,
-            -0.3827
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.3827,
-            0.0,
-            -0.9239
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.1456,
-           2.1035,
-           -0.8715
-          ],
-          "orientation": [
-           [
-            -0.3827,
-            0.0,
-            -0.9239
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.9239,
-            0.0,
-            -0.3827
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.1456,
-           2.1635,
-           -0.8715
-          ],
-          "orientation": [
-           [
-            0.3827,
-            0.0,
-            -0.9239
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.9239,
-            0.0,
-            0.3827
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Nimbus_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.3515,
-           2.1635,
-           -0.6656
-          ],
-          "orientation": [
-           [
-            0.9239,
-            0.0,
-            -0.3827
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.3827,
-            0.0,
-            0.9239
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1522,
-         0.0761,
-         0.0815
-        ],
-        "Color": [
-         0.9843,
-         0.8941,
-         0.6039
-        ],
-        "Material": "Metal",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
+        "CastShadow": true,
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth"
        },
@@ -3073,19 +3123,19 @@
       {
        "className": "Model",
        "attributes": {
-        "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/12"
+        "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/12"
        },
        "children": [
         {
-         "name": "CleanACat_Pet_Nimbus_Glow",
+         "name": "CleanACat_Pet_Glitch_Glow",
          "className": "Part",
          "properties": {
           "CFrame": {
            "CFrame": {
             "position": [
-             0.0,
-             2.1443,
-             -0.8135
+             -0.4865,
+             1.8157,
+             -0.4819
             ],
             "orientation": [
              [
@@ -3107,14 +3157,14 @@
            }
           },
           "Size": [
-           0.1522,
-           0.1522,
-           0.1522
+           0.2065,
+           0.2065,
+           0.152
           ],
           "Color": [
-           0.949,
-           0.7098,
-           0.2275
+           0.9686,
+           0.6588,
+           0.7843
           ],
           "Material": "Neon",
           "Anchored": true,
@@ -3123,13 +3173,12 @@
           "CastShadow": false,
           "TopSurface": "Smooth",
           "BottomSurface": "Smooth",
-          "Shape": "Ball",
           "PivotOffset": {
            "CFrame": {
             "position": [
-             0.0,
-             -0.0109,
-             0.2935
+             0.4865,
+             -0.117,
+             -0.0381
             ],
             "orientation": [
              [
@@ -3152,7 +3201,163 @@
           }
          },
          "attributes": {
-          "Rojo_Id": "CleanACat_Pet_Nimbus/12",
+          "Rojo_Id": "CleanACat_Pet_Glitch/12",
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Glitch_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.827,
+             2.1561,
+             -0.4983
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1087,
+           0.1087,
+           0.1087
+          ],
+          "Color": [
+           0.9686,
+           0.6588,
+           0.7843
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Glitch_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.663,
+             1.3726,
+             -0.5743
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0543,
+           0.1904,
+           0.713
+          ],
+          "Color": [
+           0.9686,
+           0.6588,
+           0.7843
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": true,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Glitch_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.663,
+             1.1117,
+             -0.4657
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0543,
+           0.1904,
+           0.713
+          ],
+          "Color": [
+           0.3686,
+           0.7451,
+           1.0
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": true,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
           "Follows": "Head"
          }
         }
@@ -3162,7 +3367,7 @@
          "OptionalCFrame": {
           "position": [
            0.0,
-           2.1335,
+           1.6987,
            -0.52
           ],
           "orientation": [
@@ -3185,7 +3390,7 @@
          }
         }
        },
-       "name": "CleanACat_Pet_Nimbus_Glow"
+       "name": "CleanACat_Pet_Glitch_Glow"
       }
      ],
      "properties": {
@@ -3216,7 +3421,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Nimbus_Prop"
+     "name": "CleanACat_Pet_Glitch_Prop"
     }
    ],
    "properties": {
@@ -3247,16 +3452,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_Head"
+   "name": "CleanACat_Pet_Glitch_Head"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/6"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/6"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_Tail",
+     "name": "CleanACat_Pet_Glitch_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3286,14 +3491,14 @@
        }
       },
       "Size": [
-       0.312,
-       0.312,
+       0.24,
+       0.24,
        0.36
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3330,17 +3535,17 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/6"
+      "Rojo_Id": "CleanACat_Pet_Glitch/6"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Tail",
+     "name": "CleanACat_Pet_Glitch_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.0,
+         -0.0,
          1.1198,
          0.8518
         ],
@@ -3364,14 +3569,14 @@
        }
       },
       "Size": [
-       0.252,
-       0.292,
+       0.18,
+       0.22,
        0.36
       ],
       "Color": [
-       0.5608,
-       0.8275,
-       0.9961
+       0.9686,
+       0.6588,
+       0.7843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3381,131 +3586,6 @@
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
-    },
-    {
-     "className": "Model",
-     "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/15"
-     },
-     "children": [
-      {
-       "name": "CleanACat_Pet_Nimbus_Tail_Drop_Glow",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.0,
-           1.3168,
-           0.8865
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.3621,
-         0.4345,
-         0.3621
-        ],
-        "Color": [
-         0.3686,
-         0.7451,
-         1.0
-        ],
-        "Material": "Neon",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "PivotOffset": {
-         "CFrame": {
-          "position": [
-           0.0,
-           -0.0492,
-           -0.0087
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        }
-       },
-       "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/15",
-        "Follows": "Tail"
-       },
-       "children": [
-        {
-         "name": "Mesh",
-         "className": "SpecialMesh",
-         "properties": {
-          "MeshType": "Sphere"
-         }
-        }
-       ]
-      }
-     ],
-     "properties": {
-      "WorldPivotData": {
-       "OptionalCFrame": {
-        "position": [
-         0.0,
-         1.2675,
-         0.8778
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      }
-     },
-     "name": "CleanACat_Pet_Nimbus_Tail_Drop_Glow"
     }
    ],
    "properties": {
@@ -3536,16 +3616,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_Tail"
+   "name": "CleanACat_Pet_Glitch_Tail"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/7"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/7"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_LegF1",
+     "name": "CleanACat_Pet_Glitch_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3580,9 +3660,9 @@
        0.24
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3619,11 +3699,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/7"
+      "Rojo_Id": "CleanACat_Pet_Glitch/7"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_LegF1",
+     "name": "CleanACat_Pet_Glitch_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3631,7 +3711,7 @@
         "position": [
          -0.22,
          0.055,
-         -0.21
+         -0.2
         ],
         "orientation": [
          [
@@ -3655,12 +3735,61 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.25
       ],
       "Color": [
-       0.9843,
+       0.451,
+       0.8667,
+       0.7059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Glitch_LegF1",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.22,
+         0.065,
+         -0.3
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.33,
+       0.122,
+       0.11
+      ],
+      "Color": [
        0.9686,
-       0.9451
+       0.6588,
+       0.7843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3700,16 +3829,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_LegF1"
+   "name": "CleanACat_Pet_Glitch_LegF1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/8"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/8"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_LegF2",
+     "name": "CleanACat_Pet_Glitch_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3744,9 +3873,9 @@
        0.24
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3783,11 +3912,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/8"
+      "Rojo_Id": "CleanACat_Pet_Glitch/8"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_LegF2",
+     "name": "CleanACat_Pet_Glitch_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3795,7 +3924,7 @@
         "position": [
          0.22,
          0.055,
-         -0.21
+         -0.2
         ],
         "orientation": [
          [
@@ -3819,12 +3948,61 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.25
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Glitch_LegF2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.22,
+         0.065,
+         -0.3
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.33,
+       0.122,
+       0.11
+      ],
+      "Color": [
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3864,16 +4042,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_LegF2"
+   "name": "CleanACat_Pet_Glitch_LegF2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/9"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/9"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_LegB1",
+     "name": "CleanACat_Pet_Glitch_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3908,9 +4086,9 @@
        0.24
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3947,11 +4125,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/9"
+      "Rojo_Id": "CleanACat_Pet_Glitch/9"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_LegB1",
+     "name": "CleanACat_Pet_Glitch_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3959,7 +4137,7 @@
         "position": [
          -0.22,
          0.055,
-         0.41
+         0.42
         ],
         "orientation": [
          [
@@ -3983,12 +4161,61 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.25
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Glitch_LegB1",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         -0.22,
+         0.065,
+         0.32
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.33,
+       0.122,
+       0.11
+      ],
+      "Color": [
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4028,16 +4255,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_LegB1"
+   "name": "CleanACat_Pet_Glitch_LegB1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/10"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/10"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_LegB2",
+     "name": "CleanACat_Pet_Glitch_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -4072,9 +4299,9 @@
        0.24
       ],
       "Color": [
-       0.9843,
-       0.9686,
-       0.9451
+       0.451,
+       0.8667,
+       0.7059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4111,11 +4338,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/10"
+      "Rojo_Id": "CleanACat_Pet_Glitch/10"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_LegB2",
+     "name": "CleanACat_Pet_Glitch_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -4123,7 +4350,7 @@
         "position": [
          0.22,
          0.055,
-         0.41
+         0.42
         ],
         "orientation": [
          [
@@ -4147,12 +4374,61 @@
       "Size": [
        0.27,
        0.11,
-       0.27
+       0.25
       ],
       "Color": [
-       0.9843,
+       0.451,
+       0.8667,
+       0.7059
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Glitch_LegB2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.22,
+         0.065,
+         0.32
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.33,
+       0.122,
+       0.11
+      ],
+      "Color": [
        0.9686,
-       0.9451
+       0.6588,
+       0.7843
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4192,24 +4468,24 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_LegB2"
+   "name": "CleanACat_Pet_Glitch_LegB2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/13"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/13"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
+     "name": "CleanACat_Pet_Glitch_Prop2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.26,
-         1.11,
-         0.051
+         0.0,
+         1.33,
+         -0.02
         ],
         "orientation": [
          [
@@ -4231,14 +4507,14 @@
        }
       },
       "Size": [
-       0.4,
-       0.4,
-       0.4
+       0.07,
+       0.14,
+       0.14
       ],
       "Color": [
-       0.6588,
-       0.8471,
-       0.9412
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4247,13 +4523,12 @@
       "CastShadow": false,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth",
-      "Shape": "Ball",
       "PivotOffset": {
        "CFrame": {
         "position": [
-         -0.26,
-         -1.11,
-         -0.051
+         0.0,
+         -1.33,
+         0.02
         ],
         "orientation": [
          [
@@ -4276,20 +4551,20 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/13",
+      "Rojo_Id": "CleanACat_Pet_Glitch/13",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
+     "name": "CleanACat_Pet_Glitch_Prop2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.95,
-         0.051
+         1.01,
+         0.12
         ],
         "orientation": [
          [
@@ -4311,14 +4586,14 @@
        }
       },
       "Size": [
-       0.36,
-       0.12,
-       0.2
+       0.06,
+       0.24,
+       0.06
       ],
       "Color": [
-       0.5608,
-       0.8275,
-       0.9961
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4333,15 +4608,15 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
+     "name": "CleanACat_Pet_Glitch_Prop2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.5,
-         1.25,
-         0.111
+         0.0,
+         1.19,
+         0.12
         ],
         "orientation": [
          [
@@ -4363,14 +4638,14 @@
        }
       },
       "Size": [
-       0.36,
-       0.36,
-       0.36
+       0.07,
+       0.14,
+       0.14
       ],
       "Color": [
-       0.6588,
-       0.8471,
-       0.9412
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4378,23 +4653,22 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
+      "BottomSurface": "Smooth"
      },
      "attributes": {
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
+     "name": "CleanACat_Pet_Glitch_Prop2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.72,
-         1.37,
-         0.181
+         0.0,
+         1.47,
+         0.12
         ],
         "orientation": [
          [
@@ -4416,14 +4690,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.28,
-       0.28
+       0.07,
+       0.14,
+       0.14
       ],
       "Color": [
-       0.6588,
-       0.8471,
-       0.9412
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4431,23 +4705,22 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
+      "BottomSurface": "Smooth"
      },
      "attributes": {
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
+     "name": "CleanACat_Pet_Glitch_Prop2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.5,
-         1.05,
-         0.101
+         0.0,
+         1.33,
+         0.26
         ],
         "orientation": [
          [
@@ -4469,14 +4742,14 @@
        }
       },
       "Size": [
-       0.28,
-       0.28,
-       0.28
+       0.07,
+       0.14,
+       0.14
       ],
       "Color": [
-       0.5608,
-       0.8275,
-       0.9961
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4484,23 +4757,22 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
+      "BottomSurface": "Smooth"
      },
      "attributes": {
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
+     "name": "CleanACat_Pet_Glitch_Prop2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         0.74,
-         1.18,
-         0.171
+         0.0,
+         1.07,
+         0.42
         ],
         "orientation": [
          [
@@ -4510,26 +4782,26 @@
          ],
          [
           0.0,
-          1.0,
-          0.0
+          0.6508,
+          -0.7593
          ],
          [
           0.0,
-          0.0,
-          1.0
+          0.7593,
+          0.6508
          ]
         ]
        }
       },
       "Size": [
-       0.22,
-       0.22,
-       0.22
+       0.025,
+       0.025,
+       0.3688
       ],
       "Color": [
-       0.5608,
-       0.8275,
-       0.9961
+       0.1843,
+       0.1765,
+       0.2314
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4537,23 +4809,22 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
+      "BottomSurface": "Smooth"
      },
      "attributes": {
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
+     "name": "CleanACat_Pet_Glitch_Prop2",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
-         -0.26,
-         1.11,
-         0.051
+         0.045,
+         1.01,
+         0.47
         ],
         "orientation": [
          [
@@ -4575,14 +4846,14 @@
        }
       },
       "Size": [
-       0.4,
-       0.4,
-       0.4
+       0.06,
+       0.07,
+       0.07
       ],
       "Color": [
-       0.6588,
-       0.8471,
-       0.9412
+       0.451,
+       0.8667,
+       0.7059
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -4590,220 +4861,7 @@
       "CanTouch": false,
       "CastShadow": false,
       "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.5,
-         1.25,
-         0.111
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.36,
-       0.36,
-       0.36
-      ],
-      "Color": [
-       0.6588,
-       0.8471,
-       0.9412
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.72,
-         1.37,
-         0.181
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.28,
-       0.28,
-       0.28
-      ],
-      "Color": [
-       0.6588,
-       0.8471,
-       0.9412
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.5,
-         1.05,
-         0.101
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.28,
-       0.28,
-       0.28
-      ],
-      "Color": [
-       0.5608,
-       0.8275,
-       0.9961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
-     },
-     "attributes": {
-      "Follows": "Body"
-     }
-    },
-    {
-     "name": "CleanACat_Pet_Nimbus_Prop2",
-     "className": "Part",
-     "properties": {
-      "CFrame": {
-       "CFrame": {
-        "position": [
-         -0.74,
-         1.18,
-         0.171
-        ],
-        "orientation": [
-         [
-          1.0,
-          0.0,
-          0.0
-         ],
-         [
-          0.0,
-          1.0,
-          0.0
-         ],
-         [
-          0.0,
-          0.0,
-          1.0
-         ]
-        ]
-       }
-      },
-      "Size": [
-       0.22,
-       0.22,
-       0.22
-      ],
-      "Color": [
-       0.5608,
-       0.8275,
-       0.9961
-      ],
-      "Material": "SmoothPlastic",
-      "Anchored": true,
-      "CanCollide": false,
-      "CanTouch": false,
-      "CastShadow": false,
-      "TopSurface": "Smooth",
-      "BottomSurface": "Smooth",
-      "Shape": "Ball"
+      "BottomSurface": "Smooth"
      },
      "attributes": {
       "Follows": "Body"
@@ -4812,19 +4870,19 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/14"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/14"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Nimbus_Wings_Glow",
+       "name": "CleanACat_Pet_Glitch_Sprite_Glow",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.84,
-           1.47,
-           0.211
+           0.0,
+           1.19,
+           -0.02
           ],
           "orientation": [
            [
@@ -4846,14 +4904,14 @@
          }
         },
         "Size": [
-         0.11,
-         0.11,
-         0.11
+         0.076,
+         0.14,
+         0.14
         ],
         "Color": [
-         0.949,
-         0.7098,
-         0.2275
+         0.9686,
+         0.6588,
+         0.7843
         ],
         "Material": "Neon",
         "Anchored": true,
@@ -4862,13 +4920,12 @@
         "CastShadow": false,
         "TopSurface": "Smooth",
         "BottomSurface": "Smooth",
-        "Shape": "Ball",
         "PivotOffset": {
          "CFrame": {
           "position": [
-           -0.84,
-           -0.26,
-           -0.16
+           0.0,
+           0.02,
+           0.14
           ],
           "orientation": [
            [
@@ -4891,20 +4948,20 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/14",
+        "Rojo_Id": "CleanACat_Pet_Glitch/14",
         "Follows": "Body"
        }
       },
       {
-       "name": "CleanACat_Pet_Nimbus_Wings_Glow",
+       "name": "CleanACat_Pet_Glitch_Sprite_Glow",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.84,
+           0.0,
            1.47,
-           0.211
+           -0.02
           ],
           "orientation": [
            [
@@ -4926,14 +4983,14 @@
          }
         },
         "Size": [
-         0.11,
-         0.11,
-         0.11
+         0.076,
+         0.14,
+         0.14
         ],
         "Color": [
-         0.949,
-         0.7098,
-         0.2275
+         0.9686,
+         0.6588,
+         0.7843
         ],
         "Material": "Neon",
         "Anchored": true,
@@ -4941,8 +4998,215 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Ball"
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Glitch_Sprite_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.33,
+           0.12
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.076,
+         0.14,
+         0.14
+        ],
+        "Color": [
+         0.9686,
+         0.6588,
+         0.7843
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Glitch_Sprite_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.19,
+           0.26
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.076,
+         0.14,
+         0.14
+        ],
+        "Color": [
+         0.9686,
+         0.6588,
+         0.7843
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Glitch_Sprite_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.47,
+           0.26
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.076,
+         0.14,
+         0.14
+        ],
+        "Color": [
+         0.9686,
+         0.6588,
+         0.7843
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Glitch_Sprite_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.11,
+           0.38
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.09,
+         0.09,
+         0.09
+        ],
+        "Color": [
+         0.9686,
+         0.6588,
+         0.7843
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
        },
        "attributes": {
         "Follows": "Body"
@@ -4955,7 +5219,7 @@
         "position": [
          0.0,
          1.21,
-         0.051
+         0.12
         ],
         "orientation": [
          [
@@ -4977,7 +5241,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Nimbus_Wings_Glow"
+     "name": "CleanACat_Pet_Glitch_Sprite_Glow"
     }
    ],
    "properties": {
@@ -5008,17 +5272,17 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_Prop2"
+   "name": "CleanACat_Pet_Glitch_Prop2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/16",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/15",
     "StarLevel": 2
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -5092,12 +5356,12 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/16",
+      "Rojo_Id": "CleanACat_Pet_Glitch/15",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5149,7 +5413,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5201,7 +5465,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5253,7 +5517,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5305,7 +5569,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5357,7 +5621,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5409,7 +5673,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5461,7 +5725,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5513,7 +5777,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5565,7 +5829,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5617,7 +5881,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5669,7 +5933,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5721,7 +5985,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5773,7 +6037,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5825,7 +6089,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5877,7 +6141,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5929,7 +6193,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5981,7 +6245,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6033,7 +6297,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6085,7 +6349,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star2",
+     "name": "CleanACat_Pet_Glitch_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6165,17 +6429,17 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_Star2"
+   "name": "CleanACat_Pet_Glitch_Star2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/17",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/16",
     "StarLevel": 3
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6249,12 +6513,12 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Nimbus/17",
+      "Rojo_Id": "CleanACat_Pet_Glitch/16",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -6306,7 +6570,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6358,7 +6622,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6410,7 +6674,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6462,7 +6726,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6514,7 +6778,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6566,7 +6830,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6618,7 +6882,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6670,7 +6934,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6722,7 +6986,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Nimbus_Star3",
+     "name": "CleanACat_Pet_Glitch_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -6776,12 +7040,12 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Nimbus/18",
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Glitch/17",
       "StarLevel": 3
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Nimbus_Star3_Glow",
+       "name": "CleanACat_Pet_Glitch_Star3_Glow",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -6855,7 +7119,7 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Nimbus/18",
+        "Rojo_Id": "CleanACat_Pet_Glitch/17",
         "Follows": "Body"
        }
       }
@@ -6888,7 +7152,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Nimbus_Star3_Glow"
+     "name": "CleanACat_Pet_Glitch_Star3_Glow"
     }
    ],
    "properties": {
@@ -6919,7 +7183,7 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Nimbus_Star3"
+   "name": "CleanACat_Pet_Glitch_Star3"
   }
  ],
  "properties": {

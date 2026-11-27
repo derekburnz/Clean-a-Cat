@@ -86,6 +86,9 @@ function CrateViewRules.total(kind: string): number
 end
 
 function CrateViewRules.title(kind: string): string
+	if kind == CrateRules.GIFT_KIND then
+		return "Gift crate" -- the gift stand's crate (switch giftCrate, issue 859)
+	end
 	return if kind == "good" then "Good crate" else "Crate"
 end
 
@@ -166,7 +169,7 @@ export type SlotRow = {
 	who: string, -- "You" or the helper's name
 	helper: string?, -- the helper's id, nil for the player
 	pet: CrateRules.Pet?,
-	say: string, -- "Cozy: tips +5%", "Koi, 2 stars: pay +18%", "No pet yet", "Comes when Lou is hired"
+	say: string, -- "Clover: tips +5%", "Angler, 2 stars: pay +18%", "No pet yet", "Comes when Lou is hired"
 	locked: boolean,
 	slot2: string?, -- the second slot beside the first, with the Second pet slot pass ("player2", "<id>2")
 	pet2: CrateRules.Pet?,
@@ -244,7 +247,7 @@ function CrateViewRules.petLine(pet: CrateRules.Pet, slot: string): string
 	return `{name}: {what} {boostPercent(pet.kind, pet.star)}`
 end
 
--- A pet's short boost for a row holding two: "Cozy +5%".
+-- A pet's short boost for a row holding two: "Clover +5%".
 local function shortLine(pet: CrateRules.Pet): string
 	return `{pet.kind} {boostPercent(pet.kind, pet.star)}`
 end

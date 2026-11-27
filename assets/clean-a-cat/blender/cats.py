@@ -742,16 +742,19 @@ def _coat_extras(b, spec, c, centre, size, sides=True, front=True, top=True):
         for at, sz_ in spots:
             b.box(at, sz_, c["third"], bevel=False)
     if spec.get("sparkle"):
+        # how far out the specks stand on the sides and the top: a pet with patches or a long coat moves them off
+        # the patch's and the fringe's faces so no two faces share a plane (pets.py, #883)
+        so, to = spec.get("speck_out", (0.03, 0.03))
         specks = []
         if sides:
-            specks += [(-hx - 0.03, y0 + 0.1, z0 + 0.08), (hx + 0.03, y0 - 0.08, z0 - 0.08), (hx + 0.03, y0 + 0.26, z0 + 0.12)]
+            specks += [(-hx - so, y0 + 0.1, z0 + 0.08), (hx + so, y0 - 0.08, z0 - 0.08), (hx + so, y0 + 0.26, z0 + 0.12)]
         if top:
-            specks += [(0.16, y0 + 0.22, tz + 0.03), (-0.18, y0 - 0.16, tz + 0.03)]
+            specks += [(0.16, y0 + 0.22, tz + to), (-0.18, y0 - 0.16, tz + to)]
         if spec["rarity"] in STARRY:                # a denser star field on the heroes
             if sides:
-                specks += [(-hx - 0.03, y0 - 0.2, z0 + 0.13), (hx + 0.03, y0 + 0.1, z0 + 0.17)]
+                specks += [(-hx - so, y0 - 0.2, z0 + 0.13), (hx + so, y0 + 0.1, z0 + 0.17)]
             if top:
-                specks += [(0.0, y0, tz + 0.03)]
+                specks += [(0.0, y0, tz + to)]
         for at in specks:
             b.box(at, (0.08, 0.08, 0.08), "sparkle", bevel=False)
     if spec.get("sprinkles"):                           # sprinkles, each at its own angle, proud of the fur

@@ -357,7 +357,11 @@ local SCENES = {
 		function()
 			flag("crateWindow", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
-			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
+			UI.showCrate(
+				"normal",
+				3,
+				CrateViewRules.rows("normal", { Clover = true, Angler = true })
+			)
 		end,
 	},
 	-- Each pet says what it gives (issue 927, switch petLines): "+5% tips or pay" on its chance row.
@@ -367,7 +371,11 @@ local SCENES = {
 			flag("crateWindow", true)
 			flag("petLines", true)
 			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
-			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
+			UI.showCrate(
+				"normal",
+				3,
+				CrateViewRules.rows("normal", { Clover = true, Angler = true })
+			)
 		end,
 	},
 	-- The Robux crate rows (issue 514, switch crateShop): under Open crate, with the chance list beside them.
@@ -381,7 +389,7 @@ local SCENES = {
 			UI.setCrateShop(CrateViewRules.shopRows("normal", true, function(key: string): unknown
 				return prices[key]
 			end))
-			UI.showCrate("normal", 0, CrateViewRules.rows("normal", { Cozy = true }))
+			UI.showCrate("normal", 0, CrateViewRules.rows("normal", { Clover = true }))
 		end,
 	},
 	-- With a crate held: Open crate and the Robux rows together, the tallest the window gets (bug hunt B8).
@@ -395,7 +403,7 @@ local SCENES = {
 			UI.setCrateShop(CrateViewRules.shopRows("normal", true, function(key: string): unknown
 				return prices[key]
 			end))
-			UI.showCrate("normal", 1, CrateViewRules.rows("normal", { Cozy = true }))
+			UI.showCrate("normal", 1, CrateViewRules.rows("normal", { Clover = true }))
 		end,
 	},
 	{
@@ -479,10 +487,10 @@ local SCENES = {
 		function()
 			flag("petsWindow", true)
 			UI.setPets({
-				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
-				{ id = 2, kind = "Koi", star = 2, slot = "player2" },
-				{ id = 3, kind = "Nimbus", star = 1, slot = "Jo1" },
-				{ id = 4, kind = "Pebble", star = 1 },
+				{ id = 1, kind = "Clover", star = 1, slot = "player" },
+				{ id = 2, kind = "Angler", star = 2, slot = "player2" },
+				{ id = 3, kind = "Blaze", star = 1, slot = "Jo1" },
+				{ id = 4, kind = "Ooze", star = 1 },
 			}, { Jo = true, Sam = true }, true)
 			UI.open("Pets")
 		end,
@@ -496,8 +504,8 @@ local SCENES = {
 			flag("staffRename", true)
 			UI.setStaffNames({ Jo = "Captain Bubbles" }, true)
 			UI.setPets({
-				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
-				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+				{ id = 1, kind = "Clover", star = 1, slot = "player" },
+				{ id = 4, kind = "Angler", star = 2, slot = "Jo1" },
 			}, { Jo = true, Sam = true }, true)
 			UI.open("Pets")
 		end,
@@ -537,7 +545,7 @@ local SCENES = {
 		end,
 	},
 	-- The Helpers window with the HUD behind it (issues 873 and 929, switch helperPets): a pet box starts each hired
-	-- row (Jo's Koi, Sam's paw), the buttons stand 16 px apart, and the X clears the coin pill.
+	-- row (Jo's Angler, Sam's paw), the buttons stand 16 px apart, and the X clears the coin pill.
 	{
 		"HelpersPets",
 		function()
@@ -550,8 +558,8 @@ local SCENES = {
 			local HelperViewRules = UIShim.require("ReplicatedStorage.Shared.HelperViewRules")
 			local values = { WorkerLevel_Jo = 4, WorkerMode_Jo = "leaving", WorkerLevel_Sam = 1 }
 			UI.setPets({
-				{ id = 1, kind = "Koi", star = 2, slot = "Jo1" },
-				{ id = 2, kind = "Pebble", star = 1 },
+				{ id = 1, kind = "Angler", star = 2, slot = "Jo1" },
+				{ id = 2, kind = "Ooze", star = 1 },
 			}, { Jo = true, Sam = true })
 			UI.setHelpers(
 				HelperViewRules.rows(function(name)
@@ -630,6 +638,112 @@ local SCENES = {
 				},
 			})
 			UI.open("Gift")
+		end,
+	},
+	-- The gift stand's card giving the gift crate (switch giftCrate, issue 859), with the free rewards rows.
+	{
+		"GiftCrate",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			UI.setGift({
+				lit = true,
+				favourite = true,
+				group = true,
+				claimed = false,
+				free = {
+					likeAsked = true,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 4000,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
+	-- The gift stand in stages (switch giftFlow, issue 968): the welcome gifts with one Claim all, then the playtime gift.
+	{
+		"GiftWelcome",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			flag("giftFlow", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", 1)
+			UI.setGift({
+				lit = true,
+				favourite = true,
+				group = false,
+				claimed = false,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 500,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
+	{
+		"GiftPlaytime",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			flag("giftFlow", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", 2)
+			UI.setGift({
+				lit = true,
+				favourite = true,
+				group = true,
+				claimed = true,
+				free = {
+					likeAsked = false,
+					likeIn = 0,
+					likeClaimed = false,
+					played = 1260,
+					playClaimed = false,
+				},
+			})
+			UI.open("Gift")
+		end,
+	},
+	-- The like how-to (switch likeHowTo, issue 869): Like was just tapped on the open welcome gifts card.
+	{
+		"LikeHowTo",
+		function()
+			flag("giftStand", true)
+			flag("pets", true)
+			flag("freeRewards", true)
+			flag("giftCrate", true)
+			flag("giftFlow", true)
+			flag("likeHowTo", true)
+			game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", 1)
+			local function gift(asked: boolean)
+				UI.setGift({
+					lit = true,
+					favourite = true,
+					group = false,
+					claimed = false,
+					free = {
+						likeAsked = asked,
+						likeIn = 0,
+						likeClaimed = false,
+						played = 500,
+						playClaimed = false,
+					},
+				})
+			end
+			gift(false)
+			UI.open("Gift")
+			gift(true)
 		end,
 	},
 	-- The leave lines (issue 726, switch leaveLines) at their longest, as Roblox's menu opens over the HUD.
@@ -844,20 +958,20 @@ local SCENES = {
 			UI.open("Checkin")
 		end,
 	},
-	-- The pets window (issue 526, switch petsWindow): three Cozy ready to fuse, a 2 star Koi with Jo, Sam not hired.
+	-- The pets window (issue 526, switch petsWindow): three Clover ready to fuse, a 2 star Angler with Jo, Sam not hired.
 	{
 		"Pets",
 		function()
 			flag("petsWindow", true)
 			UI.setPets({
-				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
-				{ id = 2, kind = "Cozy", star = 1 },
-				{ id = 3, kind = "Cozy", star = 1 },
-				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
-				{ id = 5, kind = "Pebble", star = 1 },
-				{ id = 6, kind = "Pebble", star = 1 },
-				{ id = 7, kind = "Nimbus", star = 3 },
-				{ id = 8, kind = "Scrubby", star = 1 },
+				{ id = 1, kind = "Clover", star = 1, slot = "player" },
+				{ id = 2, kind = "Clover", star = 1 },
+				{ id = 3, kind = "Clover", star = 1 },
+				{ id = 4, kind = "Angler", star = 2, slot = "Jo1" },
+				{ id = 5, kind = "Ooze", star = 1 },
+				{ id = 6, kind = "Ooze", star = 1 },
+				{ id = 7, kind = "Blaze", star = 3 },
+				{ id = 8, kind = "Ghost", star = 1 },
 			}, { Jo = true })
 			UI.open("Pets")
 		end,
@@ -869,14 +983,14 @@ local SCENES = {
 			flag("petsWindow", true)
 			flag("petLines", true)
 			UI.setPets({
-				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
-				{ id = 2, kind = "Cozy", star = 1 },
-				{ id = 3, kind = "Cozy", star = 1 },
-				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
-				{ id = 5, kind = "Pebble", star = 1 },
-				{ id = 6, kind = "Pebble", star = 1 },
-				{ id = 7, kind = "Nimbus", star = 3 },
-				{ id = 8, kind = "Scrubby", star = 1 },
+				{ id = 1, kind = "Clover", star = 1, slot = "player" },
+				{ id = 2, kind = "Clover", star = 1 },
+				{ id = 3, kind = "Clover", star = 1 },
+				{ id = 4, kind = "Angler", star = 2, slot = "Jo1" },
+				{ id = 5, kind = "Ooze", star = 1 },
+				{ id = 6, kind = "Ooze", star = 1 },
+				{ id = 7, kind = "Blaze", star = 3 },
+				{ id = 8, kind = "Ghost", star = 1 },
 			}, { Jo = true })
 			UI.open("Pets")
 		end,
@@ -1174,6 +1288,10 @@ function Scenes.close()
 	flag("helpersWindow", false)
 	flag("helperPets", false)
 	flag("petLines", false)
+	flag("giftCrate", false)
+	flag("giftFlow", false)
+	flag("likeHowTo", false)
+	game:GetService("Players").LocalPlayer:SetAttribute("GiftStage", nil)
 	flag("menuContrast", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)

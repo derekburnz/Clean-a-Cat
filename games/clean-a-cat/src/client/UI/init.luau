@@ -340,6 +340,7 @@ function UI.init()
 	windows.Helpers = HelpersWindow.build(root) -- the helpers' levels, modes and names (switch helpersWindow, 526)
 	-- every window's X stays below the coin pill and the friend tag (issue 873)
 	require(script:WaitForChild("Window")).avoid = HUD.topRight
+	Recap.avoid = HUD.topRight -- the recap card's X clears the coin pill too (issue 873)
 	HelpersWindow.onPet(function(id: string)
 		PetsWindow.pickOnOpen(`{id}1`) -- Pets opens on this helper's slot: one tap on a pet gives it to them
 		UI.open("Pets")
@@ -712,6 +713,12 @@ end
 -- fn() when Get Starcoat is pressed.
 function UI.onGiftClaim(fn: () -> ())
 	GiftCard.onClaim(fn)
+end
+
+-- fn(answer) for the like how-to on the gift card (switch likeHowTo, issue 869): nil when it shows, then "yes" or
+-- "closed", for the ask_shown and ask_answered events.
+function UI.onLikeHowTo(fn: (answer: string?) -> ())
+	GiftCard.onHowTo(fn)
 end
 
 -- fn() when Get pack is pressed.

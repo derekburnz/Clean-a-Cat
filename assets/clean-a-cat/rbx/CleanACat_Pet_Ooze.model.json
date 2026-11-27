@@ -1,19 +1,20 @@
 {
  "className": "Model",
  "attributes": {
-  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/0",
+  "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/0",
   "PartBuilt": true,
   "Pet": true,
-  "PetId": "Cozy",
-  "Rarity": "Common",
+  "PetId": "Ooze",
+  "Rarity": "Uncommon",
   "PetScale": {
    "Float64": 0.7
   },
-  "PropSlot": "Head"
+  "PropSlot": "Head",
+  "PropSlot2": "Back"
  },
  "children": [
   {
-   "name": "CleanACat_Pet_Cozy_Body",
+   "name": "CleanACat_Pet_Ooze_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
@@ -21,7 +22,7 @@
       "position": [
        0.0,
        0.62,
-       0.12
+       0.1098
       ],
       "orientation": [
        [
@@ -45,12 +46,12 @@
     "Size": [
      0.78,
      0.58,
-     0.95
+     0.9295
     ],
     "Color": [
-     0.9294,
-     0.7333,
-     0.6314
+     0.7255,
+     0.8471,
+     0.2902
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
@@ -64,7 +65,7 @@
       "position": [
        0.0,
        -0.62,
-       -0.12
+       -0.1098
       ],
       "orientation": [
        [
@@ -87,7 +88,7 @@
     }
    },
    "attributes": {
-    "Rojo_Id": "CleanACat_Pet_Cozy/0"
+    "Rojo_Id": "CleanACat_Pet_Ooze/0"
    },
    "children": [
     {
@@ -98,8 +99,8 @@
        "CFrame": {
         "position": [
          0.0,
-         1.4124,
-         -0.64
+         1.3765,
+         -0.6298
         ],
         "orientation": [
          [
@@ -125,15 +126,15 @@
    ]
   },
   {
-   "name": "CleanACat_Pet_Cozy_Body",
+   "name": "CleanACat_Pet_Ooze_Body",
    "className": "Part",
    "properties": {
     "CFrame": {
      "CFrame": {
       "position": [
        0.0,
-       0.58,
-       -0.365
+       0.62,
+       0.16
       ],
       "orientation": [
        [
@@ -155,20 +156,69 @@
      }
     },
     "Size": [
-     0.36,
-     0.348,
-     0.06
+     0.81,
+     0.61,
+     0.285
     ],
     "Color": [
-     1.0,
-     0.9647,
-     0.9255
+     0.6588,
+     0.902,
+     0.8118
     ],
     "Material": "SmoothPlastic",
     "Anchored": true,
     "CanCollide": false,
     "CanTouch": false,
-    "CastShadow": false,
+    "CastShadow": true,
+    "TopSurface": "Smooth",
+    "BottomSurface": "Smooth"
+   }
+  },
+  {
+   "name": "CleanACat_Pet_Ooze_Body",
+   "className": "Part",
+   "properties": {
+    "CFrame": {
+     "CFrame": {
+      "position": [
+       0.0,
+       0.62,
+       0.4335
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    },
+    "Size": [
+     0.82,
+     0.62,
+     0.342
+    ],
+    "Color": [
+     0.6588,
+     0.902,
+     0.8118
+    ],
+    "Material": "SmoothPlastic",
+    "Anchored": true,
+    "CanCollide": false,
+    "CanTouch": false,
+    "CastShadow": true,
     "TopSurface": "Smooth",
     "BottomSurface": "Smooth"
    }
@@ -176,11 +226,11 @@
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/1"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/1"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -188,7 +238,7 @@
         "position": [
          0.0,
          1.17,
-         -0.52
+         -0.531
         ],
         "orientation": [
          [
@@ -212,12 +262,12 @@
       "Size": [
        1.0,
        0.84,
-       0.8
+       0.778
       ],
       "Color": [
-       0.9294,
-       0.7333,
-       0.6314
+       0.7255,
+       0.8471,
+       0.2902
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -231,7 +281,7 @@
         "position": [
          0.0,
          -0.32,
-         0.22
+         0.231
         ],
         "orientation": [
          [
@@ -254,19 +304,19 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/1"
+      "Rojo_Id": "CleanACat_Pet_Ooze/1"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
        "CFrame": {
         "position": [
          0.0,
-         0.9375,
-         -0.905
+         1.17,
+         -0.28
         ],
         "orientation": [
          [
@@ -288,26 +338,26 @@
        }
       },
       "Size": [
-       0.414,
-       0.23,
-       0.07
+       1.03,
+       0.87,
+       0.336
       ],
       "Color": [
-       1.0,
-       0.9647,
-       0.9255
+       0.6588,
+       0.902,
+       0.8118
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
       "CanCollide": false,
       "CanTouch": false,
-      "CastShadow": false,
+      "CastShadow": true,
       "TopSurface": "Smooth",
       "BottomSurface": "Smooth"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -342,9 +392,9 @@
        0.06
       ],
       "Color": [
-       0.949,
-       0.5529,
-       0.6824
+       0.2902,
+       0.2667,
+       0.3137
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -356,7 +406,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -364,7 +414,7 @@
         "position": [
          0.0,
          0.9138,
-         -0.945
+         -0.925
         ],
         "orientation": [
          [
@@ -405,7 +455,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -413,7 +463,7 @@
         "position": [
          0.0288,
          0.8628,
-         -0.948
+         -0.928
         ],
         "orientation": [
          [
@@ -454,7 +504,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -462,7 +512,7 @@
         "position": [
          0.0978,
          0.8628,
-         -0.945
+         -0.925
         ],
         "orientation": [
          [
@@ -503,7 +553,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -511,7 +561,7 @@
         "position": [
          -0.0288,
          0.8628,
-         -0.948
+         -0.928
         ],
         "orientation": [
          [
@@ -552,7 +602,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -560,7 +610,7 @@
         "position": [
          -0.0978,
          0.8628,
-         -0.945
+         -0.925
         ],
         "orientation": [
          [
@@ -601,7 +651,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -651,7 +701,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Head",
+     "name": "CleanACat_Pet_Ooze_Head",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -703,11 +753,11 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/2"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/2"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Cozy_Eye1",
+       "name": "CleanACat_Pet_Ooze_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -737,14 +787,14 @@
          }
         },
         "Size": [
-         0.253,
-         0.3289,
+         0.2576,
+         0.3349,
          0.076
         ],
         "Color": [
-         0.3686,
-         0.7451,
-         1.0
+         0.6588,
+         0.8471,
+         0.9412
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -781,18 +831,18 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Cozy/2"
+        "Rojo_Id": "CleanACat_Pet_Ooze/2"
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Eye1",
+       "name": "CleanACat_Pet_Ooze_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            -0.263,
-           1.0847,
+           1.0842,
            -0.9725
           ],
           "orientation": [
@@ -815,8 +865,8 @@
          }
         },
         "Size": [
-         0.1518,
-         0.2368,
+         0.1546,
+         0.2411,
          0.075
         ],
         "Color": [
@@ -834,63 +884,14 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Eye1",
+       "name": "CleanACat_Pet_Ooze_Eye1",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.253,
-           1.2122,
-           -0.948
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.313,
-         0.1846,
-         0.094
-        ],
-        "Color": [
-         0.9294,
-         0.7333,
-         0.6314
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Cozy_Eye1",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.1961,
-           1.0837,
+           -0.195,
+           1.2038,
            -0.975
           ],
           "orientation": [
@@ -913,8 +914,8 @@
          }
         },
         "Size": [
-         0.0759,
-         0.0632,
+         0.0773,
+         0.0902,
          0.03
         ],
         "Color": [
@@ -960,16 +961,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Cozy_Eye1"
+     "name": "CleanACat_Pet_Ooze_Eye1"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/3"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/3"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Cozy_Eye2",
+       "name": "CleanACat_Pet_Ooze_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -999,14 +1000,14 @@
          }
         },
         "Size": [
-         0.253,
-         0.3289,
+         0.2576,
+         0.3349,
          0.076
         ],
         "Color": [
-         0.3686,
-         0.7451,
-         1.0
+         0.6588,
+         0.8471,
+         0.9412
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1043,18 +1044,18 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Cozy/3"
+        "Rojo_Id": "CleanACat_Pet_Ooze/3"
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Eye2",
+       "name": "CleanACat_Pet_Ooze_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.263,
-           1.0847,
+           1.0842,
            -0.9725
           ],
           "orientation": [
@@ -1077,8 +1078,8 @@
          }
         },
         "Size": [
-         0.1518,
-         0.2368,
+         0.1546,
+         0.2411,
          0.075
         ],
         "Color": [
@@ -1096,63 +1097,14 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Eye2",
+       "name": "CleanACat_Pet_Ooze_Eye2",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.253,
-           1.2122,
-           -0.948
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.3129,
-         0.1846,
-         0.094
-        ],
-        "Color": [
-         0.9294,
-         0.7333,
-         0.6314
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Cozy_Eye2",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.3099,
-           1.0837,
+           0.311,
+           1.2038,
            -0.975
           ],
           "orientation": [
@@ -1175,8 +1127,8 @@
          }
         },
         "Size": [
-         0.0759,
-         0.0632,
+         0.0773,
+         0.0902,
          0.03
         ],
         "Color": [
@@ -1222,16 +1174,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Cozy_Eye2"
+     "name": "CleanACat_Pet_Ooze_Eye2"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/4"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/4"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Cozy_EarL",
+       "name": "CleanACat_Pet_Ooze_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1266,9 +1218,9 @@
          0.2667
         ],
         "Color": [
-         0.9294,
-         0.7333,
-         0.6314
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1305,11 +1257,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Cozy/4"
+        "Rojo_Id": "CleanACat_Pet_Ooze/4"
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_EarL",
+       "name": "CleanACat_Pet_Ooze_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1344,9 +1296,9 @@
          0.16
         ],
         "Color": [
-         0.9294,
-         0.7333,
-         0.6314
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1358,7 +1310,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_EarL",
+       "name": "CleanACat_Pet_Ooze_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1393,9 +1345,9 @@
          0.0533
         ],
         "Color": [
-         0.9294,
-         0.7333,
-         0.6314
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1407,7 +1359,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_EarL",
+       "name": "CleanACat_Pet_Ooze_EarL",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1442,9 +1394,9 @@
          0.03
         ],
         "Color": [
-         0.949,
-         0.749,
-         0.7961
+         0.8784,
+         0.4784,
+         0.549
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1484,16 +1436,16 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Cozy_EarL"
+     "name": "CleanACat_Pet_Ooze_EarL"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/5"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/5"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Cozy_EarR",
+       "name": "CleanACat_Pet_Ooze_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1528,9 +1480,9 @@
          0.2667
         ],
         "Color": [
-         0.9294,
-         0.7333,
-         0.6314
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1567,11 +1519,11 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Cozy/5"
+        "Rojo_Id": "CleanACat_Pet_Ooze/5"
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_EarR",
+       "name": "CleanACat_Pet_Ooze_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1606,9 +1558,9 @@
          0.16
         ],
         "Color": [
-         0.9294,
-         0.7333,
-         0.6314
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1620,7 +1572,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_EarR",
+       "name": "CleanACat_Pet_Ooze_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1655,9 +1607,9 @@
          0.0533
         ],
         "Color": [
-         0.9294,
-         0.7333,
-         0.6314
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1669,7 +1621,7 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_EarR",
+       "name": "CleanACat_Pet_Ooze_EarR",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1704,9 +1656,9 @@
          0.03
         ],
         "Color": [
-         0.949,
-         0.749,
-         0.7961
+         0.8784,
+         0.4784,
+         0.549
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1746,24 +1698,24 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Cozy_EarR"
+     "name": "CleanACat_Pet_Ooze_EarR"
     },
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/11"
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/11"
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.0,
-           1.6389,
-           -0.7374
+           1.628,
+           -0.52
           ],
           "orientation": [
            [
@@ -1785,14 +1737,14 @@
          }
         },
         "Size": [
-         1.1087,
+         1.087,
          0.0978,
-         0.3478
+         0.887
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1805,8 +1757,8 @@
          "CFrame": {
           "position": [
            0.0,
-           -0.7889,
-           0.4374
+           -0.778,
+           0.22
           ],
           "orientation": [
            [
@@ -1829,20 +1781,20 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Cozy/11",
+        "Rojo_Id": "CleanACat_Pet_Ooze/11",
         "Follows": "Head"
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.5326,
-           1.5139,
-           -0.7374
+           0.3696,
+           1.503,
+           -0.9526
           ],
           "orientation": [
            [
@@ -1864,14 +1816,14 @@
          }
         },
         "Size": [
-         0.0761,
-         0.2391,
-         0.3261
+         0.1196,
+         0.3261,
+         0.0652
         ],
         "Color": [
-         0.5608,
-         0.8275,
-         0.9961
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1886,15 +1838,15 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.5471,
-           1.4596,
-           -0.7374
+           0.1304,
+           1.5683,
+           -0.9526
           ],
           "orientation": [
            [
@@ -1916,14 +1868,14 @@
          }
         },
         "Size": [
-         0.1071,
-         0.0543,
-         0.3862
+         0.1196,
+         0.1957,
+         0.0652
         ],
         "Color": [
-         0.9647,
-         0.8745,
-         0.6275
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -1938,7 +1890,111 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1087,
+           1.5248,
+           -0.9526
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1196,
+         0.2826,
+         0.0652
+        ],
+        "Color": [
+         0.4353,
+         0.8118,
+         0.5922
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.3478,
+           1.5791,
+           -0.9526
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.1196,
+         0.1739,
+         0.0652
+        ],
+        "Color": [
+         0.4353,
+         0.8118,
+         0.5922
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -1946,7 +2002,7 @@
           "position": [
            -0.5326,
            1.5139,
-           -0.7374
+           -0.6504
           ],
           "orientation": [
            [
@@ -1963,175 +2019,19 @@
             0.0,
             0.0,
             1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.0761,
-         0.2391,
-         0.3261
-        ],
-        "Color": [
-         0.5608,
-         0.8275,
-         0.9961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Cozy_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.5471,
-           1.4596,
-           -0.7374
-          ],
-          "orientation": [
-           [
-            1.0,
-            0.0,
-            0.0
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            0.0,
-            0.0,
-            1.0
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.1071,
-         0.0543,
-         0.3862
-        ],
-        "Color": [
-         0.9647,
-         0.8745,
-         0.6275
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": false,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Cozy_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           -0.0109,
-           1.753,
-           -0.732
-          ],
-          "orientation": [
-           [
-            0.9962,
-            0.0,
-            0.0872
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.0872,
-            0.0,
-            0.9962
-           ]
-          ]
-         }
-        },
-        "Size": [
-         0.6522,
-         0.1413,
-         0.2935
-        ],
-        "Color": [
-         0.5608,
-         0.8275,
-         0.9961
-        ],
-        "Material": "SmoothPlastic",
-        "Anchored": true,
-        "CanCollide": false,
-        "CanTouch": false,
-        "CastShadow": true,
-        "TopSurface": "Smooth",
-        "BottomSurface": "Smooth"
-       },
-       "attributes": {
-        "Follows": "Head"
-       }
-      },
-      {
-       "name": "CleanACat_Pet_Cozy_Prop",
-       "className": "Part",
-       "properties": {
-        "CFrame": {
-         "CFrame": {
-          "position": [
-           0.2057,
-           1.7723,
-           -0.751
-          ],
-          "orientation": [
-           [
-            0.9962,
-            0.0,
-            0.0872
-           ],
-           [
-            0.0,
-            1.0,
-            0.0
-           ],
-           [
-            -0.0872,
-            0.0,
-            0.9962
            ]
           ]
          }
         },
         "Size": [
          0.0652,
-         0.1626,
-         0.3535
+         0.3043,
+         0.1196
         ],
         "Color": [
-         0.9647,
-         0.8745,
-         0.6275
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -2146,21 +2046,21 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.2274,
-           1.7723,
-           -0.713
+           -0.5326,
+           1.4487,
+           -0.3461
           ],
           "orientation": [
            [
-            0.9962,
+            1.0,
             0.0,
-            0.0872
+            0.0
            ],
            [
             0.0,
@@ -2168,22 +2068,22 @@
             0.0
            ],
            [
-            -0.0872,
             0.0,
-            0.9962
+            0.0,
+            1.0
            ]
           ]
          }
         },
         "Size": [
          0.0652,
-         0.1626,
-         0.3535
+         0.4348,
+         0.1196
         ],
         "Color": [
-         0.9647,
-         0.8745,
-         0.6275
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -2198,44 +2098,44 @@
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           0.0408,
-           1.7775,
-           -0.9059
+           0.5326,
+           1.4813,
+           -0.5635
           ],
           "orientation": [
            [
+            1.0,
             0.0,
-            -1.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
             0.0
            ],
            [
             0.0,
             0.0,
             1.0
-           ],
-           [
-            -1.0,
-            0.0,
-            0.0
            ]
           ]
          }
         },
         "Size": [
-         0.038,
-         0.0913,
-         0.0913
+         0.0652,
+         0.3696,
+         0.1196
         ],
         "Color": [
-         0.949,
-         0.5608,
-         0.6667
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -2243,52 +2143,51 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Cylinder"
+        "BottomSurface": "Smooth"
        },
        "attributes": {
         "Follows": "Head"
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
-           -0.0408,
-           1.7775,
-           -0.9059
+           0.5326,
+           1.5574,
+           -0.3026
           ],
           "orientation": [
            [
+            1.0,
             0.0,
-            -1.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
             0.0
            ],
            [
             0.0,
             0.0,
             1.0
-           ],
-           [
-            -1.0,
-            0.0,
-            0.0
            ]
           ]
          }
         },
         "Size": [
-         0.0489,
-         0.0913,
-         0.0913
+         0.0652,
+         0.2174,
+         0.1196
         ],
         "Color": [
-         0.949,
-         0.5608,
-         0.6667
+         0.4353,
+         0.8118,
+         0.5922
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -2296,52 +2195,155 @@
         "CanTouch": false,
         "CastShadow": false,
         "TopSurface": "Smooth",
-        "BottomSurface": "Smooth",
-        "Shape": "Cylinder"
+        "BottomSurface": "Smooth"
        },
        "attributes": {
         "Follows": "Head"
        }
       },
       {
-       "name": "CleanACat_Pet_Cozy_Prop",
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1757,
+           1.6987,
+           -0.4629
+          ],
+          "orientation": [
+           [
+            0.9511,
+            0.0,
+            0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.309,
+            0.0,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1086,
+           1.6987,
+           -0.3705
+          ],
+          "orientation": [
+           [
+            0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
        "className": "Part",
        "properties": {
         "CFrame": {
          "CFrame": {
           "position": [
            0.0,
-           1.7351,
-           -0.9059
+           1.6987,
+           -0.3352
           ],
           "orientation": [
-           [
-            0.7071,
-            -0.7071,
-            0.0
-           ],
-           [
-            0.7071,
-            0.7071,
-            0.0
-           ],
            [
             0.0,
             0.0,
             1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
            ]
           ]
          }
         },
         "Size": [
-         0.0815,
-         0.0815,
-         0.0598
+         0.0652,
+         0.0652,
+         0.1451
         ],
         "Color": [
-         0.949,
-         0.5608,
-         0.6667
+         0.6588,
+         0.902,
+         0.8118
         ],
         "Material": "SmoothPlastic",
         "Anchored": true,
@@ -2354,6 +2356,1638 @@
        "attributes": {
         "Follows": "Head"
        }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1086,
+           1.6987,
+           -0.3705
+          ],
+          "orientation": [
+           [
+            -0.5878,
+            0.0,
+            0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.809,
+            0.0,
+            -0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1757,
+           1.6987,
+           -0.4629
+          ],
+          "orientation": [
+           [
+            -0.9511,
+            0.0,
+            0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -0.309,
+            0.0,
+            -0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1757,
+           1.6987,
+           -0.5771
+          ],
+          "orientation": [
+           [
+            -0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            -0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.1086,
+           1.6987,
+           -0.6695
+          ],
+          "orientation": [
+           [
+            -0.5878,
+            0.0,
+            -0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.809,
+            0.0,
+            -0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.6987,
+           -0.7048
+          ],
+          "orientation": [
+           [
+            0.0,
+            0.0,
+            -1.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1086,
+           1.6987,
+           -0.6695
+          ],
+          "orientation": [
+           [
+            0.5878,
+            0.0,
+            -0.809
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.809,
+            0.0,
+            0.5878
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Prop",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.1757,
+           1.6987,
+           -0.5771
+          ],
+          "orientation": [
+           [
+            0.9511,
+            0.0,
+            -0.309
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.309,
+            0.0,
+            0.9511
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.0652,
+         0.0652,
+         0.1451
+        ],
+        "Color": [
+         0.6588,
+         0.902,
+         0.8118
+        ],
+        "Material": "SmoothPlastic",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Head"
+       }
+      },
+      {
+       "className": "Model",
+       "attributes": {
+        "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/12"
+       },
+       "children": [
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.3696,
+             1.3291,
+             -0.9526
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball",
+          "PivotOffset": {
+           "CFrame": {
+            "position": [
+             -0.3696,
+             0.3696,
+             0.4326
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          }
+         },
+         "attributes": {
+          "Rojo_Id": "CleanACat_Pet_Ooze/12",
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1304,
+             1.4596,
+             -0.9526
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1087,
+             1.3726,
+             -0.9526
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.3478,
+             1.4813,
+             -0.9526
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.5326,
+             1.3509,
+             -0.6504
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.5326,
+             1.2204,
+             -0.3461
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.5326,
+             1.2857,
+             -0.5635
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.5326,
+             1.4378,
+             -0.3026
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1304,
+           0.1304,
+           0.1304
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth",
+          "Shape": "Ball"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1757,
+             1.5791,
+             -0.4629
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1087,
+           0.087,
+           0.1087
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1757,
+             1.6661,
+             -0.4629
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0652,
+           0.087,
+           0.0652
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1757,
+             1.753,
+             -0.4629
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0217,
+           0.087,
+           0.0217
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             1.5791,
+             -0.3352
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1087,
+           0.087,
+           0.1087
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             1.6661,
+             -0.3352
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0652,
+           0.087,
+           0.1252
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.0,
+             1.753,
+             -0.3352
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0217,
+           0.087,
+           0.0217
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1757,
+             1.5791,
+             -0.4629
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1087,
+           0.087,
+           0.1087
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1757,
+             1.6661,
+             -0.4629
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0652,
+           0.087,
+           0.0652
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1757,
+             1.753,
+             -0.4629
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0217,
+           0.087,
+           0.0217
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1086,
+             1.5791,
+             -0.6695
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1087,
+           0.087,
+           0.1087
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1086,
+             1.6661,
+             -0.6695
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0652,
+           0.087,
+           0.0652
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             0.1086,
+             1.753,
+             -0.6695
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0217,
+           0.087,
+           0.0217
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1086,
+             1.5791,
+             -0.6695
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.1087,
+           0.087,
+           0.1087
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1086,
+             1.6661,
+             -0.6695
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0652,
+           0.087,
+           0.0652
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        },
+        {
+         "name": "CleanACat_Pet_Ooze_Glow",
+         "className": "Part",
+         "properties": {
+          "CFrame": {
+           "CFrame": {
+            "position": [
+             -0.1086,
+             1.753,
+             -0.6695
+            ],
+            "orientation": [
+             [
+              1.0,
+              0.0,
+              0.0
+             ],
+             [
+              0.0,
+              1.0,
+              0.0
+             ],
+             [
+              0.0,
+              0.0,
+              1.0
+             ]
+            ]
+           }
+          },
+          "Size": [
+           0.0217,
+           0.087,
+           0.0217
+          ],
+          "Color": [
+           0.7255,
+           0.8471,
+           0.2902
+          ],
+          "Material": "Neon",
+          "Anchored": true,
+          "CanCollide": false,
+          "CanTouch": false,
+          "CastShadow": false,
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+         },
+         "attributes": {
+          "Follows": "Head"
+         }
+        }
+       ],
+       "properties": {
+        "WorldPivotData": {
+         "OptionalCFrame": {
+          "position": [
+           0.0,
+           1.6987,
+           -0.52
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "name": "CleanACat_Pet_Ooze_Glow"
       }
      ],
      "properties": {
@@ -2384,7 +4018,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Cozy_Prop"
+     "name": "CleanACat_Pet_Ooze_Prop"
     }
    ],
    "properties": {
@@ -2415,16 +4049,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_Head"
+   "name": "CleanACat_Pet_Ooze_Head"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/6"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/6"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_Tail",
+     "name": "CleanACat_Pet_Ooze_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2459,9 +4093,9 @@
        0.36
       ],
       "Color": [
-       0.9294,
-       0.7333,
-       0.6314
+       0.7255,
+       0.8471,
+       0.2902
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2498,11 +4132,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/6"
+      "Rojo_Id": "CleanACat_Pet_Ooze/6"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Tail",
+     "name": "CleanACat_Pet_Ooze_Tail",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2537,9 +4171,9 @@
        0.36
       ],
       "Color": [
-       1.0,
-       0.9647,
-       0.9255
+       0.6588,
+       0.902,
+       0.8118
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2579,16 +4213,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_Tail"
+   "name": "CleanACat_Pet_Ooze_Tail"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/7"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/7"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_LegF1",
+     "name": "CleanACat_Pet_Ooze_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2623,9 +4257,9 @@
        0.24
       ],
       "Color": [
-       0.9294,
-       0.7333,
-       0.6314
+       0.7255,
+       0.8471,
+       0.2902
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2662,11 +4296,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/7"
+      "Rojo_Id": "CleanACat_Pet_Ooze/7"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_LegF1",
+     "name": "CleanACat_Pet_Ooze_LegF1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2701,9 +4335,9 @@
        0.295
       ],
       "Color": [
-       1.0,
-       0.9647,
-       0.9255
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2743,16 +4377,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_LegF1"
+   "name": "CleanACat_Pet_Ooze_LegF1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/8"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/8"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_LegF2",
+     "name": "CleanACat_Pet_Ooze_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2787,9 +4421,9 @@
        0.24
       ],
       "Color": [
-       0.9294,
-       0.7333,
-       0.6314
+       0.7255,
+       0.8471,
+       0.2902
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2826,11 +4460,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/8"
+      "Rojo_Id": "CleanACat_Pet_Ooze/8"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_LegF2",
+     "name": "CleanACat_Pet_Ooze_LegF2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2865,9 +4499,9 @@
        0.295
       ],
       "Color": [
-       1.0,
-       0.9647,
-       0.9255
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2907,16 +4541,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_LegF2"
+   "name": "CleanACat_Pet_Ooze_LegF2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/9"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/9"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_LegB1",
+     "name": "CleanACat_Pet_Ooze_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -2951,9 +4585,9 @@
        0.24
       ],
       "Color": [
-       0.9294,
-       0.7333,
-       0.6314
+       0.7255,
+       0.8471,
+       0.2902
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -2990,11 +4624,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/9"
+      "Rojo_Id": "CleanACat_Pet_Ooze/9"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_LegB1",
+     "name": "CleanACat_Pet_Ooze_LegB1",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3029,9 +4663,9 @@
        0.295
       ],
       "Color": [
-       1.0,
-       0.9647,
-       0.9255
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3071,16 +4705,16 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_LegB1"
+   "name": "CleanACat_Pet_Ooze_LegB1"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/10"
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/10"
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_LegB2",
+     "name": "CleanACat_Pet_Ooze_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3115,9 +4749,9 @@
        0.24
       ],
       "Color": [
-       0.9294,
-       0.7333,
-       0.6314
+       0.7255,
+       0.8471,
+       0.2902
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3154,11 +4788,11 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/10"
+      "Rojo_Id": "CleanACat_Pet_Ooze/10"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_LegB2",
+     "name": "CleanACat_Pet_Ooze_LegB2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3193,9 +4827,9 @@
        0.295
       ],
       "Color": [
-       1.0,
-       0.9647,
-       0.9255
+       0.4353,
+       0.8118,
+       0.5922
       ],
       "Material": "SmoothPlastic",
       "Anchored": true,
@@ -3235,17 +4869,829 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_LegB2"
+   "name": "CleanACat_Pet_Ooze_LegB2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/12",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/13"
+   },
+   "children": [
+    {
+     "name": "CleanACat_Pet_Ooze_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.11,
+         0.14
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.34,
+       0.38,
+       0.38
+      ],
+      "Color": [
+       0.9569,
+       0.9333,
+       0.9647
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder",
+      "PivotOffset": {
+       "CFrame": {
+        "position": [
+         -1.11,
+         0.0,
+         -0.14
+        ],
+        "orientation": [
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          -1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "attributes": {
+      "Rojo_Id": "CleanACat_Pet_Ooze/13",
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Ooze_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         0.925,
+         0.14
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.82,
+       0.05,
+       0.12
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": true,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Ooze_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.31,
+         0.14
+        ],
+        "orientation": [
+         [
+          0.0,
+          -1.0,
+          0.0
+         ],
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.08,
+       0.3,
+       0.3
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Cylinder"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "name": "CleanACat_Pet_Ooze_Prop2",
+     "className": "Part",
+     "properties": {
+      "CFrame": {
+       "CFrame": {
+        "position": [
+         0.0,
+         1.36,
+         0.14
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      },
+      "Size": [
+       0.12,
+       0.12,
+       0.12
+      ],
+      "Color": [
+       0.6588,
+       0.902,
+       0.8118
+      ],
+      "Material": "SmoothPlastic",
+      "Anchored": true,
+      "CanCollide": false,
+      "CanTouch": false,
+      "CastShadow": false,
+      "TopSurface": "Smooth",
+      "BottomSurface": "Smooth",
+      "Shape": "Ball"
+     },
+     "attributes": {
+      "Follows": "Body"
+     }
+    },
+    {
+     "className": "Model",
+     "attributes": {
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/14"
+     },
+     "children": [
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.0,
+           1.08,
+           0.14
+          ],
+          "orientation": [
+           [
+            0.0,
+            -1.0,
+            0.0
+           ],
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.26,
+         0.32,
+         0.32
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Cylinder",
+        "PivotOffset": {
+         "CFrame": {
+          "position": [
+           0.03,
+           0.0,
+           0.0
+          ],
+          "orientation": [
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            -1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        }
+       },
+       "attributes": {
+        "Rojo_Id": "CleanACat_Pet_Ooze/14",
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.415,
+           0.85,
+           0.04
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.05,
+         0.24,
+         0.1
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.415,
+           0.73,
+           0.04
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.415,
+           0.8,
+           0.24
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.05,
+         0.34,
+         0.1
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           -0.415,
+           0.63,
+           0.24
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.415,
+           0.82,
+           0.12
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.05,
+         0.3,
+         0.1
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.415,
+           0.67,
+           0.12
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.415,
+           0.88,
+           0.28
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.05,
+         0.18,
+         0.1
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      },
+      {
+       "name": "CleanACat_Pet_Ooze_Jar_Glow",
+       "className": "Part",
+       "properties": {
+        "CFrame": {
+         "CFrame": {
+          "position": [
+           0.415,
+           0.79,
+           0.28
+          ],
+          "orientation": [
+           [
+            1.0,
+            0.0,
+            0.0
+           ],
+           [
+            0.0,
+            1.0,
+            0.0
+           ],
+           [
+            0.0,
+            0.0,
+            1.0
+           ]
+          ]
+         }
+        },
+        "Size": [
+         0.11,
+         0.11,
+         0.11
+        ],
+        "Color": [
+         0.7255,
+         0.8471,
+         0.2902
+        ],
+        "Material": "Neon",
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "CastShadow": false,
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth",
+        "Shape": "Ball"
+       },
+       "attributes": {
+        "Follows": "Body"
+       }
+      }
+     ],
+     "properties": {
+      "WorldPivotData": {
+       "OptionalCFrame": {
+        "position": [
+         0.0,
+         1.11,
+         0.14
+        ],
+        "orientation": [
+         [
+          1.0,
+          0.0,
+          0.0
+         ],
+         [
+          0.0,
+          1.0,
+          0.0
+         ],
+         [
+          0.0,
+          0.0,
+          1.0
+         ]
+        ]
+       }
+      }
+     },
+     "name": "CleanACat_Pet_Ooze_Jar_Glow"
+    }
+   ],
+   "properties": {
+    "WorldPivotData": {
+     "OptionalCFrame": {
+      "position": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "orientation": [
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       [
+        0.0,
+        1.0,
+        0.0
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     }
+    }
+   },
+   "name": "CleanACat_Pet_Ooze_Prop2"
+  },
+  {
+   "className": "Model",
+   "attributes": {
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/15",
     "StarLevel": 2
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -3319,12 +5765,12 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/12",
+      "Rojo_Id": "CleanACat_Pet_Ooze/15",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3376,7 +5822,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3428,7 +5874,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3480,7 +5926,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3532,7 +5978,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3584,7 +6030,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3636,7 +6082,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3688,7 +6134,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3740,7 +6186,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3792,7 +6238,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3844,7 +6290,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3896,7 +6342,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -3948,7 +6394,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4000,7 +6446,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4052,7 +6498,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4104,7 +6550,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4156,7 +6602,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4208,7 +6654,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4260,7 +6706,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4312,7 +6758,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star2",
+     "name": "CleanACat_Pet_Ooze_Star2",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4392,17 +6838,17 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_Star2"
+   "name": "CleanACat_Pet_Ooze_Star2"
   },
   {
    "className": "Model",
    "attributes": {
-    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/13",
+    "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/16",
     "StarLevel": 3
    },
    "children": [
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4476,12 +6922,12 @@
       }
      },
      "attributes": {
-      "Rojo_Id": "CleanACat_Pet_Cozy/13",
+      "Rojo_Id": "CleanACat_Pet_Ooze/16",
       "Follows": "Body"
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "Part",
      "properties": {
       "CFrame": {
@@ -4533,7 +6979,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4585,7 +7031,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4637,7 +7083,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4689,7 +7135,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4741,7 +7187,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4793,7 +7239,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4845,7 +7291,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4897,7 +7343,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -4949,7 +7395,7 @@
      }
     },
     {
-     "name": "CleanACat_Pet_Cozy_Star3",
+     "name": "CleanACat_Pet_Ooze_Star3",
      "className": "WedgePart",
      "properties": {
       "CFrame": {
@@ -5003,12 +7449,12 @@
     {
      "className": "Model",
      "attributes": {
-      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Cozy/14",
+      "Rojo_Target_PrimaryPart": "CleanACat_Pet_Ooze/17",
       "StarLevel": 3
      },
      "children": [
       {
-       "name": "CleanACat_Pet_Cozy_Star3_Glow",
+       "name": "CleanACat_Pet_Ooze_Star3_Glow",
        "className": "Part",
        "properties": {
         "CFrame": {
@@ -5082,7 +7528,7 @@
         }
        },
        "attributes": {
-        "Rojo_Id": "CleanACat_Pet_Cozy/14",
+        "Rojo_Id": "CleanACat_Pet_Ooze/17",
         "Follows": "Body"
        }
       }
@@ -5115,7 +7561,7 @@
        }
       }
      },
-     "name": "CleanACat_Pet_Cozy_Star3_Glow"
+     "name": "CleanACat_Pet_Ooze_Star3_Glow"
     }
    ],
    "properties": {
@@ -5146,7 +7592,7 @@
      }
     }
    },
-   "name": "CleanACat_Pet_Cozy_Star3"
+   "name": "CleanACat_Pet_Ooze_Star3"
   }
  ],
  "properties": {
