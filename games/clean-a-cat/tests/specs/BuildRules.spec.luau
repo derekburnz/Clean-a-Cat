@@ -54,7 +54,7 @@ return function()
 
 		it("offers the Bubble Bath and Pawdicure only with their switches on (#267)", function()
 			local function on(flag: string): boolean
-				return flag ~= "tubBuilds" -- every switch but the tubs' (those are below)
+				return flag ~= "tubBuilds" and flag ~= "noVipRoom" -- every switch but the tubs' (those are below) and noVipRoom
 			end
 			local function off(_flag: string): boolean
 				return false
