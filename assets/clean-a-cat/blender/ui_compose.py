@@ -7,7 +7,7 @@ Plain Python with Pillow (not Blender). For every raw picture it writes two fina
   <name>.png        the picture alone on a see-through background
   <name>_ink.png    the same with the ink outline round it, so it stands off any backdrop
 
-Icons are 256 px, portraits 512 px. An icon is trimmed to its model and centred with a small margin; a portrait
+Icons are 256 px, portraits and shop pictures 512 px. An icon is trimmed to its model and centred with a small margin; a portrait
 keeps its framing (the chest runs off the bottom edge on purpose, for a round or rounded frame). The outline is the
 UI's ink (dark plum, never black), about 3% of the picture wide, with no outline along a portrait's cut-off edge.
 The sheet shows every final on cream and on mint, then all of them at 64 px and 32 px: an icon that does not read
@@ -65,7 +65,10 @@ def finish(raw_path, out_dir):
     name = os.path.splitext(os.path.basename(raw_path))[0]
     is_portrait = name.startswith("portrait_")
     im = Image.open(raw_path).convert("RGBA")
-    if is_portrait:
+    if name.startswith("shop_"):                     # a shop card's picture (#1030): trimmed like an icon, portrait size
+        plain = _square(im, PORTRAIT, trim=True)
+        inked = _inked(plain, open_bottom=False)
+    elif is_portrait:
         plain = _square(im, PORTRAIT, trim=False)
         inked = _inked(plain, open_bottom=True)
     else:                                            # leave room for the outline inside the frame
@@ -105,7 +108,7 @@ def sheet(done, path):
 def main(argv):
     raw_dir, out_dir = argv[0], argv[1]
     os.makedirs(out_dir, exist_ok=True)
-    names = sorted(f for f in os.listdir(raw_dir) if f.endswith(".png") and f.startswith(("portrait_", "icon_")))
+    names = sorted(f for f in os.listdir(raw_dir) if f.endswith(".png") and f.startswith(("portrait_", "icon_", "shop_")))
     done = [finish(os.path.join(raw_dir, f), out_dir) for f in names]
     print(f"ui: {len(done)} pictures in {out_dir}")
     if len(argv) > 2:

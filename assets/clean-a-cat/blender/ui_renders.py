@@ -7,8 +7,9 @@ Python with Pillow) trims them, adds the ink outline and writes the finals and t
 
   portrait_<Cat>.png, portrait_<Cat>_Dirty.png   head and shoulders of every roster cat, sitting, clean and muddy
   portrait_Helper.png, _Helper2, _Helper3        each helper look in its bath cap, same crop as the cats
-  portrait_Staff_<Name>.png                      each member of the human staff (spa_staff.py, the game models):
-                                                 the head whole, the apron down to its paw
+  portrait_Staff_<Name>.png                      each member of the human staff and the builder as a smooth bust
+                                                 (staff_busts.py, #1036): the head whole, the apron down to its paw
+  shop_<Item>.png                                the Robux shop's card pictures (shop_art.py, #1030)
   portrait_Pet_<Name>.png                        each crate pet's face with its head piece (#883)
   icon_<Model name without CleanACat_>.png       one three-quarter picture of each model in ICONS
   icon_Customer_<Name>.png, icon_Visitor_<Name>.png   head and shoulders of each customer and rare visitor look, on
@@ -40,7 +41,8 @@ import gift  # noqa: E402
 import palette  # noqa: E402
 import pets  # noqa: E402
 import scenes  # noqa: E402
-import spa_staff  # noqa: E402
+import shop_art  # noqa: E402
+import staff_busts  # noqa: E402
 import townsfolk  # noqa: E402
 
 PORTRAIT_RAW, ICON_RAW = 1024, 512
@@ -199,15 +201,22 @@ def helper_portrait(i, mat, out):
 
 
 def staff_portrait(name, mat, out):
-    """Head and shoulders of one member of staff (spa_staff.py, the game model): the head and hair whole, the apron
-    down to its paw. The shoulders run off the sides, so the head is big enough to read in a small round frame."""
-    look = spa_staff.LOOKS[name]
-    objs = spa_staff.build_staff(name, mat)
+    """Head and shoulders of one member of staff (#1036): the smooth bust of staff_busts.py, not the Part model,
+    the head whole and the chest cut at the apron's paw, so it reads in a small round frame."""
+    objs = staff_busts.build_bust(name, mat)
     bpy.context.view_layer.update()
-    f = townsfolk.Frame(look["body"])
-    lo, hi = Vector((-1.2, -0.65, f.top - 0.72)), Vector((1.2, 0.65, townsfolk.top_of(look) + 0.02))
     path = os.path.join(out, f"portrait_Staff_{name}.png")
-    shot(objs, path, PORTRAIT_RAW, PORTRAIT_VIEW, focus=(lo, hi), pad=1.04)
+    shot(objs, path, PORTRAIT_RAW, PORTRAIT_VIEW, focus=staff_busts.bust_focus(name), pad=1.04)
+    _clear()
+    return path
+
+
+def shop_picture(key, mat, out, makers):
+    """One shop card's picture (#1030), framed on all of it."""
+    objs = shop_art.SHOTS[key](mat, makers)
+    bpy.context.view_layer.update()
+    path = os.path.join(out, key + ".png")
+    shot(objs, path, PORTRAIT_RAW, shop_art.VIEW, pad=1.04)
     _clear()
     return path
 
@@ -296,9 +305,12 @@ def main(argv):
     for i, look in enumerate(busy_spa.HELPERS):
         if want("portrait_" + look[0].replace("CleanACat_NPC_", "")):
             print("ui:", helper_portrait(i, mat, out))
-    for name in spa_staff.LOOKS:
+    for name in staff_busts.LOOKS:
         if want("portrait_Staff_" + name):
             print("ui:", staff_portrait(name, mat, out))
+    for key in shop_art.SHOTS:
+        if want(key):
+            print("ui:", shop_picture(key, mat, out, makers))
     for name in pets.PETS:
         if want("portrait_Pet_" + name):
             print("ui:", pet_portrait(name, mat, out))
