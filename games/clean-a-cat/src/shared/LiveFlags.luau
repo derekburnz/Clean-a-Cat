@@ -184,6 +184,7 @@ LiveFlags.KEYS = {
 	"washSides", -- half way through the scrub, the lather and the rinse the cat turns once so the player works on another side, then turns back to the front as he shakes (WashSidesRules, ScrubController, issue 899); off by default
 	"showerAim", -- the rinse's shower head is held off the fur, above and in front of the touch, its nozzle aimed at it (ToolOnCat.nozzle for the spray, issue 899); off by default
 	"outdoorWalk", -- once the first session's tutorial has ended (2:45 of play), the player walks at 24 studs a second outside every spa building, the default 16 inside one and all through the tutorial (OutdoorWalkRules, OutdoorWalkService, OutdoorWalkController, issue 886); off by default
+	"tipTake", -- with counterLine: while the next cat waits on Suds's tip after a recap card, the cats on the counter keep their Take cat prompt, and a tap asks for the next cat at once and takes that cat (BubbleController.hurry, CarryController, issue 1017); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -340,6 +341,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	washSides = true,
 	showerAim = true,
 	outdoorWalk = true,
+	tipTake = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).
