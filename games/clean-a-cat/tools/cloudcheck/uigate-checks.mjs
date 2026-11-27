@@ -50,7 +50,7 @@ export const LIMITS = {
 };
 
 // gate: fails the run when new; warn: in the report only
-const GATED = new Set(['tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke', 'cut']);
+const GATED = new Set(['closecoins', 'tap', 'text', 'offscreen', 'topbar', 'fonts', 'jitter', 'error', 'tiles', 'strokeclip', 'darkstroke', 'cut']);
 
 // The HUD's buttons (a tile can sit on its neighbours, or a key badge half under one): a Components/Button is a holder with a Depth frame (the outlined shape) and a Face. What a
 // tile draws is every piece under it, each grown by its outline (UIStroke Border draws outside the box): the
@@ -320,6 +320,16 @@ export function checkScene(profile, scene) {
     const extra = [...families.keys()].filter((f) => f !== 'FredokaOne' && f !== 'Nunito');
     for (const family of extra) {
       add('fonts', families.get(family), `font ${family} on screen besides Fredoka One and Nunito`);
+    }
+  }
+
+  // a window's X never on the coin pill (issue 873): the X box stays clear of HUD/Root/Coins
+  const coins = shown.find(({ node }) => node.path === 'HUD/Root/Coins');
+  if (coins) {
+    for (const { node, rect } of shown) {
+      if (!/\/Card\/Close$/.test(node.path)) continue;
+      const both = intersect(rect, coins.rect);
+      if (both && area(both) > 0) add('closecoins', node, `the window's X covers the coin pill${label(node)}`);
     }
   }
 

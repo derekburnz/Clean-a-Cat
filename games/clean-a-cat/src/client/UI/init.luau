@@ -338,6 +338,8 @@ function UI.init()
 	windows.Rename = RenameCard.build(root) -- name a hired helper, from their row in Pets (switch staffRename, #487)
 	windows.Build = BuildWindow.build(root) -- builds and upgrades from the HUD (switch buildWindow, issue 751)
 	windows.Helpers = HelpersWindow.build(root) -- the helpers' levels, modes and names (switch helpersWindow, 526)
+	-- every window's X stays below the coin pill and the friend tag (issue 873)
+	require(script:WaitForChild("Window")).avoid = HUD.topRight
 	HelpersWindow.onPet(function(id: string)
 		PetsWindow.pickOnOpen(`{id}1`) -- Pets opens on this helper's slot: one tap on a pet gives it to them
 		UI.open("Pets")
