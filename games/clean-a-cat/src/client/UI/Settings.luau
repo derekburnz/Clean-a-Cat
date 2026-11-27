@@ -344,6 +344,7 @@ local function buildRow(spec: RowSpec, parent: Instance, order: number): Row
 		fill.BackgroundTransparency = 0
 		fill.BackgroundColor3 = Kit.WHITE
 		gradient(fill, FILL_TOP, FILL_BOTTOM)
+		Kit.corner(fill, UDim.new(0.5, 0)) -- round like its track: a corner never clips a child (issue 1062)
 		local thumb = frame("Thumb", slider)
 		thumb.AnchorPoint = Vector2.new(0.5, 0.5)
 		thumb.Size = UDim2.fromOffset(THUMB, THUMB)
@@ -413,7 +414,8 @@ redraw = function()
 	local scale, short = Kit.screenScale()
 	local s: Sizes = if short then SIZES.short else SIZES.full
 	local width = math.min(s.width, screenWidth(scale) - SCREEN_MARGIN)
-	Window.fit(p.window, width, s.band, s.title, s.badge)
+	-- with the reset button on a short screen the card is taller: it sits a little higher, as the Helpers window does
+	Window.fit(p.window, width, s.band, s.title, s.badge, if short and canReset then 8 else nil)
 
 	local padding = p.pad
 	padding.PaddingLeft, padding.PaddingRight = UDim.new(0, s.padX), UDim.new(0, s.padX)
