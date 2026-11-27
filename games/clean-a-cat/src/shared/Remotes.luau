@@ -110,6 +110,9 @@ Remotes.ClientToServer = {
 	-- The back door expansion (ExpansionService, behind expansionDoor, issue 1041).
 	"RequestUnlockExpansion", -- ()  1 a second; switch on, save loaded, still locked, the character within
 	-- ExpansionRules.SERVER_REACH studs of the plot's SpotGardenDoor, ExpansionRules.PRICE coins
+	-- Send feedback (FeedbackService, behind feedback, issue 1081).
+	"SendFeedback", -- (choice: one of FeedbackRules.CHOICES, note: string?)  once in 30 seconds and 3 a visit; switch on;
+	-- the note, at most FeedbackRules.NOTE_MAX characters, is filtered before it is kept; a bad note is dropped
 	-- Reset my game (ResetService, behind resetSave, issue 1037).
 	"RequestResetSave", -- ()  once in 5 seconds; switch on, save loaded, the dev game, Studio or the group's owner:
 	-- the save goes back to a new one (receipts and passes kept) and the player is kicked to rejoin at the opening

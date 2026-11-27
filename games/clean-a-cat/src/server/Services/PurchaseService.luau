@@ -126,6 +126,8 @@ local function processReceipt(receipt: { [string]: any }): Enum.ProductPurchaseD
 		else Enum.ProductPurchaseDecision.NotProcessedYet
 end
 
+local priceWarned: { [string]: boolean } = {}
+
 -- Reads every created product's price into its attribute, trying again later for any Roblox did not give.
 local function readPrices()
 	while true do
@@ -143,6 +145,15 @@ local function readPrices()
 				ReplicatedStorage:SetAttribute(Products.PRICE_PREFIX .. key, price)
 			else
 				missing = true
+				if not priceWarned[key] then
+					-- once per key, so a dev server's console (F9, Server) names why a price is missing (issue 1080)
+					priceWarned[key] = true
+					warn(
+						`[PurchaseService] no price yet for {key} ({id}): {if ok
+							then "no PriceInRobux"
+							else tostring(info)}`
+					)
+				end
 			end
 		end
 		if not missing then
