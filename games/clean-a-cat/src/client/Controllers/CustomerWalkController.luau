@@ -54,12 +54,45 @@ local function seatCounterCat(figure: Model)
 	end
 end
 
+-- (switch counterCrate) While the customer walks up, their cat rides in the crate on their arm, so the counter cat
+-- is not drawn on this device until the crate is set down (CounterSetAt; CounterCrate takes over from there). It also
+-- stays on its own spot instead of riding along with the figure: Sync-Agent's run on 792d2dd (issue 871) saw it
+-- travel at counter height beside the walking customer, over the street.
+local function setCatShown(cat: Model, shown: boolean)
+	for _, descendant in cat:GetDescendants() do
+		if descendant:IsA("BasePart") then
+			(descendant :: BasePart).LocalTransparencyModifier = if shown then 0 else 1
+		end
+	end
+end
+
+local function holdCounterCat(figure: Model, now: number)
+	local cat = figure:FindFirstChild(CounterRules.CAT_NAME)
+	if cat == nil or not cat:IsA("Model") then
+		return
+	end
+	local setAt = cat:GetAttribute(CounterRules.SET_ATTRIBUTE)
+	if type(setAt) ~= "number" then
+		return -- the crate switch is off: the cat comes up with the customer, as before
+	end
+	if now >= (setAt :: number) then
+		return -- already set down: a step-up slides it along the counter with its customer
+	end
+	setCatShown(cat :: Model, false)
+	seatCounterCat(figure)
+end
+
 local function finish(walk: Walk)
 	walks[walk.figure] = nil
 	setHidden(walk, false)
 	if walk.figure.Parent then
 		walk.figure:PivotTo(walk.to)
 		seatCounterCat(walk.figure)
+		-- drawn again: from here CounterCrate hides it by its own Transparency until it walks out of the crate
+		local cat = walk.figure:FindFirstChild(CounterRules.CAT_NAME)
+		if cat and cat:IsA("Model") then
+			setCatShown(cat :: Model, true)
+		end
 	end
 end
 
@@ -140,6 +173,7 @@ local function step()
 		local position = walk.from.Position:Lerp(walk.to.Position, progress)
 		local turn = math.clamp(1 - (walk.duration - elapsed) / WalkRules.TURN_SECONDS, 0, 1)
 		walk.figure:PivotTo(CFrame.new(position) * walk.facing:Lerp(walk.to.Rotation, turn))
+		holdCounterCat(walk.figure, now)
 	end
 end
 
