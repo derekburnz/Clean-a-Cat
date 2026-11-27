@@ -17,6 +17,9 @@ local RecapRules = {}
 RecapRules.FULL_BELOW_STARS = 3
 -- The full card always shows for a cat of this rarity or rarer.
 RecapRules.FULL_FROM_RARITY = "Rare"
+-- With this switch on, every customer gets the full card (Derek's plan page answer of 2026-11-25: "a full recap card
+-- after every cat"; issue 890). Off, the two values above choose.
+RecapRules.EVERY_FLAG = "recapEvery"
 
 -- Above any real payment; a bigger number from the network is refused rather than shown.
 local MAX_AMOUNT = 1_000_000
@@ -67,9 +70,10 @@ local function rank(rarity: string): number?
 	return CatRules.rank(rarity) -- a special visitor's cat (SPECIAL) is rarest, so always the full card
 end
 
--- Whether a customer gets the full card: the spa's stars before this customer paid, and the cat's rarity.
-function RecapRules.isFull(starsBefore: number, rarity: string): boolean
-	if starsBefore < RecapRules.FULL_BELOW_STARS then
+-- Whether a customer gets the full card: the spa's stars before this customer paid, and the cat's rarity; `every`
+-- (switch recapEvery) gives it to every customer.
+function RecapRules.isFull(starsBefore: number, rarity: string, every: boolean?): boolean
+	if every == true or starsBefore < RecapRules.FULL_BELOW_STARS then
 		return true
 	end
 	local own, from = rank(rarity), rank(RecapRules.FULL_FROM_RARITY)
@@ -83,7 +87,8 @@ function RecapRules.make(
 	bonus: number,
 	starsBefore: number,
 	isNew: boolean,
-	extra: Extra?
+	extra: Extra?,
+	every: boolean?
 ): Recap
 	local rarity = CatRules.rarityOf(cat) or "Common"
 	local more: Extra = extra or {}
@@ -95,7 +100,7 @@ function RecapRules.make(
 		bonus = bonus,
 		stars = pay.stars,
 		isNew = isNew,
-		full = RecapRules.isFull(starsBefore, rarity),
+		full = RecapRules.isFull(starsBefore, rarity, every),
 		mascot = false,
 		speed = more.speed or 0,
 		early = more.early or 0,

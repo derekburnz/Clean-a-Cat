@@ -182,6 +182,25 @@ local function spray(rate: number): Emitter
 	}
 end
 
+-- (switch showerAim, issue 899) The shower's own stream from its nozzle into the fur: fast, tight and short lived, so
+-- the drops end about where the fur is (the nozzle is held about 1.2 studs out). Effects/ShowerStream draws the line.
+local function stream(rate: number): Emitter
+	return {
+		texture = "",
+		color = { WATER, FOAM_WHITE },
+		size = { 0.1, 0.07 },
+		transparency = { 0.1, 0.5 },
+		lifetime = { 0.1, 0.13 },
+		speed = { 11, 13 },
+		spread = 5,
+		acceleration = Vector3.zero,
+		drag = 0,
+		lightEmission = 0.2,
+		maxRate = rate,
+		burst = 0,
+	}
+end
+
 local DUST = Color3.fromRGB(214, 200, 178)
 local DUST_PALE = Color3.fromRGB(236, 230, 220)
 
@@ -239,6 +258,7 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		roadDust = dust(5),
 		shakeFlecks = flecks(8),
 		rinseSpray = spray(8),
+		showerStream = stream(8),
 	},
 	high = {
 		foamTrail = foam(FOAM_WHITE, FOAM_BLUE, 0.22, 25, 16),
@@ -253,6 +273,7 @@ local Presets: { [Tier]: { [string]: Emitter } } = {
 		roadDust = dust(9),
 		shakeFlecks = flecks(14),
 		rinseSpray = spray(16),
+		showerStream = stream(16),
 	},
 }
 
