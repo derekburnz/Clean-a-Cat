@@ -75,15 +75,14 @@ local function quietOne(item: Instance)
 	wanted[item] = true
 	it.Enabled = false
 	-- its owner may switch it on meanwhile: it is switched off again, and gets that back at the end
-	table.insert(
-		watch,
-		it:GetPropertyChangedSignal("Enabled"):Connect(function()
+	local connection: RBXScriptConnection = it:GetPropertyChangedSignal("Enabled")
+		:Connect(function()
 			if active and wanted[item] ~= nil and it.Enabled == true then
 				wanted[item] = true
 				it.Enabled = false
 			end
 		end)
-	)
+	table.insert(watch, connection)
 end
 
 local function look(item: Instance)

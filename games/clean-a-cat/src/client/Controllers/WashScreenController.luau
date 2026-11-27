@@ -210,12 +210,12 @@ end
 -- the effects' folders (suds, foam, glows).
 local function washOwns(item: Instance): boolean
 	local at: Instance? = item
-	while at and at ~= Workspace do
+	while at and at ~= (Workspace :: Instance) do
 		if at == room then
 			return true
 		end
 		local parent = at.Parent
-		if parent == Workspace then
+		if parent == (Workspace :: Instance) then
 			return at.Name == WASH_FOLDER or string.sub(at.Name, 1, #FX_PREFIX) == FX_PREFIX
 		end
 		at = parent
