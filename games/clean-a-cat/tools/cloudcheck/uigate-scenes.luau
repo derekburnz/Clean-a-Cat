@@ -144,6 +144,34 @@ local SCENES = {
 			recap(false)
 		end,
 	},
+	-- The card at its tallest in play (issue 991, Sync on an iPhone 13): a quick, early, extra dirty wash with a bow, a
+	-- tip, the stations bonus, friends and a pass, so eight coin rows.
+	{
+		"RecapRows",
+		function()
+			flag("recapCard", true)
+			hud(true)
+			UI.setCoins(999999)
+			UI.showRecap({
+				cat = "Marshmallow",
+				rarity = "Legendary",
+				coins = 80,
+				grade = 3,
+				speed = 12,
+				early = 6,
+				dirt = 20,
+				bow = 8,
+				bowTier = "Ribbon",
+				tip = 15,
+				bonus = 12,
+				friends = 10,
+				pass = 80,
+				stars = 5,
+				isNew = true,
+				full = true,
+			})
+		end,
+	},
 	-- The same card at the side with no dim (switch recapSide), so the clean cat stays in view; the touch controls hide.
 	{
 		"RecapSide",
