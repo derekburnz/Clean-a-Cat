@@ -14,6 +14,8 @@
 --   BubbleWipe.shrink(t, column) -> number  pure: the same while uncovering (1 to 0)
 --   BubbleWipe.covered(t) -> boolean        pure: every bubble is full at t seconds into the cover
 --   BubbleWipe.play(onCovered)              covers, calls onCovered once (errors are caught and logged), uncovers
+--   BubbleWipe.holdFor() -> number          seconds a wipe started now waits first: the photo beat's card printing
+--                                           (Effects/PhotoFx.left, MAX_HOLD at most); a caller's timeout adds it
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
@@ -194,10 +196,23 @@ local function bubbleWipe(gui: ScreenGui, fill: Frame, onCovered: () -> ())
 	gui:Destroy()
 end
 
+BubbleWipe.MAX_HOLD = 1.2 -- seconds
+
+function BubbleWipe.holdFor(): number
+	local ok, left = pcall(function()
+		local PhotoFx = require(script.Parent:WaitForChild("PhotoFx")) :: any
+		return PhotoFx.left()
+	end)
+	if not ok or type(left) ~= "number" then
+		return 0
+	end
+	return math.clamp(left, 0, BubbleWipe.MAX_HOLD)
+end
+
 function BubbleWipe.play(onCovered: () -> ())
 	local player = Players.LocalPlayer
+	local hold = BubbleWipe.holdFor()
 	local gui, fill = makeGui()
-	gui.Parent = player:WaitForChild("PlayerGui")
 	local called = false
 	local function once()
 		if not called then
@@ -206,6 +221,10 @@ function BubbleWipe.play(onCovered: () -> ())
 		end
 	end
 	task.spawn(function()
+		if hold > 0 then
+			task.wait(hold) -- let the photo's card print first (issue 862)
+		end
+		gui.Parent = player:WaitForChild("PlayerGui")
 		local ok, problem = pcall(function()
 			if reducedMotion() then
 				fadeWipe(gui, fill, once)

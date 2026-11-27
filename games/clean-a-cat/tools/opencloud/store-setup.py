@@ -232,6 +232,39 @@ def server_size(keys, universe, place, confirm, summary):
     return True
 
 
+def description(keys, universe, place, path, confirm, summary):
+    # the game page's description is the start place's description (Growth's text, issue 892)
+    if not path or not os.path.isfile(path):
+        summary.append(f"No description file at {path}")
+        return False
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read().strip()
+    if len(text) > 1000 or not text.isascii():
+        summary.append(f"The description must be plain text under 1000 characters (it is {len(text)}, ascii {text.isascii()})")
+        return False
+    url = f"{API}/cloud/v2/universes/{universe}/places/{place}"
+    label, key, status, now = pick_key(keys, lambda k: request("GET", url, k))
+    if key is None:
+        summary.append(f"Cannot read the place: HTTP {status}: {short(now)}")
+        return False
+    summary.append(f"Using {label}. Description now ({len(now.get('description') or '')} characters): {short(now.get('description') or '')}")
+    if (now.get("description") or "").strip() == text:
+        summary.append("The description already matches.")
+        return True
+    if confirm != "yes":
+        summary.append(f"would set the description ({len(text)} characters)")
+        return True
+    status, after = request("PATCH", url + "?updateMask=description", key, {"description": text})
+    if status != 200:
+        summary.append(f"FAILED to set the description: HTTP {status}: {short(after)}")
+        return False
+    status, back = request("GET", url, key)
+    saved = (back.get("description") or "").strip() if status == 200 else ""
+    summary.append(f"Read back: {'matches' if saved == text else 'DIFFERS'} ({len(saved)} characters)")
+    summary.append("Saved text:\n" + saved)
+    return saved == text
+
+
 def upload_image(key, group, path):
     meta = {
         "assetType": "Image",
@@ -323,6 +356,8 @@ def main():
         ok = make("products", PRODUCTS, keys, universe, confirm, summary)
     elif action == "server-size":
         ok = server_size(keys, universe, place, confirm, summary)
+    elif action == "description":
+        ok = description(keys, universe, place, os.environ.get("DESCRIPTION_FILE", ""), confirm, summary)
     elif action == "store-art":
         ok = store_art(keys, place, os.environ.get("GROUP_ID", ""), os.environ.get("ART_DIR", ""), confirm, summary)
     else:
