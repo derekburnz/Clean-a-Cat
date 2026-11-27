@@ -144,3 +144,9 @@ customerWalk is on (CustomerMotion enabled) and the ArmR joint is recognised. Sa
   - Walking with a carrier, the arm stays out at CarryArmOut.
   - LegL swings 0 to 26 degrees on walk-ins.
   - PackedCat leaves FAIL. Bea's arm turned out only 15.2 of 35.5 degrees. Theo's stayed at 0 of 19.6.
+
+## Starter pack HUD card (1069, 1080) on main 29e9249, iphone_13, 2026-11-27
+
+- `1080-card-see-the-pack-iphone13.jpg`: the dark plum card with no price known locally. It shows one big sponge on a gold glow, the round "i" and no time chip.
+- `1080-card-199-robux-iphone13.jpg`: with ProductPrice_StarterPack set to 199 by hand, the price reads "199 Robux" in light green. Contrast is 7.8 against the top of the plum and 11.3 against the bottom.
+- `1080-info-window-new-player-offer.jpg`: the "i" opens the Spa Starter Pack window, and its band says "New player offer".
