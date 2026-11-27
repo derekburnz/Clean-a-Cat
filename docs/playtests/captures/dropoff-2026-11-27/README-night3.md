@@ -185,3 +185,8 @@ The `hotel-*.jpg` pictures show the side Garden's three looks (locked, building,
 - The two-helpers picture (rbxassetid://97491083681037) on the HUD Helpers button and the Helpers window badge.
 - The Crate's Uncommon pills at 89 in 89.
 - The Check in title at 84 in 84.
+
+## groupVerify (issue 1111, PRs 1115 and 1117) on main 8729c8a, iphone_13, 2026-11-27
+
+`1111-<step>-iphone13.jpg` covers the free reward board: Join, Verify when not in the group, the 10 s wait, and the join with the gift and 150 coins. It also covers the seeded saves with the like already paid and with the gift already owned.
+Group membership was faked only inside the unsaved local place: a QA patch to GiftService.inGroup reads the workspace attribute _QAInGroup. No real group was joined, left or changed.
