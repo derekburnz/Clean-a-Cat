@@ -16,7 +16,7 @@ local CatRules = require(script.Parent:WaitForChild("CatRules"))
 local CrateRules = {}
 
 CrateRules.FLAG = "pets"
-CrateRules.KINDS = table.freeze({ "normal", "good" }) :: { string }
+CrateRules.KINDS = table.freeze({ "normal", "good", "gift" }) :: { string }
 CrateRules.CRATE_ATTRIBUTE_PREFIX = "Crates_" -- Player attribute Crates_<kind>: crates of that kind held
 CrateRules.PET_ATTRIBUTE_PREFIX = "Pet_" -- Player attribute Pet_<slot>: "<kind>:<star>" of the pet in that slot
 CrateRules.ODDS_NOTE =
@@ -41,6 +41,25 @@ CrateRules.GIFT_PETS = table.freeze({ Starcoat = "Uncommon" }) :: { [string]: st
 CrateRules.CHANCES = table.freeze({
 	normal = table.freeze({ Common = 50, Uncommon = 26, Rare = 16, Epic = 6, Legendary = 2 }),
 	good = table.freeze({ Common = 30, Uncommon = 30, Rare = 24, Epic = 12, Legendary = 4 }),
+	gift = table.freeze({ Common = 0, Uncommon = 69, Rare = 24, Epic = 6, Legendary = 1 }),
+}) :: { [string]: { [string]: number } }
+
+-- (switch giftCrate, issue 859) Derek, 2026-11-26: "for the group reward maybe make it a crate to open so that people
+-- can pull something from it". The gift crate, given once for the favourite and the group (GiftService), has its own
+-- chance per pet (Design-Agent's spec; its rarities' sums are CHANCES.gift): no Commons, so it is never worse than
+-- Starcoat was, and Starcoat comes only from it. A crate kind listed here uses these percents instead of an even split.
+CrateRules.GIFT_FLAG = "giftCrate"
+CrateRules.GIFT_KIND = "gift"
+CrateRules.PET_CHANCES = table.freeze({
+	gift = table.freeze({
+		Starcoat = 23,
+		Pebble = 23,
+		Pickle = 23,
+		Koi = 12,
+		Bamboo = 12,
+		Coral = 6,
+		Nimbus = 1,
+	}),
 }) :: { [string]: { [string]: number } }
 
 -- Boost per rarity (tuning pet.boost), and times it at each star (pet.starUp).
@@ -92,8 +111,36 @@ end
 -- The chance list of crate `kind`: every pet with its percent and its boost at star 1, rarest last. The roll uses this
 -- very list.
 function CrateRules.odds(kind: string): { Odds }
-	local chances = CrateRules.CHANCES[CrateRules.cleanKind(kind) or "normal"]
+	local clean = CrateRules.cleanKind(kind) or "normal"
+	local chances = CrateRules.CHANCES[clean]
 	local out: { Odds } = {}
+	local perPet = CrateRules.PET_CHANCES[clean]
+	if perPet then
+		-- its own percent per pet, rarest last, the gift pets with their rarity
+		for _, rarity in CatRules.RARITIES do
+			local names: { string } = {}
+			for pet, percent in perPet do
+				if PET_RARITY[pet] == rarity and percent > 0 then
+					table.insert(names, pet)
+				end
+			end
+			table.sort(names, function(a: string, b: string): boolean
+				if perPet[a] ~= perPet[b] then
+					return perPet[a] > perPet[b]
+				end
+				return a < b
+			end)
+			for _, pet in names do
+				table.insert(out, {
+					pet = pet,
+					rarity = rarity,
+					percent = perPet[pet],
+					boost = CrateRules.BOOST[rarity],
+				})
+			end
+		end
+		return out
+	end
 	for _, rarity in CatRules.RARITIES do
 		local pets = CrateRules.PETS[rarity]
 		for _, pet in pets do

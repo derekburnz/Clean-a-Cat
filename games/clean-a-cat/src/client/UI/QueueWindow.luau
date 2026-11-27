@@ -261,7 +261,7 @@ local function drawNeeds(
 		dot.BackgroundColor3 = Kit.WHITE
 		Kit.corner(dot, UDim.new(0.5, 0))
 		local edge = Kit.stroke(dot, 2)
-		edge.Color = Kit.LINE
+		edge.Color = Kit.line()
 		local box = frame("IconBox", dot)
 		box.AnchorPoint = Vector2.new(0.5, 0.5)
 		box.Position = UDim2.fromScale(0.5, 0.5)
@@ -425,7 +425,7 @@ local function drawCard(
 	Kit.corner(box, UDim.new(0, 18))
 	local glows = card.vip or card.special
 	local edge = Kit.stroke(box, if glows then 4 else 3)
-	edge.Color = if glows then Kit.RARITY[card.rarity] or Kit.LINE else Kit.LINE
+	edge.Color = if glows then Kit.RARITY[card.rarity] or Kit.line() else Kit.line()
 	-- a special visitor's cat: lilac with the Special gold rim (Kit.RARITY_RIM), so it never reads as an Epic VIP
 	if card.special then
 		Kit.rim(box, CatRules.SPECIAL, edge.Color)
@@ -581,7 +581,7 @@ local function drawCard(
 		say.BackgroundColor3 = if card.place == 1 then Color3.fromHex("DFF6E8") else Kit.CREAM
 		Kit.corner(say, UDim.new(0, 14))
 		local line = Kit.stroke(say, 2)
-		line.Color = Kit.LINE
+		line.Color = Kit.line()
 		say.Text = if card.place == 1 then "Up next" else "Waiting"
 		act = say
 	end

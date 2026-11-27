@@ -63,6 +63,7 @@ local SIZES = {
 		chip = 24,
 		star = 24,
 		fuse = 48,
+		effect = 19,
 		slotH = 84,
 		pencil = 28, -- the pencil on a helper's picture: tap it to rename them
 		slotGap = 10,
@@ -88,6 +89,7 @@ local SIZES = {
 		chip = 22,
 		star = 22,
 		fuse = 46,
+		effect = 19,
 		slotH = 72,
 		pencil = 26,
 		slotGap = 4,
@@ -218,8 +220,14 @@ local function fuseHeight(s: Sizes): number
 	return math.max(s.fuse, math.ceil(44 / scale))
 end
 
-local function tileHeight(s: Sizes): number
-	return s.tileH - s.fuse + fuseHeight(s)
+local function tileHeight(s: Sizes, twoLines: boolean?): number
+	-- with petLines, room for the line that says what the pet gives (issue 927), two lines when a pet's boost is over
+	-- the helper cap ("+40% tips" then "+30% pay")
+	local lines = if twoLines then 2 else 1
+	local extra = if LiveFlags.isOn(CrateViewRules.LINES_FLAG)
+		then lines * (s.effect + 2) + 4
+		else 0
+	return s.tileH - s.fuse + fuseHeight(s) + extra
 end
 
 local function drawTile(
@@ -235,7 +243,7 @@ local function drawTile(
 	tile.BackgroundColor3 = Kit.WHITE
 	Kit.corner(tile, UDim.new(0, 18))
 	local edge = Kit.stroke(tile, 3)
-	edge.Color = Kit.LINE
+	edge.Color = Kit.line()
 	-- the tile's words and pictures sit in their own stack, so the tap area over the tile is not laid out with them
 	local body = frame("Stack", tile)
 	body.Size = UDim2.fromScale(1, 1)
@@ -262,6 +270,25 @@ local function drawTile(
 	local lineList = list(line, true, 6)
 	lineList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	Kit.rarityChip(line, group.rarity, s.chip, 1, cellW - 8) -- never past the tile (issue 609)
+	if LiveFlags.isOn(CrateViewRules.LINES_FLAG) then
+		-- what it gives, true numbers at its stars: beside you your tips, beside a helper their pay (issue 927)
+		local effect = words("Gives", body, s.effect)
+		effect.LayoutOrder = 4
+		effect.FontFace = Kit.BODY_FACE
+		effect.TextColor3 = Kit.INK_SOFT
+		local share = CrateRules.boost(group.kind, group.star)
+		local text = CrateViewRules.effectText(share, LiveFlags.isOn)
+		if CrateViewRules.overCap(share) then
+			-- "+40% tips, +30% pay" is too wide for a tile: one number per line
+			effect.Size = UDim2.new(1, -8, 0, 2 * (s.effect + 2))
+			effect.Text = (string.gsub(text, ", ", "\n"))
+			effect.TextWrapped = true
+		else
+			effect.Size = UDim2.new(1, -8, 0, s.effect + 2)
+			effect.Text = text
+			Kit.shrinkToFit(effect, s.effect)
+		end
+	end
 	-- the stars sit across the bottom of the picture, so a Legendary chip and three stars never crowd one line
 	local starRow = frame("StarRow", pic)
 	starRow.AnchorPoint = Vector2.new(0.5, 0.8)
@@ -290,7 +317,7 @@ local function drawTile(
 
 	if group.canFuse then
 		local fuse = Window.button("Fuse", "Fuse", body, SKY_TOP, SKY_BOTTOM)
-		fuse.LayoutOrder = 4
+		fuse.LayoutOrder = 5
 		fuse.Size = UDim2.new(1, -20, 0, fuseHeight(s))
 		fuse.TextSize = 22
 		fuse.ZIndex = 5
@@ -347,7 +374,7 @@ local function drawSlot(
 	Kit.corner(card, UDim.new(0, 18))
 	local mineNow = row.slot == picked or row.slot2 == picked
 	local edge = Kit.stroke(card, if mineNow then 4 else 3)
-	edge.Color = if mineNow and not row.locked then PICKED else Kit.LINE
+	edge.Color = if mineNow and not row.locked then PICKED else Kit.line()
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
 	pad.Parent = card
@@ -513,7 +540,13 @@ function PetsWindow.redraw()
 	local groups = CrateViewRules.groups(pets)
 	clear(p.scroll)
 	local cellW = math.floor((leftW - 20 - (s.cols - 1) * s.tileGap) / s.cols) -- the bar and the list's padding
-	local tileH = tileHeight(s)
+	local twoLines = false
+	for _, group in groups do
+		if CrateViewRules.overCap(CrateRules.boost(group.kind, group.star)) then
+			twoLines = true
+		end
+	end
+	local tileH = tileHeight(s, twoLines)
 	p.grid.CellSize = UDim2.fromOffset(cellW, tileH)
 	p.grid.CellPadding = UDim2.fromOffset(s.tileGap, s.tileGap)
 	-- both lists stop above the screen's bottom edge and scroll past it (#834): the tallest a list may be is the

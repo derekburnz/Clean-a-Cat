@@ -360,6 +360,16 @@ local SCENES = {
 			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
 		end,
 	},
+	-- Each pet says what it gives (issue 927, switch petLines): "+5% tips or pay" on its chance row.
+	{
+		"CrateLines",
+		function()
+			flag("crateWindow", true)
+			flag("petLines", true)
+			local CrateViewRules = UIShim.require("ReplicatedStorage.Shared.CrateViewRules")
+			UI.showCrate("normal", 3, CrateViewRules.rows("normal", { Cozy = true, Koi = true }))
+		end,
+	},
 	-- The Robux crate rows (issue 514, switch crateShop): under Open crate, with the chance list beside them.
 	{
 		"CrateShop",
@@ -852,6 +862,25 @@ local SCENES = {
 			UI.open("Pets")
 		end,
 	},
+	-- The same pets, each tile with its line of what it gives at its stars (issue 927, switch petLines).
+	{
+		"PetsLines",
+		function()
+			flag("petsWindow", true)
+			flag("petLines", true)
+			UI.setPets({
+				{ id = 1, kind = "Cozy", star = 1, slot = "player" },
+				{ id = 2, kind = "Cozy", star = 1 },
+				{ id = 3, kind = "Cozy", star = 1 },
+				{ id = 4, kind = "Koi", star = 2, slot = "Jo1" },
+				{ id = 5, kind = "Pebble", star = 1 },
+				{ id = 6, kind = "Pebble", star = 1 },
+				{ id = 7, kind = "Nimbus", star = 3 },
+				{ id = 8, kind = "Scrubby", star = 1 },
+			}, { Jo = true })
+			UI.open("Pets")
+		end,
+	},
 	{
 		"PetsEmpty",
 		function()
@@ -1099,6 +1128,22 @@ local SCENES = {
 	},
 }
 
+-- The menus with their stronger card edges (issue 928, switch menuContrast): the same scenes, the switch on.
+for _, name in { "Shop", "Build", "Quests", "Helpers", "Pets", "Crate" } do
+	for _, scene in table.clone(SCENES) do
+		if scene[1] == name then
+			local open = scene[2]
+			table.insert(SCENES, {
+				name .. "Contrast",
+				function()
+					flag("menuContrast", true)
+					open()
+				end,
+			})
+		end
+	end
+end
+
 Scenes.names = {}
 for _, scene in SCENES do
 	table.insert(Scenes.names, scene[1])
@@ -1128,6 +1173,8 @@ function Scenes.close()
 	flag("petsWindow", false)
 	flag("helpersWindow", false)
 	flag("helperPets", false)
+	flag("petLines", false)
+	flag("menuContrast", false)
 	UI.showLeaveLines(false)
 	flag("freeRewards", false)
 	flag("workers", false)

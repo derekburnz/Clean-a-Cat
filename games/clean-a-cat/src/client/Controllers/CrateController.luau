@@ -24,6 +24,7 @@ local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 
 local WINDOW_FLAG = "crateWindow"
 local CRATE_ASSET = "CleanACat_Prop_PetCrate"
+local GIFT_ASSET = "CleanACat_Prop_GiftCrate"
 local NAME = "CleanACat_HeldCrate"
 local REVEAL_SECONDS = 3 -- the pet stays on the crate this long before it goes to the player
 local PROMPT_REACH = 10
@@ -135,7 +136,11 @@ local function draw()
 	end
 	clear()
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
-	local asset = if assets then assets:FindFirstChild(CRATE_ASSET) else nil
+	-- (giftCrate, issue 859) the gift crate is Model-Agent's own ribboned crate, the pet crate while it is missing
+	local gift = if assets and kind == CrateRules.GIFT_KIND
+		then assets:FindFirstChild(GIFT_ASSET)
+		else nil
+	local asset = if gift then gift elseif assets then assets:FindFirstChild(CRATE_ASSET) else nil
 	local model: Model
 	if asset and asset:IsA("Model") then
 		model = (asset :: Model):Clone() :: Model

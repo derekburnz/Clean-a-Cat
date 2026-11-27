@@ -23,8 +23,40 @@ end
 
 return function()
 	describe("CrateRules", function()
+		it(
+			"shows the gift crate's own chance per pet, adding up to 100 (giftCrate, issue 859)",
+			function()
+				local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+				expect(table.find(LiveFlags.KEYS, CrateRules.GIFT_FLAG)).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT[CrateRules.GIFT_FLAG]).to.equal(true)
+				expect(table.find(CrateRules.KINDS, CrateRules.GIFT_KIND)).to.be.ok()
+				local list = CrateRules.odds(CrateRules.GIFT_KIND)
+				expect(#list).to.equal(7)
+				local total = 0
+				local byRarity: { [string]: number } = {}
+				for _, entry in list do
+					expect(entry.rarity).never.to.equal("Common")
+					total += entry.percent
+					byRarity[entry.rarity] = (byRarity[entry.rarity] or 0) + entry.percent
+				end
+				expect(math.abs(total - 100) < 1e-9).to.equal(true)
+				for rarity, sum in byRarity do
+					expect(sum).to.equal(CrateRules.CHANCES.gift[rarity])
+				end
+				expect(list[1].pet).to.equal("Pebble") -- 23%, Uncommon, by name among the three at 23
+				expect(list[#list].pet).to.equal("Nimbus")
+				expect(list[#list].percent).to.equal(1)
+				expect(CrateRules.roll(CrateRules.GIFT_KIND, always(0.995))).to.equal("Nimbus")
+				local starcoat = false
+				for _, entry in list do
+					starcoat = starcoat or entry.pet == "Starcoat"
+				end
+				expect(starcoat).to.equal(true)
+			end
+		)
+
 		it("shows every pet with a chance, adding up to 100, for both crates", function()
-			for _, kind in CrateRules.KINDS do
+			for _, kind in { "normal", "good" } do
 				local total = 0
 				local list = CrateRules.odds(kind)
 				expect(#list).to.equal(8)
