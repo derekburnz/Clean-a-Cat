@@ -103,3 +103,12 @@ stand-ins-1054-every-icon-swapped-69b9548.jpg: the HUD and Pets window show emoj
 - Open look, PASS (back-door-open-1057-a7da269.jpg): BackDoor now holds CleanACat_Area_BackDoorOpen. A ray through the doorway hits nothing, and the path from inside to behind the door is 13.0 studs straight through (it was 119 studs round the outside while locked). The door leaf (5.9 x 8.9 x 0.4) stands at (12.9, 5.0, 7.1), swung about 180 degrees flat against the yard side of the wall, clear of the doorway.
 - Reset my game, PASS (reset-confirm-1056-a7da269.jpg): the red "Reset my game" button at the bottom of Settings turns into "Tap again to wipe it all" on the first tap, with coins unchanged. The second tap shows "Resetting..." and the server drops the player (Players 0).
 - Not tested: the Garden behind the open door, and an old save with the Garden built.
+
+## 1062 right arm out at the counter, main 41da07f (desktop, seeded save, every switch on)
+arm-out-1062-from-behind-41da07f.jpg: the three customers standing at the counter, after setting their crates down, all hold the right arm out while the left hangs straight.
+| figure | ArmsStraight | CarryArmDegrees | CarryArmOut | CarrierHidden | carrier parts showing | ArmR off vertical | ArmL off vertical |
+|---|---|---|---|---|---|---|---|
+| Sunny | true | 32.4 | 32.4 | true | 0/188 | 32.4 | 0.0 |
+| Mo | true | 19.6 | 19.6 | true | 0/213 | 19.6 | 0.0 |
+| Pip | true | 27.1 | 27.1 | true | 0/193 | 27.1 | 0.0 |
+The carrier is hidden and CarrierHidden is true, yet ArmR stays turned out by exactly CarryArmOut. CustomerMotion.armIn should turn it back in by that much, so it is not being applied on this client.
