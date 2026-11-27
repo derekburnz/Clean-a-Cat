@@ -7,6 +7,7 @@
 -- Behind the LiveFlags switch `queuePick`, with `scrubPrototype` and `customers`; all off by default.
 -- The prompts appear only once a customer has been served (Player attribute ChanceBoardLit, set by SpaService), so a
 -- new save's first cat stays the guaranteed common one. The server refuses a pick before that too.
+-- With `menuOnly` and `queueWindow` on, there are no prompts: Who's next? picks (MenuRules, issue 1028).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -14,6 +15,7 @@ local Workspace = game:GetService("Workspace")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local CarryRules = require(Shared:WaitForChild("CarryRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local MenuRules = require(Shared:WaitForChild("MenuRules"))
 local Remotes = require(Shared:WaitForChild("Remotes"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local SpaRules = require(Shared:WaitForChild("SpaRules"))
@@ -44,6 +46,7 @@ local function refresh()
 	local player = Players.LocalPlayer
 	if
 		not allOn()
+		or MenuRules.queue(LiveFlags.isOn)
 		or player:GetAttribute(SERVED) ~= true
 		or player:GetAttribute(CarryRules.ATTRIBUTE) ~= nil
 	then
@@ -84,6 +87,10 @@ function QueuePickController.Init(_controllers: { [string]: any }) end
 
 function QueuePickController.Start()
 	for _, flag in FLAGS do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(refresh)
+	end
+	for _, flag in { MenuRules.FLAG, MenuRules.QUEUE_FLAG } do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(refresh)
 	end

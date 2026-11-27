@@ -16,7 +16,8 @@
 -- "Show me" only points the way: the floor trail (switch tutorialTrail) to the tub, the Tools board or the builder
 -- board, and Moments.SudsPoint so Suds can trot there from his bed. It never opens a window, buys, builds or moves
 -- the player; they still walk there and tap the thing themselves. The trail goes once they arrive, start a scrub, or
--- after TRAIL_SECONDS.
+-- after TRAIL_SECONDS. With `menuOnly` on, a card whose thing is done in a window (hire Jo in Helpers, a build or a
+-- tool in Build: MenuRules.windowFor) has no trail, and its "Show me" opens that window instead (issue 1028).
 --
 -- With askQueue on (issue 522), every bubble but the opening's own (BubbleRules.OPENING) is the ask "bubble"
 -- (AskController): between washes it waits its turn in the line and goes by itself after ASK_UP_SECONDS; as a recap
@@ -34,6 +35,7 @@ local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local CatRules = require(Shared:WaitForChild("CatRules"))
 local CounterRules = require(Shared:WaitForChild("CounterRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local MenuRules = require(Shared:WaitForChild("MenuRules"))
 local Moments = require(Shared:WaitForChild("Moments"))
 local Passes = require(Shared:WaitForChild("Passes"))
 local QuestViewRules = require(Shared:WaitForChild("QuestViewRules"))
@@ -233,6 +235,13 @@ end
 local function show(bubble: BubbleRules.Bubble, onGone: ((closed: boolean) -> ())?)
 	told[bubble.id] = true
 	Remotes.event("ReportBubbleSeen"):FireServer(bubble.id)
+	local window = if bubble.showMe then MenuRules.windowFor(bubble.id, LiveFlags.isOn) else nil
+	if window then
+		UI.showBubble(bubble, function()
+			UI.open(window)
+		end, onGone)
+		return
+	end
 	local spot = if bubble.showMe then target(bubble.id) else nil
 	-- contextAsks (issue 877): a guide card shows its trail with it, not only after "Show me"
 	if spot and BubbleRules.contextOn(LiveFlags.isOn) then

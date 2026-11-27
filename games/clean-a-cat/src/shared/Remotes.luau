@@ -40,7 +40,8 @@ Remotes.ClientToServer = {
 	-- the board (or anywhere with buildWindow), the next tier in order, enough coins
 	-- Workers (WorkerService, behind workers, scrubPrototype and customers). Each needs the save loaded; hiring also
 	-- needs the character within WorkerRules.SERVER_REACH studs of that worker's pad (mode and level come from the HUD).
-	"RequestHireWorker", -- (id: one of WorkerRules.IDS)  1 a second; near the pad, not a pass worker, not hired, coins
+	"RequestHireWorker", -- (id: one of WorkerRules.IDS)  1 a second; near the pad (anywhere with menuOnly and
+	-- helpersWindow: the Helpers window's Hire), not a pass worker, not hired, coins
 	"RequestWorkerMode", -- (id, mode: one of WorkerRules.MODES)  2 a second; the worker is hired
 	"RequestWorkerLevel", -- (id)  1 a second; the worker is hired, below the top level, enough coins
 	-- Crates and pets (PetService, behind pets). Every pet id must be one of the player's own.
@@ -106,6 +107,9 @@ Remotes.ClientToServer = {
 	-- Suds's help bubble (BubbleService, behind sudsBubble).
 	"ReportBubbleSeen", -- (id: one of BubbleRules.IDS)  2 a second; switch on, save loaded; marks that bubble shown in the
 	-- save so it never shows again, nothing else changes
+	-- Reset my game (ResetService, behind resetSave, issue 1037).
+	"RequestResetSave", -- ()  once in 5 seconds; switch on, save loaded, the dev game, Studio or the group's owner:
+	-- the save goes back to a new one (receipts and passes kept) and the player is kicked to rejoin at the opening
 }
 
 -- Server -> client.

@@ -10,6 +10,8 @@
 -- Roblox) once its product exists, or "Finish now with your saved finish" when a saved credit covers it; never under
 -- 15 s left. It is held for half a second, then asks the server (RequestFinish), which opens Roblox's purchase prompt;
 -- waiting stays free.
+-- With `menuOnly` and `buildWindow` on, the Build prompts go: builds are started in the Build window (MenuRules,
+-- issue 1028). A running build keeps its own prompt (its countdown, and Finish now), and the bell stays.
 --
 --   BuildBoardController.finished:Connect(fn)  fn(id) when a build finishes (also one that finished while away),
 --                                              for the celebration effects and the builder panel
@@ -24,6 +26,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local BuildRules = require(Shared:WaitForChild("BuildRules"))
 local FinishRules = require(Shared:WaitForChild("FinishRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local MenuRules = require(Shared:WaitForChild("MenuRules"))
 local NotifyRules = require(Shared:WaitForChild("NotifyRules"))
 local Passes = require(Shared:WaitForChild("Passes"))
 local Products = require(Shared:WaitForChild("Products"))
@@ -149,12 +152,13 @@ local function refreshPrompts()
 	local now = os.time() + clockOffset
 	refreshBell(now)
 	table.clear(finishing)
+	local inMenu = MenuRules.build(LiveFlags.isOn)
 	for id, prompt in prompts do
 		local item = BuildRules.item(id, LiveFlags.isOn) :: BuildRules.Item
 		local running: BuildRules.Build? = builds[item.slot]
 		local mine = running ~= nil and running.item == id
 		-- built, or (issue 574) its slot busy or its first build missing: one pill fewer
-		if built[id] or not (mine or startable(item)) then
+		if built[id] or not (mine or (startable(item) and not inMenu)) then
 			prompt.Enabled = false
 		elseif running and mine then
 			prompt.Enabled = true
@@ -332,6 +336,11 @@ function BuildBoardController.Init(_controllers: { [string]: any }) end
 function BuildBoardController.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG):Connect(refresh)
 	-- An item's own switch (the Bubble Bath's, the Pawdicure's) changed: the board is drawn again with or without it.
+	-- menuOnly or the Build window came or went: the Build prompts come or go
+	for _, flag in { MenuRules.FLAG, MenuRules.BUILD_FLAG } do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(refreshPrompts)
+	end
 	for _, itemFlag in BuildRules.itemFlags() do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. itemFlag)
 			:Connect(function()

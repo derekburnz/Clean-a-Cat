@@ -69,6 +69,28 @@ return function()
 			expect(rows[2].name).to.equal("Sam")
 		end)
 
+		it("gives Jo and Sam a Hire button with menuOnly and the Helpers window on", function()
+			local function isOn(flag: string): boolean
+				return flag == "menuOnly" or flag == "helpersWindow"
+			end
+			local rows = HelperViewRules.rows(reader({ WorkerLevel_Jo = 1 }), {}, isOn)
+			expect(rows[1].hire).to.equal(false) -- hired
+			expect(HelperViewRules.hireText(rows[1])).to.equal(nil)
+			expect(rows[2].hire).to.equal(true)
+			expect(HelperViewRules.hireText(rows[2])).to.equal(
+				`Hire · {WorkerRules.WORKERS.Sam.price}`
+			)
+			expect(HelperViewRules.say(rows[2])).to.equal("Washes cats for you")
+			expect(rows[3].hire).to.equal(false) -- Lou comes with his pass
+			local off = HelperViewRules.rows(reader({}), {}, function(flag: string): boolean
+				return flag == "menuOnly" -- no Helpers window: the pads stay
+			end)
+			expect(off[1].hire).to.equal(false)
+			expect(HelperViewRules.say(off[1])).to.equal(
+				`Hire at their pad · {WorkerRules.WORKERS.Jo.price} coins`
+			)
+		end)
+
 		it("finds the pet beside a helper, first slot first", function()
 			local pets: { HelperViewRules.Pet } = {
 				{ id = 1, kind = "Ooze", star = 1, slot = "Jo2" },

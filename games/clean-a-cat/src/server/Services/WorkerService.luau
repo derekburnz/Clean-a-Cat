@@ -19,6 +19,7 @@ local DirtRules = require(Shared:WaitForChild("DirtRules"))
 local Guard = require(Shared:WaitForChild("Guard"))
 local HelperFetchRules = require(Shared:WaitForChild("HelperFetchRules"))
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
+local MenuRules = require(Shared:WaitForChild("MenuRules"))
 local SpaLayout = require(Shared:WaitForChild("SpaLayout"))
 local WorkerRules = require(Shared:WaitForChild("WorkerRules"))
 
@@ -301,6 +302,9 @@ function WorkerService.refresh(player: Player)
 		if not hired and info.pass then
 			continue -- Lou comes with his pass, never as a pad
 		end
+		if not hired and MenuRules.helpers(LiveFlags.isOn) then
+			continue -- menuOnly: hired from the Helpers window, no pad (issue 1033)
+		end
 		local spot = SpaLayout.slotSpot(info.spot, slot)
 		-- a hired worker's own wash stand (Model-Agent's), or the plain tub until it is in the game
 		local template = if hired
@@ -348,7 +352,8 @@ local function stands(player: Player, id: string): boolean
 end
 
 -- The worker id and the save for a request, or nil. Hiring needs the player at the pad; the mode and the level come
--- from the Helpers window on the HUD as well (tuning worker.windowFromHud), so they skip the distance check.
+-- from the Helpers window on the HUD as well (tuning worker.windowFromHud), so they skip the distance check. With
+-- menuOnly there is no pad and the hire comes from the Helpers window too, so it skips the check as well.
 local function forRequest(player: Player, rawId: unknown, atStation: boolean): (string?, any)
 	if not isOn() then
 		return nil, nil
@@ -369,7 +374,7 @@ local function showWorkers(player: Player, save: any)
 end
 
 local function onHire(player: Player, rawId: unknown)
-	local id, save = forRequest(player, rawId, true)
+	local id, save = forRequest(player, rawId, not MenuRules.helpers(LiveFlags.isOn))
 	if id == nil then
 		return
 	end
@@ -463,11 +468,29 @@ local function finish(player: Player, id: string, job: Job)
 	restUntil[player][id] = os.clock() + back + REST_SECONDS
 end
 
+-- menuOnly: the Helpers button opens once the player can pay for a helper (MenuRules.helpersOpen), for the visit.
+local function openHelpers(player: Player, save: any)
+	if player:GetAttribute(MenuRules.OPEN_ATTRIBUTE) == true then
+		return
+	end
+	local cheapest: number? = nil
+	for _, id in WorkerRules.IDS do
+		local price = WorkerRules.priceOf(id, LiveFlags.isOn)
+		if save.workers[id] == nil and not WorkerRules.WORKERS[id].pass and price then
+			cheapest = if cheapest then math.min(cheapest, price) else price
+		end
+	end
+	if MenuRules.helpersOpen(LiveFlags.isOn, save.coins, cheapest) then
+		player:SetAttribute(MenuRules.OPEN_ATTRIBUTE, true)
+	end
+end
+
 local function tickPlayer(player: Player)
 	local save = DataService.get(player)
 	if save == nil or player.Parent ~= Players or SpaLayout.slotOf(player) == nil then
 		return
 	end
+	openHelpers(player, save)
 	local own = jobs[player]
 	if own == nil then
 		own = {}
@@ -632,6 +655,11 @@ function WorkerService.Start()
 	ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. FLAG)
 		:Connect(refreshAll)
 	for _, flag in NEEDS do
+		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
+			:Connect(refreshAll)
+	end
+	-- menuOnly takes the hire pads away (and brings them back when it goes off)
+	for _, flag in MenuRules.FLAGS do
 		ReplicatedStorage:GetAttributeChangedSignal(LiveFlags.ATTRIBUTE_PREFIX .. flag)
 			:Connect(refreshAll)
 	end

@@ -45,6 +45,7 @@ LiveFlags.KEYS = {
 	"washPace", -- each wash step takes about 4 to 5 seconds: more brush strokes, more lather, a narrower rinse, a longer claw hold (WashPace, issue 865); off by default
 	"gradeStars", -- a wash earns its grade in spa stars (1 to 3, plus a rarer cat's extra) and the star tiers start 3 times higher (CatRules.gradeStars, issue 868); off by default
 	"toastCards", -- the short notices are small cards at the top right, coloured by kind with a portrait for a cat, not a dark bar across the screen (UI/ToastCard, ToastRules, issue 877); off by default
+	"rewardPop", -- a pet, crate, gift, check-in day or purchase shows as a big popup in the middle with its picture on a sunburst (UI/RewardPop, ToastRules, issue 1024); off by default
 	"contextAsks", -- pop ups only when they guide a next action: announcement cards cut, guide cards name the action and start the floor trail, the notification ask waits for a first build, the special visitor and first crate get guide cards (BubbleRules, issue 877); off by default
 	"openingBonus", -- a brand new spa's first customer tops the player up to Jo's price with a one-time Grand opening gift line (WorkerRules.openingGift, issue 913); off by default
 	"sudsVoice", -- one soft meow when Suds's speech bubble appears (Audio/SudsVoice, issue 827); off by default
@@ -187,6 +188,8 @@ LiveFlags.KEYS = {
 	"outdoorWalk", -- once the first session's tutorial has ended (2:45 of play), the player walks at 24 studs a second outside every spa building, the default 16 inside one and all through the tutorial (OutdoorWalkRules, OutdoorWalkService, OutdoorWalkController, issue 886); off by default
 	"tipTake", -- with counterLine: while the next cat waits on Suds's tip after a recap card, the cats on the counter keep their Take cat prompt, and a tap asks for the next cat at once and takes that cat (BubbleController.hurry, CarryController, issue 1017); off by default
 	"noVisitBoard", -- the "Who might visit" chance board by the door is not drawn (Derek: it adds clutter); the same chances stay in the cat index and the queue window (ChanceBoardController, issue 1021); off by default
+	"menuOnly", -- a choice with a menu is made only there: no helper hire pads or Hire and Takes prompts at the stands (Helpers window), no Buy and Build prompts on the boards (Build window), no Wash next prompts (Who's next?), each only while its window is on; guide cards open the window (MenuRules, issues 1028 and 1033); off by default
+	"resetSave", -- Settings' "Reset my game" for the dev game, Studio or the group's owner only: the save goes back to a new one (receipts and passes kept) and the player rejoins at the opening (ResetRules, ResetService, issue 1037); off by default
 }
 
 LiveFlags.OFF_BY_DEFAULT = {
@@ -215,6 +218,7 @@ LiveFlags.OFF_BY_DEFAULT = {
 	washPace = true,
 	gradeStars = true,
 	toastCards = true,
+	rewardPop = true,
 	contextAsks = true,
 	openingBonus = true,
 	counterCardFx = true,
@@ -346,6 +350,8 @@ LiveFlags.OFF_BY_DEFAULT = {
 	outdoorWalk = true,
 	tipTake = true,
 	noVisitBoard = true,
+	menuOnly = true,
+	resetSave = true,
 } :: { [string]: boolean }
 
 -- What a stored value means for a key. `stored` is whatever the DataStore returned (nil when missing).

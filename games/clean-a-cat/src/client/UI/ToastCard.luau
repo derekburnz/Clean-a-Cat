@@ -6,7 +6,8 @@
 --     wash's meter and step line in the middle or the prompts in the world;
 --   * cream with the ink outline and ink words, and a coloured tab at its left by type: mint for a reward (a notice
 --     that starts with "+" or says "is yours" or "is ready"), peach for a "not yet" (warning), lilac for news;
---   * the cat's round portrait in the tab when the notice is about a cat (a special visitor);
+--   * a picture in the tab (issue 1024): the cat's or pet's round portrait when the notice names one, else the icon of
+--     what it gives (a crate, a gift, a bow, coins; ToastRules.pictureOf);
 --   * left of anything else at the top right in its band (the coin pill, the friend tag, the starter pack ad), so it
 --     never covers them (issue 925).
 -- Off, it is the old dark bar. Design-Agent, 2026-11-26.
@@ -17,6 +18,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local LiveFlags = require(Shared:WaitForChild("LiveFlags"))
 local ToastRules = require(Shared:WaitForChild("ToastRules"))
 
+local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local Portraits = require(script.Parent:WaitForChild("Portraits"))
 
@@ -40,6 +42,19 @@ local GAP = 10 -- px between the card and a piece it moves left of
 
 -- The card's type for a notice (ToastRules, pure and covered by its spec).
 ToastCard.lookOf = ToastRules.lookOf
+-- The big reward popup's switch and words (UI/RewardPop, issue 1024).
+ToastCard.POP_FLAG = ToastRules.POP_FLAG
+ToastCard.popOf = ToastRules.popOf
+
+-- True when a cat or pet called `name` has a portrait.
+function ToastCard.isPortrait(name: string): boolean
+	return Portraits.imageFor(name) ~= ""
+end
+
+-- The picture for a notice (issue 1024): the portrait of the cat or pet it names, else the icon of what it gives.
+function ToastCard.pictureOf(text: string, icon: string?): ToastRules.Picture?
+	return ToastRules.pictureOf(text, icon, ToastCard.isPortrait)
+end
 
 local function child<T>(parent: Instance, name: string, class: string): T
 	local found = parent:FindFirstChild(name)
@@ -90,6 +105,7 @@ function ToastCard.style(
 	local pad = child(label, "Room", "UIPadding") :: UIPadding
 	local tab = child(label, "Tab", "Frame") :: Frame
 	local face = child(tab, "Icon", "ImageLabel") :: ImageLabel
+	local thing = child(tab, "Thing", "Frame") :: Frame -- an icon's holder (Icons.draw fills it)
 	if not on then
 		label.AnchorPoint = Vector2.new(0.5, 0)
 		label.Position = UDim2.new(0.5, 0, 0, 70)
@@ -101,12 +117,16 @@ function ToastCard.style(
 		label.TextXAlignment = Enum.TextXAlignment.Center
 		stroke.Enabled = false
 		tab.Visible = false
+		thing.Visible = false
 		pad.PaddingLeft = UDim.new(0, 0)
 		pad.PaddingRight = UDim.new(0, 0)
 		return
 	end
 	local look: string = ToastCard.lookOf(text, kind)
-	local image = if icon then Portraits.imageFor(icon) else ""
+	local picture = ToastCard.pictureOf(text, icon)
+	local image = if picture and picture.kind == "portrait"
+		then Portraits.imageFor(picture.name)
+		else ""
 	label.Font = Kit.FONT
 	label.TextSize = TEXT_SIZE
 	label.TextColor3 = Kit.INK
@@ -146,6 +166,14 @@ function ToastCard.style(
 	face.Size = UDim2.fromOffset(ICON, ICON)
 	local faceRound = child(face, "Round", "UICorner") :: UICorner
 	faceRound.CornerRadius = UDim.new(0.5, 0)
+	thing.BackgroundTransparency = 1
+	thing.AnchorPoint = Vector2.new(0.5, 0.5)
+	thing.Position = UDim2.fromScale(0.5, 0.5)
+	thing.Size = UDim2.fromOffset(ICON, ICON)
+	thing.Visible = picture ~= nil and picture.kind == "icon"
+	if picture and picture.kind == "icon" then
+		Icons.draw(picture.name, thing)
+	end
 end
 
 return ToastCard

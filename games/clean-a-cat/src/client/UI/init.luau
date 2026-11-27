@@ -75,6 +75,7 @@ local QuestBook = require(script:WaitForChild("QuestBook"))
 local QueueWindow = require(script:WaitForChild("QueueWindow"))
 local Recap = require(script:WaitForChild("Recap"))
 local RenameCard = require(script:WaitForChild("RenameCard"))
+local RewardPop = require(script:WaitForChild("RewardPop"))
 local SettingsCard = require(script:WaitForChild("Settings"))
 local ShopWindow = require(script:WaitForChild("ShopWindow"))
 local SideButtons = require(script:WaitForChild("HUD"):WaitForChild("SideButtons"))
@@ -843,6 +844,7 @@ type Toast = { text: string, kind: ("info" | "warning")?, icon: string? }
 local toastQueue: { Toast } = {}
 local toastShownAt = -math.huge
 local toastBusy = false
+local closePop: (() -> ())? = nil -- the big reward popup on screen (switch rewardPop, issue 1024)
 
 local function showNextToast()
 	local label = toastLabel
@@ -857,6 +859,39 @@ local function showNextToast()
 	toastBusy = true
 	toastToken += 1
 	local token = toastToken
+	-- a pet, crate, gift, check-in day or purchase: the big popup in the middle (switch rewardPop, issue 1024)
+	local pop = if LiveFlags.isOn(ToastCard.POP_FLAG)
+		then ToastCard.popOf(nextToast.text, nextToast.kind)
+		else nil
+	local root = label.Parent
+	if pop and root and root:IsA("GuiObject") then
+		label.Visible = false
+		local picture = ToastCard.pictureOf(nextToast.text, nextToast.icon)
+		closePop = RewardPop.show(root :: GuiObject, pop, picture, function()
+			if token == toastToken then
+				closePop = nil
+				showNextToast()
+			end
+		end)
+		toastShownAt = os.clock()
+		task.spawn(function()
+			while token == toastToken do
+				local shownFor = os.clock() - toastShownAt
+				if
+					shownFor >= RewardPop.SECONDS
+					or (#toastQueue > 0 and shownFor >= RewardPop.SHORT)
+				then
+					break
+				end
+				task.wait(0.1)
+			end
+			local close = closePop
+			if token == toastToken and close then
+				close() -- its onClosed shows the next
+			end
+		end)
+		return
+	end
 	label.Text = nextToast.text
 	local around = HUD.topRight() -- the coin pill and friend tag, then the starter ad: the card keeps clear (issue 925)
 	for _, piece in StarterAd.boxes() do
@@ -914,6 +949,11 @@ function UI.setWashFocus(on: boolean)
 		toastBusy = false
 		if label then
 			label.Visible = false
+		end
+		local close = closePop
+		closePop = nil
+		if close then
+			close() -- the reward popup goes too; its onClosed sees the new token and shows nothing
 		end
 	elseif not toastBusy then
 		showNextToast()
