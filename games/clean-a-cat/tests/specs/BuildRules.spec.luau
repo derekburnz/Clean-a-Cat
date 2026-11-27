@@ -329,6 +329,48 @@ return function()
 			end
 		)
 
+		it(
+			"takes the VIP Room out under noVipRoom and pays back what it cost (issue 1063)",
+			function()
+				local noVip = switches({ builds = true, tubBuilds = true, noVipRoom = true })
+				expect(BuildRules.shown("VipRoom", noVip)).to.equal(false)
+				expect(table.find(BuildRules.offered(noVip), "VipRoom")).to.equal(nil)
+				expect(BuildRules.hasVip({ VipRoom = true }, noVip)).to.equal(false)
+				expect(table.find(BuildRules.itemFlags(), "noVipRoom")).to.be.ok()
+				local coins, ids = BuildRules.oldRefund({ VipRoom = true }, {}, noVip)
+				expect(coins).to.equal(15000) -- its tubBuilds price, not the old board's 100
+				expect(ids[1]).to.equal("VipRoom")
+				local tubs = switches({ builds = true, tubBuilds = true })
+				expect(BuildRules.shown("VipRoom", tubs)).to.equal(true)
+				expect(BuildRules.hasVip({ VipRoom = true }, tubs)).to.equal(true)
+				expect(BuildRules.oldRefund({ VipRoom = true }, {}, tubs)).to.equal(0)
+				local LiveFlags = require(game:GetService("ReplicatedStorage").Shared.LiveFlags)
+				expect(table.find(LiveFlags.KEYS, "noVipRoom")).to.be.ok()
+				expect(LiveFlags.OFF_BY_DEFAULT.noVipRoom).to.equal(true)
+			end
+		)
+
+		it("ends a VIP Room still building under noVipRoom, so the builder is free", function()
+			local noVip = switches({ builds = true, tubBuilds = true, noVipRoom = true })
+			local s: BuildRules.State = {
+				coins = 0,
+				stations = {},
+				builds = { room = { item = "VipRoom", endsAt = 99999 } },
+			}
+			local ended = BuildRules.endTakenOut(s, noVip)
+			expect(ended[1]).to.equal("VipRoom")
+			expect(s.builds.room).to.equal(nil)
+			expect(s.stations.VipRoom).to.equal(true)
+			local keep: BuildRules.State = {
+				coins = 0,
+				stations = {},
+				builds = { room = { item = "VipRoom", endsAt = 99999 } },
+			}
+			local tubs = switches({ builds = true, tubBuilds = true })
+			expect(#BuildRules.endTakenOut(keep, tubs)).to.equal(0)
+			expect(keep.builds.room).to.be.ok()
+		end)
+
 		it("covers the Bubble Bath and Pawdicure at their board prices", function()
 			local coins = BuildRules.oldRefund({ BubbleBath = true, Pawdicure = true }, {}, both)
 			expect(coins).to.equal(
