@@ -26,6 +26,7 @@ local Contrast = require(script.Parent:WaitForChild("Contrast"))
 local Icons = require(script.Parent:WaitForChild("HUD"):WaitForChild("Icons"))
 local Kit = require(script.Parent:WaitForChild("Kit"))
 local Motion = require(script.Parent:WaitForChild("Motion"))
+local ShortText = require(script.Parent:WaitForChild("ShortText"))
 
 local Window = {}
 
@@ -276,6 +277,7 @@ function Window.new(name: string, title: string, badgeIcon: string, root: Instan
 		keepOnScreen(w)
 	end)
 	Contrast.watch(card) -- switch menuContrast2 (issue 1029)
+	ShortText.watch(card) -- switch shortText (issue 1027)
 	return w
 end
 
